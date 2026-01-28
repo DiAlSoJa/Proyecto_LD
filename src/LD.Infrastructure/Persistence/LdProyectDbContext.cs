@@ -15,6 +15,7 @@ namespace LD.Infrastructure.Persistence
         {
             
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
