@@ -1,0 +1,16 @@
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\bin\Debug\net9.0\LD.Application.deps.json
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\bin\Debug\net9.0\LD.Application.dll
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\bin\Debug\net9.0\LD.Application.pdb
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\bin\Debug\net9.0\LD.Domain.dll
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\bin\Debug\net9.0\LD.Domain.pdb
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.csproj.AssemblyReference.cache
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.AssemblyInfoInputs.cache
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.AssemblyInfo.cs
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.csproj.CoreCompileInputs.cache
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.sourcelink.json
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Appli.B74E48D0.Up2Date
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.dll
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\refint\LD.Application.dll
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\LD.Application.pdb
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Application\obj\Debug\net9.0\ref\LD.Application.dll
