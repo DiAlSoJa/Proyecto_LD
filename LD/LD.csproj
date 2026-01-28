@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Dialogs\FrmConfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevaUbicacionMasiva.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevaUbicacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevoArticuloMasiva.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevoArticulo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevoAlmacen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevoProyecto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevoCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmSuccess.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmError.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmMovimientos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmArticulos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmUbicaciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmAlmacenes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmProyectos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmClientes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
