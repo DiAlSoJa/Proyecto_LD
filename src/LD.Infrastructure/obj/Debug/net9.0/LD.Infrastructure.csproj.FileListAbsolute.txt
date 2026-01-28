@@ -16,3 +16,5 @@ C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Infrastructure\obj\De
 C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Infrastructure\obj\Debug\net9.0\refint\LD.Infrastructure.dll
 C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Infrastructure\obj\Debug\net9.0\LD.Infrastructure.pdb
 C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Infrastructure\obj\Debug\net9.0\ref\LD.Infrastructure.dll
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Infrastructure\bin\Debug\net9.0\LD.Infrastructure.runtimeconfig.json
+C:\Users\DIEGO ALFREDO\OneDrive\Desktop\Proyecto_LD\src\LD.Infrastructure\obj\Debug\net9.0\LD.Infrastructure.genruntimeconfig.cache

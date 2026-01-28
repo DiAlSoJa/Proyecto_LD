@@ -4,6 +4,18 @@
   "Documents": [
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D8CC1A60-B27B-4463-ABF6-8B9164EB16CC}|src\\LD.Api\\LD.Api.csproj|c:\\users\\diego alfredo\\onedrive\\desktop\\proyecto_ld\\src\\ld.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D8CC1A60-B27B-4463-ABF6-8B9164EB16CC}|src\\LD.Api\\LD.Api.csproj|solutionrelative:src\\ld.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6EA288BD-45E9-4E63-9328-8DF215C1BB3D}|src\\LD.Infrastructure\\LD.Infrastructure.csproj|c:\\users\\diego alfredo\\onedrive\\desktop\\proyecto_ld\\src\\ld.infrastructure\\persistence\\ldproyectdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6EA288BD-45E9-4E63-9328-8DF215C1BB3D}|src\\LD.Infrastructure\\LD.Infrastructure.csproj|solutionrelative:src\\ld.infrastructure\\persistence\\ldproyectdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6EA288BD-45E9-4E63-9328-8DF215C1BB3D}|src\\LD.Infrastructure\\LD.Infrastructure.csproj|c:\\users\\diego alfredo\\onedrive\\desktop\\proyecto_ld\\src\\ld.infrastructure\\configureservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6EA288BD-45E9-4E63-9328-8DF215C1BB3D}|src\\LD.Infrastructure\\LD.Infrastructure.csproj|solutionrelative:src\\ld.infrastructure\\configureservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -13,7 +25,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -45,15 +57,54 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\DIEGO ALFREDO\\OneDrive\\Desktop\\Proyecto_LD\\src\\LD.Api\\Program.cs",
+              "RelativeDocumentMoniker": "src\\LD.Api\\Program.cs",
+              "ToolTip": "C:\\Users\\DIEGO ALFREDO\\OneDrive\\Desktop\\Proyecto_LD\\src\\LD.Api\\Program.cs",
+              "RelativeToolTip": "src\\LD.Api\\Program.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAtwA4AAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T19:20:56.234Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Microsoft.NET.TargetFrameworkInference.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",
               "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",
               "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.304\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.TargetFrameworkInference.targets",
-              "ViewState": "AgIAAJUAAAAAAAAAAADwv6oAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAKEAAAAAAAAAAAD4v6oAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2026-01-28T15:59:05.12Z",
+              "WhenOpened": "2026-01-28T19:19:50.924Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LdProyectDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\DIEGO ALFREDO\\OneDrive\\Desktop\\Proyecto_LD\\src\\LD.Infrastructure\\Persistence\\LdProyectDbContext.cs",
+              "RelativeDocumentMoniker": "src\\LD.Infrastructure\\Persistence\\LdProyectDbContext.cs",
+              "ToolTip": "C:\\Users\\DIEGO ALFREDO\\OneDrive\\Desktop\\Proyecto_LD\\src\\LD.Infrastructure\\Persistence\\LdProyectDbContext.cs",
+              "RelativeToolTip": "src\\LD.Infrastructure\\Persistence\\LdProyectDbContext.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA0AAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T19:18:50.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ConfigureServices.cs",
+              "DocumentMoniker": "C:\\Users\\DIEGO ALFREDO\\OneDrive\\Desktop\\Proyecto_LD\\src\\LD.Infrastructure\\ConfigureServices.cs",
+              "RelativeDocumentMoniker": "src\\LD.Infrastructure\\ConfigureServices.cs",
+              "ToolTip": "C:\\Users\\DIEGO ALFREDO\\OneDrive\\Desktop\\Proyecto_LD\\src\\LD.Infrastructure\\ConfigureServices.cs",
+              "RelativeToolTip": "src\\LD.Infrastructure\\ConfigureServices.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAwA8AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T19:16:59.459Z",
               "EditorCaption": ""
             }
           ]
