@@ -1,5 +1,5 @@
 ﻿using LD.Application.Common.Interfaces.Auth;
-using LD.Application.Features.Models;
+using LD.Application.Common.Models;
 using MediatR;
 using System;
 using System.Collections.Generic;

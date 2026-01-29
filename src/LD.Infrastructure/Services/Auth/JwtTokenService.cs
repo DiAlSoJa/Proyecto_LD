@@ -1,6 +1,8 @@
 ﻿using LD.Application.Common.Interfaces.Auth;
+using LD.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,11 +12,11 @@ namespace LD.Infrastructure.Services.Auth
 {
     public class JwtTokenService : IJwtTokenService
     {
-        private readonly IConfiguration _config;
+        private readonly JwtSettings _jwt;
 
-        public JwtTokenService(IConfiguration config)
+        public JwtTokenService(IOptions<JwtSettings> jwt)
         {
-            _config = config;
+            _jwt = jwt.Value;
         }
 
         public string GenerateToken(IdentityUser user)
@@ -26,13 +28,13 @@ namespace LD.Infrastructure.Services.Auth
             };
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+                Encoding.UTF8.GetBytes(_jwt.Key));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: _jwt.Issuer,
+                audience: _jwt.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(8),
                 signingCredentials: creds);

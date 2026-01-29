@@ -1,4 +1,4 @@
-﻿using LD.Application.Features.Models;
+﻿using LD.Application.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

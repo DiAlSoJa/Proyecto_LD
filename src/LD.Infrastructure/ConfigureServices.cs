@@ -1,4 +1,5 @@
 ﻿using LD.Application.Common.Interfaces.Auth;
+using LD.Application.Common.Models;
 using LD.Application.Features.Auth.Commands;
 using LD.Infrastructure.Identity;
 using LD.Infrastructure.Persistence;
@@ -26,6 +27,9 @@ public static class ConfigureServices
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<LdProyectDbContext>()
             .AddDefaultTokenProviders();
+
+
+
 
 
         services.AddScoped<IJwtTokenService, JwtTokenService>();

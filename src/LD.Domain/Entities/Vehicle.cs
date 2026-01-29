@@ -1,0 +1,41 @@
+﻿using LD.Domain.Common;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LD.Domain.Entities
+{
+    public class Vehicle : AuditableEntity
+    {
+        [Key]
+        public int VehiculoId { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string NumeroVehiculo { get; set; }   // No. Vehículo
+
+        [Required]
+        [MaxLength(150)]
+        public string Nombre { get; set; }            // FORD DIESEL 96
+
+        [Required]
+        [MaxLength(50)]
+        public string Tipo { get; set; }              // CAJA SECA, RABON, CAMIONETA
+
+        [Required]
+        public decimal Capacidad { get; set; }        // 5.00
+
+        [MaxLength(50)]
+        public string Placas { get; set; }            // JP26370
+
+        // Dimensiones (metros)
+        public decimal Largo { get; set; }            // 4.20
+        public decimal Ancho { get; set; }            // 2.30
+        public decimal Alto { get; set; }              // 1.90
+
+        public bool Activo { get; set; }
+    }
+}

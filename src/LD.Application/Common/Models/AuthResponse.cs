@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD.Application.Features.Models
+namespace LD.Application.Common.Models
 {
     public class AuthResponse
     {
