@@ -92,7 +92,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.searchBar;
+            pictureBox1.Image =Forms.Properties.Resources.searchBar;
             pictureBox1.Location = new Point(317, 15);
             pictureBox1.Margin = new Padding(3, 2, 3, 2);
             pictureBox1.Name = "pictureBox1";
@@ -131,7 +131,7 @@
             // button1
             // 
             button1.Cursor = Cursors.Hand;
-            button1.Image = Properties.Resources.clientes;
+            button1.Image =Forms.Properties.Resources.clientes;
             button1.Location = new Point(12, 10);
             button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
@@ -145,7 +145,7 @@
             // button2
             // 
             button2.Cursor = Cursors.Hand;
-            button2.Image = Properties.Resources.proyectos;
+            button2.Image =Forms.Properties.Resources.proyectos;
             button2.Location = new Point(171, 10);
             button2.Margin = new Padding(3, 2, 3, 2);
             button2.Name = "button2";
@@ -159,7 +159,7 @@
             // button3
             // 
             button3.Cursor = Cursors.Hand;
-            button3.Image = Properties.Resources.almacen;
+            button3.Image =Forms.Properties.Resources.almacen;
             button3.Location = new Point(330, 10);
             button3.Margin = new Padding(3, 2, 3, 2);
             button3.Name = "button3";
@@ -173,7 +173,7 @@
             // button4
             // 
             button4.Cursor = Cursors.Hand;
-            button4.Image = Properties.Resources.ubicaciones;
+            button4.Image =Forms.Properties.Resources.ubicaciones;
             button4.Location = new Point(489, 10);
             button4.Margin = new Padding(3, 2, 3, 2);
             button4.Name = "button4";
@@ -187,7 +187,7 @@
             // button5
             // 
             button5.Cursor = Cursors.Hand;
-            button5.Image = Properties.Resources.articulos;
+            button5.Image =Forms.Properties.Resources.articulos;
             button5.Location = new Point(648, 10);
             button5.Margin = new Padding(3, 2, 3, 2);
             button5.Name = "button5";
@@ -201,7 +201,7 @@
             // button15
             // 
             button15.Cursor = Cursors.Hand;
-            button15.Image = Properties.Resources.transaccion;
+            button15.Image =Forms.Properties.Resources.transaccion;
             button15.Location = new Point(807, 10);
             button15.Margin = new Padding(3, 2, 3, 2);
             button15.Name = "button15";
@@ -215,7 +215,7 @@
             // button9
             // 
             button9.Cursor = Cursors.Hand;
-            button9.Image = Properties.Resources.entrada;
+            button9.Image =Forms.Properties.Resources.entrada;
             button9.Location = new Point(966, 10);
             button9.Margin = new Padding(3, 2, 3, 2);
             button9.Name = "button9";
@@ -228,7 +228,7 @@
             // button6
             // 
             button6.Cursor = Cursors.Hand;
-            button6.Image = Properties.Resources.controlPatio;
+            button6.Image =Forms.Properties.Resources.controlPatio;
             button6.Location = new Point(12, 74);
             button6.Margin = new Padding(3, 2, 3, 2);
             button6.Name = "button6";
@@ -241,7 +241,7 @@
             // button7
             // 
             button7.Cursor = Cursors.Hand;
-            button7.Image = Properties.Resources.asn;
+            button7.Image =Forms.Properties.Resources.asn;
             button7.Location = new Point(171, 74);
             button7.Margin = new Padding(3, 2, 3, 2);
             button7.Name = "button7";
@@ -254,7 +254,7 @@
             // button8
             // 
             button8.Cursor = Cursors.Hand;
-            button8.Image = Properties.Resources.validarRecepcion;
+            button8.Image =Forms.Properties.Resources.validarRecepcion;
             button8.Location = new Point(330, 74);
             button8.Margin = new Padding(3, 2, 3, 2);
             button8.Name = "button8";
@@ -267,7 +267,7 @@
             // button10
             // 
             button10.Cursor = Cursors.Hand;
-            button10.Image = Properties.Resources.surtido;
+            button10.Image =Forms.Properties.Resources.surtido;
             button10.Location = new Point(489, 74);
             button10.Margin = new Padding(3, 2, 3, 2);
             button10.Name = "button10";
@@ -280,7 +280,7 @@
             // button11
             // 
             button11.Cursor = Cursors.Hand;
-            button11.Image = Properties.Resources.auditar;
+            button11.Image =Forms.Properties.Resources.auditar;
             button11.Location = new Point(648, 74);
             button11.Margin = new Padding(3, 2, 3, 2);
             button11.Name = "button11";
@@ -293,7 +293,7 @@
             // button12
             // 
             button12.Cursor = Cursors.Hand;
-            button12.Image = Properties.Resources.salida1;
+            button12.Image =Forms.Properties.Resources.salida1;
             button12.Location = new Point(807, 74);
             button12.Margin = new Padding(3, 2, 3, 2);
             button12.Name = "button12";
@@ -306,7 +306,7 @@
             // button16
             // 
             button16.Cursor = Cursors.Hand;
-            button16.Image = Properties.Resources.inventario;
+            button16.Image =Forms.Properties.Resources.inventario;
             button16.Location = new Point(966, 74);
             button16.Margin = new Padding(3, 2, 3, 2);
             button16.Name = "button16";
@@ -319,7 +319,7 @@
             // button13
             // 
             button13.Cursor = Cursors.Hand;
-            button13.Image = Properties.Resources.aleatorio;
+            button13.Image =Forms.Properties.Resources.aleatorio;
             button13.Location = new Point(12, 138);
             button13.Margin = new Padding(3, 2, 3, 2);
             button13.Name = "button13";
@@ -332,7 +332,7 @@
             // button14
             // 
             button14.Cursor = Cursors.Hand;
-            button14.Image = Properties.Resources.grafica1;
+            button14.Image =Forms.Properties.Resources.grafica1;
             button14.Location = new Point(171, 138);
             button14.Margin = new Padding(3, 2, 3, 2);
             button14.Name = "button14";
@@ -345,7 +345,7 @@
             // button17
             // 
             button17.Cursor = Cursors.Hand;
-            button17.Image = Properties.Resources.acceso;
+            button17.Image =Forms.Properties.Resources.acceso;
             button17.Location = new Point(330, 138);
             button17.Margin = new Padding(3, 2, 3, 2);
             button17.Name = "button17";

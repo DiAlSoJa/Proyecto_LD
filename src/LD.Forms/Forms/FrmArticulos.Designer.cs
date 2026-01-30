@@ -73,7 +73,7 @@ namespace LD.Forms
             // 
             // button4
             // 
-            button4.Image = Properties.Resources.pegar;
+            button4.Image =Forms.Properties.Resources.pegar;
             button4.ImageAlign = ContentAlignment.MiddleLeft;
             button4.Location = new Point(422, 3);
             button4.Name = "button4";
@@ -99,7 +99,7 @@ namespace LD.Forms
             // 
             // button1
             // 
-            button1.Image = Properties.Resources.plusM;
+            button1.Image =Forms.Properties.Resources.plusM;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(153, 3);
             button1.Name = "button1";
@@ -111,7 +111,7 @@ namespace LD.Forms
             // 
             // button3
             // 
-            button3.Image = Properties.Resources.editar;
+            button3.Image =Forms.Properties.Resources.editar;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Location = new Point(266, 3);
             button3.Name = "button3";
@@ -131,7 +131,7 @@ namespace LD.Forms
             // 
             // button2
             // 
-            button2.Image = Properties.Resources.plusM;
+            button2.Image =Forms.Properties.Resources.plusM;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(3, 3);
             button2.Name = "button2";
@@ -259,7 +259,7 @@ namespace LD.Forms
             // 
             // button5
             // 
-            button5.Image = Properties.Resources.editar;
+            button5.Image =Forms.Properties.Resources.editar;
             button5.ImageAlign = ContentAlignment.MiddleLeft;
             button5.Location = new Point(23, 50);
             button5.Name = "button5";
@@ -270,7 +270,7 @@ namespace LD.Forms
             // 
             // button6
             // 
-            button6.Image = Properties.Resources.update;
+            button6.Image =Forms.Properties.Resources.update;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
             button6.Location = new Point(23, 3);
             button6.Name = "button6";

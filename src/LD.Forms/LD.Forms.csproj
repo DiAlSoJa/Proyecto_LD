@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="X\**" />
+    <EmbeddedResource Remove="X\**" />
+    <None Remove="X\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Dialogs\FrmConfirm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,10 +79,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="X\" />
   </ItemGroup>
 
 </Project>

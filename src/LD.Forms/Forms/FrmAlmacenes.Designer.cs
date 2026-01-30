@@ -77,7 +77,7 @@ namespace LD.Forms
             // 
             // button1
             // 
-            button1.Image = Properties.Resources.plusM;
+            button1.Image =Forms.Properties.Resources.plusM;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(153, 3);
             button1.Name = "button1";
@@ -89,7 +89,7 @@ namespace LD.Forms
             // 
             // button3
             // 
-            button3.Image = Properties.Resources.editar;
+            button3.Image =Forms.Properties.Resources.editar;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Location = new Point(266, 3);
             button3.Name = "button3";
@@ -109,7 +109,7 @@ namespace LD.Forms
             // 
             // button2
             // 
-            button2.Image = Properties.Resources.plusM;
+            button2.Image =Forms.Properties.Resources.plusM;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(3, 3);
             button2.Name = "button2";
@@ -187,7 +187,7 @@ namespace LD.Forms
             // 
             // button6
             // 
-            button6.Image = Properties.Resources.update;
+            button6.Image =Forms.Properties.Resources.update;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
             button6.Location = new Point(23, 3);
             button6.Name = "button6";

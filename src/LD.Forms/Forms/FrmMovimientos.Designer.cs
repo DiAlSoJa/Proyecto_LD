@@ -84,7 +84,7 @@ namespace LD.Forms
             // 
             // button2
             // 
-            button2.Image = Properties.Resources.plusM;
+            button2.Image =Forms.Properties.Resources.plusM;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(3, 3);
             button2.Name = "button2";
@@ -109,7 +109,7 @@ namespace LD.Forms
             // 
             // button6
             // 
-            button6.Image = Properties.Resources.update;
+            button6.Image =Forms.Properties.Resources.update;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
             button6.Location = new Point(23, 3);
             button6.Name = "button6";

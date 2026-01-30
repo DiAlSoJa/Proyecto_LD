@@ -231,7 +231,7 @@
             // 
             // button2
             // 
-            button2.Image = Properties.Resources.cancel;
+            button2.Image =Forms.Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(569, 8);
             button2.Name = "button2";
@@ -243,7 +243,7 @@
             // 
             // button1
             // 
-            button1.Image = Properties.Resources.save;
+            button1.Image =Forms.Properties.Resources.save;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(391, 8);
             button1.Name = "button1";
@@ -282,7 +282,7 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image = Properties.Resources.cancelar;
+            pictureBox2.Image =Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(718, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 10, 0, 0);

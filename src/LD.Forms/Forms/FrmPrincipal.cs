@@ -7,8 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using LD.Forms.Classes;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using LD.Forms.Properties;
 
 namespace LD.Forms
 {
@@ -47,7 +46,7 @@ namespace LD.Forms
         {
             if (this.WindowState == FormWindowState.Maximized)
             {
-                this.btnFrmMaximizar.Image = global::LD.Properties.Resources.max1;
+                this.btnFrmMaximizar.Image = Resources.max1;
                 Rectangle sc = Screen.FromHandle(this.Handle).WorkingArea;
                 sc.Height = sc.Height + 20;
                 sc.Width = sc.Width + 20;
@@ -57,7 +56,7 @@ namespace LD.Forms
             }
             else
             {
-                this.btnFrmMaximizar.Image = global::LD.Properties.Resources.max2;
+                this.btnFrmMaximizar.Image = Resources.max2;
             }
             // pMenu.Size = new System.Drawing.Size(286, this.Height - 100);
         }

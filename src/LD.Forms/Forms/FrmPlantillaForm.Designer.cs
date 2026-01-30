@@ -50,7 +50,7 @@
             // 
             // button1
             // 
-            button1.Image = Properties.Resources.update;
+            button1.Image =Forms.Properties.Resources.update;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(12, 12);
             button1.Name = "button1";
