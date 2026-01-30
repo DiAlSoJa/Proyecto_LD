@@ -5,8 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using LD.Classes;
 using LD.Dialogs;
+using LD.Forms.Classes;
 
 namespace LD.Forms
 {

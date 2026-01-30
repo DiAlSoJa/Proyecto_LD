@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 
-namespace LD.Controls
+namespace LD.Forms.Controls
 {
     public class RoundedButton :Button
     {
@@ -16,38 +16,38 @@ namespace LD.Controls
         private int borderRadius = 40;
         private Color borderColor = Color.FromArgb(50,0,0,0);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int BorderSize { get => borderSize; set { borderSize = value; this.Invalidate(); }}
+        public int BorderSize { get => borderSize; set { borderSize = value; Invalidate(); }}
         private Color disabledBackColor = Color.FromArgb(203, 213, 225);
         private Color originalBackColor;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int BorderRadius { get => borderRadius; 
             set {
-                if (value <= this.Height)
+                if (value <= Height)
                     borderRadius = value;
                 else
-                    borderRadius = this.Height;
+                    borderRadius = Height;
 
-                this.Invalidate();
+                Invalidate();
             }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color DisabledBackColor
         {
             get => disabledBackColor;
-            set { disabledBackColor = value; this.Invalidate(); }
+            set { disabledBackColor = value; Invalidate(); }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color BorderColor { get => borderColor; set { borderColor = value; this.Invalidate(); }}
+        public Color BorderColor { get => borderColor; set { borderColor = value; Invalidate(); }}
 
         public RoundedButton()
         {
-            this.FlatStyle = FlatStyle.Flat;
-            this.FlatAppearance.BorderSize = 0;
-            this.Size = new Size(150, 40);
-            this.BackColor = Color.White;
-            this.ForeColor = Color.Black;
-            this.Cursor = Cursors.Hand;
-            this.Resize += new EventHandler(Button_Resize);
+            FlatStyle = FlatStyle.Flat;
+            FlatAppearance.BorderSize = 0;
+            Size = new Size(150, 40);
+            BackColor = Color.White;
+            ForeColor = Color.Black;
+            Cursor = Cursors.Hand;
+            Resize += new EventHandler(Button_Resize);
         }
         private GraphicsPath GetFigurePath(RectangleF rect, float radius)
         {
@@ -65,20 +65,20 @@ namespace LD.Controls
             base.OnPaint(pevent);
             pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            RectangleF rectSurface = new RectangleF(0, 0, this.Width, this.Height);
-            RectangleF rectBorder = new RectangleF(1, 1, this.Width - 0.8f, this.Height - 1);
+            RectangleF rectSurface = new RectangleF(0, 0, Width, Height);
+            RectangleF rectBorder = new RectangleF(1, 1, Width - 0.8f, Height - 1);
 
             if (borderRadius > 2) // Rounded button
             {
                 using (GraphicsPath pathSurface = GetFigurePath(rectSurface, borderRadius))
                 using (GraphicsPath pathBorder = GetFigurePath(rectBorder, borderRadius - 1f))
-                using (Pen penSurface = new Pen(this.Parent.BackColor, 2))
+                using (Pen penSurface = new Pen(Parent.BackColor, 2))
                 using (Pen penBorder = new Pen(borderColor, borderSize))
                 {
                     penBorder.Alignment = PenAlignment.Inset;
 
                     // Button surface
-                    this.Region = new Region(pathSurface);
+                    Region = new Region(pathSurface);
 
                     // Draw surface border for HD result
                     pevent.Graphics.DrawPath(penSurface, pathSurface);
@@ -92,7 +92,7 @@ namespace LD.Controls
             else // Normal button
             {
                 // Button surface
-                this.Region = new Region(rectSurface);
+                Region = new Region(rectSurface);
 
                 // Button border
                 if (borderSize >= 1)
@@ -100,7 +100,7 @@ namespace LD.Controls
                     using (Pen penBorder = new Pen(borderColor, borderSize))
                     {
                         penBorder.Alignment = PenAlignment.Inset;
-                        pevent.Graphics.DrawRectangle(penBorder, 0, 0, this.Width - 1, this.Height - 1);
+                        pevent.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
                     }
                 }
             }
@@ -110,34 +110,34 @@ namespace LD.Controls
         {
             base.OnEnabledChanged(e);
 
-            if (this.Enabled)
+            if (Enabled)
             {
                 // Restaurar el color original
-                this.BackColor = originalBackColor;
+                BackColor = originalBackColor;
             }
             else
             {
-                originalBackColor = this.BackColor;
-                this.BackColor = disabledBackColor;
+                originalBackColor = BackColor;
+                BackColor = disabledBackColor;
             }
 
-            this.Invalidate(); 
+            Invalidate(); 
         }
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            this.Parent.BackColorChanged += new EventHandler(Container_BackColorChanged);
+            Parent.BackColorChanged += new EventHandler(Container_BackColorChanged);
         }
 
         private void Container_BackColorChanged(object sender, EventArgs e)
         {
-            if (this.DesignMode)
-                this.Invalidate();
+            if (DesignMode)
+                Invalidate();
         }
         private void Button_Resize(object sender, EventArgs e)
         {
-            if (borderRadius > this.Height)
-                BorderRadius = this.Height;
+            if (borderRadius > Height)
+                BorderRadius = Height;
         }
     }
 }

@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\juan.parvol\\source\\repos\\LD\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|c:\\users\\juan.parvol\\source\\repos\\ld\\ld.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|solutionrelative:ld.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|c:\\users\\juan.parvol\\source\\repos\\ld\\ld.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|solutionrelative:ld.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|C:\\Users\\juan.parvol\\source\\repos\\LD\\forms\\frmclientes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|solutionrelative:forms\\frmclientes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
@@ -15,7 +23,7 @@
       "RelativeMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|solutionrelative:forms\\frmmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|c:\\users\\juan.parvol\\source\\repos\\ld\\forms\\frmmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|C:\\Users\\juan.parvol\\source\\repos\\LD\\forms\\frmmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{7FEED1AA-8E43-B3B1-A740-99F89B26FE00}|LD.csproj|solutionrelative:forms\\frmmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
@@ -78,11 +86,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 1636,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "FrmLogin.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmLogin.cs",
               "RelativeDocumentMoniker": "Forms\\FrmLogin.cs",
@@ -93,41 +101,37 @@
               "IsPinned": true
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FrmClientes.cs",
-              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs",
-              "RelativeDocumentMoniker": "Forms\\FrmClientes.cs",
-              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs",
-              "RelativeToolTip": "Forms\\FrmClientes.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAuwB0AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-28T03:47:30.804Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
-            },
-            {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "FrmMenu.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMenu.cs",
-              "RelativeDocumentMoniker": "Forms\\FrmMenu.cs",
-              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMenu.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Forms\\FrmMenu.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-25T23:41:52.457Z",
-              "EditorCaption": " [Dise\u00F1o]"
+              "DocumentIndex": 0,
+              "Title": "LD.csproj",
+              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\LD.csproj",
+              "RelativeDocumentMoniker": "LD.csproj",
+              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\LD.csproj",
+              "RelativeToolTip": "LD.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-29T11:02:33.053Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
+              "Title": "LD",
+              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\LD.csproj",
+              "RelativeDocumentMoniker": "LD.csproj",
+              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\LD.csproj",
+              "RelativeToolTip": "LD.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-28T23:26:14.145Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "FrmMenu.cs",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMenu.cs",
               "RelativeDocumentMoniker": "Forms\\FrmMenu.cs",
@@ -140,7 +144,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Formularios.cs",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Classes\\Formularios.cs",
               "RelativeDocumentMoniker": "Classes\\Formularios.cs",
@@ -152,7 +156,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "FrmMovimientos.Designer.cs",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMovimientos.Designer.cs",
               "RelativeDocumentMoniker": "Forms\\FrmMovimientos.Designer.cs",
@@ -160,11 +164,12 @@
               "RelativeToolTip": "Forms\\FrmMovimientos.Designer.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T02:04:25.195Z"
+              "WhenOpened": "2026-01-26T02:04:25.195Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "FrmMovimientos.cs",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMovimientos.cs",
               "RelativeDocumentMoniker": "Forms\\FrmMovimientos.cs",
@@ -172,11 +177,47 @@
               "RelativeToolTip": "Forms\\FrmMovimientos.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T02:04:16.972Z"
+              "WhenOpened": "2026-01-26T02:04:16.972Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 2,
+              "Title": "FrmClientes.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs",
+              "RelativeDocumentMoniker": "Forms\\FrmClientes.cs",
+              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Forms\\FrmClientes.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-26T02:09:43.176Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FrmMenu.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMenu.cs",
+              "RelativeDocumentMoniker": "Forms\\FrmMenu.cs",
+              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMenu.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Forms\\FrmMenu.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-25T23:41:52.457Z",
+              "EditorCaption": " [Dise\u00F1o]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FrmClientes.cs",
+              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs",
+              "RelativeDocumentMoniker": "Forms\\FrmClientes.cs",
+              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs",
+              "RelativeToolTip": "Forms\\FrmClientes.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAuwB0AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T03:47:30.804Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "FrmNuevoArticuloMasiva.cs",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Dialogs\\FrmNuevoArticuloMasiva.cs",
               "RelativeDocumentMoniker": "Dialogs\\FrmNuevoArticuloMasiva.cs",
@@ -184,23 +225,25 @@
               "RelativeToolTip": "Dialogs\\FrmNuevoArticuloMasiva.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T01:10:59.619Z"
+              "WhenOpened": "2026-01-26T01:10:59.619Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "FrmArticulos.cs",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmArticulos.cs",
               "RelativeDocumentMoniker": "Forms\\FrmArticulos.cs",
               "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmArticulos.cs",
               "RelativeToolTip": "Forms\\FrmArticulos.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAcwB8AAAA+AAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAA2wB8AAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T00:28:49.111Z"
+              "WhenOpened": "2026-01-26T00:28:49.111Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "FrmNuevoArticulo.cs",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Dialogs\\FrmNuevoArticulo.cs",
               "RelativeDocumentMoniker": "Dialogs\\FrmNuevoArticulo.cs",
@@ -212,41 +255,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FrmClientes.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs",
-              "RelativeDocumentMoniker": "Forms\\FrmClientes.cs",
-              "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmClientes.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Forms\\FrmClientes.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T02:09:43.176Z",
-              "EditorCaption": " [Dise\u00F1o]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "FrmArticulos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmArticulos.cs",
               "RelativeDocumentMoniker": "Forms\\FrmArticulos.cs",
               "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmArticulos.cs [Dise\u00F1o]",
               "RelativeToolTip": "Forms\\FrmArticulos.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T02:09:42.154Z"
+              "WhenOpened": "2026-01-26T02:09:42.154Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "FrmMovimientos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMovimientos.cs",
               "RelativeDocumentMoniker": "Forms\\FrmMovimientos.cs",
               "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmMovimientos.cs [Dise\u00F1o]",
               "RelativeToolTip": "Forms\\FrmMovimientos.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T02:08:22.473Z"
+              "WhenOpened": "2026-01-26T02:08:22.473Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "FrmAlmacenes.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmAlmacenes.cs",
               "RelativeDocumentMoniker": "Forms\\FrmAlmacenes.cs",
@@ -257,18 +290,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "FrmNuevoArticuloMasiva.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Dialogs\\FrmNuevoArticuloMasiva.cs",
               "RelativeDocumentMoniker": "Dialogs\\FrmNuevoArticuloMasiva.cs",
               "ToolTip": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Dialogs\\FrmNuevoArticuloMasiva.cs [Dise\u00F1o]",
               "RelativeToolTip": "Dialogs\\FrmNuevoArticuloMasiva.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-26T01:11:13.91Z"
+              "WhenOpened": "2026-01-26T01:11:13.91Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "FrmUbicaciones.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Forms\\FrmUbicaciones.cs",
               "RelativeDocumentMoniker": "Forms\\FrmUbicaciones.cs",
@@ -279,7 +313,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "FrmNuevaUbicacionMasiva.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\juan.parvol\\source\\repos\\LD\\Dialogs\\FrmNuevaUbicacionMasiva.cs",
               "RelativeDocumentMoniker": "Dialogs\\FrmNuevaUbicacionMasiva.cs",

@@ -61,7 +61,7 @@
             // 
             // button1
             // 
-            button1.Image = Properties.Resources.cancel;
+            button1.Image = Forms.Properties.Resources.cancel;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(337, 170);
             button1.Name = "button1";
@@ -72,7 +72,7 @@
             // 
             // btnAceptar
             // 
-            btnAceptar.Image = Properties.Resources._checked;
+            btnAceptar.Image = Forms.Properties.Resources._checked;
             btnAceptar.ImageAlign = ContentAlignment.MiddleLeft;
             btnAceptar.Location = new Point(129, 170);
             btnAceptar.Name = "btnAceptar";
@@ -95,7 +95,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.question;
+            pictureBox1.Image = Forms.Properties.Resources.question;
             pictureBox1.Location = new Point(20, 57);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(72, 76);
@@ -126,7 +126,7 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = Properties.Resources.cancelar;
+            pictureBox2.Image = Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(521, 9);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(26, 18);

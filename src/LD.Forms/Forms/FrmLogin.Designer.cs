@@ -1,4 +1,6 @@
-﻿namespace LD
+﻿using LD.Forms.Controls;
+
+namespace LD
 {
     partial class FrmLogin
     {
@@ -32,7 +34,7 @@
             label2 = new Label();
             label1 = new Label();
             label3 = new Label();
-            btnLogin = new LD.Controls.RoundedButton();
+            btnLogin = new LD.Forms.Controls.RoundedButton();
             txtPassword = new TextBox();
             txtUsuario = new TextBox();
             pictureBox3 = new PictureBox();
@@ -40,7 +42,7 @@
             panel4 = new Panel();
             panel3 = new Panel();
             panel1 = new Panel();
-            roundedPanel1 = new SpacerNet10.Controls.RoundedPanel();
+            roundedPanel1 = new LD.Forms.Controls.RoundedPanel();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -50,7 +52,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.logo;
+            pictureBox1.Image = Forms.Properties.Resources.logo;
             pictureBox1.Location = new Point(-1, -92);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(895, 591);
@@ -138,7 +140,7 @@
             // 
             // pictureBox3
             // 
-            pictureBox3.Image = Properties.Resources.user;
+            pictureBox3.Image = Forms.Properties.Resources.user;
             pictureBox3.Location = new Point(61, 125);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(41, 32);
@@ -147,7 +149,7 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = Properties.Resources.key;
+            pictureBox2.Image = Forms.Properties.Resources.key;
             pictureBox2.Location = new Point(61, 221);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(41, 32);
@@ -238,9 +240,9 @@
         private PictureBox pictureBox2;
         private TextBox txtUsuario;
         private TextBox txtPassword;
-        private Controls.RoundedButton btnLogin;
+        private RoundedButton btnLogin;
         private Label label3;
         private Panel panel1;
-        private SpacerNet10.Controls.RoundedPanel roundedPanel1;
+        private RoundedPanel roundedPanel1;
     }
 }
