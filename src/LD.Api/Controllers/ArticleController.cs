@@ -22,6 +22,12 @@ namespace LD.Api.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetClients2()
+        {
+            return Ok("GetClientdasdfasfs");
+
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClient(int id)
         {
