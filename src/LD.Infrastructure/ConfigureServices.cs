@@ -26,9 +26,11 @@ public static class ConfigureServices
                 b => b.MigrationsAssembly(migrationAssembly)
             )
         );
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<LdProyectDbContext>()
-            .AddDefaultTokenProviders();
+
+        services
+             .AddIdentity<ApplicationUser, IdentityRole>()
+             .AddEntityFrameworkStores<LdProyectDbContext>()
+             .AddDefaultTokenProviders();
 
 
 
@@ -46,7 +48,8 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureRepositories(this IServiceCollection services, IConfiguration configuration)
     {
 
-        services.AddScoped<IRepository<ClientRepository>, ClientRepository>;
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
 
         return services;
     }

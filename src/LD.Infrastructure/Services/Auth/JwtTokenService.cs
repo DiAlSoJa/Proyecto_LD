@@ -19,13 +19,17 @@ namespace LD.Infrastructure.Services.Auth
             _jwt = jwt.Value;
         }
 
-        public string GenerateToken(IdentityUser user)
+        public string GenerateToken(
+            string userId,
+            string email,
+            IEnumerable<string> roles)
         {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email)
-            };
+            var claims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, userId),
+                    new Claim(JwtRegisteredClaimNames.Email, email),
+                    new Claim(ClaimTypes.NameIdentifier, userId)
+                };
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_jwt.Key));

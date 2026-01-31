@@ -1,5 +1,6 @@
 ﻿using LD.Domain.Entities;
 using LD.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,7 +25,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Location> Locations { get; set; }
         public DbSet<PickingZone> PickingZones { get; set; }
         public DbSet<Printer> Printers { get; set; }
-        public DbSet<Proyect> Proyects { get; set; }
+        //public DbSet<Proyect> Proyects { get; set; }
         public DbSet<Units> Units { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Warehouse>Warehouses{ get; set; }
@@ -35,9 +36,32 @@ namespace LD.Infrastructure.Persistence
             
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
+
+            const string schema = "Auth";
+
+            builder.Entity<ApplicationUser>()
+                .ToTable("AppUsers", schema);
+
+            builder.Entity<IdentityRole>()
+                .ToTable("Roles", schema);
+
+            builder.Entity<IdentityUserRole<string>>()
+                .ToTable("UserRoles", schema);
+
+            builder.Entity<IdentityUserClaim<string>>()
+                .ToTable("UserClaims", schema);
+
+            builder.Entity<IdentityUserLogin<string>>()
+                .ToTable("UserLogins", schema);
+
+            builder.Entity<IdentityRoleClaim<string>>()
+                .ToTable("RoleClaims", schema);
+
+            builder.Entity<IdentityUserToken<string>>()
+                .ToTable("UserTokens", schema);
         }
     } 
 

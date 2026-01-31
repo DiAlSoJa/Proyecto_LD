@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,14 +33,14 @@ namespace LD.Infrastructure.Services.Auth
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return AuthResponse.Fail("Credenciales inválidas");
-
+            var roles = await _userManager.GetRolesAsync(user);
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, password, false);
 
             if (!result.Succeeded)
                 return AuthResponse.Fail("Credenciales inválidas");
 
-            var token = _jwtTokenService.GenerateToken(user);
+            var token = _jwtTokenService.GenerateToken(user.Id.ToString(), user.Email!, roles);
 
             return AuthResponse.Ok(token);
         }

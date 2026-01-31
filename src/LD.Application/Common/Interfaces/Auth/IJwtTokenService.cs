@@ -9,6 +9,10 @@ namespace LD.Application.Common.Interfaces.Auth
 {
     public interface IJwtTokenService
     {
-        string GenerateToken(IdentityUser user);
+        string GenerateToken(
+            string userId,
+            string email,
+            IEnumerable<string> roles
+        );
     }
 }

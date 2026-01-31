@@ -8,10 +8,10 @@ namespace LD.Application.Common.Interfaces
 {
     public interface IRepository<T>
     {
-        Task<T?> GetById(int id);
-        Task<List<T>?> GetMany();
-        Task<bool> Create(T newModoe);
-        Task<bool> Update(T modelToUpdate);
-        Task<bool> Archive(int id);
+        Task<T?> GetByIdAsync(int id);
+        Task<List<T>?> GetManyAsync();
+        Task<bool> CreateAsync(T newModoe);
+        Task<bool> UpdateAsync(T modelToUpdate);
+        Task<bool> ArchiveAsync(int id);
     }
 }
