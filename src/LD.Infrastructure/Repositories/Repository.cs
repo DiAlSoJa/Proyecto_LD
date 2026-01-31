@@ -12,6 +12,10 @@ namespace LD.Infrastructure.Repositories
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly LdProyectDbContext _context;
+        public Repository(LdProyectDbContext ldProyectDbContext)
+        {
+            _context = ldProyectDbContext;
+        }
 
         public async Task<T?> GetByIdAsync(int id)
         {

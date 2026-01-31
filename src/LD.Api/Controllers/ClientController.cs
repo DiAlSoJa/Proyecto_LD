@@ -1,4 +1,4 @@
-﻿using LD.Application.Features.Auth.Commands;
+﻿using LD.Application.Features.Clients.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,18 +16,16 @@ namespace LD.Api.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetClients()
+        public async Task<IActionResult> GetClients([FromQuery] ClientsQuery query)
         {
-            return Ok("GetClientds");
+            return Ok(await _mediator.Send(query));
 
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClient(int id)
-        {
+            => Ok(await _mediator.Send(new ClientByIdQuery(id)));
 
-            return Ok("GetClientd");
-        }
 
         [HttpPost]
         public async Task<IActionResult> CreateClient()

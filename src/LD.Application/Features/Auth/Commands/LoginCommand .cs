@@ -1,4 +1,7 @@
-﻿using LD.Application.Common.Interfaces.Auth;
+﻿
+
+
+using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using MediatR;
 using System;
@@ -25,7 +28,7 @@ public class LoginCommandHandler
         _authService = authService;
     }
 
-    public async Task<AuthResponse> Handle(LoginCommand request,CancellationToken cancellationToken)
+    public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         return await _authService.Login(request.Email, request.Password);
     }

@@ -37,18 +37,12 @@ namespace LD.Forms.Services
             _http.DefaultRequestHeaders.Authorization = null;
         }
 
-        // =========================
-        // GET
-        // =========================
         public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _http.GetAsync(endpoint);
             return await HandleResponse<T>(response);
         }
 
-        // =========================
-        // POST
-        // =========================
         public async Task<TResponse> PostAsync<TRequest, TResponse>(
             string endpoint, TRequest body)
         {
@@ -56,9 +50,6 @@ namespace LD.Forms.Services
             return await HandleResponse<TResponse>(response);
         }
 
-        // =========================
-        // PUT
-        // =========================
         public async Task<TResponse> PutAsync<TRequest, TResponse>(
             string endpoint, TRequest body)
         {
@@ -66,18 +57,12 @@ namespace LD.Forms.Services
             return await HandleResponse<TResponse>(response);
         }
 
-        // =========================
-        // DELETE
-        // =========================
         public async Task DeleteAsync(string endpoint)
         {
             var response = await _http.DeleteAsync(endpoint);
             response.EnsureSuccessStatusCode();
         }
 
-        // =========================
-        // RESPONSE HANDLER
-        // =========================
         private static async Task<T> HandleResponse<T>(HttpResponseMessage response)
         {
             var content = await response.Content.ReadAsStringAsync();
