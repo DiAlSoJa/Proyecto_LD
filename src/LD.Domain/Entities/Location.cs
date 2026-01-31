@@ -11,24 +11,23 @@ namespace LD.Domain.Entities
     public class Location : AuditableEntity
     {
         [Key]
-        public int UbicacionId { get; set; }
+        public int LocationId { get; set; }
 
-        [Required]
-        public int AlmacenId { get; set; }
+        //[Required]
+        //public int AlmacenId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string Codigo { get; set; }   // Ej: RACK-A01-N01
+        public string Code { get; set; }   // Ej: RACK-A01-N01
 
-        public bool Activa { get; set; }
 
         // Flags operativos
         public bool Fiscal { get; set; }
         public bool TemperaturaControlada { get; set; }
 
         // Dimensiones (cm)
-        public decimal? AltoCm { get; set; }
-        public decimal? AnchoCm { get; set; }
+        public decimal? HeightCm { get; set; }
+        public decimal? WeightCm { get; set; }
         public decimal? ProfundidadCm { get; set; }
 
 

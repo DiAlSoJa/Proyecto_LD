@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,13 +12,13 @@ namespace LD.Domain.Entities
     public class Category : AuditableEntity
     {
         [Key]
-        public int CategoriaProyectoId { get; set; }
+        public int CategoryId { get; set; }
 
         [Required]
-        public int ClienteId { get; set; }
+        public int ClientId { get; set; }
 
-        [Required]
-        public int ProyectoId { get; set; }
+        //[Required]
+        //public int ProyectoId { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -25,15 +26,15 @@ namespace LD.Domain.Entities
 
         [Required]
         [MaxLength(150)]
-        public string Descripcion { get; set; }
+        public string Description { get; set; }
 
         [Required]
         public int Frecuencia { get; set; }
 
-        public bool Activo { get; set; }
 
         // Navegación
-        //public Cliente Cliente { get; set; }
+        [ForeignKey("ClientId")]
+        public Client Cliente { get; set; }
         //public Proyecto Proyecto { get; set; }
     }
 }

@@ -11,10 +11,10 @@ namespace LD.Domain.Entities
     public class InventaryStatus : AuditableEntity
     {
         [Key]
-        public int EstatusInventarioId { get; set; }
+        public int InventoryStatusId { get; set; }
 
         [Required]
-        public int ClienteId { get; set; }
+        public int IdClient { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -22,9 +22,9 @@ namespace LD.Domain.Entities
 
         [Required]
         [MaxLength(150)]
-        public string Nombre { get; set; }  // DISPONIBLE, CUARENTENA, etc.
+        public string FullName { get; set; }  // DISPONIBLE, CUARENTENA, etc.
 
-        public bool Disponible { get; set; } // Impacta stock disponible
+        public bool IsAvailable { get; set; } // Impacta stock disponible
 
     }
 }

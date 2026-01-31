@@ -8,23 +8,22 @@ using System.Threading.Tasks;
 
 namespace LD.Domain.Entities
 {
-    public class Proyect : AuditableEntity
+    public class Project : AuditableEntity
     {
         [Key]
-        public int ProyectoId { get; set; }
+        public int ProjectId { get; set; }
 
         [Required]
-        public int ClienteId { get; set; }
+        public int ClientId { get; set; }
 
         [Required]
         [MaxLength(150)]
-        public string NombreProyecto { get; set; }
+        public string Name { get; set; }
 
-        public bool Activo { get; set; }
 
         // Flags operativos
         public bool Backorder { get; set; }
-        public bool Distribucion { get; set; }
+        public bool Distribution { get; set; }
         public bool AlmacenFiscal { get; set; }
         public bool Subdimension { get; set; }
         public bool Etiquetas { get; set; }
@@ -38,7 +37,7 @@ namespace LD.Domain.Entities
         public int? AlmacenId { get; set; }
 
         // Navegación
-        public Client Cliente { get; set; }
+        public Client Client { get; set; }
         //public Almacen Almacen { get; set; }
 
         //public ProyectoFlujoConfig FlujoConfig { get; set; }

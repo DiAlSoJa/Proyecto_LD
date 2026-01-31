@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,39 +12,40 @@ namespace LD.Domain.Entities
     public class PickingZone : AuditableEntity
     {
         [Key]
-        public int ZonaPickingId { get; set; }
+        public int PickingZoneId { get; set; }
 
         [Required]
-        public int ClienteId { get; set; }
+        public int ClientId { get; set; }
 
         [Required]
-        public int ProyectoId { get; set; }
+        public int ProyectId { get; set; }
 
         [Required]
-        public int ProductoId { get; set; }
+        public int ProductId { get; set; }
 
         [Required]
-        public int UbicacionId { get; set; }
+        public int LocationId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string NumeroParte { get; set; }
+        public string PartNumber { get; set; }
 
         [Required]
         [MaxLength(200)]
-        public string Descripcion { get; set; }
+        public string Description { get; set; }
 
-        public int Minimo { get; set; }
+        public int Minimun { get; set; }
 
-        public bool Particionar { get; set; }
+        public bool Particioned { get; set; }
 
-        public bool Activo { get; set; }
 
         // Navegación
-        //public Cliente Cliente { get; set; }
+        [ForeignKey("ClientId")]
+        public Client Client { get; set; }
         //public Proyecto Proyecto { get; set; }
         //public Producto Producto { get; set; }
-        //public Ubicacion Ubicacion { get; set; }
+        [ForeignKey("LocationId")]
+        public Location Location { get; set; }
     }
 
 }

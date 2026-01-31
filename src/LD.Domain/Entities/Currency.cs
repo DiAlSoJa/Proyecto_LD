@@ -11,7 +11,7 @@ namespace LD.Domain.Entities
     public class Currency : AuditableEntity
     {
         [Key]
-        public int MonedaId { get; set; }
+        public int CurrencyId { get; set; }
 
         [Required]
         [MaxLength(5)]
@@ -19,7 +19,7 @@ namespace LD.Domain.Entities
 
         [Required]
         [MaxLength(100)]
-        public string Descripcion { get; set; }  // PESOS MEXICANOS
+        public string Description { get; set; }  // PESOS MEXICANOS
 
     }
 }

@@ -11,33 +11,32 @@ namespace LD.Domain.Entities
     public class ClientContact : AuditableEntity
     {
         [Key]
-        public int ContactoId { get; set; }
+        public int ContactId { get; set; }
 
         [Required]
-        public int ClienteId { get; set; }
+        public int ClientId { get; set; }
 
         [Required]
         [MaxLength(150)]
-        public string Nombre { get; set; }
+        public string FullName { get; set; }
 
         [MaxLength(100)]
         public string Puesto { get; set; }
 
         [MaxLength(150)]
-        public string Correo { get; set; }
+        public string Email { get; set; }
 
         [MaxLength(20)]
-        public string Telefono { get; set; }
+        public string Phone { get; set; }
 
         [MaxLength(20)]
         public string Fax { get; set; }
 
         [MaxLength(500)]
-        public string Notas { get; set; }
+        public string Notes { get; set; }
 
-        public bool Activo { get; set; }
 
         // Navegación
-        public Client Cliente { get; set; }
+        public Client Client { get; set; }
     }
 }

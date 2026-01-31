@@ -11,7 +11,7 @@ namespace LD.Domain.Entities
     public class Units : AuditableEntity
     {
         [Key]
-        public int UnidadMedidaId { get; set; }
+        public int UnitId { get; set; }
 
         [Required]
         [MaxLength(10)]
@@ -19,7 +19,7 @@ namespace LD.Domain.Entities
 
         [Required]
         [MaxLength(100)]
-        public string Descripcion { get; set; }
+        public string Description { get; set; }
 
 
     }

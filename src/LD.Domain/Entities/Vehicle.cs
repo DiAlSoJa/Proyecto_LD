@@ -11,31 +11,29 @@ namespace LD.Domain.Entities
     public class Vehicle : AuditableEntity
     {
         [Key]
-        public int VehiculoId { get; set; }
+        public int VehicleId { get; set; }
 
         [Required]
         [MaxLength(20)]
-        public string NumeroVehiculo { get; set; }   // No. Vehículo
+        public string VehicleNumber { get; set; }   // No. Vehículo
 
         [Required]
         [MaxLength(150)]
-        public string Nombre { get; set; }            // FORD DIESEL 96
+        public string Name { get; set; }            // FORD DIESEL 96
 
         [Required]
         [MaxLength(50)]
-        public string Tipo { get; set; }              // CAJA SECA, RABON, CAMIONETA
+        public string Type { get; set; }              // CAJA SECA, RABON, CAMIONETA
 
         [Required]
-        public decimal Capacidad { get; set; }        // 5.00
+        public decimal Capacity { get; set; }        // 5.00
 
         [MaxLength(50)]
         public string Placas { get; set; }            // JP26370
 
         // Dimensiones (metros)
         public decimal Largo { get; set; }            // 4.20
-        public decimal Ancho { get; set; }            // 2.30
-        public decimal Alto { get; set; }              // 1.90
-
-        public bool Activo { get; set; }
+        public decimal Wight { get; set; }            // 2.30
+        public decimal Height { get; set; }              // 1.90
     }
 }
