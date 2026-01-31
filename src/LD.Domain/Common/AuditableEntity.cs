@@ -17,7 +17,7 @@ namespace LD.Domain.Common
         public int? LastModifiedByUserId { get; set; }
 
         // Soft delete
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
         public DateTime? DeletedAt { get; set; }
 

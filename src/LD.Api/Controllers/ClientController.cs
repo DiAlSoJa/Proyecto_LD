@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LD.Api.Controllers
 {
@@ -28,9 +29,9 @@ namespace LD.Api.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateClient()
+        public async Task<IActionResult> CreateClient([FromBody] CreateClientCommand command)
         {
-            return Ok("create client");
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpPut("{id}")]

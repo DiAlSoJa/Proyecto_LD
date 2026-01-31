@@ -22,26 +22,24 @@ namespace LD.Domain.Entities
         public string ComercialName { get; set; }
 
         [MaxLength(250)]
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string Neightbourhoud { get; set; }
+        public string Neightbourhoud { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string City { get; set; }
+        public string City { get; set; } = string.Empty;
 
         [MaxLength(10)]
-        public string ZipCode { get; set; }
+        public string ZipCode { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string Fax { get; set; }
+        public string Fax { get; set; } = string.Empty;
 
-        public bool Activo { get; set; }
-
-        public bool IsProvider { get; set; }
+        public bool IsProvider { get; set; } 
 
         //// Relación 1–1
         //public ClienteFiscal ClienteFiscal { get; set; }

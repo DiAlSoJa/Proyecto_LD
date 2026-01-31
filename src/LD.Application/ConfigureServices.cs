@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+﻿using Application;
+using FluentValidation;
+using LD.Application.Common.Behaviors;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.Application;
 
@@ -8,7 +11,15 @@ public static class ConfigureServices
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
 
-       
+        services.AddValidatorsFromAssembly(
+            typeof(AssemblyMarker).Assembly
+        );
+
+
+        services.AddTransient(
+            typeof(IPipelineBehavior<,>),
+            typeof(ValidationBehavior<,>)
+        );
 
         return services;
     }
