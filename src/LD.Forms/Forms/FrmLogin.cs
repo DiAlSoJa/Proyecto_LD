@@ -1,5 +1,7 @@
 ﻿using LD.Dialogs;
 using LD.Forms;
+using LD.Forms.Services;
+using System.Threading.Tasks;
 
 namespace LD
 {
@@ -12,6 +14,9 @@ namespace LD
         private bool bloqueo;
         private bool validacionForzoza;
         private Boolean respuesta;
+
+        
+
         public FrmLogin()
         {
             InitializeComponent();
@@ -42,16 +47,29 @@ namespace LD
                 Application.Exit();
             }
         }
+        private async Task<bool> Login()
+        {
+            var authService = new AuthService();
+            var response = await  authService.LoginAsync(txtUsuario.Text, txtPassword.Text);
+            MessageBox.Show("Token: " + response.Token);
+            return true;
+        }
 
-        private void valida()
+        private async Task valida()
         {
             String usuario = txtUsuario.Text;
             String password = txtPassword.Text;
+            
+            //await Login();
 
             this.Hide();
             FrmPrincipal fm = new FrmPrincipal();
             fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
             fm.Show();
+
+
+
+
 
             /*
             if (usuario.Equals("") || password.Equals(""))
