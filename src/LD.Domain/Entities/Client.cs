@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LD.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,47 +8,45 @@ using System.Threading.Tasks;
 
 namespace LD.Domain.Entities
 {
-    public class Client
+    public class Client :AuditableEntity
     {
         [Key]
-        public int ClienteId { get; set; }
+        public int ClientId { get; set; }
 
         [Required]
         [MaxLength(20)]
-        public string NumeroCliente { get; set; }
+        public string ClientNumber { get; set; }
 
         [Required]
         [MaxLength(150)]
-        public string NombreComercial { get; set; }
+        public string ComercialName { get; set; }
 
         [MaxLength(250)]
-        public string Domicilio { get; set; }
+        public string Address { get; set; }
 
         [MaxLength(100)]
-        public string Colonia { get; set; }
+        public string Neightbourhoud { get; set; }
 
         [MaxLength(100)]
-        public string Ciudad { get; set; }
+        public string City { get; set; }
 
         [MaxLength(10)]
-        public string CodigoPostal { get; set; }
+        public string ZipCode { get; set; }
 
         [MaxLength(20)]
-        public string Telefono { get; set; }
+        public string Phone { get; set; }
 
         [MaxLength(20)]
         public string Fax { get; set; }
 
         public bool Activo { get; set; }
 
-        public bool EsProveedor { get; set; }
+        public bool IsProvider { get; set; }
 
         //// Relación 1–1
         //public ClienteFiscal ClienteFiscal { get; set; }
 
-        // Auditoría (muy recomendable)
-        public DateTime FechaAlta { get; set; }
-        public DateTime? FechaModificacion { get; set; }
+
     }
 
 }

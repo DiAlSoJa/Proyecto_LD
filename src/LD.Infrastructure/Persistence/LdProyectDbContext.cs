@@ -1,4 +1,5 @@
-﻿using LD.Infrastructure.Identity;
+﻿using LD.Domain.Entities;
+using LD.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,6 +12,24 @@ namespace LD.Infrastructure.Persistence
 {
     public class LdProyectDbContext : IdentityDbContext<ApplicationUser>
     {
+
+
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<ClientContact> ClientContacts { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<DireccionEntrega> DireccionEntregas { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<InventaryStatus> inventaryStatuses { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<PickingZone> PickingZones { get; set; }
+        public DbSet<Printer> Printers { get; set; }
+        public DbSet<Proyect> Proyects { get; set; }
+        public DbSet<Units> Units { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Warehouse>Warehouses{ get; set; }
+
+
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
         {
             

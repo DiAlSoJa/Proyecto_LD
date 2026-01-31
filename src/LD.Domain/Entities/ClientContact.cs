@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LD.Domain.Entities
 {
-    internal class ClientContact : AuditableEntity
+    public class ClientContact : AuditableEntity
     {
         [Key]
         public int ContactoId { get; set; }

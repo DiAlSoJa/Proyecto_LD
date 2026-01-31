@@ -28,13 +28,6 @@ namespace LD.Api.Controllers
             return Ok("GetClientdasdfasfs");
 
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClient(int id)
-        {
-
-            return Ok("GetClientd");
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateClient()
         {

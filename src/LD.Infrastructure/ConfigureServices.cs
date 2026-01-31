@@ -1,8 +1,10 @@
-﻿using LD.Application.Common.Interfaces.Auth;
+﻿using LD.Application.Common.Interfaces;
+using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Application.Features.Auth.Commands;
 using LD.Infrastructure.Identity;
 using LD.Infrastructure.Persistence;
+using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,14 @@ public static class ConfigureServices
 
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));
+
+        return services;
+    }
+
+    public static IServiceCollection AddInfrastructureRepositories(this IServiceCollection services, IConfiguration configuration)
+    {
+
+        services.AddScoped<IRepository<ClientRepository>, ClientRepository>;
 
         return services;
     }
