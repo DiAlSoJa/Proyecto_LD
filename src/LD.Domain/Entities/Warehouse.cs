@@ -11,31 +11,29 @@ namespace LD.Domain.Entities
     public class Warehouse : AuditableEntity
     {
         [Key]
-        public int AlmacenId { get; set; }
+        public int WarehouseId { get; set; }
 
         [Required]
         [MaxLength(20)]
-        public string NumeroAlmacen { get; set; }   // ALMACEN B1, AT_B2, etc.
+        public string WarehouseNumber { get; set; }  
 
         [Required]
         [MaxLength(150)]
-        public string Nombre { get; set; }
+        public string WarehouseName { get; set; }
 
         [Required]
         [MaxLength(250)]
-        public string Domicilio { get; set; }
+        public string Address { get; set; }
 
         [MaxLength(100)]
         public string Colonia { get; set; }
 
         [MaxLength(100)]
-        public string Ciudad { get; set; }
+        public string City { get; set; }
 
         [MaxLength(10)]
-        public string CodigoPostal { get; set; }
+        public string ZipCode { get; set; }
 
-        public bool Activo { get; set; }
-
-        public bool Produccion { get; set; }
+        public bool Produccion { get; set; } = false;
     }
 }
