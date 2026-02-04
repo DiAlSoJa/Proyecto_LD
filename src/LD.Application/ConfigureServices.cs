@@ -1,6 +1,7 @@
 ﻿using Application;
 using FluentValidation;
 using LD.Application.Common.Behaviors;
+using LD.Application.Features.Clients.Profiles;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,8 @@ public static class ConfigureServices
             typeof(IPipelineBehavior<,>),
             typeof(ValidationBehavior<,>)
         );
+
+        
 
         return services;
     }

@@ -1,8 +1,8 @@
+using Application;
 using LD.Application;
 using LD.Application.Common.Models;
 using LD.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
 //aplication
+builder.Services.AddAutoMapper(typeof(AssemblyMarker).Assembly);
 builder.Services.AddApplicationServices();
 
 //infrasctruture
