@@ -1,4 +1,6 @@
 ﻿using LD.Application.Features.Auth.Commands;
+using LD.Application.Features.Comands;
+using LD.Application.Features.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,36 +18,32 @@ namespace LD.Api.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetContact()
+        public async Task<IActionResult> GetProyects([FromQuery] LocationQuery query)
         {
-            return Ok("get Contact");
+            return Ok(await _mediator.Send(query));
 
         }
-
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetContact(int id)
-        {
-
-            return Ok("GetContactId");
-        }
+        public async Task<IActionResult> GetProjectById(int id)
+             => Ok(await _mediator.Send(new LocationByIdQuery(id)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateContact()
+        public async Task<IActionResult> CreateProject([FromBody] CreateLocationCommand command)
         {
-            return Ok("create Contact");
+            return Ok(await _mediator.Send(command));
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContact()
-        {
-            return Ok("update Contact");
-        }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateContact()
+        //{
+        //    return Ok("update Contact");
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContact(int id)
-        {
-            return Ok("Delete Contact");
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteContact(int id)
+        //{
+        //    return Ok("Delete Contact");
+        //}
 
 
     }

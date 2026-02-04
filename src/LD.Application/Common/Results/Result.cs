@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LD.Application.Common.Results
 {
@@ -10,18 +11,17 @@ namespace LD.Application.Common.Results
     {
         public bool IsSuccess { get; }
         public bool IsFailure => !IsSuccess;
-        public string Error { get; }
+        public ErrorResponse error { get; }
 
-        protected Result(bool isSuccess, string error)
+        protected Result(bool isSuccess, ErrorResponse _error)
         {
             IsSuccess = isSuccess;
-            Error = error;
+            error = error;
         }
 
-        public static Result Success()
-            => new Result(true, null);
+        //public static Result Success() => new(true, error.None)
 
-        public static Result Failure(string error)
-            => new Result(false, error);
+        public static Result Failure(ErrorResponse error) =>
+             new(false, error);
     }
 }

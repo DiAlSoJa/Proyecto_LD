@@ -8,18 +8,24 @@ namespace LD.Application.Common.Results
 {
     public class Result<T> : Result
     {
-        public T Value { get; }
+        public T? Value { get; }
 
-        protected Result(bool isSuccess, T value, string error)
-            : base(isSuccess, error)
+        protected Result(T value)
+            : base(true, ErrorResponse.None)
         {
             Value = value;
         }
-        
-        public static Result<T> Success(T value)
-            => new Result<T>(true, value, null);
 
-        public static new Result<T> Failure(string error)
-            => new Result<T>(false, default, error);
+        protected Result(ErrorResponse error)
+            : base(false, error)
+        {
+            Value = default;
+        }
+
+        public static Result<T> Success(T value) =>
+            new(value);
+
+        public static Result<T> Failure(ErrorResponse error) =>
+            new(error);
     }
 }

@@ -1,5 +1,5 @@
-﻿using LD.Application.Features.Auth.Commands;
-using LD.Application.Features.Clients.Queries;
+﻿using LD.Application.Features.Warehouses.Comands;
+using LD.Application.Features.Warehouses.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,17 +34,17 @@ namespace LD.Api.Controllers
             return Ok(await _mediator.Send(command));
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateWarehouse()
-        {
-            return Ok("update Contact");
-        }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateWarehouse()
+        //{
+        //    return Ok("update Contact");
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWarehouse(int id)
-        {
-            return Ok("Delete Contact");
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteWarehouse(int id)
+        //{
+        //    return Ok("Delete Contact");
+        //}
 
 
     }

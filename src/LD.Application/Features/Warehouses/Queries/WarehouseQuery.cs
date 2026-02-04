@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD.Application.Features.Auth.Commands;
+namespace LD.Application.Features.Warehouses.Queries;
 
 public class WarehouseQuery : IRequest<List<Warehouse>?>
 {
