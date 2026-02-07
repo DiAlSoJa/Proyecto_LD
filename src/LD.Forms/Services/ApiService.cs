@@ -67,14 +67,6 @@ namespace LD.Forms.Services
         {
             var content = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new ApiException(
-                    (int)response.StatusCode,
-                    content
-                );
-            }
-
             return JsonSerializer.Deserialize<T>(
                 content,
                 new JsonSerializerOptions

@@ -135,7 +135,7 @@
             // 
             // btnFrmMinimizar
             // 
-            btnFrmMinimizar.Image =Forms.Properties.Resources.min;
+            btnFrmMinimizar.Image = Properties.Resources.min;
             btnFrmMinimizar.Location = new Point(3, 3);
             btnFrmMinimizar.Name = "btnFrmMinimizar";
             btnFrmMinimizar.Size = new Size(39, 39);
@@ -148,7 +148,7 @@
             // 
             // btnFrmMaximizar
             // 
-            btnFrmMaximizar.Image =Forms.Properties.Resources.max2;
+            btnFrmMaximizar.Image = Properties.Resources.max2;
             btnFrmMaximizar.Location = new Point(48, 3);
             btnFrmMaximizar.Name = "btnFrmMaximizar";
             btnFrmMaximizar.Size = new Size(39, 39);
@@ -161,7 +161,7 @@
             // 
             // btnFrmClose
             // 
-            btnFrmClose.Image =Forms.Properties.Resources.cerr;
+            btnFrmClose.Image = Properties.Resources.cerr;
             btnFrmClose.Location = new Point(93, 3);
             btnFrmClose.Name = "btnFrmClose";
             btnFrmClose.Size = new Size(45, 42);
@@ -174,7 +174,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image =Forms.Properties.Resources.barra_de_menus;
+            pictureBox1.Image = Properties.Resources.barra_de_menus;
             pictureBox1.Location = new Point(11, 5);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(38, 33);
@@ -210,6 +210,7 @@
             cerrarSesiónToolStripMenuItem.Name = "cerrarSesiónToolStripMenuItem";
             cerrarSesiónToolStripMenuItem.Size = new Size(265, 28);
             cerrarSesiónToolStripMenuItem.Text = "Cerrar sesión";
+            cerrarSesiónToolStripMenuItem.Click += cerrarSesiónToolStripMenuItem_Click;
             // 
             // pCenter
             // 

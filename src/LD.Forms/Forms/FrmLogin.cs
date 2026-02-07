@@ -1,6 +1,9 @@
 ﻿using LD.Dialogs;
 using LD.Forms;
+using LD.Forms.Classes;
+using LD.Forms.Exceptions;
 using LD.Forms.Services;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace LD
@@ -14,12 +17,14 @@ namespace LD
         private bool bloqueo;
         private bool validacionForzoza;
         private Boolean respuesta;
-
         
+        private AuthService _authService;
+
 
         public FrmLogin()
         {
             InitializeComponent();
+            _authService = new AuthService();
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
@@ -47,36 +52,59 @@ namespace LD
                 Application.Exit();
             }
         }
-        private async Task<bool> Login()
-        {
-            var authService = new AuthService();
-            var response = await  authService.LoginAsync(txtUsuario.Text, txtPassword.Text);
-            MessageBox.Show("Token: " + response.Token);
-            return true;
-        }
 
         private async Task valida()
         {
-            String usuario = txtUsuario.Text;
-            String password = txtPassword.Text;
-            
-            //await Login();
+            try
+            {
+                String usuario = txtUsuario.Text;
+                String password = txtPassword.Text;
 
-            this.Hide();
-            FrmPrincipal fm = new FrmPrincipal();
-            fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
-            fm.Show();
+                if (usuario.Equals("") || password.Equals(""))
+                {
+                    FrmWarning f = new FrmWarning("Ingrese usuario y contraseña");
+                    f.ShowDialog();
+                    return;
+                }
+
+
+                var response = await _authService.LoginAsync(usuario, password);
+                if (!response.Success)
+                {
+                    FrmWarning f = new FrmWarning(response.Message);
+                    f.ShowDialog();
+                    return;
+                }
+
+                UserSession.AccessToken = response.Data;
+                this.Hide();
+                FrmPrincipal fm = new FrmPrincipal();
+                fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
+                fm.Show();
+            }
+            catch (ApiException ex)
+            {
+                FrmError frmError = new FrmError("Hubo un error inesperado");
+                frmError.ShowDialog();
+                this.setRespuesta(false);
+            }
+            catch(Exception ex)
+            {
+                FrmError frmError = new FrmError("Hubo un error inesperado");
+                frmError.ShowDialog();
+                this.setRespuesta(false);
+                
+            }
+          
+
+         
 
 
 
 
 
             /*
-            if (usuario.Equals("") || password.Equals(""))
-            {
-                FrmWarning f = new FrmWarning("Ingrese usuario y contraseña");
-                f.ShowDialog();
-            }
+            
             else
             {
                /* this.usuarios = new Usuarios(usuario, password);

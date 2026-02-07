@@ -17,7 +17,7 @@ namespace LD.Forms
         public FrmPrincipal()
         {
             InitializeComponent();
-            
+
             formularios.inicia(this.pCenter, this, this.lblTitle, this.flowLayoutPest);
             this.Text = String.Empty;
             this.ControlBox = false;
@@ -113,13 +113,13 @@ namespace LD.Forms
         private void lblUser_Click(object sender, EventArgs e)
         {
 
-          
-            menuUser.Show(panelUser, new Point(0, panelUser.Height+5));
+
+            menuUser.Show(panelUser, new Point(0, panelUser.Height + 5));
         }
 
         private void label1_Click(object sender, EventArgs e)
-        {            
-            menuUser.Show(panelUser, new Point(0, panelUser.Height+5));
+        {
+            menuUser.Show(panelUser, new Point(0, panelUser.Height + 5));
         }
 
         private void lblUser_MouseEnter(object sender, EventArgs e)
@@ -160,6 +160,15 @@ namespace LD.Forms
         private void btnFrmMaximizar_MouseLeave(object sender, EventArgs e)
         {
             btnFrmMaximizar.BackColor = Color.FromArgb(20, 41, 84);
+        }
+
+        private void cerrarSesiónToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UserSession.LogOut();
+            var login = new FrmLogin();
+            login.Show();
+
+            this.Hide();
         }
     }
 }

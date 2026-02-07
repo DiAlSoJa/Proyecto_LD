@@ -11,11 +11,12 @@ namespace LD.Application.Common.Models
         public bool Success { get; set; }
         public string Message { get; set; }
         public string Token { get; set; }
+        public object Data { get; set; }
 
         public static AuthResponse Fail(string message)
             => new() { Success = false, Message = message };
 
         public static AuthResponse Ok(string token)
-            => new() { Success = true, Token = token };
+            => new() { Success = true, Data = token };
     }
 }

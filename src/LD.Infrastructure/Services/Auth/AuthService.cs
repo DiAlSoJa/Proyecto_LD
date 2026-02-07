@@ -28,9 +28,9 @@ namespace LD.Infrastructure.Services.Auth
             _signInManager = signInManager;
             _jwtTokenService = jwtTokenService;
         }
-        public async Task<AuthResponse> Login(string email, string password)
+        public async Task<AuthResponse> Login(string username, string password)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByNameAsync(username);
             if (user == null)
                 return AuthResponse.Fail("Credenciales inválidas");
             var roles = await _userManager.GetRolesAsync(user);

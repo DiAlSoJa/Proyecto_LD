@@ -14,8 +14,8 @@ namespace LD.Application.Features.Auth.Commands;
 
 public class LoginCommand : IRequest<AuthResponse>
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public string? Username { get; set; }
+    public string? Password { get; set; }
 }
 
 public class LoginCommandHandler
@@ -30,6 +30,6 @@ public class LoginCommandHandler
 
     public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        return await _authService.Login(request.Email, request.Password);
+        return await _authService.Login(request.Username, request.Password);
     }
 }

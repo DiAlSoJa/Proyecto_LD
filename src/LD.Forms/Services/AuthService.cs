@@ -15,9 +15,9 @@ namespace LD.Forms.Services
             _api = new ApiService();
         }
 
-        public async Task<AuthResponse> LoginAsync(string user, string password)
+        public async Task<ApiResponseDto<string>> LoginAsync(string user, string password)
         {
-            return await _api.PostAsync<LoginRequest, AuthResponse>(
+            return await _api.PostAsync<LoginRequest, ApiResponseDto<string>>(
                 ApiEndpoints.Auth.Login,
                 new LoginRequest
                 {
