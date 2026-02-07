@@ -17,7 +17,7 @@ namespace LD
         private bool bloqueo;
         private bool validacionForzoza;
         private Boolean respuesta;
-        
+
         private AuthService _authService;
 
 
@@ -88,16 +88,15 @@ namespace LD
                 frmError.ShowDialog();
                 this.setRespuesta(false);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 FrmError frmError = new FrmError("Hubo un error inesperado");
                 frmError.ShowDialog();
                 this.setRespuesta(false);
-                
-            }
-          
 
-         
+            }
+
+
 
 
 
@@ -147,11 +146,11 @@ namespace LD
                     regedit.escribirRecordar();
                 }*/
 
-               /* this.Hide();
-                FrmPrincipal fm = new FrmPrincipal();                
-                fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
-                fm.Show();
-            }*/
+            /* this.Hide();
+             FrmPrincipal fm = new FrmPrincipal();                
+             fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
+             fm.Show();
+         }*/
         }
 
         void pr_FormClosed(object sender, FormClosedEventArgs e)
@@ -201,9 +200,19 @@ namespace LD
             mouseDown = false;
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
-            valida();
+            try
+            {
+                btnLogin.Enabled = false;
+                await valida();
+               
+
+            }
+            finally
+            {
+                btnLogin.Enabled = true;
+            }
         }
     }
 }

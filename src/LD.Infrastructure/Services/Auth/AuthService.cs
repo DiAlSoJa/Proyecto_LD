@@ -33,6 +33,7 @@ namespace LD.Infrastructure.Services.Auth
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
                 return AuthResponse.Fail("Credenciales inválidas");
+
             var roles = await _userManager.GetRolesAsync(user);
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, password, false);

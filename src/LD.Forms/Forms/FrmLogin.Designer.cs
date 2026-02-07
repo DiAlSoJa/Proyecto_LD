@@ -34,7 +34,7 @@ namespace LD
             label2 = new Label();
             label1 = new Label();
             label3 = new Label();
-            btnLogin = new LD.Forms.Controls.RoundedButton();
+            btnLogin = new RoundedButton();
             txtPassword = new TextBox();
             txtUsuario = new TextBox();
             pictureBox3 = new PictureBox();
@@ -42,7 +42,7 @@ namespace LD
             panel4 = new Panel();
             panel3 = new Panel();
             panel1 = new Panel();
-            roundedPanel1 = new LD.Forms.Controls.RoundedPanel();
+            roundedPanel1 = new RoundedPanel();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();

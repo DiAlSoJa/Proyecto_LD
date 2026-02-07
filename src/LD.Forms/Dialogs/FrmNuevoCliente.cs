@@ -16,7 +16,7 @@ namespace LD.Dialogs
         {
             InitializeComponent();
         }
-       
+
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;
@@ -57,6 +57,11 @@ namespace LD.Dialogs
         private void button2_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

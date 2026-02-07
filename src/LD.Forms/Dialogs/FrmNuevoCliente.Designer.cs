@@ -48,7 +48,7 @@
             label9 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
-            button1 = new Button();
+            btnSave = new Button();
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
@@ -248,7 +248,7 @@
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.Controls.Add(button2);
-            flowLayoutPanel1.Controls.Add(button1);
+            flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
             flowLayoutPanel1.Location = new Point(0, 397);
@@ -259,7 +259,7 @@
             // 
             // button2
             // 
-            button2.Image =Forms.Properties.Resources.cancel;
+            button2.Image = Forms.Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(569, 8);
             button2.Name = "button2";
@@ -269,16 +269,17 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
-            // button1
+            // btnSave
             // 
-            button1.Image =Forms.Properties.Resources.save;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(391, 8);
-            button1.Name = "button1";
-            button1.Size = new Size(172, 35);
-            button1.TabIndex = 6;
-            button1.Text = "Guardar";
-            button1.UseVisualStyleBackColor = true;
+            btnSave.Image = Forms.Properties.Resources.save;
+            btnSave.ImageAlign = ContentAlignment.MiddleLeft;
+            btnSave.Location = new Point(391, 8);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(172, 35);
+            btnSave.TabIndex = 6;
+            btnSave.Text = "Guardar";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // panel2
             // 
@@ -310,7 +311,7 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image =Forms.Properties.Resources.cancelar;
+            pictureBox2.Image = Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(718, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 10, 0, 0);
@@ -345,7 +346,7 @@
         private Label label1;
         private PictureBox pictureBox2;
         private Button button2;
-        private Button button1;
+        private Button btnSave;
         private FlowLayoutPanel flowLayoutPanel1;
         private CheckBox checkBox1;
         private TextBox textBox8;
