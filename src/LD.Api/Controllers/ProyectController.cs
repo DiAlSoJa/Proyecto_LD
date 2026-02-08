@@ -1,10 +1,12 @@
 ﻿using LD.Application.Features.Comands;
 using LD.Application.Features.Projects.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LD.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProyectController : ControllerBase

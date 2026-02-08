@@ -1,4 +1,5 @@
 ﻿
+using LD.Forms.Classes;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Configuration;
 using System;
@@ -13,17 +14,12 @@ namespace LD.Forms.Services
         public ClientService()
         {
             _api = new ApiService();
+            _api.SetBearerToken(UserSession.AccessToken??"");
         }
 
-        public async Task<ApiResponseDto<string>> LoginAsync(string user, string password)
+        public async Task<ApiResponseDto<string>> GetClients()
         {
-            return await _api.PostAsync<LoginRequest, ApiResponseDto<string>>(
-                ApiEndpoints.Auth.Login,
-                new LoginRequest
-                {
-                    Username = user,
-                    Password = password
-                });
+            return await _api.GetAsync<ApiResponseDto<string>>(ApiEndpoints.Client.GetAll);
         }
     }
 }

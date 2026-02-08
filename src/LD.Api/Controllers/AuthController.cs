@@ -1,5 +1,6 @@
 ﻿using LD.Application.Features.Auth.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +31,7 @@ namespace LD.Api.Controllers
             return result.Success ? Ok(result) : Unauthorized(result);
         }
 
+        [Authorize]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword()
         {
