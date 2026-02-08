@@ -205,13 +205,17 @@ namespace LD
             try
             {
                 btnLogin.Enabled = false;
-                await valida();
-               
+                await LoaderManager.Run(roundedPanel1, async () =>
+                {
+
+                    await valida();
+                }, "Validando credenciales");
 
             }
             finally
             {
                 btnLogin.Enabled = true;
+                LoaderManager.Hide(roundedPanel1);
             }
         }
     }

@@ -4,6 +4,9 @@
     <_LastSelectedProfileId>C:\Users\juan.parvol\source\repos\LD\Properties\PublishProfiles\ClickOnceProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Controls\LoaderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Controls\RoundedButton.cs">
       <SubType>Component</SubType>
     </Compile>
