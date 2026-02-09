@@ -1,4 +1,5 @@
 ﻿using LD.Application.Features.Auth.Commands;
+using LD.Application.Features.Clients.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,17 @@ namespace LD.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterCommand command)
+        //[HttpPost("register")]
+        //public async Task<IActionResult> Register(RegisterCommand command)
+        //{
+        //    var result = await _mediator.Send(command);
+        //    return result.Success ? Ok(result) : BadRequest(result);
+        //}
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe([FromQuery] GetMeQuery command)
         {
-            var result = await _mediator.Send(command);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpPost("login")]
@@ -30,7 +37,7 @@ namespace LD.Api.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result) : Unauthorized(result);
         }
-
+      
         [Authorize]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword()

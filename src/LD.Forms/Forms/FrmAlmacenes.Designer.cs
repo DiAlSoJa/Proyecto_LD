@@ -31,9 +31,10 @@ namespace LD.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
+            button6 = new Button();
             button1 = new Button();
             button3 = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
@@ -46,11 +47,12 @@ namespace LD.Forms
             Telefono = new DataGridViewTextBoxColumn();
             Ciudad = new DataGridViewTextBoxColumn();
             CP = new DataGridViewTextBoxColumn();
-            button6 = new Button();
+            gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            gridContainer.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -75,9 +77,20 @@ namespace LD.Forms
             flowLayoutPanel1.Size = new Size(399, 47);
             flowLayoutPanel1.TabIndex = 0;
             // 
+            // button6
+            // 
+            button6.Image = Properties.Resources.update;
+            button6.ImageAlign = ContentAlignment.MiddleLeft;
+            button6.Location = new Point(23, 3);
+            button6.Name = "button6";
+            button6.Size = new Size(124, 35);
+            button6.TabIndex = 6;
+            button6.Text = "Actualizar";
+            button6.UseVisualStyleBackColor = true;
+            // 
             // button1
             // 
-            button1.Image =Forms.Properties.Resources.plusM;
+            button1.Image = Properties.Resources.plusM;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(153, 3);
             button1.Name = "button1";
@@ -89,7 +102,7 @@ namespace LD.Forms
             // 
             // button3
             // 
-            button3.Image =Forms.Properties.Resources.editar;
+            button3.Image = Properties.Resources.editar;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Location = new Point(266, 3);
             button3.Name = "button3";
@@ -109,7 +122,7 @@ namespace LD.Forms
             // 
             // button2
             // 
-            button2.Image =Forms.Properties.Resources.plusM;
+            button2.Image = Properties.Resources.plusM;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(3, 3);
             button2.Name = "button2";
@@ -120,13 +133,13 @@ namespace LD.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Id, NombreComercial, Domicilio, Telefono, Ciudad, CP });
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 47);
+            dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
@@ -185,23 +198,21 @@ namespace LD.Forms
             CP.Name = "CP";
             CP.Width = 80;
             // 
-            // button6
+            // gridContainer
             // 
-            button6.Image =Forms.Properties.Resources.update;
-            button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(23, 3);
-            button6.Name = "button6";
-            button6.Size = new Size(124, 35);
-            button6.TabIndex = 6;
-            button6.Text = "Actualizar";
-            button6.UseVisualStyleBackColor = true;
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 47);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1496, 674);
+            gridContainer.TabIndex = 4;
             // 
             // FrmAlmacenes
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1496, 721);
-            Controls.Add(dataGridView1);
+            Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmAlmacenes";
@@ -210,6 +221,7 @@ namespace LD.Forms
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            gridContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -231,5 +243,6 @@ namespace LD.Forms
         private DataGridViewTextBoxColumn Ciudad;
         private DataGridViewTextBoxColumn CP;
         private Button button6;
+        private Panel gridContainer;
     }
 }

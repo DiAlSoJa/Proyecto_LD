@@ -31,7 +31,7 @@ namespace LD.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button1 = new Button();
@@ -48,10 +48,12 @@ namespace LD.Forms
             EscaneoCantidad = new DataGridViewCheckBoxColumn();
             RequiereLote = new DataGridViewCheckBoxColumn();
             RequiereCaducidad = new DataGridViewCheckBoxColumn();
+            gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            gridContainer.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -77,7 +79,7 @@ namespace LD.Forms
             // 
             // button1
             // 
-            button1.Image =Forms.Properties.Resources.plusM;
+            button1.Image = Properties.Resources.plusM;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(23, 3);
             button1.Name = "button1";
@@ -89,7 +91,7 @@ namespace LD.Forms
             // 
             // button3
             // 
-            button3.Image =Forms.Properties.Resources.editar;
+            button3.Image = Properties.Resources.editar;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Location = new Point(136, 3);
             button3.Name = "button3";
@@ -109,7 +111,7 @@ namespace LD.Forms
             // 
             // button2
             // 
-            button2.Image =Forms.Properties.Resources.plusM;
+            button2.Image = Properties.Resources.plusM;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(3, 3);
             button2.Name = "button2";
@@ -120,13 +122,13 @@ namespace LD.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Cliente, Proyecto, Almacen, EscaneoDUB, EscaneoNoParte, EscaneoCantidad, RequiereLote, RequiereCaducidad });
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 47);
+            dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
@@ -197,12 +199,21 @@ namespace LD.Forms
             RequiereCaducidad.Name = "RequiereCaducidad";
             RequiereCaducidad.Width = 125;
             // 
+            // gridContainer
+            // 
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 47);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1496, 674);
+            gridContainer.TabIndex = 4;
+            // 
             // FrmProyectos
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1496, 721);
-            Controls.Add(dataGridView1);
+            Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmProyectos";
@@ -211,6 +222,7 @@ namespace LD.Forms
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            gridContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -233,5 +245,6 @@ namespace LD.Forms
         private DataGridViewCheckBoxColumn EscaneoCantidad;
         private DataGridViewCheckBoxColumn RequiereLote;
         private DataGridViewCheckBoxColumn RequiereCaducidad;
+        private Panel gridContainer;
     }
 }

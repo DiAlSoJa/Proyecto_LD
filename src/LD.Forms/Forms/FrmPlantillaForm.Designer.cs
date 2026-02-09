@@ -35,8 +35,10 @@
             Column2 = new DataGridViewTextBoxColumn();
             Column3 = new DataGridViewTextBoxColumn();
             Column4 = new DataGridViewTextBoxColumn();
+            gridContainer = new Panel();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            gridContainer.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -45,12 +47,12 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1148, 53);
+            panel1.Size = new Size(1167, 53);
             panel1.TabIndex = 0;
             // 
             // button1
             // 
-            button1.Image =Forms.Properties.Resources.update;
+            button1.Image = Properties.Resources.update;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(12, 12);
             button1.Name = "button1";
@@ -64,10 +66,11 @@
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3, Column4 });
-            dataGridView1.Location = new Point(0, 53);
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(1082, 430);
+            dataGridView1.Size = new Size(1167, 549);
             dataGridView1.TabIndex = 1;
             // 
             // Column1
@@ -98,18 +101,28 @@
             Column4.Name = "Column4";
             Column4.Width = 125;
             // 
+            // gridContainer
+            // 
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 53);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1167, 549);
+            gridContainer.TabIndex = 3;
+            // 
             // FrmPlantillaForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1148, 599);
-            Controls.Add(dataGridView1);
+            ClientSize = new Size(1167, 602);
+            Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmPlantillaForm";
             Text = "FrmPlantillaForm";
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            gridContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -122,5 +135,6 @@
         private DataGridViewTextBoxColumn Column2;
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column4;
+        private Panel gridContainer;
     }
 }

@@ -34,10 +34,10 @@ namespace LD.Forms
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
+            button6 = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
-            button6 = new Button();
             Cliente = new DataGridViewTextBoxColumn();
             Proyecto = new DataGridViewTextBoxColumn();
             NumPArte = new DataGridViewTextBoxColumn();
@@ -47,10 +47,12 @@ namespace LD.Forms
             Usuario = new DataGridViewTextBoxColumn();
             Documento = new DataGridViewTextBoxColumn();
             TipoDoc = new DataGridViewTextBoxColumn();
+            gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            gridContainer.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -73,6 +75,17 @@ namespace LD.Forms
             flowLayoutPanel1.Size = new Size(399, 47);
             flowLayoutPanel1.TabIndex = 0;
             // 
+            // button6
+            // 
+            button6.Image = Properties.Resources.update;
+            button6.ImageAlign = ContentAlignment.MiddleLeft;
+            button6.Location = new Point(23, 3);
+            button6.Name = "button6";
+            button6.Size = new Size(124, 35);
+            button6.TabIndex = 6;
+            button6.Text = "Actualizar";
+            button6.UseVisualStyleBackColor = true;
+            // 
             // flowLayoutPanel2
             // 
             flowLayoutPanel2.Controls.Add(button2);
@@ -84,7 +97,7 @@ namespace LD.Forms
             // 
             // button2
             // 
-            button2.Image =Forms.Properties.Resources.plusM;
+            button2.Image = Properties.Resources.plusM;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(3, 3);
             button2.Name = "button2";
@@ -101,22 +114,11 @@ namespace LD.Forms
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Cliente, Proyecto, NumPArte, Descripcion, Fecha, Hora, Usuario, Documento, TipoDoc });
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 47);
+            dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
-            // 
-            // button6
-            // 
-            button6.Image =Forms.Properties.Resources.update;
-            button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(23, 3);
-            button6.Name = "button6";
-            button6.Size = new Size(124, 35);
-            button6.TabIndex = 6;
-            button6.Text = "Actualizar";
-            button6.UseVisualStyleBackColor = true;
             // 
             // Cliente
             // 
@@ -181,12 +183,21 @@ namespace LD.Forms
             TipoDoc.Name = "TipoDoc";
             TipoDoc.Width = 125;
             // 
+            // gridContainer
+            // 
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 47);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1496, 674);
+            gridContainer.TabIndex = 3;
+            // 
             // FrmMovimientos
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1496, 721);
-            Controls.Add(dataGridView1);
+            Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmMovimientos";
@@ -195,6 +206,7 @@ namespace LD.Forms
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            gridContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -216,5 +228,6 @@ namespace LD.Forms
         private DataGridViewTextBoxColumn Usuario;
         private DataGridViewTextBoxColumn Documento;
         private DataGridViewTextBoxColumn TipoDoc;
+        private Panel gridContainer;
     }
 }

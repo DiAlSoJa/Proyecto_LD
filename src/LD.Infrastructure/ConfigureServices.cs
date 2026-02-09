@@ -33,11 +33,12 @@ public static class ConfigureServices
              .AddDefaultTokenProviders();
 
 
-
+        services.AddHttpContextAccessor();
 
 
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserContextService, UserContextService>();
 
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));

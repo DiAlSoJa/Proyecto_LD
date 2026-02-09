@@ -49,10 +49,12 @@ namespace LD.Forms
             Telefono = new DataGridViewTextBoxColumn();
             Ciudad = new DataGridViewTextBoxColumn();
             CP = new DataGridViewTextBoxColumn();
+            gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            gridContainer.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -140,7 +142,7 @@ namespace LD.Forms
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Id, NombreComercial, RazonSocial, RFC, Domicilio, Telefono, Ciudad, CP });
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 47);
+            dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
@@ -217,12 +219,21 @@ namespace LD.Forms
             CP.Name = "CP";
             CP.Width = 80;
             // 
+            // gridContainer
+            // 
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 47);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1496, 674);
+            gridContainer.TabIndex = 2;
+            // 
             // FrmClientes
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1496, 721);
-            Controls.Add(dataGridView1);
+            Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmClientes";
@@ -231,6 +242,7 @@ namespace LD.Forms
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            gridContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -254,5 +266,6 @@ namespace LD.Forms
         private DataGridViewTextBoxColumn Ciudad;
         private DataGridViewTextBoxColumn CP;
         private Button button6;
+        private Panel gridContainer;
     }
 }

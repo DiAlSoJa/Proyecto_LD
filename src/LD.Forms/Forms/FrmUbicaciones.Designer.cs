@@ -31,8 +31,9 @@ namespace LD.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            button4 = new Button();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button1 = new Button();
             button3 = new Button();
@@ -52,11 +53,12 @@ namespace LD.Forms
             Cuarentena = new DataGridViewCheckBoxColumn();
             Embarque = new DataGridViewCheckBoxColumn();
             RackC = new DataGridViewCheckBoxColumn();
-            button4 = new Button();
+            gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            gridContainer.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -68,6 +70,18 @@ namespace LD.Forms
             panel1.Name = "panel1";
             panel1.Size = new Size(1496, 47);
             panel1.TabIndex = 0;
+            // 
+            // button4
+            // 
+            button4.Image = Properties.Resources.pegar;
+            button4.ImageAlign = ContentAlignment.MiddleLeft;
+            button4.Location = new Point(415, 3);
+            button4.Name = "button4";
+            button4.Size = new Size(148, 35);
+            button4.TabIndex = 3;
+            button4.Text = "Carga masiva";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // flowLayoutPanel1
             // 
@@ -82,7 +96,7 @@ namespace LD.Forms
             // 
             // button1
             // 
-            button1.Image =Forms.Properties.Resources.plusM;
+            button1.Image = Properties.Resources.plusM;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(3, 3);
             button1.Name = "button1";
@@ -94,7 +108,7 @@ namespace LD.Forms
             // 
             // button3
             // 
-            button3.Image =Forms.Properties.Resources.editar;
+            button3.Image = Properties.Resources.editar;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Location = new Point(116, 3);
             button3.Name = "button3";
@@ -114,7 +128,7 @@ namespace LD.Forms
             // 
             // button2
             // 
-            button2.Image =Forms.Properties.Resources.plusM;
+            button2.Image = Properties.Resources.plusM;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(3, 3);
             button2.Name = "button2";
@@ -125,13 +139,13 @@ namespace LD.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Almacen, Rack, Pasillo, Nivel, Ubicacion, Dimensio, Usado, General, Recib, Cuarentena, Embarque, RackC });
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 47);
+            dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
@@ -228,24 +242,21 @@ namespace LD.Forms
             RackC.Name = "RackC";
             RackC.Width = 80;
             // 
-            // button4
+            // gridContainer
             // 
-            button4.Image =Forms.Properties.Resources.pegar;
-            button4.ImageAlign = ContentAlignment.MiddleLeft;
-            button4.Location = new Point(415, 3);
-            button4.Name = "button4";
-            button4.Size = new Size(148, 35);
-            button4.TabIndex = 3;
-            button4.Text = "Carga masiva";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 47);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1496, 674);
+            gridContainer.TabIndex = 4;
             // 
             // FrmUbicaciones
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1496, 721);
-            Controls.Add(dataGridView1);
+            Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmUbicaciones";
@@ -254,6 +265,7 @@ namespace LD.Forms
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            gridContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -281,5 +293,6 @@ namespace LD.Forms
         private DataGridViewCheckBoxColumn Embarque;
         private DataGridViewCheckBoxColumn RackC;
         private Button button4;
+        private Panel gridContainer;
     }
 }
