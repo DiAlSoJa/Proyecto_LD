@@ -7,20 +7,20 @@ using System.Text;
 using System.Windows.Forms;
 using LD.Dialogs;
 using LD.Forms.Classes;
+using LD.Forms.Services;
 
 namespace LD.Forms
 {
     public partial class FrmArticulos : Form
     {
         private Formularios formularios;
-        public FrmArticulos()
-        {
-            InitializeComponent();
-        }
+        private readonly ItemService _itemService;
+
         public FrmArticulos(Formularios f)
         {
             InitializeComponent();
             this.formularios = f;
+            _itemService = new();
         }
 
         private void button1_Click(object sender, EventArgs e)

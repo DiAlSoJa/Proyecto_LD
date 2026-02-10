@@ -69,7 +69,7 @@ namespace LD
 
 
                 var response = await _authService.LoginAsync(usuario, password);
-                if (!response.Success)
+                if (!response.IsSuccess)
                 {
                     FrmWarning f = new FrmWarning(response.Message);
                     f.ShowDialog();

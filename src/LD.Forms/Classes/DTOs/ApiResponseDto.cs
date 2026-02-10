@@ -6,10 +6,12 @@ namespace LD.Forms.Classes.DTOs
 {
     public class ApiResponseDto<T>
     {
-        public bool Success { get; set; }
-        public string Message { get; set; }
-        public T Data { get; set; }
-        public List<string>? Errors{ get; set; }
+        public bool IsSuccess { get; init; }
+        public bool IsFailure => !IsSuccess;
 
+        public T? Data { get; init; }
+        public int Code { get; init; }
+        public ErrorResponse? Error { get; init; }
+        public string Message { get; init; } = string.Empty;
     }
 }

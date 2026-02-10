@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
 using LD.Application.Common.Interfaces;
+using LD.Application.Common.Results;
 using LD.Application.DTOs.Client;
 using LD.Domain.Entities;
 using MediatR;
 
 namespace LD.Application.Features.Clients.Queries;
 
-public class ClientsQuery : IRequest<List<ClientDto>?>
+public class ClientsQuery : IRequest<Result<List< ClientDto>?>>
 {
 
 }
 
-public class ClientsQueryHandler : IRequestHandler<ClientsQuery, List<ClientDto>?>
+public class ClientsQueryHandler : IRequestHandler<ClientsQuery, Result<List<ClientDto>?>>
 {
     private readonly IRepository<Client> _clientRepository;
     private readonly IMapper _mapper;
@@ -22,9 +23,10 @@ public class ClientsQueryHandler : IRequestHandler<ClientsQuery, List<ClientDto>
         _mapper = mapper;
     }
 
-    public async Task<List<ClientDto>?> Handle(ClientsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<ClientDto>?>> Handle(ClientsQuery request, CancellationToken cancellationToken)
     {
         var clients = await _clientRepository.GetManyAsync();
-        return _mapper.Map<List<ClientDto>>(clients);
+        var clientDtos = _mapper.Map<List<ClientDto>>(clients);
+        return Result<List<ClientDto>?>.Success(clientDtos, "Clientes obtenidos correctamente");
     }
 }

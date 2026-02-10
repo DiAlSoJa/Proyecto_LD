@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD.Application.Common.Results
+namespace LD.Forms.Classes.DTOs
 {
 
     public class ErrorResponse

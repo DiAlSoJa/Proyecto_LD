@@ -23,13 +23,13 @@ namespace LD.Forms.Configuration
         // ======================
         // ARTICLE
         // ======================
-        public static class Article
+        public static class Item
         {
-            public const string GetAll = $"{BASE_API}/article";
-            public const string GetById = $"{BASE_API}/article/{{id}}";
-            public const string Create = $"{BASE_API}/article";
-            public const string Update = $"{BASE_API}/article/{{id}}";
-            public const string Delete = $"{BASE_API}/article/{{id}}";
+            public const string GetAll = $"{BASE_API}/item";
+            public const string GetById = $"{BASE_API}/item/{{id}}";
+            public const string Create = $"{BASE_API}/item";
+            public const string Update = $"{BASE_API}/item/{{id}}";
+            public const string Delete = $"{BASE_API}/item/{{id}}";
         }
 
         // ======================

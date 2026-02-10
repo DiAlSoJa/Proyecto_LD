@@ -6,26 +6,32 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Common.Results
 {
-    public class Result<T> : Result
+    public class Result<T>
     {
-        public T? Value { get; }
+        public bool IsSuccess { get; }
+        public bool IsFailure => !IsSuccess;
 
-        protected Result(T value)
-            : base(true, ErrorResponse.None)
+        public T? Data { get; }
+        public int Code { get; }
+        public ErrorResponse? Error { get; }
+        public string Message { get; set; } = string.Empty;
+
+        private Result(bool isSuccess, string message,T? data, int code, ErrorResponse? error)
         {
-            Value = value;
+            IsSuccess = isSuccess;
+            Data = data;
+            Code = code;
+            Error = error;
+            Message = message;
         }
 
-        protected Result(ErrorResponse error)
-            : base(false, error)
-        {
-            Value = default;
-        }
+        // ✅ SUCCESS
+        public static Result<T> Success(T data, string message,int code = 200)
+            => new(true, message, data, code, null);
 
-        public static Result<T> Success(T value) =>
-            new(value);
-
-        public static Result<T> Failure(ErrorResponse error) =>
-            new(error);
+        // ✅ FAILURE
+        public static Result<T> Failure(string message, ErrorResponse error, int code = 400)
+            => new(false,message ,default, code, error);
     }
+
 }

@@ -35,7 +35,7 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> Login(LoginCommand command)
         {
             var result = await _mediator.Send(command);
-            return result.Success ? Ok(result) : Unauthorized(result);
+            return result.IsSuccess ? Ok(result) : Unauthorized(result);
         }
       
         [Authorize]

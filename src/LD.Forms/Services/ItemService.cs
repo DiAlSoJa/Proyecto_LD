@@ -8,18 +8,18 @@ using System.Text;
 
 namespace LD.Forms.Services
 {
-    public class ClientService
+    public class ItemService
     {
         public readonly ApiService _api;
-        public ClientService()
+        public ItemService()
         {
             _api = new ApiService();
             _api.SetBearerToken(UserSession.AccessToken??"");
         }
 
-        public async Task<ApiResponseDto<List<ClientDto>>> GetClients()
+        public async Task<ApiResponseDto<List<ClientDto>>> GetItems()
         {
-            return await _api.GetAsync<ApiResponseDto<List<ClientDto>>>(ApiEndpoints.Client.GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<ClientDto>>>(ApiEndpoints.Item.GetAll);
         }
     }
 }

@@ -67,12 +67,13 @@ namespace LD.Forms.Services
         {
             var content = await response.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<T>(
+            var contentDeserialize = JsonSerializer.Deserialize<T>(
                 content,
                 new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive =true
                 })!;
+            return contentDeserialize;
         }
     }
 }

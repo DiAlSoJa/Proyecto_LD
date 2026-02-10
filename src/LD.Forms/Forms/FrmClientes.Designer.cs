@@ -34,7 +34,7 @@ namespace LD.Forms
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
-            button6 = new Button();
+            btnActualizar = new Button();
             button1 = new Button();
             button3 = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
@@ -68,7 +68,7 @@ namespace LD.Forms
             // 
             // flowLayoutPanel1
             // 
-            flowLayoutPanel1.Controls.Add(button6);
+            flowLayoutPanel1.Controls.Add(btnActualizar);
             flowLayoutPanel1.Controls.Add(button1);
             flowLayoutPanel1.Controls.Add(button3);
             flowLayoutPanel1.Controls.Add(flowLayoutPanel2);
@@ -79,17 +79,17 @@ namespace LD.Forms
             flowLayoutPanel1.Size = new Size(399, 47);
             flowLayoutPanel1.TabIndex = 0;
             // 
-            // button6
+            // btnActualizar
             // 
-            button6.Image = Properties.Resources.update;
-            button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(23, 3);
-            button6.Name = "button6";
-            button6.Size = new Size(124, 35);
-            button6.TabIndex = 6;
-            button6.Text = "Actualizar";
-            button6.UseVisualStyleBackColor = true;
-            button6.Click += button6_Click;
+            btnActualizar.Image = Properties.Resources.update;
+            btnActualizar.ImageAlign = ContentAlignment.MiddleLeft;
+            btnActualizar.Location = new Point(23, 3);
+            btnActualizar.Name = "btnActualizar";
+            btnActualizar.Size = new Size(124, 35);
+            btnActualizar.TabIndex = 6;
+            btnActualizar.Text = "Actualizar";
+            btnActualizar.UseVisualStyleBackColor = true;
+            btnActualizar.Click += btnActualizar_Click;
             // 
             // button1
             // 
@@ -267,5 +267,6 @@ namespace LD.Forms
         private DataGridViewTextBoxColumn CP;
         private Button button6;
         private Panel gridContainer;
+        private Button btnActualizar;
     }
 }
