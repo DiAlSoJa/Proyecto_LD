@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\LD.Contracts\LD.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Dialogs\FrmConfirm.cs">
       <SubType>Form</SubType>
     </Compile>

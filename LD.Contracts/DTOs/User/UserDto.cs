@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD.Application.DTOs.User
+namespace LD.Contracts.User
 {
     public class UserDto
     {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LD.Application.DTOs.User;
+using LD.Contracts.User;
 using LD.Infrastructure.Identity;
 using System;
 using System.Collections.Generic;

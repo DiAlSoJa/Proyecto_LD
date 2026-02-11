@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
-using LD.Application.DTOs.Client;
-using LD.Application.DTOs.User;
+using LD.Contracts.User;
 using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;

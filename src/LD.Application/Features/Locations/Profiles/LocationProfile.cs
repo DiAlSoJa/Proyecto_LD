@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LD.Application.DTOs.Client;
+using LD.Contracts.Location;
 using LD.Domain.Entities;
 using System;
 using System.Collections.Generic;

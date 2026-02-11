@@ -1,7 +1,6 @@
 ﻿using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
-using LD.Application.DTOs.Client;
 using LD.Domain.Entities;
 using MediatR;
 using System;

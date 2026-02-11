@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using LD.Application.Common.Interfaces;
 using LD.Application.Common.Results;
-using LD.Application.DTOs.Client;
+using LD.Contracts.Client;
 using LD.Domain.Entities;
 using MediatR;
 
