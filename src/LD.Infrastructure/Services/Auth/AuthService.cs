@@ -1,7 +1,6 @@
 ﻿using Azure.Core;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
-using LD.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;

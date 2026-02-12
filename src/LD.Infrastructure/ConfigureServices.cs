@@ -2,7 +2,6 @@
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Application.Features.Auth.Commands;
-using LD.Infrastructure.Identity;
 using LD.Infrastructure.Persistence;
 using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
@@ -34,7 +33,7 @@ public static class ConfigureServices
 
 
         services.AddHttpContextAccessor();
-
+        services.AddTransient<IApplicationUserManager, ApplicationUserManager>();
 
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();

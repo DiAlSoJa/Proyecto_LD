@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using LD.Contracts.User;
-using LD.Infrastructure.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
