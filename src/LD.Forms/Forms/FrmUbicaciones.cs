@@ -1,13 +1,6 @@
 ﻿using LD.Dialogs;
 using LD.Forms.Classes;
 using LD.Forms.Services;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace LD.Forms
 {
@@ -36,6 +29,35 @@ namespace LD.Forms
         {
             FrmNuevaUbicacionMasiva frmNuevaUbicacionMasiva = new FrmNuevaUbicacionMasiva();
             frmNuevaUbicacionMasiva.ShowDialog();
+        }
+
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            try
+            {
+                var clientResponse = await _locationService.GetLocations();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        private async void btnActualizar_Click(object sender, EventArgs e)
+        {
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
         }
     }
 }

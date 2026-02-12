@@ -37,7 +37,8 @@ public class ValidationBehavior<TRequest, TResponse>
                 failures.Select(f => f.ErrorMessage)
             );
 
-            return (TResponse)(object)message;
+            return (TResponse)(object)Result<string>.Failure(message,null);
+
         }
 
         return await next();

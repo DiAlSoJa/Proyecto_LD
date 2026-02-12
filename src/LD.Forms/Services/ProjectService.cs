@@ -1,6 +1,7 @@
 ﻿
 using LD.Contracts;
 using LD.Contracts.Client;
+using LD.Contracts.Project;
 using LD.Forms.Classes;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Configuration;
@@ -19,9 +20,9 @@ namespace LD.Forms.Services
             _api.SetBearerToken(UserSession.AccessToken??"");
         }
 
-        public async Task<ApiResponseDto<List<ClientDto>>> GetProjects()
+        public async Task<ApiResponseDto<List<ProjectDto>>> GetProjects()
         {
-            return await _api.GetAsync<ApiResponseDto<List<ClientDto>>>(ApiEndpoints.Project.GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<ProjectDto>>>(ApiEndpoints.Project.GetAll);
         }
     }
 }

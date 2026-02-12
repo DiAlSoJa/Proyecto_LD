@@ -34,5 +34,39 @@ namespace LD.Forms
             FrmNuevoArticuloMasiva frmNuevoArticuloMasiva = new FrmNuevoArticuloMasiva();
             frmNuevoArticuloMasiva.ShowDialog();
         }
+
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            try
+            {
+                var clientResponse = await _itemService.GetItems();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        private async void btnActualizar_Click(object sender, EventArgs e)
+        {
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+        }
+
+        private void gridContainer_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

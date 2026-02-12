@@ -28,5 +28,33 @@ namespace LD.Forms
             FrmNuevoProyecto frmNuevoCliente = new FrmNuevoProyecto();
             frmNuevoCliente.ShowDialog();
         }
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            try
+            {
+                var clientResponse = await _projectService.GetProjects();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        private async void btnActualizar_Click(object sender, EventArgs e)
+        {
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+        }
     }
 }

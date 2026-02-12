@@ -9,11 +9,13 @@ namespace LD.Forms
         private readonly ClientService _clientService;
         private Formularios? formularios;
 
+        private BindingSource _clientsBinding = new();
         public FrmClientes(Formularios f)
         {
             InitializeComponent();
             this.formularios = f;
             _clientService = new();
+            dataGridView1.DataSource = _clientsBinding;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -33,10 +35,15 @@ namespace LD.Forms
         {
             try
             {
-                var clientResponse = await _clientService.GetClients();
+                var result = await _clientService.GetClients();
 
-               
-
+                if (!result.IsSuccess)
+                {
+                    MessageBox.Show(result.Message);
+                    return;
+                }
+                //dataGridView1.AutoGenerateColumns = false;
+                _clientsBinding.DataSource = result.Data;
             }
             catch (Exception ex)
             {

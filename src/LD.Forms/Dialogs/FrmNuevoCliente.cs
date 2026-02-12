@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LD.Contracts.Requests;
+using LD.Forms.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +14,11 @@ namespace LD.Dialogs
     {
         private bool mouseDown;
         private Point lastLocation;
+        private readonly ClientService _clientService;
         public FrmNuevoCliente()
         {
             InitializeComponent();
+            _clientService = new ClientService();
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
@@ -59,8 +63,32 @@ namespace LD.Dialogs
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+
+        private async  void btnSave_Click(object sender, EventArgs e)
         {
+            var request = new ClientRequest
+            {
+                CommercialName = txtComercialName.Text,
+                City = txtCiudad.Text,
+                PostalCode = txtCodigoPostal.Text,
+                BusinessName = txtRazonSocial.Text,
+                Rfc= txtRFC.Text,
+                Phone = txtTelefono.Text,
+                IsActive = checkIsActive.Checked,
+                CommercialAddress = txtDomicilioComercial.Text
+            };
+
+           var result =  await _clientService.CreateClient(request);
+
+            if (result.IsSuccess)
+            {
+                MessageBox.Show(result.Data, "Exito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show(result.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
     }

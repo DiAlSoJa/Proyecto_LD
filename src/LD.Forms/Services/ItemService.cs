@@ -1,12 +1,9 @@
 ﻿
-using LD.Contracts;
-using LD.Contracts.Client;
+
+using LD.Contracts.Item;
 using LD.Forms.Classes;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LD.Forms.Services
 {
@@ -19,9 +16,9 @@ namespace LD.Forms.Services
             _api.SetBearerToken(UserSession.AccessToken??"");
         }
 
-        public async Task<ApiResponseDto<List<ClientDto>>> GetItems()
+        public async Task<ApiResponseDto<List<ItemDto>>> GetItems()
         {
-            return await _api.GetAsync<ApiResponseDto<List<ClientDto>>>(ApiEndpoints.Item.GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<ItemDto>>>(ApiEndpoints.Item.GetAll);
         }
     }
 }

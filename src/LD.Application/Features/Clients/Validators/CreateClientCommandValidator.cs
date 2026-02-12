@@ -13,12 +13,12 @@ public class CreateClientCommandValidator
 {
     public CreateClientCommandValidator()
     {
-        RuleFor(x => x.ClientNumber)
+        RuleFor(x => x.CommercialName)
             .NotEmpty()
             .MaximumLength(20);
 
-        RuleFor(x => x.ComercialName)
-            .NotEmpty()
-            .MaximumLength(20);
+        //RuleFor(x => x.BusinessName)
+        //    .NotEmpty()
+        //    .MaximumLength(20);
     }
 }
