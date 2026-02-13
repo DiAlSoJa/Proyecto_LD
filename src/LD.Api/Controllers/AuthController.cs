@@ -1,8 +1,11 @@
-﻿using LD.Application.Features.Auth.Commands;
+﻿using LD.Api.Common.Results;
+using LD.Application.Common.Results;
+using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Clients.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LD.Api.Controllers
@@ -28,21 +31,21 @@ namespace LD.Api.Controllers
         [HttpGet("me")]
         public async Task<IActionResult> GetMe([FromQuery] GetMeQuery command)
         {
-            return Ok(await _mediator.Send(command));
+            return ResultExtensions.ToActionResult(await _mediator.Send(command));
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginCommand command)
         {
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result) : Unauthorized(result);
+            return ResultExtensions.ToActionResult(result);
         }
       
         [Authorize]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword()
         {
-            return Ok("cambiado de contrase");
+            return ResultExtensions.ToActionResult(Result < string>.Success( "cambiado de contrase",""));
         }
     }
 }

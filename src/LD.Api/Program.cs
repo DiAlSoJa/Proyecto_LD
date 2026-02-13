@@ -23,6 +23,7 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddInfrastructureRepositories(builder.Configuration);
 
 
+
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 

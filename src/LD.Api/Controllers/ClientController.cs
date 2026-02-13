@@ -1,4 +1,5 @@
-﻿using LD.Application.Features.Clients.Queries;
+﻿using LD.Api.Common.Results;
+using LD.Application.Features.Clients.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,31 +20,31 @@ namespace LD.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetClients([FromQuery] ClientsQuery query)
         {
-            return Ok(await _mediator.Send(query));
+            return ResultExtensions.ToActionResult(await _mediator.Send(query));
 
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClient(int id)
-            => Ok(await _mediator.Send(new ClientByIdQuery(id)));
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetClient(int id)
+        //    => ResultExtensions.ToActionResult(await _mediator.Send(new ClientByIdQuery(id)));
 
 
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] CreateClientCommand command)
         {
-            return Ok(await _mediator.Send(command));
+            return ResultExtensions.ToActionResult(await _mediator.Send(command));
         }
 
         //[HttpPut("{id}")]
         //public async Task<IActionResult> UpdateClient()
         //{
-        //    return Ok("update client");
+        //    return ResultExtensions.ToActionResult("update client");
         //}
 
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteClient(int id)
         //{
-        //    return Ok("Delete client");
+        //    return ResultExtensions.ToActionResult("Delete client");
         //}
 
 

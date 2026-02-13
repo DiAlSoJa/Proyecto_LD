@@ -26,7 +26,7 @@ public class GetMeQueryHandler : IRequestHandler<GetMeQuery, Result<UserDto?>>
         IUserContextService currentUser,
         IMapper mapper)
     {
-        _userManager = userManager;
+        _userManager = userManager; 
         _currentUser = currentUser;
         _mapper = mapper;
     }

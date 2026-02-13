@@ -9,7 +9,7 @@ namespace LD.Application.Common.Results
 
     public class ErrorResponse
     {
-        public string? Code { get; set; }
+        public int? Code { get; set; }
         public IEnumerable<string>? Details { get; set; }
     }
 }
