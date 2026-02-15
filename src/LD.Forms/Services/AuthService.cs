@@ -1,4 +1,6 @@
 ﻿
+using LD.Contracts.User;
+using LD.Forms.Classes;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Configuration;
 using System;
@@ -13,6 +15,12 @@ namespace LD.Forms.Services
         public AuthService()
         {
             _api = new ApiService();
+        }
+
+        public async Task<ApiResponseDto<UserDto?>> GetMeAsync()
+        {
+            _api.SetBearerToken(UserSession.AccessToken ?? "");
+            return await _api.GetAsync<ApiResponseDto<UserDto?>>(ApiEndpoints.Auth.GetMe);
         }
 
         public async Task<ApiResponseDto<string>> LoginAsync(string user, string password)

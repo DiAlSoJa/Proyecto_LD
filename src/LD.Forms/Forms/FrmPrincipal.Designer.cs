@@ -108,6 +108,7 @@
             // 
             // lblUser
             // 
+            lblUser.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblUser.AutoSize = true;
             lblUser.Cursor = Cursors.Hand;
             lblUser.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -195,7 +196,7 @@
             menuUser.ImageScalingSize = new Size(20, 20);
             menuUser.Items.AddRange(new ToolStripItem[] { configuraciónToolStripMenuItem, cerrarSesiónToolStripMenuItem });
             menuUser.Name = "menuUser";
-            menuUser.Size = new Size(234, 88);
+            menuUser.Size = new Size(234, 60);
             // 
             // configuraciónToolStripMenuItem
             // 

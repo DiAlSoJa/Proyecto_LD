@@ -77,6 +77,15 @@ namespace LD
                 }
 
                 UserSession.AccessToken = response.Data;
+                var getMeResponse = await _authService.GetMeAsync();
+                if (!getMeResponse.IsSuccess || getMeResponse.Data is null )
+                {
+                    FrmWarning f = new FrmWarning(getMeResponse.Message);
+                    f.ShowDialog();
+                    return;
+                }
+                UserData.SetUserData(getMeResponse.Data);
+
                 this.Hide();
                 FrmPrincipal fm = new FrmPrincipal();
                 fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);

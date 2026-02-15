@@ -29,6 +29,7 @@ namespace LD.Forms
             sc.Y = -10;
             this.MaximizedBounds = sc;
 
+            lblUser.Text = UserData.UserName; 
         }
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]

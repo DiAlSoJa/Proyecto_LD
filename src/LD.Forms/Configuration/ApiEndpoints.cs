@@ -15,6 +15,7 @@ namespace LD.Forms.Configuration
         {
             public const string Login = $"{BASE_API}/auth/login";
             public const string Register = $"{BASE_API}/auth/register";
+            public const string GetMe = $"{BASE_API}/auth/Me";
             public const string ResetPassword = $"{BASE_API}/auth/reset-password";
             public const string ForgotPassword = $"{BASE_API}/auth/forgot-password";
             public const string RefreshToken = $"{BASE_API}/auth/refresh";

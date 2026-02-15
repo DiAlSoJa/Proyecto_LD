@@ -17,35 +17,33 @@ namespace LD.Api.Controllers
         {
             _mediator = mediator;
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetClient(int id)
+            => ResultExtensions.ToActionResult(await _mediator.Send(new ClientByIdQuery(id)));
+
+
         [HttpGet]
         public async Task<IActionResult> GetClients([FromQuery] ClientsQuery query)
-        {
-            return ResultExtensions.ToActionResult(await _mediator.Send(query));
-
-        }
-
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetClient(int id)
-        //    => ResultExtensions.ToActionResult(await _mediator.Send(new ClientByIdQuery(id)));
+           => ResultExtensions.ToActionResult(await _mediator.Send(query));
 
 
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] CreateClientCommand command)
+            => ResultExtensions.ToActionResult(await _mediator.Send(command));
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateClient()
         {
-            return ResultExtensions.ToActionResult(await _mediator.Send(command));
+            return ResultExtensions.ToActionResult("update client");
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateClient()
-        //{
-        //    return ResultExtensions.ToActionResult("update client");
-        //}
-
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteClient(int id)
-        //{
-        //    return ResultExtensions.ToActionResult("Delete client");
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteClient(int id)
+        {
+            return ResultExtensions.ToActionResult("Delete client");
+        }
 
 
     }
