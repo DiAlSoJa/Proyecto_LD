@@ -57,10 +57,11 @@ namespace LD.Forms.Services
             return await HandleResponse<TResponse>(response);
         }
 
-        public async Task DeleteAsync(string endpoint)
+        public async Task<T> DeleteAsync<T>(string endpoint)
         {
             var response = await _http.DeleteAsync(endpoint);
-            response.EnsureSuccessStatusCode();
+            return await HandleResponse<T>(response);
+
         }
 
         private static async Task<T> HandleResponse<T>(HttpResponseMessage response)

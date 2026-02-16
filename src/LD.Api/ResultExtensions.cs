@@ -10,7 +10,7 @@ namespace LD.Api.Common.Results
             if (result.IsSuccess)
                 return new OkObjectResult(result);
 
-            var statusCode = result.Error?.Code ?? StatusCodes.Status500InternalServerError;
+            var statusCode = result.Code ;
 
             return statusCode switch
             {

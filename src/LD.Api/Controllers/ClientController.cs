@@ -19,22 +19,22 @@ namespace LD.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClient(int id)
-            => ResultExtensions.ToActionResult(await _mediator.Send(new ClientByIdQuery(id)));
 
 
         [HttpGet]
         public async Task<IActionResult> GetClients([FromQuery] ClientsQuery query)
            => ResultExtensions.ToActionResult(await _mediator.Send(query));
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetClient(int id)
+            => ResultExtensions.ToActionResult(await _mediator.Send(new ClientByIdQuery(id)));
 
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] CreateClientCommand command)
             => ResultExtensions.ToActionResult(await _mediator.Send(command));
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{clientId}")]
         public async Task<IActionResult> UpdateClient(int clientId , UpdateClientCommand command)
         {
             command.ClientId = clientId;
@@ -42,7 +42,7 @@ namespace LD.Api.Controllers
             return ResultExtensions.ToActionResult(result);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{clientId}")]
         public async Task<IActionResult> DeleteClient(int clientId, ArchiveClientCommand command)
         {
             command.ClientId = clientId;
