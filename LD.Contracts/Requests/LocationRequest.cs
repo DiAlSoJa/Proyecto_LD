@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LD.Contracts.Requests
 {
-    public class CreateLocationRequest
+    public class LocationRequest
     {
         public int? Id { get; set; }
 

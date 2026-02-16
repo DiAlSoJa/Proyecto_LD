@@ -40,7 +40,7 @@ namespace LD.Forms.Services
 
         public async Task<ApiResponseDto<string>> ArchiveClient(int clientId)
         {
-            return await _api.DeleteAsync<ApiResponseDto<string>>(ApiEndpoints.Client.GetById.Replace("{id}", clientId.ToString()));
+            return await _api.DeleteAsync<ApiResponseDto<string>>(ApiEndpoints.Client.Delete.Replace("{id}", clientId.ToString()));
         }
     }
 }
