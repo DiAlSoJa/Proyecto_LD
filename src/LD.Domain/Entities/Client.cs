@@ -19,14 +19,15 @@ namespace LD.Domain.Entities
 
         [Required]
         [MaxLength(150)]
-        public string ComercialName { get; set; }
+        public string CommercialName { get; set; }
 
         [MaxLength(250)]
         public string Address { get; set; } = string.Empty;
 
         [MaxLength(100)]
         public string Neightbourhoud { get; set; } = string.Empty;
-
+        [MaxLength(100)]
+        public string? BusinessName { get; set; } = default!;
         [MaxLength(100)]
         public string City { get; set; } = string.Empty;
 
@@ -39,6 +40,8 @@ namespace LD.Domain.Entities
         [MaxLength(20)]
         public string Fax { get; set; } = string.Empty;
 
+        [MaxLength(13)]
+        public string? Rfc { get; set; } = default!;
         public bool IsProvider { get; set; } 
 
         //// Relación 1–1

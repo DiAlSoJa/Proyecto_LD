@@ -1,5 +1,6 @@
 ﻿using LD.Api.Common.Results;
 using LD.Application.Features.Clients.Queries;
+using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,15 +35,19 @@ namespace LD.Api.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateClient()
+        public async Task<IActionResult> UpdateClient(int clientId , UpdateClientCommand command)
         {
-            return ResultExtensions.ToActionResult("update client");
+            command.ClientId = clientId;
+            var result = await _mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteClient(int id)
+        public async Task<IActionResult> DeleteClient(int clientId, ArchiveClientCommand command)
         {
-            return ResultExtensions.ToActionResult("Delete client");
+            command.ClientId = clientId;
+            var result = await _mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
         }
 
 

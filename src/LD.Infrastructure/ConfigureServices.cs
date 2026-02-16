@@ -49,6 +49,8 @@ public static class ConfigureServices
     {
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped(typeof(IArchiveRepository<>), typeof(ArchiveRepository<>));
+
 
 
         return services;
