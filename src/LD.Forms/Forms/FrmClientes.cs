@@ -1,4 +1,5 @@
-﻿using LD.Dialogs;
+﻿using LD.Contracts.Client;
+using LD.Dialogs;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 
@@ -8,6 +9,7 @@ namespace LD.Forms
     {
         private readonly ClientService _clientService;
         private Formularios? formularios;
+        private ClientDto? selectedClient { get; set; }
 
         private BindingSource _clientsBinding = new();
         public FrmClientes(Formularios f)
@@ -21,6 +23,12 @@ namespace LD.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente();
+            frmNuevoCliente.ShowDialog();
+        }
+
+        private void EditBtn_Click(object sender, EventArgs e)
+        {
+            FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente(selectedClient);
             frmNuevoCliente.ShowDialog();
         }
         protected override async void OnShown(EventArgs e)
@@ -55,6 +63,26 @@ namespace LD.Forms
         private async void btnActualizar_Click(object sender, EventArgs e)
         {
             await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                    return;
+
+                var cliente = dataGridView1.CurrentRow.DataBoundItem as ClientDto;
+
+                if (cliente == null)
+                    return;
+
+                selectedClient = cliente;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

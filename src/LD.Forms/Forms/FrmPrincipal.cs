@@ -166,8 +166,8 @@ namespace LD.Forms
         private void cerrarSesiónToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UserSession.LogOut();
-            var login = new FrmLogin();
-            login.Show();
+            //var login = new FrmLogin();
+            //login.Show();
 
             this.Hide();
         }

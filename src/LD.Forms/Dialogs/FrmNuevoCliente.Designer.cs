@@ -44,7 +44,7 @@
             label3 = new Label();
             txtComercialName = new TextBox();
             label2 = new Label();
-            textBox1 = new TextBox();
+            txtId = new TextBox();
             label9 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
@@ -76,7 +76,7 @@
             panel1.Controls.Add(label3);
             panel1.Controls.Add(txtComercialName);
             panel1.Controls.Add(label2);
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(txtId);
             panel1.Controls.Add(label9);
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Controls.Add(panel2);
@@ -226,15 +226,15 @@
             label2.TabIndex = 21;
             label2.Text = "Nombre comercial:";
             // 
-            // textBox1
+            // txtId
             // 
-            textBox1.BorderStyle = BorderStyle.FixedSingle;
-            textBox1.Font = new Font("Segoe UI", 9.75F);
-            textBox1.Location = new Point(179, 57);
-            textBox1.Name = "textBox1";
-            textBox1.ReadOnly = true;
-            textBox1.Size = new Size(109, 29);
-            textBox1.TabIndex = 20;
+            txtId.BorderStyle = BorderStyle.FixedSingle;
+            txtId.Font = new Font("Segoe UI", 9.75F);
+            txtId.Location = new Point(179, 57);
+            txtId.Name = "txtId";
+            txtId.ReadOnly = true;
+            txtId.Size = new Size(109, 29);
+            txtId.TabIndex = 20;
             // 
             // label9
             // 
@@ -363,7 +363,7 @@
         private Label label3;
         private TextBox txtComercialName;
         private Label label2;
-        private TextBox textBox1;
+        private TextBox txtId;
         private Label label9;
     }
 }

@@ -21,10 +21,10 @@ namespace LD
         private AuthService _authService;
 
 
-        public FrmLogin()
+        public FrmLogin(AuthService authService)
         {
             InitializeComponent();
-            _authService = new AuthService();
+            _authService = authService;
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)

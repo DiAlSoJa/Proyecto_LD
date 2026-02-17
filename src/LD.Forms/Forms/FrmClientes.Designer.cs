@@ -35,8 +35,8 @@ namespace LD.Forms
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             btnActualizar = new Button();
-            button1 = new Button();
-            button3 = new Button();
+            AddBtn = new Button();
+            EditBtn = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
@@ -69,8 +69,8 @@ namespace LD.Forms
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.Controls.Add(btnActualizar);
-            flowLayoutPanel1.Controls.Add(button1);
-            flowLayoutPanel1.Controls.Add(button3);
+            flowLayoutPanel1.Controls.Add(AddBtn);
+            flowLayoutPanel1.Controls.Add(EditBtn);
             flowLayoutPanel1.Controls.Add(flowLayoutPanel2);
             flowLayoutPanel1.Dock = DockStyle.Left;
             flowLayoutPanel1.Location = new Point(0, 0);
@@ -91,28 +91,30 @@ namespace LD.Forms
             btnActualizar.UseVisualStyleBackColor = true;
             btnActualizar.Click += btnActualizar_Click;
             // 
-            // button1
+            // AddBtn
             // 
-            button1.Image = Properties.Resources.plusM;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(153, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(107, 35);
-            button1.TabIndex = 0;
-            button1.Text = "Nuevo";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            AddBtn.Image = Properties.Resources.plusM;
+            AddBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            AddBtn.Location = new Point(153, 3);
+            AddBtn.Name = "AddBtn";
+            AddBtn.Size = new Size(107, 35);
+            AddBtn.TabIndex = 0;
+            AddBtn.Text = "Nuevo";
+            AddBtn.TextAlign = ContentAlignment.TopRight;
+            AddBtn.UseVisualStyleBackColor = true;
+            AddBtn.Click += button1_Click;
             // 
-            // button3
+            // EditBtn
             // 
-            button3.Image = Properties.Resources.editar;
-            button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(266, 3);
-            button3.Name = "button3";
-            button3.Size = new Size(107, 35);
-            button3.TabIndex = 2;
-            button3.Text = "Editar";
-            button3.UseVisualStyleBackColor = true;
+            EditBtn.Image = Properties.Resources.editar;
+            EditBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            EditBtn.Location = new Point(266, 3);
+            EditBtn.Name = "EditBtn";
+            EditBtn.Size = new Size(107, 35);
+            EditBtn.TabIndex = 2;
+            EditBtn.Text = "Editar";
+            EditBtn.UseVisualStyleBackColor = true;
+            EditBtn.Click += EditBtn_Click;
             // 
             // flowLayoutPanel2
             // 
@@ -147,6 +149,7 @@ namespace LD.Forms
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
+            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             // 
             // Activo
             // 
@@ -251,8 +254,8 @@ namespace LD.Forms
         private Panel panel1;
         
         private FlowLayoutPanel flowLayoutPanel1;
-        private Button button1;
-        private Button button3;
+        private Button AddBtn;
+        private Button EditBtn;
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button2;
         private DataGridView dataGridView1;

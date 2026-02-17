@@ -1,4 +1,7 @@
-﻿using LD.Contracts.Requests;
+﻿using LD.Contracts.Client;
+using LD.Contracts.Requests;
+using LD.Forms.Classes;
+using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
 using System;
 using System.Collections.Generic;
@@ -15,12 +18,64 @@ namespace LD.Dialogs
         private bool mouseDown;
         private Point lastLocation;
         private readonly ClientService _clientService;
+        private  ClientDto? ClientSelected { get; set; }
+        private bool IsEditing{ get; set; }
+
         public FrmNuevoCliente()
         {
             InitializeComponent();
             _clientService = new ClientService();
         }
 
+        public FrmNuevoCliente(ClientDto client)
+        {
+            InitializeComponent();
+            _clientService = new ClientService();
+            ClientSelected = client;
+            IsEditing = true;
+            btnSave.Text = "Actualizar";
+        }
+
+
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            if(IsEditing)
+                await CargarDatosAsync();
+
+            //await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            try
+            {
+                var response = await _clientService.GetClientById(ClientSelected?.Id??0);
+
+                if (!response.IsSuccess)
+                {
+                    MessageBox.Show(response.Message);
+                    return;
+                }
+                var client = response.Data;
+                txtId.Text = client.Id.ToString();
+                txtComercialName.Text = client.NombreComercial;
+                txtCiudad.Text = client.Ciudad;
+                txtCodigoPostal.Text=client.CodigoPostal;
+                txtRazonSocial.Text=client.RazonSocial;
+                txtRFC.Text = client.Rfc;
+                txtTelefono.Text = client.Telefono;
+                checkIsActive.Checked = client.Activo;
+                txtDomicilioComercial.Text = client.DomicilioComercial;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;
@@ -62,34 +117,67 @@ namespace LD.Dialogs
         {
             this.Close();
         }
+        private Task<ApiResponseDto<string>> CreateClient(ClientRequest request) =>
+            _clientService.CreateClient(request);
 
-
-        private async  void btnSave_Click(object sender, EventArgs e)
+        private Task<ApiResponseDto<string>> EditClient(int clientId, ClientRequest request) =>
+            _clientService.UpdateClient(clientId, request);
+        private async Task<ApiResponseDto<string>> SaveClient(ClientRequest request)
         {
-            var request = new ClientRequest
+            return IsEditing
+                ? await EditClient(ClientSelected?.Id ?? 0, request)
+                : await CreateClient(request);
+        }
+        private ClientRequest BuildRequest()
+        {
+            return new ClientRequest
             {
-                CommercialName = txtComercialName.Text,
-                City = txtCiudad.Text,
-                PostalCode = txtCodigoPostal.Text,
-                BusinessName = txtRazonSocial.Text,
-                Rfc= txtRFC.Text,
-                Phone = txtTelefono.Text,
+                CommercialName = txtComercialName.Text.Trim(),
+                City = txtCiudad.Text.Trim(),
+                PostalCode = txtCodigoPostal.Text.Trim(),
+                BusinessName = txtRazonSocial.Text.Trim(),
+                Rfc = txtRFC.Text.Trim(),
+                Phone = txtTelefono.Text.Trim(),
                 IsActive = checkIsActive.Checked,
-                CommercialAddress = txtDomicilioComercial.Text
+                CommercialAddress = txtDomicilioComercial.Text.Trim()
             };
+        }
+        private void ShowResult(ApiResponseDto<string> result)
+        {
+            MessageBox.Show(
+                result.IsSuccess ? result.Data : result.Message,
+                result.IsSuccess ? "Éxito" : "Error",
+                MessageBoxButtons.OK,
+                result.IsSuccess ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+        }
 
-           var result =  await _clientService.CreateClient(request);
-
-            if (result.IsSuccess)
+        private async void btnSave_Click(object sender, EventArgs e)
+        {
+            try
             {
-                MessageBox.Show(result.Data, "Exito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show(result.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                btnSave.Enabled = false;
 
+                var request = BuildRequest();
+
+                var result = await SaveClient(request);
+
+                ShowResult(result);
+
+                if (result.IsSuccess)
+                    this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error inesperado: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnSave.Enabled = true;
+            }
         }
     }
 }
