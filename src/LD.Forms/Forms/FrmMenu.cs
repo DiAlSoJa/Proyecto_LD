@@ -51,5 +51,25 @@ namespace LD.Forms
         {
             this.formularios.openChildForm("Movimientos");
         }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            this.formularios.openChildForm("Inventario");
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            this.formularios.openChildForm("Aleatorio");
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            this.formularios.openChildForm("Usuarios");
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            this.formularios.openChildForm("Auditar");
+        }
     }
 }

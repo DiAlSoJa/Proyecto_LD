@@ -17,6 +17,10 @@ namespace LD.Forms.Classes
         private FrmUbicaciones frmUbicaciones;
         private FrmArticulos frmArticulos;
         private FrmMovimientos frmMovimientos;
+        private FrmUsuarios frmUsuarios;
+        private FrmAuditar frmAuditar;
+        private FrmInventario frmInventario;
+        private FrmAleatorio frmAleatorio;
 
         // Menus 
         private FrmMenu frmMenu;
@@ -83,7 +87,39 @@ namespace LD.Forms.Classes
                     childForm = frmMovimientos;
                     lTitle.Text = "LMS 2.0 - Movimientos";
                     break;
-               
+                case "Usuarios":
+                    if (frmUsuarios == null)
+                    {
+                        frmUsuarios = new FrmUsuarios(this);
+                    }
+                    childForm = frmUsuarios;
+                    this.lTitle.Text = "LMS 2.0 - Usuarios";
+                    break;
+                case "Auditar":
+                    if (frmAuditar == null)
+                    {
+                        frmAuditar = new FrmAuditar(this);
+                    }
+                    childForm = frmAuditar;
+                    this.lTitle.Text = "LMS 2.0 - Auditar";
+                    break;
+                case "Inventario":
+                    if (frmInventario == null)
+                    {
+                        frmInventario = new FrmInventario(this);
+                    }
+                    childForm = frmInventario;
+                    this.lTitle.Text = "LMS 2.0 - Inventario";
+                    break;
+                case "Aleatorio":
+                    if (frmAleatorio == null)
+                    {
+                        frmAleatorio = new FrmAleatorio(this);
+                    }
+                    childForm = frmAleatorio;
+                    this.lTitle.Text = "LMS 2.0 - Inventario Ciclico";
+                    break;
+
             }
 
             childForm.TopLevel = false;

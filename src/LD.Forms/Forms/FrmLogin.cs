@@ -227,5 +227,10 @@ namespace LD
                 LoaderManager.Hide(roundedPanel1);
             }
         }
+
+        private void roundedPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
