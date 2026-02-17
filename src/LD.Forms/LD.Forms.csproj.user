@@ -16,7 +16,22 @@
     <Compile Update="Controls\TextBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Dialogs\FrmNuevaAuditoria.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\FrmNuevoUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Dialogs\FrmWarning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmAleatorio.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmAuditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmInventario.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\FrmLogin.cs">
@@ -29,6 +44,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\FrmPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\FrmUsuarios.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

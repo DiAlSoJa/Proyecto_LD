@@ -6,7 +6,8 @@ namespace LD.Forms.Configuration
 {
     public static class ApiEndpoints
     {
-        private const string BASE_API = "http://localhost:52525/api";
+        //private const string BASE_API = "http://localhost:52525/api";
+        private const string BASE_API = "https://ldapi20260216175843-d4hzf4hyfmbkgfep.mexicocentral-01.azurewebsites.net";
 
         // ======================
         // AUTH

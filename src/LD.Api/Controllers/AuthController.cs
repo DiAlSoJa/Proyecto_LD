@@ -18,12 +18,12 @@ namespace LD.Api.Controllers
             _mediator = mediator;
         }
 
-        //[HttpPost("register")]
-        //public async Task<IActionResult> Register(RegisterCommand command)
-        //{
-        //    var result = await _mediator.Send(command);
-        //    return result.Success ? Ok(result) : BadRequest(result);
-        //}
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetMe([FromQuery] GetMeQuery command)

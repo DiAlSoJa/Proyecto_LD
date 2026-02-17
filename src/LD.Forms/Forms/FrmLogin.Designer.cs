@@ -205,6 +205,7 @@ namespace LD
             roundedPanel1.Name = "roundedPanel1";
             roundedPanel1.Size = new Size(428, 452);
             roundedPanel1.TabIndex = 11;
+            roundedPanel1.Paint += roundedPanel1_Paint;
             roundedPanel1.MouseDown += panel1_MouseDown;
             roundedPanel1.MouseMove += panel1_MouseMove;
             roundedPanel1.MouseUp += panel1_MouseUp;
