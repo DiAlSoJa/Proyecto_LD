@@ -1,6 +1,6 @@
 ﻿using LD.Forms.Controls;
 
-namespace LD.Forms.Views.Forms
+namespace LD
 {
     partial class FrmLogin
     {
@@ -52,7 +52,7 @@ namespace LD.Forms.Views.Forms
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.logo;
+            pictureBox1.Image = Forms.Properties.Resources.logo;
             pictureBox1.Location = new Point(-1, -92);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(895, 591);
@@ -142,7 +142,7 @@ namespace LD.Forms.Views.Forms
             // 
             // pictureBox3
             // 
-            pictureBox3.Image = Properties.Resources.user;
+            pictureBox3.Image = Forms.Properties.Resources.user;
             pictureBox3.Location = new Point(61, 125);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(41, 32);
@@ -151,7 +151,7 @@ namespace LD.Forms.Views.Forms
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = Properties.Resources.key;
+            pictureBox2.Image = Forms.Properties.Resources.key;
             pictureBox2.Location = new Point(61, 221);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(41, 32);

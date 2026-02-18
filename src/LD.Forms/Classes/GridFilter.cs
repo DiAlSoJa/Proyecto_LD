@@ -21,12 +21,12 @@ namespace LD.Forms.Classes
         private readonly Dictionary<string, object> _activeFilters = new();
 
 
-        private System.Windows.Forms.ContextMenuStrip menuDer;
-        private System.Windows.Forms.ToolStripMenuItem SearchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem OrderToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem FilterToolStrimMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem NoFilterToolStrimMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem CopyToolStrimMenuItem;
+        private ContextMenuStrip menuDer;
+        private ToolStripMenuItem SearchToolStripMenuItem;
+        private ToolStripMenuItem OrderToolStripMenuItem;
+        private ToolStripMenuItem FilterToolStrimMenuItem;
+        private ToolStripMenuItem NoFilterToolStrimMenuItem;
+        private ToolStripMenuItem CopyToolStrimMenuItem;
 
 
         // private List<T> _originalData;
@@ -55,15 +55,15 @@ namespace LD.Forms.Classes
 
         private void startMenuStrip()
         {
-            this.menuDer = new System.Windows.Forms.ContextMenuStrip();
-            this.SearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterToolStrimMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.NoFilterToolStrimMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyToolStrimMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuDer = new ContextMenuStrip();
+            this.SearchToolStripMenuItem = new ToolStripMenuItem();
+            this.OrderToolStripMenuItem = new ToolStripMenuItem();
+            this.FilterToolStrimMenuItem = new ToolStripMenuItem();
+            this.NoFilterToolStrimMenuItem = new ToolStripMenuItem();
+            this.CopyToolStrimMenuItem = new ToolStripMenuItem();
 
 
-            this.menuDer.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuDer.Items.AddRange(new ToolStripItem[] {
             this.CopyToolStrimMenuItem,
             this.SearchToolStripMenuItem,
             this.FilterToolStrimMenuItem,
@@ -149,17 +149,17 @@ namespace LD.Forms.Classes
         {
             this._grid.AllowUserToAddRows = false;
             this._grid.AllowUserToDeleteRows = false;
-            this._grid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridView_ColumnWidthChanged);
-            this._grid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
-            this._grid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
+            this._grid.ColumnWidthChanged += new DataGridViewColumnEventHandler(this.dataGridView_ColumnWidthChanged);
+            this._grid.CellMouseDown += new DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
+            this._grid.KeyDown += new KeyEventHandler(this.dataGridView1_KeyDown);
             this._grid.Sorted += new System.EventHandler(this.dg_Sorted);
             this._grid.VisibleChanged += new System.EventHandler(this.dg_VisibleChanged);
-            this._grid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dg_Scroll);
+            this._grid.Scroll += new ScrollEventHandler(this.dg_Scroll);
             //this._filterGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgFilter_CellValueChanged);
             this._filterGrid.Sorted += new System.EventHandler(this.dg_SortedFilter);
-            this._filterGrid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgFilter_CellMouseDown);
-            this._filterGrid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dgFilter_ColumnWidthChanged);
-            this._grid.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
+            this._filterGrid.CellMouseDown += new DataGridViewCellMouseEventHandler(this.dgFilter_CellMouseDown);
+            this._filterGrid.ColumnWidthChanged += new DataGridViewColumnEventHandler(this.dgFilter_ColumnWidthChanged);
+            this._grid.DataError += new DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
             this._filterGrid.CellValueChanged += (_, __) => ApplyFilters();
             this._filterGrid.EditingControlShowing += Filter_EditingControlShowing;
 
@@ -172,7 +172,7 @@ namespace LD.Forms.Classes
             if (this._filterGrid == null)
             {
 
-                System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+                DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
                 this._filterGrid = new DataGridView();
                 this._filterGrid.AllowUserToAddRows = false;
                 this._filterGrid.AllowUserToDeleteRows = false;

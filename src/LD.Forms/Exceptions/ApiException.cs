@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Forms.Exceptions
+namespace LD.Forms.Views.Exceptions
 {
     public class ApiException : Exception
     {

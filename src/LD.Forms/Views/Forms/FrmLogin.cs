@@ -1,12 +1,12 @@
-﻿using LD.Views.Dialogs;
-using LD.Forms;
-using LD.Forms.Classes;
-using LD.Forms.Exceptions;
+﻿using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Views.Dialogs;
+using LD.Forms.Views.Exceptions;
+using LD.Forms.Views.Forms;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace LD.Forms.Views.Forms
+namespace LD
 {
     public partial class FrmLogin : Form
     {

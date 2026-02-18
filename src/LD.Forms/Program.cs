@@ -1,7 +1,7 @@
 using LD.Forms;
 using LD.Forms.Services;
+using LD.Forms.Views.Dialogs;
 using LD.Forms.Views.Forms;
-using LD.Views.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

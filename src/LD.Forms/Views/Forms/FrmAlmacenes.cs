@@ -1,6 +1,6 @@
-﻿using LD.Views.Dialogs;
-using LD.Forms.Classes;
+﻿using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

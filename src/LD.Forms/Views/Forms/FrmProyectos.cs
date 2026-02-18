@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using LD.Views.Dialogs;
+using LD.Forms.Views.Dialogs;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 

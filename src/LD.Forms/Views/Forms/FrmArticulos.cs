@@ -1,13 +1,14 @@
-﻿using System;
+﻿
+using LD.Forms.Classes;
+using LD.Forms.Services;
+using LD.Forms.Views.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using LD.Views.Dialogs;
-using LD.Forms.Classes;
-using LD.Forms.Services;
 
 namespace LD.Forms.Views.Forms
 {

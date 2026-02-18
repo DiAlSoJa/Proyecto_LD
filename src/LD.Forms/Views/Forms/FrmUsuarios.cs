@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-using LD.Views.Dialogs;
+using LD.Forms.Views.Dialogs;
 using LD.Forms.Classes;
 
 namespace LD.Forms.Views.Forms

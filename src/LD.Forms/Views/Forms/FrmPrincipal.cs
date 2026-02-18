@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LD.Forms.Classes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,8 +7,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using LD.Forms.Classes;
-using LD.Forms.Properties;
 
 namespace LD.Forms.Views.Forms
 {

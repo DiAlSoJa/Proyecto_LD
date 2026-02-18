@@ -1,5 +1,6 @@
 ﻿//using PinkSpace.Clases;
 //using PinkSpace.Dialogs;
+using LD.Forms.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LD.Views.Dialogs;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LD.Controls
@@ -370,7 +370,7 @@ namespace LD.Controls
                 // Si el texto es diferente, actualizamos el control y mostramos advertencia
                 if (textoFiltrado != textBox1.Text)
                 {
-                 
+
                     FrmWarning frmWarning = new FrmWarning($"Este campo solo permite números {(aceptaNegativos ? "" : "positivos")}");
                     frmWarning.ShowDialog();
                     textBox1.Text = textoFiltrado;

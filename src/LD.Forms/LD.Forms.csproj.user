@@ -16,10 +16,43 @@
     <Compile Update="Controls\TextBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmConfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmError.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmNuevaAuditoria.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevaUbicacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevaUbicacionMasiva.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoAlmacen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoArticulo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoArticuloMasiva.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoProyecto.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmNuevoUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmSuccess.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Dialogs\FrmWarning.cs">
@@ -28,7 +61,16 @@
     <Compile Update="Views\Forms\FrmAleatorio.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\Forms\FrmAlmacenes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmArticulos.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Forms\FrmAuditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmClientes.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Forms\FrmInventario.cs">
@@ -40,10 +82,19 @@
     <Compile Update="Views\Forms\FrmMenu.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\Forms\FrmMovimientos.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Forms\FrmPlantillaForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Forms\FrmPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmProyectos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmUbicaciones.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Forms\FrmUsuarios.cs">

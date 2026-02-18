@@ -1,4 +1,4 @@
-﻿namespace LD.Views.Dialogs
+﻿namespace LD.Forms.Views.Dialogs
 {
     partial class FrmNuevaUbicacionMasiva
     {
@@ -111,7 +111,7 @@
             // 
             // button4
             // 
-            button4.Image =LD.Forms.Properties.Resources.pegar;
+            button4.Image =Forms.Properties.Resources.pegar;
             button4.ImageAlign = ContentAlignment.MiddleLeft;
             button4.Location = new Point(20, 11);
             button4.Name = "button4";
@@ -135,7 +135,7 @@
             // 
             // button2
             // 
-            button2.Image =LD.Forms.Properties.Resources.cancel;
+            button2.Image =Forms.Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(1249, 8);
             button2.Name = "button2";
@@ -147,7 +147,7 @@
             // 
             // button1
             // 
-            button1.Image =LD.Forms.Properties.Resources.save;
+            button1.Image =Forms.Properties.Resources.save;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(1071, 8);
             button1.Name = "button1";
@@ -186,7 +186,7 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image =LD.Forms.Properties.Resources.cancelar;
+            pictureBox2.Image =Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(1382, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 10, 0, 0);

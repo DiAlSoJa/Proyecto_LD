@@ -1,4 +1,4 @@
-﻿using LD.Views.Dialogs;
+﻿using LD.Forms.Views.Dialogs;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 

@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace LD.Views.Dialogs
+namespace LD.Forms.Views.Dialogs
 {
     public partial class FrmNuevoCliente : Form
     {
