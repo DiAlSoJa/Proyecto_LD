@@ -126,6 +126,7 @@ namespace LD
             txtPassword.PlaceholderText = "Contraseña";
             txtPassword.Size = new Size(262, 27);
             txtPassword.TabIndex = 7;
+            txtPassword.Text = "Pa$$w0rd";
             // 
             // txtUsuario
             // 
@@ -137,6 +138,7 @@ namespace LD
             txtUsuario.PlaceholderText = "Usuario";
             txtUsuario.Size = new Size(262, 27);
             txtUsuario.TabIndex = 6;
+            txtUsuario.Text = "jmpv";
             // 
             // pictureBox3
             // 

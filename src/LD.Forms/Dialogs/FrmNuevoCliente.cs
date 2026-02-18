@@ -62,11 +62,11 @@ namespace LD.Dialogs
                 var client = response.Data;
                 txtId.Text = client.Id.ToString();
                 txtComercialName.Text = client.NombreComercial;
-                txtCiudad.Text = client.Ciudad;
-                txtCodigoPostal.Text=client.CodigoPostal;
+                txtCiudadComercial.Text = client.Ciudad;
+                txtCPComercial.Text=client.CodigoPostal;
                 txtRazonSocial.Text=client.RazonSocial;
                 txtRFC.Text = client.Rfc;
-                txtTelefono.Text = client.Telefono;
+                txtTelefonoComercial.Text = client.Telefono;
                 checkIsActive.Checked = client.Activo;
                 txtDomicilioComercial.Text = client.DomicilioComercial;
 
@@ -133,11 +133,11 @@ namespace LD.Dialogs
             return new ClientRequest
             {
                 CommercialName = txtComercialName.Text.Trim(),
-                City = txtCiudad.Text.Trim(),
-                PostalCode = txtCodigoPostal.Text.Trim(),
+                City = txtCiudadComercial.Text.Trim(),
+                PostalCode = txtCPComercial.Text.Trim(),
                 BusinessName = txtRazonSocial.Text.Trim(),
                 Rfc = txtRFC.Text.Trim(),
-                Phone = txtTelefono.Text.Trim(),
+                Phone = txtTelefonoComercial.Text.Trim(),
                 IsActive = checkIsActive.Checked,
                 CommercialAddress = txtDomicilioComercial.Text.Trim()
             };

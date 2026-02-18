@@ -12,12 +12,20 @@ namespace LD.Forms
         private ClientDto? selectedClient { get; set; }
 
         private BindingSource _clientsBinding = new();
+        
+        private Panel _gridContainer;
+
+        private GridFilter<ClientDto>_gridFilter;
+
+
         public FrmClientes(Formularios f)
         {
             InitializeComponent();
             this.formularios = f;
             _clientService = new();
             dataGridView1.DataSource = _clientsBinding;
+            _gridFilter = new GridFilter<ClientDto>(dataGridView1, _clientsBinding);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -41,23 +49,27 @@ namespace LD.Forms
 
         private async Task CargarDatosAsync()
         {
-            try
-            {
-                var result = await _clientService.GetClients();
+            var result = await _clientService.GetClients();
 
-                if (!result.IsSuccess)
-                {
-                    MessageBox.Show(result.Message);
-                    return;
-                }
-                //dataGridView1.AutoGenerateColumns = false;
-                _clientsBinding.DataSource = result.Data;
-            }
-            catch (Exception ex)
+            if (!result.IsSuccess)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(result.Message);
+                return;
             }
+            _clientsBinding.DataSource = result.Data;
+           // dataGridView1.DataSource = _clientsBinding;
+            
+            _gridFilter.SetData(result.Data);
+            dataGridView1 = _gridFilter.BuildFilterColumns();
+
+            //_gridFilter.a
+
+            /*  _gridFilter ??=
+                  new AxGridFilter<ClientDto>(dataGridView1, _clientsBinding);
+
+              _gridFilter.SetData(result.Data);*/
         }
+
 
 
         private async void btnActualizar_Click(object sender, EventArgs e)
@@ -83,6 +95,11 @@ namespace LD.Forms
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void FrmClientes_Load(object sender, EventArgs e)
+        {
+            //_gridFilter = new GridAxEnterpriseFilter<ClientDto>(dataGridView1, _clientsBinding);
         }
     }
 }
