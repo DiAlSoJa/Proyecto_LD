@@ -29,40 +29,30 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            tabControl1 = new TabControl();
-            tabComercial = new TabPage();
-            label3 = new Label();
-            txtColoniaComercial = new TextBox();
-            txtId = new TextBox();
+
             checkIsActive = new CheckBox();
-            label5 = new Label();
-            label9 = new Label();
-            txtDomicilioComercial = new TextBox();
-            txtCPComercial = new TextBox();
+     
             label8 = new Label();
-            label2 = new Label();
-            label6 = new Label();
-            txtComercialName = new TextBox();
-            txtTelefonoComercial = new TextBox();
-            txtCiudadComercial = new TextBox();
+           
             label7 = new Label();
-            tabFiscal = new TabPage();
-            label10 = new Label();
-            txtDomicilioFiscal = new TextBox();
+            label6 = new Label();
+            txtDomicilioComercial = new TextBox();
+            label5 = new Label();
             txtRFC = new TextBox();
-            label12 = new Label();
-            label13 = new Label();
-            label15 = new Label();
-            txtCiudadFiscal = new TextBox();
+            label4 = new Label();
             txtRazonSocial = new TextBox();
-            label16 = new Label();
-            label17 = new Label();
+            label3 = new Label();
+            txtComercialName = new TextBox();
+            label2 = new Label();
+            txtId = new TextBox();
+            label9 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
             btnSave = new Button();
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
+
             txtTelefonoFiscal = new TextBox();
             txtCPFiscal = new TextBox();
             txtEmail = new TextBox();
@@ -71,6 +61,7 @@
             tabControl1.SuspendLayout();
             tabComercial.SuspendLayout();
             tabFiscal.SuspendLayout();
+
             flowLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -79,7 +70,9 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+
             panel1.Controls.Add(tabControl1);
+
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
@@ -87,110 +80,58 @@
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
             panel1.Size = new Size(653, 344);
+
             panel1.TabIndex = 0;
             panel1.MouseDown += panel1_MouseDown;
             panel1.MouseMove += panel1_MouseMove;
             panel1.MouseUp += panel1_MouseUp;
             // 
-            // tabControl1
-            // 
-            tabControl1.Controls.Add(tabComercial);
-            tabControl1.Controls.Add(tabFiscal);
-            tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(0, 26);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(651, 275);
-            tabControl1.TabIndex = 37;
-            // 
-            // tabComercial
-            // 
-            tabComercial.Controls.Add(label3);
-            tabComercial.Controls.Add(txtColoniaComercial);
-            tabComercial.Controls.Add(txtId);
-            tabComercial.Controls.Add(checkIsActive);
-            tabComercial.Controls.Add(label5);
-            tabComercial.Controls.Add(label9);
-            tabComercial.Controls.Add(txtDomicilioComercial);
-            tabComercial.Controls.Add(txtCPComercial);
-            tabComercial.Controls.Add(label8);
-            tabComercial.Controls.Add(label2);
-            tabComercial.Controls.Add(label6);
-            tabComercial.Controls.Add(txtComercialName);
-            tabComercial.Controls.Add(txtTelefonoComercial);
-            tabComercial.Controls.Add(txtCiudadComercial);
-            tabComercial.Controls.Add(label7);
-            tabComercial.Location = new Point(4, 24);
-            tabComercial.Name = "tabComercial";
-            tabComercial.Padding = new Padding(3);
-            tabComercial.Size = new Size(643, 247);
-            tabComercial.TabIndex = 0;
-            tabComercial.Text = "Información Comercial";
-            tabComercial.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(8, 96);
-            label3.Name = "label3";
-            label3.Size = new Size(51, 15);
-            label3.TabIndex = 36;
-            label3.Text = "Colonia:";
-            // 
-            // txtColoniaComercial
-            // 
-            txtColoniaComercial.BorderStyle = BorderStyle.FixedSingle;
-            txtColoniaComercial.Font = new Font("Segoe UI", 9.75F);
-            txtColoniaComercial.Location = new Point(149, 90);
-            txtColoniaComercial.Margin = new Padding(3, 2, 3, 2);
-            txtColoniaComercial.Name = "txtColoniaComercial";
-            txtColoniaComercial.Size = new Size(352, 25);
-            txtColoniaComercial.TabIndex = 4;
-            // 
-            // txtId
-            // 
-            txtId.BorderStyle = BorderStyle.FixedSingle;
-            txtId.Font = new Font("Segoe UI", 9.75F);
-            txtId.Location = new Point(149, 5);
-            txtId.Margin = new Padding(3, 2, 3, 2);
-            txtId.Name = "txtId";
-            txtId.ReadOnly = true;
-            txtId.Size = new Size(96, 25);
-            txtId.TabIndex = 1;
-            // 
+
             // checkIsActive
             // 
             checkIsActive.AutoSize = true;
-            checkIsActive.Location = new Point(149, 206);
-            checkIsActive.Margin = new Padding(3, 2, 3, 2);
+            checkIsActive.Location = new Point(179, 350);
             checkIsActive.Name = "checkIsActive";
-            checkIsActive.Size = new Size(60, 19);
-            checkIsActive.TabIndex = 8;
+            checkIsActive.Size = new Size(73, 24);
+            checkIsActive.TabIndex = 35;
             checkIsActive.Text = "Activo";
             checkIsActive.UseVisualStyleBackColor = true;
+
             // 
-            // label5
+            // label8
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(8, 67);
-            label5.Name = "label5";
-            label5.Size = new Size(116, 15);
-            label5.TabIndex = 27;
-            label5.Text = "Domicilio comercial:";
+            label8.AutoSize = true;
+            label8.Location = new Point(18, 310);
+            label8.Name = "label8";
+            label8.Size = new Size(29, 20);
+            label8.TabIndex = 33;
+            label8.Text = "CP:";
+
             // 
-            // label9
+            // label7
             // 
-            label9.AutoSize = true;
-            label9.Location = new Point(8, 10);
-            label9.Name = "label9";
-            label9.Size = new Size(20, 15);
-            label9.TabIndex = 19;
-            label9.Text = "Id:";
+            label7.AutoSize = true;
+            label7.Location = new Point(18, 275);
+            label7.Name = "label7";
+            label7.Size = new Size(59, 20);
+            label7.TabIndex = 31;
+            label7.Text = "Ciudad:";
+
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(18, 240);
+            label6.Name = "label6";
+            label6.Size = new Size(70, 20);
+            label6.TabIndex = 29;
+            label6.Text = "Teléfono:";
             // 
             // txtDomicilioComercial
             // 
             txtDomicilioComercial.BorderStyle = BorderStyle.FixedSingle;
             txtDomicilioComercial.Font = new Font("Segoe UI", 9.75F);
+
             txtDomicilioComercial.Location = new Point(149, 61);
             txtDomicilioComercial.Margin = new Padding(3, 2, 3, 2);
             txtDomicilioComercial.Name = "txtDomicilioComercial";
@@ -315,11 +256,13 @@
             txtDomicilioFiscal.Name = "txtDomicilioFiscal";
             txtDomicilioFiscal.Size = new Size(461, 25);
             txtDomicilioFiscal.TabIndex = 11;
+
             // 
             // txtRFC
             // 
             txtRFC.BorderStyle = BorderStyle.FixedSingle;
             txtRFC.Font = new Font("Segoe UI", 9.75F);
+
             txtRFC.Location = new Point(162, 47);
             txtRFC.Margin = new Padding(3, 2, 3, 2);
             txtRFC.Name = "txtRFC";
@@ -362,11 +305,13 @@
             txtCiudadFiscal.Name = "txtCiudadFiscal";
             txtCiudadFiscal.Size = new Size(352, 25);
             txtCiudadFiscal.TabIndex = 13;
+
             // 
             // txtRazonSocial
             // 
             txtRazonSocial.BorderStyle = BorderStyle.FixedSingle;
             txtRazonSocial.Font = new Font("Segoe UI", 9.75F);
+
             txtRazonSocial.Location = new Point(162, 18);
             txtRazonSocial.Margin = new Padding(3, 2, 3, 2);
             txtRazonSocial.Name = "txtRazonSocial";
@@ -390,6 +335,7 @@
             label17.Size = new Size(48, 15);
             label17.TabIndex = 48;
             label17.Text = "Ciudad:";
+
             // 
             // flowLayoutPanel1
             // 
@@ -397,22 +343,26 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
+
             flowLayoutPanel1.Location = new Point(0, 301);
             flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(4);
             flowLayoutPanel1.Size = new Size(651, 41);
+
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
             button2.Image = LD.Forms.Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
+
             button2.Location = new Point(490, 6);
             button2.Margin = new Padding(3, 2, 3, 2);
             button2.Name = "button2";
             button2.Size = new Size(150, 26);
             button2.TabIndex = 17;
+
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
@@ -426,6 +376,7 @@
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(150, 26);
             btnSave.TabIndex = 16;
+
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
@@ -454,6 +405,7 @@
             label1.Location = new Point(18, 4);
             label1.Name = "label1";
             label1.Size = new Size(79, 16);
+
             label1.TabIndex = 3;
             label1.Text = "Nuevo cliente";
             // 
@@ -461,6 +413,7 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
+
             pictureBox2.Image = Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(619, 0);
 
@@ -468,6 +421,7 @@
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(4, 8, 0, 0);
             pictureBox2.Size = new Size(32, 26);
+
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
@@ -519,10 +473,12 @@
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(3, 2, 3, 2);
+
             Name = "FrmNuevoCliente";
             StartPosition = FormStartPosition.CenterParent;
             Text = "FrmWarning";
             panel1.ResumeLayout(false);
+
             tabControl1.ResumeLayout(false);
             tabComercial.ResumeLayout(false);
             tabComercial.PerformLayout();
@@ -553,10 +509,12 @@
         private Label label6;
         private TextBox txtDomicilioComercial;
         private Label label5;
+
         private TextBox txtComercialName;
         private Label label2;
         private TextBox txtId;
         private Label label9;
+
         private TabControl tabControl1;
         private TabPage tabComercial;
         private TabPage tabFiscal;

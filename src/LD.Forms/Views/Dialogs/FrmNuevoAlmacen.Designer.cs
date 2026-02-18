@@ -286,8 +286,8 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-
             pictureBox2.Margin = new Padding(3, 2, 3, 2);
+
 
             pictureBox2.Image =LD.Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(718, 0);
