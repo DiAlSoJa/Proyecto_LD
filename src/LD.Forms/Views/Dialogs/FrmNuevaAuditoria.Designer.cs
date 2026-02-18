@@ -176,7 +176,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Forms.Properties.Resources.Truck;
+            pictureBox1.Image =  LD.Forms.Properties.Resources.Truck;
             pictureBox1.Location = new Point(204, -86);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(622, 881);
@@ -291,7 +291,7 @@
             // 
             // button2
             // 
-            button2.Image = Forms.Properties.Resources.cancel;
+            button2.Image =  LD.Forms.Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(827, 8);
             button2.Name = "button2";
@@ -303,7 +303,7 @@
             // 
             // button1
             // 
-            button1.Image = Forms.Properties.Resources._checked;
+            button1.Image =  LD.Forms.Properties.Resources._checked;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(649, 8);
             button1.Name = "button1";
@@ -342,7 +342,7 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image = Forms.Properties.Resources.cancelar;
+            pictureBox2.Image =  LD.Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(976, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 10, 0, 0);

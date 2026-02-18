@@ -1,4 +1,5 @@
 ﻿using LD.Forms.Classes;
+using LD.Forms.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

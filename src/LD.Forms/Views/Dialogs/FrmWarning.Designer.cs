@@ -82,7 +82,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image =Forms.Properties.Resources.warning;
+            pictureBox1.Image =LD.Forms.Properties.Resources.warning;
             pictureBox1.Location = new Point(20, 57);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(72, 76);
@@ -112,7 +112,7 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Image =Forms.Properties.Resources.cancelar;
+            pictureBox2.Image =LD.Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(521, 9);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(26, 18);

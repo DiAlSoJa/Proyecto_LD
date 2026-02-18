@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LD.Forms.Views.Properties {
+namespace LD.Forms.Properties {
     using System;
     
     

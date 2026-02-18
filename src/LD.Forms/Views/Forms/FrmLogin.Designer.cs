@@ -52,7 +52,7 @@ namespace LD
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Forms.Properties.Resources.logo;
+            pictureBox1.Image =  LD.Forms.Properties.Resources.logo;
             pictureBox1.Location = new Point(-1, -92);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(895, 591);
@@ -142,7 +142,7 @@ namespace LD
             // 
             // pictureBox3
             // 
-            pictureBox3.Image = Forms.Properties.Resources.user;
+            pictureBox3.Image =  LD.Forms.Properties.Resources.user;
             pictureBox3.Location = new Point(61, 125);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(41, 32);
@@ -151,7 +151,7 @@ namespace LD
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = Forms.Properties.Resources.key;
+            pictureBox2.Image =  LD.Forms.Properties.Resources.key;
             pictureBox2.Location = new Point(61, 221);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(41, 32);
