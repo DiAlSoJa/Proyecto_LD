@@ -461,14 +461,10 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-<<<<<<< HEAD:src/LD.Forms/Dialogs/FrmNuevoCliente.Designer.cs
             pictureBox2.Image = Forms.Properties.Resources.cancelar;
             pictureBox2.Location = new Point(619, 0);
-            pictureBox2.Margin = new Padding(3, 2, 3, 2);
-=======
-            pictureBox2.Image = LD.Forms.Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(718, 0);
->>>>>>> 92cae6b (Se empezo la refactorizacion a MVP pattern):src/LD.Forms/Views/Dialogs/FrmNuevoCliente.Designer.cs
+
+
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(4, 8, 0, 0);
             pictureBox2.Size = new Size(32, 26);
