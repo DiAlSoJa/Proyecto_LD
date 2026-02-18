@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LD.Dialogs;
+using LD.Views.Dialogs;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LD.Controls

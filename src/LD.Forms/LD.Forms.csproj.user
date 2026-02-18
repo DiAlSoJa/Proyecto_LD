@@ -16,38 +16,43 @@
     <Compile Update="Controls\TextBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Dialogs\FrmNuevaAuditoria.cs">
+    <Compile Update="Views\Dialogs\FrmNuevaAuditoria.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Dialogs\FrmNuevoUsuario.cs">
+    <Compile Update="Views\Dialogs\FrmNuevoUsuario.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Dialogs\FrmWarning.cs">
+    <Compile Update="Views\Dialogs\FrmWarning.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmAleatorio.cs">
+    <Compile Update="Views\Forms\FrmAleatorio.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmAuditar.cs">
+    <Compile Update="Views\Forms\FrmAuditar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmInventario.cs">
+    <Compile Update="Views\Forms\FrmInventario.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmLogin.cs">
+    <Compile Update="Views\Forms\FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmMenu.cs">
+    <Compile Update="Views\Forms\FrmMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmPlantillaForm.cs">
+    <Compile Update="Views\Forms\FrmPlantillaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmPrincipal.cs">
+    <Compile Update="Views\Forms\FrmPrincipal.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\FrmUsuarios.cs">
+    <Compile Update="Views\Forms\FrmUsuarios.cs">
       <SubType>Form</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
