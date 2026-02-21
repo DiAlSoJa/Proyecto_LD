@@ -18,11 +18,10 @@ namespace LD.Forms.Views.Forms
         private GridFilter<ClientDto>_gridFilter;
 
 
-        public FrmClientes(Formularios f)
+        public FrmClientes(ClientService clientService)
         {
             InitializeComponent();
-            this.formularios = f;
-            _clientService = new();
+            _clientService = clientService;
             dataGridView1.DataSource = _clientsBinding;
             _gridFilter = new GridFilter<ClientDto>(dataGridView1, _clientsBinding);
 
@@ -30,14 +29,14 @@ namespace LD.Forms.Views.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente();
-            frmNuevoCliente.ShowDialog();
+            //FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente();
+            //frmNuevoCliente.ShowDialog();
         }
 
         private void EditBtn_Click(object sender, EventArgs e)
         {
-            FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente(selectedClient);
-            frmNuevoCliente.ShowDialog();
+            //FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente(selectedClient);
+            //frmNuevoCliente.ShowDialog();
         }
         protected override async void OnShown(EventArgs e)
         {

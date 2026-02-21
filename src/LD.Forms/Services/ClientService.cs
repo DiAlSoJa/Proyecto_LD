@@ -10,37 +10,39 @@ namespace LD.Forms.Services
 {
     public class ClientService
     {
-        public readonly ApiService _api;
-        public ClientService()
+        private readonly ApiService _api;
+        private readonly ApiEndpoints _apiEndpoints;
+        public ClientService(ApiEndpoints apiEndpoints)
         {
             _api = new ApiService();
             _api.SetBearerToken(UserSession.AccessToken??"");
+            _apiEndpoints = apiEndpoints;
         }
 
 
         public async Task<ApiResponseDto<ClientDto>> GetClientById(int clientId)
         {
-            return await _api.GetAsync<ApiResponseDto<ClientDto>>(ApiEndpoints.Client.GetById.Replace("{id}", clientId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<ClientDto>>(_apiEndpoints.Client_GetById.Replace("{id}", clientId.ToString()));
         }
 
         public async Task<ApiResponseDto<List<ClientDto>>> GetClients()
         {
-            return await _api.GetAsync<ApiResponseDto<List<ClientDto>>>(ApiEndpoints.Client.GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<ClientDto>>>(_apiEndpoints.Client_GetAll);
         }
 
         public async Task<ApiResponseDto<string>> CreateClient(ClientRequest request)
         {
-            return await _api.PostAsync<ClientRequest,ApiResponseDto<string>>(ApiEndpoints.Client.Create,request);
+            return await _api.PostAsync<ClientRequest,ApiResponseDto<string>>(_apiEndpoints.Client_Create,request);
         }
 
         public async Task<ApiResponseDto<string>> UpdateClient(int clientId, ClientRequest request)
         {
-            return await _api.PutAsync<ClientRequest, ApiResponseDto<string>>(ApiEndpoints.Client.Update.Replace("{id}", clientId.ToString()), request);
+            return await _api.PutAsync<ClientRequest, ApiResponseDto<string>>(_apiEndpoints.Client_Update.Replace("{id}", clientId.ToString()), request);
         }
 
         public async Task<ApiResponseDto<string>> ArchiveClient(int clientId)
         {
-            return await _api.DeleteAsync<ApiResponseDto<string>>(ApiEndpoints.Client.Delete.Replace("{id}", clientId.ToString()));
+            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Client_Delete.Replace("{id}", clientId.ToString()));
         }
     }
 }

@@ -30,98 +30,98 @@ namespace LD.Forms.Classes
         public void openChildForm(string nombreFormulario)
         {
             Form childForm = new Form();
-            switch (nombreFormulario)
-            {
-                case "Menu":
-                    if (frmMenu == null)
-                    {
-                        frmMenu = new FrmMenu(this);
-                    }
-                    childForm = frmMenu;
-                    lTitle.Text = "LMS 2.0 - Menú";
-                    break;
-                case "Clientes":
-                    if (frmClientes == null)
-                    {
-                        frmClientes = new FrmClientes(this);
-                    }
-                    childForm = frmClientes;
-                    lTitle.Text = "LMS 2.0 - Clientes";
-                    break;
-                case "Proyectos":
-                    if (frmProyectos == null)
-                    {
-                        frmProyectos = new FrmProyectos(this);
-                    }
-                    childForm = frmProyectos;
-                    lTitle.Text = "LMS 2.0 - Proyectos";
-                    break;
-                case "Almacenes":
-                    if (frmAlmacenes == null)
-                    {
-                        frmAlmacenes = new FrmAlmacenes(this);
-                    }
-                    childForm = frmAlmacenes;
-                    lTitle.Text = "LMS 2.0 - Almacenes";
-                    break;
-                case "Ubicaciones":
-                    if (frmUbicaciones == null)
-                    {
-                        frmUbicaciones = new FrmUbicaciones(this);
-                    }
-                    childForm = frmUbicaciones;
-                    lTitle.Text = "LMS 2.0 - Ubicaciones";
-                    break;
-                case "Articulos":
-                    if (frmArticulos == null)
-                    {
-                        frmArticulos = new FrmArticulos(this);
-                    }
-                    childForm = frmArticulos;
-                    lTitle.Text = "LMS 2.0 - Articulos";
-                    break;
-                case "Movimientos":
-                    if (frmMovimientos == null)
-                    {
-                        frmMovimientos = new FrmMovimientos(this);
-                    }
-                    childForm = frmMovimientos;
-                    lTitle.Text = "LMS 2.0 - Movimientos";
-                    break;
-                case "Usuarios":
-                    if (frmUsuarios == null)
-                    {
-                        frmUsuarios = new FrmUsuarios(this);
-                    }
-                    childForm = frmUsuarios;
-                    this.lTitle.Text = "LMS 2.0 - Usuarios";
-                    break;
-                case "Auditar":
-                    if (frmAuditar == null)
-                    {
-                        frmAuditar = new FrmAuditar(this);
-                    }
-                    childForm = frmAuditar;
-                    this.lTitle.Text = "LMS 2.0 - Auditar";
-                    break;
-                case "Inventario":
-                    if (frmInventario == null)
-                    {
-                        frmInventario = new FrmInventario(this);
-                    }
-                    childForm = frmInventario;
-                    this.lTitle.Text = "LMS 2.0 - Inventario";
-                    break;
-                case "Aleatorio":
-                    if (frmAleatorio == null)
-                    {
-                        frmAleatorio = new FrmAleatorio(this);
-                    }
-                    childForm = frmAleatorio;
-                    this.lTitle.Text = "LMS 2.0 - Inventario Ciclico";
-                    break;
+            //switch (nombreFormulario)
+            //{
+            //    case "Menu":
+            //        if (frmMenu == null)
+            //        {
+            //            frmMenu = new FrmMenu(this);
+            //        }
+            //        childForm = frmMenu;
+            //        lTitle.Text = "LMS 2.0 - Menú";
+            //        break;
+            //    case "Clientes":
+            //        if (frmClientes == null)
+            //        {
+            //            frmClientes = new FrmClientes(this);
+            //        }
+            //        childForm = frmClientes;
+            //        lTitle.Text = "LMS 2.0 - Clientes";
+            //        break;
+            //    case "Proyectos":
+            //        if (frmProyectos == null)
+            //        {
+            //            frmProyectos = new FrmProyectos(this);
+            //        }
+            //        childForm = frmProyectos;
+            //        lTitle.Text = "LMS 2.0 - Proyectos";
+            //        break;
+            //    case "Almacenes":
+            //        if (frmAlmacenes == null)
+            //        {
+            //            frmAlmacenes = new FrmAlmacenes(this);
+            //        }
+            //        childForm = frmAlmacenes;
+            //        lTitle.Text = "LMS 2.0 - Almacenes";
+            //        break;
+            //    case "Ubicaciones":
+            //        if (frmUbicaciones == null)
+            //        {
+            //            frmUbicaciones = new FrmUbicaciones(this);
+            //        }
+            //        childForm = frmUbicaciones;
+            //        lTitle.Text = "LMS 2.0 - Ubicaciones";
+            //        break;
+            //    case "Articulos":
+            //        if (frmArticulos == null)
+            //        {
+            //            frmArticulos = new FrmArticulos(this);
+            //        }
+            //        childForm = frmArticulos;
+            //        lTitle.Text = "LMS 2.0 - Articulos";
+            //        break;
+            //    case "Movimientos":
+            //        if (frmMovimientos == null)
+            //        {
+            //            frmMovimientos = new FrmMovimientos(this);
+            //        }
+            //        childForm = frmMovimientos;
+            //        lTitle.Text = "LMS 2.0 - Movimientos";
+            //        break;
+            //    case "Usuarios":
+            //        if (frmUsuarios == null)
+            //        {
+            //            frmUsuarios = new FrmUsuarios(this);
+            //        }
+            //        childForm = frmUsuarios;
+            //        this.lTitle.Text = "LMS 2.0 - Usuarios";
+            //        break;
+            //    case "Auditar":
+            //        if (frmAuditar == null)
+            //        {
+            //            frmAuditar = new FrmAuditar(this);
+            //        }
+            //        childForm = frmAuditar;
+            //        this.lTitle.Text = "LMS 2.0 - Auditar";
+            //        break;
+            //    case "Inventario":
+            //        if (frmInventario == null)
+            //        {
+            //            frmInventario = new FrmInventario(this);
+            //        }
+            //        childForm = frmInventario;
+            //        this.lTitle.Text = "LMS 2.0 - Inventario";
+            //        break;
+            //    case "Aleatorio":
+            //        if (frmAleatorio == null)
+            //        {
+            //            frmAleatorio = new FrmAleatorio(this);
+            //        }
+            //        childForm = frmAleatorio;
+            //        this.lTitle.Text = "LMS 2.0 - Inventario Ciclico";
+            //        break;
 
-            }
+            //}
 
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;

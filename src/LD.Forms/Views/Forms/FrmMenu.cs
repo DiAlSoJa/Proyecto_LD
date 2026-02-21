@@ -1,75 +1,81 @@
-﻿using System;
+﻿using LD.Forms.Classes;
+using LD.Forms.Configuration;
+using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using LD.Forms.Classes;
 
 namespace LD.Forms.Views.Forms
 {
     public partial class FrmMenu : Form
     {
-        private Formularios formularios;
-        public FrmMenu()
+        private readonly NavigationService _navigationService;
+        private readonly TabService _tabService;
+        public FrmMenu(NavigationService navigationService,TabService tabService)
         {
             InitializeComponent();
+            _navigationService = navigationService;
+            _tabService = tabService;
+            
         }
-        public FrmMenu(Formularios f)
-        {
-            InitializeComponent();
-            this.formularios = f;
-        }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Clientes");
+            _tabService.Open(AppRoutes.Clientes); 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Proyectos");
+            _tabService.Open(AppRoutes.Proyectos);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Almacenes");
+            _tabService.Open(AppRoutes.Almacenes);
+
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Ubicaciones");
+            _tabService.Open(AppRoutes.Ubicaciones);
+
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Articulos");
+            _tabService.Open(AppRoutes.Articulos);
         }
 
         private void button15_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Movimientos");
+            _tabService.Open(AppRoutes.Movimientos);
+
         }
 
         private void button16_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Inventario");
+            _tabService.Open(AppRoutes.Inventario);
         }
 
         private void button13_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Aleatorio");
+            _tabService.Open(AppRoutes.Aleatorio);
         }
 
         private void button17_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Usuarios");
+            _tabService.Open(AppRoutes.Usuarios);
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            this.formularios.openChildForm("Auditar");
+            _tabService.Open(AppRoutes.Auditar);
         }
     }
 }

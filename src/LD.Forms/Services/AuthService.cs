@@ -12,21 +12,24 @@ namespace LD.Forms.Services
     public class AuthService
     {
         public readonly ApiService _api;
-        public AuthService()
+        public readonly ApiEndpoints _endpoints;
+
+        public AuthService(ApiEndpoints endpoints)
         {
             _api = new ApiService();
+            _endpoints = endpoints;
         }
 
         public async Task<ApiResponseDto<UserDto?>> GetMeAsync()
         {
             _api.SetBearerToken(UserSession.AccessToken ?? "");
-            return await _api.GetAsync<ApiResponseDto<UserDto?>>(ApiEndpoints.Auth.GetMe);
+            return await _api.GetAsync<ApiResponseDto<UserDto?>>(_endpoints.GetMe);
         }
 
         public async Task<ApiResponseDto<string>> LoginAsync(string user, string password)
         {
             return await _api.PostAsync<LoginRequest, ApiResponseDto<string>>(
-                ApiEndpoints.Auth.Login,
+               _endpoints.Login,
                 new LoginRequest
                 {
                     Username = user,

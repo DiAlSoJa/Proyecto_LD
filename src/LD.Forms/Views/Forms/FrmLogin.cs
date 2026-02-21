@@ -1,31 +1,40 @@
-﻿using LD.Forms.Classes;
+﻿using LD.Contracts.Enums;
+using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Dialogs;
 using LD.Forms.Views.Exceptions;
 using LD.Forms.Views.Forms;
-using System.Text.Json;
-using System.Threading.Tasks;
+using LD.Forms.Views.Interfaces;
 
-namespace LD
+namespace LD.Forms.Views.Forms
 {
-    public partial class FrmLogin : Form
+    public partial class FrmLogin : Form, ILoginView
     {
         private bool mouseDown;
         private Point lastLocation;
-        // private Usuarios usuarios;
-        //private Conexion con;
         private bool bloqueo;
         private bool validacionForzoza;
         private Boolean respuesta;
 
         private AuthService _authService;
+        private DialogMessageService _dialogMessageService;
+        public event EventHandler? LoginSucceeded;
 
-
-        public FrmLogin(AuthService authService)
+        public FrmLogin(AuthService authService, DialogMessageService dialogMessageService)
         {
             InitializeComponent();
             _authService = authService;
+            _dialogMessageService = dialogMessageService;
         }
+
+        public string Usuario => txtUsuario.Text;
+        public string Password => txtPassword.Text;
+
+
+        public event EventHandler Login;
+        public event EventHandler Exit;
+
 
         private void pictureBox4_Click(object sender, EventArgs e)
         {
@@ -57,109 +66,41 @@ namespace LD
         {
             try
             {
-                String usuario = txtUsuario.Text;
-                String password = txtPassword.Text;
-
-                if (usuario.Equals("") || password.Equals(""))
+                if (Usuario.Equals("") || Password.Equals(""))
                 {
-                    FrmWarning f = new FrmWarning("Ingrese usuario y contraseña");
-                    f.ShowDialog();
+                    _dialogMessageService.Show("Ingrese usuario y contraseña", DialogMessageEnum.Warning);
                     return;
                 }
 
-
-                var response = await _authService.LoginAsync(usuario, password);
+                var response = await _authService.LoginAsync(Usuario, Password);
                 if (!response.IsSuccess)
                 {
-                    FrmWarning f = new FrmWarning(response.Message);
-                    f.ShowDialog();
+                    _dialogMessageService.Show(response.Message, DialogMessageEnum.Warning);
                     return;
                 }
 
                 UserSession.AccessToken = response.Data;
                 var getMeResponse = await _authService.GetMeAsync();
-                if (!getMeResponse.IsSuccess || getMeResponse.Data is null )
+                if (!getMeResponse.IsSuccess || getMeResponse.Data is null)
                 {
-                    FrmWarning f = new FrmWarning(getMeResponse.Message);
-                    f.ShowDialog();
+                    _dialogMessageService.Show(getMeResponse.Message, DialogMessageEnum.Warning);
                     return;
                 }
                 UserData.SetUserData(getMeResponse.Data);
 
-                this.Hide();
-                FrmPrincipal fm = new FrmPrincipal();
-                fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
-                fm.Show();
-            }
-            catch (ApiException ex)
-            {
-                FrmError frmError = new FrmError("Hubo un error inesperado");
-                frmError.ShowDialog();
-                this.setRespuesta(false);
+                //this.Hide();
+                //FrmPrincipal fm = new FrmPrincipal();
+                //fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
+                //fm.Show();
+                LoginSucceeded?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {
-                FrmError frmError = new FrmError("Hubo un error inesperado");
-                frmError.ShowDialog();
+                _dialogMessageService.Show("Hubo un error inesperado", DialogMessageEnum.Error);
+
                 this.setRespuesta(false);
 
             }
-
-
-
-
-
-
-
-            /*
-            
-            else
-            {
-               /* this.usuarios = new Usuarios(usuario, password);
-                if (this.bloqueo)
-                {
-                    this.usuarios.setConexion(this.con);
-                    if (this.usuarios.validaSesion())
-                    {
-                        this.setRespuesta(true);
-                        this.Close();
-                        return;
-                    }
-                    else
-                    {
-                        FrmError frmError = new FrmError("Error en usuario y contraseña");
-                        frmError.ShowDialog();
-                        this.setRespuesta(false);
-                        return;
-                    }
-                }
-                else
-                {
-                    this.usuarios = this.usuarios.login();
-                    if (!this.usuarios.Valido)
-                    {
-                        FrmError f = new FrmError(this.usuarios.Error);
-                        f.ShowDialog();
-                        return;
-                    }
-                    this.usuarios.setConexion(this.con);
-                    // buscamos los formularios de plus
-                    this.usuarios.buscaFormulariosPlus();
-                }
-             
-                //si seleccionó recordar
-                if (chkRecordar.Checked)
-                {
-                    Regedit regedit = new Regedit();
-                    regedit.IdUsuario = txtUsuario.Text;
-                    regedit.escribirRecordar();
-                }*/
-
-            /* this.Hide();
-             FrmPrincipal fm = new FrmPrincipal();                
-             fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
-             fm.Show();
-         }*/
         }
 
         void pr_FormClosed(object sender, FormClosedEventArgs e)
@@ -234,3 +175,4 @@ namespace LD
         }
     }
 }
+

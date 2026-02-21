@@ -371,8 +371,8 @@ namespace LD.Controls
                 if (textoFiltrado != textBox1.Text)
                 {
 
-                    FrmWarning frmWarning = new FrmWarning($"Este campo solo permite números {(aceptaNegativos ? "" : "positivos")}");
-                    frmWarning.ShowDialog();
+                    //FrmWarning frmWarning = new FrmWarning($"Este campo solo permite números {(aceptaNegativos ? "" : "positivos")}");
+                    //frmWarning.ShowDialog();
                     textBox1.Text = textoFiltrado;
                     textBox1.SelectionStart = textoFiltrado.Length;
                 }

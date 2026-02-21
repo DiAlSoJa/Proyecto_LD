@@ -16,33 +16,35 @@ namespace LD.Forms.Services
     public class LocationService
     {
         public readonly ApiService _api;
-        public LocationService()
+        private readonly ApiEndpoints _apiEndpoints;
+        public LocationService(ApiEndpoints apiEndpoints)
         {
             _api = new ApiService();
-            _api.SetBearerToken(UserSession.AccessToken??"");
+            _api.SetBearerToken(UserSession.AccessToken ?? "");
+            _apiEndpoints = apiEndpoints;
         }
         public async Task<ApiResponseDto<LocationDto>> GetLocationById(int locationId)
         {
-            return await _api.GetAsync<ApiResponseDto<LocationDto>>(ApiEndpoints.Location.GetById.Replace("{id}", locationId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<LocationDto>>(_apiEndpoints.Location_GetById.Replace("{id}", locationId.ToString()));
         }
         public async Task<ApiResponseDto<List<LocationDto>>> GetLocations()
         {
-            return await _api.GetAsync<ApiResponseDto<List<LocationDto>>>(ApiEndpoints.Location.GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<LocationDto>>>(_apiEndpoints.Location_GetAll);
         }
 
         public async Task<ApiResponseDto<string>> CreateLocation(LocationRequest request)
         {
-            return await _api.PostAsync<LocationRequest, ApiResponseDto<string>>(ApiEndpoints.Location.Create, request);
+            return await _api.PostAsync<LocationRequest, ApiResponseDto<string>>(_apiEndpoints.Location_Create, request);
         }
 
         public async Task<ApiResponseDto<string>> UpdateLocation(int locationId, LocationRequest request)
         {
-            return await _api.PutAsync<LocationRequest, ApiResponseDto<string>>(ApiEndpoints.Location.Update.Replace("{id}", locationId.ToString()), request);
+            return await _api.PutAsync<LocationRequest, ApiResponseDto<string>>(_apiEndpoints.Location_Update.Replace("{id}", locationId.ToString()), request);
         }
 
         public async Task<ApiResponseDto<string>> ArchiveLocation(int locationId)
         {
-            return await _api.DeleteAsync<ApiResponseDto<string>>(ApiEndpoints.Location.Delete.Replace("{id}", locationId.ToString()));
+            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Location_Delete.Replace("{id}", locationId.ToString()));
         }
     }
 }

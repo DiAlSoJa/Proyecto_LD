@@ -21,20 +21,20 @@ namespace LD.Forms.Views.Dialogs
         private  ClientDto? ClientSelected { get; set; }
         private bool IsEditing{ get; set; }
 
-        public FrmNuevoCliente()
+        public FrmNuevoCliente(ClientService clientService)
         {
             InitializeComponent();
-            _clientService = new ClientService();
+            _clientService = clientService;
         }
 
-        public FrmNuevoCliente(ClientDto client)
-        {
-            InitializeComponent();
-            _clientService = new ClientService();
-            ClientSelected = client;
-            IsEditing = true;
-            btnSave.Text = "Actualizar";
-        }
+        //public FrmNuevoCliente(ClientDto client)
+        //{
+        //    InitializeComponent();
+        //    _clientService = new ClientService();
+        //    ClientSelected = client;
+        //    IsEditing = true;
+        //    btnSave.Text = "Actualizar";
+        //}
 
 
         protected override async void OnShown(EventArgs e)

@@ -16,11 +16,10 @@ namespace LD.Forms.Views.Forms
         private Formularios formularios;
         private readonly ProjectService _projectService;
 
-        public FrmProyectos(Formularios f)
+        public FrmProyectos(ProjectService projectService)
         {
             InitializeComponent();
-            this.formularios = f;
-            _projectService=new();
+            _projectService= projectService;
         }
 
         private void button1_Click(object sender, EventArgs e)

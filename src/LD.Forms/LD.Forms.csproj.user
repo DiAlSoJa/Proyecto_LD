@@ -16,6 +16,9 @@
     <Compile Update="Controls\TextBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Views\Common\DraggableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmConfirm.cs">
       <SubType>Form</SubType>
     </Compile>

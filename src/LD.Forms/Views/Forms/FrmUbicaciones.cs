@@ -12,11 +12,10 @@ namespace LD.Forms.Views.Forms
         {
             InitializeComponent();
         }
-        public FrmUbicaciones(Formularios f)
+        public FrmUbicaciones(LocationService locationService)
         {
             InitializeComponent();
-            _locationService = new();
-            this.formularios = f;
+            _locationService = locationService;
         }
 
         private void button1_Click(object sender, EventArgs e)

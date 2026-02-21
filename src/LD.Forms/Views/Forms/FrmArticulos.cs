@@ -17,11 +17,10 @@ namespace LD.Forms.Views.Forms
         private Formularios formularios;
         private readonly ItemService _itemService;
 
-        public FrmArticulos(Formularios f)
+        public FrmArticulos(ItemService itemService)
         {
             InitializeComponent();
-            this.formularios = f;
-            _itemService = new();
+            _itemService = itemService;
         }
 
         private void button1_Click(object sender, EventArgs e)

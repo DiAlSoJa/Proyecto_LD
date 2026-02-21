@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LD.Forms.Views.Common;
+using LD.Forms.Views.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,39 +10,17 @@ using System.Windows.Forms;
 
 namespace LD.Forms.Views.Dialogs
 {
-    public partial class FrmWarning : Form
+    public partial class FrmWarning : DraggableForm, IBaseMessageDialog
     {
-        private bool mouseDown;
-        private Point lastLocation;
         public FrmWarning()
         {
             InitializeComponent();
-        }
-        public FrmWarning(String mensaje)
-        {
-            InitializeComponent();
-            txtMensaje.Text = mensaje;
-        }
-        private void panel1_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseDown = true;
-            lastLocation = e.Location;
+            EnableDrag(panel1);
         }
 
-        private void panel1_MouseMove(object sender, MouseEventArgs e)
+        public void SetMessage(string message)
         {
-            if (mouseDown)
-            {
-                this.Location = new Point(
-                    (this.Location.X - lastLocation.X) + e.X, (this.Location.Y - lastLocation.Y) + e.Y);
-
-                this.Update();
-            }
-        }
-
-        private void panel1_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseDown = false;
+            txtMensaje.Text = message;
         }
 
         private void btnAceptar_Click(object sender, EventArgs e)

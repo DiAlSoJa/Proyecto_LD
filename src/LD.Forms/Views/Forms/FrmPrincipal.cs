@@ -1,5 +1,7 @@
 ﻿using LD.Forms.Classes;
+using LD.Forms.Configuration;
 using LD.Forms.Properties;
+using LD.Forms.Services.FormServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,12 +15,19 @@ namespace LD.Forms.Views.Forms
 {
     public partial class FrmPrincipal : Form
     {
-        private Formularios formularios = new Formularios();
-        public FrmPrincipal()
+        private readonly NavigationService _navigation;
+        private readonly TabService _tabService;
+        public event EventHandler? LogoutRequested;
+        public FrmPrincipal(NavigationService navigation, TabService tabService)
         {
             InitializeComponent();
 
-            formularios.inicia(this.pCenter, this, this.lblTitle, this.flowLayoutPest);
+            _navigation = navigation;
+            _tabService = tabService;
+            _tabService.Initialize(flowLayoutPest, lblTitle);
+            _navigation.Initialize(pCenter);
+
+            //formularios.inicia(this.pCenter, this, this.lblTitle, this.flowLayoutPest);
             this.Text = String.Empty;
             this.ControlBox = false;
             iniciarMenu();
@@ -29,7 +38,7 @@ namespace LD.Forms.Views.Forms
             sc.Y = -10;
             this.MaximizedBounds = sc;
 
-            lblUser.Text = UserData.UserName; 
+            lblUser.Text = UserData.UserName;
         }
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
@@ -65,8 +74,8 @@ namespace LD.Forms.Views.Forms
 
         public void iniciarMenu()
         {
-            //openChildForm("Menu");
-            formularios.openChildForm("Menu");
+            _tabService.Open(AppRoutes.Menu);
+            //_navigation.Navigate<FrmMenu>();
 
         }
 
@@ -166,10 +175,8 @@ namespace LD.Forms.Views.Forms
         private void cerrarSesiónToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UserSession.LogOut();
-            //var login = new FrmLogin();
-            //login.Show();
-
-            this.Hide();
+            LogoutRequested?.Invoke(this, EventArgs.Empty);
+           
         }
     }
 }

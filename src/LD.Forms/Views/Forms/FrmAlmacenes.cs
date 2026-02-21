@@ -16,11 +16,10 @@ namespace LD.Forms.Views.Forms
         private readonly WarehouseService _warehouseService;
         private Formularios formularios;
 
-        public FrmAlmacenes(Formularios f)
+        public FrmAlmacenes(WarehouseService warehouseService)
         {
             InitializeComponent();
-            this.formularios = f;
-            _warehouseService = new();
+            _warehouseService = warehouseService;
         }
 
         private void button1_Click(object sender, EventArgs e)

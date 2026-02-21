@@ -1,7 +1,10 @@
 using LD.Forms;
+using LD.Forms.Configuration;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Dialogs;
 using LD.Forms.Views.Forms;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,62 +15,95 @@ namespace LD
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
+        /// 
+        public static IConfiguration? Configuration { get; private set; }
+
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            //ApplicationConfiguration.Initialize();
+            var host = Host.CreateDefaultBuilder()
+                  .ConfigureAppConfiguration((context, config) =>
+                  {
+                      var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
 
-            var host = CreateHostBuilder().Build();
-            ApplicationConfiguration.Initialize();
+                      config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
+                      config.AddJsonFile("appsettings.json", optional: false);
+                      config.AddJsonFile($"appsettings.{env}.json", optional: true);
+                  })
+                  .ConfigureServices((context, services) =>
+                  {
+                      services.Configure<ApiSettings>(
+                          context.Configuration.GetSection("ApiSettings"));
+                      RegisterServices(services);
+                  })
+                  .Build();
+
+            Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            var loginForm = host.Services.GetRequiredService<FrmLogin>();
-            Application.Run(loginForm);
+            ApplicationConfiguration.Initialize();
+
+
+            var appContext = new AppApplicationContext(host.Services);
+            Application.Run(appContext);
         }
 
-        static IHostBuilder CreateHostBuilder()
+        private static void RegisterServices(IServiceCollection services)
         {
-            return Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
-                {
-                    // 🔹 Servicios
-                    services.AddScoped<ApiService>();
-                    services.AddScoped<AuthService>();
-                    services.AddScoped<ClientService>();
-                    services.AddScoped<ItemService>();
-                    services.AddScoped<LocationService>();
-                    services.AddScoped<ProjectService>();
-                    services.AddScoped<WarehouseService>();
+            services.AddSingleton<ApiEndpoints>();
 
-                    // 🔹 Forms
-                    services.AddScoped<FrmLogin>();
-                    services.AddScoped<FrmAlmacenes>();
-                    services.AddScoped<FrmArticulos>();
-                    services.AddScoped<FrmClientes>();
-                    services.AddScoped<FrmMenu>();
-                    services.AddScoped<FrmMovimientos>();
-                    services.AddScoped<FrmPrincipal>();
-                    services.AddScoped<FrmProyectos>();
-                    services.AddScoped<FrmUbicaciones>();
+            // 🔹 Servicios
+            services.AddScoped<ApiService>();
+            services.AddScoped<AuthService>();
+            services.AddScoped<ClientService>();
+            services.AddScoped<ItemService>();
+            services.AddScoped<LocationService>();
+            services.AddScoped<ProjectService>();
+            services.AddScoped<WarehouseService>();
 
-                    // 🔹 Dialogs
-                    services.AddScoped<FrmConfirm>();
-                    services.AddScoped<FrmError>();
-                    services.AddScoped<FrmInfo>();
-                    services.AddScoped<FrmNuevaUbicacion>();
-                    services.AddScoped<FrmNuevaUbicacionMasiva>();
-                    services.AddScoped<FrmNuevoAlmacen>();
-                    services.AddScoped<FrmNuevoArticuloMasiva>();
-                    services.AddScoped<FrmNuevoArticulo>();
-                    services.AddScoped<FrmNuevoArticulo>();
-                    services.AddScoped<FrmNuevoCliente>();
-                    services.AddScoped<FrmNuevoProyecto>();
-                    services.AddScoped<FrmSuccess>();
-                    services.AddScoped<FrmWarning>();
-                });
+            // 🔹 Servicios de formularios
+            services.AddSingleton<TabService>();
+            services.AddSingleton<NavigationService>();
+            services.AddSingleton<DialogMessageService>();
+
+            // 🔹 Forms
+            services.AddTransient<FrmPrincipal>();
+            services.AddTransient<FrmLogin>();
+            services.AddTransient<FrmMenu>();
+
+            services.AddTransient<FrmAlmacenes>();
+            services.AddTransient<FrmArticulos>();
+            services.AddTransient<FrmClientes>();
+            services.AddTransient<FrmMovimientos>();
+            services.AddTransient<FrmProyectos>();
+            services.AddTransient<FrmUbicaciones>();
+            services.AddTransient<FrmInventario>();
+            services.AddTransient<FrmAuditar>();
+            services.AddTransient<FrmAleatorio>();
+            services.AddTransient<FrmUsuarios>();
+
+
+
+
+
+            // 🔹 Dialogs states
+            services.AddTransient<FrmConfirm>();
+            services.AddTransient<FrmError>();
+            services.AddTransient<FrmInfo>();
+            services.AddTransient<FrmSuccess>();
+            services.AddTransient<FrmWarning>();
+
+            // 🔹 Dialogs 
+            services.AddTransient<FrmNuevaUbicacion>();
+            services.AddTransient<FrmNuevaUbicacionMasiva>();
+            services.AddTransient<FrmNuevoAlmacen>();
+            services.AddTransient<FrmNuevoArticuloMasiva>();
+            services.AddTransient<FrmNuevoArticulo>();
+            services.AddTransient<FrmNuevoArticulo>();
+            services.AddTransient<FrmNuevoCliente>();
+            services.AddTransient<FrmNuevoProyecto>();
+
+    
         }
     }
 }
