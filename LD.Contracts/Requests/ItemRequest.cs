@@ -8,15 +8,14 @@ namespace LD.Contracts.Requests
 {
     public class ItemRequest
     {
-        public int ItemId { get; set; }
+        public int? ItemId { get; set; }
 
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
 
-        public string PartNumber { get; set; } = string.Empty;
+        public string? PartNumber { get; set; } = string.Empty;
 
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
 
-        //public InventoryControlType ControlType { get; set; }
 
         public int? MinUnitId { get; set; }
 
@@ -24,9 +23,9 @@ namespace LD.Contracts.Requests
 
         public int? MaxUnitId { get; set; }
 
-        public bool RequestLotNumber { get; set; }
+        public bool? RequestLotNumber { get; set; } = false;
 
-        public bool RequestExpirationDate { get; set; }
+        public bool? RequestExpirationDate { get; set; } = false;
     }
 
 }

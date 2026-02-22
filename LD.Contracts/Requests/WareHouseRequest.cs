@@ -10,7 +10,7 @@ namespace LD.Contracts.Requests
     {
         public int? WarehouseId { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+        public string? WarehouseName { get; set; } 
 
         public string? Address { get; set; }
 
@@ -19,8 +19,11 @@ namespace LD.Contracts.Requests
         public string? City { get; set; }
 
         public string? ZipCode { get; set; }
+        public int? Capacity { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsProduction { get; set; } = false;
+
+        public bool IsActive { get; set; } = true;
     }
 
 

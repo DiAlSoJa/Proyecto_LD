@@ -10,21 +10,21 @@ namespace LD.Contracts.Requests
     {
         public int? ProjectId { get; set; }
 
-        public int ClientId { get; set; }
+        public int? ClientId { get; set; }
 
-        public string ProjectName { get; set; } = string.Empty;
+        public string? ProjectName { get; set; } = string.Empty;
 
-        public int WarehouseId { get; set; }
+        public int? WarehouseId { get; set; }
 
-        public bool ScanDub { get; set; }
+        public bool ScanDub { get; set; } = false;
 
-        public bool ScanPartNumber { get; set; }
+        public bool ScanPartNumber { get; set; } = false;
 
-        public bool ScanQuantity { get; set; }
+        public bool ScanQuantity { get; set; } = false;
 
-        public bool RequireLot { get; set; }
+        public bool RequireLot { get; set; } = false;
 
-        public bool RequireExpirationDate { get; set; }
+        public bool RequireExpirationDate { get; set; } = false;
     }
 
 }

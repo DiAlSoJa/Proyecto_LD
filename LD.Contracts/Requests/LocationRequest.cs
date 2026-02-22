@@ -18,7 +18,7 @@ namespace LD.Contracts.Requests
 
         public string? Level { get; set; }
 
-        public string LocationCode { get; set; } = string.Empty;
+        public string? LocationCode { get; set; }
 
         public string? Dimension { get; set; }
 

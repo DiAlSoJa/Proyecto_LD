@@ -12,5 +12,7 @@ namespace LD.Application.Common.Interfaces
         Task<List<T>?> GetManyAsync();
         Task<bool> CreateAsync(T newModoe);
         Task<bool> UpdateAsync(T modelToUpdate);
+        //Task<bool> Exists(int id);
+
     }
 }

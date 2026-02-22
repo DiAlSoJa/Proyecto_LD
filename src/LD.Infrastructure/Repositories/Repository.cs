@@ -39,6 +39,7 @@ namespace LD.Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+
     }
 
 }
