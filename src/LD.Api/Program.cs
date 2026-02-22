@@ -1,4 +1,5 @@
 using Application;
+using LD.Api.Middlewares;
 using LD.Application;
 using LD.Application.Common.Models;
 using LD.Infrastructure;
@@ -125,5 +126,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
+//middlewares
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.Run();
