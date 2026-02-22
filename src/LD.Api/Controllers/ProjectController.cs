@@ -1,10 +1,10 @@
 ﻿using LD.Api.Common.Results;
-using LD.Application.Features.Warehouses.Comands;
-using LD.Application.Features.Warehouses.Queries;
+using LD.Application.Features.Comands;
+using LD.Application.Features.Projects.Comands;
+using LD.Application.Features.Projects.Queries;
 using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -13,42 +13,41 @@ namespace LD.Api.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class WarehouseController : ControllerBase
+    public class ProjectController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public WarehouseController(IMediator mediator)
+        public ProjectController(IMediator mediator)
         {
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetWarehouse([FromQuery] WarehouseQuery query)
+        public async Task<IActionResult> GetProyects([FromQuery] ProjectQuery query)
         {
             return ResultExtensions.ToActionResult(await _mediator.Send(query));
 
         }
-
-        [HttpGet("{warehouseId}")]
-        public async Task<IActionResult> GeWarehouseById(int warehouseId)
-            => ResultExtensions.ToActionResult(await _mediator.Send(new WarehouseByIdQuery(warehouseId)));
-
+        [HttpGet("{projectId}")]
+        public async Task<IActionResult> GetProjectById(int projectId)
+             => ResultExtensions.ToActionResult(await _mediator.Send(new ProjectByIdQuery(projectId)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateWarehouse([FromBody] CreateWarehouseCommand command)
+        public async Task<IActionResult> CreateProject([FromBody] CreateLocationCommand command)
         {
             return ResultExtensions.ToActionResult(await _mediator.Send(command));
         }
 
-        [HttpPut("{warehouseId}")]
-        public async Task<IActionResult> UpdateWarehouse(int warehouseId, UpdateWarehouseCommand command)
+
+        [HttpPut("{projectId}")]
+        public async Task<IActionResult> UpdateProject(int projectId, UpdateProjectCommand command)
         {
-            command.WarehouseId = warehouseId;
+            command.ProjectId = projectId;
             var result = await _mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
 
         //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteWarehouse(int id)
+        //public async Task<IActionResult> DeleteContact(int id)
         //{
         //    return Ok("Delete Contact");
         //}

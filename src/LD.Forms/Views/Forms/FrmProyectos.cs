@@ -1,13 +1,15 @@
-﻿using System;
+﻿using LD.Contracts.Item;
+using LD.Contracts.Project;
+using LD.Forms.Classes;
+using LD.Forms.Services;
+using LD.Forms.Views.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using LD.Forms.Views.Dialogs;
-using LD.Forms.Classes;
-using LD.Forms.Services;
 
 namespace LD.Forms.Views.Forms
 {
@@ -15,11 +17,16 @@ namespace LD.Forms.Views.Forms
     {
         private Formularios formularios;
         private readonly ProjectService _projectService;
+        private BindingSource _projectsBinding = new();
+        private ProjectDto? selectedProject { get; set; }
+        private GridFilter<ProjectDto> _gridFilter;
 
         public FrmProyectos(ProjectService projectService)
         {
             InitializeComponent();
-            _projectService= projectService;
+            _projectService = projectService;
+            dataGridView1.DataSource = _projectsBinding;
+            _gridFilter = new GridFilter<ProjectDto>(dataGridView1, _projectsBinding);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -27,11 +34,15 @@ namespace LD.Forms.Views.Forms
             FrmNuevoProyecto frmNuevoCliente = new FrmNuevoProyecto();
             frmNuevoCliente.ShowDialog();
         }
+        private void EditBtn_Click(object sender, EventArgs e)
+        {
+
+        }
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Proyectos");
 
         }
 
@@ -39,8 +50,17 @@ namespace LD.Forms.Views.Forms
         {
             try
             {
-                var clientResponse = await _projectService.GetProjects();
+                var result = await _projectService.GetProjects();
 
+                if (!result.IsSuccess)
+                {
+                    MessageBox.Show(result.Message);
+                    return;
+                }
+                _projectsBinding.DataSource = result.Data;
+
+                _gridFilter.SetData(result.Data);
+                dataGridView1 = _gridFilter.BuildFilterColumns();
 
 
             }
@@ -55,5 +75,7 @@ namespace LD.Forms.Views.Forms
         {
             await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
         }
+
+     
     }
 }

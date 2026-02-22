@@ -1,10 +1,13 @@
-﻿using LD.Application.Features.Auth.Commands;
+﻿using LD.Api.Common.Results;
+using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Comands;
 using LD.Application.Features.Queries;
+using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace LD.Api.Controllers
 {
@@ -20,26 +23,28 @@ namespace LD.Api.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetProyects([FromQuery] LocationQuery query)
+        public async Task<IActionResult> GetLocations([FromQuery] LocationQuery query)
         {
-            return Ok(await _mediator.Send(query));
+            return ResultExtensions.ToActionResult(await _mediator.Send(query));
 
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProjectById(int id)
-             => Ok(await _mediator.Send(new LocationByIdQuery(id)));
+        [HttpGet("{locationId}")]
+        public async Task<IActionResult> GetLocationById(int locationId)
+             => ResultExtensions.ToActionResult(await _mediator.Send(new LocationByIdQuery(locationId)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject([FromBody] CreateLocationCommand command)
+        public async Task<IActionResult> CreateLocation([FromBody] CreateLocationCommand command)
         {
-            return Ok(await _mediator.Send(command));
+            return ResultExtensions.ToActionResult(await _mediator.Send(command));
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateContact()
-        //{
-        //    return Ok("update Contact");
-        //}
+        [HttpPut("{locationId}")]
+        public async Task<IActionResult> UpdateLocation(int locationId, UpdateLocationCommand command)
+        {
+            command.LocationId = locationId;
+            var result = await _mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
+        }
 
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteContact(int id)

@@ -8,15 +8,12 @@ namespace LD.Forms.Views.Forms
     public partial class FrmClientes : Form
     {
         private readonly ClientService _clientService;
-        private Formularios? formularios;
-        private ClientDto? selectedClient { get; set; }
-
-        private BindingSource _clientsBinding = new();
-        
         private Panel _gridContainer;
-
         private GridFilter<ClientDto>_gridFilter;
 
+
+        private BindingSource _clientsBinding = new();
+        private ClientDto? selectedClient { get; set; }
 
         public FrmClientes(ClientService clientService)
         {
@@ -56,17 +53,9 @@ namespace LD.Forms.Views.Forms
                 return;
             }
             _clientsBinding.DataSource = result.Data;
-           // dataGridView1.DataSource = _clientsBinding;
             
             _gridFilter.SetData(result.Data);
             dataGridView1 = _gridFilter.BuildFilterColumns();
-
-            //_gridFilter.a
-
-            /*  _gridFilter ??=
-                  new AxGridFilter<ClientDto>(dataGridView1, _clientsBinding);
-
-              _gridFilter.SetData(result.Data);*/
         }
 
 

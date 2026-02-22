@@ -1,4 +1,6 @@
-﻿using LD.Forms.Classes;
+﻿using LD.Contracts.Client;
+using LD.Contracts.Warehouse;
+using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Views.Dialogs;
 using System;
@@ -14,18 +16,71 @@ namespace LD.Forms.Views.Forms
     public partial class FrmAlmacenes : Form
     {
         private readonly WarehouseService _warehouseService;
-        private Formularios formularios;
+        private WarehouseDto? selectedWarehouse { get; set; }
+        private BindingSource _warehousesBinding = new();
+        private GridFilter<WarehouseDto> _gridFilter;
+
 
         public FrmAlmacenes(WarehouseService warehouseService)
         {
             InitializeComponent();
             _warehouseService = warehouseService;
+            _gridFilter = new GridFilter<WarehouseDto>(dataGridView1, _warehousesBinding);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             FrmNuevoAlmacen frmNuevoCliente = new FrmNuevoAlmacen();
             frmNuevoCliente.ShowDialog();
+        }
+
+        private void EditBtn_Click(object sender, EventArgs e)
+        {
+            FrmNuevoAlmacen frmNuevoCliente = new FrmNuevoAlmacen();
+            frmNuevoCliente.ShowDialog();
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            var result = await _warehouseService.GetWarehouses();
+
+            if (!result.IsSuccess)
+            {
+                MessageBox.Show(result.Message);
+                return;
+            }
+            _warehousesBinding.DataSource = result.Data;
+
+            _gridFilter.SetData(result.Data);
+            dataGridView1 = _gridFilter.BuildFilterColumns();
+
+        }
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                    return;
+
+                var cliente = dataGridView1.CurrentRow.DataBoundItem as WarehouseDto;
+
+                if (cliente == null)
+                    return;
+
+                selectedWarehouse = cliente;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

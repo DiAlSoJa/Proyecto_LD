@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using LD.Contracts.Location;
+using LD.Contracts.Project;
 using LD.Contracts.Requests;
+using LD.Contracts.Warehouse;
 using LD.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,14 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Clients.Profiles
 {
-    public class LocationProfile : Profile
+    public class WarehouseProfile : Profile
     {
-        public LocationProfile()
+        public WarehouseProfile()
         {
-            CreateMap<Location, LocationDto>();
-            CreateMap<LocationRequest, Location>();
+            CreateMap<Warehouse, WarehouseDto>();
 
+            CreateMap<WarehouseRequest, Warehouse>();
         }
+
     }
 }

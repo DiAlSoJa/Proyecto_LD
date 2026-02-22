@@ -14,23 +14,23 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Comands;
 
-public class CreateLocationCommand : LocationRequest, IRequest<Result<string>>
+public class UpdateLocationCommand : LocationRequest, IRequest<Result<string>>
 {
 
 }
 
 
-public class CreateLocationCommandHandler : IRequestHandler<CreateLocationCommand, Result<string>>
+public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationCommand, Result<string>>
 {
     private readonly IRepository<Location> _locationRepository;
     private readonly IMapper _mapper;
-    public CreateLocationCommandHandler(IRepository<Location> locationRepository,IMapper mapper)
+    public UpdateLocationCommandHandler(IRepository<Location> locationRepository,IMapper mapper)
     {
         _locationRepository = locationRepository;
         _mapper = mapper;
     }
 
-    public async Task<Result<string>> Handle(CreateLocationCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UpdateLocationCommand request, CancellationToken cancellationToken)
     {
         try
         {

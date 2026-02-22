@@ -14,23 +14,23 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Projects.Comands;
 
-public class CreateProjectCommand :ProjectRequest, IRequest<Result<string>>
+public class UpdateProjectCommand :ProjectRequest, IRequest<Result<string>>
 {
 
 }
 
 
-public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Result<string>>
+public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, Result<string>>
 {
 
     private readonly IRepository<Project> _projectRepository;
     private readonly IMapper _mapper;
-    public CreateProjectCommandHandler(IRepository<Project> projectRepository,IMapper mapper)
+    public UpdateProjectCommandHandler(IRepository<Project> projectRepository,IMapper mapper)
     {
         _projectRepository = projectRepository;
         _mapper = mapper;
     }
-    public async Task<Result<string>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
         try
         {

@@ -31,11 +31,11 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
-            button1 = new Button();
-            button3 = new Button();
+            newBtn = new Button();
+            EditBtn = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
@@ -67,8 +67,8 @@ namespace LD.Forms.Views.Forms
             // 
             // flowLayoutPanel1
             // 
-            flowLayoutPanel1.Controls.Add(button1);
-            flowLayoutPanel1.Controls.Add(button3);
+            flowLayoutPanel1.Controls.Add(newBtn);
+            flowLayoutPanel1.Controls.Add(EditBtn);
             flowLayoutPanel1.Controls.Add(flowLayoutPanel2);
             flowLayoutPanel1.Dock = DockStyle.Left;
             flowLayoutPanel1.Location = new Point(0, 0);
@@ -77,28 +77,29 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel1.Size = new Size(399, 47);
             flowLayoutPanel1.TabIndex = 0;
             // 
-            // button1
+            // newBtn
             // 
-            button1.Image = Properties.Resources.plusM;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(23, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(107, 35);
-            button1.TabIndex = 0;
-            button1.Text = "Nuevo";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            newBtn.Image = Properties.Resources.plusM;
+            newBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            newBtn.Location = new Point(23, 3);
+            newBtn.Name = "newBtn";
+            newBtn.Size = new Size(107, 35);
+            newBtn.TabIndex = 0;
+            newBtn.Text = "Nuevo";
+            newBtn.UseVisualStyleBackColor = true;
+            newBtn.Click += button1_Click;
             // 
-            // button3
+            // EditBtn
             // 
-            button3.Image = Properties.Resources.editar;
-            button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(136, 3);
-            button3.Name = "button3";
-            button3.Size = new Size(107, 35);
-            button3.TabIndex = 2;
-            button3.Text = "Editar";
-            button3.UseVisualStyleBackColor = true;
+            EditBtn.Image = Properties.Resources.editar;
+            EditBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            EditBtn.Location = new Point(136, 3);
+            EditBtn.Name = "EditBtn";
+            EditBtn.Size = new Size(107, 35);
+            EditBtn.TabIndex = 2;
+            EditBtn.Text = "Editar";
+            EditBtn.UseVisualStyleBackColor = true;
+            EditBtn.Click += EditBtn_Click;
             // 
             // flowLayoutPanel2
             // 
@@ -122,8 +123,8 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Cliente, Proyecto, Almacen, EscaneoDUB, EscaneoNoParte, EscaneoCantidad, RequiereLote, RequiereCaducidad });
@@ -231,8 +232,8 @@ namespace LD.Forms.Views.Forms
         private Panel panel1;
         
         private FlowLayoutPanel flowLayoutPanel1;
-        private Button button1;
-        private Button button3;
+        private Button newBtn;
+        private Button EditBtn;
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button2;
         private DataGridView dataGridView1;

@@ -8,7 +8,7 @@ namespace LD.Contracts.Requests
 {
     public class WarehouseRequest
     {
-        public int? Id { get; set; }
+        public int? WarehouseId { get; set; }
 
         public string Name { get; set; } = string.Empty;
 

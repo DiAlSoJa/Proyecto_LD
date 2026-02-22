@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LD.Contracts.Project;
+using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace LD.Application.Features.Clients.Profiles
         public ProjectProfile()
         {
             CreateMap<Project, ProjectDto>();
+            CreateMap<ProjectRequest, Project>();
         }
     }
 }

@@ -1,6 +1,10 @@
-﻿using LD.Application.Common.Interfaces;
+﻿using AutoMapper;
+using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
+using LD.Application.Common.Results;
+using LD.Contracts.Client;
+using LD.Contracts.Project;
 using LD.Domain.Entities;
 using MediatR;
 using System;
@@ -11,21 +15,24 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Projects.Queries;
 
-public class ProjectQuery : IRequest<List<Project>?>
+public class ProjectQuery : IRequest<Result<List<ProjectDto?>>>
 {
 
 }
-public class ProjectQueryHandler : IRequestHandler<ProjectQuery, List<Project>?>
+public class ProjectQueryHandler : IRequestHandler<ProjectQuery, Result<List<ProjectDto?>>>
 {
 
     private readonly IRepository<Project> _projectRepository;
-    public ProjectQueryHandler(IRepository<Project> projectRepository)
+    private readonly IMapper _mapper;
+    public ProjectQueryHandler(IRepository<Project> projectRepository,IMapper mapper)
     {
         _projectRepository = projectRepository;
+        _mapper = mapper;
     }
-    public async Task<List<Project>?> Handle(ProjectQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<ProjectDto?>>> Handle(ProjectQuery request, CancellationToken cancellationToken)
     {
-
-        return await _projectRepository.GetManyAsync();
+        var projects = await _projectRepository.GetManyAsync();
+        var projectDtos = _mapper.Map<List<ProjectDto>>(projects);
+        return Result<List<ProjectDto?>>.Success(projectDtos, "Proyectos obtenidos correctamente");
     }
 }

@@ -28,9 +28,9 @@ namespace LD.Forms.Services
             return await _api.GetAsync<ApiResponseDto<ProjectDto>>(_apiEndpoints.Project_GetById.Replace("{id}", projectId.ToString()));
         }
 
-        public async Task<ApiResponseDto<List<ProjectDto>>> GetProjects()
+        public async Task<ApiResponseDto<List<ProjectDto?>>> GetProjects()
         {
-            return await _api.GetAsync<ApiResponseDto<List<ProjectDto>>>(_apiEndpoints.Project_GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<ProjectDto?>>>(_apiEndpoints.Project_GetAll);
         }
 
         public async Task<ApiResponseDto<string>> CreateProject(ProjectRequest request)

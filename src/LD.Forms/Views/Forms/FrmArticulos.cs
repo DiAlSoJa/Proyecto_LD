@@ -1,4 +1,6 @@
 ﻿
+using LD.Contracts.Client;
+using LD.Contracts.Item;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Views.Dialogs;
@@ -14,13 +16,17 @@ namespace LD.Forms.Views.Forms
 {
     public partial class FrmArticulos : Form
     {
-        private Formularios formularios;
         private readonly ItemService _itemService;
+        private BindingSource _itemsBinding = new();
+        private ItemDto? selectedItem { get; set; }
+        private GridFilter<ItemDto> _gridFilter;
 
         public FrmArticulos(ItemService itemService)
         {
             InitializeComponent();
             _itemService = itemService;
+            dataGridView1.DataSource = _itemsBinding;
+            _gridFilter = new GridFilter<ItemDto>(dataGridView1, _itemsBinding);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -28,7 +34,10 @@ namespace LD.Forms.Views.Forms
             FrmNuevoArticulo frmNuevoCliente = new FrmNuevoArticulo();
             frmNuevoCliente.ShowDialog();
         }
+        private void EditBtn_Click(object sender, EventArgs e)
+        {
 
+        }
         private void button4_Click(object sender, EventArgs e)
         {
             FrmNuevoArticuloMasiva frmNuevoArticuloMasiva = new FrmNuevoArticuloMasiva();
@@ -39,7 +48,7 @@ namespace LD.Forms.Views.Forms
         {
             base.OnShown(e);
 
-            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Articulos");
 
         }
 
@@ -47,8 +56,17 @@ namespace LD.Forms.Views.Forms
         {
             try
             {
-                var clientResponse = await _itemService.GetItems();
+                var result = await _itemService.GetItems();
 
+                if (!result.IsSuccess)
+                {
+                    MessageBox.Show(result.Message);
+                    return;
+                }
+                _itemsBinding.DataSource = result.Data;
+
+                _gridFilter.SetData(result.Data);
+                dataGridView1 = _gridFilter.BuildFilterColumns();
 
 
             }
@@ -57,16 +75,41 @@ namespace LD.Forms.Views.Forms
                 MessageBox.Show(ex.Message);
             }
         }
-
-
-        private async void btnActualizar_Click(object sender, EventArgs e)
+        private async void reloadBtn_Click(object sender, EventArgs e)
         {
-            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Articulos");
         }
 
         private void gridContainer_Paint(object sender, PaintEventArgs e)
         {
 
         }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                    return;
+
+                var item = dataGridView1.CurrentRow.DataBoundItem as ItemDto;
+
+                if (item == null)
+                    return;
+
+                selectedItem = item;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+    
     }
 }

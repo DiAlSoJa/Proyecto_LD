@@ -14,23 +14,23 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Warehouses.Comands;
 
-public class CreateWarehouseCommand :WarehouseRequest, IRequest<Result<string>>
+public class UpdateWarehouseCommand : WarehouseRequest, IRequest<Result<string>>
 {
 
 }
 
 
-public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, Result<string>>
+public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseCommand, Result<string>>
 {
     private readonly IRepository<Warehouse> _warehouseRepository;
     private readonly IMapper _mapper;
-    public CreateWarehouseCommandHandler(IRepository<Warehouse> warehouseRepository,IMapper mapper)
+    public UpdateWarehouseCommandHandler(IRepository<Warehouse> warehouseRepository,IMapper mapper)
     {
         _warehouseRepository = warehouseRepository;
         _mapper = mapper;
     }
 
-    public async Task<Result<string>> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UpdateWarehouseCommand request, CancellationToken cancellationToken)
     {
         try
         {

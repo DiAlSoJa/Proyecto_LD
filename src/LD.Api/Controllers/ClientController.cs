@@ -20,14 +20,14 @@ namespace LD.Api.Controllers
         }
 
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetClient(int id)
+            => ResultExtensions.ToActionResult(await _mediator.Send(new ClientByIdQuery(id)));
+
 
         [HttpGet]
         public async Task<IActionResult> GetClients([FromQuery] ClientsQuery query)
            => ResultExtensions.ToActionResult(await _mediator.Send(query));
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClient(int id)
-            => ResultExtensions.ToActionResult(await _mediator.Send(new ClientByIdQuery(id)));
 
         [HttpPost]
         public async Task<IActionResult> CreateClient([FromBody] CreateClientCommand command)

@@ -20,9 +20,9 @@ namespace LD.Forms.Services
             _apiEndpoints = apiEndpoints;
         }
 
-        public async Task<ApiResponseDto<List<ItemDto>>> GetItems()
+        public async Task<ApiResponseDto<List<ItemDto?>>> GetItems()
         {
-            return await _api.GetAsync<ApiResponseDto<List<ItemDto>>>(_apiEndpoints.Item_GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<ItemDto?>>>(_apiEndpoints.Item_GetAll);
         }
 
         public async Task<ApiResponseDto<ItemDto>> GetItemById(int itemId)

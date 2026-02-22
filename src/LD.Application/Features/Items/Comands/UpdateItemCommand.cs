@@ -14,23 +14,23 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Items.Comands;
 
-public class CreateItemCommand :ItemRequest, IRequest<Result <string>>
+public class UpdateItemCommand :ItemRequest, IRequest<Result <string>>
 {
 
 }
 
 
-public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Result<string>>
+public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand, Result<string>>
 {
     private readonly IRepository<Item> _itemRepository;
     private readonly IMapper _mapper;
-    public CreateItemCommandHandler(IRepository<Item> itemRepository,IMapper mapper)
+    public UpdateItemCommandHandler(IRepository<Item> itemRepository,IMapper mapper)
     {
         _itemRepository = itemRepository;
         _mapper = mapper;
     }
 
-    public async Task<Result<string>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
     {
         try
         {

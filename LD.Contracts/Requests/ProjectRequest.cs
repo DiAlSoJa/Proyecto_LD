@@ -8,7 +8,7 @@ namespace LD.Contracts.Requests
 {
     public class ProjectRequest
     {
-        public int? Id { get; set; }
+        public int? ProjectId { get; set; }
 
         public int ClientId { get; set; }
 

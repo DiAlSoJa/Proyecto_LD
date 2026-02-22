@@ -1,6 +1,10 @@
-﻿using LD.Application.Common.Interfaces;
+﻿using AutoMapper;
+using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
+using LD.Application.Common.Results;
+using LD.Contracts.Client;
+using LD.Contracts.Warehouse;
 using LD.Domain.Entities;
 using MediatR;
 using System;
@@ -11,21 +15,24 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Warehouses.Queries;
 
-public class WarehouseQuery : IRequest<List<Warehouse>?>
+public class WarehouseQuery : IRequest<Result< List<WarehouseDto>?>>
 {
 
 }
-public class WarehouseQueryHandler : IRequestHandler<WarehouseQuery, List<Warehouse>?>
+public class WarehouseQueryHandler : IRequestHandler<WarehouseQuery, Result<List<WarehouseDto>?>>
 {
     private readonly IRepository<Warehouse> _warehouseRepository;
-    public WarehouseQueryHandler(IRepository<Warehouse> warehouseRepository)
+    private readonly IMapper _mapper;
+    public WarehouseQueryHandler(IRepository<Warehouse> warehouseRepository,IMapper mapper)
     {
         _warehouseRepository = warehouseRepository;
+        _mapper = mapper;
     }
 
-    public async Task<List<Warehouse>?> Handle(WarehouseQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<WarehouseDto>?>> Handle(WarehouseQuery request, CancellationToken cancellationToken)
     {
-
-        return await _warehouseRepository.GetManyAsync();
+        var warehouse = await _warehouseRepository.GetManyAsync();
+        var warehouseDtos = _mapper.Map<List<WarehouseDto>>(warehouse);
+        return Result<List<WarehouseDto>?>.Success(warehouseDtos, "Almacenes obtenidos correctamente");
     }
 }

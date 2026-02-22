@@ -31,13 +31,13 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel1 = new Panel();
             button4 = new Button();
             flowLayoutPanel1 = new FlowLayoutPanel();
-            button6 = new Button();
-            button1 = new Button();
-            button3 = new Button();
+            reloadBtn = new Button();
+            AddBtn = new Button();
+            EditBtn = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             button5 = new Button();
@@ -87,9 +87,9 @@ namespace LD.Forms.Views.Forms
             // 
             // flowLayoutPanel1
             // 
-            flowLayoutPanel1.Controls.Add(button6);
-            flowLayoutPanel1.Controls.Add(button1);
-            flowLayoutPanel1.Controls.Add(button3);
+            flowLayoutPanel1.Controls.Add(reloadBtn);
+            flowLayoutPanel1.Controls.Add(AddBtn);
+            flowLayoutPanel1.Controls.Add(EditBtn);
             flowLayoutPanel1.Controls.Add(flowLayoutPanel2);
             flowLayoutPanel1.Controls.Add(button5);
             flowLayoutPanel1.Dock = DockStyle.Left;
@@ -99,39 +99,41 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel1.Size = new Size(473, 47);
             flowLayoutPanel1.TabIndex = 0;
             // 
-            // button6
+            // reloadBtn
             // 
-            button6.Image = Properties.Resources.update;
-            button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(23, 3);
-            button6.Name = "button6";
-            button6.Size = new Size(124, 35);
-            button6.TabIndex = 5;
-            button6.Text = "Actualizar";
-            button6.UseVisualStyleBackColor = true;
+            reloadBtn.Image = Properties.Resources.update;
+            reloadBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            reloadBtn.Location = new Point(23, 3);
+            reloadBtn.Name = "reloadBtn";
+            reloadBtn.Size = new Size(124, 35);
+            reloadBtn.TabIndex = 5;
+            reloadBtn.Text = "Actualizar";
+            reloadBtn.UseVisualStyleBackColor = true;
+            reloadBtn.Click += reloadBtn_Click;
             // 
-            // button1
+            // AddBtn
             // 
-            button1.Image = Properties.Resources.plusM;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(153, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(107, 35);
-            button1.TabIndex = 0;
-            button1.Text = "Nuevo";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            AddBtn.Image = Properties.Resources.plusM;
+            AddBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            AddBtn.Location = new Point(153, 3);
+            AddBtn.Name = "AddBtn";
+            AddBtn.Size = new Size(107, 35);
+            AddBtn.TabIndex = 0;
+            AddBtn.Text = "Nuevo";
+            AddBtn.UseVisualStyleBackColor = true;
+            AddBtn.Click += button1_Click;
             // 
-            // button3
+            // EditBtn
             // 
-            button3.Image = Properties.Resources.editar;
-            button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(266, 3);
-            button3.Name = "button3";
-            button3.Size = new Size(107, 35);
-            button3.TabIndex = 2;
-            button3.Text = "Editar";
-            button3.UseVisualStyleBackColor = true;
+            EditBtn.Image = Properties.Resources.editar;
+            EditBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            EditBtn.Location = new Point(266, 3);
+            EditBtn.Name = "EditBtn";
+            EditBtn.Size = new Size(107, 35);
+            EditBtn.TabIndex = 2;
+            EditBtn.Text = "Editar";
+            EditBtn.UseVisualStyleBackColor = true;
+            EditBtn.Click += EditBtn_Click;
             // 
             // flowLayoutPanel2
             // 
@@ -166,8 +168,8 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Cliente, Proyecto, NumPArte, Descripcion, FIFO, LIFO, NumeroLote, FechaCaducidad, Unidadmin, Unidadmed, UnidadMax, Solicitarnumerolote, Solicitafechacad });
@@ -177,6 +179,7 @@ namespace LD.Forms.Views.Forms
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
+            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             // 
             // Cliente
             // 
@@ -313,8 +316,8 @@ namespace LD.Forms.Views.Forms
         private Panel panel1;
         
         private FlowLayoutPanel flowLayoutPanel1;
-        private Button button1;
-        private Button button3;
+        private Button AddBtn;
+        private Button EditBtn;
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button2;
         private DataGridView dataGridView1;
@@ -332,7 +335,7 @@ namespace LD.Forms.Views.Forms
         private DataGridViewCheckBoxColumn Solicitarnumerolote;
         private DataGridViewCheckBoxColumn Solicitafechacad;
         private Button button4;
-        private Button button6;
+        private Button reloadBtn;
         private Button button5;
         private Panel gridContainer;
     }
