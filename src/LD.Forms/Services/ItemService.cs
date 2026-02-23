@@ -35,12 +35,12 @@ namespace LD.Forms.Services
             return await _api.PostAsync<ItemRequest, ApiResponseDto<string>>(_apiEndpoints.Item_Create, request);
         }
 
-        public async Task<ApiResponseDto<string>> UpdateClient(int itemId, ItemRequest request)
+        public async Task<ApiResponseDto<string>> UpdateItem(int itemId, ItemRequest request)
         {
             return await _api.PutAsync<ItemRequest, ApiResponseDto<string>>(_apiEndpoints.Item_Update.Replace("{id}", itemId.ToString()), request);
         }
 
-        public async Task<ApiResponseDto<string>> ArchiveClient(int itemId)
+        public async Task<ApiResponseDto<string>> ArchiveItem(int itemId)
         {
             return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Item_Delete.Replace("{id}", itemId.ToString()));
         }

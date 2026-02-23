@@ -29,12 +29,6 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            button2 = new Button();
-            button1 = new Button();
-            panel2 = new Panel();
-            label1 = new Label();
-            pictureBox2 = new PictureBox();
             comboBox5 = new ComboBox();
             label4 = new Label();
             comboBox4 = new ComboBox();
@@ -56,11 +50,17 @@
             label6 = new Label();
             label5 = new Label();
             label8 = new Label();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            button2 = new Button();
+            btnSave = new Button();
+            panel2 = new Panel();
+            label1 = new Label();
+            pictureBox2 = new PictureBox();
             panel1.SuspendLayout();
+            groupBox1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -93,81 +93,6 @@
             panel1.MouseDown += panel1_MouseDown;
             panel1.MouseMove += panel1_MouseMove;
             panel1.MouseUp += panel1_MouseUp;
-            // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.BackColor = SystemColors.Control;
-            flowLayoutPanel1.Controls.Add(button2);
-            flowLayoutPanel1.Controls.Add(button1);
-            flowLayoutPanel1.Dock = DockStyle.Bottom;
-            flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 482);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(5);
-            flowLayoutPanel1.Size = new Size(690, 55);
-            flowLayoutPanel1.TabIndex = 8;
-            // 
-            // button2
-            // 
-            button2.Image =LD.Forms.Properties.Resources.cancel;
-            button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(505, 8);
-            button2.Name = "button2";
-            button2.Size = new Size(172, 35);
-            button2.TabIndex = 7;
-            button2.Text = "Cerrar";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
-            // 
-            // button1
-            // 
-            button1.Image =LD.Forms.Properties.Resources.save;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(327, 8);
-            button1.Name = "button1";
-            button1.Size = new Size(172, 35);
-            button1.TabIndex = 6;
-            button1.Text = "Guardar";
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // panel2
-            // 
-            panel2.BackColor = Color.Green;
-            panel2.Controls.Add(label1);
-            panel2.Controls.Add(pictureBox2);
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 0);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(690, 35);
-            panel2.TabIndex = 1;
-            panel2.DoubleClick += panel2_DoubleClick;
-            panel2.MouseDown += panel1_MouseDown;
-            panel2.MouseMove += panel1_MouseMove;
-            panel2.MouseUp += panel1_MouseUp;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Arial Narrow", 9.75F, FontStyle.Bold);
-            label1.ForeColor = Color.White;
-            label1.Location = new Point(20, 5);
-            label1.Name = "label1";
-            label1.Size = new Size(119, 22);
-            label1.TabIndex = 3;
-            label1.Text = "Nuevo artcículo";
-            // 
-            // pictureBox2
-            // 
-            pictureBox2.Cursor = Cursors.Hand;
-            pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image =LD.Forms.Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(654, 0);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Padding = new Padding(5, 10, 0, 0);
-            pictureBox2.Size = new Size(36, 35);
-            pictureBox2.TabIndex = 0;
-            pictureBox2.TabStop = false;
-            pictureBox2.Click += pictureBox2_Click;
             // 
             // comboBox5
             // 
@@ -371,6 +296,82 @@
             label8.TabIndex = 34;
             label8.Text = "Cliente:";
             // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.BackColor = SystemColors.Control;
+            flowLayoutPanel1.Controls.Add(button2);
+            flowLayoutPanel1.Controls.Add(btnSave);
+            flowLayoutPanel1.Dock = DockStyle.Bottom;
+            flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
+            flowLayoutPanel1.Location = new Point(0, 482);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Padding = new Padding(5);
+            flowLayoutPanel1.Size = new Size(690, 55);
+            flowLayoutPanel1.TabIndex = 8;
+            // 
+            // button2
+            // 
+            button2.Image = Properties.Resources.cancel;
+            button2.ImageAlign = ContentAlignment.MiddleLeft;
+            button2.Location = new Point(505, 8);
+            button2.Name = "button2";
+            button2.Size = new Size(172, 35);
+            button2.TabIndex = 7;
+            button2.Text = "Cerrar";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
+            // btnSave
+            // 
+            btnSave.Image = Properties.Resources.save;
+            btnSave.ImageAlign = ContentAlignment.MiddleLeft;
+            btnSave.Location = new Point(327, 8);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(172, 35);
+            btnSave.TabIndex = 6;
+            btnSave.Text = "Guardar";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
+            // 
+            // panel2
+            // 
+            panel2.BackColor = Color.Green;
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(pictureBox2);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(690, 35);
+            panel2.TabIndex = 1;
+            panel2.DoubleClick += panel2_DoubleClick;
+            panel2.MouseDown += panel1_MouseDown;
+            panel2.MouseMove += panel1_MouseMove;
+            panel2.MouseUp += panel1_MouseUp;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Arial Narrow", 9.75F, FontStyle.Bold);
+            label1.ForeColor = Color.White;
+            label1.Location = new Point(20, 5);
+            label1.Name = "label1";
+            label1.Size = new Size(119, 22);
+            label1.TabIndex = 3;
+            label1.Text = "Nuevo artcículo";
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Cursor = Cursors.Hand;
+            pictureBox2.Dock = DockStyle.Right;
+            pictureBox2.Image = Properties.Resources.cancelar;
+            pictureBox2.Location = new Point(654, 0);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Padding = new Padding(5, 10, 0, 0);
+            pictureBox2.Size = new Size(36, 35);
+            pictureBox2.TabIndex = 0;
+            pictureBox2.TabStop = false;
+            pictureBox2.Click += pictureBox2_Click;
+            // 
             // FrmNuevoArticulo
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -383,12 +384,12 @@
             Text = "FrmWarning";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             flowLayoutPanel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -399,7 +400,7 @@
         private Label label1;
         private PictureBox pictureBox2;
         private Button button2;
-        private Button button1;
+        private Button btnSave;
         private FlowLayoutPanel flowLayoutPanel1;
         private ComboBox comboBox5;
         private Label label4;

@@ -1,5 +1,7 @@
 ﻿using LD.Contracts.Client;
+using LD.Contracts.Requests;
 using LD.Contracts.Warehouse;
+using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
 using System;
 using System.Collections.Generic;
@@ -97,6 +99,62 @@ namespace LD.Forms.Views.Dialogs
         private void button2_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private Task<ApiResponseDto<string>> CreateClient(WarehouseRequest request) =>
+         _warehouseService.CreateWarehouse(request);
+
+        private Task<ApiResponseDto<string>> EditClient(int clientId, WarehouseRequest request) =>
+            _warehouseService.UpdateWarehouse(clientId, request);
+        private async Task<ApiResponseDto<string>> SaveClient(WarehouseRequest request)
+        {
+            return WarehouseSelected != null
+                ? await EditClient(WarehouseSelected?.Id ?? 0, request)
+                : await CreateClient(request);
+        }
+        private WarehouseRequest BuildRequest()
+        {
+            return new WarehouseRequest
+            {
+
+            };
+        }
+        private void ShowResult(ApiResponseDto<string> result)
+        {
+            MessageBox.Show(
+                result.IsSuccess ? result.Data : result.Message,
+                result.IsSuccess ? "Éxito" : "Error",
+                MessageBoxButtons.OK,
+                result.IsSuccess ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+        }
+
+        private async void btnSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                btnSave.Enabled = false;
+
+                var request = BuildRequest();
+
+                var result = await SaveClient(request);
+
+                ShowResult(result);
+
+                if (result.IsSuccess)
+                    this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error inesperado: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnSave.Enabled = true;
+            }
         }
     }
 }
