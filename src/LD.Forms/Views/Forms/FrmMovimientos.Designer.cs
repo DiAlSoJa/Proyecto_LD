@@ -38,6 +38,7 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
+            gridContainer = new Panel();
             Cliente = new DataGridViewTextBoxColumn();
             Proyecto = new DataGridViewTextBoxColumn();
             NumPArte = new DataGridViewTextBoxColumn();
@@ -47,7 +48,12 @@ namespace LD.Forms.Views.Forms
             Usuario = new DataGridViewTextBoxColumn();
             Documento = new DataGridViewTextBoxColumn();
             TipoDoc = new DataGridViewTextBoxColumn();
-            gridContainer = new Panel();
+            DUB = new DataGridViewTextBoxColumn();
+            UbicacionOr = new DataGridViewTextBoxColumn();
+            UbicacionF = new DataGridViewTextBoxColumn();
+            Status = new DataGridViewTextBoxColumn();
+            StatusF = new DataGridViewTextBoxColumn();
+            StandarId = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
@@ -112,13 +118,22 @@ namespace LD.Forms.Views.Forms
             dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Cliente, Proyecto, NumPArte, Descripcion, Fecha, Hora, Usuario, Documento, TipoDoc });
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Cliente, Proyecto, NumPArte, Descripcion, Fecha, Hora, Usuario, Documento, TipoDoc, DUB, UbicacionOr, UbicacionF, Status, StatusF, StandarId });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
+            // 
+            // gridContainer
+            // 
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 47);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1496, 674);
+            gridContainer.TabIndex = 3;
             // 
             // Cliente
             // 
@@ -183,14 +198,47 @@ namespace LD.Forms.Views.Forms
             TipoDoc.Name = "TipoDoc";
             TipoDoc.Width = 125;
             // 
-            // gridContainer
+            // DUB
             // 
-            gridContainer.Controls.Add(dataGridView1);
-            gridContainer.Dock = DockStyle.Fill;
-            gridContainer.Location = new Point(0, 47);
-            gridContainer.Name = "gridContainer";
-            gridContainer.Size = new Size(1496, 674);
-            gridContainer.TabIndex = 3;
+            DUB.HeaderText = "DUB";
+            DUB.MinimumWidth = 6;
+            DUB.Name = "DUB";
+            DUB.Width = 125;
+            // 
+            // UbicacionOr
+            // 
+            UbicacionOr.HeaderText = "Ubicación origen";
+            UbicacionOr.MinimumWidth = 6;
+            UbicacionOr.Name = "UbicacionOr";
+            UbicacionOr.Width = 125;
+            // 
+            // UbicacionF
+            // 
+            UbicacionF.HeaderText = "Ubicación fnial";
+            UbicacionF.MinimumWidth = 6;
+            UbicacionF.Name = "UbicacionF";
+            UbicacionF.Width = 125;
+            // 
+            // Status
+            // 
+            Status.HeaderText = "Status origen";
+            Status.MinimumWidth = 6;
+            Status.Name = "Status";
+            Status.Width = 125;
+            // 
+            // StatusF
+            // 
+            StatusF.HeaderText = "Status final";
+            StatusF.MinimumWidth = 6;
+            StatusF.Name = "StatusF";
+            StatusF.Width = 125;
+            // 
+            // StandarId
+            // 
+            StandarId.HeaderText = "StantarID";
+            StandarId.MinimumWidth = 6;
+            StandarId.Name = "StandarId";
+            StandarId.Width = 125;
             // 
             // FrmMovimientos
             // 
@@ -219,6 +267,7 @@ namespace LD.Forms.Views.Forms
         private Button button2;
         private DataGridView dataGridView1;
         private Button button6;
+        private Panel gridContainer;
         private DataGridViewTextBoxColumn Cliente;
         private DataGridViewTextBoxColumn Proyecto;
         private DataGridViewTextBoxColumn NumPArte;
@@ -228,6 +277,11 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn Usuario;
         private DataGridViewTextBoxColumn Documento;
         private DataGridViewTextBoxColumn TipoDoc;
-        private Panel gridContainer;
+        private DataGridViewTextBoxColumn DUB;
+        private DataGridViewTextBoxColumn UbicacionOr;
+        private DataGridViewTextBoxColumn UbicacionF;
+        private DataGridViewTextBoxColumn Status;
+        private DataGridViewTextBoxColumn StatusF;
+        private DataGridViewTextBoxColumn StandarId;
     }
 }

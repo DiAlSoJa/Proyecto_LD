@@ -47,6 +47,10 @@
             txtCiudadComercial = new TextBox();
             label7 = new Label();
             tabFiscal = new TabPage();
+            txtEmail = new TextBox();
+            label4 = new Label();
+            txtCPFiscal = new TextBox();
+            txtTelefonoFiscal = new TextBox();
             label10 = new Label();
             txtDomicilioFiscal = new TextBox();
             txtRFC = new TextBox();
@@ -63,10 +67,9 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
-            txtTelefonoFiscal = new TextBox();
-            txtCPFiscal = new TextBox();
-            txtEmail = new TextBox();
-            label4 = new Label();
+            txtColonia = new TextBox();
+            label11 = new Label();
+            checkBox1 = new CheckBox();
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabComercial.SuspendLayout();
@@ -84,9 +87,8 @@
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(653, 344);
+            panel1.Size = new Size(829, 488);
             panel1.TabIndex = 0;
             panel1.MouseDown += panel1_MouseDown;
             panel1.MouseMove += panel1_MouseMove;
@@ -97,14 +99,16 @@
             tabControl1.Controls.Add(tabComercial);
             tabControl1.Controls.Add(tabFiscal);
             tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(0, 26);
+            tabControl1.Location = new Point(0, 35);
+            tabControl1.Margin = new Padding(3, 4, 3, 4);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(651, 275);
+            tabControl1.Size = new Size(827, 396);
             tabControl1.TabIndex = 37;
             // 
             // tabComercial
             // 
+            tabComercial.Controls.Add(checkBox1);
             tabComercial.Controls.Add(label3);
             tabComercial.Controls.Add(txtColoniaComercial);
             tabComercial.Controls.Add(txtId);
@@ -120,10 +124,11 @@
             tabComercial.Controls.Add(txtTelefonoComercial);
             tabComercial.Controls.Add(txtCiudadComercial);
             tabComercial.Controls.Add(label7);
-            tabComercial.Location = new Point(4, 24);
+            tabComercial.Location = new Point(4, 29);
+            tabComercial.Margin = new Padding(3, 4, 3, 4);
             tabComercial.Name = "tabComercial";
-            tabComercial.Padding = new Padding(3);
-            tabComercial.Size = new Size(643, 247);
+            tabComercial.Padding = new Padding(3, 4, 3, 4);
+            tabComercial.Size = new Size(819, 363);
             tabComercial.TabIndex = 0;
             tabComercial.Text = "Información Comercial";
             tabComercial.UseVisualStyleBackColor = true;
@@ -131,9 +136,9 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(8, 96);
+            label3.Location = new Point(9, 128);
             label3.Name = "label3";
-            label3.Size = new Size(51, 15);
+            label3.Size = new Size(63, 20);
             label3.TabIndex = 36;
             label3.Text = "Colonia:";
             // 
@@ -141,30 +146,27 @@
             // 
             txtColoniaComercial.BorderStyle = BorderStyle.FixedSingle;
             txtColoniaComercial.Font = new Font("Segoe UI", 9.75F);
-            txtColoniaComercial.Location = new Point(149, 90);
-            txtColoniaComercial.Margin = new Padding(3, 2, 3, 2);
+            txtColoniaComercial.Location = new Point(170, 120);
             txtColoniaComercial.Name = "txtColoniaComercial";
-            txtColoniaComercial.Size = new Size(352, 25);
+            txtColoniaComercial.Size = new Size(402, 29);
             txtColoniaComercial.TabIndex = 4;
             // 
             // txtId
             // 
             txtId.BorderStyle = BorderStyle.FixedSingle;
             txtId.Font = new Font("Segoe UI", 9.75F);
-            txtId.Location = new Point(149, 5);
-            txtId.Margin = new Padding(3, 2, 3, 2);
+            txtId.Location = new Point(170, 7);
             txtId.Name = "txtId";
             txtId.ReadOnly = true;
-            txtId.Size = new Size(96, 25);
+            txtId.Size = new Size(109, 29);
             txtId.TabIndex = 1;
             // 
             // checkIsActive
             // 
             checkIsActive.AutoSize = true;
-            checkIsActive.Location = new Point(149, 206);
-            checkIsActive.Margin = new Padding(3, 2, 3, 2);
+            checkIsActive.Location = new Point(170, 275);
             checkIsActive.Name = "checkIsActive";
-            checkIsActive.Size = new Size(60, 19);
+            checkIsActive.Size = new Size(73, 24);
             checkIsActive.TabIndex = 8;
             checkIsActive.Text = "Activo";
             checkIsActive.UseVisualStyleBackColor = true;
@@ -172,18 +174,18 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(8, 67);
+            label5.Location = new Point(9, 89);
             label5.Name = "label5";
-            label5.Size = new Size(116, 15);
+            label5.Size = new Size(146, 20);
             label5.TabIndex = 27;
             label5.Text = "Domicilio comercial:";
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(8, 10);
+            label9.Location = new Point(9, 13);
             label9.Name = "label9";
-            label9.Size = new Size(20, 15);
+            label9.Size = new Size(25, 20);
             label9.TabIndex = 19;
             label9.Text = "Id:";
             // 
@@ -191,46 +193,44 @@
             // 
             txtDomicilioComercial.BorderStyle = BorderStyle.FixedSingle;
             txtDomicilioComercial.Font = new Font("Segoe UI", 9.75F);
-            txtDomicilioComercial.Location = new Point(149, 61);
-            txtDomicilioComercial.Margin = new Padding(3, 2, 3, 2);
+            txtDomicilioComercial.Location = new Point(170, 81);
             txtDomicilioComercial.Name = "txtDomicilioComercial";
-            txtDomicilioComercial.Size = new Size(352, 25);
+            txtDomicilioComercial.Size = new Size(402, 29);
             txtDomicilioComercial.TabIndex = 3;
             // 
             // txtCPComercial
             // 
             txtCPComercial.BorderStyle = BorderStyle.FixedSingle;
             txtCPComercial.Font = new Font("Segoe UI", 9.75F);
-            txtCPComercial.Location = new Point(149, 177);
-            txtCPComercial.Margin = new Padding(3, 2, 3, 2);
+            txtCPComercial.Location = new Point(170, 194);
             txtCPComercial.Name = "txtCPComercial";
-            txtCPComercial.Size = new Size(96, 25);
-            txtCPComercial.TabIndex = 7;
+            txtCPComercial.Size = new Size(109, 29);
+            txtCPComercial.TabIndex = 6;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(8, 179);
+            label8.Location = new Point(9, 197);
             label8.Name = "label8";
-            label8.Size = new Size(25, 15);
+            label8.Size = new Size(29, 20);
             label8.TabIndex = 33;
             label8.Text = "CP:";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(8, 37);
+            label2.Location = new Point(9, 49);
             label2.Name = "label2";
-            label2.Size = new Size(109, 15);
+            label2.Size = new Size(136, 20);
             label2.TabIndex = 21;
             label2.Text = "Nombre comercial:";
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(8, 124);
+            label6.Location = new Point(9, 235);
             label6.Name = "label6";
-            label6.Size = new Size(55, 15);
+            label6.Size = new Size(70, 20);
             label6.TabIndex = 29;
             label6.Text = "Teléfono:";
             // 
@@ -238,43 +238,42 @@
             // 
             txtComercialName.BorderStyle = BorderStyle.FixedSingle;
             txtComercialName.Font = new Font("Segoe UI", 9.75F);
-            txtComercialName.Location = new Point(149, 32);
-            txtComercialName.Margin = new Padding(3, 2, 3, 2);
+            txtComercialName.Location = new Point(170, 43);
             txtComercialName.Name = "txtComercialName";
-            txtComercialName.Size = new Size(461, 25);
+            txtComercialName.Size = new Size(527, 29);
             txtComercialName.TabIndex = 2;
             // 
             // txtTelefonoComercial
             // 
             txtTelefonoComercial.BorderStyle = BorderStyle.FixedSingle;
             txtTelefonoComercial.Font = new Font("Segoe UI", 9.75F);
-            txtTelefonoComercial.Location = new Point(149, 119);
-            txtTelefonoComercial.Margin = new Padding(3, 2, 3, 2);
+            txtTelefonoComercial.Location = new Point(170, 229);
             txtTelefonoComercial.Name = "txtTelefonoComercial";
-            txtTelefonoComercial.Size = new Size(210, 25);
-            txtTelefonoComercial.TabIndex = 5;
+            txtTelefonoComercial.Size = new Size(240, 29);
+            txtTelefonoComercial.TabIndex = 7;
             // 
             // txtCiudadComercial
             // 
             txtCiudadComercial.BorderStyle = BorderStyle.FixedSingle;
             txtCiudadComercial.Font = new Font("Segoe UI", 9.75F);
-            txtCiudadComercial.Location = new Point(149, 148);
-            txtCiudadComercial.Margin = new Padding(3, 2, 3, 2);
+            txtCiudadComercial.Location = new Point(170, 155);
             txtCiudadComercial.Name = "txtCiudadComercial";
-            txtCiudadComercial.Size = new Size(352, 25);
-            txtCiudadComercial.TabIndex = 6;
+            txtCiudadComercial.Size = new Size(402, 29);
+            txtCiudadComercial.TabIndex = 5;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(8, 153);
+            label7.Location = new Point(9, 162);
             label7.Name = "label7";
-            label7.Size = new Size(48, 15);
+            label7.Size = new Size(59, 20);
             label7.TabIndex = 31;
             label7.Text = "Ciudad:";
             // 
             // tabFiscal
             // 
+            tabFiscal.Controls.Add(txtColonia);
+            tabFiscal.Controls.Add(label11);
             tabFiscal.Controls.Add(txtEmail);
             tabFiscal.Controls.Add(label4);
             tabFiscal.Controls.Add(txtCPFiscal);
@@ -289,20 +288,57 @@
             tabFiscal.Controls.Add(txtRazonSocial);
             tabFiscal.Controls.Add(label16);
             tabFiscal.Controls.Add(label17);
-            tabFiscal.Location = new Point(4, 24);
+            tabFiscal.Location = new Point(4, 29);
+            tabFiscal.Margin = new Padding(3, 4, 3, 4);
             tabFiscal.Name = "tabFiscal";
-            tabFiscal.Padding = new Padding(3);
-            tabFiscal.Size = new Size(643, 247);
+            tabFiscal.Padding = new Padding(3, 4, 3, 4);
+            tabFiscal.Size = new Size(819, 363);
             tabFiscal.TabIndex = 1;
             tabFiscal.Text = "Información Fiscal";
             tabFiscal.UseVisualStyleBackColor = true;
             // 
+            // txtEmail
+            // 
+            txtEmail.BorderStyle = BorderStyle.FixedSingle;
+            txtEmail.Font = new Font("Segoe UI", 9.75F);
+            txtEmail.Location = new Point(185, 256);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(402, 29);
+            txtEmail.TabIndex = 16;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(17, 259);
+            label4.Name = "label4";
+            label4.Size = new Size(49, 20);
+            label4.TabIndex = 55;
+            label4.Text = "Email:";
+            // 
+            // txtCPFiscal
+            // 
+            txtCPFiscal.BorderStyle = BorderStyle.FixedSingle;
+            txtCPFiscal.Font = new Font("Segoe UI", 9.75F);
+            txtCPFiscal.Location = new Point(185, 217);
+            txtCPFiscal.Name = "txtCPFiscal";
+            txtCPFiscal.Size = new Size(109, 29);
+            txtCPFiscal.TabIndex = 15;
+            // 
+            // txtTelefonoFiscal
+            // 
+            txtTelefonoFiscal.BorderStyle = BorderStyle.FixedSingle;
+            txtTelefonoFiscal.Font = new Font("Segoe UI", 9.75F);
+            txtTelefonoFiscal.Location = new Point(185, 295);
+            txtTelefonoFiscal.Name = "txtTelefonoFiscal";
+            txtTelefonoFiscal.Size = new Size(269, 29);
+            txtTelefonoFiscal.TabIndex = 17;
+            // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(14, 80);
+            label10.Location = new Point(16, 107);
             label10.Name = "label10";
-            label10.Size = new Size(91, 15);
+            label10.Size = new Size(115, 20);
             label10.TabIndex = 44;
             label10.Text = "Domicilio fiscal:";
             // 
@@ -310,46 +346,44 @@
             // 
             txtDomicilioFiscal.BorderStyle = BorderStyle.FixedSingle;
             txtDomicilioFiscal.Font = new Font("Segoe UI", 9.75F);
-            txtDomicilioFiscal.Location = new Point(162, 76);
-            txtDomicilioFiscal.Margin = new Padding(3, 2, 3, 2);
+            txtDomicilioFiscal.Location = new Point(185, 101);
             txtDomicilioFiscal.Name = "txtDomicilioFiscal";
-            txtDomicilioFiscal.Size = new Size(461, 25);
-            txtDomicilioFiscal.TabIndex = 11;
+            txtDomicilioFiscal.Size = new Size(527, 29);
+            txtDomicilioFiscal.TabIndex = 12;
             // 
             // txtRFC
             // 
             txtRFC.BorderStyle = BorderStyle.FixedSingle;
             txtRFC.Font = new Font("Segoe UI", 9.75F);
-            txtRFC.Location = new Point(162, 47);
-            txtRFC.Margin = new Padding(3, 2, 3, 2);
+            txtRFC.Location = new Point(185, 63);
             txtRFC.Name = "txtRFC";
-            txtRFC.Size = new Size(236, 25);
-            txtRFC.TabIndex = 10;
+            txtRFC.Size = new Size(269, 29);
+            txtRFC.TabIndex = 11;
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(14, 167);
+            label12.Location = new Point(17, 220);
             label12.Name = "label12";
-            label12.Size = new Size(25, 15);
+            label12.Size = new Size(29, 20);
             label12.TabIndex = 50;
             label12.Text = "CP:";
             // 
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(14, 51);
+            label13.Location = new Point(16, 68);
             label13.Name = "label13";
-            label13.Size = new Size(31, 15);
+            label13.Size = new Size(37, 20);
             label13.TabIndex = 42;
             label13.Text = "RFC:";
             // 
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new Point(14, 109);
+            label15.Location = new Point(16, 300);
             label15.Name = "label15";
-            label15.Size = new Size(55, 15);
+            label15.Size = new Size(70, 20);
             label15.TabIndex = 46;
             label15.Text = "Teléfono:";
             // 
@@ -357,37 +391,35 @@
             // 
             txtCiudadFiscal.BorderStyle = BorderStyle.FixedSingle;
             txtCiudadFiscal.Font = new Font("Segoe UI", 9.75F);
-            txtCiudadFiscal.Location = new Point(162, 134);
-            txtCiudadFiscal.Margin = new Padding(3, 2, 3, 2);
+            txtCiudadFiscal.Location = new Point(185, 179);
             txtCiudadFiscal.Name = "txtCiudadFiscal";
-            txtCiudadFiscal.Size = new Size(352, 25);
-            txtCiudadFiscal.TabIndex = 13;
+            txtCiudadFiscal.Size = new Size(402, 29);
+            txtCiudadFiscal.TabIndex = 14;
             // 
             // txtRazonSocial
             // 
             txtRazonSocial.BorderStyle = BorderStyle.FixedSingle;
             txtRazonSocial.Font = new Font("Segoe UI", 9.75F);
-            txtRazonSocial.Location = new Point(162, 18);
-            txtRazonSocial.Margin = new Padding(3, 2, 3, 2);
+            txtRazonSocial.Location = new Point(185, 24);
             txtRazonSocial.Name = "txtRazonSocial";
-            txtRazonSocial.Size = new Size(461, 25);
-            txtRazonSocial.TabIndex = 9;
+            txtRazonSocial.Size = new Size(527, 29);
+            txtRazonSocial.TabIndex = 10;
             // 
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(14, 22);
+            label16.Location = new Point(16, 29);
             label16.Name = "label16";
-            label16.Size = new Size(75, 15);
+            label16.Size = new Size(95, 20);
             label16.TabIndex = 40;
             label16.Text = "Razón social:";
             // 
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(14, 138);
+            label17.Location = new Point(17, 182);
             label17.Name = "label17";
-            label17.Size = new Size(48, 15);
+            label17.Size = new Size(59, 20);
             label17.TabIndex = 48;
             label17.Text = "Ciudad:";
             // 
@@ -397,35 +429,32 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 301);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
+            flowLayoutPanel1.Location = new Point(0, 431);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(4);
-            flowLayoutPanel1.Size = new Size(651, 41);
+            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
+            flowLayoutPanel1.Size = new Size(827, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
-            button2.Image =  LD.Forms.Properties.Resources.cancel;
+            button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(490, 6);
-            button2.Margin = new Padding(3, 2, 3, 2);
+            button2.Location = new Point(643, 8);
             button2.Name = "button2";
-            button2.Size = new Size(150, 26);
-            button2.TabIndex = 17;
+            button2.Size = new Size(171, 35);
+            button2.TabIndex = 19;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
             // btnSave
             // 
-            btnSave.Image =  LD.Forms.Properties.Resources.save;
+            btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(334, 6);
-            btnSave.Margin = new Padding(3, 2, 3, 2);
+            btnSave.Location = new Point(466, 8);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(150, 26);
-            btnSave.TabIndex = 16;
+            btnSave.Size = new Size(171, 35);
+            btnSave.TabIndex = 18;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
@@ -437,9 +466,8 @@
             panel2.Controls.Add(pictureBox2);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
-            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(651, 26);
+            panel2.Size = new Size(827, 35);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
             panel2.MouseDown += panel1_MouseDown;
@@ -451,9 +479,9 @@
             label1.AutoSize = true;
             label1.Font = new Font("Arial Narrow", 9.75F, FontStyle.Bold);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(18, 4);
+            label1.Location = new Point(21, 5);
             label1.Name = "label1";
-            label1.Size = new Size(79, 16);
+            label1.Size = new Size(104, 22);
             label1.TabIndex = 3;
             label1.Text = "Nuevo cliente";
             // 
@@ -461,63 +489,50 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image =  LD.Forms.Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(619, 0);
-            pictureBox2.Margin = new Padding(3, 2, 3, 2);
+            pictureBox2.Image = Properties.Resources.cancelar;
+            pictureBox2.Location = new Point(790, 0);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Padding = new Padding(4, 8, 0, 0);
-            pictureBox2.Size = new Size(32, 26);
+            pictureBox2.Padding = new Padding(5, 11, 0, 0);
+            pictureBox2.Size = new Size(37, 35);
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
-            // txtTelefonoFiscal
+            // txtColonia
             // 
-            txtTelefonoFiscal.BorderStyle = BorderStyle.FixedSingle;
-            txtTelefonoFiscal.Font = new Font("Segoe UI", 9.75F);
-            txtTelefonoFiscal.Location = new Point(162, 105);
-            txtTelefonoFiscal.Margin = new Padding(3, 2, 3, 2);
-            txtTelefonoFiscal.Name = "txtTelefonoFiscal";
-            txtTelefonoFiscal.Size = new Size(236, 25);
-            txtTelefonoFiscal.TabIndex = 12;
+            txtColonia.BorderStyle = BorderStyle.FixedSingle;
+            txtColonia.Font = new Font("Segoe UI", 9.75F);
+            txtColonia.Location = new Point(185, 141);
+            txtColonia.Name = "txtColonia";
+            txtColonia.Size = new Size(402, 29);
+            txtColonia.TabIndex = 13;
             // 
-            // txtCPFiscal
+            // label11
             // 
-            txtCPFiscal.BorderStyle = BorderStyle.FixedSingle;
-            txtCPFiscal.Font = new Font("Segoe UI", 9.75F);
-            txtCPFiscal.Location = new Point(162, 163);
-            txtCPFiscal.Margin = new Padding(3, 2, 3, 2);
-            txtCPFiscal.Name = "txtCPFiscal";
-            txtCPFiscal.Size = new Size(236, 25);
-            txtCPFiscal.TabIndex = 14;
+            label11.AutoSize = true;
+            label11.Location = new Point(17, 144);
+            label11.Name = "label11";
+            label11.Size = new Size(63, 20);
+            label11.TabIndex = 57;
+            label11.Text = "Colonia:";
             // 
-            // txtEmail
+            // checkBox1
             // 
-            txtEmail.BorderStyle = BorderStyle.FixedSingle;
-            txtEmail.Font = new Font("Segoe UI", 9.75F);
-            txtEmail.Location = new Point(162, 192);
-            txtEmail.Margin = new Padding(3, 2, 3, 2);
-            txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(352, 25);
-            txtEmail.TabIndex = 15;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(14, 196);
-            label4.Name = "label4";
-            label4.Size = new Size(39, 15);
-            label4.TabIndex = 55;
-            label4.Text = "Email:";
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(170, 305);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(129, 24);
+            checkBox1.TabIndex = 9;
+            checkBox1.Text = "Proveedor VMI";
+            checkBox1.UseVisualStyleBackColor = true;
             // 
             // FrmNuevoCliente
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(653, 344);
+            ClientSize = new Size(829, 488);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmNuevoCliente";
             StartPosition = FormStartPosition.CenterParent;
             Text = "FrmWarning";
@@ -576,5 +591,8 @@
         private TextBox txtCPFiscal;
         private TextBox txtEmail;
         private Label label4;
+        private TextBox txtColonia;
+        private Label label11;
+        private CheckBox checkBox1;
     }
 }
