@@ -21,15 +21,13 @@ namespace LD.Forms.Views.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             _dialogFormService.ShowDialog<FrmNuevaUbicacion>();
-            FrmNuevaUbicacion frmNuevoCliente = new FrmNuevaUbicacion();
-            frmNuevoCliente.ShowDialog();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             _dialogFormService.ShowDialog<FrmNuevaUbicacionMasiva>(config =>
             {
-
+                
             });
 
         }
@@ -67,7 +65,7 @@ namespace LD.Forms.Views.Forms
         {
             _dialogFormService.ShowDialog<FrmNuevaUbicacion>(config =>
             {
-
+                config.SetLocation(new());
             });
         }
     }

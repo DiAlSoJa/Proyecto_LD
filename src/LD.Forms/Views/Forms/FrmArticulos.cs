@@ -40,7 +40,7 @@ namespace LD.Forms.Views.Forms
         {
             _dialogFormService.ShowDialog<FrmNuevoArticulo>(config =>
             {
-
+                config.SetItem(new());
             });
         }
         private void button4_Click(object sender, EventArgs e)

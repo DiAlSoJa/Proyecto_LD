@@ -13,7 +13,7 @@ namespace LD.Contracts.Project
         public int ClienteId { get; set; }
         public string Cliente { get; set; } = string.Empty;
 
-        public int ProyectoId { get; set; }
+        public int ProjectId { get; set; }
         public string Proyecto { get; set; } = string.Empty;
 
         public int AlmacenId { get; set; }

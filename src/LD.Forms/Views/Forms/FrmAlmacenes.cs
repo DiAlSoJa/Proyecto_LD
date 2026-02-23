@@ -40,7 +40,7 @@ namespace LD.Forms.Views.Forms
         {
             _dialogFormService.ShowDialog<FrmNuevoAlmacen>(config =>
             {
-
+                config.SetWarehouse(new());
             });
        
         }

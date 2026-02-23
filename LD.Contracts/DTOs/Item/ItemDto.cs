@@ -8,6 +8,7 @@ namespace LD.Contracts.Item
 {
     public class ItemDto
     {
+        public int ItemId { get; set; }
         public int ClienteId { get; set; }
         public string Cliente { get; set; } = string.Empty;
 

@@ -38,9 +38,9 @@ namespace LD.Forms.Views.Forms
         }
         private void EditBtn_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoProyecto>(frm =>
+            _dialogFormService.ShowDialog<FrmNuevoProyecto>(config =>
             {
-            
+                config.SetProject(new());
             });
         }
         protected override async void OnShown(EventArgs e)

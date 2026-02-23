@@ -26,14 +26,12 @@ namespace LD.Forms.Views.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FrmNuevoArticulo frmNuevoCliente = new FrmNuevoArticulo();
-            frmNuevoCliente.ShowDialog();
+           
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            FrmNuevoArticuloMasiva frmNuevoArticuloMasiva = new FrmNuevoArticuloMasiva();
-            frmNuevoArticuloMasiva.ShowDialog();
+            
         }
     }
 }

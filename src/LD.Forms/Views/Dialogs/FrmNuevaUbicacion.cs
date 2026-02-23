@@ -1,8 +1,11 @@
-﻿using System;
+﻿using LD.Contracts.Location;
+using LD.Forms.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,11 +15,41 @@ namespace LD.Forms.Views.Dialogs
     {
         private bool mouseDown;
         private Point lastLocation;
-        public FrmNuevaUbicacion()
+        private LocationDto? LocationSelected;
+        private LocationService _locationService;
+        public FrmNuevaUbicacion(LocationService locationService)
         {
             InitializeComponent();
+            _locationService = locationService;
         }
        
+        public async void SetLocation(LocationDto? location)
+        {
+            LocationSelected = location;
+            await SetDataAsync();
+        }
+
+        private async Task SetDataAsync()
+        {
+            try
+            {
+                var response = await _locationService.GetLocationById(LocationSelected?.LocationId ?? 0);
+
+
+                if (!response.IsSuccess)
+                {
+                    MessageBox.Show(response.Message);
+                    return;
+                }
+                var client = response.Data;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;

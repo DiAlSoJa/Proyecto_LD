@@ -49,17 +49,17 @@ namespace LD.Forms.Views.Forms
             splitContainer1 = new SplitContainer();
             splitContainer2 = new SplitContainer();
             dataGridView2 = new DataGridView();
-            dataGridView3 = new DataGridView();
-            panel2 = new Panel();
-            button7 = new Button();
-            button4 = new Button();
             Rol2 = new DataGridViewTextBoxColumn();
             Permiso = new DataGridViewTextBoxColumn();
             NombreX = new DataGridViewTextBoxColumn();
             Activos = new DataGridViewCheckBoxColumn();
+            dataGridView3 = new DataGridView();
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
             dataGridViewCheckBoxColumn1 = new DataGridViewCheckBoxColumn();
+            panel2 = new Panel();
+            button7 = new Button();
+            button4 = new Button();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
@@ -132,6 +132,7 @@ namespace LD.Forms.Views.Forms
             button3.TabIndex = 2;
             button3.Text = "Editar";
             button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // flowLayoutPanel2
             // 
@@ -245,6 +246,34 @@ namespace LD.Forms.Views.Forms
             dataGridView2.Size = new Size(930, 329);
             dataGridView2.TabIndex = 2;
             // 
+            // Rol2
+            // 
+            Rol2.HeaderText = "Rol";
+            Rol2.MinimumWidth = 6;
+            Rol2.Name = "Rol2";
+            Rol2.Width = 125;
+            // 
+            // Permiso
+            // 
+            Permiso.HeaderText = "Permiso";
+            Permiso.MinimumWidth = 6;
+            Permiso.Name = "Permiso";
+            Permiso.Width = 125;
+            // 
+            // NombreX
+            // 
+            NombreX.HeaderText = "Nombre";
+            NombreX.MinimumWidth = 6;
+            NombreX.Name = "NombreX";
+            NombreX.Width = 250;
+            // 
+            // Activos
+            // 
+            Activos.HeaderText = "Activo";
+            Activos.MinimumWidth = 6;
+            Activos.Name = "Activos";
+            Activos.Width = 125;
+            // 
             // dataGridView3
             // 
             dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
@@ -258,6 +287,27 @@ namespace LD.Forms.Views.Forms
             dataGridView3.RowHeadersWidth = 51;
             dataGridView3.Size = new Size(609, 672);
             dataGridView3.TabIndex = 3;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            dataGridViewTextBoxColumn1.HeaderText = "Rol";
+            dataGridViewTextBoxColumn1.MinimumWidth = 6;
+            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.Width = 125;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            dataGridViewTextBoxColumn2.HeaderText = "Nombre";
+            dataGridViewTextBoxColumn2.MinimumWidth = 6;
+            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            dataGridViewTextBoxColumn2.Width = 250;
+            // 
+            // dataGridViewCheckBoxColumn1
+            // 
+            dataGridViewCheckBoxColumn1.HeaderText = "Activo";
+            dataGridViewCheckBoxColumn1.MinimumWidth = 6;
+            dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
+            dataGridViewCheckBoxColumn1.Width = 125;
             // 
             // panel2
             // 
@@ -294,55 +344,6 @@ namespace LD.Forms.Views.Forms
             button4.TabIndex = 3;
             button4.Text = "<";
             button4.UseVisualStyleBackColor = false;
-            // 
-            // Rol2
-            // 
-            Rol2.HeaderText = "Rol";
-            Rol2.MinimumWidth = 6;
-            Rol2.Name = "Rol2";
-            Rol2.Width = 125;
-            // 
-            // Permiso
-            // 
-            Permiso.HeaderText = "Permiso";
-            Permiso.MinimumWidth = 6;
-            Permiso.Name = "Permiso";
-            Permiso.Width = 125;
-            // 
-            // NombreX
-            // 
-            NombreX.HeaderText = "Nombre";
-            NombreX.MinimumWidth = 6;
-            NombreX.Name = "NombreX";
-            NombreX.Width = 250;
-            // 
-            // Activos
-            // 
-            Activos.HeaderText = "Activo";
-            Activos.MinimumWidth = 6;
-            Activos.Name = "Activos";
-            Activos.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            dataGridViewTextBoxColumn1.HeaderText = "Rol";
-            dataGridViewTextBoxColumn1.MinimumWidth = 6;
-            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            dataGridViewTextBoxColumn1.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            dataGridViewTextBoxColumn2.HeaderText = "Nombre";
-            dataGridViewTextBoxColumn2.MinimumWidth = 6;
-            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            dataGridViewTextBoxColumn2.Width = 250;
-            // 
-            // dataGridViewCheckBoxColumn1
-            // 
-            dataGridViewCheckBoxColumn1.HeaderText = "Activo";
-            dataGridViewCheckBoxColumn1.MinimumWidth = 6;
-            dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
-            dataGridViewCheckBoxColumn1.Width = 125;
             // 
             // FrmUsuarios
             // 

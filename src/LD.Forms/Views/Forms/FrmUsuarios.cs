@@ -26,12 +26,12 @@ namespace LD.Forms.Views.Forms
             _dialogFormService.ShowDialog<FrmNuevoUsuario>();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoUsuario>(config=>{
+            _dialogFormService.ShowDialog<FrmNuevoUsuario>(config =>
+            {
 
             });
-            
         }
     }
 }

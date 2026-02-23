@@ -8,6 +8,7 @@ namespace LD.Contracts.Location
 {
     public class LocationDto
     {
+        public int LocationId { get; set; }
         public bool Activo { get; set; }
 
         public int AlmacenId { get; set; }

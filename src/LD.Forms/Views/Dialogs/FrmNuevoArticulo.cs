@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LD.Contracts.Client;
+using LD.Contracts.Item;
+using LD.Forms.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +15,47 @@ namespace LD.Forms.Views.Dialogs
     {
         private bool mouseDown;
         private Point lastLocation;
-        public FrmNuevoArticulo()
+        private readonly ItemService _itemService;
+        private  ItemDto? ItemSelected;
+
+        public FrmNuevoArticulo(ItemService itemService)
         {
             InitializeComponent();
+            _itemService = itemService;
         }
-       
+        public async void SetItem(ItemDto? item)
+        {
+            ItemSelected = item;
+            await CargarDatosAsync();
+        }
+
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+
+
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            try
+            {
+                var response = await _itemService.GetItemById(ItemSelected?.ItemId ?? 0);
+
+                if (!response.IsSuccess)
+                {
+                    MessageBox.Show(response.Message);
+                    return;
+                }
+                var client = response.Data;
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;
