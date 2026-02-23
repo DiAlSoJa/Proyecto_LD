@@ -8,7 +8,9 @@ namespace LD.Forms.Configuration
 {
     public class ApiEndpoints
     {
+
         private readonly string _baseApi;
+
 
         public ApiEndpoints(IOptions<ApiSettings> options)
         {

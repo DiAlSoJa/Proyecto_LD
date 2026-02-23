@@ -30,14 +30,10 @@
         {
             panel1 = new Panel();
             panel4 = new Panel();
-            flowLayoutPanel3 = new FlowLayoutPanel();
-            button38 = new Button();
-            button39 = new Button();
-            button40 = new Button();
-            flowLayoutPanel2 = new FlowLayoutPanel();
-            button21 = new Button();
-            button22 = new Button();
-            button23 = new Button();
+            roundedButton4 = new LD.Forms.Controls.RoundedButton();
+            roundedButton3 = new LD.Forms.Controls.RoundedButton();
+            roundedButton2 = new LD.Forms.Controls.RoundedButton();
+            roundedButton1 = new LD.Forms.Controls.RoundedButton();
             pictureBox1 = new PictureBox();
             panel3 = new Panel();
             label2 = new Label();
@@ -56,8 +52,6 @@
             pictureBox2 = new PictureBox();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
-            flowLayoutPanel3.SuspendLayout();
-            flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel3.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -83,8 +77,10 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(flowLayoutPanel3);
-            panel4.Controls.Add(flowLayoutPanel2);
+            panel4.Controls.Add(roundedButton4);
+            panel4.Controls.Add(roundedButton3);
+            panel4.Controls.Add(roundedButton2);
+            panel4.Controls.Add(roundedButton1);
             panel4.Controls.Add(pictureBox1);
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(0, 167);
@@ -92,91 +88,61 @@
             panel4.Size = new Size(1012, 777);
             panel4.TabIndex = 48;
             // 
-            // flowLayoutPanel3
+            // roundedButton4
             // 
-            flowLayoutPanel3.AutoScroll = true;
-            flowLayoutPanel3.BackColor = Color.FromArgb(226, 131, 47);
-            flowLayoutPanel3.BorderStyle = BorderStyle.FixedSingle;
-            flowLayoutPanel3.Controls.Add(button38);
-            flowLayoutPanel3.Controls.Add(button39);
-            flowLayoutPanel3.Controls.Add(button40);
-            flowLayoutPanel3.Location = new Point(520, 73);
-            flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Padding = new Padding(5, 0, 0, 0);
-            flowLayoutPanel3.Size = new Size(221, 673);
-            flowLayoutPanel3.TabIndex = 7;
+            roundedButton4.BackColor = Color.White;
+            roundedButton4.FlatAppearance.BorderSize = 0;
+            roundedButton4.FlatStyle = FlatStyle.Flat;
+            roundedButton4.ForeColor = Color.Black;
+            roundedButton4.Location = new Point(524, 146);
+            roundedButton4.Name = "roundedButton4";
+            roundedButton4.Size = new Size(201, 59);
+            roundedButton4.TabIndex = 12;
+            roundedButton4.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton4.UseVisualStyleBackColor = false;
             // 
-            // button38
+            // roundedButton3
             // 
-            button38.Location = new Point(8, 3);
-            button38.Name = "button38";
-            button38.Size = new Size(182, 37);
-            button38.TabIndex = 16;
-            button38.Text = "202601012-002025";
-            button38.UseVisualStyleBackColor = true;
+            roundedButton3.BackColor = Color.White;
+            roundedButton3.FlatAppearance.BorderSize = 0;
+            roundedButton3.FlatStyle = FlatStyle.Flat;
+            roundedButton3.ForeColor = Color.Black;
+            roundedButton3.Location = new Point(304, 146);
+            roundedButton3.Name = "roundedButton3";
+            roundedButton3.Size = new Size(201, 59);
+            roundedButton3.TabIndex = 11;
+            roundedButton3.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton3.UseVisualStyleBackColor = false;
             // 
-            // button39
+            // roundedButton2
             // 
-            button39.Location = new Point(8, 46);
-            button39.Name = "button39";
-            button39.Size = new Size(182, 37);
-            button39.TabIndex = 17;
-            button39.Text = "202601012-002025";
-            button39.UseVisualStyleBackColor = true;
+            roundedButton2.BackColor = Color.White;
+            roundedButton2.FlatAppearance.BorderSize = 0;
+            roundedButton2.FlatStyle = FlatStyle.Flat;
+            roundedButton2.ForeColor = Color.Black;
+            roundedButton2.Location = new Point(524, 81);
+            roundedButton2.Name = "roundedButton2";
+            roundedButton2.Size = new Size(201, 59);
+            roundedButton2.TabIndex = 10;
+            roundedButton2.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton2.UseVisualStyleBackColor = false;
             // 
-            // button40
+            // roundedButton1
             // 
-            button40.Location = new Point(8, 89);
-            button40.Name = "button40";
-            button40.Size = new Size(182, 37);
-            button40.TabIndex = 18;
-            button40.Text = "202601012-002025";
-            button40.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanel2
-            // 
-            flowLayoutPanel2.AutoScroll = true;
-            flowLayoutPanel2.BackColor = Color.FromArgb(226, 131, 47);
-            flowLayoutPanel2.BorderStyle = BorderStyle.FixedSingle;
-            flowLayoutPanel2.Controls.Add(button21);
-            flowLayoutPanel2.Controls.Add(button22);
-            flowLayoutPanel2.Controls.Add(button23);
-            flowLayoutPanel2.Location = new Point(293, 73);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Padding = new Padding(5, 0, 0, 0);
-            flowLayoutPanel2.Size = new Size(221, 673);
-            flowLayoutPanel2.TabIndex = 6;
-            // 
-            // button21
-            // 
-            button21.Location = new Point(8, 3);
-            button21.Name = "button21";
-            button21.Size = new Size(182, 37);
-            button21.TabIndex = 16;
-            button21.Text = "202601012-002025";
-            button21.UseVisualStyleBackColor = true;
-            // 
-            // button22
-            // 
-            button22.Location = new Point(8, 46);
-            button22.Name = "button22";
-            button22.Size = new Size(182, 37);
-            button22.TabIndex = 17;
-            button22.Text = "202601012-002025";
-            button22.UseVisualStyleBackColor = true;
-            // 
-            // button23
-            // 
-            button23.Location = new Point(8, 89);
-            button23.Name = "button23";
-            button23.Size = new Size(182, 37);
-            button23.TabIndex = 18;
-            button23.Text = "202601012-002025";
-            button23.UseVisualStyleBackColor = true;
+            roundedButton1.BackColor = Color.White;
+            roundedButton1.FlatAppearance.BorderSize = 0;
+            roundedButton1.FlatStyle = FlatStyle.Flat;
+            roundedButton1.ForeColor = Color.Black;
+            roundedButton1.Location = new Point(304, 81);
+            roundedButton1.Name = "roundedButton1";
+            roundedButton1.Size = new Size(201, 59);
+            roundedButton1.TabIndex = 9;
+            roundedButton1.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton1.UseVisualStyleBackColor = false;
             // 
             // pictureBox1
             // 
-            pictureBox1.Image =  LD.Forms.Properties.Resources.Truck;
+            pictureBox1.Image = Properties.Resources.Truck;
             pictureBox1.Location = new Point(204, -86);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(622, 881);
@@ -291,7 +257,7 @@
             // 
             // button2
             // 
-            button2.Image =  LD.Forms.Properties.Resources.cancel;
+            button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
             button2.Location = new Point(827, 8);
             button2.Name = "button2";
@@ -303,7 +269,7 @@
             // 
             // button1
             // 
-            button1.Image =  LD.Forms.Properties.Resources._checked;
+            button1.Image = Properties.Resources._checked;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(649, 8);
             button1.Name = "button1";
@@ -342,7 +308,7 @@
             // 
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image =  LD.Forms.Properties.Resources.cancelar;
+            pictureBox2.Image = Properties.Resources.cancelar;
             pictureBox2.Location = new Point(976, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 10, 0, 0);
@@ -363,8 +329,6 @@
             Text = "Nuevo usuario";
             panel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
-            flowLayoutPanel3.ResumeLayout(false);
-            flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
@@ -393,15 +357,11 @@
         private Panel panel3;
         private Panel panel4;
         private PictureBox pictureBox1;
-        private FlowLayoutPanel flowLayoutPanel3;
-        private Button button38;
-        private Button button39;
-        private Button button40;
-        private FlowLayoutPanel flowLayoutPanel2;
-        private Button button21;
-        private Button button22;
-        private Button button23;
         private Label label2;
         private TextBox textBox2;
+        private Controls.RoundedButton roundedButton4;
+        private Controls.RoundedButton roundedButton3;
+        private Controls.RoundedButton roundedButton2;
+        private Controls.RoundedButton roundedButton1;
     }
 }

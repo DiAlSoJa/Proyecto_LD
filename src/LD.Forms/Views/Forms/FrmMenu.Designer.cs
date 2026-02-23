@@ -71,7 +71,7 @@
             // 
             searchWindow.BorderStyle = BorderStyle.None;
             searchWindow.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchWindow.Location = new Point(419, 33);
+            searchWindow.Location = new Point(417, 33);
             searchWindow.Name = "searchWindow";
             searchWindow.PlaceholderText = "Escriba para buscar";
             searchWindow.Size = new Size(610, 27);
@@ -82,7 +82,7 @@
             lblClose.AutoSize = true;
             lblClose.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblClose.ForeColor = SystemColors.ControlDarkDark;
-            lblClose.Location = new Point(1073, 38);
+            lblClose.Location = new Point(1063, 38);
             lblClose.Name = "lblClose";
             lblClose.Size = new Size(20, 23);
             lblClose.TabIndex = 3;
@@ -93,7 +93,7 @@
             pictureBox1.Image = Properties.Resources.searchBar;
             pictureBox1.Location = new Point(362, 20);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(769, 64);
+            pictureBox1.Size = new Size(878, 92);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"           
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="MauiAppLogin.DashboardPage"
+             Title="DashboardPage"   BackgroundColor="#1F3A5F"
+             
+             > 
+
+        <ScrollView>
+
+        <VerticalStackLayout Padding="20,60,20,30" Spacing="20" Background="#F4F6F9">
+
+                <!-- HEADER -->
+                <Grid ColumnDefinitions="Auto,*,Auto"
+                  BackgroundColor="#1F3A5F"
+                  Padding="15"
+                  Margin="-20,-60,-20,0">
+
+                   
+
+                    <Label Grid.Column="1"
+                       Text="juanm.parvol"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+
+                    <Border Grid.Column="2"
+                        BackgroundColor="#2F5DA8"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 15"
+                        Padding="10,5"
+                        VerticalOptions="Center">
+
+                        <HorizontalStackLayout Spacing="5">
+                            <Label Text="🔔" TextColor="White"/>
+                            <Label Text="Tareas (6)"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                        </HorizontalStackLayout>
+
+                    </Border>
+
+                </Grid>
+
+               
+
+             
+                <!-- CARD PRINCIPAL -->
+                <Border BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeShape="RoundRectangle 25"
+                    Padding="10">
+
+                    <VerticalStackLayout Spacing="10">
+
+                        <!-- Almacenista -->
+                        <toolkit:Expander>
+
+                            <toolkit:Expander.Header>
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                  Padding="15"
+                                  BackgroundColor="#F8FAFC">
+
+                                    <Label Text="📦"
+                                       FontSize="18"
+                                       VerticalOptions="Center"/>
+
+                                    <Label Grid.Column="1"
+                                       Text="Almacenista"
+                                       FontAttributes="Bold"
+                                       TextColor="#1E293B"
+                                       VerticalOptions="Center" Padding="10"/>
+
+                                    <Label Grid.Column="2"
+                                       Text="⌄"
+                                       TextColor="#64748B"
+                                       VerticalOptions="Center"/>
+
+                                </Grid>
+                            </toolkit:Expander.Header>
+
+                            <toolkit:Expander.Content>
+                                <VerticalStackLayout Padding="8,6" Spacing="0" BackgroundColor="White">
+
+                                    <!-- Botón tipo fila -->
+                                    <Button Text="ASN por ubicar"
+                                            Clicked="OnAsnPorUbicarClicked"
+                                            Style="{StaticResource MenuRowButtonStyle}" />
+
+                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                    <Button Text="Ubicación de paso surtido"
+                                            Clicked="OnUbicacionPasoSurtidoClicked"
+                                            Style="{StaticResource MenuRowButtonStyle}" />
+
+                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                    <Button Text="Cambio de ubicación"
+                                            Clicked="OnCambioUbicacionClicked"
+                                            Style="{StaticResource MenuRowButtonStyle}" />
+
+                                </VerticalStackLayout>
+                            </toolkit:Expander.Content>
+
+                    </toolkit:Expander>
+
+                        <!-- SEGURIDAD -->
+                        <toolkit:Expander>
+
+                            <toolkit:Expander.Header>
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                  Padding="15"
+                                  BackgroundColor="#F8FAFC">
+
+                                    <Label Text="👮‍♂️"
+                                       FontSize="18"
+                                       VerticalOptions="Center"/>
+
+                                    <Label Grid.Column="1"
+                                       Text="Seguridad"
+                                       FontAttributes="Bold"
+                                       TextColor="#1E293B"
+                                       VerticalOptions="Center"  Padding="10"/>
+
+                                    <Label Grid.Column="2"
+                                       Text="⌄"
+                                       TextColor="#64748B"
+                                       VerticalOptions="Center"/>
+
+                                </Grid>
+                            </toolkit:Expander.Header>
+
+                        <toolkit:Expander.Content>
+                            <VerticalStackLayout Padding="8,6" Spacing="0" BackgroundColor="White">
+
+                                <!-- Botón tipo fila -->
+                                <Button Text="Caseta"
+                                      Clicked="OnCasetaClicked"
+                                      Style="{StaticResource MenuRowButtonStyle}" />
+
+                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                    <Button Text="Cortinas"
+                                      Clicked="OnCortinasClicked"
+                                      Style="{StaticResource MenuRowButtonStyle}" />
+
+                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                    <Button Text="Validar Acople"
+                                      Clicked="OnValidarAcopleClicked"
+                                      Style="{StaticResource MenuRowButtonStyle}" />
+
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                <Button Text="Validar Desacople"
+                                      Clicked="OnValidarDesacopleClicked"
+                                      Style="{StaticResource MenuRowButtonStyle}" />
+                                
+                                
+
+                            </VerticalStackLayout>
+                        </toolkit:Expander.Content>
+
+                    </toolkit:Expander>
+
+                    <!-- Consultas -->
+                    <toolkit:Expander>
+
+                        <toolkit:Expander.Header>
+                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                Padding="15"
+                                BackgroundColor="#F8FAFC">
+
+                                <Label Text="🔍"
+                                     FontSize="18"
+                                     VerticalOptions="Center"/>
+
+                                <Label Grid.Column="1"
+                                     Text="Consultas"
+                                     FontAttributes="Bold"
+                                     TextColor="#1E293B"
+                                     VerticalOptions="Center"  Padding="10"/>
+
+                                <Label Grid.Column="2"
+                                     Text="⌄"
+                                     TextColor="#64748B"
+                                     VerticalOptions="Center"/>
+
+                            </Grid>
+                        </toolkit:Expander.Header>
+
+                        <toolkit:Expander.Content>
+                            <VerticalStackLayout Padding="15,5"
+                                               Spacing="8"
+                                               BackgroundColor="White">
+
+                                <Label Text="Championship 1"
+                                     TextColor="#64748B"/>
+
+                                <Label Text="Championship 2"
+                                     TextColor="#64748B"/>
+
+                            </VerticalStackLayout>
+                        </toolkit:Expander.Content>
+
+                    </toolkit:Expander>
+                        
+                        
+
+                    <!-- Reportes -->
+                        <toolkit:Expander>
+
+                            <toolkit:Expander.Header>
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                  Padding="15"
+                                  BackgroundColor="#F8FAFC">
+
+                                    <Label Text="📈"
+                                       FontSize="18"
+                                       VerticalOptions="Center"/>
+
+                                    <Label Grid.Column="1"
+                                       Text="Reportes"
+                                       FontAttributes="Bold"
+                                       TextColor="#1E293B"
+                                       VerticalOptions="Center"  Padding="10"/>
+
+                                    <Label Grid.Column="2"
+                                       Text="⌄"
+                                       TextColor="#64748B"
+                                       VerticalOptions="Center"/>
+
+                                </Grid>
+                            </toolkit:Expander.Header>
+                            
+
+                            <toolkit:Expander.Content>
+                                <VerticalStackLayout Padding="15,5"
+                                                 BackgroundColor="White">
+
+                                    <Label Text="Contenido de Other Sports..."
+                                       TextColor="#64748B"/>
+
+                                </VerticalStackLayout>
+                            </toolkit:Expander.Content>
+
+                        </toolkit:Expander>
+                        
+                        
+                        
+                        
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- BANNER -->
+            <Button Text="Cerrar sesión"/>
+
+           
+             
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </ContentPage>

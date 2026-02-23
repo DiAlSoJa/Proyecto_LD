@@ -86,14 +86,13 @@ namespace LD
 
 
 
-
-
             // 🔹 Dialogs states
             services.AddTransient<FrmConfirm>();
             services.AddTransient<FrmError>();
             services.AddTransient<FrmInfo>();
             services.AddTransient<FrmSuccess>();
             services.AddTransient<FrmWarning>();
+
 
             // 🔹 Dialogs 
             services.AddTransient<FrmNuevaUbicacion>();

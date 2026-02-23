@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\LD.Contracts\LD.Contracts.csproj" />
+    <ProjectReference Include="..\LD.Contracts\LD.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

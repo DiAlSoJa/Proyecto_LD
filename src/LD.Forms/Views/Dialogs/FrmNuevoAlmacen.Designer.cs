@@ -43,8 +43,6 @@
             label5 = new Label();
             textBox2 = new TextBox();
             label2 = new Label();
-            textBox1 = new TextBox();
-            label9 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
             btnSave = new Button();
@@ -74,14 +72,13 @@
             panel1.Controls.Add(label5);
             panel1.Controls.Add(textBox2);
             panel1.Controls.Add(label2);
-            panel1.Controls.Add(textBox1);
-            panel1.Controls.Add(label9);
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(733, 444);
+
+            panel1.Size = new Size(733, 404);
             panel1.TabIndex = 0;
             panel1.MouseDown += panel1_MouseDown;
             panel1.MouseMove += panel1_MouseMove;
@@ -91,7 +88,8 @@
             // 
             textBox3.BorderStyle = BorderStyle.FixedSingle;
             textBox3.Font = new Font("Segoe UI", 9.75F);
-            textBox3.Location = new Point(179, 272);
+
+            textBox3.Location = new Point(182, 239);
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(109, 29);
             textBox3.TabIndex = 7;
@@ -99,7 +97,8 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(18, 279);
+
+            label3.Location = new Point(21, 246);
             label3.Name = "label3";
             label3.Size = new Size(83, 20);
             label3.TabIndex = 37;
@@ -108,7 +107,8 @@
             // checkBox2
             // 
             checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(179, 311);
+
+            checkBox2.Location = new Point(182, 278);
             checkBox2.Name = "checkBox2";
             checkBox2.Size = new Size(105, 24);
             checkBox2.TabIndex = 8;
@@ -118,7 +118,8 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(179, 341);
+
+            checkBox1.Location = new Point(182, 308);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(73, 24);
             checkBox1.TabIndex = 9;
@@ -129,7 +130,8 @@
             // 
             textBox8.BorderStyle = BorderStyle.FixedSingle;
             textBox8.Font = new Font("Segoe UI", 9.75F);
-            textBox8.Location = new Point(179, 233);
+
+            textBox8.Location = new Point(182, 200);
             textBox8.Name = "textBox8";
             textBox8.Size = new Size(109, 29);
             textBox8.TabIndex = 6;
@@ -137,7 +139,8 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(18, 240);
+
+            label8.Location = new Point(21, 207);
             label8.Name = "label8";
             label8.Size = new Size(29, 20);
             label8.TabIndex = 33;
@@ -147,7 +150,8 @@
             // 
             textBox7.BorderStyle = BorderStyle.FixedSingle;
             textBox7.Font = new Font("Segoe UI", 9.75F);
-            textBox7.Location = new Point(179, 197);
+
+            textBox7.Location = new Point(182, 164);
             textBox7.Name = "textBox7";
             textBox7.Size = new Size(402, 29);
             textBox7.TabIndex = 5;
@@ -155,7 +159,8 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(18, 205);
+
+            label7.Location = new Point(21, 172);
             label7.Name = "label7";
             label7.Size = new Size(59, 20);
             label7.TabIndex = 31;
@@ -165,7 +170,7 @@
             // 
             textBox6.BorderStyle = BorderStyle.FixedSingle;
             textBox6.Font = new Font("Segoe UI", 9.75F);
-            textBox6.Location = new Point(179, 163);
+            textBox6.Location = new Point(182, 130);
             textBox6.Name = "textBox6";
             textBox6.Size = new Size(402, 29);
             textBox6.TabIndex = 4;
@@ -173,7 +178,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(18, 171);
+            label6.Location = new Point(21, 138);
             label6.Name = "label6";
             label6.Size = new Size(63, 20);
             label6.TabIndex = 29;
@@ -183,7 +188,7 @@
             // 
             textBox5.BorderStyle = BorderStyle.FixedSingle;
             textBox5.Font = new Font("Segoe UI", 9.75F);
-            textBox5.Location = new Point(179, 128);
+            textBox5.Location = new Point(182, 95);
             textBox5.Name = "textBox5";
             textBox5.Size = new Size(402, 29);
             textBox5.TabIndex = 3;
@@ -191,17 +196,18 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(18, 135);
+            label5.Location = new Point(21, 102);
             label5.Name = "label5";
-            label5.Size = new Size(146, 20);
+            label5.Size = new Size(77, 20);
             label5.TabIndex = 27;
-            label5.Text = "Domicilio comercial:";
+            label5.Text = "Domicilio:";
             // 
             // textBox2
             // 
             textBox2.BorderStyle = BorderStyle.FixedSingle;
             textBox2.Font = new Font("Segoe UI", 9.75F);
-            textBox2.Location = new Point(179, 93);
+
+            textBox2.Location = new Point(182, 60);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(527, 29);
             textBox2.TabIndex = 2;
@@ -209,31 +215,12 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(18, 100);
+            label2.Location = new Point(21, 67);
             label2.Name = "label2";
             label2.Size = new Size(152, 20);
             label2.TabIndex = 21;
             label2.Text = "Nombre del almacén:";
-            // 
-            // textBox1
-            // 
-            textBox1.BorderStyle = BorderStyle.FixedSingle;
-            textBox1.Font = new Font("Segoe UI", 9.75F);
-            textBox1.Location = new Point(179, 57);
-            textBox1.Name = "textBox1";
-            textBox1.ReadOnly = true;
-            textBox1.Size = new Size(109, 29);
-            textBox1.TabIndex = 1;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(18, 64);
-            label9.Name = "label9";
-            label9.Size = new Size(25, 20);
-            label9.TabIndex = 19;
-            label9.Text = "Id:";
-            // 
+
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.BackColor = SystemColors.Control;
@@ -241,9 +228,9 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 387);
+            flowLayoutPanel1.Location = new Point(0, 347);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
+            flowLayoutPanel1.Padding = new Padding(5);
             flowLayoutPanel1.Size = new Size(731, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
@@ -261,15 +248,16 @@
             // 
             // btnSave
             // 
+
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
             btnSave.Location = new Point(370, 8);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(171, 35);
+            btnSave.Click += btnSave_Click;
             btnSave.TabIndex = 10;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += btnSave_Click;
             // 
             // panel2
             // 
@@ -314,7 +302,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(733, 444);
+            ClientSize = new Size(733, 404);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmNuevoAlmacen";
@@ -349,8 +337,6 @@
         private Label label5;
         private TextBox textBox2;
         private Label label2;
-        private TextBox textBox1;
-        private Label label9;
         private CheckBox checkBox2;
         private TextBox textBox3;
         private Label label3;

@@ -1,4 +1,5 @@
 ﻿using LD.Forms.Classes;
+using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -14,27 +15,21 @@ namespace LD.Forms.Views.Forms;
 
 public partial class FrmAleatorio : Form
 {
-    private Formularios formularios;
-    public FrmAleatorio()
+    private readonly DialogFormService _dialogFormService;
+    public FrmAleatorio(DialogFormService dialogFormService)
     {
         InitializeComponent();
-    }
-    public FrmAleatorio(Formularios f)
-    {
-        InitializeComponent();
-        this.formularios = f;
+        _dialogFormService = dialogFormService;
     }
 
     private void button1_Click(object sender, EventArgs e)
     {
-        FrmNuevoArticulo frmNuevoCliente = new FrmNuevoArticulo();
-        frmNuevoCliente.ShowDialog();
+        _dialogFormService.ShowDialog<FrmNuevoCliente>();
     }
 
     private void button4_Click(object sender, EventArgs e)
     {
-        FrmNuevoArticuloMasiva frmNuevoArticuloMasiva = new FrmNuevoArticuloMasiva();
-        frmNuevoArticuloMasiva.ShowDialog();
+        _dialogFormService.ShowDialog<FrmNuevoArticuloMasiva>();
     }
     
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.LoginPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#1F3A5F"
+             > 
+        <Grid RowDefinitions="300,*">
+
+            <!-- HEADER ORANGE -->
+        <Grid BackgroundColor="#1F3A5F"
+              Padding="30,60,30,40">
+
+                <VerticalStackLayout Spacing="10">
+                
+                <Image Source="logo.png"
+                   HeightRequest="150"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center"  />
+
+                
+
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- CARD -->
+            <Frame Grid.Row="1"
+               Margin="20,-60,20,20"
+               CornerRadius="35"
+               BackgroundColor="White"
+               HasShadow="True"
+               Padding="25">
+
+                <ScrollView>
+                    <VerticalStackLayout Spacing="20">
+
+                   
+                    <!-- EMAIL -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Email"
+                               FontAttributes="Bold"
+                               FontSize="14"/>
+
+                            <Frame CornerRadius="15"
+                               BackgroundColor="#F7F7F7"
+                               HasShadow="False"
+                               Padding="15,10">
+                                <Entry Placeholder="Enter your email"                               
+                                   Text="{Binding Email}"
+                                   Keyboard="Email"
+                                   BackgroundColor="#F9FAFB"
+                                   HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- PASSWORD -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Password"
+                               FontAttributes="Bold"
+                               FontSize="14"/>
+
+                            <Frame CornerRadius="15"
+                               BackgroundColor="#F7F7F7"
+                               HasShadow="False"
+                               Padding="15,10">
+                                <Entry Placeholder="Enter your password"
+                                   Text="{Binding Password}"
+                               IsPassword="True"
+                               BackgroundColor="#F9FAFB"
+                               HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                       
+
+                        <!-- LOGIN BUTTON -->
+                        <Button Text="Login"
+                            Command="{Binding LoginCommand}"
+                            HeightRequest="55"
+                            CornerRadius="30"
+                            BackgroundColor="#1F3A5F"
+                            TextColor="White"
+                            FontAttributes="Bold"/>
+
+                      
+                      
+
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+            </Frame>
+
+        </Grid>
+    </ContentPage>

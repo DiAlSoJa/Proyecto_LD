@@ -31,8 +31,8 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button6 = new Button();
@@ -55,15 +55,12 @@ namespace LD.Forms.Views.Forms
             Status = new DataGridViewTextBoxColumn();
             Lote = new DataGridViewTextBoxColumn();
             Ubi = new DataGridViewTextBoxColumn();
-            flowLayoutPanel2 = new FlowLayoutPanel();
-            button21 = new Button();
-            button22 = new Button();
-            button23 = new Button();
-            flowLayoutPanel3 = new FlowLayoutPanel();
-            button24 = new Button();
-            button25 = new Button();
             pictureBox1 = new PictureBox();
             panel2 = new Panel();
+            roundedButton1 = new LD.Forms.Controls.RoundedButton();
+            roundedButton2 = new LD.Forms.Controls.RoundedButton();
+            roundedButton3 = new LD.Forms.Controls.RoundedButton();
+            roundedButton4 = new LD.Forms.Controls.RoundedButton();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -76,8 +73,6 @@ namespace LD.Forms.Views.Forms
             splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
-            flowLayoutPanel2.SuspendLayout();
-            flowLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -86,9 +81,8 @@ namespace LD.Forms.Views.Forms
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1386, 49);
+            panel1.Size = new Size(1584, 65);
             panel1.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -99,20 +93,18 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel1.Controls.Add(button3);
             flowLayoutPanel1.Dock = DockStyle.Left;
             flowLayoutPanel1.Location = new Point(0, 0);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(18, 8, 0, 0);
-            flowLayoutPanel1.Size = new Size(727, 49);
+            flowLayoutPanel1.Padding = new Padding(21, 11, 0, 0);
+            flowLayoutPanel1.Size = new Size(831, 65);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // button6
             // 
             button6.Image = Properties.Resources.update;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(21, 10);
-            button6.Margin = new Padding(3, 2, 3, 2);
+            button6.Location = new Point(24, 14);
             button6.Name = "button6";
-            button6.Size = new Size(108, 26);
+            button6.Size = new Size(123, 35);
             button6.TabIndex = 5;
             button6.Text = "Actualizar";
             button6.UseVisualStyleBackColor = true;
@@ -121,10 +113,9 @@ namespace LD.Forms.Views.Forms
             // 
             button1.Image = Properties.Resources.plusM;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(135, 10);
-            button1.Margin = new Padding(3, 2, 3, 2);
+            button1.Location = new Point(153, 14);
             button1.Name = "button1";
-            button1.Size = new Size(162, 26);
+            button1.Size = new Size(185, 35);
             button1.TabIndex = 0;
             button1.Text = "Nueva auditoria";
             button1.UseVisualStyleBackColor = true;
@@ -134,10 +125,9 @@ namespace LD.Forms.Views.Forms
             // 
             button2.Image = Properties.Resources.correo_electronico;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(303, 10);
-            button2.Margin = new Padding(3, 2, 3, 2);
+            button2.Location = new Point(344, 14);
             button2.Name = "button2";
-            button2.Size = new Size(135, 26);
+            button2.Size = new Size(154, 35);
             button2.TabIndex = 6;
             button2.Text = "Enviar";
             button2.UseVisualStyleBackColor = true;
@@ -146,10 +136,9 @@ namespace LD.Forms.Views.Forms
             // 
             button3.Image = Properties.Resources.editar;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(444, 10);
-            button3.Margin = new Padding(3, 2, 3, 2);
+            button3.Location = new Point(504, 14);
             button3.Name = "button3";
-            button3.Size = new Size(135, 26);
+            button3.Size = new Size(154, 35);
             button3.TabIndex = 2;
             button3.Text = "Editar";
             button3.UseVisualStyleBackColor = true;
@@ -157,8 +146,7 @@ namespace LD.Forms.Views.Forms
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 49);
-            splitContainer1.Margin = new Padding(3, 2, 3, 2);
+            splitContainer1.Location = new Point(0, 65);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -168,19 +156,21 @@ namespace LD.Forms.Views.Forms
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.BackColor = SystemColors.ButtonHighlight;
-            splitContainer1.Panel2.Controls.Add(flowLayoutPanel2);
-            splitContainer1.Panel2.Controls.Add(flowLayoutPanel3);
+            splitContainer1.Panel2.Controls.Add(roundedButton4);
+            splitContainer1.Panel2.Controls.Add(roundedButton3);
+            splitContainer1.Panel2.Controls.Add(roundedButton2);
+            splitContainer1.Panel2.Controls.Add(roundedButton1);
             splitContainer1.Panel2.Controls.Add(pictureBox1);
             splitContainer1.Panel2.Controls.Add(panel2);
-            splitContainer1.Size = new Size(1386, 669);
-            splitContainer1.SplitterDistance = 802;
+            splitContainer1.Size = new Size(1584, 892);
+            splitContainer1.SplitterDistance = 916;
+            splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 2;
             // 
             // splitContainer2
             // 
             splitContainer2.Dock = DockStyle.Fill;
             splitContainer2.Location = new Point(0, 0);
-            splitContainer2.Margin = new Padding(3, 2, 3, 2);
             splitContainer2.Name = "splitContainer2";
             splitContainer2.Orientation = Orientation.Horizontal;
             // 
@@ -191,24 +181,22 @@ namespace LD.Forms.Views.Forms
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(dataGridView2);
-            splitContainer2.Size = new Size(802, 669);
-            splitContainer2.SplitterDistance = 337;
-            splitContainer2.SplitterWidth = 3;
+            splitContainer2.Size = new Size(916, 892);
+            splitContainer2.SplitterDistance = 449;
             splitContainer2.TabIndex = 1;
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle9.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Requisicion, Picking, Cliente, Prou, FEcha, Hora });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
-            dataGridView1.Margin = new Padding(3, 2, 3, 2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(802, 337);
+            dataGridView1.Size = new Size(916, 449);
             dataGridView1.TabIndex = 1;
             // 
             // Requisicion
@@ -255,17 +243,16 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView2
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle10.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
             dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new DataGridViewColumn[] { No, DEscr, Cantida, Status, Lote, Ubi });
             dataGridView2.Dock = DockStyle.Fill;
             dataGridView2.Location = new Point(0, 0);
-            dataGridView2.Margin = new Padding(3, 2, 3, 2);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(802, 329);
+            dataGridView2.Size = new Size(916, 439);
             dataGridView2.TabIndex = 2;
             // 
             // No
@@ -310,93 +297,12 @@ namespace LD.Forms.Views.Forms
             Ubi.Name = "Ubi";
             Ubi.Width = 125;
             // 
-            // flowLayoutPanel2
-            // 
-            flowLayoutPanel2.AutoScroll = true;
-            flowLayoutPanel2.BackColor = Color.FromArgb(226, 131, 47);
-            flowLayoutPanel2.BorderStyle = BorderStyle.FixedSingle;
-            flowLayoutPanel2.Controls.Add(button21);
-            flowLayoutPanel2.Controls.Add(button22);
-            flowLayoutPanel2.Controls.Add(button23);
-            flowLayoutPanel2.Location = new Point(101, 128);
-            flowLayoutPanel2.Margin = new Padding(3, 2, 3, 2);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Padding = new Padding(4, 0, 0, 0);
-            flowLayoutPanel2.Size = new Size(194, 505);
-            flowLayoutPanel2.TabIndex = 1;
-            // 
-            // button21
-            // 
-            button21.FlatStyle = FlatStyle.Flat;
-            button21.Location = new Point(7, 2);
-            button21.Margin = new Padding(3, 2, 3, 2);
-            button21.Name = "button21";
-            button21.Size = new Size(159, 28);
-            button21.TabIndex = 16;
-            button21.Text = "202601012-002025";
-            button21.UseVisualStyleBackColor = true;
-            // 
-            // button22
-            // 
-            button22.Location = new Point(7, 34);
-            button22.Margin = new Padding(3, 2, 3, 2);
-            button22.Name = "button22";
-            button22.Size = new Size(159, 28);
-            button22.TabIndex = 17;
-            button22.Text = "202601012-002025";
-            button22.UseVisualStyleBackColor = true;
-            // 
-            // button23
-            // 
-            button23.Location = new Point(7, 66);
-            button23.Margin = new Padding(3, 2, 3, 2);
-            button23.Name = "button23";
-            button23.Size = new Size(159, 28);
-            button23.TabIndex = 18;
-            button23.Text = "202601012-002025";
-            button23.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanel3
-            // 
-            flowLayoutPanel3.AutoScroll = true;
-            flowLayoutPanel3.BackColor = Color.FromArgb(226, 131, 47);
-            flowLayoutPanel3.BorderStyle = BorderStyle.FixedSingle;
-            flowLayoutPanel3.Controls.Add(button24);
-            flowLayoutPanel3.Controls.Add(button25);
-            flowLayoutPanel3.Location = new Point(299, 128);
-            flowLayoutPanel3.Margin = new Padding(3, 2, 3, 2);
-            flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Padding = new Padding(4, 0, 0, 0);
-            flowLayoutPanel3.Size = new Size(194, 505);
-            flowLayoutPanel3.TabIndex = 2;
-            // 
-            // button24
-            // 
-            button24.Location = new Point(7, 2);
-            button24.Margin = new Padding(3, 2, 3, 2);
-            button24.Name = "button24";
-            button24.Size = new Size(159, 28);
-            button24.TabIndex = 5;
-            button24.Text = "202601012-002025";
-            button24.UseVisualStyleBackColor = true;
-            // 
-            // button25
-            // 
-            button25.Location = new Point(7, 34);
-            button25.Margin = new Padding(3, 2, 3, 2);
-            button25.Name = "button25";
-            button25.Size = new Size(159, 28);
-            button25.TabIndex = 6;
-            button25.Text = "202601012-002025";
-            button25.UseVisualStyleBackColor = true;
-            // 
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.Truck;
-            pictureBox1.Location = new Point(23, 7);
-            pictureBox1.Margin = new Padding(3, 2, 3, 2);
+            pictureBox1.Location = new Point(26, 9);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(544, 661);
+            pictureBox1.Size = new Size(622, 881);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 4;
             pictureBox1.TabStop = false;
@@ -405,20 +311,70 @@ namespace LD.Forms.Views.Forms
             // 
             panel2.Dock = DockStyle.Left;
             panel2.Location = new Point(0, 0);
-            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(14, 669);
+            panel2.Size = new Size(16, 892);
             panel2.TabIndex = 0;
+            // 
+            // roundedButton1
+            // 
+            roundedButton1.BackColor = Color.White;
+            roundedButton1.FlatAppearance.BorderSize = 0;
+            roundedButton1.FlatStyle = FlatStyle.Flat;
+            roundedButton1.ForeColor = Color.Black;
+            roundedButton1.Location = new Point(128, 171);
+            roundedButton1.Name = "roundedButton1";
+            roundedButton1.Size = new Size(201, 59);
+            roundedButton1.TabIndex = 5;
+            roundedButton1.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton1.UseVisualStyleBackColor = false;
+            // 
+            // roundedButton2
+            // 
+            roundedButton2.BackColor = Color.White;
+            roundedButton2.FlatAppearance.BorderSize = 0;
+            roundedButton2.FlatStyle = FlatStyle.Flat;
+            roundedButton2.ForeColor = Color.Black;
+            roundedButton2.Location = new Point(348, 171);
+            roundedButton2.Name = "roundedButton2";
+            roundedButton2.Size = new Size(201, 59);
+            roundedButton2.TabIndex = 6;
+            roundedButton2.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton2.UseVisualStyleBackColor = false;
+            // 
+            // roundedButton3
+            // 
+            roundedButton3.BackColor = Color.White;
+            roundedButton3.FlatAppearance.BorderSize = 0;
+            roundedButton3.FlatStyle = FlatStyle.Flat;
+            roundedButton3.ForeColor = Color.Black;
+            roundedButton3.Location = new Point(128, 236);
+            roundedButton3.Name = "roundedButton3";
+            roundedButton3.Size = new Size(201, 59);
+            roundedButton3.TabIndex = 7;
+            roundedButton3.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton3.UseVisualStyleBackColor = false;
+            // 
+            // roundedButton4
+            // 
+            roundedButton4.BackColor = Color.White;
+            roundedButton4.FlatAppearance.BorderSize = 0;
+            roundedButton4.FlatStyle = FlatStyle.Flat;
+            roundedButton4.ForeColor = Color.Black;
+            roundedButton4.Location = new Point(348, 236);
+            roundedButton4.Name = "roundedButton4";
+            roundedButton4.Size = new Size(201, 59);
+            roundedButton4.TabIndex = 8;
+            roundedButton4.Text = "20260101-2000\r\n# 5226200222520\r\n\r\n";
+            roundedButton4.UseVisualStyleBackColor = false;
             // 
             // FrmAuditar
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1386, 718);
+            ClientSize = new Size(1584, 957);
             Controls.Add(splitContainer1);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmAuditar";
             Text = "Usuarios";
             panel1.ResumeLayout(false);
@@ -433,8 +389,6 @@ namespace LD.Forms.Views.Forms
             splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
-            flowLayoutPanel2.ResumeLayout(false);
-            flowLayoutPanel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
@@ -466,12 +420,9 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn Lote;
         private DataGridViewTextBoxColumn Ubi;
         private PictureBox pictureBox1;
-        private FlowLayoutPanel flowLayoutPanel2;
-        private FlowLayoutPanel flowLayoutPanel3;
-        private Button button24;
-        private Button button25;
-        private Button button21;
-        private Button button22;
-        private Button button23;
+        private Controls.RoundedButton roundedButton1;
+        private Controls.RoundedButton roundedButton4;
+        private Controls.RoundedButton roundedButton3;
+        private Controls.RoundedButton roundedButton2;
     }
 }

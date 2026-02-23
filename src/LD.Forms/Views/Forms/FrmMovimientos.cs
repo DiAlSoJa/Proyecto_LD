@@ -7,32 +7,27 @@ using System.Text;
 using System.Windows.Forms;
 using LD.Forms.Views.Dialogs;
 using LD.Forms.Classes;
+using LD.Forms.Services.FormServices;
 
 namespace LD.Forms.Views.Forms
 {
     public partial class FrmMovimientos : Form
     {
-        private Formularios formularios;
-        public FrmMovimientos()
+        private readonly DialogFormService _dialogFormService;
+        public FrmMovimientos(DialogFormService dialogFormService)
         {
             InitializeComponent();
+            _dialogFormService = dialogFormService;
         }
-        public FrmMovimientos(Formularios f)
-        {
-            InitializeComponent();
-            this.formularios = f;
-        }
-
         private void button1_Click(object sender, EventArgs e)
-        {
-            FrmNuevoArticulo frmNuevoCliente = new FrmNuevoArticulo();
-            frmNuevoCliente.ShowDialog();
+        { 
+            _dialogFormService.ShowDialog<FrmNuevoCliente>();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            FrmNuevoArticuloMasiva frmNuevoArticuloMasiva = new FrmNuevoArticuloMasiva();
-            frmNuevoArticuloMasiva.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoArticuloMasiva>();
+
         }
     }
 }
