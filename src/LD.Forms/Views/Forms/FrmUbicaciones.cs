@@ -1,6 +1,7 @@
 ﻿using LD.Forms.Views.Dialogs;
 using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
 
 namespace LD.Forms.Views.Forms
 {
@@ -8,26 +9,29 @@ namespace LD.Forms.Views.Forms
     {
         private Formularios formularios;
         private readonly LocationService _locationService;
-        public FrmUbicaciones()
-        {
-            InitializeComponent();
-        }
-        public FrmUbicaciones(LocationService locationService)
+        private readonly DialogFormService _dialogFormService;
+
+        public FrmUbicaciones(LocationService locationService, DialogFormService dialogFormService)
         {
             InitializeComponent();
             _locationService = locationService;
+            _dialogFormService = dialogFormService;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            _dialogFormService.ShowDialog<FrmNuevaUbicacion>();
             FrmNuevaUbicacion frmNuevoCliente = new FrmNuevaUbicacion();
             frmNuevoCliente.ShowDialog();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            FrmNuevaUbicacionMasiva frmNuevaUbicacionMasiva = new FrmNuevaUbicacionMasiva();
-            frmNuevaUbicacionMasiva.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevaUbicacionMasiva>(config =>
+            {
+
+            });
+
         }
 
         protected override async void OnShown(EventArgs e)
@@ -57,6 +61,14 @@ namespace LD.Forms.Views.Forms
         private async void btnActualizar_Click(object sender, EventArgs e)
         {
             await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            _dialogFormService.ShowDialog<FrmNuevaUbicacion>(config =>
+            {
+
+            });
         }
     }
 }

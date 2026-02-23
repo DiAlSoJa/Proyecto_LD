@@ -1,13 +1,16 @@
 ﻿using LD.Contracts.Client;
-using LD.Forms.Views.Dialogs;
 using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
+using LD.Forms.Views.Dialogs;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.Forms.Views.Forms
 {
     public partial class FrmClientes : Form
     {
         private readonly ClientService _clientService;
+        private readonly DialogFormService _dialogFormService;
         private Panel _gridContainer;
         private GridFilter<ClientDto>_gridFilter;
 
@@ -15,25 +18,29 @@ namespace LD.Forms.Views.Forms
         private BindingSource _clientsBinding = new();
         private ClientDto? selectedClient { get; set; }
 
-        public FrmClientes(ClientService clientService)
+        public FrmClientes(ClientService clientService, DialogFormService dialogFormService)
         {
             InitializeComponent();
             _clientService = clientService;
             dataGridView1.DataSource = _clientsBinding;
             _gridFilter = new GridFilter<ClientDto>(dataGridView1, _clientsBinding);
-
+            _dialogFormService = dialogFormService;
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente();
-            //frmNuevoCliente.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoCliente>();
         }
+        
 
         private void EditBtn_Click(object sender, EventArgs e)
         {
-            //FrmNuevoCliente frmNuevoCliente = new FrmNuevoCliente(selectedClient);
-            //frmNuevoCliente.ShowDialog();
+            if (selectedClient is null) return;
+            _dialogFormService.ShowDialog<FrmNuevoCliente>(frm =>
+            {
+                frm.SetClient(selectedClient);
+            });
         }
         protected override async void OnShown(EventArgs e)
         {

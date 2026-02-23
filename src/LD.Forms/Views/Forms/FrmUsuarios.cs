@@ -8,32 +8,30 @@ using System.Windows.Forms;
 
 using LD.Forms.Views.Dialogs;
 using LD.Forms.Classes;
+using LD.Forms.Services.FormServices;
 
 namespace LD.Forms.Views.Forms
 {
     public partial class FrmUsuarios : Form
     {
-        private Formularios formularios;
-        public FrmUsuarios()
+        private readonly DialogFormService _dialogFormService;
+        public FrmUsuarios(DialogFormService dialogFormService)
         {
             InitializeComponent();
-        }
-        public FrmUsuarios(Formularios f)
-        {
-            InitializeComponent();
-            this.formularios = f;
+            _dialogFormService = dialogFormService;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FrmNuevoUsuario frmNuevo = new FrmNuevoUsuario();
-            frmNuevo.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoUsuario>();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            FrmNuevoArticuloMasiva frmNuevoArticuloMasiva = new FrmNuevoArticuloMasiva();
-            frmNuevoArticuloMasiva.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoUsuario>(config=>{
+
+            });
+            
         }
     }
 }

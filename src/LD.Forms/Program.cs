@@ -65,6 +65,8 @@ namespace LD
             services.AddSingleton<TabService>();
             services.AddSingleton<NavigationService>();
             services.AddSingleton<DialogMessageService>();
+            services.AddSingleton<DialogFormService>();
+
 
             // 🔹 Forms
             services.AddTransient<FrmPrincipal>();

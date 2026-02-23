@@ -2,6 +2,7 @@
 using LD.Contracts.Project;
 using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -20,23 +21,27 @@ namespace LD.Forms.Views.Forms
         private BindingSource _projectsBinding = new();
         private ProjectDto? selectedProject { get; set; }
         private GridFilter<ProjectDto> _gridFilter;
+        private readonly DialogFormService _dialogFormService;
 
-        public FrmProyectos(ProjectService projectService)
+        public FrmProyectos(ProjectService projectService,DialogFormService dialogFormService)
         {
             InitializeComponent();
             _projectService = projectService;
             dataGridView1.DataSource = _projectsBinding;
+            _dialogFormService = dialogFormService;
             _gridFilter = new GridFilter<ProjectDto>(dataGridView1, _projectsBinding);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FrmNuevoProyecto frmNuevoCliente = new FrmNuevoProyecto();
-            frmNuevoCliente.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoProyecto>();
         }
         private void EditBtn_Click(object sender, EventArgs e)
         {
-
+            _dialogFormService.ShowDialog<FrmNuevoProyecto>(frm =>
+            {
+            
+            });
         }
         protected override async void OnShown(EventArgs e)
         {

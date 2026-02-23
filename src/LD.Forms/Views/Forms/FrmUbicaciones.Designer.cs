@@ -116,6 +116,7 @@ namespace LD.Forms.Views.Forms
             button3.TabIndex = 2;
             button3.Text = "Editar";
             button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // flowLayoutPanel2
             // 

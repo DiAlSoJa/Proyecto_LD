@@ -3,6 +3,7 @@ using LD.Contracts.Client;
 using LD.Contracts.Item;
 using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -20,23 +21,27 @@ namespace LD.Forms.Views.Forms
         private BindingSource _itemsBinding = new();
         private ItemDto? selectedItem { get; set; }
         private GridFilter<ItemDto> _gridFilter;
-
-        public FrmArticulos(ItemService itemService)
+        private readonly DialogFormService _dialogFormService;
+        public FrmArticulos(ItemService itemService,DialogFormService dialogFormService)
         {
             InitializeComponent();
             _itemService = itemService;
             dataGridView1.DataSource = _itemsBinding;
+            _dialogFormService = dialogFormService;
             _gridFilter = new GridFilter<ItemDto>(dataGridView1, _itemsBinding);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FrmNuevoArticulo frmNuevoCliente = new FrmNuevoArticulo();
-            frmNuevoCliente.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoArticulo>();
+       
         }
         private void EditBtn_Click(object sender, EventArgs e)
         {
+            _dialogFormService.ShowDialog<FrmNuevoArticulo>(config =>
+            {
 
+            });
         }
         private void button4_Click(object sender, EventArgs e)
         {

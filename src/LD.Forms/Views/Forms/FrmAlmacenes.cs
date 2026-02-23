@@ -2,6 +2,7 @@
 using LD.Contracts.Warehouse;
 using LD.Forms.Classes;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -19,25 +20,29 @@ namespace LD.Forms.Views.Forms
         private WarehouseDto? selectedWarehouse { get; set; }
         private BindingSource _warehousesBinding = new();
         private GridFilter<WarehouseDto> _gridFilter;
+        private readonly DialogFormService _dialogFormService;
 
-
-        public FrmAlmacenes(WarehouseService warehouseService)
+        public FrmAlmacenes(WarehouseService warehouseService,DialogFormService dialogFormService)
         {
             InitializeComponent();
             _warehouseService = warehouseService;
+            _dialogFormService = dialogFormService;
             _gridFilter = new GridFilter<WarehouseDto>(dataGridView1, _warehousesBinding);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FrmNuevoAlmacen frmNuevoCliente = new FrmNuevoAlmacen();
-            frmNuevoCliente.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoAlmacen>();
+          
         }
 
         private void EditBtn_Click(object sender, EventArgs e)
         {
-            FrmNuevoAlmacen frmNuevoCliente = new FrmNuevoAlmacen();
-            frmNuevoCliente.ShowDialog();
+            _dialogFormService.ShowDialog<FrmNuevoAlmacen>(config =>
+            {
+
+            });
+       
         }
 
         private async Task CargarDatosAsync()

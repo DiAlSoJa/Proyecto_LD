@@ -27,24 +27,17 @@ namespace LD.Forms.Views.Dialogs
             _clientService = clientService;
         }
 
-        //public FrmNuevoCliente(ClientDto client)
-        //{
-        //    InitializeComponent();
-        //    _clientService = new ClientService();
-        //    ClientSelected = client;
-        //    IsEditing = true;
-        //    btnSave.Text = "Actualizar";
-        //}
-
+        public async void SetClient(ClientDto client)
+        {
+            ClientSelected = client;
+            await CargarDatosAsync();
+        }
 
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            if(IsEditing)
-                await CargarDatosAsync();
-
-            //await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+            
 
         }
 
