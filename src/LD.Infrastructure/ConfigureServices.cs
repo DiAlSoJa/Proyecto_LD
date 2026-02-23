@@ -5,6 +5,7 @@ using LD.Application.Features.Auth.Commands;
 using LD.Infrastructure.Persistence;
 using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
+using LD.Infrastructure.Workers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +42,8 @@ public static class ConfigureServices
 
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));
+
+        services.AddHostedService<KeepAliveWorker>();
 
         return services;
     }
