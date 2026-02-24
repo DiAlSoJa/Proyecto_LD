@@ -38,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\LD.Client\LD.Client.csproj" />
     <ProjectReference Include="..\LD.Contracts\LD.Contracts.csproj" />
   </ItemGroup>
 
