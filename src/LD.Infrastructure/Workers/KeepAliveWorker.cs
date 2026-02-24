@@ -21,14 +21,20 @@ namespace LD.Infrastructure.Workers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
-                using var scope = _scopeFactory.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
 
-                await context.Database.ExecuteSqlRawAsync("SELECT 1");
+                    await context.Database.ExecuteSqlRawAsync("SELECT 1");
 
-                await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
+                }
+
+            }catch (Exception ex)
+            {
             }
         }
     }

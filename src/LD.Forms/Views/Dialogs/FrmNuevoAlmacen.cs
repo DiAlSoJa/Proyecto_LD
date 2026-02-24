@@ -116,6 +116,14 @@ namespace LD.Forms.Views.Dialogs
         {
             return new WarehouseRequest
             {
+                WarehouseName = txtWarehouseName.Text,
+                Address = txtAddress.Text,
+                Neighborhood = txtcolonia.Text,
+                City = txtCity.Text,
+                ZipCode = txtZipCode.Text,
+                Capacity = int.TryParse(txtCapacity.Text, out int capacity) ? capacity : null,
+                IsProduction = isProduction.Checked,
+                IsActive = isActive.Checked
 
             };
         }

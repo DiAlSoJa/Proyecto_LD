@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            textBox3 = new TextBox();
+            txtCapacity = new TextBox();
             label3 = new Label();
-            checkBox2 = new CheckBox();
-            checkBox1 = new CheckBox();
-            textBox8 = new TextBox();
+            isProduction = new CheckBox();
+            isActive = new CheckBox();
+            txtZipCode = new TextBox();
             label8 = new Label();
-            textBox7 = new TextBox();
+            txtCity = new TextBox();
             label7 = new Label();
-            textBox6 = new TextBox();
+            txtcolonia = new TextBox();
             label6 = new Label();
-            textBox5 = new TextBox();
+            txtAddress = new TextBox();
             label5 = new Label();
-            textBox2 = new TextBox();
+            txtWarehouseName = new TextBox();
             label2 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
@@ -58,122 +58,113 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Controls.Add(textBox3);
+            panel1.Controls.Add(txtCapacity);
             panel1.Controls.Add(label3);
-            panel1.Controls.Add(checkBox2);
-            panel1.Controls.Add(checkBox1);
-            panel1.Controls.Add(textBox8);
+            panel1.Controls.Add(isProduction);
+            panel1.Controls.Add(isActive);
+            panel1.Controls.Add(txtZipCode);
             panel1.Controls.Add(label8);
-            panel1.Controls.Add(textBox7);
+            panel1.Controls.Add(txtCity);
             panel1.Controls.Add(label7);
-            panel1.Controls.Add(textBox6);
+            panel1.Controls.Add(txtcolonia);
             panel1.Controls.Add(label6);
-            panel1.Controls.Add(textBox5);
+            panel1.Controls.Add(txtAddress);
             panel1.Controls.Add(label5);
-            panel1.Controls.Add(textBox2);
+            panel1.Controls.Add(txtWarehouseName);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-
             panel1.Size = new Size(733, 404);
             panel1.TabIndex = 0;
             panel1.MouseDown += panel1_MouseDown;
             panel1.MouseMove += panel1_MouseMove;
             panel1.MouseUp += panel1_MouseUp;
             // 
-            // textBox3
+            // txtCapacity
             // 
-            textBox3.BorderStyle = BorderStyle.FixedSingle;
-            textBox3.Font = new Font("Segoe UI", 9.75F);
-
-            textBox3.Location = new Point(182, 239);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(109, 29);
-            textBox3.TabIndex = 7;
+            txtCapacity.BorderStyle = BorderStyle.FixedSingle;
+            txtCapacity.Font = new Font("Segoe UI", 9.75F);
+            txtCapacity.Location = new Point(182, 239);
+            txtCapacity.Name = "txtCapacity";
+            txtCapacity.Size = new Size(109, 29);
+            txtCapacity.TabIndex = 7;
             // 
             // label3
             // 
             label3.AutoSize = true;
-
             label3.Location = new Point(21, 246);
             label3.Name = "label3";
             label3.Size = new Size(83, 20);
             label3.TabIndex = 37;
             label3.Text = "Capacidad:";
             // 
-            // checkBox2
+            // isProduction
             // 
-            checkBox2.AutoSize = true;
-
-            checkBox2.Location = new Point(182, 278);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(105, 24);
-            checkBox2.TabIndex = 8;
-            checkBox2.Text = "Producción";
-            checkBox2.UseVisualStyleBackColor = true;
+            isProduction.AutoSize = true;
+            isProduction.Location = new Point(182, 278);
+            isProduction.Name = "isProduction";
+            isProduction.Size = new Size(105, 24);
+            isProduction.TabIndex = 8;
+            isProduction.Text = "Producción";
+            isProduction.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // isActive
             // 
-            checkBox1.AutoSize = true;
-
-            checkBox1.Location = new Point(182, 308);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(73, 24);
-            checkBox1.TabIndex = 9;
-            checkBox1.Text = "Activo";
-            checkBox1.UseVisualStyleBackColor = true;
+            isActive.AutoSize = true;
+            isActive.Location = new Point(182, 308);
+            isActive.Name = "isActive";
+            isActive.Size = new Size(73, 24);
+            isActive.TabIndex = 9;
+            isActive.Text = "Activo";
+            isActive.UseVisualStyleBackColor = true;
             // 
-            // textBox8
+            // txtZipCode
             // 
-            textBox8.BorderStyle = BorderStyle.FixedSingle;
-            textBox8.Font = new Font("Segoe UI", 9.75F);
-
-            textBox8.Location = new Point(182, 200);
-            textBox8.Name = "textBox8";
-            textBox8.Size = new Size(109, 29);
-            textBox8.TabIndex = 6;
+            txtZipCode.BorderStyle = BorderStyle.FixedSingle;
+            txtZipCode.Font = new Font("Segoe UI", 9.75F);
+            txtZipCode.Location = new Point(182, 200);
+            txtZipCode.Name = "txtZipCode";
+            txtZipCode.Size = new Size(109, 29);
+            txtZipCode.TabIndex = 6;
             // 
             // label8
             // 
             label8.AutoSize = true;
-
             label8.Location = new Point(21, 207);
             label8.Name = "label8";
             label8.Size = new Size(29, 20);
             label8.TabIndex = 33;
             label8.Text = "CP:";
             // 
-            // textBox7
+            // txtCity
             // 
-            textBox7.BorderStyle = BorderStyle.FixedSingle;
-            textBox7.Font = new Font("Segoe UI", 9.75F);
-
-            textBox7.Location = new Point(182, 164);
-            textBox7.Name = "textBox7";
-            textBox7.Size = new Size(402, 29);
-            textBox7.TabIndex = 5;
+            txtCity.BorderStyle = BorderStyle.FixedSingle;
+            txtCity.Font = new Font("Segoe UI", 9.75F);
+            txtCity.Location = new Point(182, 164);
+            txtCity.Name = "txtCity";
+            txtCity.Size = new Size(402, 29);
+            txtCity.TabIndex = 5;
             // 
             // label7
             // 
             label7.AutoSize = true;
-
             label7.Location = new Point(21, 172);
             label7.Name = "label7";
             label7.Size = new Size(59, 20);
             label7.TabIndex = 31;
             label7.Text = "Ciudad:";
             // 
-            // textBox6
+            // txtcolonia
             // 
-            textBox6.BorderStyle = BorderStyle.FixedSingle;
-            textBox6.Font = new Font("Segoe UI", 9.75F);
-            textBox6.Location = new Point(182, 130);
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(402, 29);
-            textBox6.TabIndex = 4;
+            txtcolonia.BorderStyle = BorderStyle.FixedSingle;
+            txtcolonia.Font = new Font("Segoe UI", 9.75F);
+            txtcolonia.Location = new Point(182, 130);
+            txtcolonia.Name = "txtcolonia";
+            txtcolonia.Size = new Size(402, 29);
+            txtcolonia.TabIndex = 4;
             // 
             // label6
             // 
@@ -184,14 +175,14 @@
             label6.TabIndex = 29;
             label6.Text = "Colonia:";
             // 
-            // textBox5
+            // txtAddress
             // 
-            textBox5.BorderStyle = BorderStyle.FixedSingle;
-            textBox5.Font = new Font("Segoe UI", 9.75F);
-            textBox5.Location = new Point(182, 95);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(402, 29);
-            textBox5.TabIndex = 3;
+            txtAddress.BorderStyle = BorderStyle.FixedSingle;
+            txtAddress.Font = new Font("Segoe UI", 9.75F);
+            txtAddress.Location = new Point(182, 95);
+            txtAddress.Name = "txtAddress";
+            txtAddress.Size = new Size(402, 29);
+            txtAddress.TabIndex = 3;
             // 
             // label5
             // 
@@ -202,15 +193,14 @@
             label5.TabIndex = 27;
             label5.Text = "Domicilio:";
             // 
-            // textBox2
+            // txtWarehouseName
             // 
-            textBox2.BorderStyle = BorderStyle.FixedSingle;
-            textBox2.Font = new Font("Segoe UI", 9.75F);
-
-            textBox2.Location = new Point(182, 60);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(527, 29);
-            textBox2.TabIndex = 2;
+            txtWarehouseName.BorderStyle = BorderStyle.FixedSingle;
+            txtWarehouseName.Font = new Font("Segoe UI", 9.75F);
+            txtWarehouseName.Location = new Point(182, 60);
+            txtWarehouseName.Name = "txtWarehouseName";
+            txtWarehouseName.Size = new Size(527, 29);
+            txtWarehouseName.TabIndex = 2;
             // 
             // label2
             // 
@@ -220,7 +210,7 @@
             label2.Size = new Size(152, 20);
             label2.TabIndex = 21;
             label2.Text = "Nombre del almacén:";
-
+            // 
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.BackColor = SystemColors.Control;
@@ -248,16 +238,15 @@
             // 
             // btnSave
             // 
-
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
             btnSave.Location = new Point(370, 8);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(171, 35);
-            btnSave.Click += btnSave_Click;
             btnSave.TabIndex = 10;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // panel2
             // 
@@ -326,19 +315,19 @@
         private Button button2;
         private Button btnSave;
         private FlowLayoutPanel flowLayoutPanel1;
-        private CheckBox checkBox1;
-        private TextBox textBox8;
+        private CheckBox isActive;
+        private TextBox txtZipCode;
         private Label label8;
-        private TextBox textBox7;
+        private TextBox txtCity;
         private Label label7;
-        private TextBox textBox6;
+        private TextBox txtcolonia;
         private Label label6;
-        private TextBox textBox5;
+        private TextBox txtAddress;
         private Label label5;
-        private TextBox textBox2;
+        private TextBox txtWarehouseName;
         private Label label2;
-        private CheckBox checkBox2;
-        private TextBox textBox3;
+        private CheckBox isProduction;
+        private TextBox txtCapacity;
         private Label label3;
     }
 }

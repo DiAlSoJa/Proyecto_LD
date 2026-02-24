@@ -22,7 +22,7 @@ public static class ConfigureServices
             typeof(ValidationBehavior<,>)
         );
 
-        
+        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
 
         return services;
     }

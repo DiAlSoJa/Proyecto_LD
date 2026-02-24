@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD.Api", "src\LD.Api\LD.Api
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD.Forms", "src\LD.Forms\LD.Forms.csproj", "{5878472C-7F45-44B1-2CDD-AA2BFDFB849F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiAppLogin", "src\LD.MobileApp\MauiAppLogin.csproj", "{93E320D3-33A8-6AA0-55D1-9D545087C5AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD.MobileApp", "src\LD.MobileApp\LD.MobileApp.csproj", "{93E320D3-33A8-6AA0-55D1-9D545087C5AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD.Contracts", "src\LD.Contracts\LD.Contracts.csproj", "{7C71CCFB-9A69-37C6-D857-5B2359DDAD34}"
 EndProject
