@@ -16,6 +16,8 @@ namespace LD.Forms.Views.Dialogs
         {
             InitializeComponent();
             EnableDrag(panel1);
+            EnableDrag(panel2);
+
         }
 
         public void SetMessage(string message)

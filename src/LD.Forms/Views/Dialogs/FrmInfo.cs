@@ -15,9 +15,11 @@ namespace LD.Forms.Views.Dialogs
         public FrmInfo()
         {
             InitializeComponent();
+            EnableDrag(panel2);
             EnableDrag(panel1);
+
         }
-     
+
         private void btnAceptar_Click(object sender, EventArgs e)
         {
             this.Close();

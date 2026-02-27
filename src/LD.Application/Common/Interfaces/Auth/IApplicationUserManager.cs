@@ -1,4 +1,5 @@
-﻿using LD.Contracts.User;
+﻿using LD.Contracts.Requests;
+using LD.Contracts.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,13 @@ namespace LD.Application.Common.Interfaces.Auth
 {
     public interface IApplicationUserManager
     {
-        //Task<IdentityResponse> RegisterUserAsync(ApplicationUser user);
+        Task<bool> CreateUserAsync(UserRequest user);
         Task<UserDto?> FindByEmailAsync(string email);
         Task<UserDto?> GetUserByNameAsync(string userName);
         Task<UserDto?> GetUserByIdAsync(string userId);
         //Task<IList<string>> GetRolesAsync(UserDto user);
         //Task<IList<Claim>> GetClaimsAsync(UserDto user);
-        //Task<UserDto> GetUserAsync(ClaimsPrincipal claimsPrincipal);
+        Task<List<UserDto>> GetUsersAsync();
         //Task<IdentityResponse> AddToRoleAsync(ApplicationUser user, string roleName);
         //Task<IdentityResponse> AddToRolesAsync(ApplicationUser user, List<string> roleNames);
         //Task<IdentityResponse> RemoveFromRoleAsync(ApplicationUser user, string roleName);
@@ -24,7 +25,7 @@ namespace LD.Application.Common.Interfaces.Auth
         //Task<IdentityResponse> AddClaimsAsync(ApplicationUser user, List<Claim> claims);
         //Task<IdentityResponse> AddClaimAsync(ApplicationUser user, Claim claim);
         //Task<IdentityResponse> RemoveClaimsAsync(ApplicationUser user, List<Claim> claims);
-        //Task<IdentityResponse> UpdateAsync(ApplicationUser user);
+        Task<bool> UpdateAsync(UserRequest user);
         //Task<IdentityResponse> HasClaimAsync(ApplicationUser user, Claim claim);
         //Task<IdentityResponse> CheckPasswordAsync(ApplicationUser user, string password);
 

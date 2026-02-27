@@ -58,9 +58,6 @@ namespace LD.Forms.Views.Forms
             pictureBox1.Size = new Size(895, 591);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
-            pictureBox1.MouseDown += panel1_MouseDown;
-            pictureBox1.MouseMove += panel1_MouseMove;
-            pictureBox1.MouseUp += panel1_MouseUp;
             // 
             // label2
             // 

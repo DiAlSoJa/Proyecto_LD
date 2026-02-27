@@ -2,6 +2,7 @@
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
+using LD.Forms.Views.Common;
 using LD.Forms.Views.Dialogs;
 using LD.Forms.Views.Exceptions;
 using LD.Forms.Views.Forms;
@@ -9,7 +10,7 @@ using LD.Forms.Views.Interfaces;
 
 namespace LD.Forms.Views.Forms
 {
-    public partial class FrmLogin : Form, ILoginView
+    public partial class FrmLogin : DraggableForm, ILoginView
     {
         private bool mouseDown;
         private Point lastLocation;
@@ -26,6 +27,9 @@ namespace LD.Forms.Views.Forms
             InitializeComponent();
             _authService = authService;
             _dialogMessageService = dialogMessageService;
+            EnableDrag(panel1);
+            EnableDrag(pictureBox1);
+
         }
 
         public string Usuario => txtUsuario.Text;

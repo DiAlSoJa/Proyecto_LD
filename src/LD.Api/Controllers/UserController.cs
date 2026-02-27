@@ -1,8 +1,12 @@
-﻿using LD.Application.Features.Auth.Commands;
+﻿using LD.Api.Common.Results;
+using LD.Application.Features.Auth.Commands;
+using LD.Application.Features.User.Commands;
+using LD.Application.Features.User.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LD.Api.Controllers
 {
@@ -17,33 +21,26 @@ namespace LD.Api.Controllers
         {
             _mediator = mediator;
         }
+
         [HttpGet]
-        public async Task<IActionResult> GetContact()
+        public async Task<IActionResult> GetUsers([FromQuery] GetUsersQuery query)
+            => ResultExtensions.ToActionResult(await _mediator.Send(query));
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserById(int userId, [FromQuery] GetUserByIdQuery query)
+            => ResultExtensions.ToActionResult(await _mediator.Send(query));
+        
+        [HttpPost]
+        public async Task<IActionResult> CreatUser([FromBody] CreateUserCommand command)
+            => ResultExtensions.ToActionResult(await _mediator.Send(command));
+
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateContact(string userId, [FromBody] UpdateUserCommand command)
         {
-            return Ok("get Contact");
+            command.UserId = userId;
+            return ResultExtensions.ToActionResult(await _mediator.Send(command));
 
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetContact(int id)
-        {
-
-            return Ok("GetContactId");
-        }
-
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContact()
-        {
-            return Ok("update Contact");
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContact(int id)
-        {
-            return Ok("Delete Contact");
-        }
-
-
+        
     }
 }

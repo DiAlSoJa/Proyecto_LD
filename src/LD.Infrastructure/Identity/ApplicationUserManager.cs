@@ -1,6 +1,9 @@
 ﻿using LD.Application.Common.Interfaces.Auth;
+using LD.Application.Common.Models;
+using LD.Contracts.Requests;
 using LD.Contracts.User;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +74,61 @@ namespace LD.Infrastructure
             };
         }
 
+        public async Task<List<UserDto>> GetUsersAsync()
+        {
+            return await _userManager.Users.Select(u => new UserDto
+            {
+                Id= u.Id,
+                UserName=u.UserName,
+                Email= u.Email,
+                Name =u.FullName
+            })
+            .ToListAsync(); 
+        }
+
+        public async Task<bool> CreateUserAsync(UserRequest user)
+        {
+            var userExists = await GetUserByNameAsync(user.Username);
+            //var userExists = await _userManager.FindByEmailAsync(email);
+            if (userExists != null)
+                return false;
+
+            var newUser = new ApplicationUser
+            {
+                UserName = user.Username,
+                Email = user.Email,
+                IsActive = user.IsActive,
+                FullName = user.Name
+            };
+
+            var result = await _userManager.CreateAsync(newUser, user.Password);
+
+            if (!result.Succeeded)
+                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+            return true;
+        }
+        public async Task<bool> UpdateAsync(UserRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.UserId??"");
+
+            if (user is null)
+                return false;
+
+            // 🔹 Actualizar propiedades
+            user.UserName = request.Username;
+            user.Email = request.Email;
+            user.IsActive = request.IsActive;
+            user.FullName = request.Name;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+            return true;
+        }
+
         //public async Task<IList<string>> GetRolesAsync(ApplicationUser user)
         //{
         //    return await _userManager.GetRolesAsync(user);
@@ -83,7 +141,7 @@ namespace LD.Infrastructure
 
         //public async Task<UserDto> GetUserAsync(ClaimsPrincipal claimsPrincipal)
         //{
-        //    return await _userManager.GetUserAsync(claimsPrincipal);
+        //   
         //}
 
 
@@ -134,11 +192,6 @@ namespace LD.Infrastructure
         //    return rs.ToIdentityResponse();
         //}
 
-        //public async Task<IdentityResponse> UpdateAsync(ApplicationUser user)
-        //{
-        //    var rs = await _userManager.UpdateAsync(user);
-        //    return rs.ToIdentityResponse();
-        //}
 
         //public async Task<IdentityResponse> HasClaimAsync(ApplicationUser user, Claim claim)
         //{
