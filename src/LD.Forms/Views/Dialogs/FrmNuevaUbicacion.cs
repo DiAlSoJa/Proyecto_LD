@@ -78,8 +78,8 @@ namespace LD.Forms.Views.Dialogs
         private Task<ApiResponseDto<string>> CreateClient(LocationRequest request) =>
    _locationService.CreateLocation(request);
 
-        private Task<ApiResponseDto<string>> EditClient(int clientId, LocationRequest request) =>
-            _locationService.UpdateLocation(clientId, request);
+        private Task<ApiResponseDto<string>> EditClient(int locationId, LocationRequest request) =>
+            _locationService.UpdateLocation(locationId, request);
         private async Task<ApiResponseDto<string>> SaveClient(LocationRequest request)
         {
             return LocationSelected != null
@@ -90,7 +90,30 @@ namespace LD.Forms.Views.Dialogs
         {
             return new LocationRequest
             {
+                WarehouseId = cmbAlmacen.SelectedValue as int?,
+                LocationName = txtNombreUbicacion.Text,
+                IsActive = checkIsActive.Checked,
+                IsFiscal = checkIsFiscal.Checked,
+                HasControlledTemperature  = checkTemperatura.Checked,
 
+                Height = decimal.TryParse(txtAltoCm.Text,out decimal alto)?alto:null,
+                Width = decimal.TryParse(txtAnchoCm.Text, out decimal ancho) ? ancho : null,
+                Depth = decimal.TryParse(txtProfundidadCm.Text, out decimal profundidad) ? profundidad : null,
+
+                IsRack = radioRack.Checked,
+                IsCompartidoType = radioCompartido.Checked,
+
+                IsGeneral = radioGeneral.Checked,
+                IsCuarentena = radioCuarentena.Checked,
+                IsEmbarque = radioEmbarque.Checked,
+                IsCompartido = radioCompartido.Checked,
+                IsReciboYEmbarque = radioReciboEmbarque.Checked,
+
+                IsDoble = radioDoble.Checked,
+                IsSencillo = radioSencillo.Checked,
+
+                HasPaso = checkPaso.Checked,
+                HasCortina = checkCortina.Checked
             };
         }
         private void ShowResult(ApiResponseDto<string> result)

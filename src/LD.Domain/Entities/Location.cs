@@ -30,7 +30,10 @@ namespace LD.Domain.Entities
         // ===== Tipo =====
 
         public bool IsRack { get; set; }
+        public bool IsCompartidoType { get; set; }
 
+
+        // ===== SubTipo =====
         public bool IsGeneral { get; set; }
 
         public bool IsCuarentena { get; set; }

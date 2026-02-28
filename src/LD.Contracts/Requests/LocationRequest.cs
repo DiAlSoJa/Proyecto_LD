@@ -11,6 +11,9 @@ namespace LD.Contracts.Requests
         public int? LocationId { get; set; }
 
         public int? WarehouseId { get; set; }
+        public string? LocationName { get; set; }
+        public bool IsFiscal { get; set; }
+        public bool HasControlledTemperature { get; set; }
         // Dimensions (cm)
         public decimal? Height { get; set; }
 
@@ -22,6 +25,9 @@ namespace LD.Contracts.Requests
 
         public bool IsRack { get; set; }
 
+        public bool IsCompartidoType { get; set; }
+
+        // ===== Tipo =====
         public bool IsGeneral { get; set; }
 
         public bool IsCuarentena { get; set; }
