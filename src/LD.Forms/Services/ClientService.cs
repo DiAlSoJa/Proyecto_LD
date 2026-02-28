@@ -1,6 +1,6 @@
 ﻿
 using LD.Contracts.Client;
-using LD.Contracts.Requests;
+using LD.Contracts.Requests.Client;
 using LD.Forms.Classes;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Configuration;

@@ -16,8 +16,6 @@ namespace LD.Forms.Views.Dialogs
 {
     public partial class FrmNuevoAlmacen : DraggableForm
     {
-        private bool mouseDown;
-        private Point lastLocation;
         private WarehouseDto? WarehouseSelected;
         private WarehouseService? _warehouseService;
 

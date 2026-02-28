@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LD.Contracts.Client;
-using LD.Contracts.Requests;
+using LD.Contracts.Requests.Client;
 using LD.Domain.Entities;
 using System;
 using System.Collections.Generic;

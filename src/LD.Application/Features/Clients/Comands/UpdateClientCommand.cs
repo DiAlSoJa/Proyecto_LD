@@ -2,7 +2,7 @@
 using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Results;
-using LD.Contracts.Requests;
+using LD.Contracts.Requests.Client;
 using LD.Domain.Entities;
 using MediatR;
 using System.ComponentModel.DataAnnotations;

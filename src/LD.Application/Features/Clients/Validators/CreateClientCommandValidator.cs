@@ -17,13 +17,7 @@ public class CreateClientCommandValidator
             .NotEmpty().WithMessage("El nombre comercial es obligatorio.")
             .MaximumLength(150).WithMessage("El nombre comercial no puede exceder 150 caracteres.");
 
-        RuleFor(x => x.BusinessName)
-            .NotEmpty().WithMessage("La razón social es obligatoria.")
-            .MaximumLength(150).WithMessage("La razón social no puede exceder 150 caracteres.");
-
-        RuleFor(x => x.Rfc)
-            .NotEmpty().WithMessage("El RFC es obligatorio.")
-            .Length(12, 13).WithMessage("El RFC debe tener 12 o 13 caracteres.");
+    
 
         RuleFor(x => x.CommercialAddress)
             .NotEmpty().WithMessage("El domicilio comercial es obligatorio.")

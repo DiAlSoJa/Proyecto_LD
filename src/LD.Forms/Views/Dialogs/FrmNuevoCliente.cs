@@ -1,5 +1,5 @@
 ﻿using LD.Contracts.Client;
-using LD.Contracts.Requests;
+using LD.Contracts.Requests.Client;
 using LD.Forms.Classes;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
@@ -103,19 +103,43 @@ namespace LD.Forms.Views.Dialogs
                 ? await EditClient(ClientSelected?.Id ?? 0, request)
                 : await CreateClient(request);
         }
+
         private ClientRequest BuildRequest()
         {
+
             return new ClientRequest
             {
                 CommercialName = txtComercialName.Text.Trim(),
+                CommercialAddress = txtDomicilioComercial.Text.Trim(),
+                Neightbourhoud = txtColoniaComercial.Text.Trim(),
                 City = txtCiudadComercial.Text.Trim(),
                 ZipCode = txtCPComercial.Text.Trim(),
-                BusinessName = txtRazonSocial.Text.Trim(),
-                Rfc = txtRFC.Text.Trim(),
                 Phone = txtTelefonoComercial.Text.Trim(),
                 IsActive = checkIsActive.Checked,
-                CommercialAddress = txtDomicilioComercial.Text.Trim()
+                IsProvider = checkIsProvider.Checked,
+                FicalData = HasFiscalData()? new ClientFiscalDataRequest
+                {
+                    BusinessName = txtRazonSocial.Text.Trim(),
+                    Rfc = txtRFC.Text.Trim(),
+                    FiscalAddress = txtDomicilioFiscal.Text.Trim(),
+                    Neightbourhoud = txtColonia.Text.Trim(),
+                    City = txtCiudadFiscal.Text.Trim(),
+                    ZipCode = txtCPFiscal.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Phone = txtTelefonoFiscal.Text.Trim()
+                } :null
             };
+        }
+        public bool HasFiscalData()
+        {
+            return !string.IsNullOrWhiteSpace(txtRazonSocial.Text) &&
+                   !string.IsNullOrWhiteSpace(txtRFC.Text) &&
+                   !string.IsNullOrWhiteSpace(txtDomicilioFiscal.Text) &&
+                   !string.IsNullOrWhiteSpace(txtColonia.Text) &&
+                   !string.IsNullOrWhiteSpace(txtCiudadFiscal.Text) &&
+                   !string.IsNullOrWhiteSpace(txtCPFiscal.Text) &&
+                   !string.IsNullOrWhiteSpace(txtEmail.Text) &&
+                   !string.IsNullOrWhiteSpace(txtTelefonoFiscal.Text);
         }
         private void ShowResult(ApiResponseDto<string> result)
         {

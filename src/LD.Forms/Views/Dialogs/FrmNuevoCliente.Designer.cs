@@ -31,6 +31,7 @@
             panel1 = new Panel();
             tabControl1 = new TabControl();
             tabComercial = new TabPage();
+            checkIsProvider = new CheckBox();
             label3 = new Label();
             txtColoniaComercial = new TextBox();
             txtId = new TextBox();
@@ -47,6 +48,8 @@
             txtCiudadComercial = new TextBox();
             label7 = new Label();
             tabFiscal = new TabPage();
+            txtColonia = new TextBox();
+            label11 = new Label();
             txtEmail = new TextBox();
             label4 = new Label();
             txtCPFiscal = new TextBox();
@@ -67,9 +70,6 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
-            txtColonia = new TextBox();
-            label11 = new Label();
-            checkBox1 = new CheckBox();
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabComercial.SuspendLayout();
@@ -105,7 +105,7 @@
             // 
             // tabComercial
             // 
-            tabComercial.Controls.Add(checkBox1);
+            tabComercial.Controls.Add(checkIsProvider);
             tabComercial.Controls.Add(label3);
             tabComercial.Controls.Add(txtColoniaComercial);
             tabComercial.Controls.Add(txtId);
@@ -129,6 +129,16 @@
             tabComercial.TabIndex = 0;
             tabComercial.Text = "Información Comercial";
             tabComercial.UseVisualStyleBackColor = true;
+            // 
+            // checkIsProvider
+            // 
+            checkIsProvider.AutoSize = true;
+            checkIsProvider.Location = new Point(170, 305);
+            checkIsProvider.Name = "checkIsProvider";
+            checkIsProvider.Size = new Size(129, 24);
+            checkIsProvider.TabIndex = 9;
+            checkIsProvider.Text = "Proveedor VMI";
+            checkIsProvider.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -294,6 +304,24 @@
             tabFiscal.Text = "Información Fiscal";
             tabFiscal.UseVisualStyleBackColor = true;
             // 
+            // txtColonia
+            // 
+            txtColonia.BorderStyle = BorderStyle.FixedSingle;
+            txtColonia.Font = new Font("Segoe UI", 9.75F);
+            txtColonia.Location = new Point(185, 141);
+            txtColonia.Name = "txtColonia";
+            txtColonia.Size = new Size(402, 29);
+            txtColonia.TabIndex = 13;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(17, 144);
+            label11.Name = "label11";
+            label11.Size = new Size(63, 20);
+            label11.TabIndex = 57;
+            label11.Text = "Colonia:";
+            // 
             // txtEmail
             // 
             txtEmail.BorderStyle = BorderStyle.FixedSingle;
@@ -428,7 +456,7 @@
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
             flowLayoutPanel1.Location = new Point(0, 431);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
+            flowLayoutPanel1.Padding = new Padding(5);
             flowLayoutPanel1.Size = new Size(827, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
@@ -491,34 +519,6 @@
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
-            // 
-            // txtColonia
-            // 
-            txtColonia.BorderStyle = BorderStyle.FixedSingle;
-            txtColonia.Font = new Font("Segoe UI", 9.75F);
-            txtColonia.Location = new Point(185, 141);
-            txtColonia.Name = "txtColonia";
-            txtColonia.Size = new Size(402, 29);
-            txtColonia.TabIndex = 13;
-            // 
-            // label11
-            // 
-            label11.AutoSize = true;
-            label11.Location = new Point(17, 144);
-            label11.Name = "label11";
-            label11.Size = new Size(63, 20);
-            label11.TabIndex = 57;
-            label11.Text = "Colonia:";
-            // 
-            // checkBox1
-            // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(170, 305);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(129, 24);
-            checkBox1.TabIndex = 9;
-            checkBox1.Text = "Proveedor VMI";
-            checkBox1.UseVisualStyleBackColor = true;
             // 
             // FrmNuevoCliente
             // 
@@ -587,6 +587,6 @@
         private Label label4;
         private TextBox txtColonia;
         private Label label11;
-        private CheckBox checkBox1;
+        private CheckBox checkIsProvider;
     }
 }

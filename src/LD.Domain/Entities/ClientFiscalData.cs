@@ -16,7 +16,7 @@ namespace LD.Domain.Entities
         //razon social
         public string BusinessName { get; set; }
         public string Rfc { get; set; }
-        public string FiscalAddres { get; set; }
+        public string FiscalAddress { get; set; }
 
         [MaxLength(100)]
         public string Neightbourhoud { get; set; } = string.Empty;

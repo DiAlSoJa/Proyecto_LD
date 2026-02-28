@@ -14,10 +14,6 @@ namespace LD.Domain.Entities
         public int ClientId { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public string ClientNumber { get; set; }
-
-        [Required]
         [MaxLength(150)]
         public string CommercialName { get; set; }
 

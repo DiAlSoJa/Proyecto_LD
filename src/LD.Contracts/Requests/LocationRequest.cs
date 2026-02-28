@@ -10,7 +10,7 @@ namespace LD.Contracts.Requests
     {
         public int? LocationId { get; set; }
 
-        public int WarehouseId { get; set; }
+        public int? WarehouseId { get; set; }
         // Dimensions (cm)
         public decimal? Height { get; set; }
 
@@ -18,23 +18,32 @@ namespace LD.Contracts.Requests
 
         public decimal? Depth { get; set; }
 
-        public string Rack { get; set; } = string.Empty;
+        // ===== Tipo =====
 
-        public string? Aisle { get; set; }
-
-        public string? Level { get; set; }
-
-        public string? LocationCode { get; set; }
-
-        public string? Dimension { get; set; }
+        public bool IsRack { get; set; }
 
         public bool IsGeneral { get; set; }
 
-        public bool IsReceipt { get; set; }
+        public bool IsCuarentena { get; set; }
 
-        public bool IsQuarantine { get; set; }
+        public bool IsEmbarque { get; set; }
 
-        public bool IsShipping { get; set; }
+        public bool IsCompartido { get; set; }
+
+        public bool IsReciboYEmbarque { get; set; }
+
+        // ===== Tamaño =====
+
+        public bool IsDoble { get; set; }
+
+        public bool IsSencillo { get; set; }
+
+        // ===== Extras =====
+
+        public bool HasPaso { get; set; }
+
+        public bool HasCortina { get; set; }
+
 
         public bool IsActive { get; set; }
     }
