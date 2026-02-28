@@ -64,6 +64,9 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
+            groupBox5 = new GroupBox();
+            radioButton8 = new RadioButton();
+            radioButton9 = new RadioButton();
             panel1.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox4.SuspendLayout();
@@ -72,11 +75,13 @@
             flowLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            groupBox5.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(groupBox4);
             panel1.Controls.Add(groupBox2);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(cmbAlmacen);
@@ -96,16 +101,16 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(groupBox4);
+            groupBox2.Controls.Add(groupBox5);
             groupBox2.Controls.Add(groupBox3);
             groupBox2.Controls.Add(radioButton7);
             groupBox2.Controls.Add(radioButton6);
             groupBox2.Controls.Add(radioButton5);
             groupBox2.Controls.Add(radioButton4);
             groupBox2.Controls.Add(radioButton3);
-            groupBox2.Location = new Point(460, 210);
+            groupBox2.Location = new Point(460, 120);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(610, 198);
+            groupBox2.Size = new Size(610, 288);
             groupBox2.TabIndex = 46;
             groupBox2.TabStop = false;
             groupBox2.Text = "Tipo de ubicación";
@@ -114,7 +119,7 @@
             // 
             groupBox4.Controls.Add(checkBox4);
             groupBox4.Controls.Add(checkBox3);
-            groupBox4.Location = new Point(0, 135);
+            groupBox4.Location = new Point(460, 346);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new Size(610, 63);
             groupBox4.TabIndex = 47;
@@ -418,7 +423,6 @@
             // 
             // btnSave
             // 
-
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
             btnSave.Location = new Point(765, 8);
@@ -456,15 +460,45 @@
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.cancelar;
-
             pictureBox2.Location = new Point(1092, 0);
-
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 10, 0, 0);
             pictureBox2.Size = new Size(36, 35);
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
+            // 
+            // groupBox5
+            // 
+            groupBox5.Controls.Add(radioButton8);
+            groupBox5.Controls.Add(radioButton9);
+            groupBox5.Location = new Point(24, 130);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new Size(205, 93);
+            groupBox5.TabIndex = 50;
+            groupBox5.TabStop = false;
+            // 
+            // radioButton8
+            // 
+            radioButton8.AutoSize = true;
+            radioButton8.Location = new Point(25, 56);
+            radioButton8.Name = "radioButton8";
+            radioButton8.Size = new Size(82, 24);
+            radioButton8.TabIndex = 10;
+            radioButton8.TabStop = true;
+            radioButton8.Text = "Sencillo";
+            radioButton8.UseVisualStyleBackColor = true;
+            // 
+            // radioButton9
+            // 
+            radioButton9.AutoSize = true;
+            radioButton9.Location = new Point(25, 26);
+            radioButton9.Name = "radioButton9";
+            radioButton9.Size = new Size(71, 24);
+            radioButton9.TabIndex = 9;
+            radioButton9.TabStop = true;
+            radioButton9.Text = "Doble";
+            radioButton9.UseVisualStyleBackColor = true;
             // 
             // FrmNuevaUbicacion
             // 
@@ -490,6 +524,8 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -531,5 +567,8 @@
         private CheckBox checkBox4;
         private GroupBox groupBox4;
         private GroupBox groupBox3;
+        private GroupBox groupBox5;
+        private RadioButton radioButton8;
+        private RadioButton radioButton9;
     }
 }
