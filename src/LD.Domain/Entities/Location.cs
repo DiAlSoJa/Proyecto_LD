@@ -15,25 +15,43 @@ namespace LD.Domain.Entities
 
         public int WarehouseId { get; set; }
 
-        public string WarehouseCode { get; set; } = string.Empty;
+        public bool IsFiscal { get; set; }
 
-        public string Rack { get; set; } = string.Empty;
+        public bool HasControlledTemperature { get; set; }
 
-        public string? Aisle { get; set; }
+        public decimal? Height { get; set; }
 
-        public string? Level { get; set; }
+        public decimal? Width { get; set; }
 
-        public string? LocationCode { get; set; }
+        public decimal? Depth { get; set; }
 
-        public string? Dimension { get; set; }
+
+
+        // ===== Tipo =====
+
+        public bool IsRack { get; set; }
 
         public bool IsGeneral { get; set; }
 
-        public bool IsReceipt { get; set; }
+        public bool IsCuarentena { get; set; }
 
-        public bool IsQuarantine { get; set; }
+        public bool IsEmbarque { get; set; }
 
-        public bool IsShipping { get; set; }
+        public bool IsCompartido { get; set; }
+
+        public bool IsReciboYEmbarque { get; set; }
+
+        // ===== Tamaño =====
+
+        public bool IsDoble { get; set; }
+
+        public bool IsSencillo { get; set; }
+
+        // ===== Extras =====
+
+        public bool HasPaso { get; set; }
+
+        public bool HasCortina { get; set; }
 
         public Warehouse? Warehouse { get; set; }
 

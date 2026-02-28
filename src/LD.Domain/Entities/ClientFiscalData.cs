@@ -8,21 +8,15 @@ using System.Threading.Tasks;
 
 namespace LD.Domain.Entities
 {
-    public class Client :AuditableEntity
+    public class ClientFiscalData :AuditableEntity
     {
-        [Key]
+        public int ClientFiscalDataId { get; set; }
+
         public int ClientId { get; set; }
-
-        [Required]
-        [MaxLength(20)]
-        public string ClientNumber { get; set; }
-
-        [Required]
-        [MaxLength(150)]
-        public string CommercialName { get; set; }
-
-        [MaxLength(250)]
-        public string CommercialAddress { get; set; } = string.Empty;
+        //razon social
+        public string BusinessName { get; set; }
+        public string Rfc { get; set; }
+        public string FiscalAddres { get; set; }
 
         [MaxLength(100)]
         public string Neightbourhoud { get; set; } = string.Empty;
@@ -31,13 +25,12 @@ namespace LD.Domain.Entities
 
         [MaxLength(10)]
         public string ZipCode { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
-        [MaxLength(20)]
+        [MaxLength(10)]
         public string Phone { get; set; } = string.Empty;
 
-        public bool IsProvider { get; set; } 
-
-        public ClientFiscalData? ClientFiscalData { get; set; }
+        public Client Client { get; set; }
 
 
     }

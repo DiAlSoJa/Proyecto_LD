@@ -11,7 +11,6 @@ namespace LD.Forms.Views.Forms
     {
         private readonly ClientService _clientService;
         private readonly DialogFormService _dialogFormService;
-        private Panel _gridContainer;
         private GridFilter<ClientDto>_gridFilter;
 
 

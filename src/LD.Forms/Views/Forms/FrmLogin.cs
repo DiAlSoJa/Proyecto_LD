@@ -91,11 +91,6 @@ namespace LD.Forms.Views.Forms
                     return;
                 }
                 UserData.SetUserData(getMeResponse.Data);
-
-                //this.Hide();
-                //FrmPrincipal fm = new FrmPrincipal();
-                //fm.FormClosed += new FormClosedEventHandler(pr_FormClosed);
-                //fm.Show();
                 LoginSucceeded?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)

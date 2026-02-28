@@ -16,8 +16,6 @@ namespace LD.Forms.Views.Dialogs
 {
     public partial class FrmNuevoCliente : DraggableForm
     {
-        private bool mouseDown;
-        private Point lastLocation;
         private readonly ClientService _clientService;
         private  ClientDto? ClientSelected { get; set; }
         private bool IsEditing{ get; set; }

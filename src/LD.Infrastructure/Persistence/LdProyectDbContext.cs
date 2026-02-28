@@ -16,6 +16,7 @@ namespace LD.Infrastructure.Persistence
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Client> Clients { get; set; }
+        public DbSet<ClientFiscalData> ClientFiscalData { get; set; }
         public DbSet<ClientContact> ClientContacts { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<DireccionEntrega> DireccionEntregas { get; set; }

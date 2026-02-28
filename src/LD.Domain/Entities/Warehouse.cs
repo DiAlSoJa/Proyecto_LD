@@ -11,11 +11,7 @@ namespace LD.Domain.Entities
     public class Warehouse : AuditableEntity
     {
         [Key]
-        public int WarehouseId { get; set; }
-
-        [Required]
-        [MaxLength(20)]
-        public string WarehouseNumber { get; set; }  
+        public int WarehouseId { get; set; } 
 
         [Required]
         [MaxLength(150)]
