@@ -3,6 +3,7 @@ using LD.Contracts.Item;
 using LD.Contracts.Requests;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
+using LD.Forms.Views.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 
 namespace LD.Forms.Views.Dialogs
 {
-    public partial class FrmNuevoArticulo : Form
+    public partial class FrmNuevoArticulo : DraggableForm
     {
         private bool mouseDown;
         private Point lastLocation;
@@ -24,6 +25,9 @@ namespace LD.Forms.Views.Dialogs
         {
             InitializeComponent();
             _itemService = itemService;
+            EnableDrag(panel2);
+            EnableDrag(panel1);
+
         }
         public async void SetItem(ItemDto? item)
         {
@@ -58,27 +62,7 @@ namespace LD.Forms.Views.Dialogs
                 MessageBox.Show(ex.Message);
             }
         }
-        private void panel1_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseDown = true;
-            lastLocation = e.Location;
-        }
-
-        private void panel1_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (mouseDown)
-            {
-                this.Location = new Point(
-                    (this.Location.X - lastLocation.X) + e.X, (this.Location.Y - lastLocation.Y) + e.Y);
-
-                this.Update();
-            }
-        }
-
-        private void panel1_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseDown = false;
-        }
+  
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {

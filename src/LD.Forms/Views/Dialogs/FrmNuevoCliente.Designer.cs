@@ -90,9 +90,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(829, 488);
             panel1.TabIndex = 0;
-            panel1.MouseDown += panel1_MouseDown;
-            panel1.MouseMove += panel1_MouseMove;
-            panel1.MouseUp += panel1_MouseUp;
             // 
             // tabControl1
             // 
@@ -470,9 +467,6 @@
             panel2.Size = new Size(827, 35);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
-            panel2.MouseDown += panel1_MouseDown;
-            panel2.MouseMove += panel1_MouseMove;
-            panel2.MouseUp += panel1_MouseUp;
             // 
             // label1
             // 

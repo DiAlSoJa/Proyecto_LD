@@ -76,9 +76,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1414, 576);
             panel1.TabIndex = 0;
-            panel1.MouseDown += panel1_MouseDown;
-            panel1.MouseMove += panel1_MouseMove;
-            panel1.MouseUp += panel1_MouseUp;
             // 
             // comboBox2
             // 
@@ -163,9 +160,6 @@
             panel2.Size = new Size(1412, 35);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
-            panel2.MouseDown += panel1_MouseDown;
-            panel2.MouseMove += panel1_MouseMove;
-            panel2.MouseUp += panel1_MouseUp;
             // 
             // label1
             // 
