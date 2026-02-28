@@ -16,18 +16,18 @@ namespace LD.Forms.Views.Forms
     {
         private readonly NavigationService _navigationService;
         private readonly TabService _tabService;
-        public FrmMenu(NavigationService navigationService,TabService tabService)
+        public FrmMenu(NavigationService navigationService, TabService tabService)
         {
             InitializeComponent();
             _navigationService = navigationService;
             _tabService = tabService;
-            
+
         }
 
 
         private void button1_Click(object sender, EventArgs e)
         {
-            _tabService.Open(AppRoutes.Clientes); 
+            _tabService.Open(AppRoutes.Clientes);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -76,6 +76,11 @@ namespace LD.Forms.Views.Forms
         private void button11_Click(object sender, EventArgs e)
         {
             _tabService.Open(AppRoutes.Auditar);
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            _tabService.Open(AppRoutes.ASN);
         }
     }
 }

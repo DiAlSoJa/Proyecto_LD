@@ -33,12 +33,8 @@ namespace LD.Forms.Views.Forms
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
-            flowLayoutPanel1 = new FlowLayoutPanel();
             button6 = new Button();
-            flowLayoutPanel2 = new FlowLayoutPanel();
-            button2 = new Button();
             dataGridView1 = new DataGridView();
-            gridContainer = new Panel();
             Cliente = new DataGridViewTextBoxColumn();
             Proyecto = new DataGridViewTextBoxColumn();
             NumPArte = new DataGridViewTextBoxColumn();
@@ -54,63 +50,43 @@ namespace LD.Forms.Views.Forms
             Status = new DataGridViewTextBoxColumn();
             StatusF = new DataGridViewTextBoxColumn();
             StandarId = new DataGridViewTextBoxColumn();
+            gridContainer = new Panel();
+            groupBox1 = new GroupBox();
+            label2 = new Label();
+            txtComercialName = new TextBox();
+            comboBox1 = new ComboBox();
+            label8 = new Label();
+            comboBox2 = new ComboBox();
+            label5 = new Label();
+            label1 = new Label();
+            dateTimePicker1 = new DateTimePicker();
+            dateTimePicker2 = new DateTimePicker();
+            label3 = new Label();
             panel1.SuspendLayout();
-            flowLayoutPanel1.SuspendLayout();
-            flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             gridContainer.SuspendLayout();
+            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.Controls.Add(flowLayoutPanel1);
+            panel1.Controls.Add(groupBox1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1496, 47);
+            panel1.Size = new Size(1791, 194);
             panel1.TabIndex = 0;
-            // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.Controls.Add(button6);
-            flowLayoutPanel1.Controls.Add(flowLayoutPanel2);
-            flowLayoutPanel1.Dock = DockStyle.Left;
-            flowLayoutPanel1.Location = new Point(0, 0);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(20, 0, 0, 0);
-            flowLayoutPanel1.Size = new Size(399, 47);
-            flowLayoutPanel1.TabIndex = 0;
             // 
             // button6
             // 
-            button6.Image = Properties.Resources.update;
+            button6.Image = Properties.Resources.search2;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(23, 3);
+            button6.Location = new Point(760, 104);
             button6.Name = "button6";
-            button6.Size = new Size(124, 35);
+            button6.Size = new Size(147, 35);
             button6.TabIndex = 6;
-            button6.Text = "Actualizar";
+            button6.Text = "Buscar";
             button6.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanel2
-            // 
-            flowLayoutPanel2.Controls.Add(button2);
-            flowLayoutPanel2.Dock = DockStyle.Left;
-            flowLayoutPanel2.Location = new Point(23, 44);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(399, 0);
-            flowLayoutPanel2.TabIndex = 1;
-            // 
-            // button2
-            // 
-            button2.Image = Properties.Resources.plusM;
-            button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(3, 3);
-            button2.Name = "button2";
-            button2.Size = new Size(107, 35);
-            button2.TabIndex = 0;
-            button2.Text = "Nuevo";
-            button2.UseVisualStyleBackColor = true;
             // 
             // dataGridView1
             // 
@@ -123,17 +99,8 @@ namespace LD.Forms.Views.Forms
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(1496, 674);
+            dataGridView1.Size = new Size(1791, 527);
             dataGridView1.TabIndex = 1;
-            // 
-            // gridContainer
-            // 
-            gridContainer.Controls.Add(dataGridView1);
-            gridContainer.Dock = DockStyle.Fill;
-            gridContainer.Location = new Point(0, 47);
-            gridContainer.Name = "gridContainer";
-            gridContainer.Size = new Size(1496, 674);
-            gridContainer.TabIndex = 3;
             // 
             // Cliente
             // 
@@ -240,31 +207,144 @@ namespace LD.Forms.Views.Forms
             StandarId.Name = "StandarId";
             StandarId.Width = 125;
             // 
+            // gridContainer
+            // 
+            gridContainer.Controls.Add(dataGridView1);
+            gridContainer.Dock = DockStyle.Fill;
+            gridContainer.Location = new Point(0, 194);
+            gridContainer.Name = "gridContainer";
+            gridContainer.Size = new Size(1791, 527);
+            gridContainer.TabIndex = 3;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(dateTimePicker2);
+            groupBox1.Controls.Add(button6);
+            groupBox1.Controls.Add(label3);
+            groupBox1.Controls.Add(dateTimePicker1);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Controls.Add(comboBox1);
+            groupBox1.Controls.Add(label8);
+            groupBox1.Controls.Add(comboBox2);
+            groupBox1.Controls.Add(label5);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(txtComercialName);
+            groupBox1.Location = new Point(12, 12);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(1304, 164);
+            groupBox1.TabIndex = 7;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Filtros";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(20, 76);
+            label2.Name = "label2";
+            label2.Size = new Size(124, 20);
+            label2.TabIndex = 23;
+            label2.Text = "Número de Parte:";
+            // 
+            // txtComercialName
+            // 
+            txtComercialName.BorderStyle = BorderStyle.FixedSingle;
+            txtComercialName.Font = new Font("Segoe UI", 9.75F);
+            txtComercialName.Location = new Point(181, 73);
+            txtComercialName.Name = "txtComercialName";
+            txtComercialName.Size = new Size(527, 29);
+            txtComercialName.TabIndex = 22;
+            // 
+            // comboBox1
+            // 
+            comboBox1.Font = new Font("Segoe UI", 9.75F);
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(181, 26);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(465, 29);
+            comboBox1.TabIndex = 36;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(101, 35);
+            label8.Name = "label8";
+            label8.Size = new Size(58, 20);
+            label8.TabIndex = 38;
+            label8.Text = "Cliente:";
+            // 
+            // comboBox2
+            // 
+            comboBox2.Font = new Font("Segoe UI", 9.75F);
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Location = new Point(760, 26);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new Size(465, 29);
+            comboBox2.TabIndex = 37;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(672, 30);
+            label5.Name = "label5";
+            label5.Size = new Size(70, 20);
+            label5.TabIndex = 39;
+            label5.Text = "Proyecto:";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(58, 119);
+            label1.Name = "label1";
+            label1.Size = new Size(86, 20);
+            label1.TabIndex = 40;
+            label1.Text = "Fecha Incio:";
+            // 
+            // dateTimePicker1
+            // 
+            dateTimePicker1.Format = DateTimePickerFormat.Short;
+            dateTimePicker1.Location = new Point(181, 114);
+            dateTimePicker1.Name = "dateTimePicker1";
+            dateTimePicker1.Size = new Size(149, 27);
+            dateTimePicker1.TabIndex = 41;
+            // 
+            // dateTimePicker2
+            // 
+            dateTimePicker2.Format = DateTimePickerFormat.Short;
+            dateTimePicker2.Location = new Point(559, 112);
+            dateTimePicker2.Name = "dateTimePicker2";
+            dateTimePicker2.Size = new Size(149, 27);
+            dateTimePicker2.TabIndex = 43;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(436, 117);
+            label3.Name = "label3";
+            label3.Size = new Size(73, 20);
+            label3.TabIndex = 42;
+            label3.Text = "Fecha Fin:";
+            // 
             // FrmMovimientos
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1496, 721);
+            ClientSize = new Size(1791, 721);
             Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmMovimientos";
             Text = "FrmPlantillaForm";
             panel1.ResumeLayout(false);
-            flowLayoutPanel1.ResumeLayout(false);
-            flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             gridContainer.ResumeLayout(false);
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
         private Panel panel1;
-        
-        private FlowLayoutPanel flowLayoutPanel1;
-        private FlowLayoutPanel flowLayoutPanel2;
-        private Button button2;
         private DataGridView dataGridView1;
         private Button button6;
         private Panel gridContainer;
@@ -283,5 +363,16 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn Status;
         private DataGridViewTextBoxColumn StatusF;
         private DataGridViewTextBoxColumn StandarId;
+        private GroupBox groupBox1;
+        private Label label2;
+        private TextBox txtComercialName;
+        private DateTimePicker dateTimePicker2;
+        private Label label3;
+        private DateTimePicker dateTimePicker1;
+        private Label label1;
+        private ComboBox comboBox1;
+        private Label label8;
+        private ComboBox comboBox2;
+        private Label label5;
     }
 }

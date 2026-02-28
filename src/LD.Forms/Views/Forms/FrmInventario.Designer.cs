@@ -38,17 +38,30 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
+            Fecha = new DataGridViewTextBoxColumn();
+            Almacen = new DataGridViewTextBoxColumn();
             Cliente = new DataGridViewTextBoxColumn();
             Proyecto = new DataGridViewTextBoxColumn();
-            Almacen = new DataGridViewTextBoxColumn();
+            Esta = new DataGridViewTextBoxColumn();
+            FechaR = new DataGridViewTextBoxColumn();
+            FEchaS = new DataGridViewTextBoxColumn();
+            AS = new DataGridViewTextBoxColumn();
+            Ubicacion = new DataGridViewTextBoxColumn();
+            Parti = new DataGridViewTextBoxColumn();
+            Orig = new DataGridViewTextBoxColumn();
             NumPArte = new DataGridViewTextBoxColumn();
             Descripcion = new DataGridViewTextBoxColumn();
-            Fecha = new DataGridViewTextBoxColumn();
-            Hora = new DataGridViewTextBoxColumn();
-            Ubicacion = new DataGridViewTextBoxColumn();
-            FechaUltimo = new DataGridViewTextBoxColumn();
-            HoraUltimo = new DataGridViewTextBoxColumn();
-            Dias = new DataGridViewTextBoxColumn();
+            Rrec = new DataGridViewTextBoxColumn();
+            Dis = new DataGridViewTextBoxColumn();
+            Statu = new DataGridViewTextBoxColumn();
+            NoLo = new DataGridViewTextBoxColumn();
+            Cadu = new DataGridViewTextBoxColumn();
+            Oc = new DataGridViewTextBoxColumn();
+            Ped = new DataGridViewTextBoxColumn();
+            Tipoc = new DataGridViewTextBoxColumn();
+            SD = new DataGridViewTextBoxColumn();
+            Estado = new DataGridViewTextBoxColumn();
+            DiasTras = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
@@ -112,13 +125,27 @@ namespace LD.Forms.Views.Forms
             dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Cliente, Proyecto, Almacen, NumPArte, Descripcion, Fecha, Hora, Ubicacion, FechaUltimo, HoraUltimo, Dias });
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Fecha, Almacen, Cliente, Proyecto, Esta, FechaR, FEchaS, AS, Ubicacion, Parti, Orig, NumPArte, Descripcion, Rrec, Dis, Statu, NoLo, Cadu, Oc, Ped, Tipoc, SD, Estado, DiasTras });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 47);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1624, 674);
             dataGridView1.TabIndex = 1;
+            // 
+            // Fecha
+            // 
+            Fecha.HeaderText = "Fecha";
+            Fecha.MinimumWidth = 6;
+            Fecha.Name = "Fecha";
+            Fecha.Width = 125;
+            // 
+            // Almacen
+            // 
+            Almacen.HeaderText = "Almacén";
+            Almacen.MinimumWidth = 6;
+            Almacen.Name = "Almacen";
+            Almacen.Width = 125;
             // 
             // Cliente
             // 
@@ -134,12 +161,54 @@ namespace LD.Forms.Views.Forms
             Proyecto.Name = "Proyecto";
             Proyecto.Width = 200;
             // 
-            // Almacen
+            // Esta
             // 
-            Almacen.HeaderText = "Almacén";
-            Almacen.MinimumWidth = 6;
-            Almacen.Name = "Almacen";
-            Almacen.Width = 125;
+            Esta.HeaderText = "EstandarID";
+            Esta.MinimumWidth = 6;
+            Esta.Name = "Esta";
+            Esta.Width = 125;
+            // 
+            // FechaR
+            // 
+            FechaR.HeaderText = "Fecha Recepción";
+            FechaR.MinimumWidth = 6;
+            FechaR.Name = "FechaR";
+            FechaR.Width = 125;
+            // 
+            // FEchaS
+            // 
+            FEchaS.HeaderText = "Fecha Storing";
+            FEchaS.MinimumWidth = 6;
+            FEchaS.Name = "FEchaS";
+            FEchaS.Width = 125;
+            // 
+            // AS
+            // 
+            AS.HeaderText = "ASN";
+            AS.MinimumWidth = 6;
+            AS.Name = "AS";
+            AS.Width = 125;
+            // 
+            // Ubicacion
+            // 
+            Ubicacion.HeaderText = "Ubicación";
+            Ubicacion.MinimumWidth = 6;
+            Ubicacion.Name = "Ubicacion";
+            Ubicacion.Width = 125;
+            // 
+            // Parti
+            // 
+            Parti.HeaderText = "Particion";
+            Parti.MinimumWidth = 6;
+            Parti.Name = "Parti";
+            Parti.Width = 125;
+            // 
+            // Orig
+            // 
+            Orig.HeaderText = "Origen";
+            Orig.MinimumWidth = 6;
+            Orig.Name = "Orig";
+            Orig.Width = 125;
             // 
             // NumPArte
             // 
@@ -155,47 +224,82 @@ namespace LD.Forms.Views.Forms
             Descripcion.Name = "Descripcion";
             Descripcion.Width = 125;
             // 
-            // Fecha
+            // Rrec
             // 
-            Fecha.HeaderText = "Fecha";
-            Fecha.MinimumWidth = 6;
-            Fecha.Name = "Fecha";
-            Fecha.Width = 125;
+            Rrec.HeaderText = "Recibida";
+            Rrec.MinimumWidth = 6;
+            Rrec.Name = "Rrec";
+            Rrec.Width = 125;
             // 
-            // Hora
+            // Dis
             // 
-            Hora.HeaderText = "Hora";
-            Hora.MinimumWidth = 6;
-            Hora.Name = "Hora";
-            Hora.Width = 125;
+            Dis.HeaderText = "Disponible";
+            Dis.MinimumWidth = 6;
+            Dis.Name = "Dis";
+            Dis.Width = 125;
             // 
-            // Ubicacion
+            // Statu
             // 
-            Ubicacion.HeaderText = "Ubicación";
-            Ubicacion.MinimumWidth = 6;
-            Ubicacion.Name = "Ubicacion";
-            Ubicacion.Width = 125;
+            Statu.HeaderText = "Status";
+            Statu.MinimumWidth = 6;
+            Statu.Name = "Statu";
+            Statu.Width = 125;
             // 
-            // FechaUltimo
+            // NoLo
             // 
-            FechaUltimo.HeaderText = "Fecha de ultimo mov";
-            FechaUltimo.MinimumWidth = 6;
-            FechaUltimo.Name = "FechaUltimo";
-            FechaUltimo.Width = 125;
+            NoLo.HeaderText = "Número de Lote";
+            NoLo.MinimumWidth = 6;
+            NoLo.Name = "NoLo";
+            NoLo.Width = 125;
             // 
-            // HoraUltimo
+            // Cadu
             // 
-            HoraUltimo.HeaderText = "Hora de ultimo mov";
-            HoraUltimo.MinimumWidth = 6;
-            HoraUltimo.Name = "HoraUltimo";
-            HoraUltimo.Width = 125;
+            Cadu.HeaderText = "Caducidad";
+            Cadu.MinimumWidth = 6;
+            Cadu.Name = "Cadu";
+            Cadu.Width = 125;
             // 
-            // Dias
+            // Oc
             // 
-            Dias.HeaderText = "Dias";
-            Dias.MinimumWidth = 6;
-            Dias.Name = "Dias";
-            Dias.Width = 80;
+            Oc.HeaderText = "Orden de Compra";
+            Oc.MinimumWidth = 6;
+            Oc.Name = "Oc";
+            Oc.Width = 125;
+            // 
+            // Ped
+            // 
+            Ped.HeaderText = "Pedimento";
+            Ped.MinimumWidth = 6;
+            Ped.Name = "Ped";
+            Ped.Width = 125;
+            // 
+            // Tipoc
+            // 
+            Tipoc.HeaderText = "Tipo de Cambio";
+            Tipoc.MinimumWidth = 6;
+            Tipoc.Name = "Tipoc";
+            Tipoc.Width = 125;
+            // 
+            // SD
+            // 
+            SD.HeaderText = "SD";
+            SD.MinimumWidth = 6;
+            SD.Name = "SD";
+            SD.Width = 125;
+            // 
+            // Estado
+            // 
+            Estado.HeaderText = "Estado";
+            Estado.MinimumWidth = 6;
+            Estado.Name = "Estado";
+            Estado.Width = 125;
+            // 
+            // DiasTras
+            // 
+            DiasTras.HeaderText = "Días Transcurridos";
+            DiasTras.MinimumWidth = 6;
+            DiasTras.Name = "DiasTras";
+            DiasTras.Width = 125;
             // 
             // FrmInventario
             // 
@@ -223,16 +327,29 @@ namespace LD.Forms.Views.Forms
         private Button button2;
         private DataGridView dataGridView1;
         private Button button6;
+        private DataGridViewTextBoxColumn Fecha;
+        private DataGridViewTextBoxColumn Almacen;
         private DataGridViewTextBoxColumn Cliente;
         private DataGridViewTextBoxColumn Proyecto;
-        private DataGridViewTextBoxColumn Almacen;
+        private DataGridViewTextBoxColumn Esta;
+        private DataGridViewTextBoxColumn FechaR;
+        private DataGridViewTextBoxColumn FEchaS;
+        private DataGridViewTextBoxColumn AS;
+        private DataGridViewTextBoxColumn Ubicacion;
+        private DataGridViewTextBoxColumn Parti;
+        private DataGridViewTextBoxColumn Orig;
         private DataGridViewTextBoxColumn NumPArte;
         private DataGridViewTextBoxColumn Descripcion;
-        private DataGridViewTextBoxColumn Fecha;
-        private DataGridViewTextBoxColumn Hora;
-        private DataGridViewTextBoxColumn Ubicacion;
-        private DataGridViewTextBoxColumn FechaUltimo;
-        private DataGridViewTextBoxColumn HoraUltimo;
-        private DataGridViewTextBoxColumn Dias;
+        private DataGridViewTextBoxColumn Rrec;
+        private DataGridViewTextBoxColumn Dis;
+        private DataGridViewTextBoxColumn Statu;
+        private DataGridViewTextBoxColumn NoLo;
+        private DataGridViewTextBoxColumn Cadu;
+        private DataGridViewTextBoxColumn Oc;
+        private DataGridViewTextBoxColumn Ped;
+        private DataGridViewTextBoxColumn Tipoc;
+        private DataGridViewTextBoxColumn SD;
+        private DataGridViewTextBoxColumn Estado;
+        private DataGridViewTextBoxColumn DiasTras;
     }
 }
