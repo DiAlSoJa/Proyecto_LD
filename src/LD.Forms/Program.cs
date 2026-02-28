@@ -84,6 +84,7 @@ namespace LD
             services.AddTransient<FrmAuditar>();
             services.AddTransient<FrmAleatorio>();
             services.AddTransient<FrmUsuarios>();
+            services.AddTransient<FrmASN>();
 
 
 
@@ -101,9 +102,11 @@ namespace LD
             services.AddTransient<FrmNuevoAlmacen>();
             services.AddTransient<FrmNuevoArticuloMasiva>();
             services.AddTransient<FrmNuevoArticulo>();
-            services.AddTransient<FrmNuevoArticulo>();
             services.AddTransient<FrmNuevoCliente>();
             services.AddTransient<FrmNuevoProyecto>();
+            services.AddTransient<FrmNuevoASN>();
+            services.AddTransient<FrmNuevoASNEscaneo>();
+            services.AddTransient<FrmVehiculosRegistrados>();
 
     
         }

@@ -48,6 +48,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmVehiculosRegistrados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoASNEscaneo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoASN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmASN.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

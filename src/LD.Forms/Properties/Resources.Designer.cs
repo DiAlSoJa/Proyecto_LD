@@ -203,6 +203,16 @@ namespace LD.Forms.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap codigoBarras {
+            get {
+                object obj = ResourceManager.GetObject("codigoBarras", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap controlPatio {
             get {
                 object obj = ResourceManager.GetObject("controlPatio", resourceCulture);

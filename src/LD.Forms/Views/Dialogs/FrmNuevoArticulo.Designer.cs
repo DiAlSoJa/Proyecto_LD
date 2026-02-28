@@ -29,9 +29,12 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-
             tabControl1 = new TabControl();
             tabGeneral = new TabPage();
+            checkBox10 = new CheckBox();
+            checkBox9 = new CheckBox();
+            checkBox8 = new CheckBox();
+            checkBox7 = new CheckBox();
             groupBox5 = new GroupBox();
             textBox13 = new TextBox();
             label24 = new Label();
@@ -91,8 +94,6 @@
             radioButton3 = new RadioButton();
             radioButton2 = new RadioButton();
             radioButton1 = new RadioButton();
-
-            btnSave = new Button();
             label6 = new Label();
             textBox6 = new TextBox();
             label7 = new Label();
@@ -109,11 +110,11 @@
             label5 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
+            btnSave = new Button();
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
             panel1.SuspendLayout();
-
             tabControl1.SuspendLayout();
             tabGeneral.SuspendLayout();
             groupBox5.SuspendLayout();
@@ -138,7 +139,7 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1320, 734);
+            panel1.Size = new Size(1365, 748);
             panel1.TabIndex = 0;
             // tabControl1
             // 
@@ -148,11 +149,15 @@
             tabControl1.Location = new Point(0, 100);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1318, 577);
+            tabControl1.Size = new Size(1363, 591);
             tabControl1.TabIndex = 51;
             // 
             // tabGeneral
             // 
+            tabGeneral.Controls.Add(checkBox10);
+            tabGeneral.Controls.Add(checkBox9);
+            tabGeneral.Controls.Add(checkBox8);
+            tabGeneral.Controls.Add(checkBox7);
             tabGeneral.Controls.Add(groupBox5);
             tabGeneral.Controls.Add(groupBox3);
             tabGeneral.Controls.Add(groupBox2);
@@ -167,10 +172,50 @@
             tabGeneral.Location = new Point(4, 29);
             tabGeneral.Name = "tabGeneral";
             tabGeneral.Padding = new Padding(3);
-            tabGeneral.Size = new Size(1310, 544);
+            tabGeneral.Size = new Size(1355, 558);
             tabGeneral.TabIndex = 0;
             tabGeneral.Text = "General";
             tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // checkBox10
+            // 
+            checkBox10.AutoSize = true;
+            checkBox10.Location = new Point(385, 165);
+            checkBox10.Name = "checkBox10";
+            checkBox10.Size = new Size(64, 24);
+            checkBox10.TabIndex = 60;
+            checkBox10.Text = "BOM";
+            checkBox10.UseVisualStyleBackColor = true;
+            // 
+            // checkBox9
+            // 
+            checkBox9.AutoSize = true;
+            checkBox9.Location = new Point(322, 165);
+            checkBox9.Name = "checkBox9";
+            checkBox9.Size = new Size(57, 24);
+            checkBox9.TabIndex = 59;
+            checkBox9.Text = "VMI";
+            checkBox9.UseVisualStyleBackColor = true;
+            // 
+            // checkBox8
+            // 
+            checkBox8.AutoSize = true;
+            checkBox8.Location = new Point(234, 165);
+            checkBox8.Name = "checkBox8";
+            checkBox8.Size = new Size(73, 24);
+            checkBox8.TabIndex = 58;
+            checkBox8.Text = "Activo";
+            checkBox8.UseVisualStyleBackColor = true;
+            // 
+            // checkBox7
+            // 
+            checkBox7.AutoSize = true;
+            checkBox7.Location = new Point(37, 167);
+            checkBox7.Name = "checkBox7";
+            checkBox7.Size = new Size(191, 24);
+            checkBox7.TabIndex = 57;
+            checkBox7.Text = "Temperatura controlada";
+            checkBox7.UseVisualStyleBackColor = true;
             // 
             // groupBox5
             // 
@@ -402,7 +447,6 @@
             // 
             comboBox5.Font = new Font("Segoe UI", 9.75F);
             comboBox5.FormattingEnabled = true;
-
             comboBox5.Items.AddRange(new object[] { "PALLET", "PIEZA" });
             comboBox5.Location = new Point(525, 95);
             comboBox5.Name = "comboBox5";
@@ -422,7 +466,6 @@
             // 
             comboBox4.Font = new Font("Segoe UI", 9.75F);
             comboBox4.FormattingEnabled = true;
-
             comboBox4.Items.AddRange(new object[] { "PALLET", "PIEZA" });
             comboBox4.Location = new Point(525, 60);
             comboBox4.Name = "comboBox4";
@@ -487,7 +530,6 @@
             // label2
             // 
             label2.AutoSize = true;
-
             label2.Location = new Point(28, 64);
             label2.Name = "label2";
             label2.Size = new Size(112, 20);
@@ -733,7 +775,6 @@
             groupBox1.Controls.Add(radioButton3);
             groupBox1.Controls.Add(radioButton2);
             groupBox1.Controls.Add(radioButton1);
-
             groupBox1.Location = new Point(646, 22);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(205, 183);
@@ -747,7 +788,6 @@
             radioButton4.Location = new Point(22, 116);
             radioButton4.Name = "radioButton4";
             radioButton4.Size = new Size(162, 24);
-
             radioButton4.TabIndex = 9;
             radioButton4.TabStop = true;
             radioButton4.Text = "Fecha de caducidad";
@@ -759,7 +799,6 @@
             radioButton3.Location = new Point(22, 86);
             radioButton3.Name = "radioButton3";
             radioButton3.Size = new Size(135, 24);
-
             radioButton3.TabIndex = 8;
             radioButton3.TabStop = true;
             radioButton3.Text = "Número de lote";
@@ -771,7 +810,6 @@
             radioButton2.Location = new Point(22, 56);
             radioButton2.Name = "radioButton2";
             radioButton2.Size = new Size(174, 24);
-
             radioButton2.TabIndex = 7;
             radioButton2.TabStop = true;
             radioButton2.Text = "LIFO - Last In First Out";
@@ -783,7 +821,6 @@
             radioButton1.Location = new Point(22, 26);
             radioButton1.Name = "radioButton1";
             radioButton1.Size = new Size(175, 24);
-
             radioButton1.TabIndex = 6;
             radioButton1.TabStop = true;
             radioButton1.Text = "FIFO - First In First Out";
@@ -884,7 +921,7 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 35);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1318, 65);
+            panel3.Size = new Size(1363, 65);
             panel3.TabIndex = 52;
             // 
             // comboBox1
@@ -899,7 +936,6 @@
             // label8
             // 
             label8.AutoSize = true;
-
             label8.Location = new Point(25, 25);
             label8.Name = "label8";
             label8.Size = new Size(58, 20);
@@ -928,33 +964,32 @@
             // 
             flowLayoutPanel1.BackColor = SystemColors.Control;
             flowLayoutPanel1.Controls.Add(button2);
-
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 677);
+            flowLayoutPanel1.Location = new Point(0, 691);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(5);
-            flowLayoutPanel1.Size = new Size(1318, 55);
+            flowLayoutPanel1.Size = new Size(1363, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
             button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(1133, 8);
+            button2.Location = new Point(1178, 8);
             button2.Name = "button2";
             button2.Size = new Size(172, 35);
             button2.TabIndex = 43;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
-            //
-            // button1
+            // 
+            // btnSave
             // 
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(955, 8);
+            btnSave.Location = new Point(1000, 8);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(172, 35);
             btnSave.TabIndex = 42;
@@ -970,7 +1005,7 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1318, 35);
+            panel2.Size = new Size(1363, 35);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
             // 
@@ -990,7 +1025,7 @@
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(1282, 0);
+            pictureBox2.Location = new Point(1327, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 10, 0, 0);
             pictureBox2.Size = new Size(36, 35);
@@ -1002,14 +1037,13 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1320, 734);
+            ClientSize = new Size(1365, 748);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmNuevoArticulo";
             StartPosition = FormStartPosition.CenterParent;
             Text = "FrmWarning";
             panel1.ResumeLayout(false);
-
             tabControl1.ResumeLayout(false);
             tabGeneral.ResumeLayout(false);
             tabGeneral.PerformLayout();
@@ -1118,5 +1152,9 @@
         private Label label25;
         private ComboBox comboBox14;
         private Label label26;
+        private CheckBox checkBox10;
+        private CheckBox checkBox9;
+        private CheckBox checkBox8;
+        private CheckBox checkBox7;
     }
 }

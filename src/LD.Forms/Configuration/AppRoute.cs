@@ -48,6 +48,10 @@ namespace LD.Forms.Configuration
 
         public static readonly AppRoute Auditar =
             AppRoute.For<FrmAuditar>("auditar", "Auditar");
+
+        public static readonly AppRoute ASN =
+            AppRoute.For<FrmASN>("asn", "ASN");
+
     }
 
 }
