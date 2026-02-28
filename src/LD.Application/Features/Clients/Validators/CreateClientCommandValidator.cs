@@ -14,28 +14,37 @@ public class CreateClientCommandValidator
     public CreateClientCommandValidator()
     {
         RuleFor(x => x.CommercialName)
-            .NotEmpty().WithMessage("El nombre comercial es obligatorio.")
-            .MaximumLength(150).WithMessage("El nombre comercial no puede exceder 150 caracteres.");
-
-    
+                   .NotEmpty().WithMessage("El nombre comercial es obligatorio.")
+                   .MaximumLength(150);
 
         RuleFor(x => x.CommercialAddress)
             .NotEmpty().WithMessage("El domicilio comercial es obligatorio.")
             .MaximumLength(250);
 
-        RuleFor(x => x.Phone)
-            .NotEmpty().WithMessage("El teléfono es obligatorio.")
-            .Matches(@"^\d{10}$").WithMessage("El teléfono debe tener 10 dígitos.");
+        RuleFor(x => x.Neightbourhoud)
+            .NotEmpty().WithMessage("La colonia es obligatoria.")
+            .MaximumLength(100);
 
         RuleFor(x => x.City)
             .NotEmpty().WithMessage("La ciudad es obligatoria.")
             .MaximumLength(100);
 
         RuleFor(x => x.ZipCode)
-            .NotEmpty().WithMessage("El código postal es obligatorio.")
-            .Matches(@"^\d{5}$").WithMessage("El código postal debe tener 5 dígitos.");
+            .NotEmpty()
+            .Matches(@"^\d{5}$")
+            .WithMessage("El código postal debe tener 5 dígitos.");
 
-        RuleFor(x => x.IsActive)
-            .NotNull().WithMessage("El estado activo es obligatorio.");
+        RuleFor(x => x.Phone)
+            .NotEmpty()
+            .Matches(@"^\d{10}$")
+            .WithMessage("El teléfono debe tener 10 dígitos.");
+
+        // ✅ solo valida si no es null
+        When(x => x.FicalData != null, () =>
+        {
+            RuleFor(x => x.FicalData!)
+                .SetValidator(new FiscalDataValidator());
+        });
     }
+}
 }

@@ -28,13 +28,16 @@ public class CreateWarehouseValidator
 
         RuleFor(x => x.City)
         .NotEmpty().WithMessage("La ciudad no puede estar vacia")
-        .MaximumLength(50).WithMessage("La ciudad no debe de exceder los 100 caracteres");
+        .MaximumLength(100).WithMessage("La ciudad no debe de exceder los 100 caracteres");
 
         RuleFor(x => x.ZipCode)
          .NotEmpty().WithMessage("El código postal es obligatorio.")
          .Matches(@"^\d{5}$").WithMessage("El código postal debe tener 5 dígitos.");
 
-        RuleFor(x => x.Capacity);
-            
+        RuleFor(x => x.Capacity)
+            .GreaterThan(0).WithMessage("La capacidad debe ser mayor que cero.")
+            .PrecisionScale(10, 4, true).WithMessage("La capacidad no debe exceder 10 dígitos en total, con hasta 4 decimales.");
+
+
     }
 }
