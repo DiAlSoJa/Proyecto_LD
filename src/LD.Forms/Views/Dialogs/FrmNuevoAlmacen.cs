@@ -17,15 +17,15 @@ namespace LD.Forms.Views.Dialogs
     public partial class FrmNuevoAlmacen : DraggableForm
     {
         private WarehouseDto? WarehouseSelected;
-        private WarehouseService? _warehouseService;
+        private WarehouseService _warehouseService;
 
         public FrmNuevoAlmacen(WarehouseService warehouseService)
         {
             InitializeComponent();
-            _warehouseService = warehouseService;
             EnableDrag(panel1);
             EnableDrag(panel2);
 
+            _warehouseService = warehouseService;
         }
         public async void SetWarehouse(WarehouseDto? warehouse)
         {
@@ -84,10 +84,10 @@ namespace LD.Forms.Views.Dialogs
         }
 
         private Task<ApiResponseDto<string>> CreateClient(WarehouseRequest request) =>
-         _warehouseService.CreateWarehouse(request);
+            _warehouseService.CreateWarehouse(request);
 
-        private Task<ApiResponseDto<string>> EditClient(int clientId, WarehouseRequest request) =>
-            _warehouseService.UpdateWarehouse(clientId, request);
+        private Task<ApiResponseDto<string>> EditClient(int warehouseId, WarehouseRequest request) =>
+            _warehouseService.UpdateWarehouse(warehouseId, request);
         private async Task<ApiResponseDto<string>> SaveClient(WarehouseRequest request)
         {
             return WarehouseSelected != null
@@ -103,7 +103,7 @@ namespace LD.Forms.Views.Dialogs
                 Neighborhood = txtcolonia.Text,
                 City = txtCity.Text,
                 ZipCode = txtZipCode.Text,
-                Capacity = int.TryParse(txtCapacity.Text, out int capacity) ? capacity : null,
+                Capacity = decimal.TryParse(txtCapacity.Text, out decimal capacity) ? capacity : null,
                 IsProduction = isProduction.Checked,
                 IsActive = isActive.Checked
 

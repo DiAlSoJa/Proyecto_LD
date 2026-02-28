@@ -29,7 +29,7 @@ namespace LD.Domain.Entities
 
         [MaxLength(10)]
         public string ZipCode { get; set; }
-        public int Capacity { get; set; }
+        public decimal Capacity { get; set; }
         public bool IsProduction { get; set; } = false;
     }
 }

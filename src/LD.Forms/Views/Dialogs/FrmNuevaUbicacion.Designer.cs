@@ -29,33 +29,36 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            groupBox2 = new GroupBox();
             groupBox4 = new GroupBox();
-            checkBox4 = new CheckBox();
-            checkBox3 = new CheckBox();
+            checkCortina = new CheckBox();
+            checkPaso = new CheckBox();
+            groupBox2 = new GroupBox();
+            groupBox5 = new GroupBox();
+            radioSencillo = new RadioButton();
+            radioDoble = new RadioButton();
             groupBox3 = new GroupBox();
-            radioButton2 = new RadioButton();
-            radioButton1 = new RadioButton();
+            radioCompartido = new RadioButton();
+            radioRack = new RadioButton();
             radioButton7 = new RadioButton();
-            radioButton6 = new RadioButton();
-            radioButton5 = new RadioButton();
-            radioButton4 = new RadioButton();
-            radioButton3 = new RadioButton();
+            radioCuarentena = new RadioButton();
+            radioReciboEmbarque = new RadioButton();
+            radioEmbarque = new RadioButton();
+            radioGeneral = new RadioButton();
             groupBox1 = new GroupBox();
             label12 = new Label();
-            textBox4 = new TextBox();
+            txtProfundidadCm = new TextBox();
             label13 = new Label();
             label10 = new Label();
-            textBox2 = new TextBox();
+            txtAnchoCm = new TextBox();
             label11 = new Label();
             label9 = new Label();
-            textBox3 = new TextBox();
+            txtAltoCm = new TextBox();
             label3 = new Label();
             cmbAlmacen = new ComboBox();
-            checkBox5 = new CheckBox();
-            checkBox2 = new CheckBox();
-            checkBox1 = new CheckBox();
-            textBox8 = new TextBox();
+            checkIsActive = new CheckBox();
+            checkTemperatura = new CheckBox();
+            checkIsFiscal = new CheckBox();
+            txtNombreUbicacion = new TextBox();
             label8 = new Label();
             label2 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
@@ -64,18 +67,15 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
-            groupBox5 = new GroupBox();
-            radioButton8 = new RadioButton();
-            radioButton9 = new RadioButton();
             panel1.SuspendLayout();
-            groupBox2.SuspendLayout();
             groupBox4.SuspendLayout();
+            groupBox2.SuspendLayout();
+            groupBox5.SuspendLayout();
             groupBox3.SuspendLayout();
             groupBox1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            groupBox5.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -85,10 +85,10 @@
             panel1.Controls.Add(groupBox2);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(cmbAlmacen);
-            panel1.Controls.Add(checkBox5);
-            panel1.Controls.Add(checkBox2);
-            panel1.Controls.Add(checkBox1);
-            panel1.Controls.Add(textBox8);
+            panel1.Controls.Add(checkIsActive);
+            panel1.Controls.Add(checkTemperatura);
+            panel1.Controls.Add(checkIsFiscal);
+            panel1.Controls.Add(txtNombreUbicacion);
             panel1.Controls.Add(label8);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(flowLayoutPanel1);
@@ -99,15 +99,45 @@
             panel1.Size = new Size(1130, 472);
             panel1.TabIndex = 0;
             // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(checkCortina);
+            groupBox4.Controls.Add(checkPaso);
+            groupBox4.Location = new Point(460, 346);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new Size(610, 63);
+            groupBox4.TabIndex = 47;
+            groupBox4.TabStop = false;
+            // 
+            // checkCortina
+            // 
+            checkCortina.AutoSize = true;
+            checkCortina.Location = new Point(134, 26);
+            checkCortina.Name = "checkCortina";
+            checkCortina.Size = new Size(79, 24);
+            checkCortina.TabIndex = 17;
+            checkCortina.Text = "Cortina";
+            checkCortina.UseVisualStyleBackColor = true;
+            // 
+            // checkPaso
+            // 
+            checkPaso.AutoSize = true;
+            checkPaso.Location = new Point(44, 26);
+            checkPaso.Name = "checkPaso";
+            checkPaso.Size = new Size(61, 24);
+            checkPaso.TabIndex = 16;
+            checkPaso.Text = "Paso";
+            checkPaso.UseVisualStyleBackColor = true;
+            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(groupBox5);
             groupBox2.Controls.Add(groupBox3);
             groupBox2.Controls.Add(radioButton7);
-            groupBox2.Controls.Add(radioButton6);
-            groupBox2.Controls.Add(radioButton5);
-            groupBox2.Controls.Add(radioButton4);
-            groupBox2.Controls.Add(radioButton3);
+            groupBox2.Controls.Add(radioCuarentena);
+            groupBox2.Controls.Add(radioReciboEmbarque);
+            groupBox2.Controls.Add(radioEmbarque);
+            groupBox2.Controls.Add(radioGeneral);
             groupBox2.Location = new Point(460, 120);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(610, 288);
@@ -115,67 +145,69 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Tipo de ubicación";
             // 
-            // groupBox4
+            // groupBox5
             // 
-            groupBox4.Controls.Add(checkBox4);
-            groupBox4.Controls.Add(checkBox3);
-            groupBox4.Location = new Point(460, 346);
-            groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(610, 63);
-            groupBox4.TabIndex = 47;
-            groupBox4.TabStop = false;
+            groupBox5.Controls.Add(radioSencillo);
+            groupBox5.Controls.Add(radioDoble);
+            groupBox5.Location = new Point(24, 130);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new Size(205, 93);
+            groupBox5.TabIndex = 50;
+            groupBox5.TabStop = false;
             // 
-            // checkBox4
+            // radioSencillo
             // 
-            checkBox4.AutoSize = true;
-            checkBox4.Location = new Point(134, 26);
-            checkBox4.Name = "checkBox4";
-            checkBox4.Size = new Size(79, 24);
-            checkBox4.TabIndex = 17;
-            checkBox4.Text = "Cortina";
-            checkBox4.UseVisualStyleBackColor = true;
+            radioSencillo.AutoSize = true;
+            radioSencillo.Location = new Point(25, 56);
+            radioSencillo.Name = "radioSencillo";
+            radioSencillo.Size = new Size(82, 24);
+            radioSencillo.TabIndex = 10;
+            radioSencillo.TabStop = true;
+            radioSencillo.Text = "Sencillo";
+            radioSencillo.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // radioDoble
             // 
-            checkBox3.AutoSize = true;
-            checkBox3.Location = new Point(44, 26);
-            checkBox3.Name = "checkBox3";
-            checkBox3.Size = new Size(61, 24);
-            checkBox3.TabIndex = 16;
-            checkBox3.Text = "Paso";
-            checkBox3.UseVisualStyleBackColor = true;
+            radioDoble.AutoSize = true;
+            radioDoble.Location = new Point(25, 26);
+            radioDoble.Name = "radioDoble";
+            radioDoble.Size = new Size(71, 24);
+            radioDoble.TabIndex = 9;
+            radioDoble.TabStop = true;
+            radioDoble.Text = "Doble";
+            radioDoble.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(radioButton2);
-            groupBox3.Controls.Add(radioButton1);
+            groupBox3.Controls.Add(radioCompartido);
+            groupBox3.Controls.Add(radioRack);
             groupBox3.Location = new Point(24, 26);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(205, 103);
             groupBox3.TabIndex = 49;
             groupBox3.TabStop = false;
             // 
-            // radioButton2
+            // radioCompartido
             // 
-            radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(25, 56);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(110, 24);
-            radioButton2.TabIndex = 10;
-            radioButton2.TabStop = true;
-            radioButton2.Text = "Compartido";
-            radioButton2.UseVisualStyleBackColor = true;
+            radioCompartido.AutoSize = true;
+            radioCompartido.Location = new Point(25, 56);
+            radioCompartido.Name = "radioCompartido";
+            radioCompartido.Size = new Size(110, 24);
+            radioCompartido.TabIndex = 10;
+            radioCompartido.TabStop = true;
+            radioCompartido.Text = "Compartido";
+            radioCompartido.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // radioRack
             // 
-            radioButton1.AutoSize = true;
-            radioButton1.Location = new Point(25, 26);
-            radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(61, 24);
-            radioButton1.TabIndex = 9;
-            radioButton1.TabStop = true;
-            radioButton1.Text = "Rack";
-            radioButton1.UseVisualStyleBackColor = true;
+            radioRack.AutoSize = true;
+            radioRack.Location = new Point(25, 26);
+            radioRack.Name = "radioRack";
+            radioRack.Size = new Size(61, 24);
+            radioRack.TabIndex = 9;
+            radioRack.TabStop = true;
+            radioRack.Text = "Rack";
+            radioRack.UseVisualStyleBackColor = true;
             // 
             // radioButton7
             // 
@@ -188,60 +220,60 @@
             radioButton7.Text = "Compartido";
             radioButton7.UseVisualStyleBackColor = true;
             // 
-            // radioButton6
+            // radioCuarentena
             // 
-            radioButton6.AutoSize = true;
-            radioButton6.Location = new Point(457, 42);
-            radioButton6.Name = "radioButton6";
-            radioButton6.Size = new Size(105, 24);
-            radioButton6.TabIndex = 14;
-            radioButton6.TabStop = true;
-            radioButton6.Text = "Cuarentena";
-            radioButton6.UseVisualStyleBackColor = true;
+            radioCuarentena.AutoSize = true;
+            radioCuarentena.Location = new Point(457, 42);
+            radioCuarentena.Name = "radioCuarentena";
+            radioCuarentena.Size = new Size(105, 24);
+            radioCuarentena.TabIndex = 14;
+            radioCuarentena.TabStop = true;
+            radioCuarentena.Text = "Cuarentena";
+            radioCuarentena.UseVisualStyleBackColor = true;
             // 
-            // radioButton5
+            // radioReciboEmbarque
             // 
-            radioButton5.AutoSize = true;
-            radioButton5.Location = new Point(259, 105);
-            radioButton5.Name = "radioButton5";
-            radioButton5.Size = new Size(159, 24);
-            radioButton5.TabIndex = 13;
-            radioButton5.TabStop = true;
-            radioButton5.Text = "Recibo y embarque";
-            radioButton5.UseVisualStyleBackColor = true;
+            radioReciboEmbarque.AutoSize = true;
+            radioReciboEmbarque.Location = new Point(259, 105);
+            radioReciboEmbarque.Name = "radioReciboEmbarque";
+            radioReciboEmbarque.Size = new Size(159, 24);
+            radioReciboEmbarque.TabIndex = 13;
+            radioReciboEmbarque.TabStop = true;
+            radioReciboEmbarque.Text = "Recibo y embarque";
+            radioReciboEmbarque.UseVisualStyleBackColor = true;
             // 
-            // radioButton4
+            // radioEmbarque
             // 
-            radioButton4.AutoSize = true;
-            radioButton4.Location = new Point(457, 71);
-            radioButton4.Name = "radioButton4";
-            radioButton4.Size = new Size(98, 24);
-            radioButton4.TabIndex = 15;
-            radioButton4.TabStop = true;
-            radioButton4.Text = "Embarque";
-            radioButton4.UseVisualStyleBackColor = true;
+            radioEmbarque.AutoSize = true;
+            radioEmbarque.Location = new Point(457, 71);
+            radioEmbarque.Name = "radioEmbarque";
+            radioEmbarque.Size = new Size(98, 24);
+            radioEmbarque.TabIndex = 15;
+            radioEmbarque.TabStop = true;
+            radioEmbarque.Text = "Embarque";
+            radioEmbarque.UseVisualStyleBackColor = true;
             // 
-            // radioButton3
+            // radioGeneral
             // 
-            radioButton3.AutoSize = true;
-            radioButton3.Location = new Point(259, 44);
-            radioButton3.Name = "radioButton3";
-            radioButton3.Size = new Size(81, 24);
-            radioButton3.TabIndex = 11;
-            radioButton3.TabStop = true;
-            radioButton3.Text = "General";
-            radioButton3.UseVisualStyleBackColor = true;
+            radioGeneral.AutoSize = true;
+            radioGeneral.Location = new Point(259, 44);
+            radioGeneral.Name = "radioGeneral";
+            radioGeneral.Size = new Size(81, 24);
+            radioGeneral.TabIndex = 11;
+            radioGeneral.TabStop = true;
+            radioGeneral.Text = "General";
+            radioGeneral.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(label12);
-            groupBox1.Controls.Add(textBox4);
+            groupBox1.Controls.Add(txtProfundidadCm);
             groupBox1.Controls.Add(label13);
             groupBox1.Controls.Add(label10);
-            groupBox1.Controls.Add(textBox2);
+            groupBox1.Controls.Add(txtAnchoCm);
             groupBox1.Controls.Add(label11);
             groupBox1.Controls.Add(label9);
-            groupBox1.Controls.Add(textBox3);
+            groupBox1.Controls.Add(txtAltoCm);
             groupBox1.Controls.Add(label3);
             groupBox1.Location = new Point(27, 210);
             groupBox1.Name = "groupBox1";
@@ -259,14 +291,14 @@
             label12.TabIndex = 46;
             label12.Text = "cm.";
             // 
-            // textBox4
+            // txtProfundidadCm
             // 
-            textBox4.BorderStyle = BorderStyle.FixedSingle;
-            textBox4.Font = new Font("Segoe UI", 9.75F);
-            textBox4.Location = new Point(161, 105);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(109, 29);
-            textBox4.TabIndex = 8;
+            txtProfundidadCm.BorderStyle = BorderStyle.FixedSingle;
+            txtProfundidadCm.Font = new Font("Segoe UI", 9.75F);
+            txtProfundidadCm.Location = new Point(161, 105);
+            txtProfundidadCm.Name = "txtProfundidadCm";
+            txtProfundidadCm.Size = new Size(109, 29);
+            txtProfundidadCm.TabIndex = 8;
             // 
             // label13
             // 
@@ -286,14 +318,14 @@
             label10.TabIndex = 43;
             label10.Text = "cm.";
             // 
-            // textBox2
+            // txtAnchoCm
             // 
-            textBox2.BorderStyle = BorderStyle.FixedSingle;
-            textBox2.Font = new Font("Segoe UI", 9.75F);
-            textBox2.Location = new Point(161, 70);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(109, 29);
-            textBox2.TabIndex = 7;
+            txtAnchoCm.BorderStyle = BorderStyle.FixedSingle;
+            txtAnchoCm.Font = new Font("Segoe UI", 9.75F);
+            txtAnchoCm.Location = new Point(161, 70);
+            txtAnchoCm.Name = "txtAnchoCm";
+            txtAnchoCm.Size = new Size(109, 29);
+            txtAnchoCm.TabIndex = 7;
             // 
             // label11
             // 
@@ -313,14 +345,14 @@
             label9.TabIndex = 40;
             label9.Text = "cm.";
             // 
-            // textBox3
+            // txtAltoCm
             // 
-            textBox3.BorderStyle = BorderStyle.FixedSingle;
-            textBox3.Font = new Font("Segoe UI", 9.75F);
-            textBox3.Location = new Point(161, 35);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(109, 29);
-            textBox3.TabIndex = 6;
+            txtAltoCm.BorderStyle = BorderStyle.FixedSingle;
+            txtAltoCm.Font = new Font("Segoe UI", 9.75F);
+            txtAltoCm.Location = new Point(161, 35);
+            txtAltoCm.Name = "txtAltoCm";
+            txtAltoCm.Size = new Size(109, 29);
+            txtAltoCm.TabIndex = 6;
             // 
             // label3
             // 
@@ -339,44 +371,44 @@
             cmbAlmacen.Size = new Size(402, 28);
             cmbAlmacen.TabIndex = 1;
             // 
-            // checkBox5
+            // checkIsActive
             // 
-            checkBox5.AutoSize = true;
-            checkBox5.Location = new Point(188, 120);
-            checkBox5.Name = "checkBox5";
-            checkBox5.Size = new Size(73, 24);
-            checkBox5.TabIndex = 3;
-            checkBox5.Text = "Activo";
-            checkBox5.UseVisualStyleBackColor = true;
+            checkIsActive.AutoSize = true;
+            checkIsActive.Location = new Point(188, 120);
+            checkIsActive.Name = "checkIsActive";
+            checkIsActive.Size = new Size(73, 24);
+            checkIsActive.TabIndex = 3;
+            checkIsActive.Text = "Activo";
+            checkIsActive.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
+            // checkTemperatura
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(188, 180);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(191, 24);
-            checkBox2.TabIndex = 5;
-            checkBox2.Text = "Temperatura controlada";
-            checkBox2.UseVisualStyleBackColor = true;
+            checkTemperatura.AutoSize = true;
+            checkTemperatura.Location = new Point(188, 180);
+            checkTemperatura.Name = "checkTemperatura";
+            checkTemperatura.Size = new Size(191, 24);
+            checkTemperatura.TabIndex = 5;
+            checkTemperatura.Text = "Temperatura controlada";
+            checkTemperatura.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // checkIsFiscal
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(188, 150);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(67, 24);
-            checkBox1.TabIndex = 4;
-            checkBox1.Text = "Fiscal";
-            checkBox1.UseVisualStyleBackColor = true;
+            checkIsFiscal.AutoSize = true;
+            checkIsFiscal.Location = new Point(188, 150);
+            checkIsFiscal.Name = "checkIsFiscal";
+            checkIsFiscal.Size = new Size(67, 24);
+            checkIsFiscal.TabIndex = 4;
+            checkIsFiscal.Text = "Fiscal";
+            checkIsFiscal.UseVisualStyleBackColor = true;
             // 
-            // textBox8
+            // txtNombreUbicacion
             // 
-            textBox8.BorderStyle = BorderStyle.FixedSingle;
-            textBox8.Font = new Font("Segoe UI", 9.75F);
-            textBox8.Location = new Point(188, 85);
-            textBox8.Name = "textBox8";
-            textBox8.Size = new Size(252, 29);
-            textBox8.TabIndex = 2;
+            txtNombreUbicacion.BorderStyle = BorderStyle.FixedSingle;
+            txtNombreUbicacion.Font = new Font("Segoe UI", 9.75F);
+            txtNombreUbicacion.Location = new Point(188, 85);
+            txtNombreUbicacion.Name = "txtNombreUbicacion";
+            txtNombreUbicacion.Size = new Size(252, 29);
+            txtNombreUbicacion.TabIndex = 2;
             // 
             // label8
             // 
@@ -468,38 +500,6 @@
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
-            // groupBox5
-            // 
-            groupBox5.Controls.Add(radioButton8);
-            groupBox5.Controls.Add(radioButton9);
-            groupBox5.Location = new Point(24, 130);
-            groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(205, 93);
-            groupBox5.TabIndex = 50;
-            groupBox5.TabStop = false;
-            // 
-            // radioButton8
-            // 
-            radioButton8.AutoSize = true;
-            radioButton8.Location = new Point(25, 56);
-            radioButton8.Name = "radioButton8";
-            radioButton8.Size = new Size(82, 24);
-            radioButton8.TabIndex = 10;
-            radioButton8.TabStop = true;
-            radioButton8.Text = "Sencillo";
-            radioButton8.UseVisualStyleBackColor = true;
-            // 
-            // radioButton9
-            // 
-            radioButton9.AutoSize = true;
-            radioButton9.Location = new Point(25, 26);
-            radioButton9.Name = "radioButton9";
-            radioButton9.Size = new Size(71, 24);
-            radioButton9.TabIndex = 9;
-            radioButton9.TabStop = true;
-            radioButton9.Text = "Doble";
-            radioButton9.UseVisualStyleBackColor = true;
-            // 
             // FrmNuevaUbicacion
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -512,10 +512,12 @@
             Text = "FrmWarning";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             groupBox1.ResumeLayout(false);
@@ -524,8 +526,6 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            groupBox5.ResumeLayout(false);
-            groupBox5.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -538,37 +538,37 @@
         private Button button2;
         private Button btnSave;
         private FlowLayoutPanel flowLayoutPanel1;
-        private CheckBox checkBox5;
-        private CheckBox checkBox2;
-        private TextBox textBox3;
+        private CheckBox checkIsActive;
+        private CheckBox checkTemperatura;
+        private TextBox txtAltoCm;
         private Label label3;
-        private CheckBox checkBox1;
-        private TextBox textBox8;
+        private CheckBox checkIsFiscal;
+        private TextBox txtNombreUbicacion;
         private Label label8;
         private Label label2;
         private ComboBox cmbAlmacen;
         private GroupBox groupBox1;
         private Label label12;
-        private TextBox textBox4;
+        private TextBox txtProfundidadCm;
         private Label label13;
         private Label label10;
-        private TextBox textBox2;
+        private TextBox txtAnchoCm;
         private Label label11;
         private Label label9;
         private GroupBox groupBox2;
-        private RadioButton radioButton2;
-        private RadioButton radioButton1;
-        private RadioButton radioButton3;
-        private RadioButton radioButton4;
-        private RadioButton radioButton6;
-        private RadioButton radioButton5;
+        private RadioButton radioCompartido;
+        private RadioButton radioRack;
+        private RadioButton radioGeneral;
+        private RadioButton radioEmbarque;
+        private RadioButton radioCuarentena;
+        private RadioButton radioReciboEmbarque;
         private RadioButton radioButton7;
-        private CheckBox checkBox3;
-        private CheckBox checkBox4;
+        private CheckBox checkPaso;
+        private CheckBox checkCortina;
         private GroupBox groupBox4;
         private GroupBox groupBox3;
         private GroupBox groupBox5;
-        private RadioButton radioButton8;
-        private RadioButton radioButton9;
+        private RadioButton radioSencillo;
+        private RadioButton radioDoble;
     }
 }
