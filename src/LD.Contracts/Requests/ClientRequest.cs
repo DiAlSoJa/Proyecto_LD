@@ -14,7 +14,7 @@ namespace LD.Contracts.Requests
         public string? CommercialAddress { get; set; } = default!;
         public string? Phone { get; set; } = default!;
         public string? City { get; set; } = default!;
-        public string? PostalCode { get; set; } = default!;
+        public string? ZipCode { get; set; } = default!;
         public bool IsActive { get; set; }
     }
 }

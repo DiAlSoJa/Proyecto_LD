@@ -15,34 +15,31 @@ namespace LD.Domain.Entities
 
         [Required]
         public int ClientId { get; set; }
+        [Required]
+        public int WarehouseId { get; set; }
 
         [Required]
         [MaxLength(150)]
-        public string Name { get; set; }
+        public string ProjectName { get; set; }
 
 
-        // Flags operativos
-        public bool Backorder { get; set; }
-        public bool Distribution { get; set; }
-        public bool AlmacenFiscal { get; set; }
-        public bool Subdimension { get; set; }
-        public bool Etiquetas { get; set; }
+        public bool ScanDub { get; set; } = false;
 
-        // FIFO / Lote
-        public bool UsaFIFO { get; set; }
-        public bool UsaLote { get; set; }
-        public bool NumeroDeLote { get; set; }
-        public bool FechaCaducidad { get; set; }
+        public bool ScanPartNumber { get; set; } = false;
 
-        public int? AlmacenId { get; set; }
+        public bool ScanQuantity { get; set; } = false;
+
+        public bool RequireLot { get; set; } = false;
+
+        public bool RequireExpirationDate { get; set; } = false;
+
+
 
         // Navegación
-        public Client Client { get; set; }
-        //public Almacen Almacen { get; set; }
+        public Client? Client { get; set; }
+        public Warehouse? Warehouse { get; set; }
 
-        //public ProyectoFlujoConfig FlujoConfig { get; set; }
-        //public ProyectoPrecioConfig PrecioConfig { get; set; }
-        //public ProyectoNotificacionConfig NotificacionConfig { get; set; }
+     
     }
 
 }

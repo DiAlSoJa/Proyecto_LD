@@ -13,25 +13,30 @@ namespace LD.Domain.Entities
         [Key]
         public int LocationId { get; set; }
 
-        //[Required]
-        //public int AlmacenId { get; set; }
+        public int WarehouseId { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string Code { get; set; }   // Ej: RACK-A01-N01
+        public string WarehouseCode { get; set; } = string.Empty;
 
+        public string Rack { get; set; } = string.Empty;
 
-        // Flags operativos
-        public bool Fiscal { get; set; }
-        public bool TemperaturaControlada { get; set; }
+        public string? Aisle { get; set; }
 
-        // Dimensiones (cm)
-        public decimal? HeightCm { get; set; }
-        public decimal? WeightCm { get; set; }
-        public decimal? ProfundidadCm { get; set; }
+        public string? Level { get; set; }
 
+        public string? LocationCode { get; set; }
 
-     
+        public string? Dimension { get; set; }
+
+        public bool IsGeneral { get; set; }
+
+        public bool IsReceipt { get; set; }
+
+        public bool IsQuarantine { get; set; }
+
+        public bool IsShipping { get; set; }
+
+        public Warehouse? Warehouse { get; set; }
+
     }
 
 

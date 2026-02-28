@@ -37,7 +37,7 @@ public class CreateClientCommandValidator
             .NotEmpty().WithMessage("La ciudad es obligatoria.")
             .MaximumLength(100);
 
-        RuleFor(x => x.PostalCode)
+        RuleFor(x => x.ZipCode)
             .NotEmpty().WithMessage("El código postal es obligatorio.")
             .Matches(@"^\d{5}$").WithMessage("El código postal debe tener 5 dígitos.");
 

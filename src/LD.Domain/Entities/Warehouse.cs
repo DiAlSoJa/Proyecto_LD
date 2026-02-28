@@ -26,14 +26,14 @@ namespace LD.Domain.Entities
         public string Address { get; set; }
 
         [MaxLength(100)]
-        public string Colonia { get; set; }
+        public string Neighborhood { get; set; }
 
         [MaxLength(100)]
         public string City { get; set; }
 
         [MaxLength(10)]
         public string ZipCode { get; set; }
-
-        public bool Produccion { get; set; } = false;
+        public int Capacity { get; set; }
+        public bool IsProduction { get; set; } = false;
     }
 }

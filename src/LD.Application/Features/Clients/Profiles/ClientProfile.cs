@@ -20,7 +20,7 @@ namespace LD.Application.Features.Clients.Profiles
                 .ForMember(dest => dest.NombreComercial,
                     opt => opt.MapFrom(src => src.CommercialName))
                 .ForMember(dest => dest.DomicilioComercial,
-                    opt => opt.MapFrom(src => src.Address))
+                    opt => opt.MapFrom(src => src.CommercialAddress))
                 .ForMember(dest => dest.Ciudad,
                     opt => opt.MapFrom(src => src.City))
                 .ForMember(dest => dest.CodigoPostal,
@@ -33,7 +33,7 @@ namespace LD.Application.Features.Clients.Profiles
                 .ForMember(dest => dest.Rfc,
                     opt => opt.Ignore())
                 .ForMember(dest => dest.Activo,
-                    opt => opt.MapFrom(_ => true));
+                    opt => opt.MapFrom(src => src.IsActive));
 
 
             CreateMap<ClientRequest, Client>();

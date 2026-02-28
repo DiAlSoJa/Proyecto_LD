@@ -22,7 +22,7 @@ namespace LD.Domain.Entities
         public string CommercialName { get; set; }
 
         [MaxLength(250)]
-        public string Address { get; set; } = string.Empty;
+        public string CommercialAddress { get; set; } = string.Empty;
 
         [MaxLength(100)]
         public string Neightbourhoud { get; set; } = string.Empty;

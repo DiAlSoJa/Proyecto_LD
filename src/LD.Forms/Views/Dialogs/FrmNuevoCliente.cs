@@ -111,7 +111,7 @@ namespace LD.Forms.Views.Dialogs
             {
                 CommercialName = txtComercialName.Text.Trim(),
                 City = txtCiudadComercial.Text.Trim(),
-                PostalCode = txtCPComercial.Text.Trim(),
+                ZipCode = txtCPComercial.Text.Trim(),
                 BusinessName = txtRazonSocial.Text.Trim(),
                 Rfc = txtRFC.Text.Trim(),
                 Phone = txtTelefonoComercial.Text.Trim(),
