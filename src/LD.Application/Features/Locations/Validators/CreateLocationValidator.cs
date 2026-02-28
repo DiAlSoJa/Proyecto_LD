@@ -14,11 +14,11 @@ public class CreateLocationValidator
 {
     public CreateLocationValidator()
     {
-        RuleFor(x => x.WarehouseCode)
-                .NotEmpty().WithMessage("El código del almacén es obligatorio.")
-                .MaximumLength(20).WithMessage("El código del almacén no puede exceder 20 caracteres.")
-                .Matches("^[A-Z0-9-]+$")
-                .WithMessage("El código del almacén solo puede contener letras mayúsculas, números y guiones.");
+        //RuleFor(x => x.WarehouseCode)
+        //        .NotEmpty().WithMessage("El código del almacén es obligatorio.")
+        //        .MaximumLength(20).WithMessage("El código del almacén no puede exceder 20 caracteres.")
+        //        .Matches("^[A-Z0-9-]+$")
+        //        .WithMessage("El código del almacén solo puede contener letras mayúsculas, números y guiones.");
 
         RuleFor(x => x.Rack)
             .NotEmpty().WithMessage("El rack es obligatorio.")

@@ -10,7 +10,13 @@ namespace LD.Contracts.Requests
     {
         public int? LocationId { get; set; }
 
-        public string WarehouseCode { get; set; } = string.Empty;
+        public int WarehouseId { get; set; }
+        // Dimensions (cm)
+        public decimal? Height { get; set; }
+
+        public decimal? Width { get; set; }
+
+        public decimal? Depth { get; set; }
 
         public string Rack { get; set; } = string.Empty;
 
