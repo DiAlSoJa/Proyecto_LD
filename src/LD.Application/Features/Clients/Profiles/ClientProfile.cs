@@ -27,7 +27,8 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.ZipCode))
                 .ForMember(dest => dest.Telefono,
                     opt => opt.MapFrom(src => src.Phone))
-                // ⚠️ No existen en entity
+                .ForMember(dest => dest.Colonia,
+                    opt => opt.MapFrom(src => src.Neightbourhoud))
                 .ForMember(dest => dest.RazonSocial,
                     opt => opt.Ignore())
                 .ForMember(dest => dest.Rfc,

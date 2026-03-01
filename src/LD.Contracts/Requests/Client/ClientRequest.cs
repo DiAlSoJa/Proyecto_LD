@@ -17,6 +17,6 @@ namespace LD.Contracts.Requests.Client
         public bool IsProvider { get; set; }
         public bool IsActive { get; set; }
 
-        public ClientFiscalDataRequest? FicalData { get; set; }
+        public ClientFiscalDataRequest? FiscalData { get; set; }
     }
 }

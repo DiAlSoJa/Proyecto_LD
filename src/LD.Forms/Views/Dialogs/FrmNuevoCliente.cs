@@ -59,8 +59,7 @@ namespace LD.Forms.Views.Dialogs
                 txtComercialName.Text = client.NombreComercial;
                 txtCiudadComercial.Text = client.Ciudad;
                 txtCPComercial.Text=client.CodigoPostal;
-                txtRazonSocial.Text=client.RazonSocial;
-                txtRFC.Text = client.Rfc;
+                txtColoniaComercial.Text = client.Colonia;
                 txtTelefonoComercial.Text = client.Telefono;
                 checkIsActive.Checked = client.Activo;
                 txtDomicilioComercial.Text = client.DomicilioComercial;
@@ -99,7 +98,7 @@ namespace LD.Forms.Views.Dialogs
             _clientService.UpdateClient(clientId, request);
         private async Task<ApiResponseDto<string>> SaveClient(ClientRequest request)
         {
-            return IsEditing
+            return ClientSelected!=null
                 ? await EditClient(ClientSelected?.Id ?? 0, request)
                 : await CreateClient(request);
         }
@@ -117,7 +116,7 @@ namespace LD.Forms.Views.Dialogs
                 Phone = txtTelefonoComercial.Text.Trim(),
                 IsActive = checkIsActive.Checked,
                 IsProvider = checkIsProvider.Checked,
-                FicalData = HasFiscalData()? new ClientFiscalDataRequest
+                FiscalData = HasFiscalData()? new ClientFiscalDataRequest
                 {
                     BusinessName = txtRazonSocial.Text.Trim(),
                     Rfc = txtRFC.Text.Trim(),

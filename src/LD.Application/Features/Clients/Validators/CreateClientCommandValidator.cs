@@ -40,9 +40,9 @@ public class CreateClientCommandValidator
             .WithMessage("El teléfono debe tener 10 dígitos.");
 
         // ✅ solo valida si no es null
-        When(x => x.FicalData != null, () =>
+        When(x => x.FiscalData != null, () =>
         {
-            RuleFor(x => x.FicalData!)
+            RuleFor(x => x.FiscalData!)
                 .SetValidator(new FiscalDataValidator());
         });
     }
