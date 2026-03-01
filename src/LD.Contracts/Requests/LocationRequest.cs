@@ -27,7 +27,7 @@ namespace LD.Contracts.Requests
 
         public bool IsCompartidoType { get; set; }
 
-        // ===== Tipo =====
+        // ===== sub Tipo =====
         public bool IsGeneral { get; set; }
 
         public bool IsCuarentena { get; set; }
