@@ -27,19 +27,21 @@ namespace LD.Forms.Views.Forms
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoCliente>();
+            var form =_dialogFormService.ShowDialog<FrmNuevoCliente>();
+            if(form.ResponseForm) await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
         }
         
 
-        private void EditBtn_Click(object sender, EventArgs e)
+        private async void EditBtn_Click(object sender, EventArgs e)
         {
             if (selectedClient is null) return;
-            _dialogFormService.ShowDialog<FrmNuevoCliente>(frm =>
+            var form = _dialogFormService.ShowDialog<FrmNuevoCliente>(frm =>
             {
                 frm.SetClient(selectedClient);
             });
+            if (form.ResponseForm) await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
         }
         protected override async void OnShown(EventArgs e)
         {

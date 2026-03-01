@@ -18,7 +18,7 @@ namespace LD.Forms.Views.Dialogs
     {
         private readonly ClientService _clientService;
         private  ClientDto? ClientSelected { get; set; }
-        private bool IsEditing{ get; set; }
+      
 
         public FrmNuevoCliente(ClientService clientService)
         {
@@ -131,13 +131,13 @@ namespace LD.Forms.Views.Dialogs
         }
         public bool HasFiscalData()
         {
-            return !string.IsNullOrWhiteSpace(txtRazonSocial.Text) &&
-                   !string.IsNullOrWhiteSpace(txtRFC.Text) &&
-                   !string.IsNullOrWhiteSpace(txtDomicilioFiscal.Text) &&
-                   !string.IsNullOrWhiteSpace(txtColonia.Text) &&
-                   !string.IsNullOrWhiteSpace(txtCiudadFiscal.Text) &&
-                   !string.IsNullOrWhiteSpace(txtCPFiscal.Text) &&
-                   !string.IsNullOrWhiteSpace(txtEmail.Text) &&
+            return !string.IsNullOrWhiteSpace(txtRazonSocial.Text) ||
+                   !string.IsNullOrWhiteSpace(txtRFC.Text) ||
+                   !string.IsNullOrWhiteSpace(txtDomicilioFiscal.Text) ||
+                   !string.IsNullOrWhiteSpace(txtColonia.Text) ||
+                   !string.IsNullOrWhiteSpace(txtCiudadFiscal.Text) ||
+                   !string.IsNullOrWhiteSpace(txtCPFiscal.Text) ||
+                   !string.IsNullOrWhiteSpace(txtEmail.Text) ||
                    !string.IsNullOrWhiteSpace(txtTelefonoFiscal.Text);
         }
         private void ShowResult(ApiResponseDto<string> result)
@@ -161,6 +161,7 @@ namespace LD.Forms.Views.Dialogs
 
                 ShowResult(result);
 
+                ResponseForm = result.IsSuccess;
                 if (result.IsSuccess)
                     this.Close();
             }

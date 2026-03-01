@@ -1,4 +1,4 @@
-﻿using LD.Application.Common.Interfaces;
+﻿using LD.Application.Common.Interfaces.Repository;
 using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;

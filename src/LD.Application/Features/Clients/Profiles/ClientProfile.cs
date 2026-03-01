@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LD.Application.Features.Clients.Queries;
 using LD.Contracts.Client;
 using LD.Contracts.Requests.Client;
 using LD.Domain.Entities;
@@ -38,6 +39,8 @@ namespace LD.Application.Features.Clients.Profiles
 
 
             CreateMap<ClientRequest, Client>();
+            CreateMap<ClientFiscalDataRequest, ClientFiscalData>();
+
         }
     }
 }

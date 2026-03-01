@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LD.Application.Common.Interfaces;
+using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
 using LD.Contracts.Client;
 using LD.Domain.Entities;
