@@ -120,9 +120,8 @@
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1237, 686);
+            panel1.Size = new Size(1676, 915);
             panel1.TabIndex = 0;
             panel1.MouseDown += panel1_MouseDown;
             panel1.MouseMove += panel1_MouseMove;
@@ -131,7 +130,8 @@
             // splitContainer2
             // 
             splitContainer2.Dock = DockStyle.Fill;
-            splitContainer2.Location = new Point(0, 304);
+            splitContainer2.Location = new Point(0, 406);
+            splitContainer2.Margin = new Padding(3, 4, 3, 4);
             splitContainer2.Name = "splitContainer2";
             splitContainer2.Orientation = Orientation.Horizontal;
             // 
@@ -143,8 +143,9 @@
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(dataGridView3);
-            splitContainer2.Size = new Size(1235, 339);
-            splitContainer2.SplitterDistance = 209;
+            splitContainer2.Size = new Size(1674, 452);
+            splitContainer2.SplitterDistance = 278;
+            splitContainer2.SplitterWidth = 5;
             splitContainer2.TabIndex = 45;
             // 
             // dataGridView2
@@ -155,11 +156,10 @@
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, SDd, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10 });
             dataGridView2.Dock = DockStyle.Fill;
-            dataGridView2.Location = new Point(0, 44);
-            dataGridView2.Margin = new Padding(3, 2, 3, 2);
+            dataGridView2.Location = new Point(0, 59);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(1235, 165);
+            dataGridView2.Size = new Size(1674, 219);
             dataGridView2.TabIndex = 2;
             // 
             // dataGridViewTextBoxColumn1
@@ -193,7 +193,9 @@
             // SDd
             // 
             SDd.HeaderText = "SD";
+            SDd.MinimumWidth = 6;
             SDd.Name = "SDd";
+            SDd.Width = 125;
             // 
             // dataGridViewTextBoxColumn5
             // 
@@ -242,18 +244,18 @@
             panel4.Controls.Add(button5);
             panel4.Dock = DockStyle.Top;
             panel4.Location = new Point(0, 0);
+            panel4.Margin = new Padding(3, 4, 3, 4);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1235, 44);
+            panel4.Size = new Size(1674, 59);
             panel4.TabIndex = 3;
             // 
             // button5
             // 
             button5.Image = Properties.Resources.codigoBarras;
             button5.ImageAlign = ContentAlignment.MiddleLeft;
-            button5.Location = new Point(3, 14);
-            button5.Margin = new Padding(3, 2, 3, 2);
+            button5.Location = new Point(3, 19);
             button5.Name = "button5";
-            button5.Size = new Size(192, 26);
+            button5.Size = new Size(219, 35);
             button5.TabIndex = 45;
             button5.Text = "Escanear";
             button5.UseVisualStyleBackColor = true;
@@ -268,21 +270,24 @@
             dataGridView3.Columns.AddRange(new DataGridViewColumn[] { Borr, Esta, dataGridViewTextBoxColumn11, dataGridViewTextBoxColumn12, Estandar, Maxima, Envia, SD, Recibida, Spli, Statuss, Ubic, Lote, Cad, Rf });
             dataGridView3.Dock = DockStyle.Fill;
             dataGridView3.Location = new Point(0, 0);
-            dataGridView3.Margin = new Padding(3, 2, 3, 2);
             dataGridView3.Name = "dataGridView3";
             dataGridView3.RowHeadersWidth = 51;
-            dataGridView3.Size = new Size(1235, 126);
+            dataGridView3.Size = new Size(1674, 169);
             dataGridView3.TabIndex = 3;
             // 
             // Borr
             // 
             Borr.HeaderText = "Borrar";
+            Borr.MinimumWidth = 6;
             Borr.Name = "Borr";
+            Borr.Width = 125;
             // 
             // Esta
             // 
             Esta.HeaderText = "EstandarID";
+            Esta.MinimumWidth = 6;
             Esta.Name = "Esta";
+            Esta.Width = 125;
             // 
             // dataGridViewTextBoxColumn11
             // 
@@ -301,57 +306,79 @@
             // Estandar
             // 
             Estandar.HeaderText = "Estandar";
+            Estandar.MinimumWidth = 6;
             Estandar.Name = "Estandar";
+            Estandar.Width = 125;
             // 
             // Maxima
             // 
             Maxima.HeaderText = "Maxima";
+            Maxima.MinimumWidth = 6;
             Maxima.Name = "Maxima";
+            Maxima.Width = 125;
             // 
             // Envia
             // 
             Envia.HeaderText = "Enviado";
+            Envia.MinimumWidth = 6;
             Envia.Name = "Envia";
+            Envia.Width = 125;
             // 
             // SD
             // 
             SD.HeaderText = "SD";
+            SD.MinimumWidth = 6;
             SD.Name = "SD";
+            SD.Width = 125;
             // 
             // Recibida
             // 
             Recibida.HeaderText = "Recibida";
+            Recibida.MinimumWidth = 6;
             Recibida.Name = "Recibida";
+            Recibida.Width = 125;
             // 
             // Spli
             // 
             Spli.HeaderText = "Split";
+            Spli.MinimumWidth = 6;
             Spli.Name = "Spli";
+            Spli.Width = 125;
             // 
             // Statuss
             // 
             Statuss.HeaderText = "Status";
+            Statuss.MinimumWidth = 6;
             Statuss.Name = "Statuss";
+            Statuss.Width = 125;
             // 
             // Ubic
             // 
             Ubic.HeaderText = "Ubicación";
+            Ubic.MinimumWidth = 6;
             Ubic.Name = "Ubic";
+            Ubic.Width = 125;
             // 
             // Lote
             // 
             Lote.HeaderText = "Número de Lote";
+            Lote.MinimumWidth = 6;
             Lote.Name = "Lote";
+            Lote.Width = 125;
             // 
             // Cad
             // 
             Cad.HeaderText = "Fecha de Caducidad";
+            Cad.MinimumWidth = 6;
             Cad.Name = "Cad";
+            Cad.Width = 125;
             // 
             // Rf
             // 
             Rf.HeaderText = "Referencia";
+            Rf.MinimumWidth = 6;
             Rf.Name = "Rf";
+            Rf.Width = 125;
             // 
             // panel3
             // 
@@ -363,10 +390,9 @@
             panel3.Controls.Add(label8);
             panel3.Controls.Add(label5);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 26);
-            panel3.Margin = new Padding(3, 2, 3, 2);
+            panel3.Location = new Point(0, 35);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1235, 278);
+            panel3.Size = new Size(1674, 371);
             panel3.TabIndex = 44;
             // 
             // label13
@@ -375,9 +401,9 @@
             label13.BackColor = Color.Khaki;
             label13.BorderStyle = BorderStyle.FixedSingle;
             label13.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label13.Location = new Point(606, 16);
+            label13.Location = new Point(693, 21);
             label13.Name = "label13";
-            label13.Size = new Size(153, 27);
+            label13.Size = new Size(193, 34);
             label13.TabIndex = 47;
             label13.Text = "PREASN000001";
             label13.Visible = false;
@@ -395,11 +421,9 @@
             groupBox2.Controls.Add(textBox4);
             groupBox2.Controls.Add(label11);
             groupBox2.Controls.Add(textBox5);
-            groupBox2.Location = new Point(438, 71);
-            groupBox2.Margin = new Padding(3, 2, 3, 2);
+            groupBox2.Location = new Point(501, 95);
             groupBox2.Name = "groupBox2";
-            groupBox2.Padding = new Padding(3, 2, 3, 2);
-            groupBox2.Size = new Size(670, 200);
+            groupBox2.Size = new Size(766, 267);
             groupBox2.TabIndex = 46;
             groupBox2.TabStop = false;
             groupBox2.Text = "Transporte:";
@@ -408,10 +432,9 @@
             // 
             button3.Image = Properties.Resources.search2;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(168, 15);
-            button3.Margin = new Padding(3, 2, 3, 2);
+            button3.Location = new Point(192, 20);
             button3.Name = "button3";
-            button3.Size = new Size(131, 26);
+            button3.Size = new Size(150, 35);
             button3.TabIndex = 47;
             button3.Text = "Buscar vehículo";
             button3.UseVisualStyleBackColor = true;
@@ -420,9 +443,9 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(30, 164);
+            label12.Location = new Point(34, 219);
             label12.Name = "label12";
-            label12.Size = new Size(35, 15);
+            label12.Size = new Size(45, 20);
             label12.TabIndex = 50;
             label12.Text = "Sello:";
             // 
@@ -430,18 +453,17 @@
             // 
             textBox7.BorderStyle = BorderStyle.FixedSingle;
             textBox7.Font = new Font("Segoe UI", 9.75F);
-            textBox7.Location = new Point(168, 158);
-            textBox7.Margin = new Padding(3, 2, 3, 2);
+            textBox7.Location = new Point(192, 211);
             textBox7.Name = "textBox7";
-            textBox7.Size = new Size(249, 25);
+            textBox7.Size = new Size(284, 29);
             textBox7.TabIndex = 49;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(30, 138);
+            label7.Location = new Point(34, 184);
             label7.Name = "label7";
-            label7.Size = new Size(43, 15);
+            label7.Size = new Size(53, 20);
             label7.TabIndex = 48;
             label7.Text = "Placas:";
             // 
@@ -449,36 +471,34 @@
             // 
             textBox3.BorderStyle = BorderStyle.FixedSingle;
             textBox3.Font = new Font("Segoe UI", 9.75F);
-            textBox3.Location = new Point(168, 131);
-            textBox3.Margin = new Padding(3, 2, 3, 2);
+            textBox3.Location = new Point(192, 175);
             textBox3.Name = "textBox3";
-            textBox3.Size = new Size(92, 25);
+            textBox3.Size = new Size(105, 29);
             textBox3.TabIndex = 47;
             // 
             // dateTimePicker2
             // 
             dateTimePicker2.Format = DateTimePickerFormat.Short;
-            dateTimePicker2.Location = new Point(168, 106);
-            dateTimePicker2.Margin = new Padding(3, 2, 3, 2);
+            dateTimePicker2.Location = new Point(192, 141);
             dateTimePicker2.Name = "dateTimePicker2";
-            dateTimePicker2.Size = new Size(138, 23);
+            dateTimePicker2.Size = new Size(157, 27);
             dateTimePicker2.TabIndex = 46;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(30, 110);
+            label9.Location = new Point(34, 147);
             label9.Name = "label9";
-            label9.Size = new Size(107, 15);
+            label9.Size = new Size(134, 20);
             label9.TabIndex = 42;
             label9.Text = "Nombre de chofer:";
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(30, 87);
+            label10.Location = new Point(34, 116);
             label10.Name = "label10";
-            label10.Size = new Size(97, 15);
+            label10.Size = new Size(122, 20);
             label10.TabIndex = 40;
             label10.Text = "Tipo de vehiculo:";
             // 
@@ -486,18 +506,17 @@
             // 
             textBox4.BorderStyle = BorderStyle.FixedSingle;
             textBox4.Font = new Font("Segoe UI", 9.75F);
-            textBox4.Location = new Point(168, 80);
-            textBox4.Margin = new Padding(3, 2, 3, 2);
+            textBox4.Location = new Point(192, 107);
             textBox4.Name = "textBox4";
-            textBox4.Size = new Size(201, 25);
+            textBox4.Size = new Size(229, 29);
             textBox4.TabIndex = 39;
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(30, 61);
+            label11.Location = new Point(34, 81);
             label11.Name = "label11";
-            label11.Size = new Size(112, 15);
+            label11.Size = new Size(142, 20);
             label11.TabIndex = 38;
             label11.Text = "Línea de Transporte:";
             // 
@@ -505,10 +524,9 @@
             // 
             textBox5.BorderStyle = BorderStyle.FixedSingle;
             textBox5.Font = new Font("Segoe UI", 9.75F);
-            textBox5.Location = new Point(168, 54);
-            textBox5.Margin = new Padding(3, 2, 3, 2);
+            textBox5.Location = new Point(192, 72);
             textBox5.Name = "textBox5";
-            textBox5.Size = new Size(395, 25);
+            textBox5.Size = new Size(451, 29);
             textBox5.TabIndex = 37;
             // 
             // groupBox1
@@ -521,11 +539,9 @@
             groupBox1.Controls.Add(textBox1);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(textBox6);
-            groupBox1.Location = new Point(18, 71);
-            groupBox1.Margin = new Padding(3, 2, 3, 2);
+            groupBox1.Location = new Point(21, 95);
             groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(3, 2, 3, 2);
-            groupBox1.Size = new Size(396, 200);
+            groupBox1.Size = new Size(453, 267);
             groupBox1.TabIndex = 45;
             groupBox1.TabStop = false;
             groupBox1.Text = "ASN";
@@ -533,9 +549,9 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(27, 106);
+            label4.Location = new Point(31, 141);
             label4.Name = "label4";
-            label4.Size = new Size(43, 15);
+            label4.Size = new Size(53, 20);
             label4.TabIndex = 48;
             label4.Text = "Bultos:";
             // 
@@ -543,36 +559,34 @@
             // 
             textBox2.BorderStyle = BorderStyle.FixedSingle;
             textBox2.Font = new Font("Segoe UI", 9.75F);
-            textBox2.Location = new Point(122, 99);
-            textBox2.Margin = new Padding(3, 2, 3, 2);
+            textBox2.Location = new Point(139, 132);
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(92, 25);
+            textBox2.Size = new Size(105, 29);
             textBox2.TabIndex = 47;
             // 
             // dateTimePicker1
             // 
             dateTimePicker1.Format = DateTimePickerFormat.Short;
-            dateTimePicker1.Location = new Point(122, 74);
-            dateTimePicker1.Margin = new Padding(3, 2, 3, 2);
+            dateTimePicker1.Location = new Point(139, 99);
             dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(138, 23);
+            dateTimePicker1.Size = new Size(157, 27);
             dateTimePicker1.TabIndex = 46;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(27, 78);
+            label3.Location = new Point(31, 104);
             label3.Name = "label3";
-            label3.Size = new Size(29, 15);
+            label3.Size = new Size(37, 20);
             label3.TabIndex = 42;
             label3.Text = "ETA:";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(27, 55);
+            label2.Location = new Point(31, 73);
             label2.Name = "label2";
-            label2.Size = new Size(56, 15);
+            label2.Size = new Size(69, 20);
             label2.TabIndex = 40;
             label2.Text = "No. Guía:";
             // 
@@ -580,18 +594,17 @@
             // 
             textBox1.BorderStyle = BorderStyle.FixedSingle;
             textBox1.Font = new Font("Segoe UI", 9.75F);
-            textBox1.Location = new Point(122, 48);
-            textBox1.Margin = new Padding(3, 2, 3, 2);
+            textBox1.Location = new Point(139, 64);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(201, 25);
+            textBox1.Size = new Size(229, 29);
             textBox1.TabIndex = 39;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(27, 28);
+            label6.Location = new Point(31, 37);
             label6.Name = "label6";
-            label6.Size = new Size(71, 15);
+            label6.Size = new Size(86, 20);
             label6.TabIndex = 38;
             label6.Text = "No. Factura:";
             // 
@@ -599,47 +612,44 @@
             // 
             textBox6.BorderStyle = BorderStyle.FixedSingle;
             textBox6.Font = new Font("Segoe UI", 9.75F);
-            textBox6.Location = new Point(122, 22);
-            textBox6.Margin = new Padding(3, 2, 3, 2);
+            textBox6.Location = new Point(139, 29);
             textBox6.Name = "textBox6";
-            textBox6.Size = new Size(201, 25);
+            textBox6.Size = new Size(229, 29);
             textBox6.TabIndex = 37;
             // 
             // comboBox1
             // 
             comboBox1.Font = new Font("Segoe UI", 9.75F);
             comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(152, 19);
-            comboBox1.Margin = new Padding(3, 2, 3, 2);
+            comboBox1.Location = new Point(174, 25);
             comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(407, 25);
+            comboBox1.Size = new Size(465, 29);
             comboBox1.TabIndex = 42;
             // 
             // comboBox2
             // 
             comboBox2.Font = new Font("Segoe UI", 9.75F);
             comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(152, 45);
-            comboBox2.Margin = new Padding(3, 2, 3, 2);
+            comboBox2.Location = new Point(174, 60);
             comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(407, 25);
+            comboBox2.Size = new Size(465, 29);
             comboBox2.TabIndex = 43;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(11, 25);
+            label8.Location = new Point(13, 33);
             label8.Name = "label8";
-            label8.Size = new Size(47, 15);
+            label8.Size = new Size(58, 20);
             label8.TabIndex = 34;
             label8.Text = "Cliente:";
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(11, 52);
+            label5.Location = new Point(13, 69);
             label5.Name = "label5";
-            label5.Size = new Size(57, 15);
+            label5.Size = new Size(70, 20);
             label5.TabIndex = 35;
             label5.Text = "Proyecto:";
             // 
@@ -650,21 +660,19 @@
             flowLayoutPanel1.Controls.Add(button1);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 643);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
+            flowLayoutPanel1.Location = new Point(0, 858);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(4);
-            flowLayoutPanel1.Size = new Size(1235, 41);
+            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
+            flowLayoutPanel1.Size = new Size(1674, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
             button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(1074, 6);
-            button2.Margin = new Padding(3, 2, 3, 2);
+            button2.Location = new Point(1490, 8);
             button2.Name = "button2";
-            button2.Size = new Size(150, 26);
+            button2.Size = new Size(171, 35);
             button2.TabIndex = 7;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
@@ -674,10 +682,9 @@
             // 
             button1.Image = Properties.Resources.save;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(918, 6);
-            button1.Margin = new Padding(3, 2, 3, 2);
+            button1.Location = new Point(1313, 8);
             button1.Name = "button1";
-            button1.Size = new Size(150, 26);
+            button1.Size = new Size(171, 35);
             button1.TabIndex = 6;
             button1.Text = "Crear ASN";
             button1.UseVisualStyleBackColor = true;
@@ -689,9 +696,8 @@
             panel2.Controls.Add(pictureBox2);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
-            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1235, 26);
+            panel2.Size = new Size(1674, 35);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
             panel2.MouseDown += panel1_MouseDown;
@@ -703,9 +709,9 @@
             label1.AutoSize = true;
             label1.Font = new Font("Arial Narrow", 9.75F, FontStyle.Bold);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(18, 4);
+            label1.Location = new Point(21, 5);
             label1.Name = "label1";
-            label1.Size = new Size(30, 16);
+            label1.Size = new Size(39, 22);
             label1.TabIndex = 3;
             label1.Text = "ASN";
             // 
@@ -714,23 +720,21 @@
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(1203, 0);
-            pictureBox2.Margin = new Padding(3, 2, 3, 2);
+            pictureBox2.Location = new Point(1637, 0);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Padding = new Padding(4, 8, 0, 0);
-            pictureBox2.Size = new Size(32, 26);
+            pictureBox2.Padding = new Padding(5, 11, 0, 0);
+            pictureBox2.Size = new Size(37, 35);
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
             // FrmNuevoASN
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1237, 686);
+            ClientSize = new Size(1676, 915);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmNuevoASN";
             StartPosition = FormStartPosition.CenterParent;
             Text = "FrmWarning";

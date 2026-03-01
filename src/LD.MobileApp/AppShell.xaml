@@ -17,6 +17,16 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:DashboardPage}"
         Route="dashboard" />
+    <ShellContent
+    ContentTemplate="{DataTemplate local:RegisterLicense}"
+    Route="RegisterLicense" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:RegisterVehicule}"
+        Route="RegisterVehicule" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:SignatureDriver}"
+        Route="SignatureDriver" />
+
 
 </Shell>
     

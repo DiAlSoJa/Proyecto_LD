@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             panel1 = new Panel();
             tab = new TabControl();
             tabDatosGenerales = new TabPage();
@@ -58,6 +58,11 @@
             cmbAlmacen = new ComboBox();
             comboBox1 = new ComboBox();
             groupBox1 = new GroupBox();
+            button3 = new Button();
+            button1 = new Button();
+            dtCamposCliente = new DataGridView();
+            dtCamposSistema = new DataGridView();
+            Campo = new DataGridViewTextBoxColumn();
             label2 = new Label();
             label4 = new Label();
             textBox3 = new TextBox();
@@ -98,12 +103,8 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
-            this.dtCamposSistema = new DataGridView();
-            Campo = new DataGridViewTextBoxColumn();
-            dtCamposCliente = new DataGridView();
-            button1 = new Button();
-            button3 = new Button();
             Orden = new DataGridViewTextBoxColumn();
+            Campod = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             Cnf = new DataGridViewComboBoxColumn();
             Valorp = new DataGridViewTextBoxColumn();
@@ -115,6 +116,8 @@
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dtCamposCliente).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dtCamposSistema).BeginInit();
             tabNotificaciones.SuspendLayout();
             groupBox6.SuspendLayout();
             groupBox5.SuspendLayout();
@@ -125,8 +128,6 @@
             flowLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)this.dtCamposSistema).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dtCamposCliente).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -138,7 +139,7 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1141, 756);
+            panel1.Size = new Size(1385, 764);
             panel1.TabIndex = 0;
             // 
             // tab
@@ -150,7 +151,7 @@
             tab.Location = new Point(0, 35);
             tab.Name = "tab";
             tab.SelectedIndex = 0;
-            tab.Size = new Size(1139, 664);
+            tab.Size = new Size(1383, 672);
             tab.TabIndex = 37;
             // 
             // tabDatosGenerales
@@ -169,8 +170,8 @@
             tabDatosGenerales.Controls.Add(label3);
             tabDatosGenerales.Location = new Point(4, 29);
             tabDatosGenerales.Name = "tabDatosGenerales";
-            tabDatosGenerales.Padding = new Padding(3, 3, 3, 3);
-            tabDatosGenerales.Size = new Size(1131, 631);
+            tabDatosGenerales.Padding = new Padding(3);
+            tabDatosGenerales.Size = new Size(1375, 639);
             tabDatosGenerales.TabIndex = 0;
             tabDatosGenerales.Text = "Datos Generales";
             tabDatosGenerales.UseVisualStyleBackColor = true;
@@ -430,13 +431,64 @@
             groupBox1.Controls.Add(button3);
             groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(dtCamposCliente);
-            groupBox1.Controls.Add(this.dtCamposSistema);
+            groupBox1.Controls.Add(dtCamposSistema);
             groupBox1.Location = new Point(26, 366);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1077, 245);
+            groupBox1.Size = new Size(1201, 245);
             groupBox1.TabIndex = 36;
             groupBox1.TabStop = false;
             groupBox1.Text = "Escaneo";
+            // 
+            // button3
+            // 
+            button3.Location = new Point(280, 69);
+            button3.Name = "button3";
+            button3.Size = new Size(48, 37);
+            button3.TabIndex = 5;
+            button3.Text = "<";
+            button3.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(280, 26);
+            button1.Name = "button1";
+            button1.Size = new Size(48, 37);
+            button1.TabIndex = 4;
+            button1.Text = ">";
+            button1.UseVisualStyleBackColor = true;
+            // 
+            // dtCamposCliente
+            // 
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
+            dtCamposCliente.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dtCamposCliente.BackgroundColor = SystemColors.ButtonHighlight;
+            dtCamposCliente.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtCamposCliente.Columns.AddRange(new DataGridViewColumn[] { Orden, Campod, dataGridViewTextBoxColumn1, Cnf, Valorp, Configgg });
+            dtCamposCliente.Location = new Point(342, 26);
+            dtCamposCliente.Name = "dtCamposCliente";
+            dtCamposCliente.RowHeadersWidth = 51;
+            dtCamposCliente.Size = new Size(834, 183);
+            dtCamposCliente.TabIndex = 3;
+            // 
+            // dtCamposSistema
+            // 
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(253, 252, 213);
+            dtCamposSistema.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dtCamposSistema.BackgroundColor = SystemColors.ButtonHighlight;
+            dtCamposSistema.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtCamposSistema.Columns.AddRange(new DataGridViewColumn[] { Campo });
+            dtCamposSistema.Location = new Point(11, 26);
+            dtCamposSistema.Name = "dtCamposSistema";
+            dtCamposSistema.RowHeadersWidth = 51;
+            dtCamposSistema.Size = new Size(263, 183);
+            dtCamposSistema.TabIndex = 2;
+            // 
+            // Campo
+            // 
+            Campo.HeaderText = "Campos del sistema";
+            Campo.MinimumWidth = 6;
+            Campo.Name = "Campo";
+            Campo.Width = 200;
             // 
             // label2
             // 
@@ -480,8 +532,8 @@
             tabNotificaciones.Controls.Add(groupBox5);
             tabNotificaciones.Location = new Point(4, 29);
             tabNotificaciones.Name = "tabNotificaciones";
-            tabNotificaciones.Padding = new Padding(3, 3, 3, 3);
-            tabNotificaciones.Size = new Size(939, 647);
+            tabNotificaciones.Padding = new Padding(3);
+            tabNotificaciones.Size = new Size(1375, 639);
             tabNotificaciones.TabIndex = 1;
             tabNotificaciones.Text = "Notificaciones";
             tabNotificaciones.UseVisualStyleBackColor = true;
@@ -611,8 +663,8 @@
             tabPrefijos.Controls.Add(groupBox7);
             tabPrefijos.Location = new Point(4, 29);
             tabPrefijos.Name = "tabPrefijos";
-            tabPrefijos.Padding = new Padding(3, 3, 3, 3);
-            tabPrefijos.Size = new Size(939, 647);
+            tabPrefijos.Padding = new Padding(3);
+            tabPrefijos.Size = new Size(1375, 639);
             tabPrefijos.TabIndex = 2;
             tabPrefijos.Text = "Prefijos";
             tabPrefijos.UseVisualStyleBackColor = true;
@@ -638,7 +690,7 @@
             checkBox13.Name = "checkBox13";
             checkBox13.Size = new Size(226, 24);
             checkBox13.TabIndex = 40;
-            checkBox13.Text = "Requiere registro de lelgadas";
+            checkBox13.Text = "Requiere registro de llegadas";
             checkBox13.UseVisualStyleBackColor = true;
             // 
             // textBox8
@@ -781,17 +833,17 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 699);
+            flowLayoutPanel1.Location = new Point(0, 707);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
-            flowLayoutPanel1.Size = new Size(1139, 55);
+            flowLayoutPanel1.Padding = new Padding(5);
+            flowLayoutPanel1.Size = new Size(1383, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
             button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(955, 8);
+            button2.Location = new Point(1199, 8);
             button2.Name = "button2";
             button2.Size = new Size(171, 35);
             button2.TabIndex = 25;
@@ -803,7 +855,7 @@
             // 
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(778, 8);
+            btnSave.Location = new Point(1022, 8);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(171, 35);
             btnSave.TabIndex = 24;
@@ -819,7 +871,7 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1139, 35);
+            panel2.Size = new Size(1383, 35);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
             // 
@@ -839,7 +891,7 @@
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(1102, 0);
+            pictureBox2.Location = new Point(1346, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 11, 0, 0);
             pictureBox2.Size = new Size(37, 35);
@@ -847,63 +899,19 @@
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
-            // dtCamposSistema
-            // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            this.dtCamposSistema.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
-            this.dtCamposSistema.BackgroundColor = SystemColors.ButtonHighlight;
-            this.dtCamposSistema.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtCamposSistema.Columns.AddRange(new DataGridViewColumn[] { Campo });
-            this.dtCamposSistema.Location = new Point(11, 26);
-            this.dtCamposSistema.Name = "dtCamposSistema";
-            this.dtCamposSistema.RowHeadersWidth = 51;
-            this.dtCamposSistema.Size = new Size(263, 183);
-            this.dtCamposSistema.TabIndex = 2;
-            // 
-            // Campo
-            // 
-            Campo.HeaderText = "Campos del sistema";
-            Campo.MinimumWidth = 6;
-            Campo.Name = "Campo";
-            Campo.Width = 200;
-            // 
-            // dtCamposCliente
-            // 
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
-            dtCamposCliente.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dtCamposCliente.BackgroundColor = SystemColors.ButtonHighlight;
-            dtCamposCliente.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtCamposCliente.Columns.AddRange(new DataGridViewColumn[] { Orden, dataGridViewTextBoxColumn1, Cnf, Valorp, Configgg });
-            dtCamposCliente.Location = new Point(342, 26);
-            dtCamposCliente.Name = "dtCamposCliente";
-            dtCamposCliente.RowHeadersWidth = 51;
-            dtCamposCliente.Size = new Size(729, 183);
-            dtCamposCliente.TabIndex = 3;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(280, 26);
-            button1.Name = "button1";
-            button1.Size = new Size(48, 37);
-            button1.TabIndex = 4;
-            button1.Text = ">";
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            button3.Location = new Point(280, 69);
-            button3.Name = "button3";
-            button3.Size = new Size(48, 37);
-            button3.TabIndex = 5;
-            button3.Text = "<";
-            button3.UseVisualStyleBackColor = true;
-            // 
             // Orden
             // 
             Orden.HeaderText = "Orden";
             Orden.MinimumWidth = 6;
             Orden.Name = "Orden";
             Orden.Width = 60;
+            // 
+            // Campod
+            // 
+            Campod.HeaderText = "Campo del sistema";
+            Campod.MinimumWidth = 6;
+            Campod.Name = "Campod";
+            Campod.Width = 125;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -941,7 +949,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1141, 756);
+            ClientSize = new Size(1385, 764);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmNuevoProyecto";
@@ -958,6 +966,8 @@
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dtCamposCliente).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dtCamposSistema).EndInit();
             tabNotificaciones.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
             groupBox6.PerformLayout();
@@ -974,8 +984,6 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)this.dtCamposSistema).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dtCamposCliente).EndInit();
             ResumeLayout(false);
         }
 
@@ -1056,6 +1064,7 @@
         private Button button3;
         private Button button1;
         private DataGridViewTextBoxColumn Orden;
+        private DataGridViewTextBoxColumn Campod;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private DataGridViewComboBoxColumn Cnf;
         private DataGridViewTextBoxColumn Valorp;

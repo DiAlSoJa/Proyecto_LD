@@ -22,7 +22,7 @@ public partial class DashboardPage : ContentPage
 
     private async void OnCambioUbicacionClicked(object sender, EventArgs e)
     {
-      //  await Navigation.PushAsync(new CambioUbicacionPage());
+        await Shell.Current.GoToAsync("ChangeLocation");
     }
     private async void OnCasetaClicked(object sender, EventArgs e)
     {
@@ -46,7 +46,7 @@ public partial class DashboardPage : ContentPage
         Console.WriteLine($"Abriendo opciones para: {modulo}"); 
         var opciones = modulo switch
         {
-            "Caseta" => new[] { "Registrar Arribo", "Registrar Salida" },
+            "Caseta" => new[] { "Carga", "Descarga" },
             "Cortinas" => new[] { "Abrir Descarga", "Cerrar Descarga","", "Abrir Carga", "Cerrar Carga" },
             "Validar Acople" => new[] { "Cortina", "Patio" },
             "Validar Desacople" => new[] { "Cortina", "Patio" },
@@ -61,7 +61,15 @@ public partial class DashboardPage : ContentPage
         if (string.IsNullOrWhiteSpace(seleccion))
             return;
 
-        await DisplayAlert("Selección", $"{modulo} -> {seleccion}", "OK");
+        switch(seleccion)
+        {
+            case "Carga":
+            case "Descarga":                
+                await Shell.Current.GoToAsync("RegisterLicense");
+                break;
+        }
+
+        //await DisplayAlert("Selección", $"{modulo} -> {seleccion}", "OK");
 
         // Aquí haces navegación real:
         // if (modulo == "Caseta" && seleccion == "Entrada")

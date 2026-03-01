@@ -1,0 +1,65 @@
+namespace MauiAppLogin;
+
+public partial class ChangeLocationPage : ContentPage
+{
+	public ChangeLocationPage()
+	{
+		InitializeComponent();
+	}
+    private async void OnCancelarClicked(object sender, EventArgs e)
+    {
+        // Limpia el preview (o navega atrás, tú decides)
+        PreviewImage.Source = null;
+        // Si quieres regresar:
+        // await Navigation.PopAsync();
+    }
+
+    private async void OnSiguienteClicked(object sender, EventArgs e)
+    {
+        // Aquí normalmente validarías y regresarías datos al registro de vehículo
+        // Por ahora: solo vuelve atrás
+        //await Navigation.PopAsync(); 
+       // await Shell.Current.GoToAsync("RegisterVehicule");
+
+
+    }
+
+    private async void OnAtrasClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
+
+    private async void OnCapturarClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!MediaPicker.Default.IsCaptureSupported)
+            {
+                await DisplayAlert("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
+                return;
+            }
+
+            var photo = await MediaPicker.Default.CapturePhotoAsync();
+            if (photo == null) return;
+
+            await using var stream = await photo.OpenReadAsync();
+            var mem = new MemoryStream();
+            await stream.CopyToAsync(mem);
+            mem.Position = 0;
+
+            var img = ImageSource.FromStream(() => new MemoryStream(mem.ToArray()));
+
+            // Preview grande
+            PreviewImage.Source = img;
+
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+
+
+}

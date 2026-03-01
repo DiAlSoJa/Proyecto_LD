@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"           
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MauiAppLogin.DashboardPage"
-             Title="DashboardPage"   BackgroundColor="#1F3A5F"
-             
-             > 
+             Title="DashboardPage"
+             BackgroundColor="#1F3A5F">
 
-        <ScrollView>
+    <ScrollView>
+        <VerticalStackLayout Padding="20,60,20,30"
+                             Spacing="20"
+                             Background="#F4F6F9">
 
-        <VerticalStackLayout Padding="20,60,20,30" Spacing="20" Background="#F4F6F9">
-
-                <!-- HEADER -->
-                <Grid ColumnDefinitions="Auto,*,Auto"
+            <!-- HEADER -->
+            <Grid ColumnDefinitions="Auto,*,Auto"
                   BackgroundColor="#1F3A5F"
                   Padding="15"
                   Margin="-20,-60,-20,0">
 
-                   
-
-                    <Label Grid.Column="1"
+                <Label Grid.Column="1"
                        Text="juanm.parvol"
                        FontSize="20"
                        FontAttributes="Bold"
@@ -27,244 +25,449 @@
                        HorizontalOptions="Center"
                        VerticalOptions="Center"/>
 
-                    <Border Grid.Column="2"
+                <Border Grid.Column="2"
                         BackgroundColor="#2F5DA8"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 15"
                         Padding="10,5"
                         VerticalOptions="Center">
 
-                        <HorizontalStackLayout Spacing="5">
-                            <Label Text="🔔" TextColor="White"/>
-                            <Label Text="Tareas (6)"
+                    <HorizontalStackLayout Spacing="5">
+                        <Label Text="🔔" TextColor="White"/>
+                        <Label Text="Tareas (6)"
                                TextColor="White"
                                FontAttributes="Bold"/>
-                        </HorizontalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
 
-                    </Border>
-
-                </Grid>
-
-               
-
-             
-                <!-- CARD PRINCIPAL -->
-                <Border BackgroundColor="White"
+            <!-- CARD PRINCIPAL -->
+            <Border BackgroundColor="White"
                     Stroke="#E2E8F0"
                     StrokeShape="RoundRectangle 25"
                     Padding="10">
 
-                    <VerticalStackLayout Spacing="10">
+                <VerticalStackLayout Spacing="10">
 
-                        <!-- Almacenista -->
-                        <toolkit:Expander>
-
-                            <toolkit:Expander.Header>
-                                <Grid ColumnDefinitions="Auto,*,Auto"
+                    <!-- =========================
+                         ALMACENISTA
+                         ========================= -->
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Grid ColumnDefinitions="Auto,*,Auto"
                                   Padding="15"
                                   BackgroundColor="#F8FAFC">
 
-                                    <Label Text="📦"
+                                <Label Text="📦"
                                        FontSize="18"
                                        VerticalOptions="Center"/>
 
-                                    <Label Grid.Column="1"
+                                <Label Grid.Column="1"
                                        Text="Almacenista"
                                        FontAttributes="Bold"
                                        TextColor="#1E293B"
-                                       VerticalOptions="Center" Padding="10"/>
-
-                                    <Label Grid.Column="2"
-                                       Text="⌄"
-                                       TextColor="#64748B"
-                                       VerticalOptions="Center"/>
-
-                                </Grid>
-                            </toolkit:Expander.Header>
-
-                            <toolkit:Expander.Content>
-                                <VerticalStackLayout Padding="8,6" Spacing="0" BackgroundColor="White">
-
-                                    <!-- Botón tipo fila -->
-                                    <Button Text="ASN por ubicar"
-                                            Clicked="OnAsnPorUbicarClicked"
-                                            Style="{StaticResource MenuRowButtonStyle}" />
-
-                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
-
-                                    <Button Text="Ubicación de paso surtido"
-                                            Clicked="OnUbicacionPasoSurtidoClicked"
-                                            Style="{StaticResource MenuRowButtonStyle}" />
-
-                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
-
-                                    <Button Text="Cambio de ubicación"
-                                            Clicked="OnCambioUbicacionClicked"
-                                            Style="{StaticResource MenuRowButtonStyle}" />
-
-                                </VerticalStackLayout>
-                            </toolkit:Expander.Content>
-
-                    </toolkit:Expander>
-
-                        <!-- SEGURIDAD -->
-                        <toolkit:Expander>
-
-                            <toolkit:Expander.Header>
-                                <Grid ColumnDefinitions="Auto,*,Auto"
-                                  Padding="15"
-                                  BackgroundColor="#F8FAFC">
-
-                                    <Label Text="👮‍♂️"
-                                       FontSize="18"
-                                       VerticalOptions="Center"/>
-
-                                    <Label Grid.Column="1"
-                                       Text="Seguridad"
-                                       FontAttributes="Bold"
-                                       TextColor="#1E293B"
-                                       VerticalOptions="Center"  Padding="10"/>
-
-                                    <Label Grid.Column="2"
-                                       Text="⌄"
-                                       TextColor="#64748B"
-                                       VerticalOptions="Center"/>
-
-                                </Grid>
-                            </toolkit:Expander.Header>
-
-                        <toolkit:Expander.Content>
-                            <VerticalStackLayout Padding="8,6" Spacing="0" BackgroundColor="White">
-
-                                <!-- Botón tipo fila -->
-                                <Button Text="Caseta"
-                                      Clicked="OnCasetaClicked"
-                                      Style="{StaticResource MenuRowButtonStyle}" />
-
-                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
-
-                                    <Button Text="Cortinas"
-                                      Clicked="OnCortinasClicked"
-                                      Style="{StaticResource MenuRowButtonStyle}" />
-
-                                    <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
-
-                                    <Button Text="Validar Acople"
-                                      Clicked="OnValidarAcopleClicked"
-                                      Style="{StaticResource MenuRowButtonStyle}" />
-
-                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
-
-                                <Button Text="Validar Desacople"
-                                      Clicked="OnValidarDesacopleClicked"
-                                      Style="{StaticResource MenuRowButtonStyle}" />
-                                
-                                
-
-                            </VerticalStackLayout>
-                        </toolkit:Expander.Content>
-
-                    </toolkit:Expander>
-
-                    <!-- Consultas -->
-                    <toolkit:Expander>
-
-                        <toolkit:Expander.Header>
-                            <Grid ColumnDefinitions="Auto,*,Auto"
-                                Padding="15"
-                                BackgroundColor="#F8FAFC">
-
-                                <Label Text="🔍"
-                                     FontSize="18"
-                                     VerticalOptions="Center"/>
-
-                                <Label Grid.Column="1"
-                                     Text="Consultas"
-                                     FontAttributes="Bold"
-                                     TextColor="#1E293B"
-                                     VerticalOptions="Center"  Padding="10"/>
+                                       VerticalOptions="Center"
+                                       Padding="10"/>
 
                                 <Label Grid.Column="2"
-                                     Text="⌄"
-                                     TextColor="#64748B"
-                                     VerticalOptions="Center"/>
-
+                                       Text="⌄"
+                                       TextColor="#64748B"
+                                       VerticalOptions="Center"/>
                             </Grid>
                         </toolkit:Expander.Header>
 
                         <toolkit:Expander.Content>
-                            <VerticalStackLayout Padding="15,5"
-                                               Spacing="8"
-                                               BackgroundColor="White">
+                            <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
 
-                                <Label Text="Championship 1"
-                                     TextColor="#64748B"/>
+                                <!-- Fila: Cambio de ubicación -->
+                                <Border Stroke="Transparent" BackgroundColor="White">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="20,14">
+                                        <Label Text="📍" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="Cambio de ubicación"
+                                               Margin="10,0,0,0"
+                                               VerticalOptions="Center"
+                                               TextColor="#1E293B"
+                                               FontSize="15"/>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCambioUbicacionClicked"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
 
-                                <Label Text="Championship 2"
-                                     TextColor="#64748B"/>
+                                <!-- Fila: Surtir mercancía -->
+                                <Border Stroke="Transparent" BackgroundColor="White">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="20,14">
+                                        <Label Text="📦" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="Surtir Mercancía"
+                                               Margin="10,0,0,0"
+                                               VerticalOptions="Center"
+                                               TextColor="#1E293B"
+                                               FontSize="15"/>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnUbicacionPasoSurtidoClicked"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                <!-- Fila: Recibir mercancía y ubicar -->
+                                <Border Stroke="Transparent" BackgroundColor="White">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="20,14">
+                                        <Label Text="📥" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="Recibir Mercancía y Ubicar"
+                                               Margin="10,0,0,0"
+                                               VerticalOptions="Center"
+                                               TextColor="#1E293B"
+                                               FontSize="15"/>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnAsnPorUbicarClicked"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                <!-- Fila: Reportar daño -->
+                                <Border Stroke="Transparent" BackgroundColor="White">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="20,14">
+                                        <Label Text="🧯" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="Reportar Daño (RD)"
+                                               Margin="10,0,0,0"
+                                               VerticalOptions="Center"
+                                               TextColor="#1E293B"
+                                               FontSize="15"/>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnAsnPorUbicarClicked"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                <!-- Task Manager dentro de Almacenista -->
+                                <toolkit:Expander Margin="0,8,0,0">
+                                    <toolkit:Expander.Header>
+                                        <Grid ColumnDefinitions="Auto,*,Auto"
+                                              Padding="15"
+                                              BackgroundColor="#F8FAFC">
+
+                                            <Label Text="🕒"
+                                                   FontSize="18"
+                                                   VerticalOptions="Center"/>
+
+                                            <Label Grid.Column="1"
+                                                   Text="Task Manager"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1E293B"
+                                                   VerticalOptions="Center"
+                                                   Padding="10,0"/>
+
+                                            <Label Grid.Column="2"
+                                                   Text="⌄"
+                                                   TextColor="#64748B"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </toolkit:Expander.Header>
+
+                                    <toolkit:Expander.Content>
+                                        <VerticalStackLayout Padding="8,6" Spacing="0" BackgroundColor="White">
+
+                                            <!-- TAREA 1 (VENCIDA) -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="22" HeightRequest="22"
+                                                        Stroke="#EF4444"
+                                                        StrokeThickness="1"
+                                                        BackgroundColor="#FEE2E2"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center">
+                                                    <Label Text="!"
+                                                           TextColor="#B91C1C"
+                                                           FontAttributes="Bold"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+                                                </Border>
+
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#B91C1C"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación A012 y tomar el pallet 2027020100001 y dejarlo en AX025"/>
+                                            </Grid>
+                                            <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                            <!-- TAREA 2 -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="8" HeightRequest="8"
+                                                        BackgroundColor="#3B82F6"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center"/>
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       TextColor="#334155"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación A014 y tomar el pallet 2027020100004 y dejarlo en AX028"/>
+                                            </Grid>
+                                            <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                            <!-- TAREA 3 -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="8" HeightRequest="8"
+                                                        BackgroundColor="#3B82F6"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center"/>
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       TextColor="#334155"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación B010 y tomar el pallet 2027020100007 y dejarlo en AX010"/>
+                                            </Grid>
+                                            <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                            <!-- TAREA 4 -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="8" HeightRequest="8"
+                                                        BackgroundColor="#3B82F6"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center"/>
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       TextColor="#334155"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación C003 y tomar el pallet 2027020100012 y dejarlo en AX005"/>
+                                            </Grid>
+
+                                        </VerticalStackLayout>
+                                    </toolkit:Expander.Content>
+                                </toolkit:Expander>
 
                             </VerticalStackLayout>
                         </toolkit:Expander.Content>
-
                     </toolkit:Expander>
-                        
-                        
 
-                    <!-- Reportes -->
-                        <toolkit:Expander>
-
-                            <toolkit:Expander.Header>
-                                <Grid ColumnDefinitions="Auto,*,Auto"
+                    <!-- =========================
+                         SEGURIDAD
+                         ========================= -->
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Grid ColumnDefinitions="Auto,*,Auto"
                                   Padding="15"
                                   BackgroundColor="#F8FAFC">
 
-                                    <Label Text="📈"
+                                <Label Text="👮‍♂️"
                                        FontSize="18"
                                        VerticalOptions="Center"/>
 
-                                    <Label Grid.Column="1"
-                                       Text="Reportes"
+                                <Label Grid.Column="1"
+                                       Text="Seguridad"
                                        FontAttributes="Bold"
                                        TextColor="#1E293B"
-                                       VerticalOptions="Center"  Padding="10"/>
+                                       VerticalOptions="Center"
+                                       Padding="10"/>
 
-                                    <Label Grid.Column="2"
+                                <Label Grid.Column="2"
                                        Text="⌄"
                                        TextColor="#64748B"
                                        VerticalOptions="Center"/>
+                            </Grid>
+                        </toolkit:Expander.Header>
 
-                                </Grid>
-                            </toolkit:Expander.Header>
-                            
+                        <toolkit:Expander.Content>
+                            <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
 
-                            <toolkit:Expander.Content>
-                                <VerticalStackLayout Padding="15,5"
-                                                 BackgroundColor="White">
+                                <!-- Fila: Registrar vehículo -->
+                                <Border Stroke="Transparent" BackgroundColor="White">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="20,14">
+                                        <Label Text="🚗" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="Registrar Vehículo"
+                                               Margin="10,0,0,0"
+                                               VerticalOptions="Center"
+                                               TextColor="#1E293B"
+                                               FontSize="15"/>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCasetaClicked"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
 
-                                    <Label Text="Contenido de Other Sports..."
-                                       TextColor="#64748B"/>
+                                <!-- Task Manager dentro de Seguridad -->
+                                <toolkit:Expander Margin="0,0,0,0">
+                                    <toolkit:Expander.Header>
+                                        <Grid ColumnDefinitions="Auto,*,Auto"
+                                              Padding="15"
+                                              BackgroundColor="#F8FAFC">
 
-                                </VerticalStackLayout>
-                            </toolkit:Expander.Content>
+                                            <Label Text="🕒"
+                                                   FontSize="18"
+                                                   VerticalOptions="Center"/>
 
-                        </toolkit:Expander>
-                        
-                        
-                        
-                        
+                                            <Label Grid.Column="1"
+                                                   Text="Task Manager"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1E293B"
+                                                   VerticalOptions="Center"
+                                                   Padding="10,0"/>
 
-                    </VerticalStackLayout>
+                                            <Label Grid.Column="2"
+                                                   Text="⌄"
+                                                   TextColor="#64748B"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </toolkit:Expander.Header>
 
-                </Border>
+                                    <toolkit:Expander.Content>
+                                        <VerticalStackLayout Padding="8,6" Spacing="0" BackgroundColor="White">
 
-                <!-- BANNER -->
+                                            <!-- TAREA 1 (VENCIDA) -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="22" HeightRequest="22"
+                                                        Stroke="#EF4444"
+                                                        StrokeThickness="1"
+                                                        BackgroundColor="#FEE2E2"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center">
+                                                    <Label Text="!"
+                                                           TextColor="#B91C1C"
+                                                           FontAttributes="Bold"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+                                                </Border>
+
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#B91C1C"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación A012 y tomar el pallet 2027020100001 y dejarlo en AX025"/>
+                                            </Grid>
+                                            <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                            <!-- TAREA 2 -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="8" HeightRequest="8"
+                                                        BackgroundColor="#3B82F6"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center"/>
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       TextColor="#334155"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación A014 y tomar el pallet 2027020100004 y dejarlo en AX028"/>
+                                            </Grid>
+                                            <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                            <!-- TAREA 3 -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="8" HeightRequest="8"
+                                                        BackgroundColor="#3B82F6"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center"/>
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       TextColor="#334155"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación B010 y tomar el pallet 2027020100007 y dejarlo en AX010"/>
+                                            </Grid>
+                                            <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                                            <!-- TAREA 4 -->
+                                            <Grid ColumnDefinitions="Auto,*" Padding="10,10">
+                                                <Border WidthRequest="8" HeightRequest="8"
+                                                        BackgroundColor="#3B82F6"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        VerticalOptions="Center"/>
+                                                <Label Grid.Column="1"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="14"
+                                                       TextColor="#334155"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="27 feb - Ir a la ubicación C003 y tomar el pallet 2027020100012 y dejarlo en AX005"/>
+                                            </Grid>
+
+                                        </VerticalStackLayout>
+                                    </toolkit:Expander.Content>
+                                </toolkit:Expander>
+
+                            </VerticalStackLayout>
+                        </toolkit:Expander.Content>
+                    </toolkit:Expander>
+
+                    <!-- =========================
+                         CONSULTAS
+                         ========================= -->
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                  Padding="15"
+                                  BackgroundColor="#F8FAFC">
+
+                                <Label Text="🔍"
+                                       FontSize="18"
+                                       VerticalOptions="Center"/>
+
+                                <Label Grid.Column="1"
+                                       Text="Consultas"
+                                       FontAttributes="Bold"
+                                       TextColor="#1E293B"
+                                       VerticalOptions="Center"
+                                       Padding="10"/>
+
+                                <Label Grid.Column="2"
+                                       Text="⌄"
+                                       TextColor="#64748B"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </toolkit:Expander.Header>
+
+                        <toolkit:Expander.Content>
+                            <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
+
+                                <Border Stroke="Transparent"
+                                        BackgroundColor="White">
+                                    <Grid ColumnDefinitions="Auto,*"
+                                          Padding="20,14">
+
+                                        <Label Text="🚚"
+                                               FontSize="16"
+                                               VerticalOptions="Center"/>
+
+                                        <Label Grid.Column="1"
+                                               Text="Ver movimientos"
+                                               Margin="10,0,0,0"
+                                               VerticalOptions="Center"
+                                               TextColor="#1E293B"
+                                               FontSize="15"/>
+                                    </Grid>
+
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCambioUbicacionClicked"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
+
+                            </VerticalStackLayout>
+                        </toolkit:Expander.Content>
+                    </toolkit:Expander>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- BANNER -->
             <Button Text="Cerrar sesión"/>
 
-           
-             
-
-            </VerticalStackLayout>
-
-        </ScrollView>
-
-    </ContentPage>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 
