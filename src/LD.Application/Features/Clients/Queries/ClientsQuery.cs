@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LD.Application.Common.Interfaces;
+using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
 using LD.Contracts.Client;
 using LD.Domain.Entities;
@@ -14,10 +14,10 @@ public class ClientsQuery : IRequest<Result<List< ClientDto>?>>
 
 public class ClientsQueryHandler : IRequestHandler<ClientsQuery, Result<List<ClientDto>?>>
 {
-    private readonly IRepository<Client> _clientRepository;
+    private readonly IClientRepository _clientRepository;
     private readonly IMapper _mapper;
 
-    public ClientsQueryHandler(IRepository<Client> clientRepository, IMapper mapper)
+    public ClientsQueryHandler(IClientRepository clientRepository, IMapper mapper)
     {
         _clientRepository = clientRepository;
         _mapper = mapper;

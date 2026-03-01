@@ -30,7 +30,7 @@ namespace LD.Infrastructure.Workers
 
                     await context.Database.ExecuteSqlRawAsync("SELECT 1");
 
-                    await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                 }
 
             }catch (Exception ex)

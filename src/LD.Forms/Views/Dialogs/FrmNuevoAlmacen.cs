@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Net;
+using System.Reflection.Emit;
 using System.Text;
 using System.Windows.Forms;
 
@@ -52,8 +54,15 @@ namespace LD.Forms.Views.Dialogs
                     MessageBox.Show(response.Message);
                     return;
                 }
-                var client = response.Data;
-             
+                var warehouse = response.Data;
+                txtWarehouseName.Text = warehouse.WarehouseName;
+                txtAddress.Text = warehouse.Address;
+                txtcolonia.Text = warehouse.Neighborhood;
+                txtCity.Text = warehouse.City;
+                txtZipCode.Text = warehouse.ZipCode;
+                txtCapacity.Text = warehouse.Capacity.ToString();
+                isProduction.Checked = warehouse.IsProduction;
+                isActive.Checked = warehouse.IsActive;
 
             }
             catch (Exception ex)
@@ -83,11 +92,11 @@ namespace LD.Forms.Views.Dialogs
             this.Close();
         }
 
-        private Task<ApiResponseDto<string>> CreateClient(WarehouseRequest request) =>
-            _warehouseService.CreateWarehouse(request);
+        private async Task<ApiResponseDto<string>> CreateClient(WarehouseRequest request) =>
+            await _warehouseService.CreateWarehouse(request);
 
-        private Task<ApiResponseDto<string>> EditClient(int warehouseId, WarehouseRequest request) =>
-            _warehouseService.UpdateWarehouse(warehouseId, request);
+        private async Task<ApiResponseDto<string>> EditClient(int warehouseId, WarehouseRequest request) =>
+            await _warehouseService.UpdateWarehouse(warehouseId, request);
         private async Task<ApiResponseDto<string>> SaveClient(WarehouseRequest request)
         {
             return WarehouseSelected != null
@@ -129,9 +138,10 @@ namespace LD.Forms.Views.Dialogs
                 var result = await SaveClient(request);
 
                 ShowResult(result);
-
+                ResponseForm = result.IsSuccess;
                 if (result.IsSuccess)
                     this.Close();
+
             }
             catch (Exception ex)
             {

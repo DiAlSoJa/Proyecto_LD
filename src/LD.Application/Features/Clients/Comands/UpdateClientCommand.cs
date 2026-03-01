@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
+using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
 using LD.Contracts.Requests.Client;
 using LD.Domain.Entities;
@@ -19,35 +19,56 @@ public class UpdateClientCommand : ClientRequest, IRequest<Result<string>>
 public class UpdateClientCommandHandler
     : IRequestHandler<UpdateClientCommand, Result<string>>
 {
-    private readonly IRepository<Client> _clientRepository;
+    private readonly IClientRepository _clientRepository;
     private readonly IMapper _mapper;
 
-    public UpdateClientCommandHandler(IRepository<Client> clientRepository, IMapper mapper)
+    public UpdateClientCommandHandler(
+        IClientRepository clientRepository,
+        IMapper mapper)
     {
         _mapper = mapper;
         _clientRepository = clientRepository;
     }
 
-    public async Task<Result<string>> Handle( UpdateClientCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UpdateClientCommand request,CancellationToken cancellationToken)
     {
-        // 1️⃣ Buscar cliente
-        var client = await _clientRepository.GetByIdAsync(request.ClientId);
-
-        if (client is null)
-            return Result<string>.Failure("No existe el cliente a actualizar",new(),404);
-
-        // 2️⃣ Mapear cambios
-        _mapper.Map(request, client);
-
-
-        // 3️⃣ Guardar
-        var updated = await _clientRepository.UpdateAsync(client);
-
-        if (!updated)
+        try
         {
-            return Result<string>.Failure("Hubo un error al intentar actualizar el cliente",new());
-        }
+            // 1️⃣ Buscar cliente
+            var client = await _clientRepository.GetByIdAsync(request.ClientId);
+            if (client is null)
+                return Result<string>.Failure( "No existe el cliente",new ErrorResponse(),404);
 
-        return Result<string>.Success("Cliente actualizado correctamente","se actualizo el cliente correctamente");
+            // 2️⃣ Mapear datos básicos
+            _mapper.Map(request, client);
+
+            // 3️⃣ FiscalData (IMPORTANTE)
+            if (request.FiscalData != null)
+            {
+                if (client.ClientFiscalData == null)
+                {
+                    // crear
+                    client.ClientFiscalData = _mapper.Map<ClientFiscalData>(request.FiscalData);
+                }
+                else
+                {
+                    // actualizar
+                    _mapper.Map(request.FiscalData,client.ClientFiscalData);
+                }
+            }
+
+            // 4️⃣ Guardar
+            var updated = await _clientRepository.UpdateAsync(client);
+
+            if (!updated)
+                return Result<string>.Failure("Error al actualizar", new ErrorResponse());
+
+
+            return Result<string>.Success("Cliente actualizado",client.ClientId.ToString());
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure("Error inesperado",new());
+        }
     }
 }

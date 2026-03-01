@@ -17,32 +17,34 @@ namespace LD.Forms.Views.Forms
     public partial class FrmAlmacenes : Form
     {
         private readonly WarehouseService _warehouseService;
-        private WarehouseDto? selectedWarehouse { get; set; }
-        private BindingSource _warehousesBinding = new();
-        private GridFilter<WarehouseDto> _gridFilter;
         private readonly DialogFormService _dialogFormService;
 
-        public FrmAlmacenes(WarehouseService warehouseService,DialogFormService dialogFormService)
+        private BindingSource _warehousesBinding = new();
+        private GridFilter<WarehouseDto> _gridFilter;
+
+        private WarehouseDto? selectedWarehouse { get; set; }
+        public FrmAlmacenes(WarehouseService warehouseService, DialogFormService dialogFormService)
         {
             InitializeComponent();
             _warehouseService = warehouseService;
             _dialogFormService = dialogFormService;
+            dataGridView1.DataSource = _warehousesBinding;
             _gridFilter = new GridFilter<WarehouseDto>(dataGridView1, _warehousesBinding);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoAlmacen>();
-          
+            var form=_dialogFormService.ShowDialog<FrmNuevoAlmacen>();
+            if (form.ResponseForm) await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo almacenes");
         }
 
-        private void EditBtn_Click(object sender, EventArgs e)
+        private async void EditBtn_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoAlmacen>(config =>
+            var form =_dialogFormService.ShowDialog<FrmNuevoAlmacen>(config =>
             {
-                config.SetWarehouse(new());
+                config.SetWarehouse(selectedWarehouse);
             });
-       
+            if (form.ResponseForm) await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo almacenes");
         }
 
         private async Task CargarDatosAsync()
@@ -60,11 +62,12 @@ namespace LD.Forms.Views.Forms
             dataGridView1 = _gridFilter.BuildFilterColumns();
 
         }
+
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo almacenes");
 
         }
 
@@ -86,6 +89,13 @@ namespace LD.Forms.Views.Forms
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+
+
+        private async void btn_actualizar_Click(object sender, EventArgs e)
+        {
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo almacenes");
         }
     }
 }

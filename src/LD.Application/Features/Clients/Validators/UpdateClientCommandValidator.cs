@@ -8,10 +8,10 @@ using FluentValidation;
 
 namespace LD.Application.Features.Clients.Validators;
 
-public class UpdateClientCommandValidator
-    : AbstractValidator<UpdateClientCommand>
+public class CreateClientCommandValidator
+    : AbstractValidator<CreateClientCommand>
 {
-    public UpdateClientCommandValidator()
+    public CreateClientCommandValidator()
     {
         RuleFor(x => x.CommercialName)
                    .NotEmpty().WithMessage("El nombre comercial es obligatorio.")

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -7,6 +8,10 @@ namespace LD.Forms.Views.Common
 {
     public class DraggableForm : Form
     {
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ResponseForm { get; set; } = false;
+
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 

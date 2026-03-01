@@ -8,6 +8,7 @@ namespace LD.Contracts.Requests.Client
 {
     public class ClientRequest
     {
+        public int? ClientId { get; set; } = null;
         public string? CommercialName { get; set; } = default!;
         public string? CommercialAddress { get; set; } = default!;
         public string? Neightbourhoud { get; set; } = default!;
@@ -17,6 +18,6 @@ namespace LD.Contracts.Requests.Client
         public bool IsProvider { get; set; }
         public bool IsActive { get; set; }
 
-        public ClientFiscalDataRequest? FicalData { get; set; }
+        public ClientFiscalDataRequest? FiscalData { get; set; }
     }
 }

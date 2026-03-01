@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LD.Application.Features.Clients.Queries;
 using LD.Contracts.Client;
 using LD.Contracts.Requests.Client;
 using LD.Domain.Entities;
@@ -27,16 +28,31 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.ZipCode))
                 .ForMember(dest => dest.Telefono,
                     opt => opt.MapFrom(src => src.Phone))
-                // ⚠️ No existen en entity
-                .ForMember(dest => dest.RazonSocial,
-                    opt => opt.Ignore())
+                 .ForMember(dest => dest.RazonSocial,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.BusinessName
+                            : "N/A"))
                 .ForMember(dest => dest.Rfc,
-                    opt => opt.Ignore())
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.Rfc
+                            : "N/A"))
                 .ForMember(dest => dest.Activo,
                     opt => opt.MapFrom(src => src.IsActive));
 
 
-            CreateMap<ClientRequest, Client>();
+            CreateMap<ClientRequest, Client>()
+                .ForMember(dest => dest.ClientId,
+                    opt => opt.Ignore());
+
+            CreateMap<ClientFiscalDataRequest, ClientFiscalData>()
+                .ForMember(dest => dest.ClientFiscalDataId,
+                    opt => opt.Ignore()); ;
+
+            CreateMap<Client, ClientRequest>();
+            CreateMap<ClientFiscalData, ClientFiscalDataRequest>();
+
         }
     }
 }

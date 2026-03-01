@@ -15,7 +15,6 @@ namespace LD.Contracts.Client
         public string NombreComercial { get; set; } = string.Empty;
 
         public string RazonSocial { get; set; } = string.Empty;
-
         public string Rfc { get; set; } = string.Empty;
 
         public string DomicilioComercial { get; set; } = string.Empty;

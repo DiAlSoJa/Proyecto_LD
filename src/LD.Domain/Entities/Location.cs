@@ -56,7 +56,7 @@ namespace LD.Domain.Entities
 
         public bool HasCortina { get; set; }
 
-        public Warehouse? Warehouse { get; set; }
+        public Warehouse Warehouse { get; set; }
 
     }
 

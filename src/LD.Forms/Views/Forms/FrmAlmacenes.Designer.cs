@@ -34,19 +34,12 @@ namespace LD.Forms.Views.Forms
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
-            button6 = new Button();
+            btn_actualizar = new Button();
             NewBtn = new Button();
             EditBtn = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
-            Activo = new DataGridViewCheckBoxColumn();
-            Id = new DataGridViewTextBoxColumn();
-            NombreComercial = new DataGridViewTextBoxColumn();
-            Domicilio = new DataGridViewTextBoxColumn();
-            Telefono = new DataGridViewTextBoxColumn();
-            Ciudad = new DataGridViewTextBoxColumn();
-            CP = new DataGridViewTextBoxColumn();
             gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -66,7 +59,7 @@ namespace LD.Forms.Views.Forms
             // 
             // flowLayoutPanel1
             // 
-            flowLayoutPanel1.Controls.Add(button6);
+            flowLayoutPanel1.Controls.Add(btn_actualizar);
             flowLayoutPanel1.Controls.Add(NewBtn);
             flowLayoutPanel1.Controls.Add(EditBtn);
             flowLayoutPanel1.Controls.Add(flowLayoutPanel2);
@@ -77,16 +70,17 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel1.Size = new Size(399, 47);
             flowLayoutPanel1.TabIndex = 0;
             // 
-            // button6
+            // btn_actualizar
             // 
-            button6.Image = Properties.Resources.update;
-            button6.ImageAlign = ContentAlignment.MiddleLeft;
-            button6.Location = new Point(23, 3);
-            button6.Name = "button6";
-            button6.Size = new Size(124, 35);
-            button6.TabIndex = 6;
-            button6.Text = "Actualizar";
-            button6.UseVisualStyleBackColor = true;
+            btn_actualizar.Image = Properties.Resources.update;
+            btn_actualizar.ImageAlign = ContentAlignment.MiddleLeft;
+            btn_actualizar.Location = new Point(23, 3);
+            btn_actualizar.Name = "btn_actualizar";
+            btn_actualizar.Size = new Size(124, 35);
+            btn_actualizar.TabIndex = 6;
+            btn_actualizar.Text = "Actualizar";
+            btn_actualizar.UseVisualStyleBackColor = true;
+            btn_actualizar.Click += btn_actualizar_Click;
             // 
             // NewBtn
             // 
@@ -138,7 +132,6 @@ namespace LD.Forms.Views.Forms
             dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Id, NombreComercial, Domicilio, Telefono, Ciudad, CP });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
@@ -146,59 +139,6 @@ namespace LD.Forms.Views.Forms
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
             dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
-            // 
-            // Activo
-            // 
-            Activo.HeaderText = "Activo";
-            Activo.MinimumWidth = 6;
-            Activo.Name = "Activo";
-            Activo.Width = 50;
-            // 
-            // Id
-            // 
-            Id.HeaderText = "Id";
-            Id.MinimumWidth = 6;
-            Id.Name = "Id";
-            Id.Resizable = DataGridViewTriState.True;
-            Id.SortMode = DataGridViewColumnSortMode.NotSortable;
-            Id.Width = 50;
-            // 
-            // NombreComercial
-            // 
-            NombreComercial.HeaderText = "Nombre del almacén";
-            NombreComercial.MinimumWidth = 6;
-            NombreComercial.Name = "NombreComercial";
-            NombreComercial.Resizable = DataGridViewTriState.True;
-            NombreComercial.SortMode = DataGridViewColumnSortMode.NotSortable;
-            NombreComercial.Width = 250;
-            // 
-            // Domicilio
-            // 
-            Domicilio.HeaderText = "Domicilio";
-            Domicilio.MinimumWidth = 6;
-            Domicilio.Name = "Domicilio";
-            Domicilio.Width = 300;
-            // 
-            // Telefono
-            // 
-            Telefono.HeaderText = "Colonia";
-            Telefono.MinimumWidth = 6;
-            Telefono.Name = "Telefono";
-            Telefono.Width = 125;
-            // 
-            // Ciudad
-            // 
-            Ciudad.HeaderText = "Ciudad";
-            Ciudad.MinimumWidth = 6;
-            Ciudad.Name = "Ciudad";
-            Ciudad.Width = 125;
-            // 
-            // CP
-            // 
-            CP.HeaderText = "CP";
-            CP.MinimumWidth = 6;
-            CP.Name = "CP";
-            CP.Width = 80;
             // 
             // gridContainer
             // 
@@ -244,7 +184,7 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn Telefono;
         private DataGridViewTextBoxColumn Ciudad;
         private DataGridViewTextBoxColumn CP;
-        private Button button6;
+        private Button btn_actualizar;
         private Panel gridContainer;
     }
 }

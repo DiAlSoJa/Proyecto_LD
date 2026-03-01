@@ -11,9 +11,9 @@ namespace LD.Forms.Views.Forms
     {
         private readonly ClientService _clientService;
         private readonly DialogFormService _dialogFormService;
+
+
         private GridFilter<ClientDto>_gridFilter;
-
-
         private BindingSource _clientsBinding = new();
         private ClientDto? selectedClient { get; set; }
 
@@ -21,25 +21,27 @@ namespace LD.Forms.Views.Forms
         {
             InitializeComponent();
             _clientService = clientService;
+            _dialogFormService = dialogFormService;
             dataGridView1.DataSource = _clientsBinding;
             _gridFilter = new GridFilter<ClientDto>(dataGridView1, _clientsBinding);
-            _dialogFormService = dialogFormService;
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoCliente>();
+            var form =_dialogFormService.ShowDialog<FrmNuevoCliente>();
+            if(form.ResponseForm) await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
         }
         
 
-        private void EditBtn_Click(object sender, EventArgs e)
+        private async void EditBtn_Click(object sender, EventArgs e)
         {
             if (selectedClient is null) return;
-            _dialogFormService.ShowDialog<FrmNuevoCliente>(frm =>
+            var form = _dialogFormService.ShowDialog<FrmNuevoCliente>(frm =>
             {
                 frm.SetClient(selectedClient);
             });
+            if (form.ResponseForm) await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
         }
         protected override async void OnShown(EventArgs e)
         {

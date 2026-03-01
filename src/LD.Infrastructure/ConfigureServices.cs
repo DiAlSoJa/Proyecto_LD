@@ -1,5 +1,5 @@
-﻿using LD.Application.Common.Interfaces;
-using LD.Application.Common.Interfaces.Auth;
+﻿using LD.Application.Common.Interfaces.Auth;
+using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Models;
 using LD.Application.Features.Auth.Commands;
 using LD.Infrastructure.Persistence;
@@ -50,11 +50,12 @@ public static class ConfigureServices
 
     public static IServiceCollection AddInfrastructureRepositories(this IServiceCollection services, IConfiguration configuration)
     {
-
+        //genericos
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped(typeof(IArchiveRepository<>), typeof(ArchiveRepository<>));
 
-
+        //especificos
+        services.AddScoped<IClientRepository, ClientRepository>();
 
         return services;
     }

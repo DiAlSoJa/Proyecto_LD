@@ -17,9 +17,9 @@ namespace LD.Forms.Services
             _api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
-        public async Task<ApiResponseDto<WarehouseDto>> GetWarehouseById(int warehouseId)
+        public async Task<ApiResponseDto<WarehouseRequest>> GetWarehouseById(int warehouseId)
         {
-            return await _api.GetAsync<ApiResponseDto<WarehouseDto>>(_apiEndpoints.Warehouse_GetById.Replace("{id}", warehouseId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<WarehouseRequest>>(_apiEndpoints.Warehouse_GetById.Replace("{id}", warehouseId.ToString()));
         }
 
         public async Task<ApiResponseDto<List<WarehouseDto>>> GetWarehouses()

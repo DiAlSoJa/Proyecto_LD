@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
+using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Models;
 using LD.Application.Common.Results;
 using LD.Contracts.Requests;
@@ -34,13 +34,18 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
     {
         try
         {
-            var result = await _warehouseRepository.CreateAsync(_mapper.Map<Warehouse>(request));
-            return result ? Result<string>.Success("Almacen creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Almacen", new());
+            var warehouse = await _warehouseRepository.GetByIdAsync(request.WarehouseId.Value);
+            if (warehouse is null)
+                return Result<string>.Failure("No existe el almacen", new ErrorResponse(), 404);
+            _mapper.Map(request, warehouse);
+
+            var result = await _warehouseRepository.UpdateAsync(warehouse);
+            return result ? Result<string>.Success("Almacen actualizado con exito", "") : Result<string>.Failure("Hubo un error al actualizar el Almacen", new());
 
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Almacen", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al actualizar el Almacen", new ErrorResponse());
         }
     }
 }

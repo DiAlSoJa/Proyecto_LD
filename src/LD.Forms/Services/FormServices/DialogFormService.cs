@@ -1,4 +1,5 @@
 ﻿using LD.Contracts.Enums;
+using LD.Forms.Views.Common;
 using LD.Forms.Views.Dialogs;
 using LD.Forms.Views.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,13 +17,13 @@ namespace LD.Forms.Services.FormServices
             _serviceProvider = serviceProvider;
         }
 
-        public DialogResult ShowDialog<T>(Action<T>? configure = null) where T : Form
+        public T ShowDialog<T>(Action<T>? configure = null) where T : DraggableForm
         {
             var form = _serviceProvider.GetRequiredService<T>();
 
             configure?.Invoke(form);
-
-            return form.ShowDialog();
+            form.ShowDialog();
+            return form;
         }
 
     }

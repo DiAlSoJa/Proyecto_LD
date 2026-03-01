@@ -9,10 +9,11 @@ using LD.Contracts.Item;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
+using LD.Forms.Views.Common;
 
 namespace LD.Forms.Views.Dialogs
 {
-    public partial class FrmNuevoASN : Form
+    public partial class FrmNuevoASN : DraggableForm
     {
         private bool mouseDown;
         private Point lastLocation;
