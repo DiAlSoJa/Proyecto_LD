@@ -28,18 +28,30 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.ZipCode))
                 .ForMember(dest => dest.Telefono,
                     opt => opt.MapFrom(src => src.Phone))
-                .ForMember(dest => dest.Colonia,
-                    opt => opt.MapFrom(src => src.Neightbourhoud))
-                .ForMember(dest => dest.RazonSocial,
-                    opt => opt.Ignore())
+                 .ForMember(dest => dest.RazonSocial,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.BusinessName
+                            : "N/A"))
                 .ForMember(dest => dest.Rfc,
-                    opt => opt.Ignore())
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.Rfc
+                            : "N/A"))
                 .ForMember(dest => dest.Activo,
                     opt => opt.MapFrom(src => src.IsActive));
 
 
-            CreateMap<ClientRequest, Client>();
-            CreateMap<ClientFiscalDataRequest, ClientFiscalData>();
+            CreateMap<ClientRequest, Client>()
+                .ForMember(dest => dest.ClientId,
+                    opt => opt.Ignore());
+
+            CreateMap<ClientFiscalDataRequest, ClientFiscalData>()
+                .ForMember(dest => dest.ClientFiscalDataId,
+                    opt => opt.Ignore()); ;
+
+            CreateMap<Client, ClientRequest>();
+            CreateMap<ClientFiscalData, ClientFiscalDataRequest>();
 
         }
     }

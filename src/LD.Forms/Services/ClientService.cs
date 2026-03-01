@@ -20,9 +20,9 @@ namespace LD.Forms.Services
         }
 
 
-        public async Task<ApiResponseDto<ClientDto>> GetClientById(int clientId)
+        public async Task<ApiResponseDto<ClientRequest>> GetClientById(int clientId)
         {
-            return await _api.GetAsync<ApiResponseDto<ClientDto>>(_apiEndpoints.Client_GetById.Replace("{id}", clientId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<ClientRequest>>(_apiEndpoints.Client_GetById.Replace("{id}", clientId.ToString()));
         }
 
         public async Task<ApiResponseDto<List<ClientDto>>> GetClients()

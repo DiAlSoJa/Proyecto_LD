@@ -1,6 +1,7 @@
 ﻿using LD.Application.Common.Interfaces.Repository;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,14 +33,14 @@ namespace LD.Infrastructure.Repositories
             }
         }
 
-        public Task<Client?> GetByIdAsync(int id)
+        public async Task<Client?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Clients.Include(c=>c.ClientFiscalData).FirstOrDefaultAsync(c=>c.ClientId == id);
         }
 
-        public Task<List<Client>?> GetManyAsync()
+        public async Task<List<Client>?> GetManyAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Clients.Include(c => c.ClientFiscalData).ToListAsync();
         }
 
  

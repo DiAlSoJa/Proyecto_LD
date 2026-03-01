@@ -8,6 +8,7 @@ namespace LD.Contracts.Requests.Client
 {
     public class ClientRequest
     {
+        public int? ClientId { get; set; } = null;
         public string? CommercialName { get; set; } = default!;
         public string? CommercialAddress { get; set; } = default!;
         public string? Neightbourhoud { get; set; } = default!;

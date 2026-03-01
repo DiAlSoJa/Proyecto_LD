@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Reflection.Emit;
 using System.Text;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace LD.Forms.Views.Dialogs
 {
@@ -47,7 +49,7 @@ namespace LD.Forms.Views.Dialogs
         {
             try
             {
-                var response = await _clientService.GetClientById(ClientSelected?.Id??0);
+                var response = await _clientService.GetClientById(ClientSelected?.Id ?? 0);
 
                 if (!response.IsSuccess)
                 {
@@ -55,14 +57,27 @@ namespace LD.Forms.Views.Dialogs
                     return;
                 }
                 var client = response.Data;
-                txtId.Text = client.Id.ToString();
-                txtComercialName.Text = client.NombreComercial;
-                txtCiudadComercial.Text = client.Ciudad;
-                txtCPComercial.Text=client.CodigoPostal;
-                txtColoniaComercial.Text = client.Colonia;
-                txtTelefonoComercial.Text = client.Telefono;
-                checkIsActive.Checked = client.Activo;
-                txtDomicilioComercial.Text = client.DomicilioComercial;
+                txtId.Text = client.ClientId.ToString();
+                txtComercialName.Text = client.CommercialName;
+                txtCiudadComercial.Text = client.City;
+                txtCPComercial.Text = client.ZipCode;
+                txtTelefonoComercial.Text = client.Phone;
+                txtColoniaComercial.Text = client.Neightbourhoud;
+                checkIsActive.Checked = client.IsActive;
+                checkIsProvider.Checked = client.IsActive;
+                txtDomicilioComercial.Text = client.CommercialAddress;
+
+
+
+                txtRazonSocial.Text= client.FiscalData?.BusinessName ?? string.Empty;
+                txtRFC.Text = client.FiscalData?.Rfc ?? string.Empty;
+                txtDomicilioFiscal.Text = client.FiscalData?.FiscalAddress ?? string.Empty;
+                txtColonia.Text = client.FiscalData?.Neightbourhoud ?? string.Empty;
+                txtCiudadFiscal.Text = client.FiscalData?.City ?? string.Empty;
+                txtCPFiscal.Text = client.FiscalData?.ZipCode ?? string.Empty;
+                txtEmail.Text = client.FiscalData?.Email ?? string.Empty; ;
+                txtTelefonoFiscal.Text = client.FiscalData?.Phone ?? string.Empty;
+
 
             }
             catch (Exception ex)
@@ -108,6 +123,7 @@ namespace LD.Forms.Views.Dialogs
 
             return new ClientRequest
             {
+                ClientId = ClientSelected!=null? ClientSelected.Id:0,
                 CommercialName = txtComercialName.Text.Trim(),
                 CommercialAddress = txtDomicilioComercial.Text.Trim(),
                 Neightbourhoud = txtColoniaComercial.Text.Trim(),
