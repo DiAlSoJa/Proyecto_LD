@@ -11,9 +11,9 @@ namespace LD.Forms.Views.Forms
     {
         private readonly ClientService _clientService;
         private readonly DialogFormService _dialogFormService;
+
+
         private GridFilter<ClientDto>_gridFilter;
-
-
         private BindingSource _clientsBinding = new();
         private ClientDto? selectedClient { get; set; }
 
@@ -21,9 +21,9 @@ namespace LD.Forms.Views.Forms
         {
             InitializeComponent();
             _clientService = clientService;
+            _dialogFormService = dialogFormService;
             dataGridView1.DataSource = _clientsBinding;
             _gridFilter = new GridFilter<ClientDto>(dataGridView1, _clientsBinding);
-            _dialogFormService = dialogFormService;
         }
 
 

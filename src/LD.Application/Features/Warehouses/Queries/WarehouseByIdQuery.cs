@@ -4,6 +4,7 @@ using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Models;
 using LD.Application.Common.Results;
 using LD.Contracts.Client;
+using LD.Contracts.Requests;
 using LD.Contracts.Warehouse;
 using LD.Domain.Entities;
 using MediatR;
@@ -16,10 +17,10 @@ using System.Threading.Tasks;
 namespace LD.Application.Features.Warehouses.Queries;
 
 public record WarehouseByIdQuery(int WarehouseId)
-    : IRequest<Result<WarehouseDto?>>;
+    : IRequest<Result<WarehouseRequest?>>;
 
 
-public class WarehouseByIdQueryHandler : IRequestHandler<WarehouseByIdQuery, Result<WarehouseDto?>>
+public class WarehouseByIdQueryHandler : IRequestHandler<WarehouseByIdQuery, Result<WarehouseRequest?>>
 {
     private readonly IRepository<Warehouse> _warehouseRepository;
     private readonly IMapper _mapper;
@@ -29,10 +30,10 @@ public class WarehouseByIdQueryHandler : IRequestHandler<WarehouseByIdQuery, Res
         _mapper = mapper;
     }
 
-    public async Task<Result<WarehouseDto?>> Handle(WarehouseByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<WarehouseRequest?>> Handle(WarehouseByIdQuery request, CancellationToken cancellationToken)
     {
         var warehouseDb = await _warehouseRepository.GetByIdAsync(request.WarehouseId);
-        if (warehouseDb == null) return Result<WarehouseDto?>.Failure("Almacen no encontrado", new(), 404);
-        return Result<WarehouseDto?>.Success(_mapper.Map<WarehouseDto>(warehouseDb), "Almacen obtenido con exito");
+        if (warehouseDb == null) return Result<WarehouseRequest?>.Failure("Almacen no encontrado", new(), 404);
+        return Result<WarehouseRequest?>.Success(_mapper.Map<WarehouseRequest>(warehouseDb), "Almacen obtenido con exito");
     }
 }
