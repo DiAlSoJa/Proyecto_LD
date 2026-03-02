@@ -107,6 +107,7 @@ namespace LD.Forms.Views.Dialogs
         {
             return new WarehouseRequest
             {
+                WarehouseId = WarehouseSelected != null ? WarehouseSelected.Id : 0,
                 WarehouseName = txtWarehouseName.Text,
                 Address = txtAddress.Text,
                 Neighborhood = txtcolonia.Text,

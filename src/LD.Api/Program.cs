@@ -19,6 +19,7 @@ builder.Services.AddHttpContextAccessor();
 
 //aplication
 builder.Services.AddAutoMapper(typeof(AssemblyMarker).Assembly);
+
 builder.Services.AddApplicationServices();
 
 //infrasctruture

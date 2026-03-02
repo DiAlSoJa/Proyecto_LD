@@ -1,4 +1,7 @@
-﻿using LD.Application.Common.Interfaces.Repository;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using LD.Application.Common.Interfaces.Repository;
+using LD.Contracts.DTOs;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +16,11 @@ namespace LD.Infrastructure.Repositories
     public class ClientRepository : IClientRepository
     {
         public readonly LdProyectDbContext _context;
-        public ClientRepository(LdProyectDbContext context)
+        public readonly IMapper _mapper;
+        public ClientRepository(LdProyectDbContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<bool> CreateAsync(Client newModel)
         {
@@ -36,6 +41,14 @@ namespace LD.Infrastructure.Repositories
         public async Task<Client?> GetByIdAsync(int id)
         {
             return await _context.Clients.Include(c=>c.ClientFiscalData).FirstOrDefaultAsync(c=>c.ClientId == id);
+        }
+
+        public async Task<List<DropDownDto>> GetLookup()
+        {
+            return await _context.Clients
+               .AsNoTracking()
+               .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
+               .ToListAsync();
         }
 
         public async Task<List<Client>?> GetManyAsync()

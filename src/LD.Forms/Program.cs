@@ -61,6 +61,8 @@ namespace LD
             services.AddScoped<ProjectService>();
             services.AddScoped<WarehouseService>();
             services.AddScoped<UserService>();
+            services.AddScoped<LookupService>();
+
 
             // 🔹 Servicios de formularios
             services.AddSingleton<TabService>();

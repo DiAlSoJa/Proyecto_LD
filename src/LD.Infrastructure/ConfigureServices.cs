@@ -44,6 +44,7 @@ public static class ConfigureServices
             cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));
 
         services.AddHostedService<KeepAliveWorker>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         return services;
     }
@@ -56,6 +57,10 @@ public static class ConfigureServices
 
         //especificos
         services.AddScoped<IClientRepository, ClientRepository>();
+        services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+        services.AddScoped<ILocationRepository, LocationRepository>();
+
+
 
         return services;
     }

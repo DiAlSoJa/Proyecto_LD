@@ -37,9 +37,9 @@
             radioSencillo = new RadioButton();
             radioDoble = new RadioButton();
             groupBox3 = new GroupBox();
-            radioCompartido = new RadioButton();
+            radioCompartidoType = new RadioButton();
             radioRack = new RadioButton();
-            radioButton7 = new RadioButton();
+            radioCompartido = new RadioButton();
             radioCuarentena = new RadioButton();
             radioReciboEmbarque = new RadioButton();
             radioEmbarque = new RadioButton();
@@ -133,7 +133,7 @@
             // 
             groupBox2.Controls.Add(groupBox5);
             groupBox2.Controls.Add(groupBox3);
-            groupBox2.Controls.Add(radioButton7);
+            groupBox2.Controls.Add(radioCompartido);
             groupBox2.Controls.Add(radioCuarentena);
             groupBox2.Controls.Add(radioReciboEmbarque);
             groupBox2.Controls.Add(radioEmbarque);
@@ -179,7 +179,7 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(radioCompartido);
+            groupBox3.Controls.Add(radioCompartidoType);
             groupBox3.Controls.Add(radioRack);
             groupBox3.Location = new Point(24, 26);
             groupBox3.Name = "groupBox3";
@@ -187,16 +187,16 @@
             groupBox3.TabIndex = 49;
             groupBox3.TabStop = false;
             // 
-            // radioCompartido
+            // radioCompartidoType
             // 
-            radioCompartido.AutoSize = true;
-            radioCompartido.Location = new Point(25, 56);
-            radioCompartido.Name = "radioCompartido";
-            radioCompartido.Size = new Size(110, 24);
-            radioCompartido.TabIndex = 10;
-            radioCompartido.TabStop = true;
-            radioCompartido.Text = "Compartido";
-            radioCompartido.UseVisualStyleBackColor = true;
+            radioCompartidoType.AutoSize = true;
+            radioCompartidoType.Location = new Point(25, 56);
+            radioCompartidoType.Name = "radioCompartidoType";
+            radioCompartidoType.Size = new Size(110, 24);
+            radioCompartidoType.TabIndex = 10;
+            radioCompartidoType.TabStop = true;
+            radioCompartidoType.Text = "Compartido";
+            radioCompartidoType.UseVisualStyleBackColor = true;
             // 
             // radioRack
             // 
@@ -209,16 +209,16 @@
             radioRack.Text = "Rack";
             radioRack.UseVisualStyleBackColor = true;
             // 
-            // radioButton7
+            // radioCompartido
             // 
-            radioButton7.AutoSize = true;
-            radioButton7.Location = new Point(259, 74);
-            radioButton7.Name = "radioButton7";
-            radioButton7.Size = new Size(110, 24);
-            radioButton7.TabIndex = 12;
-            radioButton7.TabStop = true;
-            radioButton7.Text = "Compartido";
-            radioButton7.UseVisualStyleBackColor = true;
+            radioCompartido.AutoSize = true;
+            radioCompartido.Location = new Point(259, 74);
+            radioCompartido.Name = "radioCompartido";
+            radioCompartido.Size = new Size(110, 24);
+            radioCompartido.TabIndex = 12;
+            radioCompartido.TabStop = true;
+            radioCompartido.Text = "Compartido";
+            radioCompartido.UseVisualStyleBackColor = true;
             // 
             // radioCuarentena
             // 
@@ -463,6 +463,7 @@
             btnSave.TabIndex = 18;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // panel2
             // 
@@ -556,13 +557,13 @@
         private Label label11;
         private Label label9;
         private GroupBox groupBox2;
-        private RadioButton radioCompartido;
+        private RadioButton radioCompartidoType;
         private RadioButton radioRack;
         private RadioButton radioGeneral;
         private RadioButton radioEmbarque;
         private RadioButton radioCuarentena;
         private RadioButton radioReciboEmbarque;
-        private RadioButton radioButton7;
+        private RadioButton radioCompartido;
         private CheckBox checkPaso;
         private CheckBox checkCortina;
         private GroupBox groupBox4;

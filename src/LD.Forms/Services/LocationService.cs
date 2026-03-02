@@ -23,9 +23,9 @@ namespace LD.Forms.Services
             _api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
-        public async Task<ApiResponseDto<LocationDto>> GetLocationById(int locationId)
+        public async Task<ApiResponseDto<LocationRequest>> GetLocationById(int locationId)
         {
-            return await _api.GetAsync<ApiResponseDto<LocationDto>>(_apiEndpoints.Location_GetById.Replace("{id}", locationId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<LocationRequest>>(_apiEndpoints.Location_GetById.Replace("{id}", locationId.ToString()));
         }
         public async Task<ApiResponseDto<List<LocationDto>>> GetLocations()
         {

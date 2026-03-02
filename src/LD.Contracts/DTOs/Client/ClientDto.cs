@@ -14,9 +14,6 @@ namespace LD.Contracts.Client
 
         public string NombreComercial { get; set; } = string.Empty;
 
-        public string RazonSocial { get; set; } = string.Empty;
-        public string Rfc { get; set; } = string.Empty;
-
         public string DomicilioComercial { get; set; } = string.Empty;
 
         public string Telefono { get; set; } = string.Empty;
@@ -24,6 +21,16 @@ namespace LD.Contracts.Client
         public string Ciudad { get; set; } = string.Empty;
 
         public string CodigoPostal { get; set; } = string.Empty;
+        public string RazonSocial { get; set; } = string.Empty;
+        public string Rfc { get; set; } = string.Empty;
+        public string DomicilioFiscal { get; set; } = string.Empty;
+        public string ColoniaFiscal { get; set; } = string.Empty;
+        public string CiudadFiscal { get; set; } = string.Empty;
+        public string CodigoPostalFiscal { get; set; } = string.Empty;
+        public string EmailFiscal { get; set; } = string.Empty;
+        public string TelefonoFiscal { get; set; } = string.Empty;
+
+
     }
 
 }

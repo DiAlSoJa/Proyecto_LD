@@ -28,15 +28,46 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.ZipCode))
                 .ForMember(dest => dest.Telefono,
                     opt => opt.MapFrom(src => src.Phone))
+
                  .ForMember(dest => dest.RazonSocial,
                     opt => opt.MapFrom(src =>
                         src.ClientFiscalData != null
                             ? src.ClientFiscalData.BusinessName
                             : "N/A"))
-                .ForMember(dest => dest.Rfc,
+                  .ForMember(dest => dest.Rfc,
                     opt => opt.MapFrom(src =>
                         src.ClientFiscalData != null
                             ? src.ClientFiscalData.Rfc
+                            : "N/A"))
+                 .ForMember(dest => dest.DomicilioFiscal,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.FiscalAddress
+                            : "N/A"))
+                .ForMember(dest => dest.ColoniaFiscal,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.Neightbourhoud
+                            : "N/A"))
+                 .ForMember(dest => dest.CiudadFiscal,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.City
+                            : "N/A"))
+                .ForMember(dest => dest.CodigoPostalFiscal,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.ZipCode
+                            : "N/A"))
+                 .ForMember(dest => dest.EmailFiscal,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.Email
+                            : "N/A"))
+                .ForMember(dest => dest.TelefonoFiscal,
+                    opt => opt.MapFrom(src =>
+                        src.ClientFiscalData != null
+                            ? src.ClientFiscalData.Phone
                             : "N/A"))
                 .ForMember(dest => dest.Activo,
                     opt => opt.MapFrom(src => src.IsActive));

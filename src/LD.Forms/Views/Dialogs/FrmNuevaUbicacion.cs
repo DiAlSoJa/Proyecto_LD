@@ -1,5 +1,6 @@
 ﻿using LD.Contracts.Location;
 using LD.Contracts.Requests;
+using LD.Forms.Classes;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
 using LD.Forms.Views.Common;
@@ -25,13 +26,20 @@ namespace LD.Forms.Views.Dialogs
             _locationService = locationService;
             EnableDrag(panel1);
             EnableDrag(panel2);
-
+            SetCombos();
         }
 
         public async void SetLocation(LocationDto? location)
         {
             LocationSelected = location;
             await SetDataAsync();
+        }
+
+        private void SetCombos()
+        {
+            cmbAlmacen.DataSource = UserData.Lookups?.Warehouses;
+            cmbAlmacen.DisplayMember = "Value";
+            cmbAlmacen.ValueMember = "Key";
         }
 
         private async Task SetDataAsync()
@@ -46,8 +54,34 @@ namespace LD.Forms.Views.Dialogs
                     MessageBox.Show(response.Message);
                     return;
                 }
-                var client = response.Data;
+                var location = response.Data;
 
+                cmbAlmacen.SelectedValue = location.WarehouseId?.ToString();
+
+                txtNombreUbicacion.Text = location.LocationName;
+
+                checkIsActive.Checked = location.IsActive;
+                checkIsFiscal.Checked = location.IsFiscal;
+                checkTemperatura.Checked = location.HasControlledTemperature;
+
+                txtAltoCm.Text = location.Height?.ToString();
+                txtAnchoCm.Text = location.Width?.ToString();
+                txtProfundidadCm.Text = location.Depth?.ToString();
+
+                radioRack.Checked = location.IsRack;
+                radioCompartidoType.Checked = location.IsCompartidoType;
+
+                radioGeneral.Checked = location.IsGeneral;
+                radioCuarentena.Checked = location.IsCuarentena;
+                radioEmbarque.Checked = location.IsEmbarque;
+                radioCompartido.Checked = location.IsCompartido;
+                radioReciboEmbarque.Checked = location.IsReciboYEmbarque;
+
+                radioDoble.Checked = location.IsDoble;
+                radioSencillo.Checked = location.IsSencillo;
+
+                checkPaso.Checked = location.HasPaso;
+                checkCortina.Checked = location.HasCortina;
             }
             catch (Exception ex)
             {
@@ -90,18 +124,19 @@ namespace LD.Forms.Views.Dialogs
         {
             return new LocationRequest
             {
-                WarehouseId = cmbAlmacen.SelectedValue as int?,
+                LocationId =  LocationSelected != null ? LocationSelected.LocationId : 0,
+                WarehouseId = int.TryParse( cmbAlmacen.SelectedValue?.ToString(),out int warehouseid)?warehouseid:null ,
                 LocationName = txtNombreUbicacion.Text,
                 IsActive = checkIsActive.Checked,
                 IsFiscal = checkIsFiscal.Checked,
-                HasControlledTemperature  = checkTemperatura.Checked,
+                HasControlledTemperature = checkTemperatura.Checked,
 
-                Height = decimal.TryParse(txtAltoCm.Text,out decimal alto)?alto:null,
+                Height = decimal.TryParse(txtAltoCm.Text, out decimal alto) ? alto : null,
                 Width = decimal.TryParse(txtAnchoCm.Text, out decimal ancho) ? ancho : null,
                 Depth = decimal.TryParse(txtProfundidadCm.Text, out decimal profundidad) ? profundidad : null,
 
                 IsRack = radioRack.Checked,
-                IsCompartidoType = radioCompartido.Checked,
+                IsCompartidoType = radioCompartidoType.Checked,
 
                 IsGeneral = radioGeneral.Checked,
                 IsCuarentena = radioCuarentena.Checked,
@@ -136,7 +171,7 @@ namespace LD.Forms.Views.Dialogs
                 var result = await SaveClient(request);
 
                 ShowResult(result);
-
+                ResponseForm = result.IsSuccess;
                 if (result.IsSuccess)
                     this.Close();
             }
@@ -153,5 +188,6 @@ namespace LD.Forms.Views.Dialogs
                 btnSave.Enabled = true;
             }
         }
+
     }
 }

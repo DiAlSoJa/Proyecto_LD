@@ -40,19 +40,6 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
-            Activo = new DataGridViewCheckBoxColumn();
-            Almacen = new DataGridViewTextBoxColumn();
-            Rack = new DataGridViewTextBoxColumn();
-            Pasillo = new DataGridViewTextBoxColumn();
-            Nivel = new DataGridViewTextBoxColumn();
-            Ubicacion = new DataGridViewTextBoxColumn();
-            Dimensio = new DataGridViewTextBoxColumn();
-            Usado = new DataGridViewCheckBoxColumn();
-            General = new DataGridViewCheckBoxColumn();
-            Recib = new DataGridViewCheckBoxColumn();
-            Cuarentena = new DataGridViewCheckBoxColumn();
-            Embarque = new DataGridViewCheckBoxColumn();
-            RackC = new DataGridViewCheckBoxColumn();
             gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -144,104 +131,13 @@ namespace LD.Forms.Views.Forms
             dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Almacen, Rack, Pasillo, Nivel, Ubicacion, Dimensio, Usado, General, Recib, Cuarentena, Embarque, RackC });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
-            // 
-            // Activo
-            // 
-            Activo.HeaderText = "Activo";
-            Activo.MinimumWidth = 6;
-            Activo.Name = "Activo";
-            Activo.Width = 50;
-            // 
-            // Almacen
-            // 
-            Almacen.HeaderText = "Almacén";
-            Almacen.MinimumWidth = 6;
-            Almacen.Name = "Almacen";
-            Almacen.Width = 125;
-            // 
-            // Rack
-            // 
-            Rack.HeaderText = "Rack";
-            Rack.MinimumWidth = 6;
-            Rack.Name = "Rack";
-            Rack.Width = 125;
-            // 
-            // Pasillo
-            // 
-            Pasillo.HeaderText = "Pasillo";
-            Pasillo.MinimumWidth = 6;
-            Pasillo.Name = "Pasillo";
-            Pasillo.Width = 125;
-            // 
-            // Nivel
-            // 
-            Nivel.HeaderText = "Nivel";
-            Nivel.MinimumWidth = 6;
-            Nivel.Name = "Nivel";
-            Nivel.Width = 125;
-            // 
-            // Ubicacion
-            // 
-            Ubicacion.HeaderText = "Ubicación";
-            Ubicacion.MinimumWidth = 6;
-            Ubicacion.Name = "Ubicacion";
-            Ubicacion.Width = 125;
-            // 
-            // Dimensio
-            // 
-            Dimensio.HeaderText = "Dimensión";
-            Dimensio.MinimumWidth = 6;
-            Dimensio.Name = "Dimensio";
-            Dimensio.Width = 125;
-            // 
-            // Usado
-            // 
-            Usado.HeaderText = "Usado";
-            Usado.MinimumWidth = 6;
-            Usado.Name = "Usado";
-            Usado.Width = 70;
-            // 
-            // General
-            // 
-            General.HeaderText = "General";
-            General.MinimumWidth = 6;
-            General.Name = "General";
-            General.Width = 80;
-            // 
-            // Recib
-            // 
-            Recib.HeaderText = "Recibo";
-            Recib.MinimumWidth = 6;
-            Recib.Name = "Recib";
-            Recib.Width = 60;
-            // 
-            // Cuarentena
-            // 
-            Cuarentena.HeaderText = "Cuarentena";
-            Cuarentena.MinimumWidth = 6;
-            Cuarentena.Name = "Cuarentena";
-            Cuarentena.Width = 125;
-            // 
-            // Embarque
-            // 
-            Embarque.HeaderText = "Embarque";
-            Embarque.MinimumWidth = 6;
-            Embarque.Name = "Embarque";
-            Embarque.Width = 80;
-            // 
-            // RackC
-            // 
-            RackC.HeaderText = "Rack";
-            RackC.MinimumWidth = 6;
-            RackC.Name = "RackC";
-            RackC.Width = 80;
+            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             // 
             // gridContainer
             // 
@@ -280,19 +176,6 @@ namespace LD.Forms.Views.Forms
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button2;
         private DataGridView dataGridView1;
-        private DataGridViewCheckBoxColumn Activo;
-        private DataGridViewTextBoxColumn Almacen;
-        private DataGridViewTextBoxColumn Rack;
-        private DataGridViewTextBoxColumn Pasillo;
-        private DataGridViewTextBoxColumn Nivel;
-        private DataGridViewTextBoxColumn Ubicacion;
-        private DataGridViewTextBoxColumn Dimensio;
-        private DataGridViewCheckBoxColumn Usado;
-        private DataGridViewCheckBoxColumn General;
-        private DataGridViewCheckBoxColumn Recib;
-        private DataGridViewCheckBoxColumn Cuarentena;
-        private DataGridViewCheckBoxColumn Embarque;
-        private DataGridViewCheckBoxColumn RackC;
         private Button button4;
         private Panel gridContainer;
     }
