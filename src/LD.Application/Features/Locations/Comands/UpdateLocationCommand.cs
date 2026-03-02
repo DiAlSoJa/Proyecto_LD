@@ -16,7 +16,7 @@ namespace LD.Application.Features.Comands;
 
 public class UpdateLocationCommand : LocationRequest, IRequest<Result<string>>
 {
-
+    public int LocationId { get; set; }
 }
 
 
@@ -34,8 +34,20 @@ public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationComman
     {
         try
         {
-            var result = await _locationRepository.CreateAsync(_mapper.Map<Location>(request));
-            return result ? Result<string>.Success("Ubicacion creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Ubicacion", new());
+            var location = await _locationRepository.GetByIdAsync(request.LocationId);
+            if (location is null)
+                return Result<string>.Failure("No existe la ubicacion", new ErrorResponse(), 404);
+
+            _mapper.Map(request, location);
+
+
+            var updated = await _locationRepository.UpdateAsync(location);
+
+            if (!updated)
+                return Result<string>.Failure("Error al actualizar", new ErrorResponse());
+
+
+            return Result<string>.Success("Ubicacion actualizada", location.LocationId.ToString());
 
         }
         catch (Exception ex)

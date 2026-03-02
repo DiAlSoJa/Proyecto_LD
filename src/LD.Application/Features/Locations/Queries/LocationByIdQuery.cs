@@ -5,6 +5,7 @@ using LD.Application.Common.Models;
 using LD.Application.Common.Results;
 using LD.Contracts.Client;
 using LD.Contracts.Location;
+using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using MediatR;
 using System;
@@ -16,10 +17,10 @@ using System.Threading.Tasks;
 namespace LD.Application.Features.Queries;
 
 public record LocationByIdQuery(int locationId)
-    : IRequest<Result<LocationDto?>>;
+    : IRequest<Result<LocationRequest?>>;
 
 
-public class LocationByIdQueryHandler : IRequestHandler<LocationByIdQuery, Result<LocationDto?>>
+public class LocationByIdQueryHandler : IRequestHandler<LocationByIdQuery, Result<LocationRequest?>>
 {
 
     private readonly IRepository<Location> _locationRepository;
@@ -29,10 +30,10 @@ public class LocationByIdQueryHandler : IRequestHandler<LocationByIdQuery, Resul
         _locationRepository = locationRepository;
         _mapper = mapper;
     }
-    public async Task<Result<LocationDto?>> Handle(LocationByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<LocationRequest?>> Handle(LocationByIdQuery request, CancellationToken cancellationToken)
     {
         var locationDb = await _locationRepository.GetByIdAsync(request.locationId);
-        if (locationDb == null) return Result<LocationDto?>.Failure("Ubicacion no encontrado", new(), 404);
-        return Result<LocationDto?>.Success(_mapper.Map<LocationDto>(locationDb), "Ubicacion obtenido con exito");
+        if (locationDb == null) return Result<LocationRequest?>.Failure("Ubicacion no encontrado", new(), 404);
+        return Result<LocationRequest?>.Success(_mapper.Map<LocationRequest>(locationDb), "Ubicacion obtenido con exito");
     }
 }

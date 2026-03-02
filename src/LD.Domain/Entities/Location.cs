@@ -14,6 +14,8 @@ namespace LD.Domain.Entities
         public int LocationId { get; set; }
 
         public int WarehouseId { get; set; }
+        public string LocationName { get; set; }
+
 
         public bool IsFiscal { get; set; }
 

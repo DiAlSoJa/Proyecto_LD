@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Common.Interfaces.Repository
 {
-    public interface IClientRepository : IRepository<Client>
+    public interface IWarehouseRepository : IRepository<Warehouse>
     {
-        Task<List<DropDownDto>> GetLookup();
+        Task<List<DropDownDto>> GetLookup();    
     }
 }

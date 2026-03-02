@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Clients.Validators;
 
-public class CreateLocationValidator
-    : AbstractValidator<CreateLocationCommand>
+public class UpdateLocationValidator
+    : AbstractValidator<UpdateLocationCommand>
 {
     private readonly IRepository<Warehouse> _warehouseRepository;
-    public CreateLocationValidator(IRepository<Warehouse> warehouseRepository)
+    public UpdateLocationValidator(IRepository<Warehouse> warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
 

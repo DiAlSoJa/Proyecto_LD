@@ -22,9 +22,9 @@ public class LocationQuery : IRequest<Result<List<LocationDto>?>>
 public class LocationQueryHandler : IRequestHandler<LocationQuery, Result<List<LocationDto>?>>
 {
 
-    private readonly IRepository<Location> _locationRepository;
+    private readonly ILocationRepository _locationRepository;
     private readonly IMapper _mapper;
-    public LocationQueryHandler(IRepository<Location> locationRepository,IMapper mapper)
+    public LocationQueryHandler(ILocationRepository locationRepository,IMapper mapper)
     {
         _locationRepository = locationRepository;
         _mapper = mapper;
