@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+             x:Class="MauiAppLogin.Scan3FieldsPage"
+             Title="Escanear"
+             BackgroundColor="#0F2E4F"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+
+        <!-- Header / Campos -->
+        <Border Grid.Row="0"
+                BackgroundColor="#F6F8FC"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 24"
+                Padding="16"
+                Margin="0,10,0,12">
+
+            <VerticalStackLayout Spacing="10">
+
+                <Label Text="Escaneo de ubicación"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#1E293B"/>
+
+                <!-- Indicador qué escanear -->
+                <Border BackgroundColor="#102A43"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="12,8">
+                    <Label x:Name="HintLabel"
+                           Text="Escanea: Estandar ID"
+                           TextColor="White"
+                           FontSize="15"/>
+                </Border>
+
+                <!-- Campos -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+
+                    <Border Stroke="#E2E8F0" Grid.Column="0" Grid.ColumnSpan="2" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Estandar ID" TextColor="#64748B" FontSize="12"/>
+                            <Label x:Name="EstandarIdLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border  Grid.Row="2"  Grid.Column="1" Grid.ColumnSpan="1" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Rack" TextColor="#64748B" FontSize="12"/>
+                            <Label x:Name="RackLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Row="2" Grid.ColumnSpan="1"
+                            Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
+                            BackgroundColor="White" Padding="12,8">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Posición" TextColor="#64748B" FontSize="12"/>
+                            <Label x:Name="PosicionLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </Grid>
+
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Cámara -->
+        <Grid Grid.Row="1">
+            <zxing:CameraBarcodeReaderView x:Name="CameraView"
+                                           BarcodesDetected="CameraView_BarcodesDetected"
+                                           IsDetecting="True" />
+
+            <!-- overlay -->
+            
+
+            <!-- marco -->
+            <Border Stroke="White"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 18"
+                    BackgroundColor="Transparent"
+                    Opacity="0.55"
+                    WidthRequest="280"
+                    HeightRequest="180"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- Botones -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="10" Margin="0,12,0,0">
+
+            <Button Text="Limpiar"
+                    Clicked="OnClearClicked"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#1E293B"
+                    CornerRadius="18"
+                    HeightRequest="54"
+                    FontAttributes="Bold"/>
+
+            <Button Grid.Column="1"
+                    Text="Releer"
+                    Clicked="OnRescanClicked"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#1E293B"
+                    CornerRadius="18"
+                    HeightRequest="54"
+                    FontAttributes="Bold"/>
+
+            <Button Grid.Column="2"
+                    Text="Aceptar"
+                    Clicked="OnAcceptClicked"
+                    BackgroundColor="#244A7C"
+                    TextColor="White"
+                    CornerRadius="18"
+                    HeightRequest="54"
+                    FontAttributes="Bold"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>

@@ -22,7 +22,15 @@ public partial class DashboardPage : ContentPage
 
     private async void OnCambioUbicacionClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("ChangeLocation");
+        await Shell.Current.GoToAsync("ChangeLocationPage");
+    }
+    private async void OnMovementClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("MovementPage");
+    }
+    private async void OnRDClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("DamageReportPage");
     }
     private async void OnCasetaClicked(object sender, EventArgs e)
     {

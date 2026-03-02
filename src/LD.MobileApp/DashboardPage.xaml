@@ -142,7 +142,7 @@
                                                FontSize="15"/>
                                     </Grid>
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnAsnPorUbicarClicked"/>
+                                        <TapGestureRecognizer Tapped="OnRDClicked"/>
                                     </Border.GestureRecognizers>
                                 </Border>
                                 <BoxView HeightRequest="1" BackgroundColor="#EEF2F7"/>
@@ -452,7 +452,7 @@
                                     </Grid>
 
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnCambioUbicacionClicked"/>
+                                        <TapGestureRecognizer Tapped="OnMovementClicked"/>
                                     </Border.GestureRecognizers>
                                 </Border>
 

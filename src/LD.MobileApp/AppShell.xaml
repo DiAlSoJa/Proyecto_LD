@@ -18,14 +18,32 @@
         ContentTemplate="{DataTemplate local:DashboardPage}"
         Route="dashboard" />
     <ShellContent
-    ContentTemplate="{DataTemplate local:RegisterLicense}"
-    Route="RegisterLicense" />
+        ContentTemplate="{DataTemplate local:RegisterLicense}"
+        Route="RegisterLicense" />
     <ShellContent
         ContentTemplate="{DataTemplate local:RegisterVehicule}"
         Route="RegisterVehicule" />
     <ShellContent
         ContentTemplate="{DataTemplate local:SignatureDriver}"
         Route="SignatureDriver" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:ChangeLocationPage}"
+        Route="ChangeLocationPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:MovementPage}"
+        Route="MovementPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:MovementDetail}"
+        Route="MovementDetail" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:DamageReportPage}"
+        Route="DamageReportPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:DamageReportDetailPage}"
+        Route="DamageReportDetailPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:DamageReportPrintPage}"
+        Route="DamageReportPrintPage" />
 
 
 </Shell>

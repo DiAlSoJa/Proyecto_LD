@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.MovementDetail"
+             Title="Movimientos"
+             BackgroundColor="#0F2E4F">
+
+    <Grid RowDefinitions="Auto,*" Padding="16">
+
+        <!-- Card superior: Etiqueta leída -->
+        <Border Grid.Row="0"
+                BackgroundColor="#F6F8FC"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 24"
+                Padding="16"
+                Margin="0,10,0,12">
+
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Etiqueta leída"
+                       FontSize="14"
+                       TextColor="#64748B"/>
+
+                <Border BackgroundColor="#102A43"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="12,10">
+                    <Label x:Name="EtiquetaLabel"
+                           Text="2027020100001"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           LineBreakMode="TailTruncation"/>
+                </Border>
+
+                <Label Text="Historial de movimientos"
+                       FontSize="13"
+                       TextColor="#64748B"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Card: Tabla -->
+        <Border Grid.Row="1"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 24"
+                Padding="0">
+
+            <Grid RowDefinitions="Auto,*">
+
+                <!-- Encabezado tabla -->
+                <Grid Row="0"
+                      ColumnDefinitions="110,80,90,90,*,*"
+                      BackgroundColor="#F8FAFC"
+                      Padding="12,10"
+                      ColumnSpacing="10">
+
+                    <Label Text="Fecha"   FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
+                    <Label Grid.Column="1" Text="Tipo"    FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
+                    <Label Grid.Column="2" Text="Número"  FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
+                    <Label Grid.Column="3" Text="Usuario" FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
+                    <Label Grid.Column="4" Text="Original" FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
+                    <Label Grid.Column="5" Text="Nuevo"    FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
+                </Grid>
+
+               
+
+                <!-- Filas -->
+                <CollectionView Grid.Row="1"
+                                SelectionMode="None">
+
+                    <!-- Hardcode: usa una lista estática con x:Array -->
+                    <CollectionView.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <!-- solo para que compile sin VM; el contenido real lo ponemos en DataTemplate con AlternationIndex -->
+                            <x:String>row1</x:String>
+                            <x:String>row2</x:String>
+                            <x:String>row3</x:String>
+                            <x:String>row4</x:String>
+                        </x:Array>
+                    </CollectionView.ItemsSource>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Cada fila -->
+                            <Grid ColumnDefinitions="110,80,90,90,*,*"
+                                  Padding="12,10"
+                                  ColumnSpacing="10">
+
+                                <!-- NOTA: hardcode por fila (ejemplos). Si lo quieres dinámico, te lo conecto a una lista real. -->
+                                <Label Text="27 feb 09:12" FontSize="12" TextColor="#334155"/>
+                                <Label Grid.Column="1" Text="Alta"       FontSize="12" TextColor="#334155"/>
+                                <Label Grid.Column="2" Text="MOV-1041"   FontSize="12" TextColor="#334155"/>
+                                <Label Grid.Column="3" Text="JMPV"       FontSize="12" TextColor="#334155"/>
+                                <Label Grid.Column="4" Text="—"          FontSize="12" TextColor="#334155" LineBreakMode="TailTruncation"/>
+                                <Label Grid.Column="5" Text="AX025"      FontSize="12" TextColor="#334155" LineBreakMode="TailTruncation"/>
+
+                                <!-- Divider -->
+                                <BoxView Grid.ColumnSpan="6"
+                                         HeightRequest="1"
+                                         BackgroundColor="#EEF2F7"
+                                         VerticalOptions="End"
+                                         Margin="0,10,0,-10"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentPage>

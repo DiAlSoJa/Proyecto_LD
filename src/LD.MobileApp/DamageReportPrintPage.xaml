@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MauiAppLogin.DamageReportPrintPage"
+    Title="Licencia"
+    BackgroundColor="#0F2E4F">
+    <ScrollView>
+        <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+
+            <!-- Card superior con datos -->
+            <Border Grid.Row="0"
+                BackgroundColor="#F6F8FC"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 24"
+                Padding="18"
+                Margin="0,10,0,12">
+
+                <VerticalStackLayout Spacing="12">
+                    <Border BackgroundColor="#102A43"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 16"
+                       Padding="12,8">
+                        <Label x:Name="HintLabel"
+                          Text="Estandar ID: 20260201000001"
+                          TextColor="White"
+                          FontSize="15"/>
+                    </Border>
+
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Número de Parte: LX522250 -S2DS22DS2" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Ubicación: A00253" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Status: A" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Cantidad Recibida: 52" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Almacén: B1" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Proyecto: JABIL" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Cliente: JABIL" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Descripción: SP-1-0225-2201" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="ASN: ASN5522255" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Fecha de Recepción: 01-01-2026" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Disponible: 20" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Estado: OK" TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Tipo de Daño: Empaque Dañado"  TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Categoría: Alto"  TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Nuevo Estatus: Cuarentena"  TextColor="#64748B" FontSize="14"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Comentarios:" TextColor="#64748B" FontSize="14"/>
+                        <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
+                            <Editor x:Name="LicenciaEntry"  IsReadOnly="True" HeightRequest="100" TextColor="#0F172A"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+
+
+                    <!-- Miniaturas -->
+                    <Border BackgroundColor="#EEF3FB"
+                        Stroke="#E2E8F0"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="10"
+                        Margin="0,6,0,0">
+                        <HorizontalStackLayout Spacing="10">
+                            <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Border>
+
+           
+
+            <Grid Grid.Row="1"
+                ColumnDefinitions="*"
+                ColumnSpacing="12"
+                Margin="0,14,0,6">
+
+
+
+                <Button Grid.Column="1"
+                      Text="Imprimir"
+                      Clicked="OnPrintClicked"
+                      HeightRequest="56"
+                      CornerRadius="18"
+                      BackgroundColor="#244A7C"
+                      TextColor="White"
+                      FontAttributes="Bold"
+                      FontSize="18"/>
+            </Grid>
+
+            <Grid Grid.Row="2"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="12"
+                  Margin="0,14,0,6">
+
+                <Button Text="PDF"
+                    Clicked="OnPDFClicked"
+                    HeightRequest="56"
+                    CornerRadius="18"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#1E293B"
+                    FontAttributes="Bold"
+                    FontSize="18"/>
+
+                <Button Grid.Column="1"
+                    Text="Excel"
+                    Clicked="OnExcelClicked"
+                    HeightRequest="56"
+                    CornerRadius="18"
+                    BackgroundColor="#244A7C"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="18"/>
+            </Grid>
+            
+            
+
+        </Grid>
+
+
+       
+        
+        
+    </ScrollView>
+</ContentPage>

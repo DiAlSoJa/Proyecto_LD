@@ -2,8 +2,8 @@
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="MauiAppLogin.ChangeLocationPage"
-    Title="Cambio de Ubicación"
+    x:Class="MauiAppLogin.DamageReportPage"
+    Title="Reporte de daños"
     BackgroundColor="#0F2E4F">
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="16">
@@ -19,11 +19,7 @@
 
             <VerticalStackLayout Spacing="12">
 
-                <VerticalStackLayout Spacing="6">                   
-                    <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                        <Label Text="Ir a la ubicación A012 y tomar el pallet 2027020100001 y dejarlo en AX025" TextColor="#64748B" FontSize="15"/>
-                    </Border>
-                </VerticalStackLayout>
+
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Standar ID" TextColor="#64748B" FontSize="14"/>
                     <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
@@ -31,18 +27,6 @@
                     </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Rack:" TextColor="#64748B" FontSize="14"/>
-                    <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                        <Entry x:Name="RackEntry"  Placeholder="" TextColor="#0F172A"/>
-                    </Border>
-                </VerticalStackLayout>
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Posición:" TextColor="#64748B" FontSize="14"/>
-                    <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                        <Entry x:Name="PosicionEntry" Keyboard="Numeric" Placeholder="" TextColor="#0F172A"/>
-                    </Border>
-                </VerticalStackLayout>
             </VerticalStackLayout>
         </Border>
 

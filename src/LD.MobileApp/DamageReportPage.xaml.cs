@@ -1,11 +1,11 @@
 namespace MauiAppLogin;
 
-public partial class ChangeLocationPage : ContentPage
+public partial class DamageReportPage : ContentPage
 {
-	public ChangeLocationPage()
-	{
-		InitializeComponent();
-	}
+    public DamageReportPage()
+    {
+        InitializeComponent();
+    }
     private async void OnCancelarClicked(object sender, EventArgs e)
     {
         // Limpia el preview (o navega atrás, tú decides)
@@ -19,34 +19,24 @@ public partial class ChangeLocationPage : ContentPage
         // Aquí normalmente validarías y regresarías datos al registro de vehículo
         // Por ahora: solo vuelve atrás
         //await Navigation.PopAsync(); 
-       // await Shell.Current.GoToAsync("RegisterVehicule");
+        await Shell.Current.GoToAsync("DamageReportDetailPage");
 
 
     }
-
     private async void OnAtrasClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");
     }
-
-
     private async void OnCapturarClicked(object sender, EventArgs e)
     {
-        var page = new Scan3FieldsPage();
+        var page = new ScanStandarLD();
         await Navigation.PushModalAsync(page);
 
         // Al volver, ya trae los valores
         if (!string.IsNullOrWhiteSpace(page.EstandarId))
             EstandarIdEntry.Text = page.EstandarId;
 
-        if (!string.IsNullOrWhiteSpace(page.Rack))
-            RackEntry.Text = page.Rack;
-
-        if (!string.IsNullOrWhiteSpace(page.Posicion))
-            PosicionEntry.Text = page.Posicion;
-
     }
-
 
 
 }
