@@ -36,14 +36,14 @@ namespace LD.Forms.Services
             return await _api.PostAsync<UserRequest, ApiResponseDto<string>>(_apiEndpoints.User_Create,request);
         }
 
-        public async Task<ApiResponseDto<string>> UpdateUser(int userId, UserRequest request)
+        public async Task<ApiResponseDto<string>> UpdateUser(string userId, UserRequest request)
         {
-            return await _api.PutAsync<UserRequest, ApiResponseDto<string>>(_apiEndpoints.User_Update.Replace("{id}", userId.ToString()), request);
+            return await _api.PutAsync<UserRequest, ApiResponseDto<string>>(_apiEndpoints.User_Update.Replace("{id}", userId), request);
         }
 
-        public async Task<ApiResponseDto<string>> ArchiveUser(int userId)
+        public async Task<ApiResponseDto<string>> ArchiveUser(string userId)
         {
-            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.User_Delete.Replace("{id}", userId.ToString()));
+            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.User_Delete.Replace("{id}", userId));
         }
     }
 }

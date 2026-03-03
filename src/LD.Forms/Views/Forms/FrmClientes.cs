@@ -13,10 +13,10 @@ namespace LD.Forms.Views.Forms
         private readonly DialogFormService _dialogFormService;
 
 
+
         private GridFilter<ClientDto>_gridFilter;
         private BindingSource _clientsBinding = new();
         private ClientDto? selectedClient { get; set; }
-
         public FrmClientes(ClientService clientService, DialogFormService dialogFormService)
         {
             InitializeComponent();
