@@ -36,7 +36,7 @@ public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationComman
         {
             var location = await _locationRepository.GetByIdAsync(request.LocationId);
             if (location is null)
-                return Result<string>.Failure("No existe la ubicacion", new ErrorResponse(), 404);
+                return Result<string>.Failure("No existe la ubicacion", new List<string> { "No existe la ubicacion" }, 404);
 
             _mapper.Map(request, location);
 
@@ -44,7 +44,7 @@ public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationComman
             var updated = await _locationRepository.UpdateAsync(location);
 
             if (!updated)
-                return Result<string>.Failure("Error al actualizar", new ErrorResponse());
+                return Result<string>.Failure("Error al actualizar", new List<string> { "Hubo un error al actualizar" });
 
 
             return Result<string>.Success("Ubicacion actualizada", location.LocationId.ToString());
@@ -52,7 +52,7 @@ public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationComman
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Ubicacion", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al crear el Ubicacion", new List<string> { ex.Message });
         }
     }
 }

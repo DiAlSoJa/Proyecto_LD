@@ -40,7 +40,7 @@ public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand, Resul
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Item", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al crear el Item", new List<string> { ex.Message });
         }
        
       

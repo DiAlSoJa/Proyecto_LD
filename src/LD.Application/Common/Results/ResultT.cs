@@ -13,15 +13,15 @@ namespace LD.Application.Common.Results
 
         public T? Data { get; }
         public int Code { get; }
-        public ErrorResponse? Error { get; }
+        public List<string>? Errors { get; set; }
         public string Message { get; set; } = string.Empty;
 
-        private Result(bool isSuccess, string message,T? data, int code, ErrorResponse? error)
+        private Result(bool isSuccess, string message,T? data, int code, List<string>? errors)
         {
             IsSuccess = isSuccess;
             Data = data;
             Code = code;
-            Error = error;
+            Errors = errors;
             Message = message;
         }
 
@@ -30,8 +30,8 @@ namespace LD.Application.Common.Results
             => new(true, message, data, code, null);
 
         // ✅ FAILURE
-        public static Result<T> Failure(string message, ErrorResponse error, int code = 400)
-            => new(false,message ,default, code, error);
+        public static Result<T> Failure(string message, List<string>? errors, int code = 400)
+            => new(false,message ,default, code, errors);
     }
 
 }

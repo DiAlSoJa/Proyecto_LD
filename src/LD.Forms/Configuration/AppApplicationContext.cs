@@ -1,4 +1,5 @@
-﻿using LD.Forms.Views.Forms;
+﻿using LD.Forms.Services.FormServices;
+using LD.Forms.Views.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace LD.Forms.Configuration
 
         private FrmLogin? _loginForm;
         private FrmPrincipal? _mainForm;
+        private TabService _tabService;
 
-        public AppApplicationContext(IServiceProvider serviceProvider)
+        public AppApplicationContext(IServiceProvider serviceProvider,TabService tabService)
         {
             _serviceProvider = serviceProvider;
+            _tabService = tabService;
             ShowLogin();
         }
 
@@ -51,6 +54,7 @@ namespace LD.Forms.Configuration
             _mainForm!.LogoutRequested -= OnLogoutRequested;
             _mainForm.FormClosed -= OnMainClosed;
 
+            _tabService.ClearAll();
             _mainForm.Close();
             _mainForm.Dispose();
 

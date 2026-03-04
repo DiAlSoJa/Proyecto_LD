@@ -37,7 +37,7 @@ public class UpdateClientCommandHandler
             // 1️⃣ Buscar cliente
             var client = await _clientRepository.GetByIdAsync(request.ClientId);
             if (client is null)
-                return Result<string>.Failure( "No existe el cliente",new ErrorResponse(),404);
+                return Result<string>.Failure( "No existe el cliente", new List<string> { "No existe el cliente" }, 404);
 
             // 2️⃣ Mapear datos básicos
             _mapper.Map(request, client);
@@ -61,7 +61,7 @@ public class UpdateClientCommandHandler
             var updated = await _clientRepository.UpdateAsync(client);
 
             if (!updated)
-                return Result<string>.Failure("Error al actualizar", new ErrorResponse());
+                return Result<string>.Failure("Error al actualizar", new List<string> { "Hubo un erros al actualizar el cliente" });
 
 
             return Result<string>.Success("Cliente actualizado",client.ClientId.ToString());

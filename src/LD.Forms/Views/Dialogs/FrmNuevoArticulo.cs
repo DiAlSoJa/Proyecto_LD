@@ -1,8 +1,10 @@
 ﻿using LD.Contracts.Client;
+using LD.Contracts.Enums;
 using LD.Contracts.Item;
 using LD.Contracts.Requests;
 using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Common;
 using System;
 using System.Collections.Generic;
@@ -16,18 +18,18 @@ namespace LD.Forms.Views.Dialogs
 {
     public partial class FrmNuevoArticulo : DraggableForm
     {
-        private bool mouseDown;
-        private Point lastLocation;
+
         private readonly ItemService _itemService;
         private  ItemDto? ItemSelected;
+        private readonly DialogMessageService _dialogService;
 
-        public FrmNuevoArticulo(ItemService itemService)
+        public FrmNuevoArticulo(ItemService itemService, DialogMessageService dialogService)
         {
             InitializeComponent();
             _itemService = itemService;
+            _dialogService = dialogService;
             EnableDrag(panel2);
             EnableDrag(panel1);
-
         }
         public async void SetItem(ItemDto? item)
         {
@@ -103,11 +105,10 @@ namespace LD.Forms.Views.Dialogs
         }
         private void ShowResult(ApiResponseDto<string> result)
         {
-            MessageBox.Show(
-                result.IsSuccess ? result.Data : result.Message,
-                result.IsSuccess ? "Éxito" : "Error",
-                MessageBoxButtons.OK,
-                result.IsSuccess ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+            _dialogService.Show(
+                 result.IsSuccess ? result.Data ?? "" : $"Hubo un error: {Environment.NewLine}{result.ErrorMessage ?? ""}",
+                  result.IsSuccess ? DialogMessageEnum.Info : DialogMessageEnum.Error
+                );
         }
 
         private async void btnSave_Click(object sender, EventArgs e)
@@ -127,11 +128,7 @@ namespace LD.Forms.Views.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Error inesperado: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                _dialogService.Show($"Hubo un error: {Environment.NewLine}{ex.Message}", DialogMessageEnum.Error);
             }
             finally
             {

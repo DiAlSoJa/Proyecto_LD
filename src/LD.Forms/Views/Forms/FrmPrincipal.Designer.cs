@@ -68,7 +68,6 @@
             panelTop.Size = new Size(1115, 45);
             panelTop.TabIndex = 0;
             panelTop.DoubleClick += panelTop_DoubleClick;
-            panelTop.MouseDown += panelTop_MouseDown;
             // 
             // lblTitle
             // 

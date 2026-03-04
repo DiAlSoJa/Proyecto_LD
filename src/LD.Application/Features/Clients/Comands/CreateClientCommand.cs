@@ -41,13 +41,13 @@ public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, R
             var created = await _clientRepository.CreateAsync(client);
 
             if (!created)
-                return Result<string>.Failure("No se pudo crear el cliente",new ErrorResponse() );
+                return Result<string>.Failure("No se pudo crear el cliente", new List<string>{"Hubo un erros al crear el cliente"} );
 
             return Result<string>.Success( "Cliente creado con éxito",client.ClientId.ToString());
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el cliente", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al crear el cliente", new List<string> { ex.Message });
         }
     }
 }

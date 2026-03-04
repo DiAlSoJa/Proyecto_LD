@@ -36,16 +36,16 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
         {
             var warehouse = await _warehouseRepository.GetByIdAsync(request.WarehouseId.Value);
             if (warehouse is null)
-                return Result<string>.Failure("No existe el almacen", new ErrorResponse(), 404);
+                return Result<string>.Failure("No existe el almacen", new List<string> { "Hubo un error al obtener el alamacen" }, 404);
             _mapper.Map(request, warehouse);
 
             var result = await _warehouseRepository.UpdateAsync(warehouse);
-            return result ? Result<string>.Success("Almacen actualizado con exito", "") : Result<string>.Failure("Hubo un error al actualizar el Almacen", new());
+            return result ? Result<string>.Success("Almacen actualizado con exito", "") : Result<string>.Failure("Hubo un error al actualizar el Almacen", new List<string> { "No se encontro el alamacen" });
 
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al actualizar el Almacen", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al actualizar el Almacen", new List<string> { ex.Message });
         }
     }
 }

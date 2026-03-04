@@ -40,7 +40,7 @@ public class CreateLocationCommandHandler : IRequestHandler<CreateLocationComman
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Ubicacion", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al crear el Ubicacion", new List<string> { ex.Message });
         }
     }
 }

@@ -36,12 +36,7 @@ public class ValidationBehavior<TRequest, TResponse>
 
         if (failures.Any())
         {
-            var message = string.Join(
-                Environment.NewLine,
-                failures.Select(f => f.ErrorMessage)
-            );
-
-            return (TResponse)(object)Result<string>.Failure(message,null);
+            return (TResponse)(object)Result<string>.Failure("Hubo errores de validacion", failures.Select(f => f.ErrorMessage).ToList(), 400);
 
         }
 

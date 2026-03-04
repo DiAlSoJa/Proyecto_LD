@@ -11,7 +11,8 @@ namespace LD.Forms.Classes.DTOs
 
         public T? Data { get; init; }
         public int Code { get; init; }
-        public ErrorResponse? Error { get; init; }
+        public List<string>? Errors { get; init; }
+        public string ErrorMessage => string.Join(Environment.NewLine, Errors??new());
         public string Message { get; init; } = string.Empty;
     }
 }
