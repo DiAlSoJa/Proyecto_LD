@@ -1,4 +1,5 @@
 ﻿using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.User.Commands;
 using LD.Application.Features.User.Queries;
@@ -14,33 +15,27 @@ namespace LD.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : CommonController
     {
-        private readonly IMediator _mediator;
 
-        public UserController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] GetUsersQuery query)
-            => ResultExtensions.ToActionResult(await _mediator.Send(query));
+        public async Task<IActionResult> GetUsers()
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetUsersQuery()));
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
-            => ResultExtensions.ToActionResult(await _mediator.Send(new GetUserByIdQuery(userId)));
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetUserByIdQuery(userId)));
 
         [HttpPost]
         public async Task<IActionResult> CreatUser([FromBody] CreateUserCommand command)
-            => ResultExtensions.ToActionResult(await _mediator.Send(command));
+            => ResultExtensions.ToActionResult(await Mediator.Send(command));
 
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateContact(string userId, [FromBody] UpdateUserCommand command)
         {
             command.UserId = userId;
-            return ResultExtensions.ToActionResult(await _mediator.Send(command));
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
 
         }
         
