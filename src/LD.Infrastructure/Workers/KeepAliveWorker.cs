@@ -28,13 +28,14 @@ namespace LD.Infrastructure.Workers
                     using var scope = _scopeFactory.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
 
-                    await context.Database.ExecuteSqlRawAsync("SELECT 1");
+                    await context.Warehouses.FirstOrDefaultAsync();
 
-                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(4), stoppingToken);
                 }
 
             }catch (Exception ex)
             {
+
             }
         }
     }

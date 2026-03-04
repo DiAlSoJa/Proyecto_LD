@@ -10,15 +10,15 @@ namespace LD.Domain.Common
     {
         public DateTime CreatedAt { get; set; }
 
-        public int? CreatedByUserId { get; set; }
+        public string? CreatedByUserId { get; set; }
 
         public DateTime? LastModifiedAt { get; set; }
 
-        public int? LastModifiedByUserId { get; set; }
+        public string? LastModifiedByUserId { get; set; }
 
         public DateTime? DeletedAt { get; set; }
 
-        public int? DeletedByUserId { get; set; }
+        public string? DeletedByUserId { get; set; }
 
         // Soft delete
         public bool IsActive { get; set; } = true;

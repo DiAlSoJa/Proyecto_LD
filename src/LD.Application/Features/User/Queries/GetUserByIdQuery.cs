@@ -2,6 +2,7 @@
 using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Results;
+using LD.Contracts.Requests;
 using LD.Contracts.User;
 using LD.Domain.Entities;
 using MediatR;
@@ -9,10 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LD.Application.Features.User.Queries;
 
-public class GetUserByIdQuery : IRequest<Result<UserDto?>>
-{
-
-}
+public record GetUserByIdQuery(string UserId) : IRequest<Result<UserDto?>>;
 
 public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserDto?>>
 {
@@ -33,13 +31,11 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
 
     public async Task<Result<UserDto?>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(_currentUser.UserId))
-            return Result<UserDto?>.Failure("UnAuthorized", new());
 
-        var user = await _userManager.GetUserByIdAsync(_currentUser.UserId);
+        var user = await _userManager.GetUserByIdAsync(request.UserId);
 
         if (user == null)
-            return Result<UserDto?>.Failure("No se pudo encontrar el usuario",new());
+            return Result<UserDto?>.Failure("No se pudo encontrar el usuario",new List<string> {"No existe el usuario" });
 
 
         return Result<UserDto?>.Success(user, "Usuario encontrado exitosamente");

@@ -2,6 +2,8 @@
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.User.Commands;
 using LD.Application.Features.User.Queries;
+using LD.Application.Features.Warehouses.Queries;
+using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -27,9 +29,9 @@ namespace LD.Api.Controllers
             => ResultExtensions.ToActionResult(await _mediator.Send(query));
 
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserById(int userId, [FromQuery] GetUserByIdQuery query)
-            => ResultExtensions.ToActionResult(await _mediator.Send(query));
-        
+        public async Task<IActionResult> GetUserById(string userId)
+            => ResultExtensions.ToActionResult(await _mediator.Send(new GetUserByIdQuery(userId)));
+
         [HttpPost]
         public async Task<IActionResult> CreatUser([FromBody] CreateUserCommand command)
             => ResultExtensions.ToActionResult(await _mediator.Send(command));

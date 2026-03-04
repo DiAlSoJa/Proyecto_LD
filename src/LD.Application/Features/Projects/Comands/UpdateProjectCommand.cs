@@ -40,7 +40,7 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Projecto", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al crear el Projecto", new List<string> { ex.Message });
         }
        
     }

@@ -17,18 +17,18 @@ namespace LD
         /// </summary>
         /// 
         public static IConfiguration? Configuration { get; private set; }
-
+ 
         [STAThread]
         static void Main()
         {
             var host = Host.CreateDefaultBuilder()
                   .ConfigureAppConfiguration((context, config) =>
                   {
-                   //   var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
+                      var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
 
                       config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
                       config.AddJsonFile("appsettings.json", optional: false);
-                     // config.AddJsonFile($"appsettings.{env}.json", optional: true);
+                      config.AddJsonFile($"appsettings.{env}.json", optional: true);
                   })
                   .ConfigureServices((context, services) =>
                   {
@@ -44,12 +44,13 @@ namespace LD
             ApplicationConfiguration.Initialize();
 
 
-            var appContext = new AppApplicationContext(host.Services);
+            var appContext = new AppApplicationContext(host.Services,host.Services.GetService<TabService>());
             Application.Run(appContext);
         }
 
         private static void RegisterServices(IServiceCollection services)
         {
+            services.AddSingleton<AppApplicationContext>();
             services.AddSingleton<ApiEndpoints>();
 
             // 🔹 Servicios

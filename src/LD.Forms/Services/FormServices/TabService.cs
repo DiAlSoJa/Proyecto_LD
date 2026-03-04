@@ -112,7 +112,24 @@ namespace LD.Forms.Services.FormServices
             else
                 Open(AppRoutes.Menu);
         }
+        public void ClearAll()
+        {
+            foreach(var tab in _tabs)
+            {
+                _tabsPanel!.Controls.Remove(tab.Value.TabPanel);
+                tab.Value.TabPanel.Dispose();
 
+                // quitar estado
+                _tabs.Remove(tab.Key);
+                _history.Remove(tab.Key);
+
+                // dispose del form cacheado
+                tab.Value.FormInstance.Close();
+                tab.Value.FormInstance.Dispose();
+            }
+
+
+        }
         private Panel CreateTabControl(AppRoute route)
         {
             // Panel base (tab)

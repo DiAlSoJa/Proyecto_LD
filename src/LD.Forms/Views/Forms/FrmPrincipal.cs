@@ -2,6 +2,7 @@
 using LD.Forms.Configuration;
 using LD.Forms.Properties;
 using LD.Forms.Services.FormServices;
+using LD.Forms.Views.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 
 namespace LD.Forms.Views.Forms
 {
-    public partial class FrmPrincipal : Form
+    public partial class FrmPrincipal : DraggableForm
     {
         private readonly NavigationService _navigation;
         private readonly TabService _tabService;
@@ -39,19 +40,10 @@ namespace LD.Forms.Views.Forms
             this.MaximizedBounds = sc;
 
             lblUser.Text = UserData.UserName;
+            EnableDrag(panelTop);
         }
 
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
-        [DllImport("user32.dll", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int Msg, int wParam, int lParam);
-
-
-        private void panelTop_MouseDown(object sender, MouseEventArgs e)
-        {
-            ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
-        }
+ 
         private void actualizaIcono()
         {
             if (this.WindowState == FormWindowState.Maximized)
@@ -75,7 +67,7 @@ namespace LD.Forms.Views.Forms
         public void iniciarMenu()
         {
             _tabService.Open(AppRoutes.Menu);
-            //_navigation.Navigate<FrmMenu>();
+         
 
         }
 

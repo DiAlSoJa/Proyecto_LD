@@ -40,7 +40,7 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Almacen", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al crear el Almacen", new List<string> { ex.Message });
         }
     }
 }

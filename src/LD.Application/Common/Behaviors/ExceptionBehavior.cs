@@ -35,7 +35,7 @@ public class ExceptionBehavior<TRequest, TResponse>
                 typeof(TRequest).Name,
                 request);
 
-            return (TResponse)(object) Result<string>.Failure("Unhandled exception in {RequestName} - {@Request}", null,400);
+            return (TResponse)(object) Result<string>.Failure("Unhandled exception in {RequestName} - {@Request}", new List<string> { ex.Message }, 400);
         }
     }
 }

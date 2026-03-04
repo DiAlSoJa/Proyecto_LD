@@ -3,6 +3,7 @@ using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Models;
 using LD.Application.Features.Auth.Commands;
 using LD.Infrastructure.Persistence;
+using LD.Infrastructure.Persistence.Interceptors;
 using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
 using LD.Infrastructure.Workers;
@@ -20,11 +21,16 @@ public static class ConfigureServices
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         var migrationAssembly = typeof(LdProyectDbContext).Assembly.GetName().Name;
-        services.AddDbContext<LdProyectDbContext>(options =>
-            options.UseSqlServer(
-                connectionString,
-                b => b.MigrationsAssembly(migrationAssembly)
-            )
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        services.AddDbContext<LdProyectDbContext>((sp,options) =>
+            {
+                 var interceptor = sp.GetRequiredService<AuditableEntitySaveChangesInterceptor>();
+                options.UseSqlServer(
+                    connectionString,
+                    b => b.MigrationsAssembly(migrationAssembly)
+                );
+                options.AddInterceptors(interceptor);
+            }
         );
 
         services

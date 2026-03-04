@@ -35,12 +35,12 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         try
         {
             var result = await _projectRepository.CreateAsync(_mapper.Map<Project>(request));
-            return result ? Result<string>.Success("Projecto creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Projecto", new());
+            return result ? Result<string>.Success("Projecto creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Projecto", new List<string> { "No se pudo encontrar el projecto" });
 
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Projecto", new ErrorResponse());
+            return Result<string>.Failure("Hubo un error al crear el Projecto", new List<string> { ex.Message });
         }
        
     }
