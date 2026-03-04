@@ -52,10 +52,11 @@ namespace LD.Forms.Views.Forms
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = LD.Forms.Properties.Resources.logo;
-            pictureBox1.Location = new Point(-1, -92);
+            pictureBox1.Image = Properties.Resources.logo;
+            pictureBox1.Location = new Point(-1, -74);
+            pictureBox1.Margin = new Padding(2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(895, 591);
+            pictureBox1.Size = new Size(716, 473);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
@@ -65,11 +66,12 @@ namespace LD.Forms.Views.Forms
             label2.BackColor = Color.FromArgb(20, 41, 84);
             label2.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(267, 438);
+            label2.Location = new Point(214, 350);
+            label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
-            label2.Size = new Size(118, 23);
+            label2.Size = new Size(98, 19);
             label2.TabIndex = 10;
-            label2.Text = "Version: 1.0.0";
+            label2.Text = "Version: 1.0.7";
             // 
             // label1
             // 
@@ -77,9 +79,10 @@ namespace LD.Forms.Views.Forms
             label1.BackColor = Color.FromArgb(20, 41, 84);
             label1.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(267, 255);
+            label1.Location = new Point(292, 246);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(79, 41);
+            label1.Size = new Size(62, 32);
             label1.TabIndex = 4;
             label1.Text = "LMS";
             // 
@@ -90,9 +93,10 @@ namespace LD.Forms.Views.Forms
             label3.Cursor = Cursors.Hand;
             label3.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             label3.ForeColor = Color.FromArgb(20, 41, 84);
-            label3.Location = new Point(353, 20);
+            label3.Location = new Point(282, 16);
+            label3.Margin = new Padding(2, 0, 2, 0);
             label3.Name = "label3";
-            label3.Size = new Size(38, 41);
+            label3.Size = new Size(30, 32);
             label3.TabIndex = 11;
             label3.Text = "X";
             label3.Click += pictureBox4_Click;
@@ -104,9 +108,10 @@ namespace LD.Forms.Views.Forms
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(61, 337);
+            btnLogin.Location = new Point(49, 270);
+            btnLogin.Margin = new Padding(2);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(320, 50);
+            btnLogin.Size = new Size(256, 40);
             btnLogin.TabIndex = 9;
             btnLogin.Text = "Iniciar sesión";
             btnLogin.UseVisualStyleBackColor = false;
@@ -117,11 +122,12 @@ namespace LD.Forms.Views.Forms
             txtPassword.BackColor = SystemColors.ButtonHighlight;
             txtPassword.BorderStyle = BorderStyle.None;
             txtPassword.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtPassword.Location = new Point(108, 225);
+            txtPassword.Location = new Point(86, 180);
+            txtPassword.Margin = new Padding(2);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
             txtPassword.PlaceholderText = "Contraseña";
-            txtPassword.Size = new Size(262, 27);
+            txtPassword.Size = new Size(210, 22);
             txtPassword.TabIndex = 7;
             txtPassword.Text = "Pa$$w0rd";
             // 
@@ -130,28 +136,31 @@ namespace LD.Forms.Views.Forms
             txtUsuario.BackColor = SystemColors.ButtonHighlight;
             txtUsuario.BorderStyle = BorderStyle.None;
             txtUsuario.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtUsuario.Location = new Point(108, 127);
+            txtUsuario.Location = new Point(86, 102);
+            txtUsuario.Margin = new Padding(2);
             txtUsuario.Name = "txtUsuario";
             txtUsuario.PlaceholderText = "Usuario";
-            txtUsuario.Size = new Size(262, 27);
+            txtUsuario.Size = new Size(210, 22);
             txtUsuario.TabIndex = 6;
-            txtUsuario.Text = "1";
+            txtUsuario.Text = "jmpv";
             // 
             // pictureBox3
             // 
-            pictureBox3.Image = LD.Forms.Properties.Resources.user;
-            pictureBox3.Location = new Point(61, 125);
+            pictureBox3.Image = Properties.Resources.user;
+            pictureBox3.Location = new Point(49, 100);
+            pictureBox3.Margin = new Padding(2);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(41, 32);
+            pictureBox3.Size = new Size(33, 26);
             pictureBox3.TabIndex = 5;
             pictureBox3.TabStop = false;
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = LD.Forms.Properties.Resources.key;
-            pictureBox2.Location = new Point(61, 221);
+            pictureBox2.Image = Properties.Resources.key;
+            pictureBox2.Location = new Point(49, 177);
+            pictureBox2.Margin = new Padding(2);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(41, 32);
+            pictureBox2.Size = new Size(33, 26);
             pictureBox2.TabIndex = 4;
             pictureBox2.TabStop = false;
             // 
@@ -159,18 +168,20 @@ namespace LD.Forms.Views.Forms
             // 
             panel4.BackColor = Color.FromArgb(20, 41, 84);
             panel4.BorderStyle = BorderStyle.FixedSingle;
-            panel4.Location = new Point(61, 261);
+            panel4.Location = new Point(49, 209);
+            panel4.Margin = new Padding(2);
             panel4.Name = "panel4";
-            panel4.Size = new Size(330, 3);
+            panel4.Size = new Size(264, 3);
             panel4.TabIndex = 3;
             // 
             // panel3
             // 
             panel3.BackColor = Color.FromArgb(20, 41, 84);
             panel3.BorderStyle = BorderStyle.FixedSingle;
-            panel3.Location = new Point(61, 163);
+            panel3.Location = new Point(49, 130);
+            panel3.Margin = new Padding(2);
             panel3.Name = "panel3";
-            panel3.Size = new Size(330, 3);
+            panel3.Size = new Size(264, 3);
             panel3.TabIndex = 2;
             // 
             // panel1
@@ -182,8 +193,9 @@ namespace LD.Forms.Views.Forms
             panel1.Controls.Add(pictureBox1);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(895, 500);
+            panel1.Size = new Size(716, 400);
             panel1.TabIndex = 11;
             // 
             // roundedPanel1
@@ -200,9 +212,10 @@ namespace LD.Forms.Views.Forms
             roundedPanel1.Controls.Add(panel3);
             roundedPanel1.Controls.Add(panel4);
             roundedPanel1.Controls.Add(pictureBox2);
-            roundedPanel1.Location = new Point(448, 21);
+            roundedPanel1.Location = new Point(358, 17);
+            roundedPanel1.Margin = new Padding(2);
             roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(428, 452);
+            roundedPanel1.Size = new Size(342, 362);
             roundedPanel1.TabIndex = 11;
             roundedPanel1.Paint += roundedPanel1_Paint;
             roundedPanel1.MouseDown += panel1_MouseDown;
@@ -212,11 +225,12 @@ namespace LD.Forms.Views.Forms
             // FrmLogin
             // 
             AcceptButton = btnLogin;
-            AutoScaleDimensions = new SizeF(120F, 120F);
+            AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
-            ClientSize = new Size(895, 500);
+            ClientSize = new Size(716, 400);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(2);
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";

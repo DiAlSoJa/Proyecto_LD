@@ -170,11 +170,21 @@
                               Title="Selecciona"
                               TextColor="#1E293B">
 
-                            <Picker.Items>
-                                <x:String>Bajo</x:String>
-                                <x:String>Medio</x:String>
-                                <x:String>Alto</x:String>
-                                <x:String>Muy Alto</x:String>
+                            <Picker.Items>                                
+                                <x:String>Disponible (A)</x:String>
+                                <x:String>Hold Bloqueado (B)</x:String>
+                                <x:String>Material en Caja o Contenedor (C)</x:String>
+                                <x:String>Dañado (D)</x:String>
+                                <x:String>EcoPark (E)</x:String>
+                                <x:String>Falta el Material (F)</x:String>
+                                <x:String>Hold (H)</x:String>
+                                <x:String>Kiteo (K)</x:String>
+                                <x:String>Bajo Movimiento (O)</x:String>
+                                <x:String>Cuarentena (Q)</x:String>
+                                <x:String>Rechazado (R)</x:String>
+                                <x:String>Orden Especial (S)</x:String>
+                                <x:String>Validación (V)</x:String>
+                                 <x:String>Primer Picking (Z)</x:String>
                             </Picker.Items>
 
                         </Picker>

@@ -11,19 +11,43 @@ public partial class DashboardPage : ContentPage
 
     private async void OnAsnPorUbicarClicked(object sender, EventArgs e)
     {
-       // await Navigation.PushAsync(new AsnPorUbicarPage());
+        await Shell.Current.GoToAsync("ReceptionPage");
     }
    
 
     private async void OnUbicacionPasoSurtidoClicked(object sender, EventArgs e)
     {
-       // await Navigation.PushAsync(new UbicacionPasoSurtidoPage());
+        await Shell.Current.GoToAsync("PickingPage");
+        
     }
 
     private async void OnCambioUbicacionClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("ChangeLocationPage");
+        var parameters = new Dictionary<string, object>
+        {
+            { "TextInformation", "" }
+        };
+        await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
     }
+
+    private async void OnTaskManagerClicked(object sender, EventArgs e)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "TextInformation", "27 feb - Ir a la ubicación A012 y tomar el pallet 2027020100001 y dejarlo en AX025" }
+        };
+        await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
+    }
+    private async void OnTaskManagerSecurityClicked(object sender, EventArgs e)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "TextInformation", "Abrir Cortina 5" }
+        };
+        await Shell.Current.GoToAsync("TaskSecurity", parameters);
+    }
+
+
     private async void OnMovementClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("MovementPage");

@@ -41,6 +41,9 @@ namespace MauiAppLogin
             builder.Services.AddTransient<DamageReportPage>();
             builder.Services.AddTransient<DamageReportDetailPage>();
             builder.Services.AddTransient<DamageReportPrintPage>();
+            builder.Services.AddTransient<ReceptionPage>();
+            builder.Services.AddTransient<PickingPage>();
+            builder.Services.AddTransient<TaskSecurity>();
             
 
 
