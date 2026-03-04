@@ -1,8 +1,21 @@
 namespace MauiAppLogin;
 
-public partial class ChangeLocationPage : ContentPage
+public partial class ChangeLocationPage : ContentPage, IQueryAttributable
 {
-	public ChangeLocationPage()
+    public string textInformation { get; set; }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.ContainsKey("TextInformation"))
+        {
+            textInformation = query["TextInformation"] as string;
+        }
+        this.TextInformationLabel.Text = textInformation;
+
+
+    }
+
+    public ChangeLocationPage()
 	{
 		InitializeComponent();
 	}

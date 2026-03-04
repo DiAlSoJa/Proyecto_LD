@@ -24,11 +24,11 @@ namespace LD
             var host = Host.CreateDefaultBuilder()
                   .ConfigureAppConfiguration((context, config) =>
                   {
-                      //var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
+                   //   var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
 
                       config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
                       config.AddJsonFile("appsettings.json", optional: false);
-                    //  config.AddJsonFile($"appsettings.{env}.json", optional: true);
+                     // config.AddJsonFile($"appsettings.{env}.json", optional: true);
                   })
                   .ConfigureServices((context, services) =>
                   {

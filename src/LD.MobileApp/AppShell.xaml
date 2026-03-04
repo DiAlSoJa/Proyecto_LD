@@ -44,6 +44,15 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:DamageReportPrintPage}"
         Route="DamageReportPrintPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:ReceptionPage}"
+        Route="ReceptionPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:PickingPage}"
+        Route="PickingPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:TaskSecurity}"
+        Route="TaskSecurity" />
 
 
 </Shell>
