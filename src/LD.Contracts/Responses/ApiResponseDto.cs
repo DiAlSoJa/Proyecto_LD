@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Forms.Classes.DTOs
+namespace LD.Contracts.Responses
 {
     public class ApiResponseDto<T>
     {

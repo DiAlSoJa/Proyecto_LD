@@ -12,7 +12,13 @@ namespace LD.Infrastructure.Mappers
     {
         public UserProfile()
         {
-            CreateMap<ApplicationUser, UserDto>();
+            CreateMap<ApplicationUser, UserDto>()
+                .ForMember(dest => dest.Nombre,
+                    opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.Activo,
+                    opt => opt.MapFrom(src => src.IsActive))
+                .ForMember(dest => dest.Rol,
+                    opt => opt.MapFrom(src => "Todavia no hay roles"));
         }
     }
 }

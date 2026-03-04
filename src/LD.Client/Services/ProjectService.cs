@@ -3,22 +3,20 @@ using LD.Contracts.Location;
 using LD.Contracts.Project;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
-using LD.Forms.Classes;
-using LD.Forms.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Forms.Services
+namespace LD.Client
 {
     public class ProjectService
     {
         public readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public ProjectService(ApiEndpoints apiEndpoints)
+        public ProjectService(ApiEndpoints apiEndpoints, ApiService api)
         {
-            _api = new ApiService();
-            _api.SetBearerToken(UserSession.AccessToken ?? "");
+            _api = api;
+            //_api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
         public async Task<ApiResponseDto<ProjectDto>> GetProjectById(int projectId)

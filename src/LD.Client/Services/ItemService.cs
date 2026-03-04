@@ -2,19 +2,17 @@
 using LD.Contracts.Item;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
-using LD.Forms.Classes;
-using LD.Forms.Configuration;
 
-namespace LD.Forms.Services
+namespace LD.Client
 {
     public class ItemService
     {
         public readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public ItemService(ApiEndpoints apiEndpoints)
+        public ItemService(ApiEndpoints apiEndpoints, ApiService api)
         {
-            _api = new ApiService();
-            _api.SetBearerToken(UserSession.AccessToken ?? "");
+            _api = api;
+            //_api.SetBearerToken(UserSession.AccessToken ?? "")
             _apiEndpoints = apiEndpoints;
         }
 

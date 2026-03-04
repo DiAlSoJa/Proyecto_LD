@@ -2,19 +2,17 @@
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.Warehouse;
-using LD.Forms.Classes;
-using LD.Forms.Configuration;
 
-namespace LD.Forms.Services
+namespace LD.Client
 {
     public class WarehouseService
     {
         public readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public WarehouseService(ApiEndpoints apiEndpoints)
+        public WarehouseService(ApiEndpoints apiEndpoints, ApiService api)
         {
-            _api = new ApiService();
-            _api.SetBearerToken(UserSession.AccessToken ?? "");
+            _api = api;
+            //_api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
         public async Task<ApiResponseDto<WarehouseRequest>> GetWarehouseById(int warehouseId)

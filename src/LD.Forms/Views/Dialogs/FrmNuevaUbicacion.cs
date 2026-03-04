@@ -1,7 +1,7 @@
 ﻿using LD.Contracts.Location;
 using LD.Contracts.Requests;
+using LD.Contracts.Responses;
 using LD.Forms.Classes;
-using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
 using LD.Forms.Views.Common;
 using System;

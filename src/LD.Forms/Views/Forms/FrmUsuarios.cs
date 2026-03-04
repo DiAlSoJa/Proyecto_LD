@@ -38,22 +38,22 @@ namespace LD.Forms.Views.Forms
         private async void button1_Click(object sender, EventArgs e)
         {
             var form = _dialogFormService.ShowDialog<FrmNuevoUsuario>();
-            if(form.ResponseForm) await LoaderManager.Run(splitContainer1, async () => await CargarDatosAsync(), "Trayendo usuarios");
+            if(form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo usuarios");
         }
 
         private async void button3_Click(object sender, EventArgs e)
         {
             var form=_dialogFormService.ShowDialog<FrmNuevoUsuario>(config =>
             {
-
+                
             });
-            if (form.ResponseForm) await LoaderManager.Run(splitContainer1, async () => await CargarDatosAsync(), "Trayendo usuarios");
+            if (form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo usuarios");
         }
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            await LoaderManager.Run(splitContainer1, async () => await CargarDatosAsync(), "Trayendo usuarios");
+            await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo usuarios");
 
         }
         private void btnActualizar_Click(object sender, EventArgs e)

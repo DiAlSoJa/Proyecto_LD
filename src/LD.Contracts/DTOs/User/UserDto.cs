@@ -8,9 +8,13 @@ namespace LD.Contracts.User
 {
     public class UserDto
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string UserName { get; set; }
+        public bool Activo { get; set; }
+        public string? Id { get; set; }
+        public string? Nombre { get; set; }
+        //public string Email { get; set; }
+        public string? UserName { get; set; }
+        public string? Rol { get; set; }
+
+
     }
 }

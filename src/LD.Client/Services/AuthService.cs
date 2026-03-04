@@ -1,28 +1,26 @@
 ﻿using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.User;
-using LD.Forms.Classes;
-using LD.Forms.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Forms.Services
+namespace LD.Client
 {
     public class AuthService
     {
         public readonly ApiService _api;
         public readonly ApiEndpoints _endpoints;
 
-        public AuthService(ApiEndpoints endpoints)
+        public AuthService(ApiEndpoints endpoints, ApiService api)
         {
-            _api = new ApiService();
+            _api = api;
             _endpoints = endpoints;
         }
 
         public async Task<ApiResponseDto<UserDto?>> GetMeAsync()
         {
-            _api.SetBearerToken(UserSession.AccessToken ?? "");
+            //_api.SetBearerToken(UserSession.AccessToken ?? "");
             return await _api.GetAsync<ApiResponseDto<UserDto?>>(_endpoints.GetMe);
         }
 

@@ -1,8 +1,10 @@
-﻿using LD.Contracts.Client;
+﻿
+using LD.Contracts.Client;
 using LD.Contracts.Requests;
 using LD.Contracts.Requests.Client;
+using LD.Contracts.Responses;
 using LD.Contracts.User;
-using LD.Forms.Classes.DTOs;
+using LD.Contracts.Warehouse;
 using LD.Forms.Services;
 using LD.Forms.Views.Common;
 using LD.Forms.Views.Interfaces;
@@ -40,9 +42,33 @@ namespace LD.Forms.Views.Dialogs
         public string ConfirmPassword => txtConfirmPassword.Text;
         public bool IsActive => cckIsActive.Checked;
 
-      
 
-       
+        public async void SetUser(UserDto? user)
+        {
+            UserSelected = user;
+            await CargarDatosAsync();
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            try
+            {
+                var response = await _userService.GetUserById(UserSelected.Id);
+
+                if (!response.IsSuccess)
+                {
+                    MessageBox.Show(response.Message);
+                    return;
+                }
+                var user = response.Data;
+            
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
@@ -69,9 +95,9 @@ namespace LD.Forms.Views.Dialogs
             return new UserRequest
             {
                Username = txtUsername.Text,
-               Name = txtPassword.Text,
+               Name = txtName.Text,
                Email = null,
-               Password = txtConfirmPassword.Text,
+               Password = txtPassword.Text,
                ConfirmPassword = txtConfirmPassword.Text,
                IsActive = cckIsActive.Checked,
             };
