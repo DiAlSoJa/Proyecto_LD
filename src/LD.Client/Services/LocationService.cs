@@ -3,22 +3,20 @@ using LD.Contracts.Item;
 using LD.Contracts.Location;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
-using LD.Forms.Classes;
-using LD.Forms.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Forms.Services
+namespace LD.Client
 {
     public class LocationService
     {
         public readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public LocationService(ApiEndpoints apiEndpoints)
+        public LocationService(ApiEndpoints apiEndpoints, ApiService api)
         {
-            _api = new ApiService();
-            _api.SetBearerToken(UserSession.AccessToken ?? "");
+            _api = api;
+            //_api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
         public async Task<ApiResponseDto<LocationRequest>> GetLocationById(int locationId)

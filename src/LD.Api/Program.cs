@@ -3,16 +3,34 @@ using LD.Api.Middlewares;
 using LD.Application;
 using LD.Application.Common.Models;
 using LD.Infrastructure;
+using LD.Infrastructure.Logging;
 using LD.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Formatting.Compact;
 using System.Text;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
+var logPath = Path.Combine(builder.Environment.ContentRootPath, "logs", "log-.json");
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(
+        new CompactJsonFormatter(),
+        logPath,
+        rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .WriteTo.Console();
+});
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
@@ -127,7 +145,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseSerilogRequestLogging();
 
 //middlewares
 app.UseMiddleware<GlobalExceptionMiddleware>();

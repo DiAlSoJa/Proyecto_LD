@@ -1,8 +1,8 @@
 ﻿using LD.Contracts.Client;
 using LD.Contracts.Enums;
 using LD.Contracts.Requests.Client;
+using LD.Contracts.Responses;
 using LD.Forms.Classes;
-using LD.Forms.Classes.DTOs;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Common;

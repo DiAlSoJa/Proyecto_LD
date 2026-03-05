@@ -110,8 +110,10 @@ namespace LD
             services.AddTransient<FrmNuevoASN>();
             services.AddTransient<FrmNuevoASNEscaneo>();
             services.AddTransient<FrmVehiculosRegistrados>();
+            services.AddTransient<FrmNuevoUsuario>();
 
-    
+
+
         }
     }
 }

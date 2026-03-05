@@ -21,7 +21,10 @@ public static class ConfigureServices
             typeof(IPipelineBehavior<,>),
             typeof(ValidationBehavior<,>)
         );
-
+        services.AddTransient(
+            typeof(IPipelineBehavior<,>),
+            typeof(LoggingBehavior<,>)
+        );
         //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
 
         return services;

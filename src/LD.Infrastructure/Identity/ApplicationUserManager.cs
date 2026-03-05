@@ -1,4 +1,6 @@
-﻿using LD.Application.Common.Interfaces.Auth;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Contracts.Requests;
 using LD.Contracts.User;
@@ -16,10 +18,13 @@ namespace LD.Infrastructure
     public class ApplicationUserManager : IApplicationUserManager
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public ApplicationUserManager(UserManager<ApplicationUser> userManager)
+
+        public ApplicationUserManager(UserManager<ApplicationUser> userManager,IMapper mapper)
         {
             _userManager = userManager;
+            _mapper = mapper;
 
         }
 
@@ -46,7 +51,7 @@ namespace LD.Infrastructure
             {
                 Id = user.Id,
                 UserName= user.UserName??"sin username",
-                Email = user.Email ?? "sin email"
+                //Email = user.Email ?? "sin email"
             };
         }
 
@@ -58,32 +63,21 @@ namespace LD.Infrastructure
             {
                 Id = user.Id,
                 UserName = user.UserName ?? "sin username",
-                Email = user.Email ?? "sin email"
+                //Email = user.Email ?? "sin email
             };
         }
 
         public async Task<UserDto?> GetUserByIdAsync(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return null;
-            return new UserDto
-            {
-                Id = user.Id,
-                UserName = user.UserName ?? "sin username",
-                Email = user.Email ?? "sin email"
-            };
+            return await _userManager.Users
+                .ProjectTo<UserDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(u=>u.Id== userId);
         }
 
         public async Task<List<UserDto>> GetUsersAsync()
         {
-            return await _userManager.Users.Select(u => new UserDto
-            {
-                Id= u.Id,
-                UserName=u.UserName,
-                Email= u.Email,
-                Name =u.FullName
-            })
-            .ToListAsync(); 
+            return await _userManager.Users
+                .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(); 
         }
 
         public async Task<bool> CreateUserAsync(UserRequest user)

@@ -1,20 +1,18 @@
 ﻿using LD.Contracts.Client;
 using LD.Contracts.Requests.Client;
 using LD.Contracts.Responses;
-using LD.Forms.Classes;
-using LD.Forms.Configuration;
 using System.Net;
 
-namespace LD.Forms.Services
+namespace LD.Client
 {
     public class ClientService
     {
         private readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public ClientService(ApiEndpoints apiEndpoints)
+        public ClientService(ApiEndpoints apiEndpoints, ApiService api)
         {
-            _api = new ApiService();
-            _api.SetBearerToken(UserSession.AccessToken??"");
+            _api = api;
+            //_api.SetBearerToken(UserSession.AccessToken??"");
             _apiEndpoints = apiEndpoints;
         }
 
