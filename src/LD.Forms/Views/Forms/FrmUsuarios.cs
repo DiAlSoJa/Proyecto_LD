@@ -38,27 +38,27 @@ namespace LD.Forms.Views.Forms
         private async void button1_Click(object sender, EventArgs e)
         {
             var form = _dialogFormService.ShowDialog<FrmNuevoUsuario>();
-            if(form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo usuarios");
+            if (form.ResponseForm) await LoaderManager.Run(panelContainer, CargarDatosAsync, "Trayendo usuarios");
         }
 
         private async void button3_Click(object sender, EventArgs e)
         {
-            var form=_dialogFormService.ShowDialog<FrmNuevoUsuario>(config =>
+            var form = _dialogFormService.ShowDialog<FrmNuevoUsuario>(config =>
             {
-                
+                config.SetUser(userSelected);
             });
-            if (form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo usuarios");
+            if (form.ResponseForm) await LoaderManager.Run(panelContainer,  CargarDatosAsync, "Trayendo usuarios");
         }
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo usuarios");
+            await LoaderManager.Run(panelContainer,  CargarDatosAsync, "Trayendo usuarios");
 
         }
-        private void btnActualizar_Click(object sender, EventArgs e)
+        private async void btnActualizar_Click(object sender, EventArgs e)
         {
-
+            await LoaderManager.Run(panelContainer, CargarDatosAsync, "Trayendo usuarios");
         }
         private async Task CargarDatosAsync()
         {
@@ -73,6 +73,26 @@ namespace LD.Forms.Views.Forms
 
             _gridFilter.SetData(result.Data);
             dataGridView1 = _gridFilter.BuildFilterColumns();
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                    return;
+
+                var user = dataGridView1.CurrentRow.DataBoundItem as UserDto;
+
+                if (user == null)
+                    return;
+
+                userSelected = user;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
     }

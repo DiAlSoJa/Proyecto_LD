@@ -23,6 +23,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<InventaryStatus> inventaryStatuses { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<StorageType> StorageTypes { get; set; }
+
         public DbSet<PickingZone> PickingZones { get; set; }
         public DbSet<Printer> Printers { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -64,6 +66,47 @@ namespace LD.Infrastructure.Persistence
 
             builder.Entity<IdentityUserToken<string>>()
                 .ToTable("UserTokens", schema);
+
+
+            builder.Entity<StorageType>().HasData(
+                new StorageType
+                {
+                    StorageTypeId = 1,
+                    Code = "FIFO",
+                    Name = "First In - First Out",
+                    CreatedAt = new DateTime(2026, 3, 4),
+                    CreatedByUserId = "system",
+                    IsActive = true
+                },
+                new StorageType
+                {
+                    StorageTypeId = 2,
+                    Code = "LIFO",
+                    Name = "Last In - First Out",
+                    CreatedAt = new DateTime(2026, 3, 4),
+                    CreatedByUserId = "system",
+                    IsActive = true
+                },
+                new StorageType
+                {
+                    StorageTypeId = 3,
+                    Code = "LOT",
+                    Name = "Número de Lote",
+                    CreatedAt = new DateTime(2026, 3, 4),
+                    CreatedByUserId = "system",
+                    IsActive = true
+                },
+                new StorageType
+                {
+                    StorageTypeId = 4,
+                    Code = "EXP",
+                    Name = "Fecha de Caducidad",
+                    CreatedAt = new DateTime(2026, 3, 4),
+                    CreatedByUserId ="system",
+                    IsActive = true
+                }
+            );
+
         }
     } 
 

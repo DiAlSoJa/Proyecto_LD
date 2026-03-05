@@ -29,14 +29,15 @@ namespace LD.Infrastructure.Services.Auth
         }
         public async Task<AuthResponse> Login(string username, string password)
         {
+
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
                 return AuthResponse.Fail("Credenciales inválidas");
 
             var roles = await _userManager.GetRolesAsync(user);
-            var result = await _signInManager
-                .CheckPasswordSignInAsync(user, password, false);
+           
 
+            var result= await _signInManager.PasswordSignInAsync(username,password,true,true);
             if (!result.Succeeded)
                 return AuthResponse.Fail("Credenciales inválidas");
 
@@ -45,25 +46,5 @@ namespace LD.Infrastructure.Services.Auth
             return AuthResponse.Ok(token);
         }
 
-        public async Task<AuthResponse> Register(string email, string password)
-        {
-            var userExists = await _userManager.FindByEmailAsync(email);
-            if (userExists != null)
-                return AuthResponse.Fail("El usuario ya existe");
-
-            var user = new ApplicationUser
-            {
-                UserName = email,
-                Email = email
-            };
-
-            var result = await _userManager.CreateAsync(user, password);
-
-            if (!result.Succeeded)
-                return AuthResponse.Fail(
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
-
-            return AuthResponse.Ok(null);
-        }
     }
 }

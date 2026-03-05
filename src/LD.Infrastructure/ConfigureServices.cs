@@ -49,7 +49,7 @@ public static class ConfigureServices
         services.AddScoped<IUserContextService, UserContextService>();
 
         services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly));
+            cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly));
 
         services.AddHostedService<KeepAliveWorker>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
