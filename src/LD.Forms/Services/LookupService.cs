@@ -25,12 +25,12 @@ namespace LD.Forms.Services
             _api.SetBearerToken(UserSession.AccessToken??"");
             return await _api.GetAsync<ApiResponseDto<LookupsDto>>(_apiEndpoints.Lookup_GetAll);
         }
-        public async Task<ApiResponseDto<DropDownDto>> GetWarehouseLookup()
-            => await _api.GetAsync<ApiResponseDto<DropDownDto>>(_apiEndpoints.Lookup_Warehouse);
-        public async Task<ApiResponseDto<DropDownDto>> GetClientLookup()
-           => await _api.GetAsync<ApiResponseDto<DropDownDto>>(_apiEndpoints.Lookup_Client);
-        public async Task<ApiResponseDto<DropDownDto>> GetLocationLookup()
-           => await _api.GetAsync<ApiResponseDto<DropDownDto>>(_apiEndpoints.Lookup_Location);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetWarehouseLookup()
+            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Warehouse);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetClientLookup()
+           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Client);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetLocationLookup()
+           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Location);
 
     }
 }

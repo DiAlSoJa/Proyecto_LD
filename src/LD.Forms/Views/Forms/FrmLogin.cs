@@ -19,16 +19,14 @@ namespace LD.Forms.Views.Forms
         private Boolean respuesta;
 
         private AuthService _authService;
-        private LookupService _lookupService;
 
         private DialogMessageService _dialogMessageService;
         public event EventHandler? LoginSucceeded;
 
-        public FrmLogin(AuthService authService, LookupService lookupService,  DialogMessageService dialogMessageService)
+        public FrmLogin(AuthService authService,  DialogMessageService dialogMessageService)
         {
             InitializeComponent();
             _authService = authService;
-            _lookupService = lookupService;
             _dialogMessageService = dialogMessageService;
             EnableDrag(panel1);
             EnableDrag(pictureBox1);
@@ -94,9 +92,6 @@ namespace LD.Forms.Views.Forms
                     return;
                 }
 
-                var lookUpResponse = await _lookupService.GetLookups();
-
-                UserData.SetUserData(getMeResponse.Data,lookUpResponse.Data);
                 LoginSucceeded?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)

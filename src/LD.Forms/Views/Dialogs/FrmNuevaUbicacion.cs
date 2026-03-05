@@ -30,16 +30,28 @@ namespace LD.Forms.Views.Dialogs
             _locationService = locationService;
             _lookupService = lookupService;
         }
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
 
+            await SetCombos();
+            if(LocationSelected!=null)
+                await SetDataAsync();
+        }
         public async void SetLocation(LocationDto? location)
         {
             LocationSelected = location;
-            await SetDataAsync();
+   
         }
 
         private async Task SetCombos()
         {
-            cmbAlmacen.DataSource = new();
+            var response = await _lookupService.GetWarehouseLookup();
+            if (response.IsFailure)
+            { 
+                return;
+            }
+            cmbAlmacen.DataSource = response.Data;
             cmbAlmacen.DisplayMember = "Value";
             cmbAlmacen.ValueMember = "Key";
         }

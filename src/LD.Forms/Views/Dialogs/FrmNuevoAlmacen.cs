@@ -23,6 +23,8 @@ namespace LD.Forms.Views.Dialogs
         private WarehouseDto? WarehouseSelected;
         private WarehouseService _warehouseService;
         private readonly DialogMessageService _dialogService;
+
+        
         public FrmNuevoAlmacen(WarehouseService warehouseService,DialogMessageService dialogMessageService)
         {
             InitializeComponent();

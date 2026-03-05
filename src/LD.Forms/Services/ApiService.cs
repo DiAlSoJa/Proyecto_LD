@@ -40,6 +40,7 @@ namespace LD.Forms.Services
         public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _http.GetAsync(endpoint);
+            
             return await HandleResponse<T>(response);
         }
 
