@@ -18,5 +18,16 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetLookups()
             => ResultExtensions.ToActionResult(await Mediator.Send(new GetLookupsQuery()));
 
+        [HttpGet("warehouse")]
+        public async Task<IActionResult> GetWarehouseLookup()
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetWarehouseLookupQuery()));
+
+        [HttpGet("location")]
+        public async Task<IActionResult> GetLocationLookup()
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetLocationLookupQuery()));
+
+        [HttpGet("client")]
+        public async Task<IActionResult> GetClientLookup()
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetClientLookupQuery()));
     }
 }

@@ -20,13 +20,15 @@ namespace LD.Forms.Views.Dialogs
 
         private LocationDto? LocationSelected;
         private LocationService _locationService;
-        public FrmNuevaUbicacion(LocationService locationService)
+        private LookupService _lookupService;
+
+        public FrmNuevaUbicacion(LocationService locationService, LookupService lookupService)
         {
             InitializeComponent();
-            _locationService = locationService;
             EnableDrag(panel1);
             EnableDrag(panel2);
-            SetCombos();
+            _locationService = locationService;
+            _lookupService = lookupService;
         }
 
         public async void SetLocation(LocationDto? location)
@@ -35,9 +37,9 @@ namespace LD.Forms.Views.Dialogs
             await SetDataAsync();
         }
 
-        private void SetCombos()
+        private async Task SetCombos()
         {
-            cmbAlmacen.DataSource = UserData.Lookups?.Warehouses;
+            cmbAlmacen.DataSource = new();
             cmbAlmacen.DisplayMember = "Value";
             cmbAlmacen.ValueMember = "Key";
         }

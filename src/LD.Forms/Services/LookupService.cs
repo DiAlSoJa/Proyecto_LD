@@ -12,10 +12,11 @@ namespace LD.Forms.Services
     {
         private readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public LookupService(ApiEndpoints apiEndpoints)
+        public LookupService(ApiService apiService, ApiEndpoints apiEndpoints)
         {
-            _api = new ApiService();
+            _api = apiService;
             _apiEndpoints = apiEndpoints;
+            _api.SetBearerToken(UserSession.AccessToken ?? "");
         }
 
 
@@ -24,7 +25,12 @@ namespace LD.Forms.Services
             _api.SetBearerToken(UserSession.AccessToken??"");
             return await _api.GetAsync<ApiResponseDto<LookupsDto>>(_apiEndpoints.Lookup_GetAll);
         }
+        public async Task<ApiResponseDto<DropDownDto>> GetWarehouseLookup()
+            => await _api.GetAsync<ApiResponseDto<DropDownDto>>(_apiEndpoints.Lookup_Warehouse);
+        public async Task<ApiResponseDto<DropDownDto>> GetClientLookup()
+           => await _api.GetAsync<ApiResponseDto<DropDownDto>>(_apiEndpoints.Lookup_Client);
+        public async Task<ApiResponseDto<DropDownDto>> GetLocationLookup()
+           => await _api.GetAsync<ApiResponseDto<DropDownDto>>(_apiEndpoints.Lookup_Location);
 
-    
     }
 }
