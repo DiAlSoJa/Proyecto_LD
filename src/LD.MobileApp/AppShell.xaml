@@ -53,6 +53,15 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:TaskSecurity}"
         Route="TaskSecurity" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:TaskList}"
+        Route="TaskList" />   
+    <ShellContent
+        ContentTemplate="{DataTemplate local:TaskResolve}"
+        Route="TaskResolve" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:WarehouseOperations}"
+        Route="WarehouseOperations" />
 
 
 </Shell>
