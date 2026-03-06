@@ -27,7 +27,7 @@ namespace LD.Api.Controllers
              => ResultExtensions.ToActionResult(await Mediator.Send(new ProjectByIdQuery(projectId)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject([FromBody] CreateLocationCommand command)
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectCommand command)
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }

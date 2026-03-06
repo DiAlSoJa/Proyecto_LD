@@ -19,13 +19,14 @@ namespace LD.Forms.Views.Dialogs
 
         private readonly ProjectService _projectService;
         private ProjectDto? ProjectSelected;
-        public FrmNuevoProyecto(ProjectService projectService)
+        private readonly LookupService _lookupService;
+        public FrmNuevoProyecto(ProjectService projectService,LookupService lookupService)
         {
             InitializeComponent();
             _projectService = projectService;
             EnableDrag(panel2);
             EnableDrag(panel1);
-
+            _lookupService = lookupService;
         }
 
         public async void SetProject(ProjectDto? project)
@@ -39,6 +40,31 @@ namespace LD.Forms.Views.Dialogs
             base.OnShown(e);
 
 
+            await SetCombos();
+
+
+        }
+        private async Task SetCombos()
+        {
+            var clientes = await _lookupService.GetClientLookup();
+            var warehouses = await _lookupService.GetWarehouseLookup();
+           
+            if (clientes.IsSuccess)
+            {
+
+                comboCliente.DataSource = clientes.Data;
+                comboCliente.DisplayMember = "Value";
+                comboCliente.ValueMember = "Key";
+
+            }
+            if (warehouses.IsSuccess)
+            {
+
+                comboAlmacen.DataSource = warehouses.Data;
+                comboAlmacen.DisplayMember = "Value";
+                comboAlmacen.ValueMember = "Key";
+
+            }
 
         }
 
@@ -56,7 +82,12 @@ namespace LD.Forms.Views.Dialogs
                 var project = response.Data;
                 comboCliente.SelectedValue = project.ClientId;
                 comboAlmacen.SelectedValue = project.WarehouseId;
-                //project.StorageTypeId;
+                //;
+                radioFifo.Checked = project.StorageTypeId == 1;
+                radioLifo.Checked = project.StorageTypeId == 2;
+                radioNumeroLote.Checked = project.StorageTypeId == 3;
+                radioCaducidad.Checked = project.StorageTypeId == 4;
+
                 txtProjectName.Text = project.ProjectName;
 
                 checkAutoPicking.Checked = project.AutoPicking;
@@ -130,16 +161,16 @@ namespace LD.Forms.Views.Dialogs
             this.Close();
         }
 
-        private Task<ApiResponseDto<string>> CreateClient(ProjectRequest request) =>
+        private Task<ApiResponseDto<string>> CreateProject(ProjectRequest request) =>
           _projectService.CreateProject(request);
 
-        private Task<ApiResponseDto<string>> EditClient(int clientId, ProjectRequest request) =>
+        private Task<ApiResponseDto<string>> EditProject(int clientId, ProjectRequest request) =>
             _projectService.UpdateProject(clientId, request);
         private async Task<ApiResponseDto<string>> SaveClient(ProjectRequest request)
         {
             return ProjectSelected != null
-                ? await EditClient(ProjectSelected?.ProjectId ?? 0, request)
-                : await CreateClient(request);
+                ? await EditProject(ProjectSelected?.ProjectId ?? 0, request)
+                : await CreateProject(request);
         }
         private ProjectRequest BuildRequest()
         {
@@ -148,7 +179,10 @@ namespace LD.Forms.Views.Dialogs
                 ProjectId = 0,
                 ClientId = int.TryParse( comboCliente.SelectedValue?.ToString(),out int cId)?cId:0,
                 WarehouseId = int.TryParse(comboAlmacen.SelectedValue?.ToString(), out int wId) ? wId : 0,
-                StorageTypeId = null,
+                StorageTypeId = radioFifo.Checked?1:
+                                radioLifo.Checked?2:
+                                radioNumeroLote.Checked?3:
+                                radioCaducidad.Checked?4:null,
                 ProjectName = txtProjectName.Text,
                 AutoPicking = checkAutoPicking.Checked,
 
