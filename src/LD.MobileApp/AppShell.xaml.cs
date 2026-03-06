@@ -18,6 +18,10 @@
             Routing.RegisterRoute(nameof(ReceptionPage), typeof(ReceptionPage));
             Routing.RegisterRoute(nameof(PickingPage), typeof(PickingPage));
             Routing.RegisterRoute(nameof(TaskSecurity), typeof(TaskSecurity));
+            Routing.RegisterRoute(nameof(TaskList), typeof(TaskList));
+            Routing.RegisterRoute(nameof(NewTask), typeof(NewTask));
+            Routing.RegisterRoute(nameof(TaskResolve), typeof(TaskResolve));
+            Routing.RegisterRoute(nameof(WarehouseOperations), typeof(WarehouseOperations));
         }
     }
 }

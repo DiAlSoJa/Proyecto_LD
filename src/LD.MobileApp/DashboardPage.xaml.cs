@@ -46,7 +46,10 @@ public partial class DashboardPage : ContentPage
         };
         await Shell.Current.GoToAsync("TaskSecurity", parameters);
     }
-
+    private async void OnTaskListClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("TaskList");
+    }
 
     private async void OnMovementClicked(object sender, EventArgs e)
     {
@@ -55,6 +58,10 @@ public partial class DashboardPage : ContentPage
     private async void OnRDClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("DamageReportPage");
+    }
+    private async void OnOperationClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("WarehouseOperations");
     }
     private async void OnCasetaClicked(object sender, EventArgs e)
     {
