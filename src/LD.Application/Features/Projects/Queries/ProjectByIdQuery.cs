@@ -5,6 +5,7 @@ using LD.Application.Common.Models;
 using LD.Application.Common.Results;
 using LD.Contracts.Client;
 using LD.Contracts.Project;
+using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using MediatR;
 using System;
@@ -16,10 +17,10 @@ using System.Threading.Tasks;
 namespace LD.Application.Features.Projects.Queries;
 
 public record ProjectByIdQuery(int projectId)
-    : IRequest<Result<ProjectDto?>>;
+    : IRequest<Result<ProjectRequest?>>;
 
 
-public class ProjectByIdQueryHandler : IRequestHandler<ProjectByIdQuery, Result<ProjectDto?>>
+public class ProjectByIdQueryHandler : IRequestHandler<ProjectByIdQuery, Result<ProjectRequest?>>
 {
 
     private readonly IRepository<Project> _projectRepository;
@@ -29,12 +30,12 @@ public class ProjectByIdQueryHandler : IRequestHandler<ProjectByIdQuery, Result<
         _projectRepository = projectRepository;
         _mapper = mapper;
     }
-    public async Task<Result<ProjectDto?>> Handle(ProjectByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ProjectRequest?>> Handle(ProjectByIdQuery request, CancellationToken cancellationToken)
     {
 
         var prjectDb = await _projectRepository.GetByIdAsync(request.projectId);
-        if (prjectDb == null) return Result<ProjectDto?>.Failure("Proyecto no encontrado", new(), 404);
-        return Result<ProjectDto?>.Success(_mapper.Map<ProjectDto>(prjectDb), "Proyecto obtenido con exito");
+        if (prjectDb == null) return Result<ProjectRequest?>.Failure("Proyecto no encontrado", new(), 404);
+        return Result<ProjectRequest?>.Success(_mapper.Map<ProjectRequest>(prjectDb), "Proyecto obtenido con exito");
 
     }
 }

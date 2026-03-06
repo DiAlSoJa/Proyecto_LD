@@ -22,24 +22,24 @@ namespace LD.Infrastructure.Workers
             _logger=logger;
         }
 
-           protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                try
-                {
-                    using var scope = _scopeFactory.CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
+           // while (!stoppingToken.IsCancellationRequested)
+           // {
+           //     try
+           //     {
+           //         using var scope = _scopeFactory.CreateScope();
+           //         var context = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
 
-                    await context.Database.ExecuteSqlRawAsync("SELECT 1");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "KeepAlive query falló");
-                }
+           //         await context.Database.ExecuteSqlRawAsync("SELECT 1");
+           //     }
+           //     catch (Exception ex)
+           //     {
+           //         _logger.LogWarning(ex, "KeepAlive query falló");
+           //     }
 
-                await Task.Delay(TimeSpan.FromMinutes(4), stoppingToken);
-           }
+           //     await Task.Delay(TimeSpan.FromMinutes(4), stoppingToken);
+           //}
         
         }
     }

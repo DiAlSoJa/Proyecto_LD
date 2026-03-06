@@ -16,9 +16,9 @@ namespace LD.Forms.Views.Dialogs
 {
     public partial class FrmNuevoProyecto : DraggableForm
     {
-      
+
         private readonly ProjectService _projectService;
-        private  ProjectDto? ProjectSelected;
+        private ProjectDto? ProjectSelected;
         public FrmNuevoProyecto(ProjectService projectService)
         {
             InitializeComponent();
@@ -53,7 +53,54 @@ namespace LD.Forms.Views.Dialogs
                     MessageBox.Show(response.Message);
                     return;
                 }
-                var client = response.Data;
+                var project = response.Data;
+                comboCliente.SelectedValue = project.ClientId;
+                comboAlmacen.SelectedValue = project.WarehouseId;
+                //project.StorageTypeId;
+                txtProjectName.Text = project.ProjectName;
+
+                checkAutoPicking.Checked = project.AutoPicking;
+                checkActivo.Checked = project.IsActive;
+
+                checkBackoder.Checked = project.AllowsBackorder;
+                checkDistribucion.Checked = project.IsDistributionArea;
+                checkAlmacenFiscal.Checked = project.IsFiscalWarehouse;
+                checkSobredimension.Checked = project.AllowsOversizedItems;
+                checkEtiquetas.Checked = project.RequiresLabels;
+
+                comboEntrada.Text = project.Entrada;
+                comboAlmacenamiento.Text = project.StorageArea;
+                comboRetrabajo.Text = project.ReworkArea;
+                comboSalida.Text = project.Salida;
+
+                checkNotRecibo.Checked = project.ReceiptNotificationEnabled;
+                comboNotRecibo.Text = project.ReceiptNotificationMethod;
+
+                checkNotEmbarque.Checked = project.ShipmentNotificationEnabled;
+                comboNotEmbarque.Text = project.ShipmentNotificationMethod;
+
+                checkNotInterna.Checked = project.InternalNotificationEnabled;
+                comboNotInterna.Text = project.InternalNotificationMethod;
+
+                textTiempoNormal.Text = project.NormalHrs.ToString();
+                textTiempoUrgente.Text = project.UrgentHrs.ToString();
+
+                textNumeroAsn.Text = project.AsnNumber;
+                textPrefijoAsn.Text = project.AsnPrefix;
+
+                // Kitting
+                textNumeroKitting.Text = project.KittingNumber;
+                textPrefijoKitting.Text = project.KittingPrefix;
+
+                // Delivery Order (DO)
+                textNumeroOrdenEntrega.Text = project.DeliveryOrderNumber;
+                textPrefijoOrdenEntrega.Text = project.DeliveryOrderPrefix;
+
+                textNumeroOrdenEntrega.Text = project.DoNumber;
+                textPrefijoOrdenEntrega.Text = project.DoPrefix;
+
+
+                checkRegistroRequerido.Checked = project.ReciveRequired;
 
             }
             catch (Exception ex)
@@ -61,7 +108,7 @@ namespace LD.Forms.Views.Dialogs
                 MessageBox.Show(ex.Message);
             }
         }
-       
+
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
@@ -98,7 +145,48 @@ namespace LD.Forms.Views.Dialogs
         {
             return new ProjectRequest
             {
-             
+                ProjectId = 0,
+                ClientId = int.TryParse( comboCliente.SelectedValue?.ToString(),out int cId)?cId:0,
+                WarehouseId = int.TryParse(comboAlmacen.SelectedValue?.ToString(), out int wId) ? wId : 0,
+                StorageTypeId = null,
+                ProjectName = txtProjectName.Text,
+                AutoPicking = checkAutoPicking.Checked,
+
+                AllowsBackorder = checkBackoder.Checked,
+                IsDistributionArea = checkDistribucion.Checked,
+                IsFiscalWarehouse = checkAlmacenFiscal.Checked,
+                AllowsOversizedItems = checkSobredimension.Checked,
+                RequiresLabels = checkEtiquetas.Checked,
+
+                Entrada = comboEntrada.Text,
+                StorageArea = comboAlmacenamiento.Text,
+                ReworkArea = comboRetrabajo.Text,
+                Salida = comboSalida.Text,
+
+                ReceiptNotificationEnabled = checkNotRecibo.Checked,
+                ReceiptNotificationMethod = comboNotRecibo.Text,
+
+                ShipmentNotificationEnabled = checkNotEmbarque.Checked,
+                ShipmentNotificationMethod = comboNotEmbarque.Text,
+
+                InternalNotificationEnabled = checkNotInterna.Checked,
+                InternalNotificationMethod = comboNotInterna.Text,
+
+                NormalHrs = decimal.TryParse( textTiempoNormal.Text,out decimal nHrs)? nHrs :0,
+                UrgentHrs = decimal.TryParse(textTiempoUrgente.Text, out decimal uHrs) ? uHrs : 0,
+
+                AsnNumber = textNumeroAsn.Text,
+                AsnPrefix = textPrefijoAsn.Text,
+
+                // Kitting
+                KittingNumber = textNumeroKitting.Text,
+                KittingPrefix = textPrefijoKitting.Text,
+
+                // Delivery Order (DO)
+                DeliveryOrderNumber = textNumeroOrdenEntrega.Text,
+                DeliveryOrderPrefix = textPrefijoOrdenEntrega.Text,
+       
+                ReciveRequired = true,
             };
         }
         private void ShowResult(ApiResponseDto<string> result)
@@ -137,6 +225,11 @@ namespace LD.Forms.Views.Dialogs
             {
                 btnSave.Enabled = true;
             }
+        }
+
+        private void checkAutoPicking_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

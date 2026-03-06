@@ -21,9 +21,9 @@ namespace LD.Forms.Services
             _api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
-        public async Task<ApiResponseDto<ProjectDto>> GetProjectById(int projectId)
+        public async Task<ApiResponseDto<ProjectRequest>> GetProjectById(int projectId)
         {
-            return await _api.GetAsync<ApiResponseDto<ProjectDto>>(_apiEndpoints.Project_GetById.Replace("{id}", projectId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<ProjectRequest>>(_apiEndpoints.Project_GetById.Replace("{id}", projectId.ToString()));
         }
 
         public async Task<ApiResponseDto<List<ProjectDto?>>> GetProjects()

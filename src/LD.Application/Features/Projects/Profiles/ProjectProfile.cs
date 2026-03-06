@@ -15,6 +15,7 @@ namespace LD.Application.Features.Clients.Profiles
         public ProjectProfile()
         {
             CreateMap<Project, ProjectDto>();
+            CreateMap<Project, ProjectRequest>();
             CreateMap<ProjectRequest, Project>();
         }
     }
