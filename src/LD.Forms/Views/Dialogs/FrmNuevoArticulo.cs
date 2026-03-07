@@ -1,6 +1,7 @@
-﻿using LD.Contracts.Client;
+﻿using LD.Client.Services;
+using LD.Contracts.Client;
 using LD.Contracts.Enums;
-using LD.Contracts.Item;
+using LD.Contracts.Product;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Services;
@@ -19,11 +20,11 @@ namespace LD.Forms.Views.Dialogs
     public partial class FrmNuevoArticulo : DraggableForm
     {
 
-        private readonly ItemService _itemService;
-        private  ItemDto? ItemSelected;
+        private readonly ProductService _itemService;
+        private  ProductDto? ItemSelected;
         private readonly DialogMessageService _dialogService;
 
-        public FrmNuevoArticulo(ItemService itemService, DialogMessageService dialogService)
+        public FrmNuevoArticulo(ProductService itemService, DialogMessageService dialogService)
         {
             InitializeComponent();
             _itemService = itemService;
@@ -31,7 +32,7 @@ namespace LD.Forms.Views.Dialogs
             EnableDrag(panel2);
             EnableDrag(panel1);
         }
-        public async void SetItem(ItemDto? item)
+        public async void SetItem(ProductDto? item)
         {
             ItemSelected = item;
             await CargarDatosAsync();

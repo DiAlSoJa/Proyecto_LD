@@ -2,11 +2,6 @@
 using LD.Contracts.Project;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD.Application.Features.Clients.Profiles
 {
@@ -31,7 +26,9 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
                 ;
             CreateMap<Project, ProjectRequest>();
-            CreateMap<ProjectRequest, Project>();
+            CreateMap<ProjectRequest, Project>()
+                 .ForMember(dest => dest.ProjectId,
+                    opt => opt.Ignore());
         }
     }
 }

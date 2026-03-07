@@ -1,6 +1,8 @@
-﻿using LD.Forms.Classes;
+﻿using LD.Client.Services;
+using LD.Forms.Classes;
 using LD.Forms.Configuration;
 using LD.Forms.Properties;
+using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Common;
 using System;
@@ -17,12 +19,14 @@ namespace LD.Forms.Views.Forms
     public partial class FrmPrincipal : DraggableForm
     {
         private readonly NavigationService _navigation;
+        private readonly ApiService _apiService;
+
         private readonly TabService _tabService;
         public event EventHandler? LogoutRequested;
-        public FrmPrincipal(NavigationService navigation, TabService tabService)
+        public FrmPrincipal(NavigationService navigation, TabService tabService,ApiService apiService)
         {
             InitializeComponent();
-
+            _apiService = apiService;
             _navigation = navigation;
             _tabService = tabService;
             _tabService.Initialize(flowLayoutPest, lblTitle);
@@ -167,6 +171,7 @@ namespace LD.Forms.Views.Forms
         private void cerrarSesiónToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UserSession.LogOut();
+            _apiService.ClearToken();
             LogoutRequested?.Invoke(this, EventArgs.Empty);
            
         }

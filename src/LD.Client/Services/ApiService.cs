@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace LD.Client
+namespace LD.Client.Services
 {
     public class ApiService
     {
@@ -39,6 +39,7 @@ namespace LD.Client
         public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _http.GetAsync(endpoint);
+            
             return await HandleResponse<T>(response);
         }
 

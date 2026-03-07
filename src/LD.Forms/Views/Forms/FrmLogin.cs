@@ -1,4 +1,5 @@
-﻿using LD.Contracts.Enums;
+﻿using LD.Client.Services;
+using LD.Contracts.Enums;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
@@ -84,14 +85,16 @@ namespace LD.Forms.Views.Forms
                     return;
                 }
 
-                UserSession.AccessToken = response.Data;
+                UserSession.AccessToken = response.Data?.Accesstoken;
+                UserSession.RefreshToken = response.Data?.RefreshToken;
+
                 var getMeResponse = await _authService.GetMeAsync();
                 if (!getMeResponse.IsSuccess || getMeResponse.Data is null)
                 {
                     _dialogMessageService.Show(getMeResponse.Message, DialogMessageEnum.Warning);
                     return;
                 }
-
+                UserData.SetUserData(getMeResponse.Data); 
                 LoginSucceeded?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)

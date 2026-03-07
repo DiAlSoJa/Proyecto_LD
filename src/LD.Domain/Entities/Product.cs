@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace LD.Domain.Entities
 {
-    public class Item :AuditableEntity
+    public class Product :AuditableEntity
     {
         [Key]
-        public int ItemId { get; set; }
+        public int ProductId { get; set; }
 
         [Required]
         [MaxLength(20)]
-        public string ItemName { get; set; }
+        public string ProductName { get; set; }
 
         public int? ProjectId { get; set; }
 

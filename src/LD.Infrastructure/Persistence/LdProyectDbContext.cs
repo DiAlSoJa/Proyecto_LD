@@ -28,7 +28,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<PickingZone> PickingZones { get; set; }
         public DbSet<Printer> Printers { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<Item> items { get; set; }
+        public DbSet<Product> items { get; set; }
 
         public DbSet<Units> Units { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using LD.Client.Services;
+using LD.Forms.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +11,18 @@ namespace LD.Client
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddClientServices(this IServiceCollection services)
+        public static IServiceCollection AddLDClient(this IServiceCollection services,Action<ApiSettings> configure)
         {
+            services.Configure(configure);
+
             services.AddSingleton<ApiEndpoints>();
+
+            services.AddSingleton<ApiService>();
 
             services.AddScoped<ApiService>();
             services.AddScoped<AuthService>();
             services.AddScoped<ClientService>();
-            services.AddScoped<ItemService>();
+            services.AddScoped<ProductService>();
             services.AddScoped<LocationService>();
             services.AddScoped<ProjectService>();
             services.AddScoped<WarehouseService>();

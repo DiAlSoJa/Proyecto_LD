@@ -1,8 +1,10 @@
 ﻿using Azure.Core;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
+using LD.Contracts.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,23 +29,50 @@ namespace LD.Infrastructure.Services.Auth
             _signInManager = signInManager;
             _jwtTokenService = jwtTokenService;
         }
-        public async Task<AuthResponse> Login(string username, string password)
+        public async Task<LoginResponse?> Login(string username, string password)
         {
-
             var user = await _userManager.FindByNameAsync(username);
+
             if (user == null)
-                return AuthResponse.Fail("Credenciales inválidas");
+                throw new Exception("Credenciales inválidas");
+
+            var result = await _signInManager.PasswordSignInAsync(
+                user,
+                password,
+                false,
+                false
+            );
+
+            if (!result.Succeeded)
+                throw new Exception("Credenciales inválidas");
 
             var roles = await _userManager.GetRolesAsync(user);
-           
 
-            var result= await _signInManager.PasswordSignInAsync(username,password,true,true);
-            if (!result.Succeeded)
-                return AuthResponse.Fail("Credenciales inválidas");
+            var accessToken = _jwtTokenService.GenerateToken(
+                user.Id.ToString(),
+                user.UserName??"",
+                roles
+            );
 
-            var token = _jwtTokenService.GenerateToken(user.Id.ToString(), user.Email!, roles);
+            var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
-            return AuthResponse.Ok(token);
+            var refreshEntity = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = user.Id,
+                Expiration = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            //_context.RefreshTokens.Add(refreshEntity);
+
+            //await _context.SaveChangesAsync();
+
+            return new LoginResponse
+            {
+                Accesstoken = accessToken,
+                RefreshToken = refreshToken
+            };
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using LD.Application.Common.Models;
+using LD.Contracts.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace LD.Application.Common.Interfaces.Auth
 {
     public interface IAuthService
     {
-        Task<AuthResponse> Login(string username, string password);
+        Task<LoginResponse?> Login(string username, string password);
     }
 }

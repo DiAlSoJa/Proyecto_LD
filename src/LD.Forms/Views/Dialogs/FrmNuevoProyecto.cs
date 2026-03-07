@@ -1,4 +1,5 @@
-﻿using LD.Contracts.Item;
+﻿using LD.Client.Services;
+using LD.Contracts.Product;
 using LD.Contracts.Project;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
@@ -32,7 +33,7 @@ namespace LD.Forms.Views.Dialogs
         public async void SetProject(ProjectDto? project)
         {
             ProjectSelected = project;
-            await CargarDatosAsync();
+           
         }
 
         protected override async void OnShown(EventArgs e)
@@ -41,7 +42,8 @@ namespace LD.Forms.Views.Dialogs
 
 
             await SetCombos();
-
+            if(ProjectSelected!=null)
+                await CargarDatosAsync();
 
         }
         private async Task SetCombos()
@@ -80,8 +82,8 @@ namespace LD.Forms.Views.Dialogs
                     return;
                 }
                 var project = response.Data;
-                comboCliente.SelectedValue = project.ClientId;
-                comboAlmacen.SelectedValue = project.WarehouseId;
+                comboCliente.SelectedValue = project.ClientId.ToString();
+                comboAlmacen.SelectedValue = project.WarehouseId.ToString();
                 //;
                 radioFifo.Checked = project.StorageTypeId == 1;
                 radioLifo.Checked = project.StorageTypeId == 2;

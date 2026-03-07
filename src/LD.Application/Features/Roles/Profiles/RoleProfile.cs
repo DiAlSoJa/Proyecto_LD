@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LD.Contracts.DTOs.User;
-using LD.Contracts.Item;
+using LD.Contracts.Product;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using Microsoft.AspNetCore.Identity;

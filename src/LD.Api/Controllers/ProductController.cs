@@ -15,26 +15,24 @@ namespace LD.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class ItemController : CommonController
+    public class ProductController : CommonController
     {
-
-
         [HttpGet]
         public async Task<IActionResult> GetItems()
-            => ResultExtensions.ToActionResult(await Mediator.Send(new ItemQuery()));
+            => ResultExtensions.ToActionResult(await Mediator.Send(new ProductQuery()));
 
         
         [HttpGet("{itemId}")]
         public async Task<IActionResult> GetItemById(int itemId)
-             => ResultExtensions.ToActionResult(await Mediator.Send(new ItemByIdQuery(itemId)));
+             => ResultExtensions.ToActionResult(await Mediator.Send(new ProductByIdQuery(itemId)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateItem([FromBody] CreateItemCommand command)
+        public async Task<IActionResult> CreateItem([FromBody] CreateProductCommand command)
             => ResultExtensions.ToActionResult(await Mediator.Send(command));
         
 
         [HttpPut("{itemId}")]
-        public async Task<IActionResult> UpdateLocation(int itemId, UpdateItemCommand command)
+        public async Task<IActionResult> UpdateLocation(int itemId, UpdateProductCommand command)
         {
             command.ItemId = itemId;
             var result = await Mediator.Send(command);

@@ -2,18 +2,18 @@
 using LD.Contracts.DTOs;
 using LD.Contracts.Requests.Client;
 using LD.Contracts.Responses;
+using LD.Forms.Configuration;
 using System.Net;
 
-namespace LD.Client
+namespace LD.Client.Services
 {
     public class LookupService
     {
         private readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public LookupService(ApiEndpoints apiEndpoints, ApiService api)
+        public LookupService(ApiService apiService, ApiEndpoints apiEndpoints)
         {
-            _api = api;
-            //_api.SetBearerToken(UserSession.AccessToken??"");
+            _api = apiService;
             _apiEndpoints = apiEndpoints;
         }
 
@@ -22,7 +22,12 @@ namespace LD.Client
         {
             return await _api.GetAsync<ApiResponseDto<LookupsDto>>(_apiEndpoints.Lookup_GetAll);
         }
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetWarehouseLookup()
+            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Warehouse);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetClientLookup()
+           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Client);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetLocationLookup()
+           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Location);
 
-    
     }
 }

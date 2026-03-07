@@ -2,9 +2,10 @@
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.User;
+using LD.Forms.Configuration;
 using System.Net;
 
-namespace LD.Client
+namespace LD.Client.Services
 {
     public class UserService
     {
@@ -13,14 +14,13 @@ namespace LD.Client
         public UserService(ApiService apiService, ApiEndpoints apiEndpoints)
         {
             _api = apiService;
-            //_api.SetBearerToken(UserSession.AccessToken??"");
             _apiEndpoints = apiEndpoints;
         }
 
 
-        public async Task<ApiResponseDto<UserDto>> GetUserById(int userId)
+        public async Task<ApiResponseDto<UserDto>> GetUserById(string userId)
         {
-            return await _api.GetAsync<ApiResponseDto<UserDto>>(_apiEndpoints.User_GetById.Replace("{id}", userId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<UserDto>>(_apiEndpoints.User_GetById.Replace("{id}", userId));
         }
 
         public async Task<ApiResponseDto<List<UserDto>>> GetUsers()

@@ -1,4 +1,5 @@
-﻿using LD.Contracts.Location;
+﻿using LD.Client.Services;
+using LD.Contracts.Location;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Classes;
