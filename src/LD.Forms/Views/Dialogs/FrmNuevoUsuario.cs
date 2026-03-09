@@ -1,4 +1,5 @@
 ﻿
+using LD.Client.Services;
 using LD.Contracts.Client;
 using LD.Contracts.Requests;
 using LD.Contracts.Requests.Client;
@@ -15,6 +16,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace LD.Forms.Views.Dialogs
 {
@@ -53,7 +55,7 @@ namespace LD.Forms.Views.Dialogs
         {
             try
             {
-                var response = await _userService.GetUserById(UserSelected.Id);
+                var response = await _userService.GetUserById(UserSelected?.Id??"");
 
                 if (!response.IsSuccess)
                 {
@@ -61,8 +63,12 @@ namespace LD.Forms.Views.Dialogs
                     return;
                 }
                 var user = response.Data;
-            
 
+                txtUsername.Text = user.UserName;
+                txtName.Text=user.Nombre;
+                cckIsActive.Checked = user.Activo;
+    
+                
             }
             catch (Exception ex)
             {

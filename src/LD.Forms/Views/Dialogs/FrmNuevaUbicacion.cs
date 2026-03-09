@@ -1,4 +1,5 @@
-﻿using LD.Contracts.Location;
+﻿using LD.Client.Services;
+using LD.Contracts.Location;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Classes;
@@ -20,24 +21,38 @@ namespace LD.Forms.Views.Dialogs
 
         private LocationDto? LocationSelected;
         private LocationService _locationService;
-        public FrmNuevaUbicacion(LocationService locationService)
+        private LookupService _lookupService;
+
+        public FrmNuevaUbicacion(LocationService locationService, LookupService lookupService)
         {
             InitializeComponent();
-            _locationService = locationService;
             EnableDrag(panel1);
             EnableDrag(panel2);
-            SetCombos();
+            _locationService = locationService;
+            _lookupService = lookupService;
         }
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
 
+            await SetCombos();
+            if(LocationSelected!=null)
+                await SetDataAsync();
+        }
         public async void SetLocation(LocationDto? location)
         {
             LocationSelected = location;
-            await SetDataAsync();
+   
         }
 
-        private void SetCombos()
+        private async Task SetCombos()
         {
-            cmbAlmacen.DataSource = UserData.Lookups?.Warehouses;
+            var response = await _lookupService.GetWarehouseLookup();
+            if (response.IsFailure)
+            { 
+                return;
+            }
+            cmbAlmacen.DataSource = response.Data;
             cmbAlmacen.DisplayMember = "Value";
             cmbAlmacen.ValueMember = "Key";
         }

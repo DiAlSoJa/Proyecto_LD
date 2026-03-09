@@ -1,4 +1,5 @@
 ﻿using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Clients.Queries;
 using LD.Application.Features.Items.Comands;
@@ -14,36 +15,27 @@ namespace LD.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    [ApiController]
-    public class ItemController : ControllerBase
+    public class ProductController : CommonController
     {
-        private readonly IMediator _mediator;
-
-        public ItemController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
         [HttpGet]
-        public async Task<IActionResult> GetItems([FromQuery] ItemQuery query)
-        {
-            return ResultExtensions.ToActionResult(await _mediator.Send(query));
+        public async Task<IActionResult> GetItems()
+            => ResultExtensions.ToActionResult(await Mediator.Send(new ProductQuery()));
 
-        }
+        
         [HttpGet("{itemId}")]
         public async Task<IActionResult> GetItemById(int itemId)
-             => ResultExtensions.ToActionResult(await _mediator.Send(new ItemByIdQuery(itemId)));
+             => ResultExtensions.ToActionResult(await Mediator.Send(new ProductByIdQuery(itemId)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateItem([FromBody] CreateItemCommand command)
-        {
-            return ResultExtensions.ToActionResult(await _mediator.Send(command));
-        }
+        public async Task<IActionResult> CreateItem([FromBody] CreateProductCommand command)
+            => ResultExtensions.ToActionResult(await Mediator.Send(command));
+        
 
         [HttpPut("{itemId}")]
-        public async Task<IActionResult> UpdateLocation(int itemId, UpdateItemCommand command)
+        public async Task<IActionResult> UpdateLocation(int itemId, UpdateProductCommand command)
         {
             command.ItemId = itemId;
-            var result = await _mediator.Send(command);
+            var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
 

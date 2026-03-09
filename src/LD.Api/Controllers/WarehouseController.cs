@@ -1,4 +1,5 @@
 ﻿using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
 using LD.Application.Features.Warehouses.Comands;
 using LD.Application.Features.Warehouses.Queries;
 using LD.Domain.Entities;
@@ -11,38 +12,32 @@ namespace LD.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    [ApiController]
-    public class WarehouseController : ControllerBase
+    public class WarehouseController : CommonController
     {
-        private readonly IMediator _mediator;
 
-        public WarehouseController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
         [HttpGet]
-        public async Task<IActionResult> GetWarehouse([FromQuery] WarehouseQuery query)
+        public async Task<IActionResult> GetWarehouse()
         {
-            return ResultExtensions.ToActionResult(await _mediator.Send(query));
+            return ResultExtensions.ToActionResult(await Mediator.Send(new WarehouseQuery()));
 
         }
 
         [HttpGet("{warehouseId}")]
         public async Task<IActionResult> GeWarehouseById(int warehouseId)
-            => ResultExtensions.ToActionResult(await _mediator.Send(new WarehouseByIdQuery(warehouseId)));
+            => ResultExtensions.ToActionResult(await Mediator.Send(new WarehouseByIdQuery(warehouseId)));
 
 
         [HttpPost]
         public async Task<IActionResult> CreateWarehouse([FromBody] CreateWarehouseCommand command)
         {
-            return ResultExtensions.ToActionResult(await _mediator.Send(command));
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
 
         [HttpPut("{warehouseId}")]
         public async Task<IActionResult> UpdateWarehouse(int warehouseId, UpdateWarehouseCommand command)
         {
             command.WarehouseId = warehouseId;
-            var result = await _mediator.Send(command);
+            var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
 

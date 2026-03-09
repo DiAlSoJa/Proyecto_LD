@@ -1,6 +1,7 @@
 ﻿
+using LD.Client.Services;
 using LD.Contracts.Client;
-using LD.Contracts.Item;
+using LD.Contracts.Product;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
@@ -17,18 +18,18 @@ namespace LD.Forms.Views.Forms
 {
     public partial class FrmASN : Form
     {
-        private readonly ItemService _itemService;
+        private readonly ProductService _itemService;
         private BindingSource _itemsBinding = new();
-        private ItemDto? selectedItem { get; set; }
-        private GridFilter<ItemDto> _gridFilter;
+        private ProductDto? selectedItem { get; set; }
+        private GridFilter<ProductDto> _gridFilter;
         private readonly DialogFormService _dialogFormService;
-        public FrmASN(ItemService itemService, DialogFormService dialogFormService)
+        public FrmASN(ProductService itemService, DialogFormService dialogFormService)
         {
             InitializeComponent();
             _itemService = itemService;
             dataGridView1.DataSource = _itemsBinding;
             _dialogFormService = dialogFormService;
-            _gridFilter = new GridFilter<ItemDto>(dataGridView1, _itemsBinding);
+            _gridFilter = new GridFilter<ProductDto>(dataGridView1, _itemsBinding);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -91,7 +92,7 @@ namespace LD.Forms.Views.Forms
                 if (dataGridView1.CurrentRow == null)
                     return;
 
-                var item = dataGridView1.CurrentRow.DataBoundItem as ItemDto;
+                var item = dataGridView1.CurrentRow.DataBoundItem as ProductDto;
 
                 if (item == null)
                     return;

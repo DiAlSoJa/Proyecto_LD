@@ -4,6 +4,7 @@
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Application.Common.Results;
+using LD.Contracts.Responses;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,14 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Auth.Commands;
 
-public class LoginCommand : IRequest<Result<string>>
+public class LoginCommand : IRequest<Result<LoginResponse>>
 {
     public string? Username { get; set; }
     public string? Password { get; set; }
 }
 
 public class LoginCommandHandler
-    : IRequestHandler<LoginCommand, Result<string>>
+    : IRequestHandler<LoginCommand, Result<LoginResponse>>
 {
 
     private readonly IAuthService _authService;
@@ -29,14 +30,22 @@ public class LoginCommandHandler
         _authService = authService;
     }
 
-    public async Task<Result<string>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var auth = await _authService.Login(request.Username, request.Password);
-        
-        if (!auth.Success)
+        try
         {
-            return Result<string>.Failure(auth.Message,new(),401);
+            var auth = await _authService.Login(request.Username!, request.Password!);
+        
+            if (auth is null)
+            {
+                return Result<LoginResponse>.Failure("Hubo un error al iniciar sesion", new List<string> { "Credenciales invalidas" }, 401);
+            }
+            return Result<LoginResponse>.Success(auth, "Login exitoso");
+
+        } catch (Exception ex)
+        {
+            return Result<LoginResponse>.Failure("Hubo un error al iniciar sesion", new List<string> { ex.Message});
         }
-        return Result<string>.Success(auth.Data.ToString(), auth.Message);
+   
     }
 }

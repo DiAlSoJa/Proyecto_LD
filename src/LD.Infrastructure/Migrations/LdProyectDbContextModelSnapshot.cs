@@ -219,8 +219,8 @@ namespace LD.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClientFiscalDataId"));
 
                     b.Property<string>("BusinessName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -244,11 +244,12 @@ namespace LD.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FiscalAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -270,8 +271,8 @@ namespace LD.Infrastructure.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Rfc")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
@@ -507,71 +508,6 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("inventaryStatuses");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.Item", b =>
-                {
-                    b.Property<int>("ItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MaxUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MediumUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MinUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PartNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("RequestExpirationDate")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("RequestLotNumber")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ItemId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("items");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
                 {
                     b.Property<int>("LocationId")
@@ -773,6 +709,71 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("Printers");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MaxUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MediumUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MinUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PartNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("RequestExpirationDate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("RequestLotNumber")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ProductId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("items");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.Project", b =>
                 {
                     b.Property<int>("ProjectId")
@@ -781,8 +782,152 @@ namespace LD.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
 
+                    b.Property<bool>("AllowsBackorder")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AllowsOversizedItems")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("AsnNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AsnPrefix")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("AutoPicking")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryOrderNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryOrderPrefix")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DoNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DoPrefix")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Entrada")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("InternalNotificationEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("InternalNotificationMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDistributionArea")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFiscalWarehouse")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("KittingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KittingPrefix")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("NormalHrs")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<bool>("ReceiptNotificationEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReceiptNotificationMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ReciveRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RequiresLabels")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReworkArea")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Salida")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("ShipmentNotificationEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ShipmentNotificationMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StorageArea")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("StorageTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("UrgentHrs")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("StorageTypeId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.StorageType", b =>
+                {
+                    b.Property<int>("StorageTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StorageTypeId"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -805,36 +950,51 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("LastModifiedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProjectName")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("RequireExpirationDate")
-                        .HasColumnType("bit");
+                    b.HasKey("StorageTypeId");
 
-                    b.Property<bool>("RequireLot")
-                        .HasColumnType("bit");
+                    b.ToTable("StorageTypes");
 
-                    b.Property<bool>("ScanDub")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ScanPartNumber")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ScanQuantity")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectId");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("Projects");
+                    b.HasData(
+                        new
+                        {
+                            StorageTypeId = 1,
+                            Code = "FIFO",
+                            CreatedAt = new DateTime(2026, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = "system",
+                            IsActive = true,
+                            Name = "First In - First Out"
+                        },
+                        new
+                        {
+                            StorageTypeId = 2,
+                            Code = "LIFO",
+                            CreatedAt = new DateTime(2026, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = "system",
+                            IsActive = true,
+                            Name = "Last In - First Out"
+                        },
+                        new
+                        {
+                            StorageTypeId = 3,
+                            Code = "LOT",
+                            CreatedAt = new DateTime(2026, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = "system",
+                            IsActive = true,
+                            Name = "Número de Lote"
+                        },
+                        new
+                        {
+                            StorageTypeId = 4,
+                            Code = "EXP",
+                            CreatedAt = new DateTime(2026, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = "system",
+                            IsActive = true,
+                            Name = "Fecha de Caducidad"
+                        });
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Units", b =>
@@ -1249,15 +1409,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.Item", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId");
-
-                    b.Navigation("Project");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
@@ -1288,11 +1439,26 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Location");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.Project", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.StorageType", "StorageType")
+                        .WithMany()
+                        .HasForeignKey("StorageTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1303,6 +1469,8 @@ namespace LD.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+
+                    b.Navigation("StorageType");
 
                     b.Navigation("Warehouse");
                 });

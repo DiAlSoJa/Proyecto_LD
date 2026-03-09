@@ -165,6 +165,7 @@ namespace LD.Forms.Views.Forms
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(929, 338);
             dataGridView1.TabIndex = 1;
+            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             // 
             // splitContainer1
             // 

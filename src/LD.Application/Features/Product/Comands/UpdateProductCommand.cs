@@ -14,27 +14,27 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Items.Comands;
 
-public class CreateItemCommand :ItemRequest, IRequest<Result <string>>
+public class UpdateProductCommand :ItemRequest, IRequest<Result <string>>
 {
 
 }
 
 
-public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Result<string>>
+public class UpdateItemCommandHandler : IRequestHandler<UpdateProductCommand, Result<string>>
 {
-    private readonly IRepository<Item> _itemRepository;
+    private readonly IRepository<Product> _itemRepository;
     private readonly IMapper _mapper;
-    public CreateItemCommandHandler(IRepository<Item> itemRepository,IMapper mapper)
+    public UpdateItemCommandHandler(IRepository<Product> itemRepository,IMapper mapper)
     {
         _itemRepository = itemRepository;
         _mapper = mapper;
     }
 
-    public async Task<Result<string>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _itemRepository.CreateAsync(_mapper.Map<Item>(request));
+            var result = await _itemRepository.CreateAsync(_mapper.Map<Product>(request));
             return result ? Result<string>.Success("Item creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Item", new());
 
         }

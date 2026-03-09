@@ -15,7 +15,7 @@ namespace LD.Domain.Entities
 
         [Required]
         [MaxLength(150)]
-        public string CommercialName { get; set; }
+        public string? CommercialName { get; set; } = string.Empty;
 
         [MaxLength(250)]
         public string CommercialAddress { get; set; } = string.Empty;

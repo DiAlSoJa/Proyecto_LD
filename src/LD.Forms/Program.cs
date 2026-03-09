@@ -1,6 +1,6 @@
 using LD.Forms;
 using LD.Forms.Configuration;
-using LD.Forms.Services;
+using LD.Client;
 using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Dialogs;
 using LD.Forms.Views.Forms;
@@ -32,9 +32,8 @@ namespace LD
                   })
                   .ConfigureServices((context, services) =>
                   {
-                      services.Configure<ApiSettings>(
-                          context.Configuration.GetSection("ApiSettings"));
-                      RegisterServices(services);
+                      
+                      RegisterServices(services, context.Configuration);
                   })
                   .Build();
 
@@ -48,21 +47,16 @@ namespace LD
             Application.Run(appContext);
         }
 
-        private static void RegisterServices(IServiceCollection services)
+        private static void RegisterServices(IServiceCollection services,IConfiguration configuration)
         {
             services.AddSingleton<AppApplicationContext>();
-            services.AddSingleton<ApiEndpoints>();
 
             // 🔹 Servicios
-            services.AddScoped<ApiService>();
-            services.AddScoped<AuthService>();
-            services.AddScoped<ClientService>();
-            services.AddScoped<ItemService>();
-            services.AddScoped<LocationService>();
-            services.AddScoped<ProjectService>();
-            services.AddScoped<WarehouseService>();
-            services.AddScoped<UserService>();
-            services.AddScoped<LookupService>();
+            services.AddLDClient(options =>
+            {
+                options.BaseUrl = configuration["ApiSettings:BaseUrl"]??"";
+            });
+
 
 
             // 🔹 Servicios de formularios

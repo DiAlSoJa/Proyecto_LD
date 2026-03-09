@@ -31,7 +31,7 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             newBtn = new Button();
@@ -39,15 +39,6 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
             dataGridView1 = new DataGridView();
-            Activo = new DataGridViewCheckBoxColumn();
-            Cliente = new DataGridViewTextBoxColumn();
-            Proyecto = new DataGridViewTextBoxColumn();
-            Almacen = new DataGridViewTextBoxColumn();
-            EscaneoDUB = new DataGridViewCheckBoxColumn();
-            EscaneoNoParte = new DataGridViewCheckBoxColumn();
-            EscaneoCantidad = new DataGridViewCheckBoxColumn();
-            RequiereLote = new DataGridViewCheckBoxColumn();
-            RequiereCaducidad = new DataGridViewCheckBoxColumn();
             gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -123,82 +114,17 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Activo, Cliente, Proyecto, Almacen, EscaneoDUB, EscaneoNoParte, EscaneoCantidad, RequiereLote, RequiereCaducidad });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
-            // 
-            // Activo
-            // 
-            Activo.HeaderText = "Activo";
-            Activo.MinimumWidth = 6;
-            Activo.Name = "Activo";
-            Activo.Width = 50;
-            // 
-            // Cliente
-            // 
-            Cliente.HeaderText = "Cliente";
-            Cliente.MinimumWidth = 6;
-            Cliente.Name = "Cliente";
-            Cliente.Width = 125;
-            // 
-            // Proyecto
-            // 
-            Proyecto.HeaderText = "Proyecto";
-            Proyecto.MinimumWidth = 6;
-            Proyecto.Name = "Proyecto";
-            Proyecto.Width = 125;
-            // 
-            // Almacen
-            // 
-            Almacen.HeaderText = "Almacen";
-            Almacen.MinimumWidth = 6;
-            Almacen.Name = "Almacen";
-            Almacen.Width = 125;
-            // 
-            // EscaneoDUB
-            // 
-            EscaneoDUB.HeaderText = "EscaneoDUB";
-            EscaneoDUB.MinimumWidth = 6;
-            EscaneoDUB.Name = "EscaneoDUB";
-            EscaneoDUB.Resizable = DataGridViewTriState.True;
-            EscaneoDUB.SortMode = DataGridViewColumnSortMode.Automatic;
-            EscaneoDUB.Width = 125;
-            // 
-            // EscaneoNoParte
-            // 
-            EscaneoNoParte.HeaderText = "Escaneo No. Parte";
-            EscaneoNoParte.MinimumWidth = 6;
-            EscaneoNoParte.Name = "EscaneoNoParte";
-            EscaneoNoParte.Width = 125;
-            // 
-            // EscaneoCantidad
-            // 
-            EscaneoCantidad.HeaderText = "Escaneo cantidad";
-            EscaneoCantidad.MinimumWidth = 6;
-            EscaneoCantidad.Name = "EscaneoCantidad";
-            EscaneoCantidad.Width = 125;
-            // 
-            // RequiereLote
-            // 
-            RequiereLote.HeaderText = "Requiere Lote";
-            RequiereLote.MinimumWidth = 6;
-            RequiereLote.Name = "RequiereLote";
-            RequiereLote.Width = 125;
-            // 
-            // RequiereCaducidad
-            // 
-            RequiereCaducidad.HeaderText = "RequiereFechaCaducidad";
-            RequiereCaducidad.MinimumWidth = 6;
-            RequiereCaducidad.Name = "RequiereCaducidad";
-            RequiereCaducidad.Width = 125;
+            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             // 
             // gridContainer
             // 
@@ -237,15 +163,6 @@ namespace LD.Forms.Views.Forms
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button2;
         private DataGridView dataGridView1;
-        private DataGridViewCheckBoxColumn Activo;
-        private DataGridViewTextBoxColumn Cliente;
-        private DataGridViewTextBoxColumn Proyecto;
-        private DataGridViewTextBoxColumn Almacen;
-        private DataGridViewCheckBoxColumn EscaneoDUB;
-        private DataGridViewCheckBoxColumn EscaneoNoParte;
-        private DataGridViewCheckBoxColumn EscaneoCantidad;
-        private DataGridViewCheckBoxColumn RequiereLote;
-        private DataGridViewCheckBoxColumn RequiereCaducidad;
         private Panel gridContainer;
     }
 }

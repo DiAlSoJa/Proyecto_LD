@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿    using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +14,6 @@ namespace LD.Application.Common.Interfaces.Auth
             string email,
             IEnumerable<string> roles
         );
+        string GenerateRefreshToken();
     }
 }

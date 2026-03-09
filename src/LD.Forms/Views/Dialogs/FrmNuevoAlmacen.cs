@@ -1,4 +1,5 @@
-﻿using LD.Contracts.Client;
+﻿using LD.Client.Services;
+using LD.Contracts.Client;
 using LD.Contracts.Enums;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
@@ -23,6 +24,8 @@ namespace LD.Forms.Views.Dialogs
         private WarehouseDto? WarehouseSelected;
         private WarehouseService _warehouseService;
         private readonly DialogMessageService _dialogService;
+
+        
         public FrmNuevoAlmacen(WarehouseService warehouseService,DialogMessageService dialogMessageService)
         {
             InitializeComponent();

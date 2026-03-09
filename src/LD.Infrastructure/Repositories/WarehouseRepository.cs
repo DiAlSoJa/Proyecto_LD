@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Contracts.DTOs;
+using LD.Contracts.Warehouse;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +30,11 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Warehouse?> GetByIdAsync(int id)
+        public async Task<Warehouse?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Warehouses
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.WarehouseId == id);
         }
 
         public async Task<List<DropDownDto>> GetLookup()

@@ -15,22 +15,18 @@ namespace LD.Forms.Classes
         public static string? Rol { get; set; }
 
 
-        public static LookupsDto? Lookups { get; set; }
-
-        public static void SetUserData(UserDto user, LookupsDto? lookups =null)
+        public static void SetUserData(UserDto user)
         {
             Id = user.Id;
             UserName = user.UserName;
             Activo = user.Activo;
             Rol = user.Rol;
-            Lookups = lookups;
         }
         public static void Clear()
         {
             UserName = null;
             Id = null;
             Email = null;
-            Lookups = null;
         }
     }
 }

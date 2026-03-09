@@ -1,15 +1,16 @@
-﻿using System;
+﻿using LD.Client.Services;
+using LD.Contracts.Product;
+using LD.Forms.Classes;
+using LD.Forms.Services;
+using LD.Forms.Services.FormServices;
+using LD.Forms.Views.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using LD.Contracts.Item;
-using LD.Forms.Classes;
-using LD.Forms.Services;
-using LD.Forms.Services.FormServices;
-using LD.Forms.Views.Common;
 
 namespace LD.Forms.Views.Dialogs
 {
@@ -18,15 +19,15 @@ namespace LD.Forms.Views.Dialogs
         private bool mouseDown;
         private Point lastLocation;
 
-        private readonly ItemService _itemService;
+        private readonly ProductService _itemService;
         private BindingSource _itemsBinding = new();
-        private ItemDto? selectedItem { get; set; }
+        private ProductDto? selectedItem { get; set; }
         private readonly DialogFormService _dialogFormService;
 
 
 
 
-        public FrmVehiculosRegistrados(ItemService itemService, DialogFormService dialogFormService)
+        public FrmVehiculosRegistrados(ProductService itemService, DialogFormService dialogFormService)
         {
             InitializeComponent();
             _itemService = itemService;

@@ -10,7 +10,7 @@ using LD.Application.Features.Items.Comands;
 namespace LD.Application.Features.Clients.Validators;
 
 public class CreateItemValidator
-    : AbstractValidator<CreateItemCommand>
+    : AbstractValidator<CreateProductCommand>
 {
     public CreateItemValidator()
     {

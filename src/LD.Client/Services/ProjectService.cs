@@ -3,25 +3,25 @@ using LD.Contracts.Location;
 using LD.Contracts.Project;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
+using LD.Forms.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Client
+namespace LD.Client.Services
 {
     public class ProjectService
     {
         public readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public ProjectService(ApiEndpoints apiEndpoints, ApiService api)
+        public ProjectService(ApiService api,ApiEndpoints apiEndpoints)
         {
             _api = api;
-            //_api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
-        public async Task<ApiResponseDto<ProjectDto>> GetProjectById(int projectId)
+        public async Task<ApiResponseDto<ProjectRequest>> GetProjectById(int projectId)
         {
-            return await _api.GetAsync<ApiResponseDto<ProjectDto>>(_apiEndpoints.Project_GetById.Replace("{id}", projectId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<ProjectRequest>>(_apiEndpoints.Project_GetById.Replace("{id}", projectId.ToString()));
         }
 
         public async Task<ApiResponseDto<List<ProjectDto?>>> GetProjects()

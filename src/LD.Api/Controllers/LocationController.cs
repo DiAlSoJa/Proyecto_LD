@@ -1,4 +1,5 @@
 ﻿using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Comands;
 using LD.Application.Features.Queries;
@@ -13,36 +14,28 @@ namespace LD.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    [ApiController]
-    public class LocationController : ControllerBase
+    public class LocationController : CommonController
     {
-        private readonly IMediator _mediator;
 
-        public LocationController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
         [HttpGet]
-        public async Task<IActionResult> GetLocations([FromQuery] LocationQuery query)
-        {
-            return ResultExtensions.ToActionResult(await _mediator.Send(query));
+        public async Task<IActionResult> GetLocations()
+            => ResultExtensions.ToActionResult(await Mediator.Send(new LocationQuery()));
 
-        }
+        
         [HttpGet("{locationId}")]
         public async Task<IActionResult> GetLocationById(int locationId)
-             => ResultExtensions.ToActionResult(await _mediator.Send(new LocationByIdQuery(locationId)));
+             => ResultExtensions.ToActionResult(await Mediator.Send(new LocationByIdQuery(locationId)));
 
         [HttpPost]
         public async Task<IActionResult> CreateLocation([FromBody] CreateLocationCommand command)
-        {
-            return ResultExtensions.ToActionResult(await _mediator.Send(command));
-        }
+            => ResultExtensions.ToActionResult(await Mediator.Send(command));
+        
 
         [HttpPut("{locationId}")]
         public async Task<IActionResult> UpdateLocation(int locationId, UpdateLocationCommand command)
         {
             command.LocationId = locationId;
-            var result = await _mediator.Send(command);
+            var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
 

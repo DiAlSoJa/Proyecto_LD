@@ -12,11 +12,15 @@ namespace LD.Domain.Entities
     {
         public int ClientFiscalDataId { get; set; }
 
+        [Required]
         public int ClientId { get; set; }
         //razon social
-        public string BusinessName { get; set; }
-        public string Rfc { get; set; }
-        public string FiscalAddress { get; set; }
+        [MaxLength(150)]
+        public string? BusinessName { get; set; } = string.Empty;
+        [MaxLength(20)]
+        public string? Rfc { get; set; } = string.Empty;
+        [MaxLength(250)]
+        public string? FiscalAddress { get; set; } = string.Empty;
 
         [MaxLength(100)]
         public string Neightbourhoud { get; set; } = string.Empty;
@@ -25,12 +29,13 @@ namespace LD.Domain.Entities
 
         [MaxLength(10)]
         public string ZipCode { get; set; } = string.Empty;
+        [MaxLength(100)]
         public string Email { get; set; } = string.Empty;
 
         [MaxLength(10)]
         public string Phone { get; set; } = string.Empty;
 
-        public Client Client { get; set; }
+        public Client? Client { get; set; }
 
 
     }

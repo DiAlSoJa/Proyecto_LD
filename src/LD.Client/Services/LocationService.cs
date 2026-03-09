@@ -1,22 +1,22 @@
 ﻿using LD.Contracts.Client;
-using LD.Contracts.Item;
+using LD.Contracts.Product;
 using LD.Contracts.Location;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
+using LD.Forms.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Client
+namespace LD.Client.Services
 {
     public class LocationService
     {
         public readonly ApiService _api;
         private readonly ApiEndpoints _apiEndpoints;
-        public LocationService(ApiEndpoints apiEndpoints, ApiService api)
+        public LocationService(ApiService api ,ApiEndpoints apiEndpoints)
         {
             _api = api;
-            //_api.SetBearerToken(UserSession.AccessToken ?? "");
             _apiEndpoints = apiEndpoints;
         }
         public async Task<ApiResponseDto<LocationRequest>> GetLocationById(int locationId)

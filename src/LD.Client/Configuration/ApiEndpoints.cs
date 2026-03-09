@@ -1,9 +1,10 @@
-﻿
+﻿using LD.Client;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LD.Client
+namespace LD.Forms.Configuration
 {
     public class ApiEndpoints
     {
@@ -11,9 +12,9 @@ namespace LD.Client
         private readonly string _baseApi;
 
 
-        public ApiEndpoints(/*IOptions<ApiSettings> options¨*/)
+        public ApiEndpoints(IOptions<ApiSettings> options)
         {
-            //_baseApi = options.Value.BaseUrl;
+            _baseApi = options.Value.BaseUrl;
         }
         // ======================
         // AUTH
@@ -187,6 +188,11 @@ namespace LD.Client
         public string Warehouse_Delete => $"{_baseApi}/warehouse/{{id}}";
 
         public string Lookup_GetAll => $"{_baseApi}/Lookup";
+        public string Lookup_Warehouse => $"{_baseApi}/Lookup/warehouse";
+        public string Lookup_Client => $"{_baseApi}/Lookup/client";
+
+        public string Lookup_Location => $"{_baseApi}/Lookup/location";
+
 
     }
 }

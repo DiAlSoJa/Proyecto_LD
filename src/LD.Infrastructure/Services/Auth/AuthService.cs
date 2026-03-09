@@ -1,8 +1,10 @@
 ﻿using Azure.Core;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
+using LD.Contracts.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,43 +29,51 @@ namespace LD.Infrastructure.Services.Auth
             _signInManager = signInManager;
             _jwtTokenService = jwtTokenService;
         }
-        public async Task<AuthResponse> Login(string username, string password)
+        public async Task<LoginResponse?> Login(string username, string password)
         {
             var user = await _userManager.FindByNameAsync(username);
+
             if (user == null)
-                return AuthResponse.Fail("Credenciales inválidas");
+                throw new Exception("Credenciales inválidas");
+
+            var result = await _signInManager.PasswordSignInAsync(
+                user,
+                password,
+                false,
+                false
+            );
+
+            if (!result.Succeeded)
+                throw new Exception("Credenciales inválidas");
 
             var roles = await _userManager.GetRolesAsync(user);
-            var result = await _signInManager
-                .CheckPasswordSignInAsync(user, password, false);
 
-            if (!result.Succeeded)
-                return AuthResponse.Fail("Credenciales inválidas");
+            var accessToken = _jwtTokenService.GenerateToken(
+                user.Id.ToString(),
+                user.UserName??"",
+                roles
+            );
 
-            var token = _jwtTokenService.GenerateToken(user.Id.ToString(), user.Email!, roles);
+            var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
-            return AuthResponse.Ok(token);
-        }
-
-        public async Task<AuthResponse> Register(string email, string password)
-        {
-            var userExists = await _userManager.FindByEmailAsync(email);
-            if (userExists != null)
-                return AuthResponse.Fail("El usuario ya existe");
-
-            var user = new ApplicationUser
+            var refreshEntity = new RefreshToken
             {
-                UserName = email,
-                Email = email
+                Token = refreshToken,
+                UserId = user.Id,
+                Expiration = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow
             };
 
-            var result = await _userManager.CreateAsync(user, password);
+            //_context.RefreshTokens.Add(refreshEntity);
 
-            if (!result.Succeeded)
-                return AuthResponse.Fail(
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+            //await _context.SaveChangesAsync();
 
-            return AuthResponse.Ok(null);
+            return new LoginResponse
+            {
+                Accesstoken = accessToken,
+                RefreshToken = refreshToken
+            };
         }
+
     }
 }

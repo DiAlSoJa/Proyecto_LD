@@ -1,4 +1,5 @@
-﻿using LD.Contracts.Enums;
+﻿using LD.Client.Services;
+using LD.Contracts.Enums;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
@@ -19,16 +20,14 @@ namespace LD.Forms.Views.Forms
         private Boolean respuesta;
 
         private AuthService _authService;
-        private LookupService _lookupService;
 
         private DialogMessageService _dialogMessageService;
         public event EventHandler? LoginSucceeded;
 
-        public FrmLogin(AuthService authService, LookupService lookupService,  DialogMessageService dialogMessageService)
+        public FrmLogin(AuthService authService,  DialogMessageService dialogMessageService)
         {
             InitializeComponent();
             _authService = authService;
-            _lookupService = lookupService;
             _dialogMessageService = dialogMessageService;
             EnableDrag(panel1);
             EnableDrag(pictureBox1);
@@ -86,17 +85,16 @@ namespace LD.Forms.Views.Forms
                     return;
                 }
 
-                UserSession.AccessToken = response.Data;
+                UserSession.AccessToken = response.Data?.Accesstoken;
+                UserSession.RefreshToken = response.Data?.RefreshToken;
+
                 var getMeResponse = await _authService.GetMeAsync();
                 if (!getMeResponse.IsSuccess || getMeResponse.Data is null)
                 {
                     _dialogMessageService.Show(getMeResponse.Message, DialogMessageEnum.Warning);
                     return;
                 }
-
-                var lookUpResponse = await _lookupService.GetLookups();
-
-                UserData.SetUserData(getMeResponse.Data,lookUpResponse.Data);
+                UserData.SetUserData(getMeResponse.Data); 
                 LoginSucceeded?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)

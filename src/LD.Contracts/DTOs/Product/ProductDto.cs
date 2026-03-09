@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD.Contracts.Item
+namespace LD.Contracts.Product
 {
-    public class ItemDto
+    public class ProductDto
     {
         public int ItemId { get; set; }
         public int ClienteId { get; set; }

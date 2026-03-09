@@ -1,5 +1,7 @@
-﻿using LD.Contracts.Item;
+﻿using LD.Client.Services;
+using LD.Contracts.Product;
 using LD.Contracts.Project;
+using LD.Contracts.User;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
@@ -23,7 +25,7 @@ namespace LD.Forms.Views.Forms
         private GridFilter<ProjectDto> _gridFilter;
         private readonly DialogFormService _dialogFormService;
 
-        public FrmProyectos(ProjectService projectService,DialogFormService dialogFormService)
+        public FrmProyectos(ProjectService projectService, DialogFormService dialogFormService)
         {
             InitializeComponent();
             _projectService = projectService;
@@ -40,7 +42,7 @@ namespace LD.Forms.Views.Forms
         {
             _dialogFormService.ShowDialog<FrmNuevoProyecto>(config =>
             {
-                config.SetProject(new());
+                config.SetProject(selectedProject);
             });
         }
         protected override async void OnShown(EventArgs e)
@@ -81,6 +83,24 @@ namespace LD.Forms.Views.Forms
             await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo clientes");
         }
 
-     
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.CurrentRow == null)
+                    return;
+
+                var project = dataGridView1.CurrentRow.DataBoundItem as ProjectDto;
+
+                if (project == null)
+                    return;
+
+                selectedProject = project;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
     }
 }

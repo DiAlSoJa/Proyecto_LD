@@ -9,12 +9,12 @@ namespace LD.Contracts.Project
     public class ProjectDto
     {
         public bool Activo { get; set; }
+        public int ProjectId { get; set; }
+        public string Proyecto { get; set; } = string.Empty;
 
         public int ClienteId { get; set; }
         public string Cliente { get; set; } = string.Empty;
 
-        public int ProjectId { get; set; }
-        public string Proyecto { get; set; } = string.Empty;
 
         public int AlmacenId { get; set; }
         public string Almacen { get; set; } = string.Empty;

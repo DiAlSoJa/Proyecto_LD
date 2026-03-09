@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LD.Contracts.Item;
+using LD.Contracts.Product;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using System;
@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Items.Profiles
 {
-    public class ItemProfile : Profile
+    public class ProductProfile : Profile
     {
-        public ItemProfile()
+        public ProductProfile()
         {
-            CreateMap<Item, ItemDto>();
-            CreateMap<ItemRequest, Item>();
+            CreateMap<Product, ProductDto>();
+            CreateMap<ItemRequest, Product>();
 
         }
     }

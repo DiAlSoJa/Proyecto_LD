@@ -188,6 +188,11 @@ namespace LD.Forms.Configuration
         public string Warehouse_Delete => $"{_baseApi}/warehouse/{{id}}";
 
         public string Lookup_GetAll => $"{_baseApi}/Lookup";
+        public string Lookup_Warehouse => $"{_baseApi}/Lookup/warehouse";
+        public string Lookup_Client => $"{_baseApi}/Lookup/client";
+
+        public string Lookup_Location => $"{_baseApi}/Lookup/location";
+
 
     }
 }

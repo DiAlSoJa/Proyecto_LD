@@ -1,4 +1,5 @@
 ﻿using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
 using LD.Application.Common.Results;
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Clients.Queries;
@@ -11,28 +12,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace LD.Api.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : CommonController
     {
-        private readonly IMediator _mediator;
-
-        public AuthController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
 
         [Authorize]
         [HttpGet("me")]
-        public async Task<IActionResult> GetMe([FromQuery] GetMeQuery command)
-        {
-            return ResultExtensions.ToActionResult(await _mediator.Send(command));
-        }
+        public async Task<IActionResult> GetMe()
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetMeQuery()));
+        
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
       
