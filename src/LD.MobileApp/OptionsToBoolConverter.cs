@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-
-
+﻿using System.Globalization;
 
 namespace MauiAppLogin.Converters;
 
@@ -11,14 +6,19 @@ public class OptionsToBoolConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is IList<string> options)
-            return options.Count == 2;
+        bool isTwoOptions = false;
 
-        return false;
+        if (value is IList<string> options)
+            isTwoOptions = options.Count == 2;
+
+        if (parameter?.ToString()?.ToLower() == "invert")
+            return !isTwoOptions;
+
+        return isTwoOptions;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return null!;
+        throw new NotImplementedException();
     }
 }

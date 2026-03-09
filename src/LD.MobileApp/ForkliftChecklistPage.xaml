@@ -116,31 +116,29 @@
                                                    FontSize="15"
                                                    TextColor="#243B53"/>
 
-                                                <!-- BOTONES SI / NO -->
+                                                <!-- SI / NO -->
                                                 <Grid ColumnDefinitions="*,*"
-                                                        IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}}">
+                                                      ColumnSpacing="8"
+                                                      IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}}">
 
                                                     <Button Text="{Binding Options[0]}"
                                                         Grid.Column="0"
                                                         CornerRadius="10"
-                                                        BackgroundColor="#d9d9d9"
-                                                            TextColor="#243B53"
+                                                        BackgroundColor="#E2E8F0"
                                                         Clicked="OnOptionSelected"/>
 
                                                     <Button Text="{Binding Options[1]}"
                                                     Grid.Column="1"
                                                     CornerRadius="10"
-                                                    BackgroundColor="#d9d9d9"
-                                                            TextColor="#243B53"
+                                                    BackgroundColor="#E2E8F0"
                                                     Clicked="OnOptionSelected"/>
                                                 </Grid>
 
-                                                <!-- PICKER PARA OPCIONES LARGAS -->
+                                                <!-- PICKER SOLO PARA 3 O MÁS OPCIONES -->
                                                 <Picker Title="Selecciona"
                                                     ItemsSource="{Binding Options}"
                                                     SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
                                                     IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}, ConverterParameter=invert}" />
-
                                             </VerticalStackLayout>
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
@@ -232,9 +230,91 @@
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
-            
-            
-            
+
+
+
+            <!-- Miniaturas -->
+            <Border BackgroundColor="#EEF3FB"
+                     Stroke="#E2E8F0"
+                     StrokeShape="RoundRectangle 18"
+                     Padding="10"
+                     Margin="0,6,0,0">
+                <HorizontalStackLayout Spacing="10">
+                    <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                    <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Area tipo cámara -->
+            <Border Grid.Row="1"
+        BackgroundColor="#1B2A3A"
+        Stroke="#0B1B2A"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 26"
+        Padding="10">
+
+                <Grid RowDefinitions="*,Auto" RowSpacing="12">
+
+                    <!-- Preview -->
+                    <Grid>
+                        <Border BackgroundColor="#0F172A"
+                    Stroke="#334155"
+                    StrokeShape="RoundRectangle 22"
+                    Padding="10">
+
+                            <Grid>
+                                <Image x:Name="PreviewImage" Aspect="AspectFit" />
+                                <!-- Retícula / marco -->
+                                <Grid Padding="14">
+                                    <Border Stroke="#FFFFFF"
+                                StrokeThickness="3"
+                                StrokeShape="RoundRectangle 24"
+                                BackgroundColor="Transparent"
+                                Opacity="0.35"/>
+                                </Grid>
+                            </Grid>
+
+                        </Border>
+                    </Grid>
+
+                    <!-- Controles inferiores (Cancelar / Capturar) -->
+                    <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
+                        <Button Grid.Column="0"
+                    Text="Cancelar"
+                    Clicked="OnCancelarClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="18"/>
+
+                        <Border Grid.Column="1"
+                    BackgroundColor="#102A43"
+                    Stroke="#FFFFFF"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 999"
+                    WidthRequest="86"
+                    HeightRequest="86"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Padding="10">
+                            <Button Text=""
+                        Clicked="OnCapturarClicked"
+                        BackgroundColor="White"
+                        CornerRadius="999"
+                        WidthRequest="60"
+                        HeightRequest="60"/>
+                        </Border>
+
+                        <Button Grid.Column="2"
+                    Text="Capturar"
+                    Clicked="OnCapturarClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="18"
+                    HorizontalOptions="End"/>
+                    </Grid>
+
+                </Grid>
+            </Border>
 
             <Button Text="Guardar Checklist"
                     HeightRequest="52"
