@@ -71,7 +71,7 @@ namespace LD.Forms.Views.Forms
             label2.Name = "label2";
             label2.Size = new Size(98, 19);
             label2.TabIndex = 10;
-            label2.Text = "Version: 1.0.7";
+            label2.Text = "Version: 1.0.8";
             // 
             // label1
             // 
@@ -142,7 +142,7 @@ namespace LD.Forms.Views.Forms
             txtUsuario.PlaceholderText = "Usuario";
             txtUsuario.Size = new Size(210, 22);
             txtUsuario.TabIndex = 6;
-            txtUsuario.Text = "jmpv";
+            txtUsuario.Text = "1";
             // 
             // pictureBox3
             // 

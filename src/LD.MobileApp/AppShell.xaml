@@ -62,6 +62,12 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:WarehouseOperations}"
         Route="WarehouseOperations" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:InventoryList}"
+        Route="InventoryList" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:ForkliftChecklistPage}"
+        Route="ForkliftChecklistPage" />
 
 
 </Shell>
