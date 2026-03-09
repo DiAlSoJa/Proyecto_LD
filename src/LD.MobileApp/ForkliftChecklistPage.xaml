@@ -3,13 +3,20 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:MauiAppLogin.ViewModels"
+    
     x:Class="MauiAppLogin.ForkliftChecklistPage"
+    xmlns:conv="clr-namespace:MauiAppLogin.Converters"
     Title="Checklist Montacargas"
     BackgroundColor="#0F2E4F">
 
     <ContentPage.BindingContext>
         <viewmodels:ForkliftChecklistViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:OptionsToBoolConverter x:Key="OptionsToBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="16">
@@ -103,22 +110,38 @@
                                                 SelectionMode="None">
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid ColumnDefinitions="*,180"
-                                                  RowSpacing="8"
-                                                  Padding="0,4">
+                                            <VerticalStackLayout Spacing="6">
 
                                                 <Label Text="{Binding Label}"
-                                                       VerticalOptions="Center"
-                                                       TextColor="#243B53"
-                                                       FontSize="15" />
+                                                   FontSize="15"
+                                                   TextColor="#243B53"/>
 
-                                                <Picker Grid.Column="1"
-                                                        Title="Selecciona"
-                                                        ItemsSource="{Binding Options}"
-                                                        SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
-                                                        BackgroundColor="#F8FAFC"
-                                                        TextColor="#102A43" />
-                                            </Grid>
+                                                <!-- BOTONES SI / NO -->
+                                                <Grid ColumnDefinitions="*,*"
+                                                        IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}}">
+
+                                                    <Button Text="{Binding Options[0]}"
+                                                        Grid.Column="0"
+                                                        CornerRadius="10"
+                                                        BackgroundColor="#d9d9d9"
+                                                            TextColor="#243B53"
+                                                        Clicked="OnOptionSelected"/>
+
+                                                    <Button Text="{Binding Options[1]}"
+                                                    Grid.Column="1"
+                                                    CornerRadius="10"
+                                                    BackgroundColor="#d9d9d9"
+                                                            TextColor="#243B53"
+                                                    Clicked="OnOptionSelected"/>
+                                                </Grid>
+
+                                                <!-- PICKER PARA OPCIONES LARGAS -->
+                                                <Picker Title="Selecciona"
+                                                    ItemsSource="{Binding Options}"
+                                                    SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+                                                    IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}, ConverterParameter=invert}" />
+
+                                            </VerticalStackLayout>
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>

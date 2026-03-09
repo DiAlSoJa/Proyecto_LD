@@ -84,7 +84,27 @@ public partial class ForkliftChecklistPage : ContentPage
         _rightMarks.Clear();
     }
 
-  
+    private void OnOptionSelected(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.BindingContext is Models.ChecklistQuestion question)
+        {
+            question.SelectedOption = btn.Text;
+
+            // cambiar color visual
+            var parent = btn.Parent as Grid;
+
+            foreach (var child in parent.Children)
+            {
+                if (child is Button b)
+                    b.BackgroundColor = Colors.LightGray;
+            }
+
+            btn.BackgroundColor = Colors.LightGreen;
+        }
+    }
+
+
+
     private async void OnGuardarClicked(object sender, EventArgs e)
     {
         var vm = BindingContext as ForkliftChecklistViewModel;
