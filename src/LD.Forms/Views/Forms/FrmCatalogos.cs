@@ -13,10 +13,10 @@ using System.Windows.Forms;
 
 namespace LD.Forms.Views.Forms;
 
-public partial class FrmCheckListMontacargas : Form
+public partial class FrmCatalogos : Form
 {
     private readonly DialogFormService _dialogFormService;
-    public FrmCheckListMontacargas(DialogFormService dialogFormService)
+    public FrmCatalogos(DialogFormService dialogFormService)
     {
         InitializeComponent();
         _dialogFormService = dialogFormService;
@@ -45,10 +45,5 @@ public partial class FrmCheckListMontacargas : Form
     private void button4_Click_1(object sender, EventArgs e)
     {
         var form = _dialogFormService.ShowDialog<FrmChooseUser>();
-    }
-
-    private void button11_Click(object sender, EventArgs e)
-    {
-        var form = _dialogFormService.ShowDialog<FrmDocumentos>();
     }
 }

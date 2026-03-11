@@ -45,11 +45,11 @@
             button13 = new Button();
             button17 = new Button();
             button6 = new Button();
+            button8 = new Button();
             button10 = new Button();
             button12 = new Button();
             button14 = new Button();
             button9 = new Button();
-            button8 = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             flwMenu.SuspendLayout();
@@ -280,6 +280,19 @@
             button6.UseVisualStyleBackColor = true;
             button6.Click += button6_Click;
             // 
+            // button8
+            // 
+            button8.Cursor = Cursors.Hand;
+            button8.Image = Properties.Resources.catalogos;
+            button8.Location = new Point(737, 100);
+            button8.Name = "button8";
+            button8.Size = new Size(175, 80);
+            button8.TabIndex = 20;
+            button8.Text = "Catálogos";
+            button8.TextImageRelation = TextImageRelation.ImageAboveText;
+            button8.UseVisualStyleBackColor = true;
+            button8.Click += button8_Click;
+            // 
             // button10
             // 
             button10.Cursor = Cursors.Hand;
@@ -327,18 +340,6 @@
             button9.Text = "Control de Patio";
             button9.TextImageRelation = TextImageRelation.ImageAboveText;
             button9.UseVisualStyleBackColor = true;
-            // 
-            // button8
-            // 
-            button8.Cursor = Cursors.Hand;
-            button8.Image = Properties.Resources.montacargas;
-            button8.Location = new Point(737, 100);
-            button8.Name = "button8";
-            button8.Size = new Size(175, 80);
-            button8.TabIndex = 20;
-            button8.Text = "Catálogos";
-            button8.TextImageRelation = TextImageRelation.ImageAboveText;
-            button8.UseVisualStyleBackColor = true;
             // 
             // FrmMenu
             // 

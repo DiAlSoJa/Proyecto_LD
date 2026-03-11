@@ -109,6 +109,7 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
+            checkBox1 = new CheckBox();
             panel1.SuspendLayout();
             tab.SuspendLayout();
             tabDatosGenerales.SuspendLayout();
@@ -138,8 +139,9 @@
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1385, 764);
+            panel1.Size = new Size(1212, 573);
             panel1.TabIndex = 0;
             // 
             // tab
@@ -148,14 +150,16 @@
             tab.Controls.Add(tabNotificaciones);
             tab.Controls.Add(tabPrefijos);
             tab.Dock = DockStyle.Fill;
-            tab.Location = new Point(0, 35);
+            tab.Location = new Point(0, 26);
+            tab.Margin = new Padding(3, 2, 3, 2);
             tab.Name = "tab";
             tab.SelectedIndex = 0;
-            tab.Size = new Size(1383, 672);
+            tab.Size = new Size(1210, 504);
             tab.TabIndex = 37;
             // 
             // tabDatosGenerales
             // 
+            tabDatosGenerales.Controls.Add(checkBox1);
             tabDatosGenerales.Controls.Add(checkAutoPicking);
             tabDatosGenerales.Controls.Add(groupBox4);
             tabDatosGenerales.Controls.Add(groupBox3);
@@ -168,10 +172,11 @@
             tabDatosGenerales.Controls.Add(label4);
             tabDatosGenerales.Controls.Add(txtProjectName);
             tabDatosGenerales.Controls.Add(label3);
-            tabDatosGenerales.Location = new Point(4, 29);
+            tabDatosGenerales.Location = new Point(4, 24);
+            tabDatosGenerales.Margin = new Padding(3, 2, 3, 2);
             tabDatosGenerales.Name = "tabDatosGenerales";
-            tabDatosGenerales.Padding = new Padding(3);
-            tabDatosGenerales.Size = new Size(1375, 639);
+            tabDatosGenerales.Padding = new Padding(3, 2, 3, 2);
+            tabDatosGenerales.Size = new Size(1202, 476);
             tabDatosGenerales.TabIndex = 0;
             tabDatosGenerales.Text = "Datos Generales";
             tabDatosGenerales.UseVisualStyleBackColor = true;
@@ -179,9 +184,10 @@
             // checkAutoPicking
             // 
             checkAutoPicking.AutoSize = true;
-            checkAutoPicking.Location = new Point(423, 129);
+            checkAutoPicking.Location = new Point(370, 97);
+            checkAutoPicking.Margin = new Padding(3, 2, 3, 2);
             checkAutoPicking.Name = "checkAutoPicking";
-            checkAutoPicking.Size = new Size(110, 24);
+            checkAutoPicking.Size = new Size(91, 19);
             checkAutoPicking.TabIndex = 5;
             checkAutoPicking.Text = "AutoPicking";
             checkAutoPicking.UseVisualStyleBackColor = true;
@@ -197,9 +203,11 @@
             groupBox4.Controls.Add(label6);
             groupBox4.Controls.Add(comboEntrada);
             groupBox4.Controls.Add(label5);
-            groupBox4.Location = new Point(493, 168);
+            groupBox4.Location = new Point(431, 126);
+            groupBox4.Margin = new Padding(3, 2, 3, 2);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(423, 181);
+            groupBox4.Padding = new Padding(3, 2, 3, 2);
+            groupBox4.Size = new Size(370, 136);
             groupBox4.TabIndex = 42;
             groupBox4.TabStop = false;
             groupBox4.Text = "Unidades";
@@ -209,17 +217,18 @@
             comboSalida.Font = new Font("Segoe UI", 9.75F);
             comboSalida.FormattingEnabled = true;
             comboSalida.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboSalida.Location = new Point(190, 126);
+            comboSalida.Location = new Point(166, 94);
+            comboSalida.Margin = new Padding(3, 2, 3, 2);
             comboSalida.Name = "comboSalida";
-            comboSalida.Size = new Size(185, 29);
+            comboSalida.Size = new Size(162, 25);
             comboSalida.TabIndex = 18;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(52, 135);
+            label8.Location = new Point(46, 101);
             label8.Name = "label8";
-            label8.Size = new Size(53, 20);
+            label8.Size = new Size(41, 15);
             label8.TabIndex = 50;
             label8.Text = "Salida:";
             // 
@@ -228,17 +237,18 @@
             comboRetrabajo.Font = new Font("Segoe UI", 9.75F);
             comboRetrabajo.FormattingEnabled = true;
             comboRetrabajo.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboRetrabajo.Location = new Point(190, 91);
+            comboRetrabajo.Location = new Point(166, 68);
+            comboRetrabajo.Margin = new Padding(3, 2, 3, 2);
             comboRetrabajo.Name = "comboRetrabajo";
-            comboRetrabajo.Size = new Size(185, 29);
+            comboRetrabajo.Size = new Size(162, 25);
             comboRetrabajo.TabIndex = 17;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(52, 101);
+            label7.Location = new Point(46, 76);
             label7.Name = "label7";
-            label7.Size = new Size(77, 20);
+            label7.Size = new Size(60, 15);
             label7.TabIndex = 48;
             label7.Text = "Retrabajo:";
             // 
@@ -247,17 +257,18 @@
             comboAlmacenamiento.Font = new Font("Segoe UI", 9.75F);
             comboAlmacenamiento.FormattingEnabled = true;
             comboAlmacenamiento.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboAlmacenamiento.Location = new Point(190, 55);
+            comboAlmacenamiento.Location = new Point(166, 41);
+            comboAlmacenamiento.Margin = new Padding(3, 2, 3, 2);
             comboAlmacenamiento.Name = "comboAlmacenamiento";
-            comboAlmacenamiento.Size = new Size(185, 29);
+            comboAlmacenamiento.Size = new Size(162, 25);
             comboAlmacenamiento.TabIndex = 16;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(52, 65);
+            label6.Location = new Point(46, 49);
             label6.Name = "label6";
-            label6.Size = new Size(125, 20);
+            label6.Size = new Size(101, 15);
             label6.TabIndex = 46;
             label6.Text = "Almacenamiento:";
             // 
@@ -266,17 +277,18 @@
             comboEntrada.Font = new Font("Segoe UI", 9.75F);
             comboEntrada.FormattingEnabled = true;
             comboEntrada.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboEntrada.Location = new Point(190, 21);
+            comboEntrada.Location = new Point(166, 16);
+            comboEntrada.Margin = new Padding(3, 2, 3, 2);
             comboEntrada.Name = "comboEntrada";
-            comboEntrada.Size = new Size(185, 29);
+            comboEntrada.Size = new Size(162, 25);
             comboEntrada.TabIndex = 15;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(52, 30);
+            label5.Location = new Point(46, 22);
             label5.Name = "label5";
-            label5.Size = new Size(63, 20);
+            label5.Size = new Size(50, 15);
             label5.TabIndex = 22;
             label5.Text = "Entrada:";
             // 
@@ -287,9 +299,11 @@
             groupBox3.Controls.Add(checkAlmacenFiscal);
             groupBox3.Controls.Add(checkDistribucion);
             groupBox3.Controls.Add(checkBackoder);
-            groupBox3.Location = new Point(287, 168);
+            groupBox3.Location = new Point(251, 126);
+            groupBox3.Margin = new Padding(3, 2, 3, 2);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(186, 181);
+            groupBox3.Padding = new Padding(3, 2, 3, 2);
+            groupBox3.Size = new Size(163, 136);
             groupBox3.TabIndex = 41;
             groupBox3.TabStop = false;
             groupBox3.Text = "Almacenamiento";
@@ -297,9 +311,10 @@
             // checkEtiquetas
             // 
             checkEtiquetas.AutoSize = true;
-            checkEtiquetas.Location = new Point(33, 147);
+            checkEtiquetas.Location = new Point(29, 110);
+            checkEtiquetas.Margin = new Padding(3, 2, 3, 2);
             checkEtiquetas.Name = "checkEtiquetas";
-            checkEtiquetas.Size = new Size(92, 24);
+            checkEtiquetas.Size = new Size(74, 19);
             checkEtiquetas.TabIndex = 14;
             checkEtiquetas.Text = "Etiquetas";
             checkEtiquetas.UseVisualStyleBackColor = true;
@@ -307,9 +322,10 @@
             // checkSobredimension
             // 
             checkSobredimension.AutoSize = true;
-            checkSobredimension.Location = new Point(33, 117);
+            checkSobredimension.Location = new Point(29, 88);
+            checkSobredimension.Margin = new Padding(3, 2, 3, 2);
             checkSobredimension.Name = "checkSobredimension";
-            checkSobredimension.Size = new Size(139, 24);
+            checkSobredimension.Size = new Size(112, 19);
             checkSobredimension.TabIndex = 13;
             checkSobredimension.Text = "Sobredimensión";
             checkSobredimension.UseVisualStyleBackColor = true;
@@ -317,9 +333,10 @@
             // checkAlmacenFiscal
             // 
             checkAlmacenFiscal.AutoSize = true;
-            checkAlmacenFiscal.Location = new Point(33, 85);
+            checkAlmacenFiscal.Location = new Point(29, 64);
+            checkAlmacenFiscal.Margin = new Padding(3, 2, 3, 2);
             checkAlmacenFiscal.Name = "checkAlmacenFiscal";
-            checkAlmacenFiscal.Size = new Size(129, 24);
+            checkAlmacenFiscal.Size = new Size(105, 19);
             checkAlmacenFiscal.TabIndex = 12;
             checkAlmacenFiscal.Text = "Almacén Fiscal";
             checkAlmacenFiscal.UseVisualStyleBackColor = true;
@@ -327,9 +344,10 @@
             // checkDistribucion
             // 
             checkDistribucion.AutoSize = true;
-            checkDistribucion.Location = new Point(33, 55);
+            checkDistribucion.Location = new Point(29, 41);
+            checkDistribucion.Margin = new Padding(3, 2, 3, 2);
             checkDistribucion.Name = "checkDistribucion";
-            checkDistribucion.Size = new Size(111, 24);
+            checkDistribucion.Size = new Size(90, 19);
             checkDistribucion.TabIndex = 11;
             checkDistribucion.Text = "Distribución";
             checkDistribucion.UseVisualStyleBackColor = true;
@@ -337,9 +355,10 @@
             // checkBackoder
             // 
             checkBackoder.AutoSize = true;
-            checkBackoder.Location = new Point(33, 27);
+            checkBackoder.Location = new Point(29, 20);
+            checkBackoder.Margin = new Padding(3, 2, 3, 2);
             checkBackoder.Name = "checkBackoder";
-            checkBackoder.Size = new Size(93, 24);
+            checkBackoder.Size = new Size(75, 19);
             checkBackoder.TabIndex = 10;
             checkBackoder.Text = "Backoder";
             checkBackoder.UseVisualStyleBackColor = true;
@@ -350,9 +369,11 @@
             groupBox2.Controls.Add(radioNumeroLote);
             groupBox2.Controls.Add(radioLifo);
             groupBox2.Controls.Add(radioFifo);
-            groupBox2.Location = new Point(26, 168);
+            groupBox2.Location = new Point(23, 126);
+            groupBox2.Margin = new Padding(3, 2, 3, 2);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(242, 181);
+            groupBox2.Padding = new Padding(3, 2, 3, 2);
+            groupBox2.Size = new Size(212, 136);
             groupBox2.TabIndex = 40;
             groupBox2.TabStop = false;
             groupBox2.Text = "Tipo de almacenamiento";
@@ -360,9 +381,10 @@
             // radioCaducidad
             // 
             radioCaducidad.AutoSize = true;
-            radioCaducidad.Location = new Point(25, 117);
+            radioCaducidad.Location = new Point(22, 88);
+            radioCaducidad.Margin = new Padding(3, 2, 3, 2);
             radioCaducidad.Name = "radioCaducidad";
-            radioCaducidad.Size = new Size(164, 24);
+            radioCaducidad.Size = new Size(132, 19);
             radioCaducidad.TabIndex = 9;
             radioCaducidad.TabStop = true;
             radioCaducidad.Text = "Fecha de Caducidad";
@@ -371,9 +393,10 @@
             // radioNumeroLote
             // 
             radioNumeroLote.AutoSize = true;
-            radioNumeroLote.Location = new Point(25, 86);
+            radioNumeroLote.Location = new Point(22, 64);
+            radioNumeroLote.Margin = new Padding(3, 2, 3, 2);
             radioNumeroLote.Name = "radioNumeroLote";
-            radioNumeroLote.Size = new Size(138, 24);
+            radioNumeroLote.Size = new Size(111, 19);
             radioNumeroLote.TabIndex = 8;
             radioNumeroLote.TabStop = true;
             radioNumeroLote.Text = "Número de Lote";
@@ -382,9 +405,10 @@
             // radioLifo
             // 
             radioLifo.AutoSize = true;
-            radioLifo.Location = new Point(25, 55);
+            radioLifo.Location = new Point(22, 41);
+            radioLifo.Margin = new Padding(3, 2, 3, 2);
             radioLifo.Name = "radioLifo";
-            radioLifo.Size = new Size(184, 24);
+            radioLifo.Size = new Size(150, 19);
             radioLifo.TabIndex = 7;
             radioLifo.TabStop = true;
             radioLifo.Text = "LIFO (Last In - First Out)";
@@ -393,9 +417,10 @@
             // radioFifo
             // 
             radioFifo.AutoSize = true;
-            radioFifo.Location = new Point(25, 26);
+            radioFifo.Location = new Point(22, 20);
+            radioFifo.Margin = new Padding(3, 2, 3, 2);
             radioFifo.Name = "radioFifo";
-            radioFifo.Size = new Size(185, 24);
+            radioFifo.Size = new Size(151, 19);
             radioFifo.TabIndex = 6;
             radioFifo.TabStop = true;
             radioFifo.Text = "FIFO (First In - First Out)";
@@ -404,9 +429,10 @@
             // checkActivo
             // 
             checkActivo.AutoSize = true;
-            checkActivo.Location = new Point(178, 129);
+            checkActivo.Location = new Point(156, 97);
+            checkActivo.Margin = new Padding(3, 2, 3, 2);
             checkActivo.Name = "checkActivo";
-            checkActivo.Size = new Size(73, 24);
+            checkActivo.Size = new Size(60, 19);
             checkActivo.TabIndex = 4;
             checkActivo.Text = "Activo";
             checkActivo.UseVisualStyleBackColor = true;
@@ -414,17 +440,19 @@
             // comboAlmacen
             // 
             comboAlmacen.FormattingEnabled = true;
-            comboAlmacen.Location = new Point(178, 95);
+            comboAlmacen.Location = new Point(156, 71);
+            comboAlmacen.Margin = new Padding(3, 2, 3, 2);
             comboAlmacen.Name = "comboAlmacen";
-            comboAlmacen.Size = new Size(235, 28);
+            comboAlmacen.Size = new Size(206, 23);
             comboAlmacen.TabIndex = 3;
             // 
             // comboCliente
             // 
             comboCliente.FormattingEnabled = true;
-            comboCliente.Location = new Point(178, 26);
+            comboCliente.Location = new Point(156, 20);
+            comboCliente.Margin = new Padding(3, 2, 3, 2);
             comboCliente.Name = "comboCliente";
-            comboCliente.Size = new Size(527, 28);
+            comboCliente.Size = new Size(462, 23);
             comboCliente.TabIndex = 1;
             // 
             // groupBox1
@@ -433,27 +461,31 @@
             groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(dtCamposCliente);
             groupBox1.Controls.Add(dtCamposSistema);
-            groupBox1.Location = new Point(26, 366);
+            groupBox1.Location = new Point(23, 274);
+            groupBox1.Margin = new Padding(3, 2, 3, 2);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1201, 245);
+            groupBox1.Padding = new Padding(3, 2, 3, 2);
+            groupBox1.Size = new Size(1051, 184);
             groupBox1.TabIndex = 36;
             groupBox1.TabStop = false;
             groupBox1.Text = "Escaneo";
             // 
             // button3
             // 
-            button3.Location = new Point(280, 69);
+            button3.Location = new Point(245, 52);
+            button3.Margin = new Padding(3, 2, 3, 2);
             button3.Name = "button3";
-            button3.Size = new Size(48, 37);
+            button3.Size = new Size(42, 28);
             button3.TabIndex = 5;
             button3.Text = "<";
             button3.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
-            button1.Location = new Point(280, 26);
+            button1.Location = new Point(245, 20);
+            button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
-            button1.Size = new Size(48, 37);
+            button1.Size = new Size(42, 28);
             button1.TabIndex = 4;
             button1.Text = ">";
             button1.UseVisualStyleBackColor = true;
@@ -465,10 +497,11 @@
             dtCamposCliente.BackgroundColor = SystemColors.ButtonHighlight;
             dtCamposCliente.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtCamposCliente.Columns.AddRange(new DataGridViewColumn[] { Orden, Campod, dataGridViewTextBoxColumn1, Cnf, Valorp, Configgg });
-            dtCamposCliente.Location = new Point(342, 26);
+            dtCamposCliente.Location = new Point(299, 20);
+            dtCamposCliente.Margin = new Padding(3, 2, 3, 2);
             dtCamposCliente.Name = "dtCamposCliente";
             dtCamposCliente.RowHeadersWidth = 51;
-            dtCamposCliente.Size = new Size(834, 183);
+            dtCamposCliente.Size = new Size(730, 137);
             dtCamposCliente.TabIndex = 3;
             // 
             // Orden
@@ -524,10 +557,11 @@
             dtCamposSistema.BackgroundColor = SystemColors.ButtonHighlight;
             dtCamposSistema.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtCamposSistema.Columns.AddRange(new DataGridViewColumn[] { Campo });
-            dtCamposSistema.Location = new Point(11, 26);
+            dtCamposSistema.Location = new Point(10, 20);
+            dtCamposSistema.Margin = new Padding(3, 2, 3, 2);
             dtCamposSistema.Name = "dtCamposSistema";
             dtCamposSistema.RowHeadersWidth = 51;
-            dtCamposSistema.Size = new Size(263, 183);
+            dtCamposSistema.Size = new Size(230, 137);
             dtCamposSistema.TabIndex = 2;
             // 
             // Campo
@@ -540,18 +574,18 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(17, 32);
+            label2.Location = new Point(15, 24);
             label2.Name = "label2";
-            label2.Size = new Size(58, 20);
+            label2.Size = new Size(47, 15);
             label2.TabIndex = 21;
             label2.Text = "Cliente:";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(17, 103);
+            label4.Location = new Point(15, 77);
             label4.Name = "label4";
-            label4.Size = new Size(70, 20);
+            label4.Size = new Size(57, 15);
             label4.TabIndex = 25;
             label4.Text = "Almacén:";
             // 
@@ -559,17 +593,18 @@
             // 
             txtProjectName.BorderStyle = BorderStyle.FixedSingle;
             txtProjectName.Font = new Font("Segoe UI", 9.75F);
-            txtProjectName.Location = new Point(178, 60);
+            txtProjectName.Location = new Point(156, 45);
+            txtProjectName.Margin = new Padding(3, 2, 3, 2);
             txtProjectName.Name = "txtProjectName";
-            txtProjectName.Size = new Size(527, 29);
+            txtProjectName.Size = new Size(461, 25);
             txtProjectName.TabIndex = 2;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(17, 67);
+            label3.Location = new Point(15, 50);
             label3.Name = "label3";
-            label3.Size = new Size(70, 20);
+            label3.Size = new Size(57, 15);
             label3.TabIndex = 23;
             label3.Text = "Proyecto:";
             // 
@@ -577,10 +612,11 @@
             // 
             tabNotificaciones.Controls.Add(groupBox6);
             tabNotificaciones.Controls.Add(groupBox5);
-            tabNotificaciones.Location = new Point(4, 29);
+            tabNotificaciones.Location = new Point(4, 24);
+            tabNotificaciones.Margin = new Padding(3, 2, 3, 2);
             tabNotificaciones.Name = "tabNotificaciones";
-            tabNotificaciones.Padding = new Padding(3);
-            tabNotificaciones.Size = new Size(1375, 639);
+            tabNotificaciones.Padding = new Padding(3, 2, 3, 2);
+            tabNotificaciones.Size = new Size(1202, 476);
             tabNotificaciones.TabIndex = 1;
             tabNotificaciones.Text = "Notificaciones";
             tabNotificaciones.UseVisualStyleBackColor = true;
@@ -591,9 +627,11 @@
             groupBox6.Controls.Add(label9);
             groupBox6.Controls.Add(textTiempoNormal);
             groupBox6.Controls.Add(label12);
-            groupBox6.Location = new Point(17, 215);
+            groupBox6.Location = new Point(15, 161);
+            groupBox6.Margin = new Padding(3, 2, 3, 2);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(890, 109);
+            groupBox6.Padding = new Padding(3, 2, 3, 2);
+            groupBox6.Size = new Size(779, 82);
             groupBox6.TabIndex = 43;
             groupBox6.TabStop = false;
             groupBox6.Text = "Tiempo de respuesta esperado (hrs)";
@@ -602,17 +640,18 @@
             // 
             textTiempoUrgente.BorderStyle = BorderStyle.FixedSingle;
             textTiempoUrgente.Font = new Font("Segoe UI", 9.75F);
-            textTiempoUrgente.Location = new Point(440, 35);
+            textTiempoUrgente.Location = new Point(385, 26);
+            textTiempoUrgente.Margin = new Padding(3, 2, 3, 2);
             textTiempoUrgente.Name = "textTiempoUrgente";
-            textTiempoUrgente.Size = new Size(121, 29);
+            textTiempoUrgente.Size = new Size(106, 25);
             textTiempoUrgente.TabIndex = 33;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(362, 44);
+            label9.Location = new Point(317, 33);
             label9.Name = "label9";
-            label9.Size = new Size(65, 20);
+            label9.Size = new Size(52, 15);
             label9.TabIndex = 45;
             label9.Text = "Urgente:";
             // 
@@ -620,17 +659,18 @@
             // 
             textTiempoNormal.BorderStyle = BorderStyle.FixedSingle;
             textTiempoNormal.Font = new Font("Segoe UI", 9.75F);
-            textTiempoNormal.Location = new Point(133, 35);
+            textTiempoNormal.Location = new Point(116, 26);
+            textTiempoNormal.Margin = new Padding(3, 2, 3, 2);
             textTiempoNormal.Name = "textTiempoNormal";
-            textTiempoNormal.Size = new Size(121, 29);
+            textTiempoNormal.Size = new Size(106, 25);
             textTiempoNormal.TabIndex = 32;
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(54, 44);
+            label12.Location = new Point(47, 33);
             label12.Name = "label12";
-            label12.Size = new Size(62, 20);
+            label12.Size = new Size(50, 15);
             label12.TabIndex = 22;
             label12.Text = "Normal:";
             // 
@@ -642,9 +682,11 @@
             groupBox5.Controls.Add(checkNotInterna);
             groupBox5.Controls.Add(checkNotEmbarque);
             groupBox5.Controls.Add(checkNotRecibo);
-            groupBox5.Location = new Point(17, 28);
+            groupBox5.Location = new Point(15, 21);
+            groupBox5.Margin = new Padding(3, 2, 3, 2);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(890, 172);
+            groupBox5.Padding = new Padding(3, 2, 3, 2);
+            groupBox5.Size = new Size(779, 129);
             groupBox5.TabIndex = 37;
             groupBox5.TabStop = false;
             groupBox5.Text = "Notificaciones";
@@ -652,33 +694,37 @@
             // comboNotInterna
             // 
             comboNotInterna.FormattingEnabled = true;
-            comboNotInterna.Location = new Point(315, 127);
+            comboNotInterna.Location = new Point(276, 95);
+            comboNotInterna.Margin = new Padding(3, 2, 3, 2);
             comboNotInterna.Name = "comboNotInterna";
-            comboNotInterna.Size = new Size(235, 28);
+            comboNotInterna.Size = new Size(206, 23);
             comboNotInterna.TabIndex = 31;
             // 
             // comboNotEmbarque
             // 
             comboNotEmbarque.FormattingEnabled = true;
-            comboNotEmbarque.Location = new Point(315, 84);
+            comboNotEmbarque.Location = new Point(276, 63);
+            comboNotEmbarque.Margin = new Padding(3, 2, 3, 2);
             comboNotEmbarque.Name = "comboNotEmbarque";
-            comboNotEmbarque.Size = new Size(235, 28);
+            comboNotEmbarque.Size = new Size(206, 23);
             comboNotEmbarque.TabIndex = 29;
             // 
             // comboNotRecibo
             // 
             comboNotRecibo.FormattingEnabled = true;
-            comboNotRecibo.Location = new Point(315, 40);
+            comboNotRecibo.Location = new Point(276, 30);
+            comboNotRecibo.Margin = new Padding(3, 2, 3, 2);
             comboNotRecibo.Name = "comboNotRecibo";
-            comboNotRecibo.Size = new Size(235, 28);
+            comboNotRecibo.Size = new Size(206, 23);
             comboNotRecibo.TabIndex = 27;
             // 
             // checkNotInterna
             // 
             checkNotInterna.AutoSize = true;
-            checkNotInterna.Location = new Point(48, 129);
+            checkNotInterna.Location = new Point(42, 97);
+            checkNotInterna.Margin = new Padding(3, 2, 3, 2);
             checkNotInterna.Name = "checkNotInterna";
-            checkNotInterna.Size = new Size(162, 24);
+            checkNotInterna.Size = new Size(131, 19);
             checkNotInterna.TabIndex = 30;
             checkNotInterna.Text = "Notificación Interna";
             checkNotInterna.UseVisualStyleBackColor = true;
@@ -686,9 +732,10 @@
             // checkNotEmbarque
             // 
             checkNotEmbarque.AutoSize = true;
-            checkNotEmbarque.Location = new Point(48, 88);
+            checkNotEmbarque.Location = new Point(42, 66);
+            checkNotEmbarque.Margin = new Padding(3, 2, 3, 2);
             checkNotEmbarque.Name = "checkNotEmbarque";
-            checkNotEmbarque.Size = new Size(205, 24);
+            checkNotEmbarque.Size = new Size(164, 19);
             checkNotEmbarque.TabIndex = 28;
             checkNotEmbarque.Text = "Notificación de Embarque";
             checkNotEmbarque.UseVisualStyleBackColor = true;
@@ -696,9 +743,10 @@
             // checkNotRecibo
             // 
             checkNotRecibo.AutoSize = true;
-            checkNotRecibo.Location = new Point(48, 44);
+            checkNotRecibo.Location = new Point(42, 33);
+            checkNotRecibo.Margin = new Padding(3, 2, 3, 2);
             checkNotRecibo.Name = "checkNotRecibo";
-            checkNotRecibo.Size = new Size(183, 24);
+            checkNotRecibo.Size = new Size(146, 19);
             checkNotRecibo.TabIndex = 26;
             checkNotRecibo.Text = "Notificación de Recibo";
             checkNotRecibo.UseVisualStyleBackColor = true;
@@ -708,10 +756,11 @@
             tabPrefijos.Controls.Add(groupBox9);
             tabPrefijos.Controls.Add(groupBox8);
             tabPrefijos.Controls.Add(groupBox7);
-            tabPrefijos.Location = new Point(4, 29);
+            tabPrefijos.Location = new Point(4, 24);
+            tabPrefijos.Margin = new Padding(3, 2, 3, 2);
             tabPrefijos.Name = "tabPrefijos";
-            tabPrefijos.Padding = new Padding(3);
-            tabPrefijos.Size = new Size(1375, 639);
+            tabPrefijos.Padding = new Padding(3, 2, 3, 2);
+            tabPrefijos.Size = new Size(1202, 476);
             tabPrefijos.TabIndex = 2;
             tabPrefijos.Text = "Prefijos";
             tabPrefijos.UseVisualStyleBackColor = true;
@@ -723,9 +772,11 @@
             groupBox9.Controls.Add(label15);
             groupBox9.Controls.Add(label16);
             groupBox9.Controls.Add(textPrefijoOrdenEntrega);
-            groupBox9.Location = new Point(17, 171);
+            groupBox9.Location = new Point(15, 128);
+            groupBox9.Margin = new Padding(3, 2, 3, 2);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(897, 181);
+            groupBox9.Padding = new Padding(3, 2, 3, 2);
+            groupBox9.Size = new Size(785, 136);
             groupBox9.TabIndex = 55;
             groupBox9.TabStop = false;
             groupBox9.Text = "Entrega DO:";
@@ -733,9 +784,10 @@
             // checkRegistroRequerido
             // 
             checkRegistroRequerido.AutoSize = true;
-            checkRegistroRequerido.Location = new Point(336, 128);
+            checkRegistroRequerido.Location = new Point(294, 96);
+            checkRegistroRequerido.Margin = new Padding(3, 2, 3, 2);
             checkRegistroRequerido.Name = "checkRegistroRequerido";
-            checkRegistroRequerido.Size = new Size(226, 24);
+            checkRegistroRequerido.Size = new Size(177, 19);
             checkRegistroRequerido.TabIndex = 40;
             checkRegistroRequerido.Text = "Requiere registro de llegadas";
             checkRegistroRequerido.UseVisualStyleBackColor = true;
@@ -744,26 +796,27 @@
             // 
             textNumeroOrdenEntrega.BorderStyle = BorderStyle.FixedSingle;
             textNumeroOrdenEntrega.Font = new Font("Segoe UI", 9.75F);
-            textNumeroOrdenEntrega.Location = new Point(336, 27);
+            textNumeroOrdenEntrega.Location = new Point(294, 20);
+            textNumeroOrdenEntrega.Margin = new Padding(3, 2, 3, 2);
             textNumeroOrdenEntrega.Name = "textNumeroOrdenEntrega";
-            textNumeroOrdenEntrega.Size = new Size(151, 29);
+            textNumeroOrdenEntrega.Size = new Size(132, 25);
             textNumeroOrdenEntrega.TabIndex = 38;
             // 
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new Point(37, 45);
+            label15.Location = new Point(32, 34);
             label15.Name = "label15";
-            label15.Size = new Size(242, 20);
+            label15.Size = new Size(191, 15);
             label15.TabIndex = 45;
             label15.Text = "Número de orden de entrega (DO):";
             // 
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(37, 84);
+            label16.Location = new Point(32, 63);
             label16.Name = "label16";
-            label16.Size = new Size(260, 20);
+            label16.Size = new Size(203, 15);
             label16.TabIndex = 47;
             label16.Text = "Prefijo para la orden de entrega (DO):";
             // 
@@ -771,9 +824,10 @@
             // 
             textPrefijoOrdenEntrega.BorderStyle = BorderStyle.FixedSingle;
             textPrefijoOrdenEntrega.Font = new Font("Segoe UI", 9.75F);
-            textPrefijoOrdenEntrega.Location = new Point(336, 75);
+            textPrefijoOrdenEntrega.Location = new Point(294, 56);
+            textPrefijoOrdenEntrega.Margin = new Padding(3, 2, 3, 2);
             textPrefijoOrdenEntrega.Name = "textPrefijoOrdenEntrega";
-            textPrefijoOrdenEntrega.Size = new Size(151, 29);
+            textPrefijoOrdenEntrega.Size = new Size(132, 25);
             textPrefijoOrdenEntrega.TabIndex = 39;
             // 
             // groupBox8
@@ -782,9 +836,11 @@
             groupBox8.Controls.Add(label13);
             groupBox8.Controls.Add(label14);
             groupBox8.Controls.Add(textPrefijoKitting);
-            groupBox8.Location = new Point(501, 28);
+            groupBox8.Location = new Point(438, 21);
+            groupBox8.Margin = new Padding(3, 2, 3, 2);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(414, 125);
+            groupBox8.Padding = new Padding(3, 2, 3, 2);
+            groupBox8.Size = new Size(362, 94);
             groupBox8.TabIndex = 54;
             groupBox8.TabStop = false;
             groupBox8.Text = "Kitting:";
@@ -793,26 +849,27 @@
             // 
             textNumeroKitting.BorderStyle = BorderStyle.FixedSingle;
             textNumeroKitting.Font = new Font("Segoe UI", 9.75F);
-            textNumeroKitting.Location = new Point(178, 36);
+            textNumeroKitting.Location = new Point(156, 27);
+            textNumeroKitting.Margin = new Padding(3, 2, 3, 2);
             textNumeroKitting.Name = "textNumeroKitting";
-            textNumeroKitting.Size = new Size(151, 29);
+            textNumeroKitting.Size = new Size(132, 25);
             textNumeroKitting.TabIndex = 36;
             // 
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(37, 45);
+            label13.Location = new Point(32, 34);
             label13.Name = "label13";
-            label13.Size = new Size(135, 20);
+            label13.Size = new Size(108, 15);
             label13.TabIndex = 45;
             label13.Text = "Número de Kitting;";
             // 
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(37, 84);
+            label14.Location = new Point(32, 63);
             label14.Name = "label14";
-            label14.Size = new Size(124, 20);
+            label14.Size = new Size(98, 15);
             label14.TabIndex = 47;
             label14.Text = "Prefijo de Kitting:";
             // 
@@ -820,9 +877,10 @@
             // 
             textPrefijoKitting.BorderStyle = BorderStyle.FixedSingle;
             textPrefijoKitting.Font = new Font("Segoe UI", 9.75F);
-            textPrefijoKitting.Location = new Point(178, 75);
+            textPrefijoKitting.Location = new Point(156, 56);
+            textPrefijoKitting.Margin = new Padding(3, 2, 3, 2);
             textPrefijoKitting.Name = "textPrefijoKitting";
-            textPrefijoKitting.Size = new Size(151, 29);
+            textPrefijoKitting.Size = new Size(132, 25);
             textPrefijoKitting.TabIndex = 37;
             // 
             // groupBox7
@@ -831,9 +889,11 @@
             groupBox7.Controls.Add(label10);
             groupBox7.Controls.Add(label11);
             groupBox7.Controls.Add(textPrefijoAsn);
-            groupBox7.Location = new Point(17, 28);
+            groupBox7.Location = new Point(15, 21);
+            groupBox7.Margin = new Padding(3, 2, 3, 2);
             groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(414, 125);
+            groupBox7.Padding = new Padding(3, 2, 3, 2);
+            groupBox7.Size = new Size(362, 94);
             groupBox7.TabIndex = 53;
             groupBox7.TabStop = false;
             groupBox7.Text = "ASN";
@@ -842,26 +902,27 @@
             // 
             textNumeroAsn.BorderStyle = BorderStyle.FixedSingle;
             textNumeroAsn.Font = new Font("Segoe UI", 9.75F);
-            textNumeroAsn.Location = new Point(178, 36);
+            textNumeroAsn.Location = new Point(156, 27);
+            textNumeroAsn.Margin = new Padding(3, 2, 3, 2);
             textNumeroAsn.Name = "textNumeroAsn";
-            textNumeroAsn.Size = new Size(151, 29);
+            textNumeroAsn.Size = new Size(132, 25);
             textNumeroAsn.TabIndex = 34;
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(37, 45);
+            label10.Location = new Point(32, 34);
             label10.Name = "label10";
-            label10.Size = new Size(120, 20);
+            label10.Size = new Size(96, 15);
             label10.TabIndex = 45;
             label10.Text = "Número de ASN:";
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(37, 84);
+            label11.Location = new Point(32, 63);
             label11.Name = "label11";
-            label11.Size = new Size(109, 20);
+            label11.Size = new Size(86, 15);
             label11.TabIndex = 47;
             label11.Text = "Prefijo de ASN:";
             // 
@@ -869,9 +930,10 @@
             // 
             textPrefijoAsn.BorderStyle = BorderStyle.FixedSingle;
             textPrefijoAsn.Font = new Font("Segoe UI", 9.75F);
-            textPrefijoAsn.Location = new Point(178, 75);
+            textPrefijoAsn.Location = new Point(156, 56);
+            textPrefijoAsn.Margin = new Padding(3, 2, 3, 2);
             textPrefijoAsn.Name = "textPrefijoAsn";
-            textPrefijoAsn.Size = new Size(151, 29);
+            textPrefijoAsn.Size = new Size(132, 25);
             textPrefijoAsn.TabIndex = 35;
             // 
             // flowLayoutPanel1
@@ -880,19 +942,21 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 707);
+            flowLayoutPanel1.Location = new Point(0, 530);
+            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(5);
-            flowLayoutPanel1.Size = new Size(1383, 55);
+            flowLayoutPanel1.Padding = new Padding(4, 4, 4, 4);
+            flowLayoutPanel1.Size = new Size(1210, 41);
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
             button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(1199, 8);
+            button2.Location = new Point(1049, 6);
+            button2.Margin = new Padding(3, 2, 3, 2);
             button2.Name = "button2";
-            button2.Size = new Size(171, 35);
+            button2.Size = new Size(150, 26);
             button2.TabIndex = 25;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
@@ -902,9 +966,10 @@
             // 
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(1022, 8);
+            btnSave.Location = new Point(893, 6);
+            btnSave.Margin = new Padding(3, 2, 3, 2);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(171, 35);
+            btnSave.Size = new Size(150, 26);
             btnSave.TabIndex = 24;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
@@ -917,8 +982,9 @@
             panel2.Controls.Add(pictureBox2);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
+            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1383, 35);
+            panel2.Size = new Size(1210, 26);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
             // 
@@ -927,9 +993,9 @@
             label1.AutoSize = true;
             label1.Font = new Font("Arial Narrow", 9.75F, FontStyle.Bold);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(21, 5);
+            label1.Location = new Point(18, 4);
             label1.Name = "label1";
-            label1.Size = new Size(120, 22);
+            label1.Size = new Size(91, 16);
             label1.TabIndex = 3;
             label1.Text = "Nuevo proyecto";
             // 
@@ -938,21 +1004,34 @@
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(1346, 0);
+            pictureBox2.Location = new Point(1178, 0);
+            pictureBox2.Margin = new Padding(3, 2, 3, 2);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Padding = new Padding(5, 11, 0, 0);
-            pictureBox2.Size = new Size(37, 35);
+            pictureBox2.Padding = new Padding(4, 8, 0, 0);
+            pictureBox2.Size = new Size(32, 26);
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(569, 97);
+            checkBox1.Margin = new Padding(3, 2, 3, 2);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(61, 19);
+            checkBox1.TabIndex = 43;
+            checkBox1.Text = "Validar";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
             // FrmNuevoProyecto
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1385, 764);
+            ClientSize = new Size(1212, 573);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmNuevoProyecto";
             StartPosition = FormStartPosition.CenterParent;
             Text = "FrmWarning";
@@ -1070,5 +1149,6 @@
         private DataGridViewComboBoxColumn Cnf;
         private DataGridViewTextBoxColumn Valorp;
         private DataGridViewComboBoxColumn Configgg;
+        private CheckBox checkBox1;
     }
 }

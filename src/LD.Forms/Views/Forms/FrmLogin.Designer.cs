@@ -69,9 +69,9 @@ namespace LD.Forms.Views.Forms
             label2.Location = new Point(214, 350);
             label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
-            label2.Size = new Size(98, 19);
+            label2.Size = new Size(106, 19);
             label2.TabIndex = 10;
-            label2.Text = "Version: 1.0.9";
+            label2.Text = "Version: 1.0.11";
             // 
             // label1
             // 

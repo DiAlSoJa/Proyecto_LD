@@ -163,6 +163,26 @@ namespace LD.Forms.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap carpeta_abierta {
+            get {
+                object obj = ResourceManager.GetObject("carpeta-abierta", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap catalogos {
+            get {
+                object obj = ResourceManager.GetObject("catalogos", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cerr {
             get {
                 object obj = ResourceManager.GetObject("cerr", resourceCulture);
@@ -443,6 +463,16 @@ namespace LD.Forms.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap pictures {
+            get {
+                object obj = ResourceManager.GetObject("pictures", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap plusM {
             get {
                 object obj = ResourceManager.GetObject("plusM", resourceCulture);
@@ -536,6 +566,16 @@ namespace LD.Forms.Properties {
         internal static System.Drawing.Bitmap searchBar {
             get {
                 object obj = ResourceManager.GetObject("searchBar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sin_imagen {
+            get {
+                object obj = ResourceManager.GetObject("sin-imagen", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
