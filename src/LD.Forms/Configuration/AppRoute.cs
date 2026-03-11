@@ -51,6 +51,8 @@ namespace LD.Forms.Configuration
 
         public static readonly AppRoute ASN =
             AppRoute.For<FrmASN>("asn", "ASN");
+        public static readonly AppRoute CheckListMontacargas =
+            AppRoute.For<FrmCheckListMontacargas>("checklistMontacargas", "CheckList Montacargas");
 
     }
 

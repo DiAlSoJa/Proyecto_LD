@@ -25,7 +25,7 @@ namespace LD
                   .ConfigureAppConfiguration((context, config) =>
                   {
                       var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
-
+                      env = "Development";
                       config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
                       config.AddJsonFile("appsettings.json", optional: false);
                       config.AddJsonFile($"appsettings.{env}.json", optional: true);
@@ -82,6 +82,7 @@ namespace LD
             services.AddTransient<FrmAleatorio>();
             services.AddTransient<FrmUsuarios>();
             services.AddTransient<FrmASN>();
+            services.AddTransient<FrmCheckListMontacargas>();
 
 
 
@@ -105,6 +106,9 @@ namespace LD
             services.AddTransient<FrmNuevoASNEscaneo>();
             services.AddTransient<FrmVehiculosRegistrados>();
             services.AddTransient<FrmNuevoUsuario>();
+            services.AddTransient<FrmNuevoAleatorio>();
+            services.AddTransient<FrmNuevoMontacargas>();
+            services.AddTransient<FrmChooseUser>();
 
 
 
