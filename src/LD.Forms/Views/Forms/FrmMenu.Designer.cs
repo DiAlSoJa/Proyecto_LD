@@ -71,7 +71,7 @@
             // 
             searchWindow.BorderStyle = BorderStyle.None;
             searchWindow.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchWindow.Location = new Point(431, 41);
+            searchWindow.Location = new Point(431, 36);
             searchWindow.Name = "searchWindow";
             searchWindow.PlaceholderText = "Escriba para buscar";
             searchWindow.Size = new Size(610, 27);
@@ -82,8 +82,7 @@
             lblClose.AutoSize = true;
             lblClose.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblClose.ForeColor = SystemColors.ControlDarkDark;
-
-            lblClose.Location = new Point(1153, 45);
+            lblClose.Location = new Point(1061, 41);
             lblClose.Name = "lblClose";
             lblClose.Size = new Size(20, 23);
             lblClose.TabIndex = 3;
@@ -94,7 +93,7 @@
             pictureBox1.Image = Properties.Resources.searchBar;
             pictureBox1.Location = new Point(362, 20);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(878, 92);
+            pictureBox1.Size = new Size(767, 62);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
@@ -216,60 +215,10 @@
             button7.UseVisualStyleBackColor = true;
             button7.Click += button7_Click;
             // 
-            // button9
-            // 
-            button9.Cursor = Cursors.Hand;
-            button9.Image = Properties.Resources.entrada;
-            button9.Location = new Point(1280, 14);
-            button9.Name = "button9";
-            button9.Size = new Size(175, 80);
-            button9.TabIndex = 9;
-            button9.Text = "Recepción de Material";
-            button9.TextImageRelation = TextImageRelation.ImageAboveText;
-            button9.UseVisualStyleBackColor = true;
-            // 
-            // button6
-            // 
-            button6.Cursor = Cursors.Hand;
-            button6.Image = Properties.Resources.controlPatio;
-            button6.Location = new Point(13, 100);
-            button6.Name = "button6";
-            button6.Size = new Size(175, 80);
-            button6.TabIndex = 6;
-            button6.Text = "Control de Patio";
-            button6.TextImageRelation = TextImageRelation.ImageAboveText;
-            button6.UseVisualStyleBackColor = true;
-            // 
-            // button8
-            // 
-            button8.Cursor = Cursors.Hand;
-            button8.Image = Properties.Resources.validarRecepcion;
-            button8.Location = new Point(194, 100);
-            button8.Name = "button8";
-            button8.Size = new Size(175, 80);
-            button8.TabIndex = 8;
-            button8.Text = "Validación de Recepción";
-            button8.TextImageRelation = TextImageRelation.ImageAboveText;
-            button8.UseVisualStyleBackColor = true;
-            // 
-            // button10
-            // 
-            button10.Cursor = Cursors.Hand;
-            button10.Image = Properties.Resources.surtido;
-            button10.Location = new Point(375, 100);
-            button10.Name = "button10";
-            button10.Size = new Size(175, 80);
-            button10.TabIndex = 10;
-            button10.Text = "Surtido";
-            button10.TextImageRelation = TextImageRelation.ImageAboveText;
-            button10.UseVisualStyleBackColor = true;
-            // 
-
             // button11
             // 
             button11.Cursor = Cursors.Hand;
             button11.Image = Properties.Resources.auditar;
-
             button11.Location = new Point(1280, 14);
             button11.Name = "button11";
             button11.Size = new Size(175, 80);
@@ -279,24 +228,10 @@
             button11.UseVisualStyleBackColor = true;
             button11.Click += button11_Click;
             // 
-            // button12
-            // 
-            button12.Cursor = Cursors.Hand;
-            button12.Image = Properties.Resources.salida1;
-            button12.Location = new Point(737, 100);
-            button12.Name = "button12";
-            button12.Size = new Size(175, 80);
-            button12.TabIndex = 12;
-            button12.Text = "Embarques";
-            button12.TextImageRelation = TextImageRelation.ImageAboveText;
-            button12.UseVisualStyleBackColor = true;
-            // 
-
             // button16
             // 
             button16.Cursor = Cursors.Hand;
             button16.Image = Properties.Resources.inventario;
-
             button16.Location = new Point(13, 100);
             button16.Name = "button16";
             button16.Size = new Size(175, 80);
@@ -310,7 +245,6 @@
             // 
             button13.Cursor = Cursors.Hand;
             button13.Image = Properties.Resources.aleatorio;
-
             button13.Location = new Point(194, 100);
             button13.Name = "button13";
             button13.Size = new Size(175, 80);
@@ -320,24 +254,11 @@
             button13.UseVisualStyleBackColor = true;
             button13.Click += button13_Click;
             // 
-            // button14
-            // 
-            button14.Cursor = Cursors.Hand;
-            button14.Image = Properties.Resources.grafica1;
-            button14.Location = new Point(1280, 100);
-            button14.Name = "button14";
-            button14.Size = new Size(175, 80);
-            button14.TabIndex = 14;
-            button14.Text = "Reportes";
-            button14.TextImageRelation = TextImageRelation.ImageAboveText;
-            button14.UseVisualStyleBackColor = true;
-            // 
             // button17
             // 
             button17.Cursor = Cursors.Hand;
             button17.Image = Properties.Resources.acceso;
-            button17.Location = new Point(13, 186);
-
+            button17.Location = new Point(375, 100);
             button17.Name = "button17";
             button17.Size = new Size(175, 80);
             button17.TabIndex = 17;
