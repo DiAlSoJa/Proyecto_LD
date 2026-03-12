@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Items.Comands;
 
-public class CreateProductCommand :ItemRequest, IRequest<Result <string>>
+public class CreateProductCommand :ProductRequest, IRequest<Result <string>>
 {
 
 }

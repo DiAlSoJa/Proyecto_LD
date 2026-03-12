@@ -18,27 +18,27 @@ namespace LD.Client.Services
 
         public async Task<ApiResponseDto<List<ProductDto?>>> GetItems()
         {
-            return await _api.GetAsync<ApiResponseDto<List<ProductDto?>>>(_apiEndpoints.Item_GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<ProductDto?>>>(_apiEndpoints.Product_GetAll);
         }
 
         public async Task<ApiResponseDto<ProductDto>> GetItemById(int itemId)
         {
-            return await _api.GetAsync<ApiResponseDto<ProductDto>>(_apiEndpoints.Item_GetById.Replace("{id}", itemId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<ProductDto>>(_apiEndpoints.Product_GetById.Replace("{id}", itemId.ToString()));
         }
 
-        public async Task<ApiResponseDto<string>> CreateItem(ItemRequest request)
+        public async Task<ApiResponseDto<string>> CreateItem(ProductRequest request)
         {
-            return await _api.PostAsync<ItemRequest, ApiResponseDto<string>>(_apiEndpoints.Item_Create, request);
+            return await _api.PostAsync<ProductRequest, ApiResponseDto<string>>(_apiEndpoints.Product_Create, request);
         }
 
-        public async Task<ApiResponseDto<string>> UpdateItem(int itemId, ItemRequest request)
+        public async Task<ApiResponseDto<string>> UpdateItem(int itemId, ProductRequest request)
         {
-            return await _api.PutAsync<ItemRequest, ApiResponseDto<string>>(_apiEndpoints.Item_Update.Replace("{id}", itemId.ToString()), request);
+            return await _api.PutAsync<ProductRequest, ApiResponseDto<string>>(_apiEndpoints.Product_Update.Replace("{id}", itemId.ToString()), request);
         }
 
         public async Task<ApiResponseDto<string>> ArchiveItem(int itemId)
         {
-            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Item_Delete.Replace("{id}", itemId.ToString()));
+            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Product_Delete.Replace("{id}", itemId.ToString()));
         }
     }
 }

@@ -15,7 +15,7 @@ namespace LD.Application.Features.Items.Profiles
         public ProductProfile()
         {
             CreateMap<Product, ProductDto>();
-            CreateMap<ItemRequest, Product>();
+            CreateMap<ProductRequest, Product>();
 
         }
     }

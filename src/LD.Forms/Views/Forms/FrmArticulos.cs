@@ -18,15 +18,15 @@ namespace LD.Forms.Views.Forms
 {
     public partial class FrmArticulos : Form
     {
-        private readonly ProductService _itemService;
+        private readonly ProductService _productService;
         private BindingSource _itemsBinding = new();
-        private ProductDto? selectedItem { get; set; }
+        private ProductDto? selectedProduct { get; set; }
         private GridFilter<ProductDto> _gridFilter;
         private readonly DialogFormService _dialogFormService;
-        public FrmArticulos(ProductService itemService,DialogFormService dialogFormService)
+        public FrmArticulos(ProductService productService, DialogFormService dialogFormService)
         {
             InitializeComponent();
-            _itemService = itemService;
+            _productService = productService;
             dataGridView1.DataSource = _itemsBinding;
             _dialogFormService = dialogFormService;
             _gridFilter = new GridFilter<ProductDto>(dataGridView1, _itemsBinding);
@@ -41,7 +41,7 @@ namespace LD.Forms.Views.Forms
         {
             _dialogFormService.ShowDialog<FrmNuevoArticulo>(config =>
             {
-                config.SetItem(new());
+                config.SetItem(selectedProduct);
             });
         }
         private void button4_Click(object sender, EventArgs e)
@@ -62,7 +62,7 @@ namespace LD.Forms.Views.Forms
         {
             try
             {
-                var result = await _itemService.GetItems();
+                var result = await _productService.GetItems();
 
                 if (!result.IsSuccess)
                 {
@@ -103,7 +103,7 @@ namespace LD.Forms.Views.Forms
                 if (item == null)
                     return;
 
-                selectedItem = item;
+                selectedProduct = item;
             }
             catch (Exception ex)
             {

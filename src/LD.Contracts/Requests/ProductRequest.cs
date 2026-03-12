@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LD.Contracts.Requests
 {
-    public class ItemRequest
+    public class ProductRequest
     {
         public int? ItemId { get; set; }
 

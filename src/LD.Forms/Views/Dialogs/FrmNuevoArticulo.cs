@@ -86,20 +86,20 @@ namespace LD.Forms.Views.Dialogs
         {
             this.Close();
         }
-        private Task<ApiResponseDto<string>> CreateClient(ItemRequest request) =>
+        private Task<ApiResponseDto<string>> CreateClient(ProductRequest request) =>
         _itemService.CreateItem(request);
 
-        private Task<ApiResponseDto<string>> EditClient(int clientId, ItemRequest request) =>
+        private Task<ApiResponseDto<string>> EditClient(int clientId, ProductRequest request) =>
             _itemService.UpdateItem(clientId, request);
-        private async Task<ApiResponseDto<string>> SaveClient(ItemRequest request)
+        private async Task<ApiResponseDto<string>> SaveClient(ProductRequest request)
         {
             return ItemSelected != null
                 ? await EditClient(ItemSelected?.ItemId ?? 0, request)
                 : await CreateClient(request);
         }
-        private ItemRequest BuildRequest()
+        private ProductRequest BuildRequest()
         {
-            return new ItemRequest
+            return new ProductRequest
             {
 
             };

@@ -30,11 +30,11 @@ namespace LD.Forms.Configuration
         // ITEM
         // ======================
 
-        public string Item_GetAll => $"{_baseApi}/item";
-        public string Item_GetById => $"{_baseApi}/item/{{id}}";
-        public string Item_Create => $"{_baseApi}/item";
-        public string Item_Update => $"{_baseApi}/item/{{id}}";
-        public string Item_Delete => $"{_baseApi}/item/{{id}}";
+        public string Product_GetAll => $"{_baseApi}/Product";
+        public string Product_GetById => $"{_baseApi}/Product/{{id}}";
+        public string Product_Create => $"{_baseApi}/Product";
+        public string Product_Update => $"{_baseApi}/Product/{{id}}";
+        public string Product_Delete => $"{_baseApi}/Product/{{id}}";
         // ======================
         // ARTICLE
         // ======================
