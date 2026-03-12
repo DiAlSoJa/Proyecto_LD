@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPrincipal));
             panelTop = new Panel();
             lblTitle = new Label();
             panelUser = new Panel();
@@ -56,7 +57,7 @@
             // 
             // panelTop
             // 
-            panelTop.BackColor = Color.FromArgb(20, 41, 84);
+            panelTop.BackColor = Color.FromArgb(35, 49, 103);
             panelTop.Controls.Add(lblTitle);
             panelTop.Controls.Add(panelUser);
             panelTop.Controls.Add(flowLayoutPanel1);
@@ -75,10 +76,11 @@
             lblTitle.Font = new Font("Segoe UI", 10.2F);
             lblTitle.ForeColor = Color.White;
             lblTitle.Location = new Point(91, 11);
+            lblTitle.Margin = new Padding(2, 0, 2, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(91, 23);
+            lblTitle.Size = new Size(103, 23);
             lblTitle.TabIndex = 6;
-            lblTitle.Text = "LD - Menú";
+            lblTitle.Text = "LMS - Menú";
             // 
             // panelUser
             // 
@@ -86,6 +88,7 @@
             panelUser.Controls.Add(lblUser);
             panelUser.Dock = DockStyle.Right;
             panelUser.Location = new Point(728, 0);
+            panelUser.Margin = new Padding(2);
             panelUser.Name = "panelUser";
             panelUser.Size = new Size(246, 45);
             panelUser.TabIndex = 5;
@@ -97,6 +100,7 @@
             label1.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
             label1.Location = new Point(214, 9);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
             label1.Size = new Size(25, 23);
             label1.TabIndex = 1;
@@ -112,7 +116,8 @@
             lblUser.Cursor = Cursors.Hand;
             lblUser.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblUser.ForeColor = Color.White;
-            lblUser.Location = new Point(7, 9);
+            lblUser.Location = new Point(8, 9);
+            lblUser.Margin = new Padding(2, 0, 2, 0);
             lblUser.Name = "lblUser";
             lblUser.Size = new Size(201, 23);
             lblUser.TabIndex = 0;
@@ -136,7 +141,8 @@
             // btnFrmMinimizar
             // 
             btnFrmMinimizar.Image = Properties.Resources.min;
-            btnFrmMinimizar.Location = new Point(3, 3);
+            btnFrmMinimizar.Location = new Point(2, 2);
+            btnFrmMinimizar.Margin = new Padding(2);
             btnFrmMinimizar.Name = "btnFrmMinimizar";
             btnFrmMinimizar.Size = new Size(39, 39);
             btnFrmMinimizar.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -149,7 +155,8 @@
             // btnFrmMaximizar
             // 
             btnFrmMaximizar.Image = Properties.Resources.max2;
-            btnFrmMaximizar.Location = new Point(48, 3);
+            btnFrmMaximizar.Location = new Point(45, 2);
+            btnFrmMaximizar.Margin = new Padding(2);
             btnFrmMaximizar.Name = "btnFrmMaximizar";
             btnFrmMaximizar.Size = new Size(39, 39);
             btnFrmMaximizar.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -162,7 +169,8 @@
             // btnFrmClose
             // 
             btnFrmClose.Image = Properties.Resources.cerr;
-            btnFrmClose.Location = new Point(93, 3);
+            btnFrmClose.Location = new Point(88, 2);
+            btnFrmClose.Margin = new Padding(2);
             btnFrmClose.Name = "btnFrmClose";
             btnFrmClose.Size = new Size(45, 42);
             btnFrmClose.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -176,8 +184,9 @@
             // 
             pictureBox1.Image = Properties.Resources.barra_de_menus;
             pictureBox1.Location = new Point(11, 5);
+            pictureBox1.Margin = new Padding(2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(38, 33);
+            pictureBox1.Size = new Size(38, 32);
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
             // 
@@ -185,6 +194,7 @@
             // 
             flowLayoutPest.Dock = DockStyle.Top;
             flowLayoutPest.Location = new Point(0, 45);
+            flowLayoutPest.Margin = new Padding(2);
             flowLayoutPest.Name = "flowLayoutPest";
             flowLayoutPest.Size = new Size(1115, 45);
             flowLayoutPest.TabIndex = 1;
@@ -216,6 +226,7 @@
             // 
             pCenter.Dock = DockStyle.Fill;
             pCenter.Location = new Point(0, 90);
+            pCenter.Margin = new Padding(2);
             pCenter.Name = "pCenter";
             pCenter.Size = new Size(1115, 528);
             pCenter.TabIndex = 2;
@@ -228,6 +239,8 @@
             Controls.Add(pCenter);
             Controls.Add(flowLayoutPest);
             Controls.Add(panelTop);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(2);
             Name = "FrmPrincipal";
             Text = "FrmPrincipal";
             WindowState = FormWindowState.Maximized;

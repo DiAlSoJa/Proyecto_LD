@@ -97,5 +97,17 @@ namespace LD.Forms.Views.Forms
         {
             _tabService.Open(AppRoutes.Catalogos);
         }
+
+        private void button9_Click_1(object sender, EventArgs e)
+        {
+            _tabService.Open(AppRoutes.ControlPatio);
+
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            _tabService.Open(AppRoutes.Reportes);
+            
+        }
     }
 }

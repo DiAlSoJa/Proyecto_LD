@@ -84,6 +84,7 @@ namespace LD
             services.AddTransient<FrmASN>();
             services.AddTransient<FrmCheckListMontacargas>();
             services.AddTransient<FrmCatalogos>();
+            services.AddTransient<FrmReportes>();
 
 
 
@@ -111,6 +112,8 @@ namespace LD
             services.AddTransient<FrmNuevoMontacargas>();
             services.AddTransient<FrmChooseUser>();
             services.AddTransient<FrmDocumentos>();
+            services.AddTransient<FrmControlPatio>();
+            services.AddTransient<FrmParametersQuery>();
 
 
 
