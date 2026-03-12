@@ -167,10 +167,10 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 16, PermissionName = "Eliminar ubicaciones", Key = "locations.delete", ModuleId = 4 },
 
                 // Productos
-                new Permission { PermissionId = 17, PermissionName = "Ver artículos", Key = "product.read", ModuleId = 5 },
-                new Permission { PermissionId = 18, PermissionName = "Crear artículos", Key = "product.create", ModuleId = 5 },
-                new Permission { PermissionId = 19, PermissionName = "Editar artículos", Key = "product.update", ModuleId = 5 },
-                new Permission { PermissionId = 20, PermissionName = "Eliminar artículos", Key = "product.delete", ModuleId = 5 },
+                new Permission { PermissionId = 17, PermissionName = "Ver artículos", Key = "products.read", ModuleId = 5 },
+                new Permission { PermissionId = 18, PermissionName = "Crear artículos", Key = "products.create", ModuleId = 5 },
+                new Permission { PermissionId = 19, PermissionName = "Editar artículos", Key = "products.update", ModuleId = 5 },
+                new Permission { PermissionId = 20, PermissionName = "Eliminar artículos", Key = "products.delete", ModuleId = 5 },
 
 
                 new Permission { PermissionId = 21, PermissionName = "Ver movimientos", Key = "movements.read", ModuleId = 6 },
@@ -186,30 +186,33 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 31, PermissionName = "Ver reportes", Key = "reports.read", ModuleId = 16 },
 
                 // User
-                new Permission { PermissionId = 32, PermissionName = "Ver Usuarios", Key = "user.read", ModuleId = 17 },
-                new Permission { PermissionId = 33, PermissionName = "Crear Usuarios", Key = "user.create", ModuleId = 17 },
-                new Permission { PermissionId = 34, PermissionName = "Editar Usuarios", Key = "user.update", ModuleId = 17 },
-                new Permission { PermissionId = 35, PermissionName = "Eliminar Usuarios", Key = "user.delete", ModuleId = 17 }
+                new Permission { PermissionId = 32, PermissionName = "Ver Usuarios", Key = "users.read", ModuleId = 17 },
+                new Permission { PermissionId = 33, PermissionName = "Crear Usuarios", Key = "users.create", ModuleId = 17 },
+                new Permission { PermissionId = 34, PermissionName = "Editar Usuarios", Key = "users.update", ModuleId = 17 },
+                new Permission { PermissionId = 35, PermissionName = "Eliminar Usuarios", Key = "users.delete", ModuleId = 17 }
             );
 
-            builder.Entity<IdentityRole<string>>().HasData(
-                new IdentityRole<string>
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole
                 {
                     Id = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
                     Name = "SuperAdmin",
-                    NormalizedName = "SUPERADMIN"
+                    NormalizedName = "SUPERADMIN",
+                    ConcurrencyStamp = "1"
                 },
-                new IdentityRole<string>
+                new IdentityRole
                 {
                     Id = "006be5c9-bd8c-4d39-bc11-88c04640df25",
                     Name = "Supervisor",
-                    NormalizedName = "SUPERVISOR"
+                    NormalizedName = "SUPERVISOR",
+                    ConcurrencyStamp = "2"
                 },
                 new IdentityRole<string>
                 {
                     Id = "3d8628b6-676a-4a82-858e-898f0fd623fe",
                     Name = "Operador",
-                    NormalizedName = "OPERADOR"
+                    NormalizedName = "OPERADOR",
+                    ConcurrencyStamp = "3"
                 }
             );
            
