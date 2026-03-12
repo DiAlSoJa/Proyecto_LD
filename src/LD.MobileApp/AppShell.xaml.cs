@@ -22,6 +22,8 @@
             Routing.RegisterRoute(nameof(NewTask), typeof(NewTask));
             Routing.RegisterRoute(nameof(TaskResolve), typeof(TaskResolve));
             Routing.RegisterRoute(nameof(WarehouseOperations), typeof(WarehouseOperations));
+            Routing.RegisterRoute(nameof(InventoryList), typeof(InventoryList));
+            Routing.RegisterRoute(nameof(ForkliftChecklistPage), typeof(ForkliftChecklistPage));
         }
     }
 }

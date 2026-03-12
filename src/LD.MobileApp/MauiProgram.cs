@@ -47,6 +47,8 @@ namespace MauiAppLogin
             builder.Services.AddTransient<NewTask>();
             builder.Services.AddTransient<TaskResolve>();
             builder.Services.AddTransient<WarehouseOperations>();
+            builder.Services.AddTransient<InventoryList>();
+            builder.Services.AddTransient<ForkliftChecklistPage>();
             
 
 

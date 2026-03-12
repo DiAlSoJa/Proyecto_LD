@@ -55,6 +55,10 @@ public partial class DashboardPage : ContentPage
     {
         await Shell.Current.GoToAsync("MovementPage");
     }
+    private async void OnInventoryListClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("InventoryList");
+    }
     private async void OnRDClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("DamageReportPage");
@@ -62,6 +66,10 @@ public partial class DashboardPage : ContentPage
     private async void OnOperationClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("WarehouseOperations");
+    }
+    private async void OnChecklistClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("ForkliftChecklistPage");
     }
     private async void OnCasetaClicked(object sender, EventArgs e)
     {
@@ -78,6 +86,14 @@ public partial class DashboardPage : ContentPage
     private async void OnValidarDesacopleClicked(object sender, EventArgs e)
     {
         await AbrirOpcionesAsync("Validar Desacople");
+    }
+    private async void OnAuditClicked(object sender, EventArgs e)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "TextInformation", "Auditar Ubicación: DC01A" }
+        };
+        await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
     }
 
     private async Task AbrirOpcionesAsync(string modulo)

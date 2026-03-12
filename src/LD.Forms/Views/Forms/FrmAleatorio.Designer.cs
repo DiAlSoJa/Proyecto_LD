@@ -31,9 +31,10 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             label1 = new Label();
@@ -63,6 +64,11 @@ namespace LD.Forms.Views.Forms
             dataGridView3 = new DataGridView();
             NoParte = new DataGridViewTextBoxColumn();
             esc = new DataGridViewCheckBoxColumn();
+            groupBox4 = new GroupBox();
+            dataGridView4 = new DataGridView();
+            splitContainer3 = new SplitContainer();
+            Auditor = new DataGridViewTextBoxColumn();
+            button3 = new Button();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -80,6 +86,12 @@ namespace LD.Forms.Views.Forms
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
+            groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
+            splitContainer3.Panel1.SuspendLayout();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -154,8 +166,8 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Fecha, Almacen, Turno });
@@ -220,6 +232,7 @@ namespace LD.Forms.Views.Forms
             // panel2
             // 
             panel2.Controls.Add(button1);
+            panel2.Controls.Add(button3);
             panel2.Dock = DockStyle.Bottom;
             panel2.Location = new Point(0, 252);
             panel2.Name = "panel2";
@@ -228,14 +241,15 @@ namespace LD.Forms.Views.Forms
             // 
             // button1
             // 
-            button1.Image = Properties.Resources.plusM;
+            button1.Image = Properties.Resources.editar;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(33, 0);
+            button1.Location = new Point(212, 3);
             button1.Name = "button1";
-            button1.Size = new Size(221, 35);
+            button1.Size = new Size(129, 35);
             button1.TabIndex = 7;
-            button1.Text = "Agregar ubicaciones";
+            button1.Text = "Editar";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
             // 
             // splitContainer2
             // 
@@ -245,7 +259,7 @@ namespace LD.Forms.Views.Forms
             // 
             // splitContainer2.Panel1
             // 
-            splitContainer2.Panel1.Controls.Add(groupBox2);
+            splitContainer2.Panel1.Controls.Add(splitContainer3);
             // 
             // splitContainer2.Panel2
             // 
@@ -260,15 +274,15 @@ namespace LD.Forms.Views.Forms
             groupBox2.Dock = DockStyle.Fill;
             groupBox2.Location = new Point(0, 0);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(1016, 514);
+            groupBox2.Size = new Size(1016, 324);
             groupBox2.TabIndex = 0;
             groupBox2.TabStop = false;
             groupBox2.Text = "Ubicaciones";
             // 
             // dataGridView2
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new DataGridViewColumn[] { Ubicacion, Tomada, Teoric, F, Retul, REs2, Resultado });
@@ -276,7 +290,7 @@ namespace LD.Forms.Views.Forms
             dataGridView2.Location = new Point(3, 23);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(1010, 488);
+            dataGridView2.Size = new Size(1010, 298);
             dataGridView2.TabIndex = 2;
             // 
             // Ubicacion
@@ -341,8 +355,8 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView3
             // 
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle7.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
             dataGridView3.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView3.Columns.AddRange(new DataGridViewColumn[] { NoParte, esc });
@@ -366,6 +380,68 @@ namespace LD.Forms.Views.Forms
             esc.MinimumWidth = 6;
             esc.Name = "esc";
             esc.Width = 125;
+            // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(dataGridView4);
+            groupBox4.Dock = DockStyle.Fill;
+            groupBox4.Location = new Point(0, 0);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new Size(1016, 186);
+            groupBox4.TabIndex = 1;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Ubicaciones";
+            // 
+            // dataGridView4
+            // 
+            dataGridViewCellStyle8.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView4.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridView4.BackgroundColor = SystemColors.ButtonHighlight;
+            dataGridView4.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView4.Columns.AddRange(new DataGridViewColumn[] { Auditor });
+            dataGridView4.Dock = DockStyle.Fill;
+            dataGridView4.Location = new Point(3, 23);
+            dataGridView4.Name = "dataGridView4";
+            dataGridView4.RowHeadersWidth = 51;
+            dataGridView4.Size = new Size(1010, 160);
+            dataGridView4.TabIndex = 2;
+            // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = DockStyle.Fill;
+            splitContainer3.Location = new Point(0, 0);
+            splitContainer3.Name = "splitContainer3";
+            splitContainer3.Orientation = Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            splitContainer3.Panel1.Controls.Add(groupBox4);
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(groupBox2);
+            splitContainer3.Size = new Size(1016, 514);
+            splitContainer3.SplitterDistance = 186;
+            splitContainer3.TabIndex = 2;
+            // 
+            // Auditor
+            // 
+            Auditor.HeaderText = "Auditor";
+            Auditor.MinimumWidth = 6;
+            Auditor.Name = "Auditor";
+            Auditor.Width = 300;
+            // 
+            // button3
+            // 
+            button3.Image = Properties.Resources.plusM;
+            button3.ImageAlign = ContentAlignment.MiddleLeft;
+            button3.Location = new Point(3, 3);
+            button3.Name = "button3";
+            button3.Size = new Size(203, 35);
+            button3.TabIndex = 9;
+            button3.Text = "Nuevo Inventario";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // FrmAleatorio
             // 
@@ -395,6 +471,12 @@ namespace LD.Forms.Views.Forms
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
+            groupBox4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView4).EndInit();
+            splitContainer3.Panel1.ResumeLayout(false);
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
+            splitContainer3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -430,5 +512,10 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn Resultado;
         private Button button1;
         private Panel panel2;
+        private SplitContainer splitContainer3;
+        private GroupBox groupBox4;
+        private DataGridView dataGridView4;
+        private DataGridViewTextBoxColumn Auditor;
+        private Button button3;
     }
 }

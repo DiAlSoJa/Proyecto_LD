@@ -31,5 +31,14 @@ public partial class FrmAleatorio : Form
     {
         _dialogFormService.ShowDialog<FrmNuevoArticuloMasiva>();
     }
-    
+
+    private void button1_Click_1(object sender, EventArgs e)
+    {
+
+    }
+
+    private void button3_Click(object sender, EventArgs e)
+    {
+        var form = _dialogFormService.ShowDialog<FrmNuevoAleatorio>();
+    }
 }

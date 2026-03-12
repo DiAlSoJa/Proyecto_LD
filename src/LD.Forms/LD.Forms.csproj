@@ -48,6 +48,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmChooseUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmDocumentos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoMontacargas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoAleatorio.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmVehiculosRegistrados.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,6 +67,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Dialogs\FrmNuevoASN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmCatalogos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmCheckListMontacargas.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Forms\FrmASN.cs">

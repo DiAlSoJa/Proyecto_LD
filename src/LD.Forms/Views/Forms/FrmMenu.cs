@@ -82,5 +82,20 @@ namespace LD.Forms.Views.Forms
         {
             _tabService.Open(AppRoutes.ASN);
         }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            _tabService.Open(AppRoutes.CheckListMontacargas);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            _tabService.Open(AppRoutes.Catalogos);
+        }
     }
 }

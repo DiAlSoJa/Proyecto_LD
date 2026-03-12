@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:MauiAppLogin.ViewModels"
+    
+    x:Class="MauiAppLogin.ForkliftChecklistPage"
+    xmlns:conv="clr-namespace:MauiAppLogin.Converters"
+    Title="Checklist Montacargas"
+    BackgroundColor="#0F2E4F">
+
+    <ContentPage.BindingContext>
+        <viewmodels:ForkliftChecklistViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:OptionsToBoolConverter x:Key="OptionsToBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <!-- Datos generales -->
+            <Frame CornerRadius="16"
+                   Padding="16"
+                   BackgroundColor="White"
+                   BorderColor="#D9E2EC"
+                   HasShadow="False">
+
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Checklist de Montacargas"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="#102A43" />
+
+                    <Grid ColumnDefinitions="*,*"
+                          RowDefinitions="Auto,Auto,Auto"
+                          ColumnSpacing="12"
+                          RowSpacing="12">
+
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
+                            <Label Text="Operador" FontAttributes="Bold" TextColor="#486581" />
+                            <Entry x:Name="OperadorEntry"
+                                   Placeholder="Nombre del operador"
+                                   BackgroundColor="#F8FAFC"
+                                   TextColor="#102A43" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                            <Label Text="Equipo" FontAttributes="Bold" TextColor="#486581" />
+                            <Entry x:Name="EquipoEntry"
+                                   Placeholder="No. de equipo"
+                                   BackgroundColor="#F8FAFC"
+                                   TextColor="#102A43" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
+                            <Label Text="Turno" FontAttributes="Bold" TextColor="#486581" />
+                            <Picker x:Name="TurnoPicker"
+                                    Title="Selecciona turno"
+                                    BackgroundColor="#F8FAFC"
+                                    TextColor="#102A43">
+                                <Picker.Items>
+                                    <x:String>1er Turno</x:String>
+                                    <x:String>2do Turno</x:String>
+                                    <x:String>3er Turno</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                            <Label Text="Fecha" FontAttributes="Bold" TextColor="#486581" />
+                            <DatePicker x:Name="FechaPicker"
+                                        BackgroundColor="#F8FAFC"
+                                        TextColor="#102A43" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
+                            <Label Text="Horómetro" FontAttributes="Bold" TextColor="#486581" />
+                            <Entry x:Name="HorometroEntry"
+                                   Placeholder="Captura el horómetro"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="#F8FAFC"
+                                   TextColor="#102A43" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Checklist dinámico -->
+            <CollectionView ItemsSource="{Binding Sections}"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="16"
+                               Padding="16"
+                               Margin="0,0,0,12"
+                               BackgroundColor="White"
+                               BorderColor="#D9E2EC"
+                               HasShadow="False">
+
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="{Binding Title}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="#102A43" />
+
+                                <CollectionView ItemsSource="{Binding Questions}"
+                                                SelectionMode="None">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <VerticalStackLayout Spacing="6">
+
+                                                <Label Text="{Binding Label}"
+                                                   FontSize="15"
+                                                   TextColor="#243B53"/>
+
+                                                <!-- SI / NO -->
+                                                <Grid ColumnDefinitions="*,*"
+                                                      ColumnSpacing="8"
+                                                      IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}}">
+
+                                                    <Button Text="{Binding Options[0]}"
+                                                        Grid.Column="0"
+                                                        CornerRadius="10"
+                                                        BackgroundColor="#E2E8F0"
+                                                        Clicked="OnOptionSelected"/>
+
+                                                    <Button Text="{Binding Options[1]}"
+                                                    Grid.Column="1"
+                                                    CornerRadius="10"
+                                                    BackgroundColor="#E2E8F0"
+                                                    Clicked="OnOptionSelected"/>
+                                                </Grid>
+
+                                                <!-- PICKER SOLO PARA 3 O MÁS OPCIONES -->
+                                                <Picker Title="Selecciona"
+                                                    ItemsSource="{Binding Options}"
+                                                    SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+                                                    IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}, ConverterParameter=invert}" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Observaciones -->
+            <Frame CornerRadius="16"
+                   Padding="16"
+                   BackgroundColor="White"
+                   BorderColor="#D9E2EC"
+                   HasShadow="False">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Observaciones"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#102A43" />
+
+                    <Editor x:Name="ObservacionesEditor"
+                            Placeholder="Escribe observaciones o daños detectados..."
+                            AutoSize="TextChanges"
+                            HeightRequest="120"
+                            BackgroundColor="#F8FAFC"
+                            TextColor="#102A43" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Imágenes -->
+            <Frame CornerRadius="16"
+                   Padding="16"
+                   BackgroundColor="White"
+                   BorderColor="#D9E2EC"
+                   HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Ubica el daño o detalle marcando una X sobre la imagen"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#102A43" />
+
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+
+                        <AbsoluteLayout x:Name="LeftImageHost"
+                                        Grid.Column="0"
+                                        HeightRequest="300"
+                                        BackgroundColor="#F8FAFC">
+                            <Image x:Name="LeftForkliftImage"
+                                   Source="montacargas_hp_izq.png"
+                                   Aspect="AspectFit"
+                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                   AbsoluteLayout.LayoutFlags="All">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnLeftImageTapped" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </AbsoluteLayout>
+
+                        <AbsoluteLayout x:Name="RightImageHost"
+                                        Grid.Column="1"
+                                        HeightRequest="300"
+                                        BackgroundColor="#F8FAFC">
+                            <Image x:Name="RightForkliftImage"
+                                   Source="montacargas_hp_der.png"
+                                   Aspect="AspectFit"
+                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                   AbsoluteLayout.LayoutFlags="All">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRightImageTapped" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </AbsoluteLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+                        <Button Text="Limpiar izquierda"
+                                Clicked="OnClearLeftMarksClicked"
+                                BackgroundColor="#D9E2EC"
+                                TextColor="#102A43" />
+                        <Button Text="Limpiar derecha"
+                                Grid.Column="1"
+                                Clicked="OnClearRightMarksClicked"
+                                BackgroundColor="#D9E2EC"
+                                TextColor="#102A43" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+
+
+            <!-- Miniaturas -->
+            <Border BackgroundColor="#EEF3FB"
+                     Stroke="#E2E8F0"
+                     StrokeShape="RoundRectangle 18"
+                     Padding="10"
+                     Margin="0,6,0,0">
+                <HorizontalStackLayout Spacing="10">
+                    <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                    <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Area tipo cámara -->
+            <Border Grid.Row="1"
+        BackgroundColor="#1B2A3A"
+        Stroke="#0B1B2A"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 26"
+        Padding="10">
+
+                <Grid RowDefinitions="*,Auto" RowSpacing="12">
+
+                    <!-- Preview -->
+                    <Grid>
+                        <Border BackgroundColor="#0F172A"
+                    Stroke="#334155"
+                    StrokeShape="RoundRectangle 22"
+                    Padding="10">
+
+                            <Grid>
+                                <Image x:Name="PreviewImage" Aspect="AspectFit" />
+                                <!-- Retícula / marco -->
+                                <Grid Padding="14">
+                                    <Border Stroke="#FFFFFF"
+                                StrokeThickness="3"
+                                StrokeShape="RoundRectangle 24"
+                                BackgroundColor="Transparent"
+                                Opacity="0.35"/>
+                                </Grid>
+                            </Grid>
+
+                        </Border>
+                    </Grid>
+
+                    <!-- Controles inferiores (Cancelar / Capturar) -->
+                    <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
+                        <Button Grid.Column="0"
+                    Text="Cancelar"
+                    Clicked="OnCancelarClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="18"/>
+
+                        <Border Grid.Column="1"
+                    BackgroundColor="#102A43"
+                    Stroke="#FFFFFF"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 999"
+                    WidthRequest="86"
+                    HeightRequest="86"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Padding="10">
+                            <Button Text=""
+                        Clicked="OnCapturarClicked"
+                        BackgroundColor="White"
+                        CornerRadius="999"
+                        WidthRequest="60"
+                        HeightRequest="60"/>
+                        </Border>
+
+                        <Button Grid.Column="2"
+                    Text="Capturar"
+                    Clicked="OnCapturarClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="18"
+                    HorizontalOptions="End"/>
+                    </Grid>
+
+                </Grid>
+            </Border>
+
+            <Button Text="Guardar Checklist"
+                    HeightRequest="52"
+                    CornerRadius="14"
+                    BackgroundColor="#1F3A5F"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Clicked="OnGuardarClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

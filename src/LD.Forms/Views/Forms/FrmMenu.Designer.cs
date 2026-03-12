@@ -40,16 +40,16 @@
             button5 = new Button();
             button15 = new Button();
             button7 = new Button();
-            button9 = new Button();
+            button11 = new Button();
+            button16 = new Button();
+            button13 = new Button();
+            button17 = new Button();
             button6 = new Button();
             button8 = new Button();
             button10 = new Button();
-            button11 = new Button();
             button12 = new Button();
-            button16 = new Button();
-            button13 = new Button();
             button14 = new Button();
-            button17 = new Button();
+            button9 = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             flwMenu.SuspendLayout();
@@ -82,7 +82,8 @@
             lblClose.AutoSize = true;
             lblClose.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblClose.ForeColor = SystemColors.ControlDarkDark;
-            lblClose.Location = new Point(1062, 41);
+
+            lblClose.Location = new Point(1153, 45);
             lblClose.Name = "lblClose";
             lblClose.Size = new Size(20, 23);
             lblClose.TabIndex = 3;
@@ -107,16 +108,16 @@
             flwMenu.Controls.Add(button5);
             flwMenu.Controls.Add(button15);
             flwMenu.Controls.Add(button7);
-            flwMenu.Controls.Add(button9);
+            flwMenu.Controls.Add(button11);
+            flwMenu.Controls.Add(button16);
+            flwMenu.Controls.Add(button13);
+            flwMenu.Controls.Add(button17);
             flwMenu.Controls.Add(button6);
             flwMenu.Controls.Add(button8);
             flwMenu.Controls.Add(button10);
-            flwMenu.Controls.Add(button11);
             flwMenu.Controls.Add(button12);
-            flwMenu.Controls.Add(button16);
-            flwMenu.Controls.Add(button13);
             flwMenu.Controls.Add(button14);
-            flwMenu.Controls.Add(button17);
+            flwMenu.Controls.Add(button9);
             flwMenu.Dock = DockStyle.Fill;
             flwMenu.Location = new Point(0, 175);
             flwMenu.Name = "flwMenu";
@@ -263,11 +264,13 @@
             button10.TextImageRelation = TextImageRelation.ImageAboveText;
             button10.UseVisualStyleBackColor = true;
             // 
+
             // button11
             // 
             button11.Cursor = Cursors.Hand;
             button11.Image = Properties.Resources.auditar;
-            button11.Location = new Point(556, 100);
+
+            button11.Location = new Point(1280, 14);
             button11.Name = "button11";
             button11.Size = new Size(175, 80);
             button11.TabIndex = 11;
@@ -288,11 +291,13 @@
             button12.TextImageRelation = TextImageRelation.ImageAboveText;
             button12.UseVisualStyleBackColor = true;
             // 
+
             // button16
             // 
             button16.Cursor = Cursors.Hand;
             button16.Image = Properties.Resources.inventario;
-            button16.Location = new Point(918, 100);
+
+            button16.Location = new Point(13, 100);
             button16.Name = "button16";
             button16.Size = new Size(175, 80);
             button16.TabIndex = 16;
@@ -305,7 +310,8 @@
             // 
             button13.Cursor = Cursors.Hand;
             button13.Image = Properties.Resources.aleatorio;
-            button13.Location = new Point(1099, 100);
+
+            button13.Location = new Point(194, 100);
             button13.Name = "button13";
             button13.Size = new Size(175, 80);
             button13.TabIndex = 13;
@@ -331,6 +337,7 @@
             button17.Cursor = Cursors.Hand;
             button17.Image = Properties.Resources.acceso;
             button17.Location = new Point(13, 186);
+
             button17.Name = "button17";
             button17.Size = new Size(175, 80);
             button17.TabIndex = 17;
@@ -338,6 +345,80 @@
             button17.TextImageRelation = TextImageRelation.ImageAboveText;
             button17.UseVisualStyleBackColor = true;
             button17.Click += button17_Click;
+            // 
+            // button6
+            // 
+            button6.Cursor = Cursors.Hand;
+            button6.Image = Properties.Resources.montacargas;
+            button6.Location = new Point(556, 100);
+            button6.Name = "button6";
+            button6.Size = new Size(175, 80);
+            button6.TabIndex = 6;
+            button6.Text = "CheckList Montacargas";
+            button6.TextImageRelation = TextImageRelation.ImageAboveText;
+            button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
+            // 
+            // button8
+            // 
+            button8.Cursor = Cursors.Hand;
+            button8.Image = Properties.Resources.catalogos;
+            button8.Location = new Point(737, 100);
+            button8.Name = "button8";
+            button8.Size = new Size(175, 80);
+            button8.TabIndex = 20;
+            button8.Text = "Catálogos";
+            button8.TextImageRelation = TextImageRelation.ImageAboveText;
+            button8.UseVisualStyleBackColor = true;
+            button8.Click += button8_Click;
+            // 
+            // button10
+            // 
+            button10.Cursor = Cursors.Hand;
+            button10.Image = Properties.Resources.surtido;
+            button10.Location = new Point(918, 100);
+            button10.Name = "button10";
+            button10.Size = new Size(175, 80);
+            button10.TabIndex = 10;
+            button10.Text = "Surtido";
+            button10.TextImageRelation = TextImageRelation.ImageAboveText;
+            button10.UseVisualStyleBackColor = true;
+            // 
+            // button12
+            // 
+            button12.Cursor = Cursors.Hand;
+            button12.Image = Properties.Resources.salida1;
+            button12.Location = new Point(1099, 100);
+            button12.Name = "button12";
+            button12.Size = new Size(175, 80);
+            button12.TabIndex = 12;
+            button12.Text = "Embarques";
+            button12.TextImageRelation = TextImageRelation.ImageAboveText;
+            button12.UseVisualStyleBackColor = true;
+            // 
+            // button14
+            // 
+            button14.Cursor = Cursors.Hand;
+            button14.Image = Properties.Resources.grafica1;
+            button14.Location = new Point(1280, 100);
+            button14.Name = "button14";
+            button14.Size = new Size(175, 80);
+            button14.TabIndex = 14;
+            button14.Text = "Reportes";
+            button14.TextImageRelation = TextImageRelation.ImageAboveText;
+            button14.UseVisualStyleBackColor = true;
+            // 
+            // button9
+            // 
+            button9.Cursor = Cursors.Hand;
+            button9.Image = Properties.Resources.controlPatio;
+            button9.Location = new Point(13, 186);
+            button9.Name = "button9";
+            button9.Size = new Size(175, 80);
+            button9.TabIndex = 19;
+            button9.Text = "Control de Patio";
+            button9.TextImageRelation = TextImageRelation.ImageAboveText;
+            button9.UseVisualStyleBackColor = true;
             // 
             // FrmMenu
             // 
@@ -370,8 +451,6 @@
         private Button button5;
         private Button button6;
         private Button button7;
-        private Button button8;
-        private Button button9;
         private Button button10;
         private Button button11;
         private Button button12;
@@ -380,5 +459,7 @@
         private Button button15;
         private Button button16;
         private Button button17;
+        private Button button9;
+        private Button button8;
     }
 }
