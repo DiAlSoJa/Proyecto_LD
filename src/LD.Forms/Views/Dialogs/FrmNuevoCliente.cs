@@ -45,8 +45,7 @@ namespace LD.Forms.Views.Dialogs
         {
             base.OnShown(e);
 
-            
-
+          
         }
 
         private async Task CargarDatosAsync()

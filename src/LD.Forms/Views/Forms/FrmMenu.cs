@@ -1,4 +1,5 @@
-﻿using LD.Forms.Classes;
+﻿using LD.Contracts.Enums;
+using LD.Forms.Classes;
 using LD.Forms.Configuration;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
@@ -24,7 +25,43 @@ namespace LD.Forms.Views.Forms
 
         }
 
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
 
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Clients))
+                clientBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Warehouses))
+                warehouseBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Locations))    
+                locationBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Projects))
+                projectBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Items))
+                productBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Movements))
+                movementBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ASN))
+                asnBtn.Visible = false;
+            //if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.MaterialReception))
+            //    materialReceptionBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.YardControl))
+                yardControlBtn.Visible = false;
+            //if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ReceptionValidation))
+            //    receptionValidationBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Picking))
+                shipmentBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Shipments))
+                shipmentBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Inventory))
+                inventoryBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.RandomInventory))
+                randomInventoryBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Reports))
+                reportBtn.Visible = false;
+            if (!UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Users))
+                userBtn.Visible = false;
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             _tabService.Open(AppRoutes.Clientes);
