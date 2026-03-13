@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace LD.Domain.Entities
 {
+    [Table("Permissions", Schema ="Auth")]
     public class Permission : AuditableEntity
     {
         public int PermissionId { get; set; }

@@ -19,25 +19,26 @@ public class UpdateRoleCommand : RoleRequest, IRequest<Result<string>>
 
 public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Result<string>>
 {
-
-    private readonly RoleManager<IdentityRole> _roleManager;
-    public UpdateRoleCommandHandler(RoleManager<IdentityRole> roleManager)
+    private readonly IApplicationUserManager _userManager;
+    public UpdateRoleCommandHandler( IApplicationUserManager userManager)
     {
-        _roleManager = roleManager;
+        _userManager = userManager;
     }
 
     public async Task<Result<string>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
-        var role = await _roleManager.FindByIdAsync(request.RoleId);
-        if(role is null) return Result<string>.Failure($"No se pudo actualizar el role con id {request.RoleId}", new(), 401);
-
-        role.Name = request.RoleName;
-        var response = await _roleManager.UpdateAsync(role);
-
-        if (!response.Succeeded)
+        try
         {
-            return Result<string>.Failure($"No se pudo actualizar el usuario con id {request.RoleId}",new(),401);
+            var response = await _userManager.UpdateRoleAsync(request.RoleId, request);
+            if (!response)
+            {
+                return Result<string>.Failure($"Hubo un error ",new List<string> { "No se pudo actualizar el usuario con id {request.RoleId}" },401);
+            }
+            return Result<string>.Success("usuario actualizado con exito", "usuario actualizado con exito");
+
+        }catch (Exception ex) {
+            return Result<string>.Failure($"Hubo un error", new List<string> { ex.Message }, 400);
+
         }
-        return Result<string>.Success("usuario actualizado con exito", "usuario actualizado con exito");
     }
 }

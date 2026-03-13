@@ -5,17 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD.Contracts.User
+namespace LD.Contracts.Responses
 {
-    public class UserDto
+    public class GetMeReponse
     {
-        public bool Activo { get; set; }
         public string? Id { get; set; }
-        public string? Nombre { get; set; }
-        //public string Email { get; set; }
+        public string? Name { get; set; }
         public string? UserName { get; set; }
-        public string? Rol { get; set; }
-
         public AuthorizationDto? Authorization { get; set; }
+        
     }
 }

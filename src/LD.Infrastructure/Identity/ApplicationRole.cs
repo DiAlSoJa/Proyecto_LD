@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LD.Infrastructure
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationRole : IdentityRole<string>
     {
-        public string? FullName { get; set; }
-        public bool IsActive { get; set; } = true;
         public ICollection<ApplicationUserRole> UserRoles { get; set; } = new List<ApplicationUserRole>();
+        public ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
     }
-    
 }

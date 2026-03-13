@@ -1,9 +1,16 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Azure.Core;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
+using LD.Application.Common.Results;
+using LD.Contracts.DTOs.Auth;
+using LD.Contracts.DTOs.User;
 using LD.Contracts.Requests;
+using LD.Contracts.Responses;
 using LD.Contracts.User;
+using LD.Domain.Entities;
+using LD.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,14 +25,17 @@ namespace LD.Infrastructure
     public class ApplicationUserManager : IApplicationUserManager
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly LdProyectDbContext _context;
         private readonly IMapper _mapper;
 
 
-        public ApplicationUserManager(UserManager<ApplicationUser> userManager,IMapper mapper)
+        public ApplicationUserManager(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole>  roleMapper,IMapper mapper,LdProyectDbContext context)
         {
             _userManager = userManager;
             _mapper = mapper;
-
+            _roleManager = roleMapper;
+            _context = context;
         }
 
         //public async Task<IdentityResponse> RegisterUserAsync(ApplicationUser user)
@@ -42,6 +52,11 @@ namespace LD.Infrastructure
         //    var rs = await _userManager.CreateAsync(user);
         //    return rs.ToIdentityResponse();
         //}
+
+        public async Task<bool> PermissionExists(int permissionId)
+        {
+            return await _context.Permissions.AnyAsync(p=>p.PermissionId==permissionId);
+        }
 
         public async Task<UserDto?> FindByEmailAsync(string email)
         {
@@ -122,6 +137,139 @@ namespace LD.Infrastructure
 
             return true;
         }
+        public async Task<RoleRequest?> GetRoleByIdAsync(string roleId)
+        {
+            var role = await _roleManager.Roles
+                .Where(r => r.Id == roleId)
+                .ProjectTo<RoleRequest>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+
+            if (role == null)
+                throw new Exception($"No se pudo obtener el role con id {roleId}");
+
+            return role;
+        }
+        public async Task<bool> CreateRoleAsync(string roleId, RoleRequest roleRequest)
+        {
+            var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var role = await _roleManager.FindByIdAsync(roleId);
+                if (role is null) throw new Exception($"No se pudo actualizar el role con id {roleId}");
+
+                role.Name = roleRequest.RoleName;
+                var result = await _roleManager.UpdateAsync(role);
+
+                if (!result.Succeeded)
+                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                await _context.RolePermissions.AddRangeAsync(roleRequest.Permissions.Select(p => new RolePermission
+
+                { RoleId = roleId, PermissionId = p.PermissionId })
+                );
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        public async Task<bool> UpdateRoleAsync(string roleId, RoleRequest roleRequest)
+        {
+            var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var role = await _roleManager.FindByIdAsync(roleId);
+                if (role is null) throw new Exception($"No se pudo actualizar el role con id {roleId}");
+
+                role.Name = roleRequest.RoleName;
+                var result = await _roleManager.UpdateAsync(role);
+
+                if (!result.Succeeded)
+                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                var existing = await _context.RolePermissions
+                        .Where(x => x.RoleId == roleId)
+                        .Select(x => x.PermissionId)
+                        .ToListAsync();
+
+                var toAdd = roleRequest.Permissions.Select(x=>x.PermissionId).Except(existing);
+                var toRemove = existing.Except(roleRequest.Permissions.Select(x => x.PermissionId));
+
+                await _context.RolePermissions.AddRangeAsync(
+                         toAdd.Select(p => new RolePermission
+                         {
+                             RoleId = roleId,
+                             PermissionId = p
+                         })
+                     );
+
+                var removeEntities = await _context.RolePermissions
+                                            .Where(x => x.RoleId == roleId && toRemove.Contains(x.PermissionId))
+                                            .ToListAsync();
+
+                _context.RolePermissions.RemoveRange(removeEntities);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+
+            }
+            catch (Exception ex) {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        public async Task<GetMeReponse?> GetMe(string userId)
+        {
+            var user = await _userManager.Users
+                .Include(u=>u.UserRoles)
+                .FirstOrDefaultAsync(u=>u.Id== userId);
+            if (user == null) throw new Exception($"No se pudo obtener el usuario con id {userId}");
+
+            var userRoleId = user.UserRoles.FirstOrDefault()?.RoleId;
+            var rol = await GetRoleByIdAsync(userRoleId);
+
+            var permissionIds = rol?.Permissions.Select(x => x.PermissionId).ToList()?? new List<int>();
+
+            var permissions = await _context.Permissions
+                .Include(p=>p.Module)
+                .Where(p => permissionIds.Contains(p.PermissionId))
+                .ToListAsync();
+
+            var modules = permissions
+                .GroupBy(p => p.Module)
+                .Select(g => new ModuleAuthorizationDto
+                {
+                    ModuleId = g.Key.ModuleId,
+                    ModuleName = g.Key.ModuleName,
+                    Permissions = g.Select(p => new PermissionAuthorizationDto
+                    {
+                        PermissionName = p.PermissionName,
+                        Key = p.Key
+                    }).ToList()
+                }).ToList();
+
+            var response = new GetMeReponse
+            {
+                Id = user.Id,
+                Name = user.FullName,
+                UserName = user.UserName,
+                Authorization = new AuthorizationDto
+                {
+                    RoleName = rol?.RoleName,
+                    Modules = modules
+                }
+            };
+            return response;
+        
+         }
 
         //public async Task<IList<string>> GetRolesAsync(ApplicationUser user)
         //{

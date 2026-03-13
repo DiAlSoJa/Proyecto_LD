@@ -19,9 +19,9 @@ namespace LD.Client.Services
             _endpoints = endpoints;
         }
 
-        public async Task<ApiResponseDto<UserDto?>> GetMeAsync()
+        public async Task<ApiResponseDto<GetMeReponse?>> GetMeAsync()
         {
-            return await _api.GetAsync<ApiResponseDto<UserDto?>>(_endpoints.GetMe);
+            return await _api.GetAsync<ApiResponseDto<GetMeReponse?>>(_endpoints.GetMe);
         }
 
         public async Task<ApiResponseDto<LoginResponse>> LoginAsync(string user, string password)

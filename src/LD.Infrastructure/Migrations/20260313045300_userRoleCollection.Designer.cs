@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    [Migration("20260312205303_rolesYPermisos")]
-    partial class rolesYPermisos
+    [Migration("20260313045300_userRoleCollection")]
+    partial class userRoleCollection
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -813,7 +813,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", "Auth");
 
                     b.HasData(
                         new
@@ -965,7 +965,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 17,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "product.read",
+                            Key = "products.read",
                             ModuleId = 5,
                             PermissionName = "Ver artículos"
                         },
@@ -974,7 +974,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 18,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "product.create",
+                            Key = "products.create",
                             ModuleId = 5,
                             PermissionName = "Crear artículos"
                         },
@@ -983,7 +983,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 19,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "product.update",
+                            Key = "products.update",
                             ModuleId = 5,
                             PermissionName = "Editar artículos"
                         },
@@ -992,7 +992,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 20,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "product.delete",
+                            Key = "products.delete",
                             ModuleId = 5,
                             PermissionName = "Eliminar artículos"
                         },
@@ -1100,7 +1100,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 32,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "user.read",
+                            Key = "users.read",
                             ModuleId = 17,
                             PermissionName = "Ver Usuarios"
                         },
@@ -1109,7 +1109,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 33,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "user.create",
+                            Key = "users.create",
                             ModuleId = 17,
                             PermissionName = "Crear Usuarios"
                         },
@@ -1118,7 +1118,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 34,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "user.update",
+                            Key = "users.update",
                             ModuleId = 17,
                             PermissionName = "Editar Usuarios"
                         },
@@ -1127,7 +1127,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 35,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "user.delete",
+                            Key = "users.delete",
                             ModuleId = 17,
                             PermissionName = "Eliminar Usuarios"
                         });
@@ -1451,6 +1451,42 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.RolePermission", b =>
+                {
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoleId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("RolePermissions", "Auth");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.StorageType", b =>
                 {
                     b.Property<int>("StorageTypeId")
@@ -1706,6 +1742,56 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("Warehouses");
                 });
 
+            modelBuilder.Entity("LD.Infrastructure.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("Roles", "Auth");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            ConcurrencyStamp = "1",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN"
+                        },
+                        new
+                        {
+                            Id = "006be5c9-bd8c-4d39-bc11-88c04640df25",
+                            ConcurrencyStamp = "2",
+                            Name = "Supervisor",
+                            NormalizedName = "SUPERVISOR"
+                        },
+                        new
+                        {
+                            Id = "3d8628b6-676a-4a82-858e-898f0fd623fe",
+                            ConcurrencyStamp = "3",
+                            Name = "Operador",
+                            NormalizedName = "OPERADOR"
+                        });
+                });
+
             modelBuilder.Entity("LD.Infrastructure.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -1777,73 +1863,24 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("AppUsers", "Auth");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("LD.Infrastructure.ApplicationUserRole", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<string>", b =>
-                {
-                    b.Property<string>("Id")
+                    b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("UserId", "RoleId");
 
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("ApplicationUserId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("RoleId");
 
-                    b.ToTable("Roles", "Auth");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
-                            ConcurrencyStamp = "1",
-                            Name = "SuperAdmin",
-                            NormalizedName = "SUPERADMIN"
-                        },
-                        new
-                        {
-                            Id = "006be5c9-bd8c-4d39-bc11-88c04640df25",
-                            ConcurrencyStamp = "2",
-                            Name = "Supervisor",
-                            NormalizedName = "SUPERVISOR"
-                        },
-                        new
-                        {
-                            Id = "3d8628b6-676a-4a82-858e-898f0fd623fe",
-                            ConcurrencyStamp = "3",
-                            Name = "Operador",
-                            NormalizedName = "OPERADOR"
-                        });
+                    b.ToTable("UserRoles", "Auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1916,21 +1953,6 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserLogins", "Auth");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles", "Auth");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -2070,9 +2092,45 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.RolePermission", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Permission", "Permission")
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Infrastructure.ApplicationRole", null)
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+                });
+
+            modelBuilder.Entity("LD.Infrastructure.ApplicationUserRole", b =>
+                {
+                    b.HasOne("LD.Infrastructure.ApplicationUser", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("LD.Infrastructure.ApplicationRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Infrastructure.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("LD.Infrastructure.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2090,21 +2148,6 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("LD.Infrastructure.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LD.Infrastructure.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -2131,6 +2174,16 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("LD.Infrastructure.ApplicationRole", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("LD.Infrastructure.ApplicationUser", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LD.Contracts.DTOs.User
 {
-    public class RoleDto
+    public class PermissionDto
     {
-        public string RoleId { get; set; }
-        public string RoleName { get; set; }
+        public int PermissionId { get; set; }
+        public string PermissionName { get; set; }
     }
 }

@@ -10,12 +10,21 @@ using System.Threading.Tasks;
 
 namespace LD.Infrastructure.Persistence
 {
-    public class LdProyectDbContext : IdentityDbContext<ApplicationUser>
+    public class LdProyectDbContext : IdentityDbContext<
+                                            ApplicationUser,
+                                            ApplicationRole,
+                                            string,
+                                            IdentityUserClaim<string>,
+                                            ApplicationUserRole,
+                                            IdentityUserLogin<string>,
+                                            IdentityRoleClaim<string>,
+                                            IdentityUserToken<string>>
     {
 
 
         public DbSet<Module> Modules { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
 
 
@@ -54,10 +63,10 @@ namespace LD.Infrastructure.Persistence
             builder.Entity<ApplicationUser>()
                 .ToTable("AppUsers", schema);
 
-            builder.Entity<IdentityRole<string>>()
+            builder.Entity<ApplicationRole>()
                 .ToTable("Roles", schema);
 
-            builder.Entity<IdentityUserRole<string>>()
+            builder.Entity<ApplicationUserRole>()
                 .ToTable("UserRoles", schema);
 
             builder.Entity<IdentityUserClaim<string>>()
@@ -72,12 +81,36 @@ namespace LD.Infrastructure.Persistence
             builder.Entity<IdentityUserToken<string>>()
                 .ToTable("UserTokens", schema);
 
+            builder.Entity<ApplicationUser>()
+                     .HasMany(u => u.UserRoles)
+                     .WithOne(ur => ur.User)
+                     .HasForeignKey(ur => ur.UserId)
+                     .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationRole>()
+                .HasMany(r => r.UserRoles)
+                .WithOne(ur => ur.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Module>()
                 .HasOne(m => m.ParentModule)
                 .WithMany(m => m.Children)
                 .HasForeignKey(m => m.ParentModuleId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<RolePermission>()
+                 .HasKey(x => new { x.RoleId, x.PermissionId });
+
+            builder.Entity<RolePermission>()
+                .HasOne<ApplicationRole>()
+                .WithMany(r => r.RolePermissions)
+                .HasForeignKey(x => x.RoleId);
+
+            builder.Entity<RolePermission>()
+                .HasOne(x => x.Permission)
+                .WithMany()
+                .HasForeignKey(x => x.PermissionId);
 
 
             builder.Entity<StorageType>().HasData(
@@ -192,22 +225,22 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 35, PermissionName = "Eliminar Usuarios", Key = "users.delete", ModuleId = 17 }
             );
 
-            builder.Entity<IdentityRole>().HasData(
-                new IdentityRole
+            builder.Entity<ApplicationRole>().HasData(
+                new ApplicationRole
                 {
                     Id = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
                     Name = "SuperAdmin",
                     NormalizedName = "SUPERADMIN",
                     ConcurrencyStamp = "1"
                 },
-                new IdentityRole
+                new ApplicationRole
                 {
                     Id = "006be5c9-bd8c-4d39-bc11-88c04640df25",
                     Name = "Supervisor",
                     NormalizedName = "SUPERVISOR",
                     ConcurrencyStamp = "2"
                 },
-                new IdentityRole<string>
+                new ApplicationRole
                 {
                     Id = "3d8628b6-676a-4a82-858e-898f0fd623fe",
                     Name = "Operador",
