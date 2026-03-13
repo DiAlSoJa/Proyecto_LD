@@ -6,7 +6,9 @@ using LD.Infrastructure;
 using LD.Infrastructure.Logging;
 using LD.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -128,13 +130,26 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
-
     db.Database.Migrate();
+
+    var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
+    var permissions = db.Permissions
+        .Select(p => p.Key)
+        .ToList();
+
+    foreach (var permission in permissions)
+    {
+        authOptions.Value.AddPolicy(permission, policy =>
+            policy.RequireClaim("permission", permission));
+    }
+
 }
+
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
 

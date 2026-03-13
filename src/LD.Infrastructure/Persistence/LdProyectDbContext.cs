@@ -153,23 +153,23 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<Module>().HasData(
-                new Module { ModuleId = 1, ModuleName = "Clientes" },
-                new Module { ModuleId = 2, ModuleName = "Proyectos" },
-                new Module { ModuleId = 3, ModuleName = "Almacenes" },
-                new Module { ModuleId = 4, ModuleName = "Ubicaciones" },
-                new Module { ModuleId = 5, ModuleName = "Articulos" },
-                new Module { ModuleId = 6, ModuleName = "Movimientos" },
-                new Module { ModuleId = 7, ModuleName = "ASN" },
-                new Module { ModuleId = 8, ModuleName = "Recepcion de Material" },
-                new Module { ModuleId = 9, ModuleName = "Control de patio" },
-                new Module { ModuleId = 10, ModuleName = "Validacion de recepcion" },
-                new Module { ModuleId = 11, ModuleName = "Surtido" },
-                new Module { ModuleId = 12, ModuleName = "Auditar" },
-                new Module { ModuleId = 13, ModuleName = "Embarques" },
-                new Module { ModuleId = 14, ModuleName = "Inventario" },
-                new Module { ModuleId = 15, ModuleName = "Inventario Aleatorio" },
-                new Module { ModuleId = 16, ModuleName = "Reportes" },
-                new Module { ModuleId = 17, ModuleName = "Usuarios" }
+                new Module { ModuleId = 1, ModuleName = "Clientes" },//si
+                new Module { ModuleId = 2, ModuleName = "Proyectos" },//si
+                new Module { ModuleId = 3, ModuleName = "Almacenes" },//si
+                new Module { ModuleId = 4, ModuleName = "Ubicaciones" },//si
+                new Module { ModuleId = 5, ModuleName = "Articulos" },//si
+                new Module { ModuleId = 6, ModuleName = "Movimientos" },//si
+                new Module { ModuleId = 7, ModuleName = "ASN" },//si
+                new Module { ModuleId = 8, ModuleName = "CheckList Montacargas" }, //no
+                new Module { ModuleId = 9, ModuleName = "Control de patio" },//si
+                new Module { ModuleId = 10, ModuleName = "Catalogos" },//no
+                new Module { ModuleId = 11, ModuleName = "Surtido" },//si
+                new Module { ModuleId = 12, ModuleName = "Auditar" },//si
+                new Module { ModuleId = 13, ModuleName = "Embarques" },//si
+                new Module { ModuleId = 14, ModuleName = "Inventario" },//si
+                new Module { ModuleId = 15, ModuleName = "Inventario Aleatorio" },//si
+                new Module { ModuleId = 16, ModuleName = "Reportes" },//si
+                new Module { ModuleId = 17, ModuleName = "Usuarios" }//si
 
             );
 
@@ -208,9 +208,9 @@ namespace LD.Infrastructure.Persistence
 
                 new Permission { PermissionId = 21, PermissionName = "Ver movimientos", Key = "movements.read", ModuleId = 6 },
                 new Permission { PermissionId = 22, PermissionName = "Ver ASN", Key = "asn.read", ModuleId = 7 },
-                new Permission { PermissionId = 23, PermissionName = "Ver recepción de material", Key = "material-receiving.read", ModuleId = 8 },
+                new Permission { PermissionId = 23, PermissionName = "Ver checklist montacargas", Key = "checklist-lift.read", ModuleId = 8 },//nno
                 new Permission { PermissionId = 24, PermissionName = "Ver control de patio", Key = "yard-control.read", ModuleId = 9 },
-                new Permission { PermissionId = 25, PermissionName = "Ver validación de recepción", Key = "receiving-validation.read", ModuleId = 10 },
+                new Permission { PermissionId = 25, PermissionName = "Ver catalogos", Key = "catalogs.read", ModuleId = 10 }, //nno
                 new Permission { PermissionId = 26, PermissionName = "Ver surtido", Key = "picking.read", ModuleId = 11 },
                 new Permission { PermissionId = 27, PermissionName = "Ver auditoría", Key = "audit.read", ModuleId = 12 },
                 new Permission { PermissionId = 28, PermissionName = "Ver embarques", Key = "shipments.read", ModuleId = 13 },

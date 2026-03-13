@@ -26,7 +26,7 @@ public static class ConfigureServices
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
         services.AddDbContext<LdProyectDbContext>((sp,options) =>
             {
-                 var interceptor = sp.GetRequiredService<AuditableEntitySaveChangesInterceptor>();
+                var interceptor = sp.GetRequiredService<AuditableEntitySaveChangesInterceptor>();
                 options.UseSqlServer(
                     connectionString,
                     b => b.MigrationsAssembly(migrationAssembly)
@@ -34,6 +34,9 @@ public static class ConfigureServices
                 options.AddInterceptors(interceptor);
             }
         );
+
+
+
 
         services
              .AddIdentity<ApplicationUser, ApplicationRole>()

@@ -4,6 +4,7 @@ using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Clients.Queries;
 using LD.Application.Features.Items.Comands;
 using LD.Application.Features.Items.Queries;
+using LD.Contracts.Constants;
 using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,28 +14,31 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace LD.Api.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class ProductController : CommonController
     {
         [HttpGet]
-        public async Task<IActionResult> GetItems()
+        [Authorize(Policy = PermissionKeys.Product_View)]
+        public async Task<IActionResult> GetProducts()
             => ResultExtensions.ToActionResult(await Mediator.Send(new ProductQuery()));
 
         
-        [HttpGet("{itemId}")]
-        public async Task<IActionResult> GetItemById(int itemId)
-             => ResultExtensions.ToActionResult(await Mediator.Send(new ProductByIdQuery(itemId)));
+        [HttpGet("{productId}")]
+        [Authorize(Policy = PermissionKeys.Product_View)]
+        public async Task<IActionResult> GetProductById(int productId)
+             => ResultExtensions.ToActionResult(await Mediator.Send(new ProductByIdQuery(productId)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateItem([FromBody] CreateProductCommand command)
+        [Authorize(Policy = PermissionKeys.Product_Create)]
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
             => ResultExtensions.ToActionResult(await Mediator.Send(command));
         
 
-        [HttpPut("{itemId}")]
-        public async Task<IActionResult> UpdateLocation(int itemId, UpdateProductCommand command)
+        [HttpPut("{productId}")]
+        [Authorize(Policy = PermissionKeys.Product_Update)]
+        public async Task<IActionResult> UpdateProduct(int productId, UpdateProductCommand command)
         {
-            command.ItemId = itemId;
+            command.ProductId = productId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
