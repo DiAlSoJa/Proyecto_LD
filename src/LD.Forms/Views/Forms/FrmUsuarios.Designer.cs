@@ -31,9 +31,9 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             btnActualizar = new Button();
@@ -57,6 +57,8 @@ namespace LD.Forms.Views.Forms
             button7 = new Button();
             button4 = new Button();
             panelContainer = new Panel();
+            btnNewRol = new Button();
+            btnEditRol = new Button();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
@@ -77,6 +79,8 @@ namespace LD.Forms.Views.Forms
             // 
             // panel1
             // 
+            panel1.Controls.Add(btnEditRol);
+            panel1.Controls.Add(btnNewRol);
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
@@ -155,8 +159,8 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
@@ -206,8 +210,8 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView2
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
             dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new DataGridViewColumn[] { Rol2, Permiso, NombreX, Activos });
@@ -248,8 +252,8 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView3
             // 
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             dataGridView3.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView3.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewCheckBoxColumn1 });
@@ -326,6 +330,30 @@ namespace LD.Forms.Views.Forms
             panelContainer.Size = new Size(1605, 672);
             panelContainer.TabIndex = 3;
             // 
+            // btnNewRol
+            // 
+            btnNewRol.Image = Properties.Resources.plusM;
+            btnNewRol.ImageAlign = ContentAlignment.MiddleLeft;
+            btnNewRol.Location = new Point(996, 2);
+            btnNewRol.Name = "btnNewRol";
+            btnNewRol.Size = new Size(137, 35);
+            btnNewRol.TabIndex = 1;
+            btnNewRol.Text = "Nuevo rol";
+            btnNewRol.UseVisualStyleBackColor = true;
+            btnNewRol.Click += btnNewRol_Click;
+            // 
+            // btnEditRol
+            // 
+            btnEditRol.Image = Properties.Resources.editar;
+            btnEditRol.ImageAlign = ContentAlignment.MiddleLeft;
+            btnEditRol.Location = new Point(1139, 2);
+            btnEditRol.Name = "btnEditRol";
+            btnEditRol.Size = new Size(107, 35);
+            btnEditRol.TabIndex = 3;
+            btnEditRol.Text = "Editar rol";
+            btnEditRol.UseVisualStyleBackColor = true;
+            btnEditRol.Click += btnEditRol_Click;
+            // 
             // FrmUsuarios
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -381,5 +409,7 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
         private Panel panelContainer;
+        private Button btnEditRol;
+        private Button btnNewRol;
     }
 }

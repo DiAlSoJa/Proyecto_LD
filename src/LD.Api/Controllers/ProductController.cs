@@ -1,4 +1,5 @@
-﻿using LD.Api.Common.Results;
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Clients.Queries;
@@ -14,28 +15,29 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace LD.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class ProductController : CommonController
     {
         [HttpGet]
-        [Authorize(Policy = PermissionKeys.Product_View)]
+        [Permission(PermissionKeys.Product_View)]
         public async Task<IActionResult> GetProducts()
             => ResultExtensions.ToActionResult(await Mediator.Send(new ProductQuery()));
 
         
         [HttpGet("{productId}")]
-        [Authorize(Policy = PermissionKeys.Product_View)]
+        [Permission(PermissionKeys.Product_View)]
         public async Task<IActionResult> GetProductById(int productId)
              => ResultExtensions.ToActionResult(await Mediator.Send(new ProductByIdQuery(productId)));
 
         [HttpPost]
-        [Authorize(Policy = PermissionKeys.Product_Create)]
+        [Permission(PermissionKeys.Product_Create)]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
             => ResultExtensions.ToActionResult(await Mediator.Send(command));
         
 
         [HttpPut("{productId}")]
-        [Authorize(Policy = PermissionKeys.Product_Update)]
+        [Permission(PermissionKeys.Product_Update)]
         public async Task<IActionResult> UpdateProduct(int productId, UpdateProductCommand command)
         {
             command.ProductId = productId;

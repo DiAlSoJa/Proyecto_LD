@@ -193,6 +193,12 @@ namespace LD.Forms.Configuration
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
 
+        // ======================
+        // MODULES
+        // ======================
+
+        public string Module_GetAll => $"{_baseApi}/module";
+
 
     }
 }

@@ -54,6 +54,9 @@
     <Compile Update="Views\Dialogs\FrmDocumentos.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmNuevoRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmNuevoMontacargas.cs">
       <SubType>Form</SubType>
     </Compile>

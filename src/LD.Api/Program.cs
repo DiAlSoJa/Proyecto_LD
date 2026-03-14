@@ -1,8 +1,12 @@
 using Application;
+using LD.Api.Authorization;
 using LD.Api.Middlewares;
 using LD.Application;
+using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
+using LD.Contracts.Constants;
 using LD.Infrastructure;
+using LD.Infrastructure.Authorization;
 using LD.Infrastructure.Logging;
 using LD.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -46,7 +50,8 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddInfrastructureRepositories(builder.Configuration);
 
-
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
@@ -133,6 +138,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 
     var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
+
     var permissions = db.Permissions
         .Select(p => p.Key)
         .ToList();
@@ -140,11 +146,9 @@ using (var scope = app.Services.CreateScope())
     foreach (var permission in permissions)
     {
         authOptions.Value.AddPolicy(permission, policy =>
-            policy.RequireClaim("permission", permission));
+            policy.Requirements.Add(new PermissionRequirement(permission)));
     }
-
 }
-
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())

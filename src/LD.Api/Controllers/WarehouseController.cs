@@ -1,4 +1,5 @@
-﻿using LD.Api.Common.Results;
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Features.Warehouses.Comands;
 using LD.Application.Features.Warehouses.Queries;
@@ -11,12 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LD.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class WarehouseController : CommonController
     {
 
         [HttpGet]
-        [Authorize(Policy = PermissionKeys.Warehouse_View)]
+        [Permission(PermissionKeys.Warehouse_View)]
         public async Task<IActionResult> GetWarehouse()
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(new WarehouseQuery()));
@@ -24,20 +26,20 @@ namespace LD.Api.Controllers
         }
 
         [HttpGet("{warehouseId}")]
-        [Authorize(Policy = PermissionKeys.Warehouse_View)]
+        [Permission(PermissionKeys.Warehouse_View)]
         public async Task<IActionResult> GeWarehouseById(int warehouseId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new WarehouseByIdQuery(warehouseId)));
 
 
         [HttpPost]
-        [Authorize(Policy = PermissionKeys.Warehouse_Create)]
+        [Permission(PermissionKeys.Warehouse_Create)]
         public async Task<IActionResult> CreateWarehouse([FromBody] CreateWarehouseCommand command)
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
 
         [HttpPut("{warehouseId}")]
-        [Authorize(Policy = PermissionKeys.Warehouse_Update)]
+        [Permission(PermissionKeys.Warehouse_Update)]
         public async Task<IActionResult> UpdateWarehouse(int warehouseId, UpdateWarehouseCommand command)
         {
             command.WarehouseId = warehouseId;

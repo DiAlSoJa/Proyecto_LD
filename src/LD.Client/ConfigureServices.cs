@@ -22,6 +22,7 @@ namespace LD.Client
             services.AddScoped<ApiService>();
             services.AddScoped<AuthService>();
             services.AddScoped<ClientService>();
+            services.AddScoped<ModuleService>();
             services.AddScoped<ProductService>();
             services.AddScoped<LocationService>();
             services.AddScoped<ProjectService>();

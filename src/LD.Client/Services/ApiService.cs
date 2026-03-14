@@ -68,7 +68,7 @@ namespace LD.Client.Services
         {
             var content = await response.Content.ReadAsStringAsync();
 
-            var contentDeserialize = JsonSerializer.Deserialize<T>(
+             var contentDeserialize = JsonSerializer.Deserialize<T>(
                 content,
                 new JsonSerializerOptions
                 {

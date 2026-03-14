@@ -111,6 +111,8 @@ namespace LD
             services.AddTransient<FrmNuevoMontacargas>();
             services.AddTransient<FrmChooseUser>();
             services.AddTransient<FrmDocumentos>();
+            services.AddTransient<FrmNuevoRol>();
+
 
 
 

@@ -48,13 +48,13 @@ namespace LD.Forms.Views.Forms
             {
                 config.SetUser(userSelected);
             });
-            if (form.ResponseForm) await LoaderManager.Run(panelContainer,  CargarDatosAsync, "Trayendo usuarios");
+            if (form.ResponseForm) await LoaderManager.Run(panelContainer, CargarDatosAsync, "Trayendo usuarios");
         }
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            await LoaderManager.Run(panelContainer,  CargarDatosAsync, "Trayendo usuarios");
+            await LoaderManager.Run(panelContainer, CargarDatosAsync, "Trayendo usuarios");
 
         }
         private async void btnActualizar_Click(object sender, EventArgs e)
@@ -96,5 +96,14 @@ namespace LD.Forms.Views.Forms
             }
         }
 
+        private void btnNewRol_Click(object sender, EventArgs e)
+        {
+            var form = _dialogFormService.ShowDialog<FrmNuevoRol>();
+        }
+
+        private void btnEditRol_Click(object sender, EventArgs e)
+        {
+            var form = _dialogFormService.ShowDialog<FrmNuevoRol>();
+        }
     }
 }
