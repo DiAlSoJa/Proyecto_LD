@@ -30,6 +30,7 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmLogin));
             pictureBox1 = new PictureBox();
             label2 = new Label();
             label1 = new Label();
@@ -71,7 +72,7 @@ namespace LD.Forms.Views.Forms
             label2.Name = "label2";
             label2.Size = new Size(106, 19);
             label2.TabIndex = 10;
-            label2.Text = "Version: 1.0.11";
+            label2.Text = "Version: 1.0.13";
             // 
             // label1
             // 
@@ -230,10 +231,11 @@ namespace LD.Forms.Views.Forms
             ClientSize = new Size(716, 400);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(2);
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Form1";
+            Text = "LMS 2.0";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();

@@ -51,10 +51,18 @@ namespace LD.Forms.Configuration
 
         public static readonly AppRoute ASN =
             AppRoute.For<FrmASN>("asn", "ASN");
+
         public static readonly AppRoute CheckListMontacargas =
             AppRoute.For<FrmCheckListMontacargas>("checklistMontacargas", "CheckList Montacargas");
+
         public static readonly AppRoute Catalogos =
             AppRoute.For<FrmCatalogos>("catalogos", "Catálogos");
+
+        public static readonly AppRoute ControlPatio =
+            AppRoute.For<FrmControlPatio>("control_patio", "Control de Patio");
+
+        public static readonly AppRoute Reportes =
+            AppRoute.For<FrmReportes>("reportes", "Reportes");
 
     }
 

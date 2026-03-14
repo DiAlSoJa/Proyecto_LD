@@ -33,6 +33,7 @@
             lblClose = new Label();
             pictureBox1 = new PictureBox();
             flwMenu = new FlowLayoutPanel();
+
             clientBtn = new Button();
             projectBtn = new Button();
             warehouseBtn = new Button();
@@ -50,6 +51,7 @@
             shipmentBtn = new Button();
             reportBtn = new Button();
             yardControlBtn = new Button();
+
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             flwMenu.SuspendLayout();
@@ -63,18 +65,21 @@
             panel1.Controls.Add(pictureBox1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1469, 175);
+            panel1.Size = new Size(1285, 131);
             panel1.TabIndex = 1;
             // 
             // searchWindow
             // 
             searchWindow.BorderStyle = BorderStyle.None;
             searchWindow.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+
             searchWindow.Location = new Point(431, 36);
+
             searchWindow.Name = "searchWindow";
             searchWindow.PlaceholderText = "Escriba para buscar";
-            searchWindow.Size = new Size(610, 27);
+            searchWindow.Size = new Size(534, 22);
             searchWindow.TabIndex = 0;
             // 
             // lblClose
@@ -82,24 +87,30 @@
             lblClose.AutoSize = true;
             lblClose.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblClose.ForeColor = SystemColors.ControlDarkDark;
+
             lblClose.Location = new Point(1061, 41);
+
             lblClose.Name = "lblClose";
-            lblClose.Size = new Size(20, 23);
+            lblClose.Size = new Size(17, 19);
             lblClose.TabIndex = 3;
             lblClose.Text = "X";
             // 
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.searchBar;
-            pictureBox1.Location = new Point(362, 20);
+            pictureBox1.Location = new Point(317, 15);
+            pictureBox1.Margin = new Padding(3, 2, 3, 2);
             pictureBox1.Name = "pictureBox1";
+
             pictureBox1.Size = new Size(767, 62);
+
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
             // flwMenu
             // 
             flwMenu.BackColor = Color.White;
+
             flwMenu.Controls.Add(clientBtn);
             flwMenu.Controls.Add(projectBtn);
             flwMenu.Controls.Add(warehouseBtn);
@@ -117,15 +128,18 @@
             flwMenu.Controls.Add(shipmentBtn);
             flwMenu.Controls.Add(reportBtn);
             flwMenu.Controls.Add(yardControlBtn);
+
             flwMenu.Dock = DockStyle.Fill;
-            flwMenu.Location = new Point(0, 175);
+            flwMenu.Location = new Point(0, 131);
+            flwMenu.Margin = new Padding(3, 2, 3, 2);
             flwMenu.Name = "flwMenu";
-            flwMenu.Padding = new Padding(10, 11, 10, 11);
-            flwMenu.Size = new Size(1469, 626);
+            flwMenu.Padding = new Padding(9, 8, 9, 8);
+            flwMenu.Size = new Size(1285, 470);
             flwMenu.TabIndex = 1;
             // 
             // clientBtn
             // 
+
             clientBtn.Cursor = Cursors.Hand;
             clientBtn.Image = Properties.Resources.clientes;
             clientBtn.Location = new Point(13, 14);
@@ -136,9 +150,11 @@
             clientBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             clientBtn.UseVisualStyleBackColor = true;
             clientBtn.Click += button1_Click;
+
             // 
             // projectBtn
             // 
+
             projectBtn.Cursor = Cursors.Hand;
             projectBtn.Image = Properties.Resources.proyectos;
             projectBtn.Location = new Point(194, 14);
@@ -149,9 +165,11 @@
             projectBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             projectBtn.UseVisualStyleBackColor = true;
             projectBtn.Click += button2_Click;
+
             // 
             // warehouseBtn
             // 
+
             warehouseBtn.Cursor = Cursors.Hand;
             warehouseBtn.Image = Properties.Resources.almacen;
             warehouseBtn.Location = new Point(375, 14);
@@ -162,9 +180,11 @@
             warehouseBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             warehouseBtn.UseVisualStyleBackColor = true;
             warehouseBtn.Click += button3_Click;
+
             // 
             // locationBtn
             // 
+
             locationBtn.Cursor = Cursors.Hand;
             locationBtn.Image = Properties.Resources.ubicaciones;
             locationBtn.Location = new Point(556, 14);
@@ -175,9 +195,11 @@
             locationBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             locationBtn.UseVisualStyleBackColor = true;
             locationBtn.Click += button4_Click;
+
             // 
             // productBtn
             // 
+
             productBtn.Cursor = Cursors.Hand;
             productBtn.Image = Properties.Resources.articulos;
             productBtn.Location = new Point(737, 14);
@@ -188,9 +210,11 @@
             productBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             productBtn.UseVisualStyleBackColor = true;
             productBtn.Click += button5_Click;
+
             // 
             // inventoryBtn
             // 
+
             inventoryBtn.Cursor = Cursors.Hand;
             inventoryBtn.Image = Properties.Resources.inventario;
             inventoryBtn.Location = new Point(918, 14);
@@ -201,9 +225,11 @@
             inventoryBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             inventoryBtn.UseVisualStyleBackColor = true;
             inventoryBtn.Click += button16_Click;
+
             // 
             // movementBtn
             // 
+
             movementBtn.Cursor = Cursors.Hand;
             movementBtn.Image = Properties.Resources.transaccion;
             movementBtn.Location = new Point(1099, 14);
@@ -214,9 +240,11 @@
             movementBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             movementBtn.UseVisualStyleBackColor = true;
             movementBtn.Click += button15_Click;
+
             // 
             // asnBtn
             // 
+
             asnBtn.Cursor = Cursors.Hand;
             asnBtn.Image = Properties.Resources.asn;
             asnBtn.Location = new Point(1280, 14);
@@ -227,9 +255,11 @@
             asnBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             asnBtn.UseVisualStyleBackColor = true;
             asnBtn.Click += button7_Click;
+
             // 
             // auditBtn
             // 
+
             auditBtn.Cursor = Cursors.Hand;
             auditBtn.Image = Properties.Resources.auditar;
             auditBtn.Location = new Point(13, 100);
@@ -240,9 +270,11 @@
             auditBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             auditBtn.UseVisualStyleBackColor = true;
             auditBtn.Click += button11_Click;
+
             // 
             // randomInventoryBtn
             // 
+
             randomInventoryBtn.Cursor = Cursors.Hand;
             randomInventoryBtn.Image = Properties.Resources.aleatorio;
             randomInventoryBtn.Location = new Point(194, 100);
@@ -253,9 +285,11 @@
             randomInventoryBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             randomInventoryBtn.UseVisualStyleBackColor = true;
             randomInventoryBtn.Click += button13_Click;
+
             // 
             // userBtn
             // 
+
             userBtn.Cursor = Cursors.Hand;
             userBtn.Image = Properties.Resources.acceso;
             userBtn.Location = new Point(375, 100);
@@ -266,9 +300,11 @@
             userBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             userBtn.UseVisualStyleBackColor = true;
             userBtn.Click += button17_Click;
+
             // 
             // checkListBtn
             // 
+
             checkListBtn.Cursor = Cursors.Hand;
             checkListBtn.Image = Properties.Resources.montacargas;
             checkListBtn.Location = new Point(556, 100);
@@ -279,9 +315,11 @@
             checkListBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             checkListBtn.UseVisualStyleBackColor = true;
             checkListBtn.Click += button6_Click;
+
             // 
             // catalogBtn
             // 
+
             catalogBtn.Cursor = Cursors.Hand;
             catalogBtn.Image = Properties.Resources.catalogos;
             catalogBtn.Location = new Point(737, 100);
@@ -304,9 +342,11 @@
             pickingBtn.Text = "Surtido";
             pickingBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             pickingBtn.UseVisualStyleBackColor = true;
+
             // 
             // shipmentBtn
             // 
+
             shipmentBtn.Cursor = Cursors.Hand;
             shipmentBtn.Image = Properties.Resources.salida1;
             shipmentBtn.Location = new Point(1099, 100);
@@ -341,14 +381,16 @@
             yardControlBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             yardControlBtn.UseVisualStyleBackColor = true;
             // 
+
             // FrmMenu
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1469, 801);
+            ClientSize = new Size(1285, 601);
             Controls.Add(flwMenu);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmMenu";
             Text = "FrmMenu";
             panel1.ResumeLayout(false);

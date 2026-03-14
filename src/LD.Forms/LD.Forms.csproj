@@ -7,6 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
 	 <AssemblyName>LD</AssemblyName>
+	 <ApplicationIcon>Resources\logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="Resources\logo.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +49,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmParametersQuery.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Dialogs\FrmChooseUser.cs">
       <SubType>Form</SubType>
@@ -70,6 +75,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Dialogs\FrmNuevoASN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmReportes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Forms\FrmControlPatio.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\Forms\FrmCatalogos.cs">
