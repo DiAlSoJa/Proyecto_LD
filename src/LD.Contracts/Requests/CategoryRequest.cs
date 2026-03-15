@@ -15,8 +15,6 @@ namespace LD.Contracts.Requests
 
 
         public string? Description { get; set; }
-        public string? ClientId { get; set; }
-        public int Frecuencia { get; set; }
 
 
 

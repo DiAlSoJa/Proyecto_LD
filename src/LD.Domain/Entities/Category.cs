@@ -13,10 +13,7 @@ namespace LD.Domain.Entities
     {
         [Key]
         public int CategoryId { get; set; }
-
-        [Required]
-        public int ClientId { get; set; }
-
+      
         //[Required]
         //public int ProyectoId { get; set; }
 
@@ -28,13 +25,5 @@ namespace LD.Domain.Entities
         [MaxLength(150)]
         public string Description { get; set; }
 
-        [Required]
-        public int Frecuencia { get; set; }
-
-
-        // Navegación
-        [ForeignKey("ClientId")]
-        public Client Cliente { get; set; }
-        //public Proyecto Proyecto { get; set; }
     }
 }
