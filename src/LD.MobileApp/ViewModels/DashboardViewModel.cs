@@ -14,9 +14,9 @@ namespace MauiAppLogin.ViewModels
         public DashboardViewModel(ApiService apiService)
         {
             _apiService = apiService;
-            Logout = new AsyncRelayCommand(LogoutHandle);
+            LogoutCommand = new AsyncRelayCommand(LogoutHandle);
         }
-        public ICommand Logout;
+        public ICommand LogoutCommand;
 
 
         public async Task LogoutHandle()
