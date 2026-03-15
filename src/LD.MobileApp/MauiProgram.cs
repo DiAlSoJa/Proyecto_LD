@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Maui;
+using LD.Client;
+using MauiAppLogin.ViewModels;
 using Microsoft.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
-
+using static System.Net.WebRequestMethods;
 
 namespace MauiAppLogin
 {
@@ -22,11 +24,14 @@ namespace MauiAppLogin
                 });
 
 
+            builder.Services.AddLDClient(options =>
+            {
+                options.BaseUrl = "http://192.168.1.74:8050/api";
+            });
 
-
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+            #if DEBUG
+            builder.Logging.AddDebug();
+            #endif
 
           
 
@@ -49,7 +54,11 @@ namespace MauiAppLogin
             builder.Services.AddTransient<WarehouseOperations>();
             builder.Services.AddTransient<InventoryList>();
             builder.Services.AddTransient<ForkliftChecklistPage>();
-            
+            builder.Services.AddTransient<LoginPage>();
+
+            //viewmodels
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<DashboardViewModel>();
 
 
             return builder.Build();

@@ -1,12 +1,14 @@
 using CommunityToolkit.Maui.Views;
+using MauiAppLogin.ViewModels;
 
 namespace MauiAppLogin;
 
 public partial class DashboardPage : ContentPage
 {
-	public DashboardPage()
+	public DashboardPage(DashboardViewModel dashboardViewModel)
 	{
 		InitializeComponent();
+        BindingContext = dashboardViewModel;
 	}
 
     private async void OnAsnPorUbicarClicked(object sender, EventArgs e)

@@ -18,8 +18,6 @@
                    Aspect="AspectFit"
                    HorizontalOptions="Center"  />
 
-                
-
                 </VerticalStackLayout>
             </Grid>
 
@@ -35,9 +33,9 @@
                     <VerticalStackLayout Spacing="20">
 
                    
-                    <!-- EMAIL -->
+                    <!-- Username -->
                         <VerticalStackLayout Spacing="5">
-                            <Label Text="Email"
+                            <Label Text="Username"
                                FontAttributes="Bold"
                                FontSize="14"/>
 
@@ -45,9 +43,8 @@
                                BackgroundColor="#F7F7F7"
                                HasShadow="False"
                                Padding="15,10">
-                                <Entry Placeholder="Enter your email"                               
-                                   Text="{Binding Email}"
-                                   Keyboard="Email"
+                                <Entry Placeholder="Enter your username"                               
+                                   Text="{Binding Username}"
                                    BackgroundColor="#F9FAFB"
                                    HeightRequest="50"/>
                             </Frame>
@@ -71,20 +68,15 @@
                             </Frame>
                         </VerticalStackLayout>
 
-                       
 
                         <!-- LOGIN BUTTON -->
                         <Button Text="Login"
                             Command="{Binding LoginCommand}"
                             HeightRequest="55"
-                            CornerRadius="30"
+                            CornerRadius="15"
                             BackgroundColor="#1F3A5F"
                             TextColor="White"
                             FontAttributes="Bold"/>
-
-                      
-                      
-
 
                     </VerticalStackLayout>
                 </ScrollView>

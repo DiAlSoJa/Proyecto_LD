@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MauiAppLogin
+namespace MauiAppLogin.Services
 {
     public interface IOcrService
     {

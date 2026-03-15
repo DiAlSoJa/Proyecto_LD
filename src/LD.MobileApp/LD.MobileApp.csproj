@@ -90,79 +90,79 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="RegisterLicense.xaml.cs">
+	  <Compile Update="Views\Pages\RegisterLicense.xaml.cs">
 	    <DependentUpon>RegisterLicense.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="ChangeLocationPage.xaml">
+	  <MauiXaml Update="Views\Pages\ChangeLocationPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="DamageReportDetailPage.xaml">
+	  <MauiXaml Update="Views\Pages\DamageReportDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="DamageReportPage.xaml">
+	  <MauiXaml Update="Views\Pages\DamageReportPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="DamageReportPrintPage.xaml">
+	  <MauiXaml Update="Views\Pages\DamageReportPrintPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="DashboardPage.xaml">
+	  <MauiXaml Update="Views\Pages\DashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ForkliftChecklistPage.xaml">
+	  <MauiXaml Update="Views\Pages\ForkliftChecklistPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="InventoryList.xaml">
+	  <MauiXaml Update="Views\Pages\InventoryList.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="LoginPage.xaml">
+	  <MauiXaml Update="Views\Pages\Auth\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="MovementDetail.xaml">
+	  <MauiXaml Update="Views\Pages\MovementDetail.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="MovementPage.xaml">
+	  <MauiXaml Update="Views\Pages\MovementPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="NewTask.xaml">
+	  <MauiXaml Update="Views\Pages\NewTask.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="PickingPage.xaml">
+	  <MauiXaml Update="Views\Pages\PickingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ReceptionPage.xaml">
+	  <MauiXaml Update="Views\Pages\ReceptionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="RegisterLicense.xaml">
+	  <MauiXaml Update="Views\Pages\RegisterLicense.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="RegisterVehicule.xaml">
+	  <MauiXaml Update="Views\Pages\RegisterVehicule.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Scan3FieldsPage.xaml">
+	  <MauiXaml Update="Views\Pages\Scan3FieldsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ScanStandarLD.xaml">
+	  <MauiXaml Update="Views\Pages\ScanStandarLD.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="SignatureDriver.xaml">
+	  <MauiXaml Update="Views\Pages\SignatureDriver.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TaskList.xaml">
+	  <MauiXaml Update="Views\Pages\TaskList.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TaskResolve.xaml">
+	  <MauiXaml Update="Views\Pages\TaskResolve.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TaskSecurity.xaml">
+	  <MauiXaml Update="Views\Pages\TaskSecurity.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="WarehouseOperations.xaml">
+	  <MauiXaml Update="Views\Pages\WarehouseOperations.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

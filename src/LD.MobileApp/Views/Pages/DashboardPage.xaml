@@ -599,7 +599,7 @@
             </Border>
 
             <!-- BANNER -->
-            <Button Text="Cerrar sesión"/>
+            <Button Text="Cerrar sesión" Command="{Binding Logout}"/>
 
         </VerticalStackLayout>
     </ScrollView>
