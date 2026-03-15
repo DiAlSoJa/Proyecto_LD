@@ -1,52 +1,58 @@
-﻿//using LD.Application.Features.Auth.Commands;
-//using MediatR;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
+using LD.Application.Features.Currency.Comands;
+using LD.Application.Features.Currency.Queries;
+using LD.Contracts.Constants;
+using LD.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace LD.Api.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class CurrencyController : ControllerBase
-//    {
-//        private readonly IMediator _mediator;
+namespace LD.Api.Controllers
+{
+    [Authorize]
+    [Route("api/[controller]")]
+    public class CurrencyController : CommonController
+    {
 
-//        public CurrencyController(IMediator mediator)
-//        {
-//            _mediator = mediator;
-//        }
-//        [HttpGet]
-//        public async Task<IActionResult> GetContact()
-//        {
-//            return Ok("get Contact");
+        [HttpGet]
+        [Permission(PermissionKeys.Currency_View)]
+        public async Task<IActionResult> getCurrency()
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new CurrencyQuery()));
 
-//        }
+        }
 
-//        [HttpGet("{id}")]
-//        public async Task<IActionResult> GetContact(int id)
-//        {
-
-//            return Ok("GetContactId");
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> CreateContact()
-//        {
-//            return Ok("create Contact");
-//        }
-
-//        [HttpPut("{id}")]
-//        public async Task<IActionResult> UpdateContact()
-//        {
-//            return Ok("update Contact");
-//        }
-
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteContact(int id)
-//        {
-//            return Ok("Delete Contact");
-//        }
+        [HttpGet("{currencyId}")]
+        [Permission(PermissionKeys.Currency_View)]
+        public async Task<IActionResult> GeCurrencyById(int currencyId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new CurrencyByIdQuery(currencyId)));
 
 
-//    }
-//}
+        [HttpPost]
+        [Permission(PermissionKeys.Currency_Create)]
+        public async Task<IActionResult> CreateCurrency([FromBody] CreateCurrencyCommand command)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
+        [HttpPut("{currencyId}")]
+        [Permission(PermissionKeys.Currency_Update)]
+        public async Task<IActionResult> UpdateCurrency(int currencyId, UpdateCurrencyCommand command)
+        {
+            command.CurrencyId = currencyId;
+            var result = await Mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
+        }
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteWarehouse(int id)
+        //{
+        //    return Ok("Delete Contact");
+        //}
+
+
+    }
+}
