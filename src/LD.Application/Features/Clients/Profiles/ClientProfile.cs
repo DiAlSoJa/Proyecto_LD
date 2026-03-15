@@ -75,7 +75,8 @@ namespace LD.Application.Features.Clients.Profiles
 
             CreateMap<ClientRequest, Client>()
                 .ForMember(dest => dest.ClientId,
-                    opt => opt.Ignore());
+                    opt => opt.Ignore())
+                ;
 
             CreateMap<ClientFiscalDataRequest, ClientFiscalData>()
                 .ForMember(dest => dest.ClientFiscalDataId,

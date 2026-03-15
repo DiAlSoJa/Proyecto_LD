@@ -67,7 +67,7 @@ namespace LD.Forms.Views.Dialogs
                 txtTelefonoComercial.Text = client.Phone;
                 txtColoniaComercial.Text = client.Neightbourhoud;
                 checkIsActive.Checked = client.IsActive;
-                checkIsProvider.Checked = client.IsActive;
+                checkIsProvider.Checked = client.IsProvider;
                 txtDomicilioComercial.Text = client.CommercialAddress;
 
 

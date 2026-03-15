@@ -34,7 +34,7 @@ public class UpdateClientCommandHandler
     {
         try
         {
-            // 1️⃣ Buscar cliente
+            // 1️ Buscar cliente
             var client = await _clientRepository.GetByIdAsync(request.ClientId);
             if (client is null)
                 return Result<string>.Failure( "No existe el cliente", new List<string> { "No existe el cliente" }, 404);
@@ -42,7 +42,7 @@ public class UpdateClientCommandHandler
             // 2️⃣ Mapear datos básicos
             _mapper.Map(request, client);
 
-            // 3️⃣ FiscalData (IMPORTANTE)
+            // 3️⃣ FiscalData 
             if (request.FiscalData != null)
             {
                 if (client.ClientFiscalData == null)
