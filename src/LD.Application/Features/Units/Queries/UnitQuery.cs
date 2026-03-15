@@ -22,17 +22,17 @@ public class UnitQuery : IRequest<Result<List<UnitDto>?>>
 }
 public class UnitQueryHandler : IRequestHandler<UnitQuery, Result<List<UnitDto>?>>
 {
-    private readonly IRepository<LD.Domain.Entities.Units> _unitRepository;
+    private readonly IRepository<LD.Domain.Entities.Units> _categoryRepository;
     private readonly IMapper _mapper;
-    public UnitQueryHandler(IRepository<LD.Domain.Entities.Units> unitRepository, IMapper mapper)
+    public UnitQueryHandler(IRepository<LD.Domain.Entities.Units> categoryRepository, IMapper mapper)
     {
-        _unitRepository = unitRepository;
+        _categoryRepository = categoryRepository;
         _mapper = mapper;
     }
 
     public async Task<Result<List<UnitDto>?>> Handle(UnitQuery request, CancellationToken cancellationToken)
     {
-        var unit = await _unitRepository.GetManyAsync();
+        var unit = await _categoryRepository.GetManyAsync();
         var unitDtos = _mapper.Map<List<UnitDto>>(unit);
         return Result<List<UnitDto>?>.Success(unitDtos, "Unidades obtenidas correctamente");
     }

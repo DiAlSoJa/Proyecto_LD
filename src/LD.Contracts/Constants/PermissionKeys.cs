@@ -66,6 +66,11 @@ public static class PermissionKeys
     public const string Currency_Update = "users.create";
     public const string Currency_Delete = "users.create";
 
+    public const string Category_View = "users.read";
+    public const string Category_Create = "users.create";
+    public const string Category_Update = "users.create";
+    public const string Category_Delete = "users.create";
+
 
 
 

@@ -23,17 +23,17 @@ public record UnitByIdQuery(int UnitId)
 
 public class UnitByIdQueryHandler : IRequestHandler<UnitByIdQuery, Result<UnitRequest?>>
 {
-    private readonly IRepository<LD.Domain.Entities.Units> _unitRepository;
+    private readonly IRepository<LD.Domain.Entities.Units> _categoryRepository;
     private readonly IMapper _mapper;
-    public UnitByIdQueryHandler(IRepository<LD.Domain.Entities.Units> unitRepository, IMapper mapper)
+    public UnitByIdQueryHandler(IRepository<LD.Domain.Entities.Units> categoryRepository, IMapper mapper)
     {
-        _unitRepository = unitRepository;
+        _categoryRepository = categoryRepository;
         _mapper = mapper;
     }
 
     public async Task<Result<UnitRequest?>> Handle(UnitByIdQuery request, CancellationToken cancellationToken)
     {
-        var unitDb = await _unitRepository.GetByIdAsync(request.UnitId);
+        var unitDb = await _categoryRepository.GetByIdAsync(request.UnitId);
         if (unitDb == null) return Result<UnitRequest?>.Failure("Unidad no encontrada", new(), 404);
         return Result<UnitRequest?>.Success(_mapper.Map<UnitRequest>(unitDb), "Unidad obtenida con exito");
     }
