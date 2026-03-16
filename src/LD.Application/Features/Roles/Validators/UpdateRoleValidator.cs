@@ -23,7 +23,7 @@ namespace LD.Application.Features.Roles.Validators
 
             RuleForEach(x => x.Permissions)
                 .MustAsync(async (permission, cancellationToken) =>
-                    await _applicationUserManager.PermissionExists(permission.PermissionId))
+                    await _applicationUserManager.PermissionExists(permission.PermissionId.GetValueOrDefault(0)))
                 .WithMessage("El permiso no existe en la base de datos");
         }
 

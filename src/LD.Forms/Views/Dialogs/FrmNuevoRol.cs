@@ -90,7 +90,7 @@ namespace LD.Forms.Views.Dialogs
 
                 txtRoleName.Text = role?.RoleName ?? "";
 
-                var permissions = role?.Permissions.Select(p => p.PermissionId).ToHashSet() ?? new HashSet<int>();
+                var permissions = role?.Permissions.Select(p => p.PermissionId).ToHashSet() ?? new HashSet<int?>();
 
                 foreach (TreeNode moduleNode in treePermissions.Nodes)
                 {
@@ -146,7 +146,7 @@ namespace LD.Forms.Views.Dialogs
             return new RoleRequest
             {
                 RoleName = txtRoleName.Text.Trim(),
-                Permissions = GetPermissions().Select(id => new PermissionDto { PermissionId = id }).ToList()
+                Permissions = GetPermissions()
             };
         }
 
@@ -190,9 +190,9 @@ namespace LD.Forms.Views.Dialogs
             }
         }
 
-        private List<int> GetPermissions()
+        private List<PermissionDto> GetPermissions()
         {
-            List<int> permissions = new();
+            List<PermissionDto> permissions = new();
 
             foreach (TreeNode module in treePermissions.Nodes)
             {
@@ -200,9 +200,11 @@ namespace LD.Forms.Views.Dialogs
                 {
                     if (permission.Checked)
                     {
-                        permissions.Add(
-                            int.TryParse( permission?.Tag.ToString(),out int p)?p:0
-                            );
+                        permissions.Add(new PermissionDto
+                        {
+                            PermissionId = int.TryParse(permission?.Tag?.ToString(), out int p) ? p : 0,
+                            PermissionName = permission?.Text
+                        });
                     }
                 }
             }

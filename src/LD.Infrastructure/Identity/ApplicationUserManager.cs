@@ -216,6 +216,7 @@ namespace LD.Infrastructure
 
                 role = new ApplicationRole
                 {
+                    Id=Guid.NewGuid().ToString(),
                     Name = roleRequest.RoleName
                 };
                 var result = await _roleManager.CreateAsync(role);
@@ -226,7 +227,7 @@ namespace LD.Infrastructure
                 await _context.RolePermissions.AddRangeAsync(roleRequest.Permissions.Select(p => new RolePermission
 
                 { 
-                    RoleId = role.Id, PermissionId = p.PermissionId })
+                    RoleId = role.Id, PermissionId = p.PermissionId.GetValueOrDefault(0) })
                 );
 
                 await _context.SaveChangesAsync();
@@ -259,8 +260,8 @@ namespace LD.Infrastructure
                         .Select(x => x.PermissionId)
                         .ToListAsync();
 
-                var toAdd = roleRequest.Permissions.Select(x=>x.PermissionId).Except(existing);
-                var toRemove = existing.Except(roleRequest.Permissions.Select(x => x.PermissionId));
+                var toAdd = roleRequest.Permissions.Select(x=>x.PermissionId.GetValueOrDefault(0)).Except(existing);
+                var toRemove = existing.Except(roleRequest.Permissions.Select(x => x.PermissionId.GetValueOrDefault(0)));
 
                 await _context.RolePermissions.AddRangeAsync(
                          toAdd.Select(p => new RolePermission
@@ -297,7 +298,7 @@ namespace LD.Infrastructure
             var userRoleId = user.UserRoles.FirstOrDefault()?.RoleId;
             var rol = await GetRoleByIdAsync(userRoleId);
 
-            var permissionIds = rol?.Permissions.Select(x => x.PermissionId).ToList()?? new List<int>();
+            var permissionIds = rol?.Permissions.Select(x => x.PermissionId.GetValueOrDefault(0)).ToList() ?? new List<int>();
 
             var permissions = await _context.Permissions
                 .Include(p=>p.Module)
