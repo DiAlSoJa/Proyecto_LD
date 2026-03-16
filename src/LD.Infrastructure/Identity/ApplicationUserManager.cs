@@ -206,23 +206,27 @@ namespace LD.Infrastructure
 
             return role;
         }
-        public async Task<bool> CreateRoleAsync(string roleId, RoleRequest roleRequest)
+        public async Task<bool> CreateRoleAsync(RoleRequest roleRequest)
         {
             var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var role = await _roleManager.FindByIdAsync(roleId);
-                if (role is null) throw new Exception($"No se pudo actualizar el role con id {roleId}");
+                var role = await _roleManager.FindByNameAsync(roleRequest.RoleName);
+                if (role is not null) throw new Exception($"El role con nombre {roleRequest.RoleName} ya existe");
 
-                role.Name = roleRequest.RoleName;
-                var result = await _roleManager.UpdateAsync(role);
+                role = new ApplicationRole
+                {
+                    Name = roleRequest.RoleName
+                };
+                var result = await _roleManager.CreateAsync(role);
 
                 if (!result.Succeeded)
                     throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 
                 await _context.RolePermissions.AddRangeAsync(roleRequest.Permissions.Select(p => new RolePermission
 
-                { RoleId = roleId, PermissionId = p.PermissionId })
+                { 
+                    RoleId = role.Id, PermissionId = p.PermissionId })
                 );
 
                 await _context.SaveChangesAsync();

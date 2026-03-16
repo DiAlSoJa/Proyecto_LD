@@ -38,6 +38,7 @@ namespace LD.Application.Common.Interfaces.Auth
         //Task<IdentityResponse> AddClaimAsync(ApplicationUser user, Claim claim);
         //Task<IdentityResponse> RemoveClaimsAsync(ApplicationUser user, List<Claim> claims);
         Task<bool> UpdateAsync(UserRequest user);
+        Task<bool> CreateRoleAsync(RoleRequest user);
         Task<bool> UpdateRoleAsync(string idRole,RoleRequest user);
 
         //Task<IdentityResponse> HasClaimAsync(ApplicationUser user, Claim claim);
