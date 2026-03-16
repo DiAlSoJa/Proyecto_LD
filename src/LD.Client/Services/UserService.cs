@@ -18,9 +18,9 @@ namespace LD.Client.Services
         }
 
 
-        public async Task<ApiResponseDto<UserDto>> GetUserById(string userId)
+        public async Task<ApiResponseDto<UserRequest>> GetUserById(string userId)
         {
-            return await _api.GetAsync<ApiResponseDto<UserDto>>(_apiEndpoints.User_GetById.Replace("{id}", userId));
+            return await _api.GetAsync<ApiResponseDto<UserRequest>>(_apiEndpoints.User_GetById.Replace("{id}", userId));
         }
 
         public async Task<ApiResponseDto<List<UserDto>>> GetUsers()

@@ -45,6 +45,8 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
+            label3 = new Label();
+            cmbRol = new ComboBox();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -55,6 +57,8 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(cmbRol);
+            panel1.Controls.Add(label3);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(txtUsername);
             panel1.Controls.Add(cckIsActive);
@@ -75,7 +79,7 @@
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(txtPassword);
             groupBox1.Controls.Add(label7);
-            groupBox1.Location = new Point(46, 208);
+            groupBox1.Location = new Point(45, 232);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(635, 174);
             groupBox1.TabIndex = 45;
@@ -132,7 +136,7 @@
             // cckIsActive
             // 
             cckIsActive.AutoSize = true;
-            cckIsActive.Location = new Point(243, 148);
+            cckIsActive.Location = new Point(243, 202);
             cckIsActive.Name = "cckIsActive";
             cckIsActive.Size = new Size(73, 24);
             cckIsActive.TabIndex = 40;
@@ -239,6 +243,23 @@
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(82, 161);
+            label3.Name = "label3";
+            label3.Size = new Size(34, 20);
+            label3.TabIndex = 46;
+            label3.Text = "Rol:";
+            // 
+            // cmbRol
+            // 
+            cmbRol.FormattingEnabled = true;
+            cmbRol.Location = new Point(243, 153);
+            cmbRol.Name = "cmbRol";
+            cmbRol.Size = new Size(405, 28);
+            cmbRol.TabIndex = 47;
+            // 
             // FrmNuevoUsuario
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -279,5 +300,7 @@
         private GroupBox groupBox1;
         private TextBox txtConfirmPassword;
         private Label label2;
+        private Label label3;
+        private ComboBox cmbRol;
     }
 }

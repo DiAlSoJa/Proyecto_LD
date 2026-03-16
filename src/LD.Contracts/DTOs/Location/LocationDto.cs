@@ -14,27 +14,31 @@ namespace LD.Contracts.Location
         public int AlmacenId { get; set; }
         public string Almacen { get; set; } = string.Empty;
 
-        public string Rack { get; set; } = string.Empty;
+        //public string Pasillo { get; set; } = string.Empty;
 
-        public string Pasillo { get; set; } = string.Empty;
-
-        public string Nivel { get; set; } = string.Empty;
+        //public string Nivel { get; set; } = string.Empty;
 
         public string Ubicacion { get; set; } = string.Empty;
 
         public string Dimension { get; set; } = string.Empty;
 
-        public bool Usado { get; set; }
+        public bool Fiscal { get; set; }
 
+
+        public bool ControlTemperatura { get; set; }
+        public bool Rack { get; set; }
         public bool General { get; set; }
-
-        public bool Recibo { get; set; }
-
         public bool Cuarentena { get; set; }
-
         public bool Embarque { get; set; }
+        public bool Compartido { get; set; }
+        public bool ReciboYEmbarque { get; set; }
+        public bool Doble { get; set; }
+        public bool Sencillo { get; set; }
+        public bool TienePaso { get; set; }
+        public bool TieneCortina { get; set; }
 
-        public bool EsRack { get; set; }
+
+
     }
 
 

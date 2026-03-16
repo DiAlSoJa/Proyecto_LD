@@ -28,6 +28,8 @@ namespace LD.Client
             services.AddScoped<ProjectService>();
             services.AddScoped<WarehouseService>();
             services.AddScoped<UserService>();
+            services.AddScoped<RoleService>();
+
             services.AddScoped<LookupService>();
 
             return services;

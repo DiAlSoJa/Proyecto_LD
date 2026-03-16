@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LD.Application.Features.User.Queries;
 
-public record GetUserByIdQuery(string UserId) : IRequest<Result<UserDto?>>;
+public record GetUserByIdQuery(string UserId) : IRequest<Result<UserRequest?>>;
 
-public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserDto?>>
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserRequest?>>
 {
 
     private readonly IApplicationUserManager _userManager;
@@ -29,15 +29,15 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
         _mapper = mapper;
     }
 
-    public async Task<Result<UserDto?>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<UserRequest?>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
 
         var user = await _userManager.GetUserByIdAsync(request.UserId);
 
         if (user == null)
-            return Result<UserDto?>.Failure("No se pudo encontrar el usuario",new List<string> {"No existe el usuario" });
+            return Result<UserRequest?>.Failure("No se pudo encontrar el usuario",new List<string> {"No existe el usuario" });
 
 
-        return Result<UserDto?>.Success(user, "Usuario encontrado exitosamente");
+        return Result<UserRequest?>.Success(user, "Usuario encontrado exitosamente");
     }
 }

@@ -4,6 +4,7 @@ using Azure.Core;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Application.Common.Results;
+using LD.Contracts.DTOs;
 using LD.Contracts.DTOs.Auth;
 using LD.Contracts.DTOs.User;
 using LD.Contracts.Requests;
@@ -11,6 +12,7 @@ using LD.Contracts.Responses;
 using LD.Contracts.User;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -82,10 +84,14 @@ namespace LD.Infrastructure
             };
         }
 
-        public async Task<UserDto?> GetUserByIdAsync(string userId)
+        public async Task<UserRequest?> GetUserByIdAsync(string userId)
         {
-            return await _userManager.Users
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(u=>u.Id== userId);
+            return await _userManager.Users.Include(u=>u.UserRoles).ThenInclude(ur=>ur.Role)
+                .Where(u=>u.Id== userId)
+                .ProjectTo<UserRequest>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+
+             
         }
 
         public async Task<List<UserDto>> GetUsersAsync()
@@ -97,45 +103,96 @@ namespace LD.Infrastructure
 
         public async Task<bool> CreateUserAsync(UserRequest user)
         {
-            var userExists = await GetUserByNameAsync(user.Username);
-            //var userExists = await _userManager.FindByEmailAsync(email);
-            if (userExists != null)
-                return false;
-
-            var newUser = new ApplicationUser
+            var transation = await _context.Database.BeginTransactionAsync();
+            try
             {
-                UserName = user.Username,
-                Email = user.Email,
-                IsActive = user.IsActive,
-                FullName = user.Name
-            };
+                var userExists = await GetUserByNameAsync(user.Username);
+                if (userExists != null)
+                    return false;
 
-            var result = await _userManager.CreateAsync(newUser, user.Password);
+                var newUser = new ApplicationUser
+                {
+                    UserName = user.Username,
+                    Email = user.Email,
+                    IsActive = user.IsActive,
+                    FullName = user.Name
+                };
 
-            if (!result.Succeeded)
-                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+                var result = await _userManager.CreateAsync(newUser, user.Password);
 
-            return true;
+                if (!result.Succeeded)
+                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+                var role = await _roleManager.FindByIdAsync(user.Role);
+
+                if (role is null)
+                    throw new Exception("El rol no existe");
+
+                var addRoleResult = await _userManager.AddToRoleAsync(newUser, role.Name);
+                if (!addRoleResult.Succeeded)
+                    throw new Exception(string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+
+    
+                await transation.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transation.RollbackAsync();
+                throw;
+            }
+           
         }
         public async Task<bool> UpdateAsync(UserRequest request)
         {
-            var user = await _userManager.FindByIdAsync(request.UserId??"");
+            var transation= await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var user = await _userManager.FindByIdAsync(request.UserId ?? "");
 
-            if (user is null)
-                return false;
+                if (user is null)
+                    return false;
 
-            // 🔹 Actualizar propiedades
-            user.UserName = request.Username;
-            user.Email = request.Email;
-            user.IsActive = request.IsActive;
-            user.FullName = request.Name;
+                // 🔹 Actualizar propiedades
+                user.UserName = request.Username;
+                user.Email = request.Email;
+                user.IsActive = request.IsActive;
+                user.FullName = request.Name;
 
-            var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
-                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+                if (!result.Succeeded)
+                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            return true;
+                if (!string.IsNullOrWhiteSpace(request.Role))
+                {
+                    var currentRoles = await _userManager.GetRolesAsync(user);
+
+                    if (currentRoles.Any())
+                    {
+                        var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+                        if (!removeResult.Succeeded)
+                            throw new Exception(string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+                    }
+                    var role = await _roleManager.FindByIdAsync(request.Role);
+
+                    if (role is null)
+                        throw new Exception("El rol no existe");
+
+                    var addRoleResult = await _userManager.AddToRoleAsync(user, role.Name);
+
+                    if (!addRoleResult.Succeeded)
+                        throw new Exception(string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+                }
+
+                await transation.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transation.RollbackAsync();
+                throw;
+            }
         }
         public async Task<RoleRequest?> GetRoleByIdAsync(string roleId)
         {
@@ -270,6 +327,14 @@ namespace LD.Infrastructure
             return response;
         
          }
+
+        public async Task<List<DropDownDto>> GetRoleLookupAsync()
+        {
+            return await _roleManager.Roles
+                .AsNoTracking()
+                .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
 
         //public async Task<IList<string>> GetRolesAsync(ApplicationUser user)
         //{

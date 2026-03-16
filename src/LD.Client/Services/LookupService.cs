@@ -28,6 +28,8 @@ namespace LD.Client.Services
            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Client);
         public async Task<ApiResponseDto<List<DropDownDto>>> GetLocationLookup()
            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Location);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetRoleLookup()
+          => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Role);
 
     }
 }

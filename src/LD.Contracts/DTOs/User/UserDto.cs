@@ -15,7 +15,5 @@ namespace LD.Contracts.User
         //public string Email { get; set; }
         public string? UserName { get; set; }
         public string? Rol { get; set; }
-
-        public AuthorizationDto? Authorization { get; set; }
     }
 }

@@ -25,14 +25,16 @@ namespace LD.Forms.Views.Dialogs
 
 
         private readonly UserService _userService;
+        private readonly LookupService _lookupService;
+
         private UserDto? UserSelected{ get; set; }
-        public FrmNuevoUsuario(UserService userService)
+        public FrmNuevoUsuario(UserService userService, LookupService lookupService)
         {
             InitializeComponent();
             _userService = userService;
+            _lookupService = lookupService;
             EnableDrag(panel2);
             EnableDrag(panel1);
-
         }
 
         //public event EventHandler CreateUser;
@@ -44,11 +46,31 @@ namespace LD.Forms.Views.Dialogs
         public string ConfirmPassword => txtConfirmPassword.Text;
         public bool IsActive => cckIsActive.Checked;
 
+        protected override async void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
 
+            await SetCombos();
+
+            if(UserSelected!=null)
+                await CargarDatosAsync();   
+
+        }
+        private async Task SetCombos()
+        {
+            var response = await _lookupService.GetRoleLookup();
+            if (response.IsFailure)
+            {
+                return;
+            }
+            cmbRol.DataSource = response.Data;
+            cmbRol.DisplayMember = "Value";
+            cmbRol.ValueMember = "Key";
+        }
         public async void SetUser(UserDto? user)
         {
             UserSelected = user;
-            await CargarDatosAsync();
+          
         }
 
         private async Task CargarDatosAsync()
@@ -64,11 +86,14 @@ namespace LD.Forms.Views.Dialogs
                 }
                 var user = response.Data;
 
-                txtUsername.Text = user.UserName;
-                txtName.Text=user.Nombre;
-                cckIsActive.Checked = user.Activo;
-    
-                
+                txtUsername.Text = user.Username;
+                txtName.Text=user.Name;
+                cckIsActive.Checked = user.IsActive;
+                if(user.Role is not null)
+                    cmbRol.SelectedValue = user.Role;
+                else cmbRol.SelectedIndex = -1;
+
+
             }
             catch (Exception ex)
             {
@@ -105,7 +130,8 @@ namespace LD.Forms.Views.Dialogs
                Email = null,
                Password = txtPassword.Text,
                ConfirmPassword = txtConfirmPassword.Text,
-               IsActive = cckIsActive.Checked,
+               Role= cmbRol.SelectedValue?.ToString(),
+                IsActive = cckIsActive.Checked,
             };
         }
        

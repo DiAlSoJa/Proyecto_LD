@@ -133,15 +133,7 @@ namespace LD.Forms.Configuration
         public string Project_Delete => $"{_baseApi}/project/{{id}}";
         
 
-        // ======================
-        // ROLE
-        // ======================
-       
-        public string Role_GetAll => $"{_baseApi}/role";
-        public string Role_GetById => $"{_baseApi}/role/{{id}}";
-        public string Role_Create => $"{_baseApi}/role";
-        public string Role_Update => $"{_baseApi}/role/{{id}}";
-        public string Role_Delete => $"{_baseApi}/role/{{id}}";
+    
         
 
         // ======================
@@ -164,12 +156,20 @@ namespace LD.Forms.Configuration
         public string User_Create => $"{_baseApi}/user";
         public string User_Update => $"{_baseApi}/user/{{id}}";
         public string User_Delete => $"{_baseApi}/user/{{id}}";
-        
+        // ======================
+        // ROLE
+        // ======================
+
+        public string Role_GetAll => $"{_baseApi}/role";
+        public string Role_GetById => $"{_baseApi}/role/{{id}}";
+        public string Role_Create => $"{_baseApi}/role";
+        public string Role_Update => $"{_baseApi}/role/{{id}}";
+        public string Role_Delete => $"{_baseApi}/role/{{id}}";
 
         // ======================
         // VEHICLE
         // ======================
-    
+
         public string Vehicle_GetAll => $"{_baseApi}/vehicle";
         public string Vehicle_GetById => $"{_baseApi}/vehicle/{{id}}";
         public string Vehicle_Create => $"{_baseApi}/vehicle";
@@ -187,11 +187,16 @@ namespace LD.Forms.Configuration
         public string Warehouse_Update => $"{_baseApi}/warehouse/{{id}}";
         public string Warehouse_Delete => $"{_baseApi}/warehouse/{{id}}";
 
+        // ======================
+        // LOOKUP
+        // ======================
         public string Lookup_GetAll => $"{_baseApi}/Lookup";
         public string Lookup_Warehouse => $"{_baseApi}/Lookup/warehouse";
         public string Lookup_Client => $"{_baseApi}/Lookup/client";
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
+        public string Lookup_Role => $"{_baseApi}/Lookup/role";
+
 
         // ======================
         // MODULES

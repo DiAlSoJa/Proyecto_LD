@@ -1,4 +1,5 @@
-﻿using LD.Contracts.Requests;
+﻿using LD.Contracts.DTOs;
+using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.User;
 using System;
@@ -15,7 +16,7 @@ namespace LD.Application.Common.Interfaces.Auth
         Task<bool> CreateUserAsync(UserRequest user);
         Task<UserDto?> FindByEmailAsync(string email);
         Task<UserDto?> GetUserByNameAsync(string userName);
-        Task<UserDto?> GetUserByIdAsync(string userId);
+        Task<UserRequest?> GetUserByIdAsync(string userId);
         Task<GetMeReponse?> GetMe(string userId);
 
         Task<bool> PermissionExists(int permissionId);
@@ -23,6 +24,8 @@ namespace LD.Application.Common.Interfaces.Auth
         //Task<IList<Claim>> GetClaimsAsync(UserDto user);
         Task<List<UserDto>> GetUsersAsync();
         Task<RoleRequest?> GetRoleByIdAsync(string roleId);
+        Task<List<DropDownDto>> GetRoleLookupAsync();
+
 
         //Task<IdentityResponse> AddToRoleAsync(ApplicationUser user, string roleName);
         //Task<IdentityResponse> AddToRolesAsync(ApplicationUser user, List<string> roleNames);

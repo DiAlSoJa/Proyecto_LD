@@ -26,6 +26,11 @@ namespace LD.Infrastructure.Mappers
                 .ForMember(dest => dest.Value,
                     opt => opt.MapFrom(src => src.LocationName));
 
+            CreateMap<ApplicationRole, DropDownDto>()
+                 .ForMember(dest => dest.Key,
+                    opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Value,
+                    opt => opt.MapFrom(src => src.Name));
         }
     }
 }
