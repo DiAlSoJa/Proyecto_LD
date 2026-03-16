@@ -1,52 +1,58 @@
-﻿//using LD.Application.Features.Auth.Commands;
-//using MediatR;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
+using LD.Application.Features.Category.Comands;
+using LD.Application.Features.Category.Queries;
+using LD.Contracts.Constants;
+using LD.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace LD.Api.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class CategoryController : ControllerBase
-//    {
-//        private readonly IMediator _mediator;
+namespace LD.Api.Controllers
+{
+    [Authorize]
+    [Route("api/[controller]")]
+    public class CategoryController : CommonController
+    {
 
-//        public CategoryController(IMediator mediator)
-//        {
-//            _mediator = mediator;
-//        }
-//        [HttpGet]
-//        public async Task<IActionResult> GetContact()
-//        {
-//            return Ok("get Contact");
+        [HttpGet]
+        [Permission(PermissionKeys.Category_View)]
+        public async Task<IActionResult> getCategory()
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new CategoryQuery()));
 
-//        }
+        }
 
-//        [HttpGet("{id}")]
-//        public async Task<IActionResult> GetContact(int id)
-//        {
-
-//            return Ok("GetContactId");
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> CreateContact()
-//        {
-//            return Ok("create Contact");
-//        }
-
-//        [HttpPut("{id}")]
-//        public async Task<IActionResult> UpdateContact()
-//        {
-//            return Ok("update Contact");
-//        }
-
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteContact(int id)
-//        {
-//            return Ok("Delete Contact");
-//        }
+        [HttpGet("{categoryId}")]
+        [Permission(PermissionKeys.Category_View)]
+        public async Task<IActionResult> GeCategoryById(int categoryId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new CategoryByIdQuery(categoryId)));
 
 
-//    }
-//}
+        [HttpPost]
+        [Permission(PermissionKeys.Category_Create)]
+        public async Task<IActionResult> Createcategory([FromBody] CreateCategoryCommand command)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
+        [HttpPut("{categoryId}")]
+        [Permission(PermissionKeys.Category_Update)]
+        public async Task<IActionResult> Updatecategory(int categoryId, UpdateCategoryCommand command)
+        {
+            command.CategoryId = categoryId;
+            var result = await Mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
+        }
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteWarehouse(int id)
+        //{
+        //    return Ok("Delete Contact");
+        //}
+
+
+    }
+}

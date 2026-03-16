@@ -1,52 +1,59 @@
-﻿//using LD.Application.Features.Auth.Commands;
-//using MediatR;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
+using LD.Application.Features.Units.Comands;
+using LD.Application.Features.Units.Queries;
+using LD.Application.Features.Warehouses.Queries;
+using LD.Contracts.Constants;
+using LD.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace LD.Api.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class UnitController : ControllerBase
-//    {
-//        private readonly IMediator _mediator;
+namespace LD.Api.Controllers
+{
+    [Authorize]
+    [Route("api/[controller]")]
+    public class UnitController : CommonController
+    {
 
-//        public UnitController(IMediator mediator)
-//        {
-//            _mediator = mediator;
-//        }
-//        [HttpGet]
-//        public async Task<IActionResult> GetContact()
-//        {
-//            return Ok("get Contact");
+        [HttpGet]
+        [Permission(PermissionKeys.Unit_View)]
+        public async Task<IActionResult> GetUnit()
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new UnitQuery()));
 
-//        }
+        }
 
-//        [HttpGet("{id}")]
-//        public async Task<IActionResult> GetContact(int id)
-//        {
-
-//            return Ok("GetContactId");
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> CreateContact()
-//        {
-//            return Ok("create Contact");
-//        }
-
-//        [HttpPut("{id}")]
-//        public async Task<IActionResult> UpdateContact()
-//        {
-//            return Ok("update Contact");
-//        }
-
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteContact(int id)
-//        {
-//            return Ok("Delete Contact");
-//        }
+        [HttpGet("{unitId}")]
+        [Permission(PermissionKeys.Unit_View)]
+        public async Task<IActionResult> GeUnitById(int unitId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new UnitByIdQuery(unitId)));
 
 
-//    }
-//}
+        [HttpPost]
+        [Permission(PermissionKeys.Unit_Create)]
+        public async Task<IActionResult> CreateUnit([FromBody] CreateUnitCommand command)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
+        [HttpPut("{unitId}")]
+        [Permission(PermissionKeys.Unit_Create)]
+        public async Task<IActionResult> UpdateUnit(int unitId, UpdateUnitCommand command)
+        {
+            command.UnitId = unitId;
+            var result = await Mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
+        }
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteWarehouse(int id)
+        //{
+        //    return Ok("Delete Contact");
+        //}
+
+
+    }
+}

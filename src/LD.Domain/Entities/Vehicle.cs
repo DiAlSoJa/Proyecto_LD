@@ -25,14 +25,14 @@ namespace LD.Domain.Entities
         [MaxLength(50)]
         public string Type { get; set; }              // CAJA SECA, RABON, CAMIONETA
 
-        [Required]
+        
         public decimal Capacity { get; set; }        // 5.00
 
         [MaxLength(50)]
-        public string Placas { get; set; }            // JP26370
+        public string Plates { get; set; }            // JP26370
 
         // Dimensiones (metros)
-        public decimal Largo { get; set; }            // 4.20
+        public decimal Long { get; set; }            // 4.20
         public decimal Wight { get; set; }            // 2.30
         public decimal Height { get; set; }              // 1.90
     }

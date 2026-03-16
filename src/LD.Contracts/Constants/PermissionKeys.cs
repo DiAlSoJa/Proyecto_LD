@@ -56,4 +56,32 @@ public static class PermissionKeys
     public const string User_Delete = "users.delete";
 
 
+    public const string Unit_View = "users.read";
+    public const string Unit_Create = "users.create";
+    public const string Unit_Update = "users.create";
+    public const string Unit_Delete = "users.create";
+
+    public const string Currency_View = "users.read";
+    public const string Currency_Create = "users.create";
+    public const string Currency_Update = "users.create";
+    public const string Currency_Delete = "users.create";
+
+    public const string Category_View = "users.read";
+    public const string Category_Create = "users.create";
+    public const string Category_Update = "users.create";
+    public const string Category_Delete = "users.create";
+
+    public const string Status_View = "users.read";
+    public const string Status_Create = "users.create";
+    public const string Status_Update = "users.create";
+    public const string Status_Delete = "users.create";
+
+    public const string Vehicle_View = "users.read";
+    public const string Vehicle_Create = "users.create";
+    public const string Vehicle_Update = "users.create";
+    public const string Vehicle_Delete = "users.create";
+
+
+
+
 }

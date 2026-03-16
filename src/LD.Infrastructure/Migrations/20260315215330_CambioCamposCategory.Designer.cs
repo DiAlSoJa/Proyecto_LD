@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260315215330_CambioCamposCategory")]
+    partial class CambioCamposCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,8 +65,6 @@ namespace LD.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoryId");
-
-
 
                     b.ToTable("Categories");
                 });
@@ -132,7 +133,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.ClientContact", b =>
@@ -201,7 +202,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("ClientContacts", (string)null);
+                    b.ToTable("ClientContacts");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.ClientFiscalData", b =>
@@ -278,7 +279,7 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("ClientId")
                         .IsUnique();
 
-                    b.ToTable("ClientFiscalData", (string)null);
+                    b.ToTable("ClientFiscalData");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Currency", b =>
@@ -322,7 +323,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("CurrencyId");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.DireccionEntrega", b =>
@@ -395,7 +396,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DireccionEntregaId");
 
-                    b.ToTable("DireccionEntregas", (string)null);
+                    b.ToTable("DireccionEntregas");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Driver", b =>
@@ -449,7 +450,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DriverId");
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.InventaryStatus", b =>
@@ -482,6 +483,9 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<int>("IdClient")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -496,7 +500,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("InventoryStatusId");
 
-                    b.ToTable("inventaryStatuses", (string)null);
+                    b.ToTable("inventaryStatuses");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
@@ -587,7 +591,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Module", b =>
@@ -631,7 +635,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ParentModuleId");
 
-                    b.ToTable("Modules", (string)null);
+                    b.ToTable("Modules");
 
                     b.HasData(
                         new
@@ -1184,7 +1188,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("PickingZones", (string)null);
+                    b.ToTable("PickingZones");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Printer", b =>
@@ -1228,7 +1232,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("PrinterId");
 
-                    b.ToTable("Printers", (string)null);
+                    b.ToTable("Printers");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Product", b =>
@@ -1293,7 +1297,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("items", (string)null);
+                    b.ToTable("items");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Project", b =>
@@ -1436,7 +1440,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.RolePermission", b =>
@@ -1514,7 +1518,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("StorageTypeId");
 
-                    b.ToTable("StorageTypes", (string)null);
+                    b.ToTable("StorageTypes");
 
                     b.HasData(
                         new
@@ -1596,12 +1600,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("UnitId");
 
-
-                    b.HasIndex("Clave")
-                        .IsUnique();
-
                     b.ToTable("Units");
-
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Vehicle", b =>
@@ -1633,21 +1632,21 @@ namespace LD.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("Largo")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastModifiedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Long")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Plates")
+                    b.Property<string>("Placas")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -1667,7 +1666,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("VehicleId");
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Warehouse", b =>
@@ -1732,7 +1731,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("WarehouseId");
 
-                    b.ToTable("Warehouses", (string)null);
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("LD.Infrastructure.ApplicationRole", b =>

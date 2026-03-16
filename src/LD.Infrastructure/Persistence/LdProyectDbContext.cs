@@ -1,4 +1,5 @@
 ﻿using LD.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -112,6 +113,9 @@ namespace LD.Infrastructure.Persistence
                 .WithMany()
                 .HasForeignKey(x => x.PermissionId);
 
+            builder.Entity<Units>()
+                .HasIndex(u => u.Clave)
+                .IsUnique(); 
 
             builder.Entity<StorageType>().HasData(
                 new StorageType
