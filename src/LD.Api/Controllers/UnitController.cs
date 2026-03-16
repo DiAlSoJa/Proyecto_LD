@@ -28,7 +28,7 @@ namespace LD.Api.Controllers
 
         [HttpGet("{unitId}")]
         [Permission(PermissionKeys.Unit_View)]
-        public async Task<IActionResult> GeUnitById(int unitId)
+        public async Task<IActionResult> GeUnitById(string unitId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new UnitByIdQuery(unitId)));
 
 
@@ -41,9 +41,9 @@ namespace LD.Api.Controllers
 
         [HttpPut("{unitId}")]
         [Permission(PermissionKeys.Unit_Create)]
-        public async Task<IActionResult> UpdateUnit(int unitId, UpdateUnitCommand command)
+        public async Task<IActionResult> UpdateUnit(string unitId, UpdateUnitCommand command)
         {
-            command.UnitId = unitId;
+            command.UnitIdS = unitId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }

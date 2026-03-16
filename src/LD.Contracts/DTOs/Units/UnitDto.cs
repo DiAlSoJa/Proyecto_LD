@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace LD.Contracts.Units
 {
     public class UnitDto
-    {
-        public int id { get; set; } 
+    {       
         public string Unidad { get; set; } = string.Empty;
         public string Descripcion { get; set; } = string.Empty;
     }

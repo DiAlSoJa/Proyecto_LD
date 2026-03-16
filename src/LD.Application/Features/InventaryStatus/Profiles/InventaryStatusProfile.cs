@@ -14,22 +14,31 @@ namespace LD.Application.Features.Status.Profiles
     {
         public InventaryStatusProfile()
         {
+
             CreateMap<LD.Domain.Entities.InventaryStatus, InventaryStatusDto>()
-                 .ForMember(dest => dest.StatusId,
-                    opt => opt.MapFrom(src => src.InventoryStatusId))
-                   .ForMember(dest => dest.Nombre,
-                    opt => opt.MapFrom(src => src.Clave))
-                   .ForMember(dest => dest.Descripcion,
-                    opt => opt.MapFrom(src => src.FullName))
-                    .ForMember(dest => dest.Disponible,
+                     .ForMember(dest => dest.StatusId,
+                         opt => opt.MapFrom(src => src.InventoryStatusIdS))
+                     .ForMember(dest => dest.Descripcion,
+                         opt => opt.MapFrom(src => src.FullName))
+                         .ForMember(dest => dest.Disponible,
                     opt => opt.MapFrom(src => src.IsAvailable)
-                    );
+                         );
 
             CreateMap<InventaryStatusRequest, LD.Domain.Entities.InventaryStatus>()
-                .ForMember(dest => dest.InventoryStatusId,
-                    opt => opt.Ignore());
+                .ForMember(dest => dest.InventoryStatusIdS,
+                    opt => opt.MapFrom(src => src.InventoryStatusIdS))
+                .ForMember(dest => dest.FullName,
+                    opt => opt.MapFrom(src => src.FullName));
 
             CreateMap<LD.Domain.Entities.InventaryStatus, InventaryStatusRequest>();
+
+
+
+
+
+
+
+
         }
 
     }

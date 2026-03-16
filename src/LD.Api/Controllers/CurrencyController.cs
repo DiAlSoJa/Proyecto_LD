@@ -27,7 +27,7 @@ namespace LD.Api.Controllers
 
         [HttpGet("{currencyId}")]
         [Permission(PermissionKeys.Currency_View)]
-        public async Task<IActionResult> GeCurrencyById(int currencyId)
+        public async Task<IActionResult> GeCurrencyById(string currencyId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new CurrencyByIdQuery(currencyId)));
 
 
@@ -40,9 +40,9 @@ namespace LD.Api.Controllers
 
         [HttpPut("{currencyId}")]
         [Permission(PermissionKeys.Currency_Update)]
-        public async Task<IActionResult> UpdateCurrency(int currencyId, UpdateCurrencyCommand command)
+        public async Task<IActionResult> UpdateCurrency(string currencyId, UpdateCurrencyCommand command)
         {
-            command.CurrencyId = currencyId;
+            command.CurrencyIdS = currencyId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }

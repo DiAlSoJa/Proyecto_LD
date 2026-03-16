@@ -15,7 +15,7 @@ public class UpdateUnitValidator
 {
     public UpdateUnitValidator()
     {
-        RuleFor(x => x.Clave)
+        RuleFor(x => x.UnitIdS)
              .NotEmpty().WithMessage("El nombre de la unidad no debe estar vacia")
              .MaximumLength(20).WithMessage("El nombre de la unidad no debe exceder de 20 caracteres");
 

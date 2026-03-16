@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Status.Queries;
 
-public record InventaryStatusByIdQuery(int StatusId)
+public record InventaryStatusByIdQuery(string StatusId)
     : IRequest<Result<InventaryStatusRequest?>>;
 
 

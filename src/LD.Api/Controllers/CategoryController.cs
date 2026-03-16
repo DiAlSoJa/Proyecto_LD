@@ -27,7 +27,7 @@ namespace LD.Api.Controllers
 
         [HttpGet("{categoryId}")]
         [Permission(PermissionKeys.Category_View)]
-        public async Task<IActionResult> GeCategoryById(int categoryId)
+        public async Task<IActionResult> GeCategoryById(string categoryId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new CategoryByIdQuery(categoryId)));
 
 
@@ -40,9 +40,9 @@ namespace LD.Api.Controllers
 
         [HttpPut("{categoryId}")]
         [Permission(PermissionKeys.Category_Update)]
-        public async Task<IActionResult> Updatecategory(int categoryId, UpdateCategoryCommand command)
+        public async Task<IActionResult> Updatecategory(string categoryId, UpdateCategoryCommand command)
         {
-            command.CategoryId = categoryId;
+            command.CategoryIdS = categoryId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }

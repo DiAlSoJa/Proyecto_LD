@@ -9,13 +9,10 @@ namespace LD.Contracts.Requests
     public class UnitRequest
     {
 
-
-        public int? UnitId { get; set; }
-
-        public string? Clave { get; set; }   // KG, PZA, PAL, CJ
+        public string UnitIdS { get; set; }   // KG, PZA, PAL, CJ
 
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
 
 

@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Currency.Queries;
 
-public record CurrencyByIdQuery(int CurrencyId)
+public record CurrencyByIdQuery(string CurrencyId)
     : IRequest<Result<CurrencyRequest?>>;
 
 

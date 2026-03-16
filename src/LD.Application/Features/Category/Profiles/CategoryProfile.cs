@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using LD.Contracts.Category;
 using LD.Contracts.Requests;
+using LD.Contracts.Units;
 
 
 namespace LD.Application.Features.Category.Profiles
@@ -15,17 +16,16 @@ namespace LD.Application.Features.Category.Profiles
         public CategoryProfile()
         {
             CreateMap<LD.Domain.Entities.Category, CategoryDto>()
-                 .ForMember(dest => dest.CategoryId,
-                    opt => opt.MapFrom(src => src.CategoryId))
-                 .ForMember(dest => dest.Nombre,
-                    opt => opt.MapFrom(src => src.Clave))
-                   .ForMember(dest => dest.Descripcion,
-                    opt => opt.MapFrom(src => src.Description)
-                    );
+           .ForMember(dest => dest.Categoria,
+               opt => opt.MapFrom(src => src.CategoryIdS))
+           .ForMember(dest => dest.Descripcion,
+               opt => opt.MapFrom(src => src.Description));
 
             CreateMap<CategoryRequest, LD.Domain.Entities.Category>()
-                .ForMember(dest => dest.CategoryId,
-                    opt => opt.Ignore());
+                .ForMember(dest => dest.CategoryIdS,
+                    opt => opt.MapFrom(src => src.CategoryIdS))
+                .ForMember(dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Description));
 
             CreateMap<LD.Domain.Entities.Category, CategoryRequest>();
         }

@@ -16,20 +16,24 @@ namespace LD.Application.Features.Currency.Profiles
     {
         public CurrencyProfile()
         {
+
             CreateMap<LD.Domain.Entities.Currency, CurrencyDto>()
-                 .ForMember(dest => dest.CurrencyId,
-                    opt => opt.MapFrom(src => src.CurrencyId))
-                 .ForMember(dest => dest.Moneda,
-                    opt => opt.MapFrom(src => src.Clave))
+                   .ForMember(dest => dest.CurrencyIdS,
+                    opt => opt.MapFrom(src => src.CurrencyIdS))
                    .ForMember(dest => dest.Descripcion,
                     opt => opt.MapFrom(src => src.Description)
                     );
 
             CreateMap<CurrencyRequest, LD.Domain.Entities.Currency>()
-                .ForMember(dest => dest.CurrencyId,
-                    opt => opt.Ignore());
+                .ForMember(dest => dest.CurrencyIdS,
+                    opt => opt.MapFrom(src => src.CurrencyIdS))
+                .ForMember(dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Description));
 
             CreateMap<LD.Domain.Entities.Currency, CurrencyRequest>();
+
+
+
         }
 
     }

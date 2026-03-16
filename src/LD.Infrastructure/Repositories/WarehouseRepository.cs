@@ -37,6 +37,11 @@ namespace LD.Infrastructure.Repositories
                 .FirstOrDefaultAsync(w => w.WarehouseId == id);
         }
 
+        public Task<Warehouse?> GetByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<DropDownDto>> GetLookup()
         {
             return await _context.Warehouses

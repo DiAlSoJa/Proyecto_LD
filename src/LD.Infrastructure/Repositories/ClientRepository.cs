@@ -43,6 +43,11 @@ namespace LD.Infrastructure.Repositories
             return await _context.Clients.Include(c=>c.ClientFiscalData).FirstOrDefaultAsync(c=>c.ClientId == id);
         }
 
+        public Task<Client?> GetByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<DropDownDto>> GetLookup()
         {
             return await _context.Clients

@@ -9,8 +9,7 @@ namespace LD.Contracts.Category
 {
     public class CategoryDto
     {
-        public int CategoryId { get; set; } 
-        public string Nombre { get; set; } = string.Empty;
+        public string Categoria { get; set; }         
         public string Descripcion { get; set; } = string.Empty;
     }
 

@@ -11,11 +11,9 @@ namespace LD.Domain.Entities
     public class InventaryStatus : AuditableEntity
     {
         [Key]
-        public int InventoryStatusId { get; set; }
-
         [Required]
-        [MaxLength(50)]
-        public string Clave { get; set; }   // A, C, D, E...
+        [MaxLength(20)]
+        public string InventoryStatusIdS { get; set; }   // A, C, D, E...
 
         [Required]
         [MaxLength(150)]

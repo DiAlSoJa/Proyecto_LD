@@ -18,8 +18,8 @@ namespace LD.Application.Features.Vehicle.Profiles
         public VehicleProfile()
         {
             CreateMap<LD.Domain.Entities.Vehicle, VehicleDto>()
-                 .ForMember(dest => dest.VehicleId,
-                    opt => opt.MapFrom(src => src.VehicleId))
+            .ForMember(dest => dest.Placas,
+                    opt => opt.MapFrom(src => src.Plates))
                  .ForMember(dest => dest.NumeroVehiculo,
                     opt => opt.MapFrom(src => src.VehicleNumber))
                  .ForMember(dest => dest.Nombre,
@@ -39,10 +39,21 @@ namespace LD.Application.Features.Vehicle.Profiles
                     );
 
             CreateMap<VechicleRequest, LD.Domain.Entities.Vehicle>()
-                .ForMember(dest => dest.VehicleId,
-                    opt => opt.Ignore());
+                .ForMember(dest => dest.Plates,
+                    opt => opt.MapFrom(src => src.Plates))
+                .ForMember(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name));
 
             CreateMap<LD.Domain.Entities.Vehicle, VechicleRequest>();
+
+
+
+
+
+
+
+
+
         }
 
     }
