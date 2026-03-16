@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.InventaryStatus.Comands;
 
-public class CreateInventaryStatusCommand : VechicleRequest, IRequest<Result<string>>
+public class CreateInventaryStatusCommand : InventaryStatusRequest, IRequest<Result<string>>
 {
 
 }

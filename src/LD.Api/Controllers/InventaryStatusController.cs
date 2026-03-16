@@ -14,7 +14,7 @@ namespace LD.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class StatusController : CommonController
+    public class InventaryStatusController : CommonController
     {
 
         [HttpGet]
@@ -31,7 +31,7 @@ namespace LD.Api.Controllers
             => ResultExtensions.ToActionResult(await Mediator.Send(new InventaryStatusByIdQuery(statusId)));
 
 
-      /*  [HttpPost]
+        [HttpPost]
         [Permission(PermissionKeys.Status_Create)]
         public async Task<IActionResult> CreateStatus([FromBody] CreateInventaryStatusCommand command)
         {
@@ -42,11 +42,11 @@ namespace LD.Api.Controllers
         [Permission(PermissionKeys.Status_Update)]
         public async Task<IActionResult> UpdateStatus(int statusId, UpdateInventaryStatusCommand command)
         {
-            command.StatusId = statusId;
+            command.InventoryStatusId = statusId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
-      */
+      
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteWarehouse(int id)
         //{
