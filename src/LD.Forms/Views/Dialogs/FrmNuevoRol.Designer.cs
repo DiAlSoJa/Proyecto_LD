@@ -31,7 +31,7 @@
             panel1 = new Panel();
             treePermissions = new TreeView();
             panel3 = new Panel();
-            txtComercialName = new TextBox();
+            txtRoleName = new TextBox();
             label2 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
@@ -70,7 +70,7 @@
             // 
             // panel3
             // 
-            panel3.Controls.Add(txtComercialName);
+            panel3.Controls.Add(txtRoleName);
             panel3.Controls.Add(label2);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 35);
@@ -78,14 +78,14 @@
             panel3.Size = new Size(623, 66);
             panel3.TabIndex = 38;
             // 
-            // txtComercialName
+            // txtRoleName
             // 
-            txtComercialName.BorderStyle = BorderStyle.FixedSingle;
-            txtComercialName.Font = new Font("Segoe UI", 9.75F);
-            txtComercialName.Location = new Point(131, 16);
-            txtComercialName.Name = "txtComercialName";
-            txtComercialName.Size = new Size(445, 29);
-            txtComercialName.TabIndex = 3;
+            txtRoleName.BorderStyle = BorderStyle.FixedSingle;
+            txtRoleName.Font = new Font("Segoe UI", 9.75F);
+            txtRoleName.Location = new Point(131, 16);
+            txtRoleName.Name = "txtRoleName";
+            txtRoleName.Size = new Size(445, 29);
+            txtRoleName.TabIndex = 3;
             // 
             // label2
             // 
@@ -200,7 +200,7 @@
         private TextBox textBox6;
         private Panel panel3;
         private Label label2;
-        private TextBox txtComercialName;
+        private TextBox txtRoleName;
         private TreeView treePermissions;
     }
 }

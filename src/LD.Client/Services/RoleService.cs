@@ -19,9 +19,9 @@ namespace LD.Client.Services
         }
 
 
-        public async Task<ApiResponseDto<RoleRequest>> GetRolById(int rolId)
+        public async Task<ApiResponseDto<RoleRequest>> GetRoleById(string roleId)
         {
-            return await _api.GetAsync<ApiResponseDto<RoleRequest>>(_apiEndpoints.Role_GetById.Replace("{id}", rolId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<RoleRequest>>(_apiEndpoints.Role_GetById.Replace("{id}", roleId));
         }
 
         public async Task<ApiResponseDto<List<RolePermissionDto>>> GetRols()
@@ -34,14 +34,14 @@ namespace LD.Client.Services
             return await _api.PostAsync<RoleRequest, ApiResponseDto<string>>(_apiEndpoints.Role_Create,request);
         }
 
-        public async Task<ApiResponseDto<string>> UpdateRol(int rolId, RoleRequest request)
+        public async Task<ApiResponseDto<string>> UpdateRol(string rolId, RoleRequest request)
         {
-            return await _api.PutAsync<RoleRequest, ApiResponseDto<string>>(_apiEndpoints.Role_Update.Replace("{id}", rolId.ToString()), request);
+            return await _api.PutAsync<RoleRequest, ApiResponseDto<string>>(_apiEndpoints.Role_Update.Replace("{id}", rolId), request);
         }
 
-        public async Task<ApiResponseDto<string>> ArchiveRol(int rolId)
+        public async Task<ApiResponseDto<string>> ArchiveRol(string rolId)
         {
-            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Role_Delete.Replace("{id}", rolId.ToString()));
+            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Role_Delete.Replace("{id}", rolId));
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using LD.Client.Services;
 using LD.Contracts.Client;
 using LD.Contracts.DTOs.Auth;
+using LD.Contracts.DTOs.User;
 using LD.Contracts.Enums;
+using LD.Contracts.Requests;
 using LD.Contracts.Requests.Client;
 using LD.Contracts.Responses;
 using LD.Forms.Classes;
@@ -23,23 +25,25 @@ namespace LD.Forms.Views.Dialogs
     public partial class FrmNuevoRol : DraggableForm
     {
         private readonly ModuleService _moduleService;
-        private ClientDto? ClientSelected { get; set; }
+        private readonly RoleService _roleService;
+
+        private RoleDto? RoleSelected { get; set; }
         private readonly DialogMessageService _dialogService;
 
-        public FrmNuevoRol(ModuleService moduleService, DialogMessageService dialogService)
+        public FrmNuevoRol(ModuleService moduleService, RoleService roleService, DialogMessageService dialogService)
         {
             InitializeComponent();
             EnableDrag(panel2);
             EnableDrag(panel1);
             _moduleService = moduleService;
+            _roleService = roleService;
             _dialogService = dialogService;
 
         }
 
-        public async void SetClient(ClientDto client)
+        public void SetRole(RoleDto role)
         {
-            ClientSelected = client;
-            await CargarDatosAsync();
+            RoleSelected = role;
         }
 
         protected override async void OnShown(EventArgs e)
@@ -67,24 +71,37 @@ namespace LD.Forms.Views.Dialogs
                 treePermissions.Nodes.Add(moduleNode);
             }
 
-
+            if (RoleSelected != null)
+                await CargarDatosAsync();
         }
 
         private async Task CargarDatosAsync()
         {
             try
             {
-                //var response = await _clientService.GetClientById(ClientSelected?.Id ?? 0);
+                var response = await _roleService.GetRoleById(RoleSelected?.RoleId);
 
-                //if (!response.IsSuccess)
-                //{
-                //    MessageBox.Show(response.Message);
-                //    return;
-                //}
-                //var client = response.Data;
+                if (!response.IsSuccess)
+                {
+                    MessageBox.Show(response.Message);
+                    return;
+                }
+                var role = response.Data;
 
+                txtRoleName.Text = role?.RoleName ?? "";
 
+                var permissions = role?.Permissions.Select(p => p.PermissionId).ToHashSet() ?? new HashSet<int>();
 
+                foreach (TreeNode moduleNode in treePermissions.Nodes)
+                {
+                    foreach (TreeNode permissionNode in moduleNode.Nodes)
+                    {
+                        if (permissionNode.Tag is int permId)
+                            permissionNode.Checked = permissions.Contains(permId);
+                    }
+                }
+
+                treePermissions.ExpandAll();
             }
             catch (Exception ex)
             {
@@ -112,24 +129,24 @@ namespace LD.Forms.Views.Dialogs
         {
             this.Close();
         }
-        //private Task<ApiResponseDto<string>> CreateClient(ClientRequest request) =>
-        //    _clientService.CreateClient(request);
+        private Task<ApiResponseDto<string>> CreateRole(RoleRequest request) =>
+            _roleService.CreateRol (request);
 
-        //private Task<ApiResponseDto<string>> EditClient(int clientId, ClientRequest request) =>
-        //    _clientService.UpdateClient(clientId, request);
-        //private async Task<ApiResponseDto<string>> SaveClient(ClientRequest request)
-        //{
-        //    return ClientSelected != null
-        //        ? await EditClient(ClientSelected?.Id ?? 0, request)
-        //        : await CreateClient(request);
-        //}
-
-        private ClientRequest BuildRequest()
+        private Task<ApiResponseDto<string>> UpdateRole(string roleId, RoleRequest request) =>
+            _roleService.UpdateRol(roleId, request);
+        private async Task<ApiResponseDto<string>> SaveClient(RoleRequest request)
         {
+            return RoleSelected != null
+                ? await UpdateRole(RoleSelected?.RoleId??"", request)
+                : await CreateRole(request);
+        }
 
-            return new ClientRequest
+        private RoleRequest BuildRequest()
+        {
+            return new RoleRequest
             {
-
+                RoleName = txtRoleName.Text.Trim(),
+                Permissions = GetPermissions().Select(id => new PermissionDto { PermissionId = id }).ToList()
             };
         }
 
@@ -147,17 +164,21 @@ namespace LD.Forms.Views.Dialogs
         {
             try
             {
-                //btnSave.Enabled = false;
+                btnSave.Enabled = false;
 
-                //var request = BuildRequest();
+                var request = BuildRequest();
 
-                //var result = await SaveClient(request);
+                ApiResponseDto<string> result;
+                if (RoleSelected != null )
+                    result = await _roleService.UpdateRol(RoleSelected.RoleId, request);
+                else
+                    result = await _roleService.CreateRol(request);
 
-                //ShowResult(result);
+                ShowResult(result);
 
-                //ResponseForm = result.IsSuccess;
-                //if (result.IsSuccess)
-                //    this.Close();
+                ResponseForm = result.IsSuccess;
+                if (result.IsSuccess)
+                    this.Close();
             }
             catch (Exception ex)
             {
