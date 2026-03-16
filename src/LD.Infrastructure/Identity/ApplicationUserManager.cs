@@ -336,6 +336,16 @@ namespace LD.Infrastructure
                 .ToListAsync();
         }
 
+        public Task<List<RolePermissionDto>> GetRolesWithPermissionsAsync()
+        {
+            return _roleManager.Roles
+                .Include(r => r.RolePermissions)
+                .ThenInclude(rp => rp.Permission)
+                .AsNoTracking()
+                .ProjectTo<RolePermissionDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         //public async Task<IList<string>> GetRolesAsync(ApplicationUser user)
         //{
         //    return await _userManager.GetRolesAsync(user);

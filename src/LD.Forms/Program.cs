@@ -88,6 +88,7 @@ namespace LD
 
 
 
+
             // 🔹 Dialogs states
             services.AddTransient<FrmConfirm>();
             services.AddTransient<FrmError>();
@@ -112,7 +113,7 @@ namespace LD
             services.AddTransient<FrmNuevoMontacargas>();
             services.AddTransient<FrmChooseUser>();
             services.AddTransient<FrmDocumentos>();
-
+            services.AddTransient<FrmRoles>();
             services.AddTransient<FrmNuevoRol>();
 
 

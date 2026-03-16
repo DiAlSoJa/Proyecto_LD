@@ -16,7 +16,6 @@ namespace LD.Infrastructure.Mappers
             CreateMap<ApplicationRole, RoleRequest>()
         .ForMember(re => re.RoleName,
             opt => opt.MapFrom(src => src.Name))
-
         .ForMember(re => re.Permissions,
             opt => opt.MapFrom(src => src.RolePermissions
                 .Select(p => new PermissionDto{
@@ -24,6 +23,20 @@ namespace LD.Infrastructure.Mappers
                   PermissionName = p.Permission.PermissionName??""
                 })
                 .ToList()));
+
+            CreateMap<ApplicationRole, RolePermissionDto>()
+            .ForMember(re => re.Id,
+                opt => opt.MapFrom(src => src.Id))
+            .ForMember(re => re.RoleName,
+                opt => opt.MapFrom(src => src.Name))
+            .ForMember(re => re.Permissions,
+                opt => opt.MapFrom(src => src.RolePermissions
+                    .Select(p => new PermissionDto
+                    {
+                        PermissionId = p.PermissionId,
+                        PermissionName = p.Permission.PermissionName ?? ""
+                    })
+                    .ToList()));
         }
     }
 }

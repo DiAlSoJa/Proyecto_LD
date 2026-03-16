@@ -105,5 +105,10 @@ namespace LD.Forms.Views.Forms
         {
             var form = _dialogFormService.ShowDialog<FrmNuevoRol>();
         }
+
+        private void btnRoles_Click(object sender, EventArgs e)
+        {
+            var form = _dialogFormService.ShowDialog<FrmRoles>();
+        }
     }
 }

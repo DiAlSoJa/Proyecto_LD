@@ -61,8 +61,8 @@ namespace LD.Forms.Views.Forms
                 MessageBox.Show(result.Message);
                 return;
             }
+
             _clientsBinding.DataSource = result.Data;
-            
             _gridFilter.SetData(result.Data);
             dataGridView1 = _gridFilter.BuildFilterColumns();
         }

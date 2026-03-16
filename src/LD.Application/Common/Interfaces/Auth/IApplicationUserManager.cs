@@ -1,4 +1,5 @@
 ﻿using LD.Contracts.DTOs;
+using LD.Contracts.DTOs.User;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.User;
@@ -23,6 +24,8 @@ namespace LD.Application.Common.Interfaces.Auth
         //Task<IList<string>> GetRolesAsync(UserDto user);
         //Task<IList<Claim>> GetClaimsAsync(UserDto user);
         Task<List<UserDto>> GetUsersAsync();
+        Task<List<RolePermissionDto>> GetRolesWithPermissionsAsync();
+
         Task<RoleRequest?> GetRoleByIdAsync(string roleId);
         Task<List<DropDownDto>> GetRoleLookupAsync();
 

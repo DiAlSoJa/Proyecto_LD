@@ -24,9 +24,9 @@ namespace LD.Client.Services
             return await _api.GetAsync<ApiResponseDto<RoleRequest>>(_apiEndpoints.Role_GetById.Replace("{id}", rolId.ToString()));
         }
 
-        public async Task<ApiResponseDto<List<RoleDto>>> GetRols()
+        public async Task<ApiResponseDto<List<RolePermissionDto>>> GetRols()
         {
-            return await _api.GetAsync<ApiResponseDto<List<RoleDto>>>(_apiEndpoints.Role_GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<RolePermissionDto>>>(_apiEndpoints.Role_GetAll);
         }
 
         public async Task<ApiResponseDto<string>> CreateRol(RoleRequest request)

@@ -57,8 +57,7 @@ namespace LD.Forms.Views.Forms
             button7 = new Button();
             button4 = new Button();
             panelContainer = new Panel();
-            btnNewRol = new Button();
-            btnEditRol = new Button();
+            btnRoles = new Button();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
@@ -79,8 +78,6 @@ namespace LD.Forms.Views.Forms
             // 
             // panel1
             // 
-            panel1.Controls.Add(btnEditRol);
-            panel1.Controls.Add(btnNewRol);
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
@@ -93,12 +90,13 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel1.Controls.Add(btnActualizar);
             flowLayoutPanel1.Controls.Add(btnAdd);
             flowLayoutPanel1.Controls.Add(btnEdit);
+            flowLayoutPanel1.Controls.Add(btnRoles);
             flowLayoutPanel1.Controls.Add(flowLayoutPanel2);
             flowLayoutPanel1.Dock = DockStyle.Left;
             flowLayoutPanel1.Location = new Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(21, 0, 0, 0);
-            flowLayoutPanel1.Size = new Size(473, 43);
+            flowLayoutPanel1.Size = new Size(598, 43);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // btnActualizar
@@ -330,29 +328,17 @@ namespace LD.Forms.Views.Forms
             panelContainer.Size = new Size(1605, 672);
             panelContainer.TabIndex = 3;
             // 
-            // btnNewRol
+            // btnRoles
             // 
-            btnNewRol.Image = Properties.Resources.plusM;
-            btnNewRol.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNewRol.Location = new Point(996, 2);
-            btnNewRol.Name = "btnNewRol";
-            btnNewRol.Size = new Size(137, 35);
-            btnNewRol.TabIndex = 1;
-            btnNewRol.Text = "Nuevo rol";
-            btnNewRol.UseVisualStyleBackColor = true;
-            btnNewRol.Click += btnNewRol_Click;
-            // 
-            // btnEditRol
-            // 
-            btnEditRol.Image = Properties.Resources.editar;
-            btnEditRol.ImageAlign = ContentAlignment.MiddleLeft;
-            btnEditRol.Location = new Point(1139, 2);
-            btnEditRol.Name = "btnEditRol";
-            btnEditRol.Size = new Size(107, 35);
-            btnEditRol.TabIndex = 3;
-            btnEditRol.Text = "Editar rol";
-            btnEditRol.UseVisualStyleBackColor = true;
-            btnEditRol.Click += btnEditRol_Click;
+            btnRoles.Image = Properties.Resources.plusM;
+            btnRoles.ImageAlign = ContentAlignment.MiddleLeft;
+            btnRoles.Location = new Point(379, 3);
+            btnRoles.Name = "btnRoles";
+            btnRoles.Size = new Size(137, 35);
+            btnRoles.TabIndex = 4;
+            btnRoles.Text = "Roles";
+            btnRoles.UseVisualStyleBackColor = true;
+            btnRoles.Click += btnRoles_Click;
             // 
             // FrmUsuarios
             // 
@@ -411,5 +397,6 @@ namespace LD.Forms.Views.Forms
         private Panel panelContainer;
         private Button btnEditRol;
         private Button btnNewRol;
+        private Button btnRoles;
     }
 }

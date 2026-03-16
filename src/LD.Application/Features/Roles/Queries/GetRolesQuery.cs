@@ -10,24 +10,24 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LD.Application.Features.Roles.Queries;
 
-public class GetRolesQuery : IRequest<Result<List<RoleDto>>>
+public class GetRolesQuery : IRequest<Result<List<RolePermissionDto>>>
 {
 
 }
 
-public class GetRolesQueryHandler : IRequestHandler<GetRolesQuery, Result<List<RoleDto>>>
+public class GetRolesQueryHandler : IRequestHandler<GetRolesQuery, Result<List<RolePermissionDto>>>
 {
 
-    //private readonly RoleManager<IdentityRole> _roleManager;
 
-    public GetRolesQueryHandler()
+    private readonly IApplicationUserManager _userManager;
+    public GetRolesQueryHandler(IApplicationUserManager userManager)
     {
-        //_roleManager = roleManager;
+        _userManager = userManager;
     }
 
-    public async Task<Result<List<RoleDto>>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<RolePermissionDto>>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
     {
-        //var roles =  _roleManager.Roles.ToList();
-        return Result<List<RoleDto>>.Success(null, "Roles obtenidos exitosamente");
+        var roles = await _userManager.GetRolesWithPermissionsAsync();
+        return Result<List<RolePermissionDto>>.Success(roles, "Roles obtenidos exitosamente");
     }
 }
