@@ -13,29 +13,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD.Application.Features.Status.Comands;
+namespace LD.Application.Features.InventaryStatus.Comands;
 
-public class UpdateStatusCommand : StatusRequest, IRequest<Result<string>>
+public class UpdateInventaryStatusCommand : InventaryStatusRequest, IRequest<Result<string>>
 {
 
 }
 
 
-public class UpdateStatusCommandHandler : IRequestHandler<UpdateStatusCommand, Result<string>>
+public class UpdateStatusCommandHandler : IRequestHandler<UpdateInventaryStatusCommand, Result<string>>
 {
-    private readonly IRepository<LD.Domain.Entities.Status> _statusRepository;
+    private readonly IRepository<LD.Domain.Entities.InventaryStatus> _statusRepository;
     private readonly IMapper _mapper;
-    public UpdateStatusCommandHandler(IRepository<LD.Domain.Entities.Status> statusRepository, IMapper mapper)
+    public UpdateStatusCommandHandler(IRepository<LD.Domain.Entities.InventaryStatus> statusRepository, IMapper mapper)
     {
         _statusRepository = statusRepository;
         _mapper = mapper;
     }
 
-    public async Task<Result<string>> Handle(UpdateStatusCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UpdateInventaryStatusCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var statusX = await _statusRepository.GetByIdAsync(request.StatusId);
+            var statusX = await _statusRepository.GetByIdAsync(request.InventoryStatusId);
             if (statusX is null)
                 return Result<string>.Failure("No existe el estatus", new List<string> { "Hubo un error al obtener el estatus" }, 404);
             _mapper.Map(request, statusX);

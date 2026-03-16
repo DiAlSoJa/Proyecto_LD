@@ -1,7 +1,7 @@
 ﻿using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
-using LD.Application.Features.Status.Comands;
+using LD.Application.Features.InventaryStatus.Comands;
 using LD.Application.Features.Status.Queries;
 using LD.Contracts.Constants;
 using LD.Domain.Entities;
@@ -21,32 +21,32 @@ namespace LD.Api.Controllers
         [Permission(PermissionKeys.Status_View)]
         public async Task<IActionResult> GetStatus()
         {
-            return ResultExtensions.ToActionResult(await Mediator.Send(new StatusQuery()));
+            return ResultExtensions.ToActionResult(await Mediator.Send(new InventaryStatusQuery()));
 
         }
 
         [HttpGet("{statusId}")]
         [Permission(PermissionKeys.Status_View)]
         public async Task<IActionResult> GeStatusById(int statusId)
-            => ResultExtensions.ToActionResult(await Mediator.Send(new StatusByIdQuery(statusId)));
+            => ResultExtensions.ToActionResult(await Mediator.Send(new InventaryStatusByIdQuery(statusId)));
 
 
-        [HttpPost]
+      /*  [HttpPost]
         [Permission(PermissionKeys.Status_Create)]
-        public async Task<IActionResult> CreateStatus([FromBody] CreateStatusCommand command)
+        public async Task<IActionResult> CreateStatus([FromBody] CreateInventaryStatusCommand command)
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
 
         [HttpPut("{statusId}")]
         [Permission(PermissionKeys.Status_Update)]
-        public async Task<IActionResult> UpdateStatus(int statusId, UpdateStatusCommand command)
+        public async Task<IActionResult> UpdateStatus(int statusId, UpdateInventaryStatusCommand command)
         {
             command.StatusId = statusId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
-
+      */
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteWarehouse(int id)
         //{

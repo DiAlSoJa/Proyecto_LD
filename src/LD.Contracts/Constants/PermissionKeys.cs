@@ -76,6 +76,11 @@ public static class PermissionKeys
     public const string Status_Update = "users.create";
     public const string Status_Delete = "users.create";
 
+    public const string Vehicle_View = "users.read";
+    public const string Vehicle_Create = "users.create";
+    public const string Vehicle_Update = "users.create";
+    public const string Vehicle_Delete = "users.create";
+
 
 
 

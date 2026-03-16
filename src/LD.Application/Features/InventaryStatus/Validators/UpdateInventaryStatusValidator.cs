@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using LD.Application.Features.Clients.Queries;
 using FluentValidation;
-using LD.Application.Features.Status.Comands;
+using LD.Application.Features.InventaryStatus.Comands;
 
 namespace LD.Application.Features.Status.Validators;
 
-public class UpdateStatusValidator
-    : AbstractValidator<UpdateStatusCommand>
+public class UpdateInventaryStatusValidator
+    : AbstractValidator<UpdateInventaryStatusCommand>
 {
-    public UpdateStatusValidator()
+    public UpdateInventaryStatusValidator()
     {
         RuleFor(x => x.Clave)
              .NotEmpty().WithMessage("El nombre del estatus no debe estar vacio")

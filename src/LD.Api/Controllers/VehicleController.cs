@@ -1,52 +1,60 @@
-﻿//using LD.Application.Features.Auth.Commands;
-//using MediatR;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
+using LD.Application.Features.Vehicle.Comands;
+using LD.Application.Features.Vehicle.Queries;
+using LD.Application.Features.Vehicule.Comands;
+using LD.Application.Features.Warehouses.Queries;
+using LD.Contracts.Constants;
+using LD.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace LD.Api.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class VehicleController : ControllerBase
-//    {
-//        private readonly IMediator _mediator;
+namespace LD.Api.Controllers
+{
+    [Authorize]
+    [Route("api/[controller]")]
+    public class VehicleController : CommonController
+    {
 
-//        public VehicleController(IMediator mediator)
-//        {
-//            _mediator = mediator;
-//        }
-//        [HttpGet]
-//        public async Task<IActionResult> GetContact()
-//        {
-//            return Ok("get Contact");
+        [HttpGet]
+        [Permission(PermissionKeys.Vehicle_View)]
+        public async Task<IActionResult> GetVehicle()
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new VehicleQuery()));
 
-//        }
+        }
 
-//        [HttpGet("{id}")]
-//        public async Task<IActionResult> GetContact(int id)
-//        {
-
-//            return Ok("GetContactId");
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> CreateContact()
-//        {
-//            return Ok("create Contact");
-//        }
-
-//        [HttpPut("{id}")]
-//        public async Task<IActionResult> UpdateContact()
-//        {
-//            return Ok("update Contact");
-//        }
-
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteContact(int id)
-//        {
-//            return Ok("Delete Contact");
-//        }
+        [HttpGet("{vehicleId}")]
+        [Permission(PermissionKeys.Vehicle_View)]
+        public async Task<IActionResult> GeVehicleById(int vehicleId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new VehicleByIdQuery(vehicleId)));
 
 
-//    }
-//}
+        [HttpPost]
+        [Permission(PermissionKeys.Vehicle_Create)]
+        public async Task<IActionResult> CreateVehicle([FromBody] CreateVehicleCommand command)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
+        [HttpPut("{vehicleId}")]
+        [Permission(PermissionKeys.Vehicle_Update)]
+        public async Task<IActionResult> UpdateVehicle(int vehicleId, UpdateVehicleCommand command)
+        {
+            command.VehicleId = vehicleId;
+            var result = await Mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
+        }
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteWarehouse(int id)
+        //{
+        //    return Ok("Delete Contact");
+        //}
+
+
+    }
+}
