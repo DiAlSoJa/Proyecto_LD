@@ -71,6 +71,11 @@ public static class PermissionKeys
     public const string Category_Update = "users.create";
     public const string Category_Delete = "users.create";
 
+    public const string Status_View = "users.read";
+    public const string Status_Create = "users.create";
+    public const string Status_Update = "users.create";
+    public const string Status_Delete = "users.create";
+
 
 
 

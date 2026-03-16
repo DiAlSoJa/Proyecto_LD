@@ -25,7 +25,7 @@ namespace LD.Domain.Entities
         [MaxLength(50)]
         public string Type { get; set; }              // CAJA SECA, RABON, CAMIONETA
 
-        [Required]
+        
         public decimal Capacity { get; set; }        // 5.00
 
         [MaxLength(50)]

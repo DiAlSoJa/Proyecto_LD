@@ -1,0 +1,58 @@
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
+using LD.Api.Controllers.Common;
+using LD.Application.Features.Status.Comands;
+using LD.Application.Features.Status.Queries;
+using LD.Contracts.Constants;
+using LD.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LD.Api.Controllers
+{
+    [Authorize]
+    [Route("api/[controller]")]
+    public class StatusController : CommonController
+    {
+
+        [HttpGet]
+        [Permission(PermissionKeys.Status_View)]
+        public async Task<IActionResult> GetStatus()
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new StatusQuery()));
+
+        }
+
+        [HttpGet("{statusId}")]
+        [Permission(PermissionKeys.Status_View)]
+        public async Task<IActionResult> GeStatusById(int statusId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new StatusByIdQuery(statusId)));
+
+
+        [HttpPost]
+        [Permission(PermissionKeys.Status_Create)]
+        public async Task<IActionResult> CreateStatus([FromBody] CreateStatusCommand command)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
+        [HttpPut("{statusId}")]
+        [Permission(PermissionKeys.Status_Update)]
+        public async Task<IActionResult> UpdateStatus(int statusId, UpdateStatusCommand command)
+        {
+            command.StatusId = statusId;
+            var result = await Mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
+        }
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteWarehouse(int id)
+        //{
+        //    return Ok("Delete Contact");
+        //}
+
+
+    }
+}
