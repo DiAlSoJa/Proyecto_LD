@@ -61,8 +61,9 @@ namespace LD.Forms.Views.Dialogs
         {
             base.OnShown(e);
 
+            await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo roles");
 
-            await CargarDatosAsync();
+            
 
         }
 
@@ -136,17 +137,19 @@ namespace LD.Forms.Views.Dialogs
         }
 
 
-        private void addBtn_Click(object sender, EventArgs e)
+        private async void addBtn_Click(object sender, EventArgs e)
         {
             var form = _dialogFormService.ShowDialog<FrmNuevoRol>();
+            if (form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo roles");
         }
 
-        private void editBtn_Click(object sender, EventArgs e)
+        private async void editBtn_Click(object sender, EventArgs e)
         {
             var form = _dialogFormService.ShowDialog<FrmNuevoRol>(config =>
             {
                 config.SetRole(selectedRole);
             });
+            if (form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo roles");
         }
 
        
