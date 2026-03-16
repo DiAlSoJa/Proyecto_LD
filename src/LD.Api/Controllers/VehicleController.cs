@@ -27,10 +27,10 @@ namespace LD.Api.Controllers
 
         }
 
-        [HttpGet("{vehicleId}")]
+        [HttpGet("{plates}")]
         [Permission(PermissionKeys.Vehicle_View)]
-        public async Task<IActionResult> GeVehicleById(int vehicleId)
-            => ResultExtensions.ToActionResult(await Mediator.Send(new VehicleByIdQuery(vehicleId)));
+        public async Task<IActionResult> GeVehicleById(string plates)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new VehicleByIdQuery(plates)));
 
 
         [HttpPost]
@@ -40,11 +40,11 @@ namespace LD.Api.Controllers
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
 
-        [HttpPut("{vehicleId}")]
+        [HttpPut("{plates}")]
         [Permission(PermissionKeys.Vehicle_Update)]
-        public async Task<IActionResult> UpdateVehicle(int vehicleId, UpdateVehicleCommand command)
+        public async Task<IActionResult> UpdateVehicle(string plates, UpdateVehicleCommand command)
         {
-            command.VehicleId = vehicleId;
+            command.Plates = plates;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }

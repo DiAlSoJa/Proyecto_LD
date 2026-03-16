@@ -12,14 +12,9 @@ namespace LD.Domain.Entities
     public class Category : AuditableEntity
     {
         [Key]
-        public int CategoryId { get; set; }
-      
-        //[Required]
-        //public int ProyectoId { get; set; }
-
         [Required]
         [MaxLength(50)]
-        public string Clave { get; set; }   // A, B, C...
+        public string CategoryIdS { get; set; }   // A, B, C...
 
         [Required]
         [MaxLength(150)]

@@ -35,7 +35,7 @@ public class UpdateCurrencyCommandHandler : IRequestHandler<UpdateCurrencyComman
     {
         try
         {
-            var currency = await _currencyRepository.GetByIdAsync(request.CurrencyId.Value);
+            var currency = await _currencyRepository.GetByIdAsync(request.CurrencyIdS);
             if (currency is null)
                 return Result<string>.Failure("No existe la moneda", new List<string> { "Hubo un error al obtener la moneda" }, 404);
             _mapper.Map(request, currency);

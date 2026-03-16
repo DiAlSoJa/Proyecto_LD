@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Vehicle.Queries;
 
-public record VehicleByIdQuery(int vehiculeId)
+public record VehicleByIdQuery(string plates)
     : IRequest<Result<VechicleRequest?>>;
 
 
@@ -33,7 +33,7 @@ public class VehicleByIdQueryHandler : IRequestHandler<VehicleByIdQuery, Result<
 
     public async Task<Result<VechicleRequest?>> Handle(VehicleByIdQuery request, CancellationToken cancellationToken)
     {
-        var vehiculeDb = await _vehicleRepository.GetByIdAsync(request.vehiculeId);
+        var vehiculeDb = await _vehicleRepository.GetByIdAsync(request.plates);
         if (vehiculeDb == null) return Result<VechicleRequest?>.Failure("Vehículo no encontrado", new(), 404);
         return Result<VechicleRequest?>.Success(_mapper.Map<VechicleRequest>(vehiculeDb), "Vehículo obtenido con éxito");
     }

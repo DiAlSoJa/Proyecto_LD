@@ -34,6 +34,11 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<Location?> GetByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<DropDownDto>> GetLookup()
         {
             return await _context.Locations

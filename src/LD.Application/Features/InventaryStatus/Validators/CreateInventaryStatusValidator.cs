@@ -13,10 +13,10 @@ public class CreateInventaryStatusValidator
 {
     public CreateInventaryStatusValidator()
     {
-        /*RuleFor(x => x.)
+        RuleFor(x => x.InventoryStatusIdS)
              .NotEmpty().WithMessage("El nombre del estatus no debe estar vacio")
-             .MaximumLength(10).WithMessage("El nombre del estatus no debe exceder de 10 caracteres");
-        **/
+             .MaximumLength(20).WithMessage("El nombre del estatus no debe exceder de 20 caracteres");
+        
 
 
     }

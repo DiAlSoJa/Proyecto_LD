@@ -35,7 +35,7 @@ public class UpdateUnitCommandHandler : IRequestHandler<UpdateUnitCommand, Resul
     {
         try
         {
-            var unit = await _unitRepository.GetByIdAsync(request.UnitId.Value);
+            var unit = await _unitRepository.GetByIdAsync(request.UnitIdS);
             if (unit is null)
                 return Result<string>.Failure("No existe la unidad", new List<string> { "Hubo un error al obtener la unidad" }, 404);
             _mapper.Map(request, unit);

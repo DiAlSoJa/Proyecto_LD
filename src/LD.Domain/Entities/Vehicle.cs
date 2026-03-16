@@ -11,7 +11,9 @@ namespace LD.Domain.Entities
     public class Vehicle : AuditableEntity
     {
         [Key]
-        public int VehicleId { get; set; }
+        [MaxLength(50)]
+        public string Plates { get; set; }            // JP26370
+     
 
         [Required]
         [MaxLength(20)]
@@ -27,9 +29,7 @@ namespace LD.Domain.Entities
 
         
         public decimal Capacity { get; set; }        // 5.00
-
-        [MaxLength(50)]
-        public string Plates { get; set; }            // JP26370
+      
 
         // Dimensiones (metros)
         public decimal Long { get; set; }            // 4.20

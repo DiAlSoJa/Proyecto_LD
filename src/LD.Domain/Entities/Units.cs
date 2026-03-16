@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 namespace LD.Domain.Entities
 {
     public class Units : AuditableEntity
-    {
-        [Key]
-        public int UnitId { get; set; }
+    {     
 
+        [Key]
         [Required]
-        [MaxLength(10)]
-        public string Clave { get; set; }   // KG, PZA, PAL, CJ
+        [MaxLength(20)]
+        public string UnitIdS { get; set; }   // KG, PZA, PAL, CJ
 
         [Required]
         [MaxLength(100)]

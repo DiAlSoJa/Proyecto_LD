@@ -10,12 +10,12 @@ namespace LD.Contracts.Requests
     public class VechicleRequest
     {
 
-        public int VehicleId { get; set; }        
+        public string Plates { get; set; }            // JP26370
         public string VehicleNumber { get; set; }   // No. Vehículo        
         public string Name { get; set; }            // FORD DIESEL 96        
         public string Type { get; set; }              // CAJA SECA, RABON, CAMIONETA
         public decimal Capacity { get; set; }        // 5.00        
-        public string Plates { get; set; }            // JP26370
+        
 
         // Dimensiones (metros)
         public decimal Long { get; set; }            // 4.20

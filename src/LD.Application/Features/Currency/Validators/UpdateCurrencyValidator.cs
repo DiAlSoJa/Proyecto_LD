@@ -15,7 +15,7 @@ public class UpdateCurrencyValidator
 {
     public UpdateCurrencyValidator()
     {
-        RuleFor(x => x.Clave)
+        RuleFor(x => x.CurrencyIdS)
              .NotEmpty().WithMessage("El nombre de la moneda no debe estar vacia")
              .MaximumLength(5).WithMessage("El nombre de la moneda no debe exceder de 5 caracteres");
 

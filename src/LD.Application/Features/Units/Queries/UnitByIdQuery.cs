@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Warehouses.Queries;
 
-public record UnitByIdQuery(int UnitId)
+public record UnitByIdQuery(string UnitId)
     : IRequest<Result<UnitRequest?>>;
 
 

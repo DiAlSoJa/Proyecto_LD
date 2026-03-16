@@ -9,6 +9,7 @@ namespace LD.Application.Common.Interfaces.Repository
     public interface IRepository<T>
     {
         Task<T?> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(string id);
         Task<List<T>?> GetManyAsync();
         Task<bool> CreateAsync(T newModoe);
         Task<bool> UpdateAsync(T modelToUpdate);

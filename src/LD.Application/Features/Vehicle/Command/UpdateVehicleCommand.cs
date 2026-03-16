@@ -35,7 +35,7 @@ public class UpdateVehiculeCommandHandler : IRequestHandler<UpdateVehicleCommand
     {
         try
         {
-            var vehicle = await _vehicleRepository.GetByIdAsync(request.VehicleId);
+            var vehicle = await _vehicleRepository.GetByIdAsync(request.Plates);
             if (vehicle is null)
                 return Result<string>.Failure("No existe el vehículo", new List<string> { "Hubo un error al obtener el vehículo" }, 404);
             _mapper.Map(request, vehicle);

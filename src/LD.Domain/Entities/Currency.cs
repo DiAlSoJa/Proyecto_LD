@@ -11,11 +11,9 @@ namespace LD.Domain.Entities
     public class Currency : AuditableEntity
     {
         [Key]
-        public int CurrencyId { get; set; }
-
         [Required]
         [MaxLength(5)]
-        public string Clave { get; set; }   // MXN, USD, EUR
+        public string CurrencyIdS { get; set; }   // MXN, USD, EUR
 
         [Required]
         [MaxLength(100)]

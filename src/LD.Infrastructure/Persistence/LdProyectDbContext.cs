@@ -114,7 +114,7 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(x => x.PermissionId);
 
             builder.Entity<Units>()
-                .HasIndex(u => u.Clave)
+                .HasIndex(u => u.UnitIdS)
                 .IsUnique(); 
 
             builder.Entity<StorageType>().HasData(

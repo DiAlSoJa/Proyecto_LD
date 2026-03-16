@@ -8,8 +8,7 @@ namespace LD.Contracts.Currency
 {
     public class CurrencyDto
     {
-        public int CurrencyId { get; set; } 
-        public string Moneda { get; set; } = string.Empty;
+        public string CurrencyIdS { get; set; }         
         public string Descripcion { get; set; } = string.Empty;
     }
 
