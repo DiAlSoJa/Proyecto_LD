@@ -10,86 +10,12 @@
 
     <ShellContent
         Title="Login"
-        ContentTemplate="{DataTemplate local:LoginPage}"
-        Route="MainPage" />
-    <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:LoginPage}"
-        Route="login" />
-    <ShellContent
-          Title="Dashboard"
-        ContentTemplate="{DataTemplate local:DashboardPage}"
-        Route="dashboard" />
-    <ShellContent
-        Title="Registrar Licencia"
-        ContentTemplate="{DataTemplate local:RegisterLicense}"
-        Route="RegisterLicense" />
-    <ShellContent
-        Title="Registrar Vehículo"
-        ContentTemplate="{DataTemplate local:RegisterVehicule}"
-        Route="RegisterVehicule" />
-    <ShellContent
-            Title="Registrar Conductor"
-        ContentTemplate="{DataTemplate local:SignatureDriver}"
-        Route="SignatureDriver" />
-    <ShellContent
-        Title="Registrar Ubicación"
-        ContentTemplate="{DataTemplate local:ChangeLocationPage}"
-        Route="ChangeLocationPage" />
-    <ShellContent
-            Title="Registrar Movimiento"
-        ContentTemplate="{DataTemplate local:MovementPage}"
-        Route="MovementPage" />
-    <ShellContent
-        Title="Detalle Movimiento"
-        ContentTemplate="{DataTemplate local:MovementDetail}"
-        Route="MovementDetail" />
-    <ShellContent
-        Title="Reporte de Daños"
-        ContentTemplate="{DataTemplate local:DamageReportPage}"
-        Route="DamageReportPage" />
-    <ShellContent
-        Title="Detalle del Reporte de Daños"
-        ContentTemplate="{DataTemplate local:DamageReportDetailPage}"
-        Route="DamageReportDetailPage" />
-    <ShellContent
-        Title="Imprimir Reporte de Daños"
-        ContentTemplate="{DataTemplate local:DamageReportPrintPage}"
-        Route="DamageReportPrintPage" />
-    <ShellContent
-        Title="Recepción"
-        ContentTemplate="{DataTemplate local:ReceptionPage}"
-        Route="ReceptionPage" />
-    <ShellContent
-        Title="Picking"
-        ContentTemplate="{DataTemplate local:PickingPage}"
-        Route="PickingPage" />
-    <ShellContent
-        Title="Seguridad de Tareas"
-        ContentTemplate="{DataTemplate local:TaskSecurity}"
-        Route="TaskSecurity" />
-    <ShellContent
-        Title="Lista de Tareas"
-        ContentTemplate="{DataTemplate local:TaskList}"
-        Route="TaskList" />   
-    <ShellContent
-        Title="Resolver Tareas"
-        ContentTemplate="{DataTemplate local:TaskResolve}"
-        Route="TaskResolve" />
-    <ShellContent
-        Title="Operaciones de Almacén"
-        ContentTemplate="{DataTemplate local:WarehouseOperations}"
-        Route="WarehouseOperations" />
-    <ShellContent
-        Title="Lista de Inventario"
-        ContentTemplate="{DataTemplate local:InventoryList}"
-        Route="InventoryList" />
-    <ShellContent
-        Title="Checklist de Montacargas"
-        ContentTemplate="{DataTemplate local:ForkliftChecklistPage}"
-        Route="ForkliftChecklistPage" />
+        Route="login"
+        ContentTemplate="{DataTemplate local:LoginPage}" />
 
+    <ShellContent
+        Title="Dashboard"
+        Route="dashboard"
+        ContentTemplate="{DataTemplate local:DashboardPage}" />
 
 </Shell>
-    
-    

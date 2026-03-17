@@ -13,10 +13,16 @@ namespace LD.Client.Services
 
         public ApiService()
         {
-            _http = new HttpClient
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            _http = new HttpClient(handler) 
             {
                 Timeout = TimeSpan.FromSeconds(20)
             };
+
 
             _http.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
