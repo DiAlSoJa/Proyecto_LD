@@ -22,23 +22,28 @@ public class CreateRoleCommandHandler
     : IRequestHandler<CreateRoleCommand, Result<string>>
 {
 
-    //private readonly RoleManager<ApplicationRole> _roleManager;
-    private readonly IMapper _mapper;
-    public CreateRoleCommandHandler(IMapper mapper)
+    private readonly IApplicationUserManager _userManager;
+    public CreateRoleCommandHandler(IApplicationUserManager userManager)
     {
-        //_roleManager = roleManager;
-        _mapper = mapper;
+        _userManager = userManager;
     }
 
     public async Task<Result<string>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
- 
-        //var response = await _roleManager.CreateAsync(_mapper.Map<ApplicationRole>(request));
-        
-        //if (response.Succeeded)
-        //{
-        //    return Result<string>.Success("Todo bien","Role creado con exito");
-        //}
-        return Result<string>.Failure("No se pudo crear el role", new());
+        try
+        {
+            var response = await _userManager.CreateRoleAsync( request);
+            if (!response)
+            {
+                return Result<string>.Failure($"Hubo un error ", new List<string> { "No se pudo crear el rol con id {request.RoleId}" }, 401);
+            }
+            return Result<string>.Success("rol creado con exito", "rol creado  con exito");
+
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure($"Hubo un error", new List<string> { ex.Message }, 400);
+
+        }
     }
 }

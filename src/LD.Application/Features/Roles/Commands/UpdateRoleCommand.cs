@@ -14,7 +14,7 @@ namespace LD.Application.Features.Roles.Commands;
 
 public class UpdateRoleCommand : RoleRequest, IRequest<Result<string>>
 {
-    public string RoleId { get; set; }
+    public string? RoleId { get; set; }
 }
 
 public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Result<string>>

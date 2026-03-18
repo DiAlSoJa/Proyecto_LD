@@ -4,6 +4,7 @@ using LD.Api.Middlewares;
 using LD.Application;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
+using LD.Application.Common.Results;
 using LD.Contracts.Constants;
 using LD.Infrastructure;
 using LD.Infrastructure.Authorization;
@@ -18,6 +19,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Formatting.Compact;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +79,30 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = async context =>
+        {
+            context.HandleResponse(); // evita la respuesta default
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            var result = Result<string>.Failure("No autorizado",new List<string> (){"Necesitas authenticatrte" },401);
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(result));
+        },
+        OnForbidden = async context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "application/json";
+
+            var result = Result<string>.Failure("No tienes acceso", new List<string>() { "Necesitas auhtorizacion" }, 403);
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(result));
+        }
     };
 });
 builder.Services.AddAuthorization();

@@ -14,15 +14,15 @@ namespace LD.Infrastructure.Mappers
         public RoleProfile()
         {
             CreateMap<ApplicationRole, RoleRequest>()
-        .ForMember(re => re.RoleName,
-            opt => opt.MapFrom(src => src.Name))
-        .ForMember(re => re.Permissions,
-            opt => opt.MapFrom(src => src.RolePermissions
-                .Select(p => new PermissionDto{
-                  PermissionId=  p.PermissionId ,
-                  PermissionName = p.Permission.PermissionName??""
-                })
-                .ToList()));
+                .ForMember(re => re.RoleName,
+                    opt => opt.MapFrom(src => src.Name))
+                .ForMember(re => re.Permissions,
+                    opt => opt.MapFrom(src => src.RolePermissions
+                        .Select(p => new PermissionDto{
+                          PermissionId=  p.PermissionId ,
+                          PermissionName = p.Permission.PermissionName??""
+                        })
+                        .ToList()));
 
             CreateMap<ApplicationRole, RolePermissionDto>()
             .ForMember(re => re.Id,
