@@ -120,8 +120,8 @@ namespace LD.Forms.Classes
 
         public DataGridView BuildFilterColumns()
         {
-         
 
+           
             _propertyCache = typeof(T)
                 .GetProperties()
                 .ToDictionary(p => p.Name, p => p);
