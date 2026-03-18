@@ -109,6 +109,7 @@ public partial class FrmCatalogos : Form
         _categoryBinding.DataSource = result.Data;
         _gridFilterCa.SetData(result.Data);
         dtCategoria = _gridFilterCa.BuildFilterColumns();
+        dtCategoria.ApplyColumnHeadersFromDisplayName<CategoryDto>();
     }
     private async Task CargarMonedaAsync()
     {
