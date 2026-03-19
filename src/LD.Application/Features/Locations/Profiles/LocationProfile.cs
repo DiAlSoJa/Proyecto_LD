@@ -18,38 +18,36 @@ namespace LD.Application.Features.Clients.Profiles
                 .ForMember(dest => dest.LocationId,
                     opt => opt.MapFrom(src => src.LocationId))
                 .ForMember(dest => dest.Activo,
-                    opt => opt.MapFrom(src => src.IsActive))
-                .ForMember(dest => dest.AlmacenId,
-                    opt => opt.MapFrom(src => src.WarehouseId))
+                    opt => opt.MapFrom(src => src.IsActive))                
                 .ForMember(dest => dest.Almacen,
                     opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
                 .ForMember(dest => dest.Ubicacion,
                     opt => opt.MapFrom(src => src.LocationName))
                 .ForMember(dest => dest.Dimension,
                     opt => opt.MapFrom(src => $"{src.Height}x{src.Width}x{src.Depth}"))
-                .ForMember(dest => dest.Fiscal,
+                .ForMember(dest => dest.EsFiscal,
                     opt => opt.MapFrom(src => src.IsFiscal))
                 .ForMember(dest => dest.ControlTemperatura,
                     opt => opt.MapFrom(src => src.HasControlledTemperature))
-                .ForMember(dest => dest.Rack,
+                .ForMember(dest => dest.EsRack,
                     opt => opt.MapFrom(src => src.IsRack))
-                .ForMember(dest => dest.General,
+                .ForMember(dest => dest.EsGeneral,
                     opt => opt.MapFrom(src => src.IsGeneral))
-                .ForMember(dest => dest.Cuarentena,
+                .ForMember(dest => dest.EsCuarentena,
                     opt => opt.MapFrom(src => src.IsCuarentena))
-                .ForMember(dest => dest.Embarque,
+                .ForMember(dest => dest.EsEmbarque,
                     opt => opt.MapFrom(src => src.IsEmbarque))
-                .ForMember(dest => dest.Compartido,
+                .ForMember(dest => dest.EsCompartido,
                     opt => opt.MapFrom(src => src.IsCompartido))
-                .ForMember(dest => dest.ReciboYEmbarque,
+                .ForMember(dest => dest.EsReciboYEmbarque,
                     opt => opt.MapFrom(src => src.IsReciboYEmbarque))
-                .ForMember(dest => dest.Doble,
+                .ForMember(dest => dest.EsDoble,
                     opt => opt.MapFrom(src => src.IsDoble))
-                .ForMember(dest => dest.Sencillo,
+                .ForMember(dest => dest.EsSencillo,
                     opt => opt.MapFrom(src => src.IsSencillo))
-                .ForMember(dest => dest.TienePaso,
+                .ForMember(dest => dest.EsTienePaso,
                     opt => opt.MapFrom(src => src.HasPaso))
-                .ForMember(dest => dest.TieneCortina,
+                .ForMember(dest => dest.EsTieneCortina,
                     opt => opt.MapFrom(src => src.HasCortina));
 
             CreateMap<LocationRequest, Location>()
