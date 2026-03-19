@@ -50,10 +50,10 @@ namespace LD.Forms.Configuration
         // ======================
 
         public string Category_GetAll => $"{_baseApi}/category";
-        public string Category_GetById => $"{_baseApi}/category/{{id}}";
+        public string Category_GetById => $"{_baseApi}/category/{{categoryId}}";
         public string Category_Create => $"{_baseApi}/category";
-        public string Category_Update => $"{_baseApi}/category/{{id}}";
-        public string Category_Delete => $"{_baseApi}/category/{{id}}";
+        public string Category_Update => $"{_baseApi}/category/{{categoryId}}";
+        public string Category_Delete => $"{_baseApi}/category/{{categoryId}}";
         
 
         // ======================
@@ -83,10 +83,10 @@ namespace LD.Forms.Configuration
         // ======================
 
         public string Currency_GetAll => $"{_baseApi}/currency";
-        public string Currency_GetById => $"{_baseApi}/currency/{{id}}";
+        public string Currency_GetById => $"{_baseApi}/currency/{{currencyId}}";
         public string Currency_Create => $"{_baseApi}/currency";
-        public string Currency_Update => $"{_baseApi}/currency/{{id}}";
-        public string Currency_Delete => $"{_baseApi}/currency/{{id}}";
+        public string Currency_Update => $"{_baseApi}/currency/{{currencyId}}";
+        public string Currency_Delete => $"{_baseApi}/currency/{{currencyId}}";
         
 
         // ======================
@@ -109,6 +109,7 @@ namespace LD.Forms.Configuration
         public string Location_Create => $"{_baseApi}/location";
         public string Location_Update => $"{_baseApi}/location/{{id}}";
         public string Location_Delete => $"{_baseApi}/location/{{id}}";
+        public string Location_CreationRange => $"{_baseApi}/location/create-range";
        
 
         // ======================
@@ -141,10 +142,10 @@ namespace LD.Forms.Configuration
         // ======================
  
         public string Unit_GetAll => $"{_baseApi}/unit";
-        public string Unit_GetById => $"{_baseApi}/unit/{{id}}";
+        public string Unit_GetById => $"{_baseApi}/unit/{{unitIdS}}";
         public string Unit_Create => $"{_baseApi}/unit";
-        public string Unit_Update => $"{_baseApi}/unit/{{id}}";
-        public string Unit_Delete => $"{_baseApi}/unit/{{id}}";
+        public string Unit_Update => $"{_baseApi}/unit/{{unitIdS}}";
+        public string Unit_Delete => $"{_baseApi}/unit/{{unitIdS}}";
         
 
         // ======================
@@ -203,6 +204,20 @@ namespace LD.Forms.Configuration
         // ======================
 
         public string Module_GetAll => $"{_baseApi}/module";
+
+
+
+        // ======================
+        // INVENTORYSTATUS
+        // ======================
+
+        public string InventaryStatus_GetAll => $"{_baseApi}/inventaryStatus";
+        public string InventaryStatus_GetById => $"{_baseApi}/inventaryStatus/{{statusId}}";
+        public string InventaryStatus_Create => $"{_baseApi}/inventaryStatus";
+        public string InventaryStatus_Update => $"{_baseApi}/inventaryStatus/{{statusId}}";
+        public string InventaryStatus_Delete => $"{_baseApi}/inventaryStatus/{{statusId}}";
+
+
 
 
     }

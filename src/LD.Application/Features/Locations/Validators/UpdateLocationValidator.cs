@@ -25,7 +25,7 @@ public class UpdateLocationValidator
            .MustAsync(async (id, cancelation) =>
            {
               
-               return await _warehouseRepository.GetByIdAsync(id ?? 0)!=null;
+               return await _warehouseRepository.GetByIdAsync(id )!=null;
            }).WithMessage("No se encontro el almacen");
 
         RuleFor(x => x.LocationName)

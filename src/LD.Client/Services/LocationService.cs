@@ -42,5 +42,12 @@ namespace LD.Client.Services
         {
             return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.Location_Delete.Replace("{id}", locationId.ToString()));
         }
+
+        public async Task<ApiResponseDto<string>> CreateLocationRange(LocationRequest request)
+        {
+            return await _api.PostAsync<LocationRequest, ApiResponseDto<string>>(_apiEndpoints.Location_CreationRange, request);
+        }
+
+
     }
 }

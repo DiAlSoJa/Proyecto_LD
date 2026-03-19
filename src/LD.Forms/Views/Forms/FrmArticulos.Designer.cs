@@ -31,7 +31,7 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             panel1 = new Panel();
             button4 = new Button();
             flowLayoutPanel1 = new FlowLayoutPanel();
@@ -42,19 +42,6 @@ namespace LD.Forms.Views.Forms
             button2 = new Button();
             button5 = new Button();
             dataGridView1 = new DataGridView();
-            Cliente = new DataGridViewTextBoxColumn();
-            Proyecto = new DataGridViewTextBoxColumn();
-            NumPArte = new DataGridViewTextBoxColumn();
-            Descripcion = new DataGridViewTextBoxColumn();
-            FIFO = new DataGridViewCheckBoxColumn();
-            LIFO = new DataGridViewCheckBoxColumn();
-            NumeroLote = new DataGridViewCheckBoxColumn();
-            FechaCaducidad = new DataGridViewCheckBoxColumn();
-            Unidadmin = new DataGridViewTextBoxColumn();
-            Unidadmed = new DataGridViewTextBoxColumn();
-            UnidadMax = new DataGridViewTextBoxColumn();
-            Solicitarnumerolote = new DataGridViewCheckBoxColumn();
-            Solicitafechacad = new DataGridViewCheckBoxColumn();
             gridContainer = new Panel();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
@@ -168,11 +155,10 @@ namespace LD.Forms.Views.Forms
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Cliente, Proyecto, NumPArte, Descripcion, FIFO, LIFO, NumeroLote, FechaCaducidad, Unidadmin, Unidadmed, UnidadMax, Solicitarnumerolote, Solicitafechacad });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
@@ -180,109 +166,6 @@ namespace LD.Forms.Views.Forms
             dataGridView1.Size = new Size(1496, 674);
             dataGridView1.TabIndex = 1;
             dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
-            // 
-            // Cliente
-            // 
-            Cliente.HeaderText = "Cliente";
-            Cliente.MinimumWidth = 6;
-            Cliente.Name = "Cliente";
-            Cliente.Width = 200;
-            // 
-            // Proyecto
-            // 
-            Proyecto.HeaderText = "Proyecto";
-            Proyecto.MinimumWidth = 6;
-            Proyecto.Name = "Proyecto";
-            Proyecto.Width = 200;
-            // 
-            // NumPArte
-            // 
-            NumPArte.HeaderText = "No. Parte";
-            NumPArte.MinimumWidth = 6;
-            NumPArte.Name = "NumPArte";
-            NumPArte.Width = 125;
-            // 
-            // Descripcion
-            // 
-            Descripcion.HeaderText = "Descripción";
-            Descripcion.MinimumWidth = 6;
-            Descripcion.Name = "Descripcion";
-            Descripcion.Width = 125;
-            // 
-            // FIFO
-            // 
-            FIFO.HeaderText = "FIFO";
-            FIFO.MinimumWidth = 6;
-            FIFO.Name = "FIFO";
-            FIFO.Resizable = DataGridViewTriState.True;
-            FIFO.SortMode = DataGridViewColumnSortMode.Automatic;
-            FIFO.Width = 60;
-            // 
-            // LIFO
-            // 
-            LIFO.HeaderText = "LIFO";
-            LIFO.MinimumWidth = 6;
-            LIFO.Name = "LIFO";
-            LIFO.Resizable = DataGridViewTriState.True;
-            LIFO.SortMode = DataGridViewColumnSortMode.Automatic;
-            LIFO.Width = 60;
-            // 
-            // NumeroLote
-            // 
-            NumeroLote.HeaderText = "Número de Lote";
-            NumeroLote.MinimumWidth = 6;
-            NumeroLote.Name = "NumeroLote";
-            NumeroLote.Resizable = DataGridViewTriState.True;
-            NumeroLote.SortMode = DataGridViewColumnSortMode.Automatic;
-            NumeroLote.Width = 80;
-            // 
-            // FechaCaducidad
-            // 
-            FechaCaducidad.HeaderText = "Fecha de caducidad";
-            FechaCaducidad.MinimumWidth = 6;
-            FechaCaducidad.Name = "FechaCaducidad";
-            FechaCaducidad.Resizable = DataGridViewTriState.True;
-            FechaCaducidad.SortMode = DataGridViewColumnSortMode.Automatic;
-            FechaCaducidad.Width = 80;
-            // 
-            // Unidadmin
-            // 
-            Unidadmin.HeaderText = "Unidad Mínima";
-            Unidadmin.MinimumWidth = 6;
-            Unidadmin.Name = "Unidadmin";
-            Unidadmin.Width = 80;
-            // 
-            // Unidadmed
-            // 
-            Unidadmed.HeaderText = "Unidad Media";
-            Unidadmed.MinimumWidth = 6;
-            Unidadmed.Name = "Unidadmed";
-            Unidadmed.Width = 80;
-            // 
-            // UnidadMax
-            // 
-            UnidadMax.HeaderText = "Unidad Máxima";
-            UnidadMax.MinimumWidth = 6;
-            UnidadMax.Name = "UnidadMax";
-            UnidadMax.Width = 80;
-            // 
-            // Solicitarnumerolote
-            // 
-            Solicitarnumerolote.HeaderText = "Solicitar Número de Lote";
-            Solicitarnumerolote.MinimumWidth = 6;
-            Solicitarnumerolote.Name = "Solicitarnumerolote";
-            Solicitarnumerolote.Resizable = DataGridViewTriState.True;
-            Solicitarnumerolote.SortMode = DataGridViewColumnSortMode.Automatic;
-            Solicitarnumerolote.Width = 80;
-            // 
-            // Solicitafechacad
-            // 
-            Solicitafechacad.HeaderText = "Solicitar Fecha de Caducidad";
-            Solicitafechacad.MinimumWidth = 6;
-            Solicitafechacad.Name = "Solicitafechacad";
-            Solicitafechacad.Resizable = DataGridViewTriState.True;
-            Solicitafechacad.SortMode = DataGridViewColumnSortMode.Automatic;
-            Solicitafechacad.Width = 80;
             // 
             // gridContainer
             // 
@@ -321,19 +204,6 @@ namespace LD.Forms.Views.Forms
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button2;
         private DataGridView dataGridView1;
-        private DataGridViewTextBoxColumn Cliente;
-        private DataGridViewTextBoxColumn Proyecto;
-        private DataGridViewTextBoxColumn NumPArte;
-        private DataGridViewTextBoxColumn Descripcion;
-        private DataGridViewCheckBoxColumn FIFO;
-        private DataGridViewCheckBoxColumn LIFO;
-        private DataGridViewCheckBoxColumn NumeroLote;
-        private DataGridViewCheckBoxColumn FechaCaducidad;
-        private DataGridViewTextBoxColumn Unidadmin;
-        private DataGridViewTextBoxColumn Unidadmed;
-        private DataGridViewTextBoxColumn UnidadMax;
-        private DataGridViewCheckBoxColumn Solicitarnumerolote;
-        private DataGridViewCheckBoxColumn Solicitafechacad;
         private Button button4;
         private Button reloadBtn;
         private Button button5;

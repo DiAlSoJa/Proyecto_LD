@@ -71,7 +71,7 @@ namespace LD.Forms.Views.Dialogs
                 }
                 var location = response.Data;
 
-                cmbAlmacen.SelectedValue = location.WarehouseId?.ToString();
+                cmbAlmacen.SelectedValue = location.WarehouseId.ToString();
 
                 txtNombreUbicacion.Text = location.LocationName;
 
@@ -140,7 +140,7 @@ namespace LD.Forms.Views.Dialogs
             return new LocationRequest
             {
                 LocationId =  LocationSelected != null ? LocationSelected.LocationId : 0,
-                WarehouseId = int.TryParse( cmbAlmacen.SelectedValue?.ToString(),out int warehouseid)?warehouseid:null ,
+                WarehouseId = int.TryParse( cmbAlmacen.SelectedValue?.ToString(),out int warehouseid)?warehouseid:0 ,
                 LocationName = txtNombreUbicacion.Text,
                 IsActive = checkIsActive.Checked,
                 IsFiscal = checkIsFiscal.Checked,

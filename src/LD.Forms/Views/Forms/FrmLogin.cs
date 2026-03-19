@@ -10,7 +10,7 @@ using LD.Forms.Views.Forms;
 using LD.Forms.Views.Interfaces;
 
 namespace LD.Forms.Views.Forms
-{
+{   
     public partial class FrmLogin : DraggableForm, ILoginView
     {
         private bool mouseDown;

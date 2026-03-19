@@ -56,6 +56,9 @@ namespace LD.Forms.Views.Forms
             splitContainer1 = new SplitContainer();
             splitContainer2 = new SplitContainer();
             dataGridView2 = new DataGridView();
+            panel2 = new Panel();
+            button1 = new Button();
+            dataGridView3 = new DataGridView();
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
@@ -66,9 +69,7 @@ namespace LD.Forms.Views.Forms
             dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn9 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn10 = new DataGridViewTextBoxColumn();
-            panel2 = new Panel();
-            button1 = new Button();
-            dataGridView3 = new DataGridView();
+            Split = new DataGridViewTextBoxColumn();
             Esta = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn11 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn12 = new DataGridViewTextBoxColumn();
@@ -77,7 +78,6 @@ namespace LD.Forms.Views.Forms
             Envia = new DataGridViewTextBoxColumn();
             SD = new DataGridViewTextBoxColumn();
             Recibida = new DataGridViewTextBoxColumn();
-            Spli = new DataGridViewTextBoxColumn();
             Statuss = new DataGridViewTextBoxColumn();
             Ubic = new DataGridViewTextBoxColumn();
             Lote = new DataGridViewTextBoxColumn();
@@ -106,19 +106,17 @@ namespace LD.Forms.Views.Forms
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1309, 35);
+            panel1.Size = new Size(1496, 47);
             panel1.TabIndex = 0;
             // 
             // button4
             // 
             button4.Image = Properties.Resources.entrada;
             button4.ImageAlign = ContentAlignment.MiddleLeft;
-            button4.Location = new Point(908, 5);
-            button4.Margin = new Padding(3, 2, 3, 2);
+            button4.Location = new Point(1038, 7);
             button4.Name = "button4";
-            button4.Size = new Size(187, 26);
+            button4.Size = new Size(214, 35);
             button4.TabIndex = 4;
             button4.Text = "Registrar arribo";
             button4.UseVisualStyleBackColor = true;
@@ -130,20 +128,18 @@ namespace LD.Forms.Views.Forms
             flowLayoutPanel1.Controls.Add(AddBtn);
             flowLayoutPanel1.Dock = DockStyle.Left;
             flowLayoutPanel1.Location = new Point(0, 0);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(18, 0, 0, 0);
-            flowLayoutPanel1.Size = new Size(859, 35);
+            flowLayoutPanel1.Padding = new Padding(21, 0, 0, 0);
+            flowLayoutPanel1.Size = new Size(982, 47);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // reloadBtn
             // 
             reloadBtn.Image = Properties.Resources.update;
             reloadBtn.ImageAlign = ContentAlignment.MiddleLeft;
-            reloadBtn.Location = new Point(21, 2);
-            reloadBtn.Margin = new Padding(3, 2, 3, 2);
+            reloadBtn.Location = new Point(24, 3);
             reloadBtn.Name = "reloadBtn";
-            reloadBtn.Size = new Size(108, 26);
+            reloadBtn.Size = new Size(123, 35);
             reloadBtn.TabIndex = 5;
             reloadBtn.Text = "Actualizar";
             reloadBtn.UseVisualStyleBackColor = true;
@@ -153,10 +149,9 @@ namespace LD.Forms.Views.Forms
             // 
             AddBtn.Image = Properties.Resources.plusM;
             AddBtn.ImageAlign = ContentAlignment.MiddleLeft;
-            AddBtn.Location = new Point(135, 2);
-            AddBtn.Margin = new Padding(3, 2, 3, 2);
+            AddBtn.Location = new Point(153, 3);
             AddBtn.Name = "AddBtn";
-            AddBtn.Size = new Size(122, 26);
+            AddBtn.Size = new Size(139, 35);
             AddBtn.TabIndex = 0;
             AddBtn.Text = "Nuevo ASN";
             AddBtn.UseVisualStyleBackColor = true;
@@ -171,10 +166,9 @@ namespace LD.Forms.Views.Forms
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { ASN, Cliente, Proyecto, Factura, Guia, Status, Bultos, Origen, Fecha, Hora, ETA, Ordend });
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
-            dataGridView1.Margin = new Padding(3, 2, 3, 2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(1309, 132);
+            dataGridView1.Size = new Size(1496, 175);
             dataGridView1.TabIndex = 1;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
@@ -259,23 +253,23 @@ namespace LD.Forms.Views.Forms
             // Ordend
             // 
             Ordend.HeaderText = "Orden de compra";
+            Ordend.MinimumWidth = 6;
             Ordend.Name = "Ordend";
+            Ordend.Width = 125;
             // 
             // gridContainer
             // 
             gridContainer.Controls.Add(splitContainer1);
             gridContainer.Dock = DockStyle.Fill;
-            gridContainer.Location = new Point(0, 35);
-            gridContainer.Margin = new Padding(3, 2, 3, 2);
+            gridContainer.Location = new Point(0, 47);
             gridContainer.Name = "gridContainer";
-            gridContainer.Size = new Size(1309, 506);
+            gridContainer.Size = new Size(1496, 674);
             gridContainer.TabIndex = 5;
             // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Margin = new Padding(3, 2, 3, 2);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = Orientation.Horizontal;
             // 
@@ -286,15 +280,15 @@ namespace LD.Forms.Views.Forms
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
-            splitContainer1.Size = new Size(1309, 506);
-            splitContainer1.SplitterDistance = 132;
-            splitContainer1.SplitterWidth = 3;
+            splitContainer1.Size = new Size(1496, 674);
+            splitContainer1.SplitterDistance = 175;
             splitContainer1.TabIndex = 2;
             // 
             // splitContainer2
             // 
             splitContainer2.Dock = DockStyle.Fill;
             splitContainer2.Location = new Point(0, 0);
+            splitContainer2.Margin = new Padding(3, 4, 3, 4);
             splitContainer2.Name = "splitContainer2";
             splitContainer2.Orientation = Orientation.Horizontal;
             // 
@@ -306,8 +300,9 @@ namespace LD.Forms.Views.Forms
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(dataGridView3);
-            splitContainer2.Size = new Size(1309, 371);
-            splitContainer2.SplitterDistance = 229;
+            splitContainer2.Size = new Size(1496, 495);
+            splitContainer2.SplitterDistance = 305;
+            splitContainer2.SplitterWidth = 5;
             splitContainer2.TabIndex = 3;
             // 
             // dataGridView2
@@ -316,14 +311,49 @@ namespace LD.Forms.Views.Forms
             dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10 });
+            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10, Split });
             dataGridView2.Dock = DockStyle.Fill;
-            dataGridView2.Location = new Point(0, 44);
-            dataGridView2.Margin = new Padding(3, 2, 3, 2);
+            dataGridView2.Location = new Point(0, 59);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(1309, 185);
+            dataGridView2.Size = new Size(1496, 246);
             dataGridView2.TabIndex = 2;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(button1);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 0);
+            panel2.Margin = new Padding(3, 4, 3, 4);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1496, 59);
+            panel2.TabIndex = 3;
+            // 
+            // button1
+            // 
+            button1.Image = Properties.Resources.codigoBarras;
+            button1.ImageAlign = ContentAlignment.MiddleLeft;
+            button1.Location = new Point(3, 19);
+            button1.Name = "button1";
+            button1.Size = new Size(219, 35);
+            button1.TabIndex = 45;
+            button1.Text = "Escanear";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
+            // 
+            // dataGridView3
+            // 
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridView3.BackgroundColor = SystemColors.ButtonHighlight;
+            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView3.Columns.AddRange(new DataGridViewColumn[] { Esta, dataGridViewTextBoxColumn11, dataGridViewTextBoxColumn12, Estandar, Maxima, Envia, SD, Recibida, Statuss, Ubic, Lote, Cad, Rf });
+            dataGridView3.Dock = DockStyle.Fill;
+            dataGridView3.Location = new Point(0, 0);
+            dataGridView3.Name = "dataGridView3";
+            dataGridView3.RowHeadersWidth = 51;
+            dataGridView3.Size = new Size(1496, 185);
+            dataGridView3.TabIndex = 3;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -395,47 +425,19 @@ namespace LD.Forms.Views.Forms
             dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             dataGridViewTextBoxColumn10.Width = 125;
             // 
-            // panel2
+            // Split
             // 
-            panel2.Controls.Add(button1);
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 0);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(1309, 44);
-            panel2.TabIndex = 3;
-            // 
-            // button1
-            // 
-            button1.Image = Properties.Resources.codigoBarras;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(3, 14);
-            button1.Margin = new Padding(3, 2, 3, 2);
-            button1.Name = "button1";
-            button1.Size = new Size(192, 26);
-            button1.TabIndex = 45;
-            button1.Text = "Escanear";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click_1;
-            // 
-            // dataGridView3
-            // 
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
-            dataGridView3.BackgroundColor = SystemColors.ButtonHighlight;
-            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView3.Columns.AddRange(new DataGridViewColumn[] { Esta, dataGridViewTextBoxColumn11, dataGridViewTextBoxColumn12, Estandar, Maxima, Envia, SD, Recibida, Spli, Statuss, Ubic, Lote, Cad, Rf });
-            dataGridView3.Dock = DockStyle.Fill;
-            dataGridView3.Location = new Point(0, 0);
-            dataGridView3.Margin = new Padding(3, 2, 3, 2);
-            dataGridView3.Name = "dataGridView3";
-            dataGridView3.RowHeadersWidth = 51;
-            dataGridView3.Size = new Size(1309, 138);
-            dataGridView3.TabIndex = 3;
+            Split.HeaderText = "Split";
+            Split.MinimumWidth = 6;
+            Split.Name = "Split";
+            Split.Width = 125;
             // 
             // Esta
             // 
             Esta.HeaderText = "EstandarID";
+            Esta.MinimumWidth = 6;
             Esta.Name = "Esta";
+            Esta.Width = 125;
             // 
             // dataGridViewTextBoxColumn11
             // 
@@ -454,67 +456,81 @@ namespace LD.Forms.Views.Forms
             // Estandar
             // 
             Estandar.HeaderText = "Estandar";
+            Estandar.MinimumWidth = 6;
             Estandar.Name = "Estandar";
+            Estandar.Width = 125;
             // 
             // Maxima
             // 
             Maxima.HeaderText = "Maxima";
+            Maxima.MinimumWidth = 6;
             Maxima.Name = "Maxima";
+            Maxima.Width = 125;
             // 
             // Envia
             // 
             Envia.HeaderText = "Enviado";
+            Envia.MinimumWidth = 6;
             Envia.Name = "Envia";
+            Envia.Width = 125;
             // 
             // SD
             // 
             SD.HeaderText = "SD";
+            SD.MinimumWidth = 6;
             SD.Name = "SD";
+            SD.Width = 125;
             // 
             // Recibida
             // 
             Recibida.HeaderText = "Recibida";
+            Recibida.MinimumWidth = 6;
             Recibida.Name = "Recibida";
-            // 
-            // Spli
-            // 
-            Spli.HeaderText = "Split";
-            Spli.Name = "Spli";
+            Recibida.Width = 125;
             // 
             // Statuss
             // 
             Statuss.HeaderText = "Status";
+            Statuss.MinimumWidth = 6;
             Statuss.Name = "Statuss";
+            Statuss.Width = 125;
             // 
             // Ubic
             // 
             Ubic.HeaderText = "Ubicación";
+            Ubic.MinimumWidth = 6;
             Ubic.Name = "Ubic";
+            Ubic.Width = 125;
             // 
             // Lote
             // 
             Lote.HeaderText = "Número de Lote";
+            Lote.MinimumWidth = 6;
             Lote.Name = "Lote";
+            Lote.Width = 125;
             // 
             // Cad
             // 
             Cad.HeaderText = "Fecha de Caducidad";
+            Cad.MinimumWidth = 6;
             Cad.Name = "Cad";
+            Cad.Width = 125;
             // 
             // Rf
             // 
             Rf.HeaderText = "Referencia";
+            Rf.MinimumWidth = 6;
             Rf.Name = "Rf";
+            Rf.Width = 125;
             // 
             // FrmASN
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1309, 541);
+            ClientSize = new Size(1496, 721);
             Controls.Add(gridContainer);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmASN";
             Text = "ASN";
             panel1.ResumeLayout(false);
@@ -548,31 +564,7 @@ namespace LD.Forms.Views.Forms
         private SplitContainer splitContainer1;
         private DataGridView dataGridView2;
         private SplitContainer splitContainer2;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
         private DataGridView dataGridView3;
-        private DataGridViewTextBoxColumn Esta;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
-        private DataGridViewTextBoxColumn Estandar;
-        private DataGridViewTextBoxColumn Maxima;
-        private DataGridViewTextBoxColumn Envia;
-        private DataGridViewTextBoxColumn SD;
-        private DataGridViewTextBoxColumn Recibida;
-        private DataGridViewTextBoxColumn Spli;
-        private DataGridViewTextBoxColumn Statuss;
-        private DataGridViewTextBoxColumn Ubic;
-        private DataGridViewTextBoxColumn Lote;
-        private DataGridViewTextBoxColumn Cad;
-        private DataGridViewTextBoxColumn Rf;
         private Panel panel2;
         private Button button1;
         private DataGridViewTextBoxColumn ASN;
@@ -587,5 +579,29 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn Hora;
         private DataGridViewTextBoxColumn ETA;
         private DataGridViewTextBoxColumn Ordend;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
+        private DataGridViewTextBoxColumn Split;
+        private DataGridViewTextBoxColumn Esta;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
+        private DataGridViewTextBoxColumn Estandar;
+        private DataGridViewTextBoxColumn Maxima;
+        private DataGridViewTextBoxColumn Envia;
+        private DataGridViewTextBoxColumn SD;
+        private DataGridViewTextBoxColumn Recibida;
+        private DataGridViewTextBoxColumn Statuss;
+        private DataGridViewTextBoxColumn Ubic;
+        private DataGridViewTextBoxColumn Lote;
+        private DataGridViewTextBoxColumn Cad;
+        private DataGridViewTextBoxColumn Rf;
     }
 }

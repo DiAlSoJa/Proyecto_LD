@@ -10,7 +10,7 @@ namespace LD.Contracts.Requests
     {
         public int? LocationId { get; set; }
 
-        public int? WarehouseId { get; set; }
+        public int WarehouseId { get; set; }
         public string? LocationName { get; set; }
         public bool IsFiscal { get; set; }
         public bool HasControlledTemperature { get; set; }
@@ -52,6 +52,12 @@ namespace LD.Contracts.Requests
 
 
         public bool IsActive { get; set; }
+
+        // Para creación masiva
+        public string Rack {  get; set; }
+        public int FromW { get; set; }
+        public int ToW { get; set; }
+        public int Leves { get; set; }
     }
 
 }

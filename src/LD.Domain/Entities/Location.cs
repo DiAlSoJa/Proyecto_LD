@@ -60,6 +60,15 @@ namespace LD.Domain.Entities
 
         public Warehouse Warehouse { get; set; }
 
+        // RAck nivel y posición
+        [MaxLength(10)]
+        public string? Rack { get; set; }
+        
+        [MaxLength(10)]
+        public string? Level { get; set; }
+        [MaxLength(10)]
+        public string? Position { get; set; }
+
     }
 
 

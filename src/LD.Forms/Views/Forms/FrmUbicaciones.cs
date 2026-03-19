@@ -34,11 +34,9 @@ namespace LD.Forms.Views.Forms
 
         private async void button4_Click(object sender, EventArgs e)
         {
-            var form = _dialogFormService.ShowDialog<FrmNuevaUbicacionMasiva>(config =>
-            {
-
-            });
+            var form = _dialogFormService.ShowDialog<FrmNuevaUbicacionMasiva>();
             if (form.ResponseForm) await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo ubicaciones");
+            
 
         }
 

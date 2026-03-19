@@ -50,6 +50,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmNewCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNewCurrency.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNewUnit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\FrmNewStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmRoles.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -29,6 +29,10 @@ namespace LD.Client
             services.AddScoped<WarehouseService>();
             services.AddScoped<UserService>();
             services.AddScoped<RoleService>();
+            services.AddScoped<UnitService>();
+            services.AddScoped<InventaryStatusService>();
+            services.AddScoped<CurrencyService>();
+            services.AddScoped<CategoryService>();
 
             services.AddScoped<LookupService>();
 
