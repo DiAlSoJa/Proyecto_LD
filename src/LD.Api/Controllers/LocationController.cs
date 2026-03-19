@@ -10,7 +10,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace LD.Api.Controllers
 {
@@ -34,7 +36,14 @@ namespace LD.Api.Controllers
         [Permission(PermissionKeys.Location_Create)]
         public async Task<IActionResult> CreateLocation([FromBody] CreateLocationCommand command)
             => ResultExtensions.ToActionResult(await Mediator.Send(command));
-        
+
+
+        [HttpPost("create-range")]
+        [Permission(PermissionKeys.Location_Create)]
+        public async Task<IActionResult> CreateRange([FromBody] CreateLocationsByRangeCommand command)
+            => ResultExtensions.ToActionResult(await Mediator.Send(command));
+
+
 
         [HttpPut("{locationId}")]
         [Permission(PermissionKeys.Location_Update)]
@@ -44,6 +53,8 @@ namespace LD.Api.Controllers
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
+
+
 
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> DeleteContact(int id)

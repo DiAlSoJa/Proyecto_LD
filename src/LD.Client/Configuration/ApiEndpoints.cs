@@ -109,6 +109,7 @@ namespace LD.Forms.Configuration
         public string Location_Create => $"{_baseApi}/location";
         public string Location_Update => $"{_baseApi}/location/{{id}}";
         public string Location_Delete => $"{_baseApi}/location/{{id}}";
+        public string Location_CreationRange => $"{_baseApi}/location/create-range";
        
 
         // ======================

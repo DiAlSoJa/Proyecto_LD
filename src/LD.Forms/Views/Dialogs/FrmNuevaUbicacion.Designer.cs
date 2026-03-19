@@ -158,6 +158,7 @@
             // radioSencillo
             // 
             radioSencillo.AutoSize = true;
+            radioSencillo.Checked = true;
             radioSencillo.Location = new Point(25, 56);
             radioSencillo.Name = "radioSencillo";
             radioSencillo.Size = new Size(82, 24);
@@ -173,7 +174,6 @@
             radioDoble.Name = "radioDoble";
             radioDoble.Size = new Size(71, 24);
             radioDoble.TabIndex = 9;
-            radioDoble.TabStop = true;
             radioDoble.Text = "Doble";
             radioDoble.UseVisualStyleBackColor = true;
             // 
@@ -194,13 +194,13 @@
             radioCompartidoType.Name = "radioCompartidoType";
             radioCompartidoType.Size = new Size(110, 24);
             radioCompartidoType.TabIndex = 10;
-            radioCompartidoType.TabStop = true;
             radioCompartidoType.Text = "Compartido";
             radioCompartidoType.UseVisualStyleBackColor = true;
             // 
             // radioRack
             // 
             radioRack.AutoSize = true;
+            radioRack.Checked = true;
             radioRack.Location = new Point(25, 26);
             radioRack.Name = "radioRack";
             radioRack.Size = new Size(61, 24);
@@ -216,7 +216,6 @@
             radioCompartido.Name = "radioCompartido";
             radioCompartido.Size = new Size(110, 24);
             radioCompartido.TabIndex = 12;
-            radioCompartido.TabStop = true;
             radioCompartido.Text = "Compartido";
             radioCompartido.UseVisualStyleBackColor = true;
             // 
@@ -227,7 +226,6 @@
             radioCuarentena.Name = "radioCuarentena";
             radioCuarentena.Size = new Size(105, 24);
             radioCuarentena.TabIndex = 14;
-            radioCuarentena.TabStop = true;
             radioCuarentena.Text = "Cuarentena";
             radioCuarentena.UseVisualStyleBackColor = true;
             // 
@@ -238,7 +236,6 @@
             radioReciboEmbarque.Name = "radioReciboEmbarque";
             radioReciboEmbarque.Size = new Size(159, 24);
             radioReciboEmbarque.TabIndex = 13;
-            radioReciboEmbarque.TabStop = true;
             radioReciboEmbarque.Text = "Recibo y embarque";
             radioReciboEmbarque.UseVisualStyleBackColor = true;
             // 
@@ -249,13 +246,13 @@
             radioEmbarque.Name = "radioEmbarque";
             radioEmbarque.Size = new Size(98, 24);
             radioEmbarque.TabIndex = 15;
-            radioEmbarque.TabStop = true;
             radioEmbarque.Text = "Embarque";
             radioEmbarque.UseVisualStyleBackColor = true;
             // 
             // radioGeneral
             // 
             radioGeneral.AutoSize = true;
+            radioGeneral.Checked = true;
             radioGeneral.Location = new Point(259, 44);
             radioGeneral.Name = "radioGeneral";
             radioGeneral.Size = new Size(81, 24);
@@ -374,6 +371,8 @@
             // checkIsActive
             // 
             checkIsActive.AutoSize = true;
+            checkIsActive.Checked = true;
+            checkIsActive.CheckState = CheckState.Checked;
             checkIsActive.Location = new Point(188, 120);
             checkIsActive.Name = "checkIsActive";
             checkIsActive.Size = new Size(73, 24);
