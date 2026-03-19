@@ -77,7 +77,7 @@ namespace LD.Forms.Views.Forms
         }
         private async void reloadBtn_Click(object sender, EventArgs e)
         {
-            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Articulos");
+            
         }
 
         private void gridContainer_Paint(object sender, PaintEventArgs e)
