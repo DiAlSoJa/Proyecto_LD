@@ -31,8 +31,8 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             btnActualizar = new Button();
@@ -145,8 +145,9 @@ namespace LD.Forms.Views.Forms
             // 
             // usersGrid
             // 
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
-            usersGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            usersGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            usersGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             usersGrid.BackgroundColor = SystemColors.ButtonHighlight;
             usersGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             usersGrid.Location = new Point(12, 7);
@@ -158,8 +159,8 @@ namespace LD.Forms.Views.Forms
             // 
             // permissionGrid
             // 
-            dataGridViewCellStyle4.BackColor = Color.FromArgb(253, 252, 213);
-            permissionGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
+            permissionGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             permissionGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             permissionGrid.BackgroundColor = SystemColors.ButtonHighlight;
             permissionGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
