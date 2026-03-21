@@ -94,11 +94,15 @@ namespace LD.Infrastructure
              
         }
 
-        public async Task<List<UserDto>> GetUsersAsync()
+        public async Task<List<GetUserDto>> GetUsersAsync()
         {
             return await _userManager.Users
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(); 
+                    .Include(u=>u.UserRoles)
+                    .ThenInclude(ur=>ur.Role)
+                    .ThenInclude(r=>r.RolePermissions)
+                    .ThenInclude(rp=>rp.Permission)
+                    .ProjectTo<GetUserDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(); 
         }
 
         public async Task<bool> CreateUserAsync(UserRequest user)

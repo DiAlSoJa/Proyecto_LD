@@ -1,5 +1,6 @@
 ﻿using LD.Client.Services;
 using LD.Contracts.Client;
+using LD.Contracts.DTOs.User;
 using LD.Contracts.User;
 using LD.Forms.Classes;
 using LD.Forms.Services;
@@ -20,11 +21,14 @@ namespace LD.Forms.Views.Forms
         private readonly DialogFormService _dialogFormService;
         private readonly UserService _userService;
 
-
+        private GridFilter<PermissionDto> _permissionFilter;
+        private BindingSource _permissionSource = new();
 
         private GridFilter<UserDto> _gridFilter;
         private BindingSource _userBinding = new();
         private UserDto? userSelected { get; set; }
+
+        private List<GetUserDto> _allUsers = new();
 
         public FrmUsuarios(DialogFormService dialogFormService, UserService userService)
         {
@@ -32,8 +36,11 @@ namespace LD.Forms.Views.Forms
             _dialogFormService = dialogFormService;
             _userService = userService;
 
-            dataGridView1.DataSource = _userBinding;
-            _gridFilter = new GridFilter<UserDto>(dataGridView1, _userBinding);
+            usersGrid.DataSource = _userBinding;
+            _gridFilter = new GridFilter<UserDto>(usersGrid, _userBinding);
+
+            permissionGrid.DataSource = _permissionSource;
+            _permissionFilter = new GridFilter<PermissionDto>(permissionGrid, _permissionSource);
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -70,25 +77,36 @@ namespace LD.Forms.Views.Forms
                 MessageBox.Show(result.Message);
                 return;
             }
-            _userBinding.DataSource = result.Data;
 
-            _gridFilter.SetData(result.Data);
-            dataGridView1 = _gridFilter.BuildFilterColumns();
+            _allUsers = result.Data ?? new List<GetUserDto>();
+
+            var users = _allUsers
+                .Where(x => x.User != null)
+                .Select(x => x.User!)
+                .ToList();
+
+            _gridFilter.SetData(users);
+            usersGrid = _gridFilter.BuildFilterColumns();
+
+            _permissionFilter.SetData(new List<PermissionDto>());
+            permissionGrid = _permissionFilter.BuildFilterColumns();
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             try
             {
-                if (dataGridView1.CurrentRow == null)
-                    return;
-
-                var user = dataGridView1.CurrentRow.DataBoundItem as UserDto;
-
-                if (user == null)
+                if (usersGrid.CurrentRow?.DataBoundItem is not UserDto user)
                     return;
 
                 userSelected = user;
+
+                var permissions = _allUsers
+                    .FirstOrDefault(x => x.User?.Id == user.Id)
+                    ?.Permissions ?? new List<PermissionDto>();
+
+                _permissionFilter.SetData(permissions);
+                permissionGrid = _permissionFilter.BuildFilterColumns();
             }
             catch (Exception ex)
             {

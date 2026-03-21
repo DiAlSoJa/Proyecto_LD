@@ -1,4 +1,5 @@
 ﻿using LD.Contracts.Client;
+using LD.Contracts.DTOs.User;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.User;
@@ -23,9 +24,9 @@ namespace LD.Client.Services
             return await _api.GetAsync<ApiResponseDto<UserRequest>>(_apiEndpoints.User_GetById.Replace("{id}", userId));
         }
 
-        public async Task<ApiResponseDto<List<UserDto>>> GetUsers()
+        public async Task<ApiResponseDto<List<GetUserDto>>> GetUsers()
         {
-            return await _api.GetAsync<ApiResponseDto<List<UserDto>>>(_apiEndpoints.User_GetAll);
+            return await _api.GetAsync<ApiResponseDto<List<GetUserDto>>>(_apiEndpoints.User_GetAll);
         }
 
         public async Task<ApiResponseDto<string>> CreateUser(UserRequest request)

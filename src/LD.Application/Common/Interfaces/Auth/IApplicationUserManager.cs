@@ -23,7 +23,7 @@ namespace LD.Application.Common.Interfaces.Auth
         Task<bool> PermissionExists(int permissionId);
         //Task<IList<string>> GetRolesAsync(UserDto user);
         //Task<IList<Claim>> GetClaimsAsync(UserDto user);
-        Task<List<UserDto>> GetUsersAsync();
+        Task<List<GetUserDto>> GetUsersAsync();
         Task<List<RolePermissionDto>> GetRolesWithPermissionsAsync();
 
         Task<RoleRequest?> GetRoleByIdAsync(string roleId);

@@ -2,6 +2,7 @@
 using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Results;
+using LD.Contracts.DTOs.User;
 using LD.Contracts.User;
 using LD.Domain.Entities;
 using MediatR;
@@ -9,12 +10,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LD.Application.Features.User.Queries;
 
-public class GetUsersQuery : IRequest<Result<List<UserDto>>>
+public class GetUsersQuery : IRequest<Result<List<GetUserDto>>>
 {
 
 }
 
-public class GetUsersHandler : IRequestHandler<GetUsersQuery, Result<List<UserDto>>>
+public class GetUsersHandler : IRequestHandler<GetUsersQuery, Result<List<GetUserDto>>>
 {
 
     private readonly IApplicationUserManager _userManager;
@@ -31,17 +32,17 @@ public class GetUsersHandler : IRequestHandler<GetUsersQuery, Result<List<UserDt
         _mapper = mapper;
     }
 
-    public async Task<Result<List<UserDto>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<GetUserDto>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(_currentUser.UserId))
-            return Result<List<UserDto>>.Failure("UnAuthorized", new());
+            return Result<List<GetUserDto>>.Failure("UnAuthorized", new());
 
         var users = await _userManager.GetUsersAsync();
 
         if (users == null)
-            return Result<List<UserDto>>.Failure("No se pudo encontrar el usuario",new());
+            return Result<List<GetUserDto>>.Failure("No se pudo encontrar el usuario",new());
 
 
-        return Result<List<UserDto>>.Success(users, "Usuario encontrado exitosamente");
+        return Result<List<GetUserDto>>.Success(users, "Usuario encontrado exitosamente");
     }
 }

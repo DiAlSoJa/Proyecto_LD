@@ -31,48 +31,24 @@ namespace LD.Forms.Views.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             btnActualizar = new Button();
             btnAdd = new Button();
             btnEdit = new Button();
+            btnRoles = new Button();
             flowLayoutPanel2 = new FlowLayoutPanel();
             button2 = new Button();
-            dataGridView1 = new DataGridView();
-            splitContainer1 = new SplitContainer();
-            splitContainer2 = new SplitContainer();
-            dataGridView2 = new DataGridView();
-            Rol2 = new DataGridViewTextBoxColumn();
-            Permiso = new DataGridViewTextBoxColumn();
-            NombreX = new DataGridViewTextBoxColumn();
-            Activos = new DataGridViewCheckBoxColumn();
-            dataGridView3 = new DataGridView();
-            dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
-            dataGridViewCheckBoxColumn1 = new DataGridViewCheckBoxColumn();
-            panel2 = new Panel();
-            button7 = new Button();
-            button4 = new Button();
+            usersGrid = new DataGridView();
+            permissionGrid = new DataGridView();
             panelContainer = new Panel();
-            btnRoles = new Button();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
-            splitContainer1.Panel1.SuspendLayout();
-            splitContainer1.Panel2.SuspendLayout();
-            splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
-            splitContainer2.Panel1.SuspendLayout();
-            splitContainer2.Panel2.SuspendLayout();
-            splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
-            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)usersGrid).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)permissionGrid).BeginInit();
             panelContainer.SuspendLayout();
             SuspendLayout();
             // 
@@ -135,6 +111,18 @@ namespace LD.Forms.Views.Forms
             btnEdit.UseVisualStyleBackColor = true;
             btnEdit.Click += button3_Click;
             // 
+            // btnRoles
+            // 
+            btnRoles.Image = Properties.Resources.plusM;
+            btnRoles.ImageAlign = ContentAlignment.MiddleLeft;
+            btnRoles.Location = new Point(379, 3);
+            btnRoles.Name = "btnRoles";
+            btnRoles.Size = new Size(137, 35);
+            btnRoles.TabIndex = 4;
+            btnRoles.Text = "Roles";
+            btnRoles.UseVisualStyleBackColor = true;
+            btnRoles.Click += btnRoles_Click;
+            // 
             // flowLayoutPanel2
             // 
             flowLayoutPanel2.Controls.Add(button2);
@@ -155,190 +143,41 @@ namespace LD.Forms.Views.Forms
             button2.Text = "Nuevo";
             button2.UseVisualStyleBackColor = true;
             // 
-            // dataGridView1
+            // usersGrid
+            // 
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
+            usersGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            usersGrid.BackgroundColor = SystemColors.ButtonHighlight;
+            usersGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            usersGrid.Location = new Point(12, 7);
+            usersGrid.Name = "usersGrid";
+            usersGrid.RowHeadersWidth = 51;
+            usersGrid.Size = new Size(1185, 628);
+            usersGrid.TabIndex = 1;
+            usersGrid.SelectionChanged += dataGridView1_SelectionChanged;
+            // 
+            // permissionGrid
             // 
             dataGridViewCellStyle4.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            dataGridView1.BackgroundColor = SystemColors.ButtonHighlight;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 0);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(929, 338);
-            dataGridView1.TabIndex = 1;
-            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
-            // 
-            // splitContainer1
-            // 
-            splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            splitContainer1.Panel1.Controls.Add(splitContainer2);
-            // 
-            // splitContainer1.Panel2
-            // 
-            splitContainer1.Panel2.Controls.Add(dataGridView3);
-            splitContainer1.Panel2.Controls.Add(panel2);
-            splitContainer1.Size = new Size(1605, 672);
-            splitContainer1.SplitterDistance = 929;
-            splitContainer1.SplitterWidth = 5;
-            splitContainer1.TabIndex = 2;
-            // 
-            // splitContainer2
-            // 
-            splitContainer2.Dock = DockStyle.Fill;
-            splitContainer2.Location = new Point(0, 0);
-            splitContainer2.Name = "splitContainer2";
-            splitContainer2.Orientation = Orientation.Horizontal;
-            // 
-            // splitContainer2.Panel1
-            // 
-            splitContainer2.Panel1.Controls.Add(dataGridView1);
-            // 
-            // splitContainer2.Panel2
-            // 
-            splitContainer2.Panel2.Controls.Add(dataGridView2);
-            splitContainer2.Size = new Size(929, 672);
-            splitContainer2.SplitterDistance = 338;
-            splitContainer2.TabIndex = 0;
-            // 
-            // dataGridView2
-            // 
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
-            dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { Rol2, Permiso, NombreX, Activos });
-            dataGridView2.Dock = DockStyle.Fill;
-            dataGridView2.Location = new Point(0, 0);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(929, 330);
-            dataGridView2.TabIndex = 2;
-            // 
-            // Rol2
-            // 
-            Rol2.HeaderText = "Rol";
-            Rol2.MinimumWidth = 6;
-            Rol2.Name = "Rol2";
-            Rol2.Width = 125;
-            // 
-            // Permiso
-            // 
-            Permiso.HeaderText = "Permiso";
-            Permiso.MinimumWidth = 6;
-            Permiso.Name = "Permiso";
-            Permiso.Width = 125;
-            // 
-            // NombreX
-            // 
-            NombreX.HeaderText = "Nombre";
-            NombreX.MinimumWidth = 6;
-            NombreX.Name = "NombreX";
-            NombreX.Width = 250;
-            // 
-            // Activos
-            // 
-            Activos.HeaderText = "Activo";
-            Activos.MinimumWidth = 6;
-            Activos.Name = "Activos";
-            Activos.Width = 125;
-            // 
-            // dataGridView3
-            // 
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
-            dataGridView3.BackgroundColor = SystemColors.ButtonHighlight;
-            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView3.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewCheckBoxColumn1 });
-            dataGridView3.Dock = DockStyle.Fill;
-            dataGridView3.Location = new Point(62, 0);
-            dataGridView3.Name = "dataGridView3";
-            dataGridView3.RowHeadersWidth = 51;
-            dataGridView3.Size = new Size(609, 672);
-            dataGridView3.TabIndex = 3;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            dataGridViewTextBoxColumn1.HeaderText = "Rol";
-            dataGridViewTextBoxColumn1.MinimumWidth = 6;
-            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            dataGridViewTextBoxColumn1.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            dataGridViewTextBoxColumn2.HeaderText = "Nombre";
-            dataGridViewTextBoxColumn2.MinimumWidth = 6;
-            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            dataGridViewTextBoxColumn2.Width = 250;
-            // 
-            // dataGridViewCheckBoxColumn1
-            // 
-            dataGridViewCheckBoxColumn1.HeaderText = "Activo";
-            dataGridViewCheckBoxColumn1.MinimumWidth = 6;
-            dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
-            dataGridViewCheckBoxColumn1.Width = 125;
-            // 
-            // panel2
-            // 
-            panel2.Controls.Add(button7);
-            panel2.Controls.Add(button4);
-            panel2.Dock = DockStyle.Left;
-            panel2.Location = new Point(0, 0);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(62, 672);
-            panel2.TabIndex = 0;
-            // 
-            // button7
-            // 
-            button7.BackColor = Color.LightSalmon;
-            button7.FlatStyle = FlatStyle.Flat;
-            button7.Font = new Font("Bookman Old Style", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button7.ImageAlign = ContentAlignment.MiddleLeft;
-            button7.Location = new Point(2, 60);
-            button7.Name = "button7";
-            button7.Size = new Size(56, 48);
-            button7.TabIndex = 4;
-            button7.Text = ">";
-            button7.UseVisualStyleBackColor = false;
-            // 
-            // button4
-            // 
-            button4.BackColor = Color.LightGreen;
-            button4.FlatStyle = FlatStyle.Flat;
-            button4.Font = new Font("Bookman Old Style", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button4.ImageAlign = ContentAlignment.MiddleLeft;
-            button4.Location = new Point(2, 5);
-            button4.Name = "button4";
-            button4.Size = new Size(56, 48);
-            button4.TabIndex = 3;
-            button4.Text = "<";
-            button4.UseVisualStyleBackColor = false;
+            permissionGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            permissionGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            permissionGrid.BackgroundColor = SystemColors.ButtonHighlight;
+            permissionGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            permissionGrid.Location = new Point(1203, 7);
+            permissionGrid.Name = "permissionGrid";
+            permissionGrid.RowHeadersWidth = 51;
+            permissionGrid.Size = new Size(379, 628);
+            permissionGrid.TabIndex = 2;
             // 
             // panelContainer
             // 
-            panelContainer.Controls.Add(splitContainer1);
+            panelContainer.Controls.Add(permissionGrid);
+            panelContainer.Controls.Add(usersGrid);
             panelContainer.Dock = DockStyle.Fill;
             panelContainer.Location = new Point(0, 43);
             panelContainer.Name = "panelContainer";
             panelContainer.Size = new Size(1605, 672);
             panelContainer.TabIndex = 3;
-            // 
-            // btnRoles
-            // 
-            btnRoles.Image = Properties.Resources.plusM;
-            btnRoles.ImageAlign = ContentAlignment.MiddleLeft;
-            btnRoles.Location = new Point(379, 3);
-            btnRoles.Name = "btnRoles";
-            btnRoles.Size = new Size(137, 35);
-            btnRoles.TabIndex = 4;
-            btnRoles.Text = "Roles";
-            btnRoles.UseVisualStyleBackColor = true;
-            btnRoles.Click += btnRoles_Click;
             // 
             // FrmUsuarios
             // 
@@ -353,18 +192,8 @@ namespace LD.Forms.Views.Forms
             panel1.ResumeLayout(false);
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
-            splitContainer1.ResumeLayout(false);
-            splitContainer2.Panel1.ResumeLayout(false);
-            splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
-            splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
-            panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)usersGrid).EndInit();
+            ((System.ComponentModel.ISupportInitialize)permissionGrid).EndInit();
             panelContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -378,22 +207,9 @@ namespace LD.Forms.Views.Forms
         private Button btnEdit;
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button2;
-        private DataGridView dataGridView1;
+        private DataGridView usersGrid;
         private Button btnActualizar;
-        private SplitContainer splitContainer1;
-        private SplitContainer splitContainer2;
-        private DataGridView dataGridView2;
-        private DataGridView dataGridView3;
-        private Panel panel2;
-        private Button button4;
-        private Button button7;
-        private DataGridViewTextBoxColumn Rol2;
-        private DataGridViewTextBoxColumn Permiso;
-        private DataGridViewTextBoxColumn NombreX;
-        private DataGridViewCheckBoxColumn Activos;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
+        private DataGridView permissionGrid;
         private Panel panelContainer;
         private Button btnEditRol;
         private Button btnNewRol;
