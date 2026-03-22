@@ -72,7 +72,7 @@ namespace LD.Forms.Views.Forms
             label2.Name = "label2";
             label2.Size = new Size(106, 19);
             label2.TabIndex = 10;
-            label2.Text = "Version: 1.0.17";
+            label2.Text = "Version: 1.0.19";
             // 
             // label1
             // 

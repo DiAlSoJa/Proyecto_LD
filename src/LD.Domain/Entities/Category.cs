@@ -20,5 +20,10 @@ namespace LD.Domain.Entities
         [MaxLength(150)]
         public string Description { get; set; }
 
+        public int Frecuency { get; set; } 
+
+        public Client? Client { get; set; }
+        public Project? Project { get; set; }
+
     }
 }

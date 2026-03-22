@@ -33,7 +33,7 @@ public class UpdateLocationValidator
             .MaximumLength(100);
 
         // ===== Dimensiones =====
-
+/*
         RuleFor(x => x.Height)
             .GreaterThan(0)
             .When(x => x.Height.HasValue);
@@ -62,7 +62,7 @@ public class UpdateLocationValidator
 
         RuleFor(x => x)
             .Must(HaveOnlyOneSize)
-            .WithMessage("Solo puede seleccionar un tamaño.");
+            .WithMessage("Solo puede seleccionar un tamaño.");*/
     }
 
 

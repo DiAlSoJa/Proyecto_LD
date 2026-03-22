@@ -16,6 +16,9 @@ namespace LD.Contracts.Category
      
         [DisplayName("Descripción")]
         public string Descripcion { get; set; } = string.Empty;
+        public int Frecuencia { get; set; } 
+        public string Cliente { get; set; } = string.Empty;
+        public string Proyecto { get; set; } = string.Empty;
     }
 
 

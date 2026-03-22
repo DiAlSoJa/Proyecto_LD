@@ -29,6 +29,12 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            txtFrecuencia = new TextBox();
+            label6 = new Label();
+            cmbProyecto = new ComboBox();
+            label4 = new Label();
+            cmbCliente = new ComboBox();
+            label3 = new Label();
             txtNombre = new TextBox();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
@@ -48,6 +54,12 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(txtFrecuencia);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(cmbProyecto);
+            panel1.Controls.Add(label4);
+            panel1.Controls.Add(cmbCliente);
+            panel1.Controls.Add(label3);
             panel1.Controls.Add(txtNombre);
             panel1.Controls.Add(flowLayoutPanel1);
             panel1.Controls.Add(txtId);
@@ -57,17 +69,69 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(692, 227);
+            panel1.Size = new Size(689, 346);
             panel1.TabIndex = 1;
+            // 
+            // txtFrecuencia
+            // 
+            txtFrecuencia.BorderStyle = BorderStyle.FixedSingle;
+            txtFrecuencia.Font = new Font("Segoe UI", 9.75F);
+            txtFrecuencia.Location = new Point(140, 229);
+            txtFrecuencia.Name = "txtFrecuencia";
+            txtFrecuencia.Size = new Size(68, 29);
+            txtFrecuencia.TabIndex = 5;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(20, 237);
+            label6.Name = "label6";
+            label6.Size = new Size(82, 20);
+            label6.TabIndex = 73;
+            label6.Text = "Frecuencia:";
+            // 
+            // cmbProyecto
+            // 
+            cmbProyecto.FormattingEnabled = true;
+            cmbProyecto.Location = new Point(140, 110);
+            cmbProyecto.Name = "cmbProyecto";
+            cmbProyecto.Size = new Size(402, 28);
+            cmbProyecto.TabIndex = 2;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(21, 113);
+            label4.Name = "label4";
+            label4.Size = new Size(70, 20);
+            label4.TabIndex = 71;
+            label4.Text = "Proyecto:";
+            // 
+            // cmbCliente
+            // 
+            cmbCliente.FormattingEnabled = true;
+            cmbCliente.Location = new Point(140, 72);
+            cmbCliente.Name = "cmbCliente";
+            cmbCliente.Size = new Size(402, 28);
+            cmbCliente.TabIndex = 1;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(20, 80);
+            label3.Name = "label3";
+            label3.Size = new Size(58, 20);
+            label3.TabIndex = 69;
+            label3.Text = "Cliente:";
             // 
             // txtNombre
             // 
             txtNombre.BorderStyle = BorderStyle.FixedSingle;
             txtNombre.Font = new Font("Segoe UI", 9.75F);
-            txtNombre.Location = new Point(143, 101);
+            txtNombre.Location = new Point(140, 185);
             txtNombre.Name = "txtNombre";
             txtNombre.Size = new Size(456, 29);
-            txtNombre.TabIndex = 2;
+            txtNombre.TabIndex = 4;
             // 
             // flowLayoutPanel1
             // 
@@ -75,20 +139,20 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 170);
+            flowLayoutPanel1.Location = new Point(0, 289);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(5);
-            flowLayoutPanel1.Size = new Size(690, 55);
+            flowLayoutPanel1.Size = new Size(687, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
             button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(506, 8);
+            button2.Location = new Point(503, 8);
             button2.Name = "button2";
             button2.Size = new Size(171, 35);
-            button2.TabIndex = 5;
+            button2.TabIndex = 7;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
@@ -97,10 +161,10 @@
             // 
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(329, 8);
+            btnSave.Location = new Point(326, 8);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(171, 35);
-            btnSave.TabIndex = 4;
+            btnSave.TabIndex = 6;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
@@ -109,15 +173,15 @@
             // 
             txtId.BorderStyle = BorderStyle.FixedSingle;
             txtId.Font = new Font("Segoe UI", 9.75F);
-            txtId.Location = new Point(143, 60);
+            txtId.Location = new Point(140, 144);
             txtId.Name = "txtId";
             txtId.Size = new Size(68, 29);
-            txtId.TabIndex = 1;
+            txtId.TabIndex = 3;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(23, 115);
+            label5.Location = new Point(20, 199);
             label5.Name = "label5";
             label5.Size = new Size(67, 20);
             label5.TabIndex = 67;
@@ -131,7 +195,7 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(690, 35);
+            panel2.Size = new Size(687, 35);
             panel2.TabIndex = 4;
             panel2.DoubleClick += panel2_DoubleClick;
             // 
@@ -151,7 +215,7 @@
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(653, 0);
+            pictureBox2.Location = new Point(650, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Padding = new Padding(5, 11, 0, 0);
             pictureBox2.Size = new Size(37, 35);
@@ -162,7 +226,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(23, 68);
+            label2.Location = new Point(20, 152);
             label2.Name = "label2";
             label2.Size = new Size(77, 20);
             label2.TabIndex = 66;
@@ -172,7 +236,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(692, 227);
+            ClientSize = new Size(689, 346);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmNewCategory";
@@ -201,5 +265,11 @@
         private TextBox txtId;
         private Label label5;
         private Label label2;
+        private ComboBox cmbProyecto;
+        private Label label4;
+        private ComboBox cmbCliente;
+        private Label label3;
+        private TextBox txtFrecuencia;
+        private Label label6;
     }
 }

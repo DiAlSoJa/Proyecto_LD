@@ -12,8 +12,10 @@ namespace LD.Contracts.Requests
 
 
         public string? Description { get; set; }
+        public int? Frecuency { get; set; }        
 
-
+        public int ClientId { get; set; }
+        public int ProjectId { get; set; }
 
     }
 

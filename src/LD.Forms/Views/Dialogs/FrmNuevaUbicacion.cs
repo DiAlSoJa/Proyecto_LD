@@ -62,7 +62,8 @@ namespace LD.Forms.Views.Dialogs
             try
             {
                 var response = await _locationService.GetLocationById(LocationSelected?.LocationId ?? 0);
-
+                cmbAlmacen.Enabled = false;
+                txtNombreUbicacion.Enabled = false;
 
                 if (!response.IsSuccess)
                 {
@@ -137,6 +138,7 @@ namespace LD.Forms.Views.Dialogs
         }
         private LocationRequest BuildRequest()
         {
+         
             return new LocationRequest
             {
                 LocationId =  LocationSelected != null ? LocationSelected.LocationId : 0,
@@ -163,7 +165,10 @@ namespace LD.Forms.Views.Dialogs
                 IsSencillo = radioSencillo.Checked,
 
                 HasPaso = checkPaso.Checked,
-                HasCortina = checkCortina.Checked
+                HasCortina = checkCortina.Checked,
+                Level = txtNombreUbicacion.Text.Substring(txtNombreUbicacion.Text.Length - 1, 1) ,
+                Position = txtNombreUbicacion.Text.Substring(txtNombreUbicacion.Text.Length - 3, 2),
+                Rack =txtNombreUbicacion.Text.Substring(0,txtNombreUbicacion.Text.Length-3),
             };
         }
         private void ShowResult(ApiResponseDto<string> result)

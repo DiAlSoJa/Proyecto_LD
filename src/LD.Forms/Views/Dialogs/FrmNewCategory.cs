@@ -112,6 +112,10 @@ namespace LD.Forms.Views.Dialogs
             {
                 CategoryIdS = CategorySelect != null? CategorySelect.Categoria:txtId.Text,
                 Description = txtNombre.Text.Trim(),                
+                Frecuency = int.TryParse(txtFrecuencia.Text, out int frec) ? frec : null,
+                ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
+                ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0,
+                               
             };
         }
       

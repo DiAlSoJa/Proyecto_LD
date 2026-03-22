@@ -19,7 +19,14 @@ namespace LD.Application.Features.Category.Profiles
            .ForMember(dest => dest.Categoria,
                opt => opt.MapFrom(src => src.CategoryIdS))
            .ForMember(dest => dest.Descripcion,
-               opt => opt.MapFrom(src => src.Description));
+               opt => opt.MapFrom(src => src.Description))
+              .ForMember(dest => dest.Frecuencia,
+               opt => opt.MapFrom(src => src.Frecuency))
+            .ForMember(dest => dest.Cliente,
+               opt => opt.MapFrom(src => src.Client))
+               .ForMember(dest => dest.Proyecto,
+               opt => opt.MapFrom(src => src.Project)
+               );
 
             CreateMap<CategoryRequest, LD.Domain.Entities.Category>()
                 .ForMember(dest => dest.CategoryIdS,
