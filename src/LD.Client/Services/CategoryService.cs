@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LD.Contracts.Category;
 using LD.Contracts.Client;
+using LD.Contracts.DTOs;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Configuration;
@@ -39,5 +40,11 @@ namespace LD.Client.Services
         {
             return await _api.PutAsync<CategoryRequest, ApiResponseDto<string>>(_apiEndpoints.Category_Update.Replace("{categoryId}", categoryId), request);
         }
+
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetClientLookup()
+          => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Client);
+
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetProjecttLookup()
+          => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Project);
     }
 }

@@ -32,7 +32,7 @@ namespace LD.Forms.Views.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmLogin));
             pictureBox1 = new PictureBox();
-            label2 = new Label();
+            lblVersion = new Label();
             label1 = new Label();
             label3 = new Label();
             btnLogin = new RoundedButton();
@@ -61,18 +61,18 @@ namespace LD.Forms.Views.Forms
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
-            // label2
+            // lblVersion
             // 
-            label2.AutoSize = true;
-            label2.BackColor = Color.FromArgb(20, 41, 84);
-            label2.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.ForeColor = Color.White;
-            label2.Location = new Point(214, 350);
-            label2.Margin = new Padding(2, 0, 2, 0);
-            label2.Name = "label2";
-            label2.Size = new Size(106, 19);
-            label2.TabIndex = 10;
-            label2.Text = "Version: 1.0.19";
+            lblVersion.AutoSize = true;
+            lblVersion.BackColor = Color.FromArgb(20, 41, 84);
+            lblVersion.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblVersion.ForeColor = Color.White;
+            lblVersion.Location = new Point(214, 350);
+            lblVersion.Margin = new Padding(2, 0, 2, 0);
+            lblVersion.Name = "lblVersion";
+            lblVersion.Size = new Size(15, 19);
+            lblVersion.TabIndex = 10;
+            lblVersion.Text = "-";
             // 
             // label1
             // 
@@ -190,7 +190,7 @@ namespace LD.Forms.Views.Forms
             panel1.BorderStyle = BorderStyle.FixedSingle;
             panel1.Controls.Add(roundedPanel1);
             panel1.Controls.Add(label1);
-            panel1.Controls.Add(label2);
+            panel1.Controls.Add(lblVersion);
             panel1.Controls.Add(pictureBox1);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
@@ -236,6 +236,7 @@ namespace LD.Forms.Views.Forms
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "LMS 2.0";
+            Load += FrmLogin_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
@@ -252,7 +253,7 @@ namespace LD.Forms.Views.Forms
         private Panel panel4;
         private Panel panel3;
         private Label label1;
-        private Label label2;
+        private Label lblVersion;
         private PictureBox pictureBox3;
         private PictureBox pictureBox2;
         private TextBox txtUsuario;

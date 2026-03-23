@@ -1,4 +1,5 @@
-﻿using LD.Client.Services;
+﻿using System.Reflection;
+using LD.Client.Services;
 using LD.Contracts.Enums;
 using LD.Forms.Classes;
 using LD.Forms.Services;
@@ -9,8 +10,9 @@ using LD.Forms.Views.Exceptions;
 using LD.Forms.Views.Forms;
 using LD.Forms.Views.Interfaces;
 
+
 namespace LD.Forms.Views.Forms
-{   
+{
     public partial class FrmLogin : DraggableForm, ILoginView
     {
         private bool mouseDown;
@@ -24,7 +26,7 @@ namespace LD.Forms.Views.Forms
         private DialogMessageService _dialogMessageService;
         public event EventHandler? LoginSucceeded;
 
-        public FrmLogin(AuthService authService,  DialogMessageService dialogMessageService)
+        public FrmLogin(AuthService authService, DialogMessageService dialogMessageService)
         {
             InitializeComponent();
             _authService = authService;
@@ -94,7 +96,7 @@ namespace LD.Forms.Views.Forms
                     _dialogMessageService.Show(getMeResponse.Message, DialogMessageEnum.Warning);
                     return;
                 }
-                UserData.SetUserData(getMeResponse.Data); 
+                UserData.SetUserData(getMeResponse.Data);
                 LoginSucceeded?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
@@ -175,6 +177,12 @@ namespace LD.Forms.Views.Forms
         private void roundedPanel1_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void FrmLogin_Load(object sender, EventArgs e)
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            lblVersion.Text = $"Versión: {version}";
         }
     }
 }

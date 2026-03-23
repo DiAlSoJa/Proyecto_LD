@@ -30,6 +30,10 @@ namespace LD.Client.Services
            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Location);
         public async Task<ApiResponseDto<List<DropDownDto>>> GetRoleLookup()
           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Role);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetProjectLookup()
+          => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Project);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetProjectClientLookup(int clientId)
+                => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>($"{_apiEndpoints.Lookup_ProjectClient}/{clientId}");
 
     }
 }

@@ -60,8 +60,6 @@
             label16 = new Label();
             comboBox4 = new ComboBox();
             label15 = new Label();
-            comboBox3 = new ComboBox();
-            label14 = new Label();
             textBox8 = new TextBox();
             label4 = new Label();
             textBox5 = new TextBox();
@@ -141,6 +139,7 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1365, 748);
             panel1.TabIndex = 0;
+            // 
             // tabControl1
             // 
             tabControl1.Controls.Add(tabGeneral);
@@ -429,8 +428,6 @@
             groupBox3.Controls.Add(label16);
             groupBox3.Controls.Add(comboBox4);
             groupBox3.Controls.Add(label15);
-            groupBox3.Controls.Add(comboBox3);
-            groupBox3.Controls.Add(label14);
             groupBox3.Controls.Add(textBox8);
             groupBox3.Controls.Add(label4);
             groupBox3.Controls.Add(textBox5);
@@ -480,25 +477,6 @@
             label15.Size = new Size(137, 20);
             label15.TabIndex = 65;
             label15.Text = "Estatus producción:";
-            // 
-            // comboBox3
-            // 
-            comboBox3.Font = new Font("Segoe UI", 9.75F);
-            comboBox3.FormattingEnabled = true;
-            comboBox3.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox3.Location = new Point(525, 25);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(133, 29);
-            comboBox3.TabIndex = 26;
-            // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.Location = new Point(436, 29);
-            label14.Name = "label14";
-            label14.Size = new Size(69, 20);
-            label14.TabIndex = 62;
-            label14.Text = "Estandar:";
             // 
             // textBox8
             // 
@@ -871,7 +849,7 @@
             tabAvanzada.Location = new Point(4, 29);
             tabAvanzada.Name = "tabAvanzada";
             tabAvanzada.Padding = new Padding(3);
-            tabAvanzada.Size = new Size(1310, 544);
+            tabAvanzada.Size = new Size(1355, 558);
             tabAvanzada.TabIndex = 1;
             tabAvanzada.Text = "Avanzada";
             tabAvanzada.UseVisualStyleBackColor = true;
@@ -1122,12 +1100,10 @@
         private Label label4;
         private TextBox textBox5;
         private Label label2;
-        private Label label14;
         private ComboBox comboBox5;
         private Label label16;
         private ComboBox comboBox4;
         private Label label15;
-        private ComboBox comboBox3;
         private GroupBox groupBox5;
         private CheckBox checkBox11;
         private CheckBox checkBox12;

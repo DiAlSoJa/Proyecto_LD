@@ -11,6 +11,7 @@ using LD.Client.Services;
 using LD.Contracts.Category;
 using LD.Contracts.Currency;
 using LD.Contracts.Enums;
+using LD.Contracts.Project;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.Units;
@@ -25,16 +26,19 @@ namespace LD.Forms.Views.Dialogs
     public partial class FrmNewCategory : DraggableForm
     {
         private readonly CategoryService _categoryService;
+        private LookupService _lookupService;
         private CategoryDto? CategorySelect { get; set; }
         private readonly DialogMessageService _dialogService;
 
-        public FrmNewCategory(CategoryService categoryService, DialogMessageService dialogService)
+
+        public FrmNewCategory(CategoryService categoryService, LookupService lookupService, DialogMessageService dialogService)
         {
             InitializeComponent();
             EnableDrag(panel2);
             EnableDrag(panel1);
             _categoryService = categoryService;
             _dialogService = dialogService;
+            _lookupService = lookupService;
 
         }
 
@@ -44,18 +48,43 @@ namespace LD.Forms.Views.Dialogs
             await CargarDatosAsync();
         }
 
+
+
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-          
+
+            await SetCombos();
+            if (CategorySelect != null)
+                await CargarDatosAsync();
+
         }
+        private async Task SetCombos()
+        {
+            var clientes = await _lookupService.GetClientLookup();
+
+
+            if (clientes.IsSuccess)
+            {
+
+                cmbCliente.DataSource = clientes.Data;
+                cmbCliente.DisplayMember = "Value";
+                cmbCliente.ValueMember = "Key";
+                cmbCliente.SelectedIndex = -1;
+
+            }
+
+
+        }
+
+
 
         private async Task CargarDatosAsync()
         {
             try
             {
-                var response = await _categoryService.GetCategoryById(CategorySelect?.Categoria??"");
+                var response = await _categoryService.GetCategoryById(CategorySelect?.Categoria ?? "");
 
                 if (!response.IsSuccess)
                 {
@@ -63,16 +92,16 @@ namespace LD.Forms.Views.Dialogs
                     return;
                 }
                 var unitI = response.Data;
-                txtId.Text = unitI.CategoryIdS; 
-                txtNombre.Text = unitI.Description;                
-                txtId.Enabled = CategorySelect == null; 
+                txtId.Text = unitI.CategoryName;
+                txtNombre.Text = unitI.Description;
+                txtId.Enabled = CategorySelect == null;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-      
+
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
@@ -110,23 +139,23 @@ namespace LD.Forms.Views.Dialogs
 
             return new CategoryRequest
             {
-                CategoryIdS = CategorySelect != null? CategorySelect.Categoria:txtId.Text,
-                Description = txtNombre.Text.Trim(),                
+                CategoryName = CategorySelect != null ? CategorySelect.Categoria : txtId.Text,
+                Description = txtNombre.Text.Trim(),
                 Frecuency = int.TryParse(txtFrecuencia.Text, out int frec) ? frec : null,
                 ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
                 ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0,
-                               
+
             };
         }
-      
+
         private void ShowResult(ApiResponseDto<string> result)
         {
             _dialogService.Show(
-                 result.IsSuccess ? result.Data??"" : $"Hubo un error: {Environment.NewLine}{result.ErrorMessage??""}",
+                 result.IsSuccess ? result.Data ?? "" : $"Hubo un error: {Environment.NewLine}{result.ErrorMessage ?? ""}",
                   result.IsSuccess ? DialogMessageEnum.Info : DialogMessageEnum.Error
                 );
-        
-               
+
+
         }
 
         private async void btnSave_Click(object sender, EventArgs e)
@@ -153,6 +182,38 @@ namespace LD.Forms.Views.Dialogs
             {
                 btnSave.Enabled = true;
             }
+        }
+
+        private async void cmbCliente_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbCliente.SelectedValue == null)
+                return;
+
+            if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
+                return;
+
+            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
+
+            if (proyectos.IsSuccess)
+            {
+                cmbProyecto.DataSource = proyectos.Data;
+                cmbProyecto.DisplayMember = "Value";
+                cmbProyecto.ValueMember = "Key";
+
+                if (proyectos.Data.Count > 1)
+                {
+                    cmbProyecto.SelectedIndex = -1;
+                }
+            }
+
+
+
+
+        }
+
+        private async void cmbCliente_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+          
         }
     }
 }

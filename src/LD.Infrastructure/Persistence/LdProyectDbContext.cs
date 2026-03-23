@@ -115,7 +115,21 @@ namespace LD.Infrastructure.Persistence
 
             builder.Entity<Units>()
                 .HasIndex(u => u.UnitIdS)
-                .IsUnique(); 
+                .IsUnique();
+
+
+            builder.Entity<Category>()
+                    .HasOne(c => c.Client)
+                    .WithMany()
+                    .HasForeignKey(c => c.ClientId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Category>()
+                .HasOne(c => c.Project)
+                .WithMany()
+                .HasForeignKey(c => c.ProjectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.Entity<StorageType>().HasData(
                 new StorageType

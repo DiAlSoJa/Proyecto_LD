@@ -456,98 +456,7 @@ namespace LD.Forms.Classes
             ApplyFilters();
         }
 
-        /* private void ApplyFilters()
-         {
-             if (_originalData == null)
-                 return;
-
-             _activeFilters.Clear();
-
-             foreach (DataGridViewColumn col in _filterGrid.Columns)
-             {
-                 var value = _filterGrid.Rows[0].Cells[col.Index].Value?.ToString();
-
-                 if (!string.IsNullOrWhiteSpace(value))
-                     _activeFilters[col.Name] = value;
-             }
-
-             if (_activeFilters.Count == 0)
-             {
-                 _binding.DataSource = _originalData;
-                 ResetHeaderStyle();
-                 return;
-             }
-
-             var parameter = Expression.Parameter(typeof(T), "x");
-             Expression body = null;
-
-             foreach (var filter in _activeFilters)
-             {
-                 var prop = _propertyCache[filter.Key];
-                 var member = Expression.Property(parameter, prop);
-
-                 Expression condition;
-
-                 if (prop.PropertyType == typeof(string))
-                 {
-                     var toLower = Expression.Call(member, "ToLower", null);
-                     var filterValue = filter.Value.ToString()
-                         .Replace("*", "")
-                         .ToLower();
-
-                     var constant = Expression.Constant(filterValue);
-                     condition = Expression.Call(toLower,
-                         "Contains", null, constant);
-                 }
-                 else if (prop.PropertyType == typeof(bool)
-                       || prop.PropertyType == typeof(bool?))
-                 {
-                     string strVal = filter.Value.ToString().ToLower();
-                     bool boolValue = false;
-                     if ((strVal=="1") || strVal.ToLower()=="true")
-                     {
-                         boolValue = true;
-                     }
-
-                     var constant = Expression.Constant(boolValue);
-                     condition = Expression.Equal(member, constant);
-                 }
-                 else if (prop.PropertyType == typeof(DateTime)
-                       || prop.PropertyType == typeof(DateTime?))
-                 {
-                     if (DateTime.TryParse(filter.Value.ToString(),
-                         out DateTime dt))
-                     {
-                         var constant = Expression.Constant(dt.Date);
-                         var memberDate = Expression.Property(member, "Date");
-                         condition = Expression.Equal(memberDate, constant);
-                     }
-                     else continue;
-                 }
-                 else
-                 {
-                     var constant = Expression.Constant(
-                         Convert.ChangeType(filter.Value,
-                         prop.PropertyType));
-
-                     condition = Expression.Equal(member, constant);
-                 }
-
-                 body = body == null
-                     ? condition
-                     : Expression.AndAlso(body, condition);
-             }
-
-             var lambda =
-                 Expression.Lambda<Func<T, bool>>(body, parameter).Compile();
-
-             var filtered = _originalData.Where(lambda).ToList();
-
-             _binding.DataSource = filtered;
-
-             HighlightFilteredColumns();
-         }*/
-
+      
 
 
         private void ApplyFilters()
@@ -603,10 +512,7 @@ namespace LD.Forms.Classes
         // Motor de condiciones avanzado
         // ===============================
 
-        private Expression BuildCondition(
-    MemberExpression member,
-    PropertyInfo prop,
-    string input)
+        private Expression BuildCondition(MemberExpression member, PropertyInfo prop, string input)
         {
             var values = input.Split(',')
                               .Select(v => v.Trim())
@@ -622,40 +528,72 @@ namespace LD.Forms.Classes
                 // STRING
                 if (prop.PropertyType == typeof(string))
                 {
-                    var toLower = Expression.Call(member, "ToLower", null);
-                    var value = val.Replace("*", "").ToLower();
-                    var constant = Expression.Constant(value);
-                    condition = Expression.Call(toLower, "Contains", null, constant);
+                    var notNull = Expression.NotEqual(
+                        member,
+                        Expression.Constant(null, typeof(string))
+                    );
+
+                    var toLower = Expression.Call(member, typeof(string).GetMethod("ToLower", Type.EmptyTypes)!);
+                    var constant = Expression.Constant(val.Replace("*", "").ToLower());
+                    var contains = Expression.Call(toLower, typeof(string).GetMethod("Contains", new[] { typeof(string) })!, constant);
+
+                    condition = Expression.AndAlso(notNull, contains);
                 }
 
-                // DATE RANGE
-                else if (prop.PropertyType == typeof(DateTime)
-                      || prop.PropertyType == typeof(DateTime?))
+                // DATE / DATETIME?
+                else if (prop.PropertyType == typeof(DateTime))
                 {
                     if (val.Contains(".."))
                     {
                         var parts = val.Split("..");
 
-                        if (DateTime.TryParse(parts[0], out DateTime start)
-                         && DateTime.TryParse(parts[1], out DateTime end))
+                        if (DateTime.TryParse(parts[0], out DateTime start) &&
+                            DateTime.TryParse(parts[1], out DateTime end))
                         {
+                            var memberDate = Expression.Property(member, "Date");
                             var startConst = Expression.Constant(start.Date);
                             var endConst = Expression.Constant(end.Date);
-                            var memberDate = Expression.Property(member, "Date");
 
-                            var greater =
-                                Expression.GreaterThanOrEqual(memberDate, startConst);
-                            var less =
-                                Expression.LessThanOrEqual(memberDate, endConst);
+                            var greater = Expression.GreaterThanOrEqual(memberDate, startConst);
+                            var less = Expression.LessThanOrEqual(memberDate, endConst);
 
                             condition = Expression.AndAlso(greater, less);
                         }
                     }
                     else if (DateTime.TryParse(val, out DateTime dt))
                     {
-                        var constant = Expression.Constant(dt.Date);
                         var memberDate = Expression.Property(member, "Date");
+                        var constant = Expression.Constant(dt.Date);
                         condition = Expression.Equal(memberDate, constant);
+                    }
+                }
+                else if (prop.PropertyType == typeof(DateTime?))
+                {
+                    var hasValue = Expression.Property(member, "HasValue");
+                    var valueExpr = Expression.Property(member, "Value");
+                    var memberDate = Expression.Property(valueExpr, "Date");
+
+                    if (val.Contains(".."))
+                    {
+                        var parts = val.Split("..");
+
+                        if (DateTime.TryParse(parts[0], out DateTime start) &&
+                            DateTime.TryParse(parts[1], out DateTime end))
+                        {
+                            var startConst = Expression.Constant(start.Date);
+                            var endConst = Expression.Constant(end.Date);
+
+                            var greater = Expression.GreaterThanOrEqual(memberDate, startConst);
+                            var less = Expression.LessThanOrEqual(memberDate, endConst);
+
+                            condition = Expression.AndAlso(hasValue, Expression.AndAlso(greater, less));
+                        }
+                    }
+                    else if (DateTime.TryParse(val, out DateTime dt))
+                    {
+                        var constant = Expression.Constant(dt.Date);
+                        var equal = Expression.Equal(memberDate, constant);
+                        condition = Expression.AndAlso(hasValue, equal);
                     }
                 }
 
@@ -672,9 +610,7 @@ namespace LD.Forms.Classes
 
                     if (double.TryParse(cleanValue, out double num))
                     {
-                        var constant =
-                            Expression.Constant(Convert.ChangeType(num,
-                                prop.PropertyType));
+                        var constant = Expression.Constant(Convert.ChangeType(num, prop.PropertyType));
 
                         condition = op switch
                         {
@@ -688,12 +624,21 @@ namespace LD.Forms.Classes
                 }
 
                 // BOOL
-                else if (prop.PropertyType == typeof(bool)
-                      || prop.PropertyType == typeof(bool?))
+                else if (prop.PropertyType == typeof(bool))
                 {
                     if (bool.TryParse(val, out bool b))
-                        condition = Expression.Equal(member,
-                            Expression.Constant(b));
+                        condition = Expression.Equal(member, Expression.Constant(b));
+                }
+                else if (prop.PropertyType == typeof(bool?))
+                {
+                    var hasValue = Expression.Property(member, "HasValue");
+                    var valueExpr = Expression.Property(member, "Value");
+
+                    if (bool.TryParse(val, out bool b))
+                    {
+                        var equal = Expression.Equal(valueExpr, Expression.Constant(b));
+                        condition = Expression.AndAlso(hasValue, equal);
+                    }
                 }
 
                 if (condition == null)
@@ -706,8 +651,6 @@ namespace LD.Forms.Classes
 
             return finalExpression;
         }
-
-
 
         private static bool IsNumeric(Type type)
         {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LD.Contracts.DTOs;
 using LD.Contracts.Project;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
@@ -26,9 +27,16 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
                 ;
             CreateMap<Project, ProjectRequest>();
+
             CreateMap<ProjectRequest, Project>()
                  .ForMember(dest => dest.ProjectId,
                     opt => opt.Ignore());
+
+            CreateMap<Project, DropDownDto>()
+              .ForMember(dest => dest.Key,
+                  opt => opt.MapFrom(src => src.ProjectId))
+              .ForMember(dest => dest.Value,
+                  opt => opt.MapFrom(src => src.ProjectName));
         }
     }
 }
