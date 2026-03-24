@@ -1,8 +1,12 @@
-﻿using LD.Api.Common.Results;
+﻿using LD.Api.Authorization;
+using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Clients.Queries;
+using LD.Application.Features.Lookup.Queries;
 using LD.Application.Features.Queries;
+using LD.Contracts.Constants;
+using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,5 +36,16 @@ namespace LD.Api.Controllers
         [HttpGet("role")]
         public async Task<IActionResult> GetRoleLookup()
           => ResultExtensions.ToActionResult(await Mediator.Send(new GetRoleLookupQuery()));
+
+        [HttpGet("project")]
+        public async Task<IActionResult> GetProjectLookup()
+          => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjectLookupQuery()));
+
+
+        [HttpGet("project/{clientId}")]        
+        public async Task<IActionResult> GetProjectByClient(int clientId)
+          => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjecClienttLookupQuery(clientId)));
+
+
     }
 }

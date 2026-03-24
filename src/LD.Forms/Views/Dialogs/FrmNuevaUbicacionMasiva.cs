@@ -143,7 +143,28 @@ namespace LD.Forms.Views.Dialogs
                 FromW = int.TryParse(txtDesde.Text, out int fromW) ? fromW : 0,
                 ToW = int.TryParse(txtHasta.Text, out int toW) ? toW : 0,
                 Leves = int.TryParse(txtNiveles.Text, out int leves) ? leves : 0,
+                IsActive = checkIsActive.Checked,
+                IsFiscal = checkIsFiscal.Checked,
+                HasControlledTemperature = checkTemperatura.Checked,
 
+                Height = decimal.TryParse(txtAltoCm.Text, out decimal alto) ? alto : null,
+                Width = decimal.TryParse(txtAnchoCm.Text, out decimal ancho) ? ancho : null,
+                Depth = decimal.TryParse(txtProfundidadCm.Text, out decimal profundidad) ? profundidad : null,
+
+                IsRack = radioRack.Checked,
+                IsCompartidoType = radioCompartidoType.Checked,
+
+                IsGeneral = radioGeneral.Checked,
+                IsCuarentena = radioCuarentena.Checked,
+                IsEmbarque = radioEmbarque.Checked,
+                IsCompartido = radioCompartido.Checked,
+                IsReciboYEmbarque = radioReciboEmbarque.Checked,
+
+                IsDoble = radioDoble.Checked,
+                IsSencillo = radioSencillo.Checked,
+
+                HasPaso = checkPaso.Checked,
+                HasCortina = checkCortina.Checked
 
 
             };

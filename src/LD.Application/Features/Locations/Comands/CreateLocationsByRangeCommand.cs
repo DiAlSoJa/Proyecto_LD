@@ -49,7 +49,7 @@ public class CreateLocationsByRangeCommandHandler : IRequestHandler<CreateLocati
 
             var locationsToCreate = new List<Location>();
 
-            for (int position = request.FromW; position <= request.ToW; position++)
+            for (int position = (int) request.FromW; position <= request.ToW; position++)
             {
                 string positionText = position.ToString("D2");
 
@@ -64,7 +64,26 @@ public class CreateLocationsByRangeCommandHandler : IRequestHandler<CreateLocati
                         Rack = rack,
                         Position = positionText,
                         Level = levelText,
-                        LocationName = locationName
+                        LocationName = locationName,
+                        IsActive = request.IsActive,
+                        IsFiscal = request.IsFiscal,
+                        HasControlledTemperature = request.HasControlledTemperature,
+                        Height = request.Height,
+                        Width   = request.Width,
+                        Depth = request.Depth,
+                        IsRack = request.IsRack,
+                        IsCompartidoType = request.IsCompartidoType,
+                        IsGeneral = request.IsGeneral,
+                        IsCuarentena = request.IsCuarentena,
+                        IsEmbarque = request.IsEmbarque,
+                        IsCompartido = request.IsCompartido,
+                        IsReciboYEmbarque = request.IsReciboYEmbarque,
+                        IsDoble = request.IsDoble,
+                        IsSencillo = request.IsSencillo,
+                        HasPaso = request.HasPaso,
+                        HasCortina = request.HasCortina,
+
+
                     });
                 }
             }

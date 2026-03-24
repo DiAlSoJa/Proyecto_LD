@@ -11,6 +11,7 @@ namespace LD.Contracts.DTOs
         public List<DropDownDto> Warehouses { get; set; } = new();
         public List<DropDownDto> Clients { get; set; } = new();
         public List<DropDownDto> Locations { get; set; } = new();
+        public List<DropDownDto> Projects { get; set; } = new();
 
     }
 }

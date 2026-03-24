@@ -54,10 +54,13 @@ namespace LD.Contracts.Requests
         public bool IsActive { get; set; }
 
         // Para creación masiva
-        public string Rack {  get; set; }
-        public int FromW { get; set; }
-        public int ToW { get; set; }
-        public int Leves { get; set; }
+        public string? Rack {  get; set; }
+        public string? Level { get; set; }
+        public string? Position { get; set; }
+        public int? FromW { get; set; }
+        public int? ToW { get; set; }
+        public int? Leves { get; set; }
+        
     }
 
 }

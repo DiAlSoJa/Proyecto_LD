@@ -46,14 +46,14 @@ namespace LD.Forms.Views.Forms
 
         protected override async void OnShown(EventArgs e)
         {
-            base.OnShown(e);
+           /* base.OnShown(e);
 
-            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Articulos");
+            await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Articulos");*/
 
         }
 
         private async Task CargarDatosAsync()
-        {
+        {/*
             try
             {
                 var result = await _itemService.GetItems();
@@ -73,7 +73,7 @@ namespace LD.Forms.Views.Forms
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }*/
         }
         private async void reloadBtn_Click(object sender, EventArgs e)
         {

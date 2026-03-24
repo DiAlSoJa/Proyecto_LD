@@ -34,7 +34,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
     {
         try
         {
-            var category = await _categoryRepository.GetByIdAsync(request.CategoryIdS);
+            var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category is null)
                 return Result<string>.Failure("No existe la categoría", new List<string> { "Hubo un error al obtener la categoría" }, 404);
             _mapper.Map(request, category);

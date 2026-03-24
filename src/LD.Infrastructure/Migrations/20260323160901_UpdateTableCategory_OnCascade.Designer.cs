@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260323160901_UpdateTableCategory_OnCascade")]
+    partial class UpdateTableCategory_OnCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1702,60 +1705,6 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("Units");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.UserWarehouse", b =>
-                {
-                    b.Property<int>("UserWarehouseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserWarehouseId"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WarehouseId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserWarehouseId");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.HasIndex("WarehouseId1");
-
-                    b.ToTable("UserWarehouses");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.Vehicle", b =>
                 {
                     b.Property<string>("Plates")
@@ -2274,29 +2223,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Permission");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.UserWarehouse", b =>
-                {
-                    b.HasOne("LD.Infrastructure.ApplicationUser", null)
-                        .WithMany("UserWarehouses")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("LD.Infrastructure.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("LD.Domain.Entities.Warehouse", null)
-                        .WithMany("UserWarehouses")
-                        .HasForeignKey("WarehouseId1");
-
-                    b.Navigation("Warehouse");
-                });
-
             modelBuilder.Entity("LD.Infrastructure.ApplicationUserRole", b =>
                 {
                     b.HasOne("LD.Infrastructure.ApplicationRole", "Role")
@@ -2364,11 +2290,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Permissions");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.Warehouse", b =>
-                {
-                    b.Navigation("UserWarehouses");
-                });
-
             modelBuilder.Entity("LD.Infrastructure.ApplicationRole", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -2379,8 +2300,6 @@ namespace LD.Infrastructure.Migrations
             modelBuilder.Entity("LD.Infrastructure.ApplicationUser", b =>
                 {
                     b.Navigation("UserRoles");
-
-                    b.Navigation("UserWarehouses");
                 });
 #pragma warning restore 612, 618
         }

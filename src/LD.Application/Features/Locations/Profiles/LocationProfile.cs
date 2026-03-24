@@ -18,7 +18,7 @@ namespace LD.Application.Features.Clients.Profiles
                 .ForMember(dest => dest.LocationId,
                     opt => opt.MapFrom(src => src.LocationId))
                 .ForMember(dest => dest.Activo,
-                    opt => opt.MapFrom(src => src.IsActive))                
+                    opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.Almacen,
                     opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
                 .ForMember(dest => dest.Ubicacion,
@@ -48,7 +48,13 @@ namespace LD.Application.Features.Clients.Profiles
                 .ForMember(dest => dest.EsTienePaso,
                     opt => opt.MapFrom(src => src.HasPaso))
                 .ForMember(dest => dest.EsTieneCortina,
-                    opt => opt.MapFrom(src => src.HasCortina));
+                    opt => opt.MapFrom(src => src.HasCortina))
+                .ForMember(dest => dest.Rack,
+                    opt => opt.MapFrom(src => src.Rack))
+                  .ForMember(dest => dest.Posicion,
+                    opt => opt.MapFrom(src => src.Level))
+                    .ForMember(dest => dest.Nivel,
+                    opt => opt.MapFrom(src => src.Position));
 
             CreateMap<LocationRequest, Location>()
                 .ForMember(dest => dest.LocationId,

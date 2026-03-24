@@ -40,9 +40,9 @@ namespace LD.Api.Controllers
 
         [HttpPut("{categoryId}")]
         [Permission(PermissionKeys.Category_Update)]
-        public async Task<IActionResult> Updatecategory(string categoryId, UpdateCategoryCommand command)
+        public async Task<IActionResult> Updatecategory(int categoryId, UpdateCategoryCommand command)
         {
-            command.CategoryIdS = categoryId;
+            command.CategoryId = categoryId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
