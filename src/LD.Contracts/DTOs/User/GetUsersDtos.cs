@@ -1,4 +1,5 @@
 ﻿using LD.Contracts.User;
+using LD.Contracts.Warehouse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace LD.Contracts.DTOs.User
     {
         public UserDto? User { get; set; }
         public List<PermissionDto>? Permissions { get; set; }
+        public List<WarehouseDto>? Warehouse { get; set; }
 
     }
 }

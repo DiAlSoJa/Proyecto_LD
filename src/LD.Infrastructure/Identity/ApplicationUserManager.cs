@@ -97,6 +97,8 @@ namespace LD.Infrastructure
         public async Task<List<GetUserDto>> GetUsersAsync()
         {
             return await _userManager.Users
+                    .Include(u=>u.UserWarehouses)
+                    .ThenInclude(uw=>uw.Warehouse)
                     .Include(u=>u.UserRoles)
                     .ThenInclude(ur=>ur.Role)
                     .ThenInclude(r=>r.RolePermissions)

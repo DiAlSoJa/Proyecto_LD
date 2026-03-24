@@ -2,6 +2,7 @@
 using LD.Contracts.DTOs.User;
 using LD.Contracts.Requests;
 using LD.Contracts.User;
+using LD.Contracts.Warehouse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,20 @@ namespace LD.Infrastructure.Mappers
                         {
                             PermissionId   = rp.PermissionId,
                             PermissionName = rp.Permission.PermissionName ?? ""
+                        })
+                        .ToList()))
+                .ForMember(dest => dest.Warehouse,
+                    opt => opt.MapFrom(src => src.UserWarehouses
+                        .Where(uw => uw.Warehouse != null)
+                        .Select(uw => new WarehouseDto
+                        {
+                            Id            = uw.Warehouse!.WarehouseId,
+                            NombreAlmacen = uw.Warehouse.WarehouseName,
+                            Domicilio     = uw.Warehouse.Address,
+                            Colonia       = uw.Warehouse.Neighborhood,
+                            Ciudad        = uw.Warehouse.City,
+                            CodigoPostal  = uw.Warehouse.ZipCode,
+                            Activo        = uw.Warehouse.IsActive
                         })
                         .ToList()));
         }
