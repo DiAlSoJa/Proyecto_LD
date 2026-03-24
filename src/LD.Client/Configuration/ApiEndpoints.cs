@@ -220,7 +220,15 @@ namespace LD.Forms.Configuration
         public string InventaryStatus_Delete => $"{_baseApi}/inventaryStatus/{{statusId}}";
 
 
+        // ======================
+        // FAMILY
+        // ======================
 
+        public string Family_GetAll => $"{_baseApi}/family";
+        public string Family_GetById => $"{_baseApi}/family/{{familyId}}";
+        public string Family_Create => $"{_baseApi}/family";
+        public string Family_Update => $"{_baseApi}/family/{{familyId}}";
+        public string Family_Delete => $"{_baseApi}/family/{{familyId}}";
 
     }
 }

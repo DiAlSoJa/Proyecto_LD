@@ -27,7 +27,7 @@ namespace LD.Infrastructure.Repositories
         {
             return await _context.Families
                 .Include(x => x.Project)
-                .Include(x => x.Warehouse)
+                .Include(x => x.Client)
                 .ToListAsync();
         }
 

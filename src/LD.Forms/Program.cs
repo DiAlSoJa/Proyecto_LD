@@ -120,6 +120,7 @@ namespace LD
             services.AddTransient<FrmNewUnit>();
             services.AddTransient<FrmNewCurrency>();
             services.AddTransient<FrmNewCategory>();
+            services.AddTransient<FrmNewFamily>();
 
 
             

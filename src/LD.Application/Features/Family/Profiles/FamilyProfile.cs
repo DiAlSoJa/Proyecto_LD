@@ -20,8 +20,8 @@ namespace LD.Application.Features.Category.Profiles
                opt => opt.MapFrom(src => src.FamilyId))
            .ForMember(dest => dest.NombreFamilia,
                opt => opt.MapFrom(src => src.FamilyName))          
-              .ForMember(dest => dest.Warehouse,
-               opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
+              .ForMember(dest => dest.Cliente,
+               opt => opt.MapFrom(src => src.Client.CommercialName))
               .ForMember(dest => dest.Proyecto,
                opt => opt.MapFrom(src => src.Project.ProjectName));
 

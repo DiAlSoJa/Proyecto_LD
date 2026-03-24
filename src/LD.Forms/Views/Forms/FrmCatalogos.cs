@@ -9,6 +9,7 @@ using LD.Client.Services;
 using LD.Contracts.Category;
 using LD.Contracts.Client;
 using LD.Contracts.Currency;
+using LD.Contracts.DTOs.Family;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Requests;
 using LD.Contracts.Units;
@@ -28,6 +29,7 @@ public partial class FrmCatalogos : Form
     private readonly InventaryStatusService _statusService;
     private readonly CurrencyService _currencyService;
     private readonly CategoryService _categoryService;
+    private readonly FamilyService _familyService;
     private GridFilter<UnitDto> _gridFilterU;
     private BindingSource _unitsBinding = new();
     private UnitDto? selectedUnit { get; set; }
@@ -44,11 +46,15 @@ public partial class FrmCatalogos : Form
     private BindingSource _categoryBinding = new();
     private CategoryDto? selectedCategory { get; set; }
 
+    private GridFilter<FamilyDto> _gridFilterFa;
+    private BindingSource _familyBinding = new();
+    private FamilyDto? selectedFamily { get; set; }
+
 
 
 
     public FrmCatalogos(UnitService unitService, InventaryStatusService statusService,
-        CurrencyService currencyService, CategoryService categoryService,
+        CurrencyService currencyService, CategoryService categoryService, FamilyService familyService,
         DialogFormService dialogFormService)
     {
         InitializeComponent();
@@ -57,14 +63,17 @@ public partial class FrmCatalogos : Form
         _statusService = statusService;
         _currencyService = currencyService;
         _categoryService = categoryService;
+        _familyService = familyService;
         dtUnidad.DataSource = _unitsBinding;
         dtStatus.DataSource = _statusBinding;
         dtMoneda.DataSource = _currencyBinding;
         dtCategoria.DataSource = _categoryBinding;
+        dtFamilias.DataSource = _familyBinding;
         _gridFilterU = new GridFilter<UnitDto>(dtUnidad, _unitsBinding);
         _gridFilterS = new GridFilter<InventaryStatusDto>(dtStatus, _statusBinding);
         _gridFilterC = new GridFilter<CurrencyDto>(dtMoneda, _currencyBinding);
         _gridFilterCa = new GridFilter<CategoryDto>(dtCategoria, _categoryBinding);
+        _gridFilterFa = new GridFilter<FamilyDto>(dtFamilias, _familyBinding);
 
     }
 
@@ -124,6 +133,23 @@ public partial class FrmCatalogos : Form
         _currencyBinding.DataSource = result.Data;
         _gridFilterC.SetData(result.Data);
         dtMoneda = _gridFilterC.BuildFilterColumns();
+    }
+
+
+    private async Task CargarFamiliasAsync()
+    {
+        var result = await _familyService.GetFamily();
+
+        if (!result.IsSuccess)
+        {
+            MessageBox.Show(result.Message);
+            return;
+        }
+
+        _familyBinding.DataSource = result.Data;
+        _gridFilterFa.SetData(result.Data);
+        dtFamilias = _gridFilterFa.BuildFilterColumns();
+        dtFamilias.ApplyColumnHeadersFromDisplayName<FamilyDto>();
     }
 
     private async void btnActualizarS_Click(object sender, EventArgs e)
@@ -306,5 +332,47 @@ public partial class FrmCatalogos : Form
         await LoaderManager.Run(dtUnidad, async () => await CargarUnidadesAsync(), "Obteniendo Unidades");
         await LoaderManager.Run(dtUnidad, async () => await CargarCategoriasAsync(), "Obteniendo Categorías");
         await LoaderManager.Run(dtStatus, async () => await CargarStatusAsync(), "Obteniendo Status");
+        await LoaderManager.Run(dtFamilias, async () => await CargarFamiliasAsync(), "Obteniendo Familias");
+    }
+
+    private async void btnActualizarF_Click(object sender, EventArgs e)
+    {
+        await LoaderManager.Run(dtFamilias, async () => await CargarFamiliasAsync(), "Obteniendo Familias");
+    }
+
+    private void dtFamilias_SelectionChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (dtFamilias.CurrentRow == null)
+                return;
+
+            var cate = dtFamilias.CurrentRow.DataBoundItem as FamilyDto;
+
+            if (cate == null)
+                return;
+
+            selectedFamily = cate;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+
+    private async void btnEditarF_Click(object sender, EventArgs e)
+    {
+        if (selectedFamily is null) return;
+        var form = _dialogFormService.ShowDialog<FrmNewFamily>(frm =>
+        {
+            frm.SetFamily(selectedFamily);
+        });
+        if (form.ResponseForm) await LoaderManager.Run(dtFamilias, async () => await CargarFamiliasAsync(), "Obteniendo Familias");
+    }
+
+    private async void btnNuevoF_Click(object sender, EventArgs e)
+    {
+        var form = _dialogFormService.ShowDialog<FrmNewFamily>();
+        if (form.ResponseForm) await LoaderManager.Run(dtFamilias, async () => await CargarFamiliasAsync(), "Obteniendo Familias");
     }
 }

@@ -33,6 +33,7 @@ namespace LD.Client
             services.AddScoped<InventaryStatusService>();
             services.AddScoped<CurrencyService>();
             services.AddScoped<CategoryService>();
+            services.AddScoped<FamilyService>();
 
             services.AddScoped<LookupService>();
 

@@ -132,9 +132,9 @@ namespace LD.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Family>()
-                    .HasOne(c => c.Warehouse)
+                    .HasOne(c => c.Client)
                     .WithMany()
-                    .HasForeignKey(c => c.WarehouseId)
+                    .HasForeignKey(c => c.ClientId)
                     .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Family>()

@@ -16,9 +16,8 @@ namespace LD.Contracts.DTOs.Family
 
         [DisplayName("Nombre de familía")]
         public string NombreFamilia { get; set; }
-
-        [DisplayName("Almacén")]
-        public string Warehouse { get; set; } = string.Empty;
+        
+        public string Cliente { get; set; } = string.Empty;
         public string Proyecto { get; set; } = string.Empty;
     }
 

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using LD.Client.Services;
 using LD.Contracts.Category;
 using LD.Contracts.Currency;
+using LD.Contracts.DTOs.Family;
 using LD.Contracts.Enums;
 using LD.Contracts.Project;
 using LD.Contracts.Requests;
@@ -23,28 +24,29 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace LD.Forms.Views.Dialogs
 {
-    public partial class FrmNewCategory : DraggableForm
+    public partial class FrmNewFamily : DraggableForm
     {
-        private readonly CategoryService _categoryService;
+        private readonly FamilyService _familyService;
         private LookupService _lookupService;
-        private CategoryDto? CategorySelect { get; set; }
+        private FamilyDto? FamilySelect { get; set; }
         private readonly DialogMessageService _dialogService;
         private bool _cargandoDatos = false;
 
-        public FrmNewCategory(CategoryService categoryService, LookupService lookupService, DialogMessageService dialogService)
+
+        public FrmNewFamily(FamilyService categoryService, LookupService lookupService, DialogMessageService dialogService)
         {
             InitializeComponent();
             EnableDrag(panel2);
             EnableDrag(panel1);
-            _categoryService = categoryService;
+            _familyService = categoryService;
             _dialogService = dialogService;
             _lookupService = lookupService;
 
         }
 
-        public async void SetCategory(CategoryDto unitS)
+        public async void SetFamily(FamilyDto unitS)
         {
-            CategorySelect = unitS;
+            FamilySelect = unitS;
             //await CargarDatosAsync();
         }
 
@@ -56,7 +58,7 @@ namespace LD.Forms.Views.Dialogs
 
 
             await SetCombos();
-            if (CategorySelect != null)
+            if (FamilySelect != null)
                 await CargarDatosAsync();
 
         }
@@ -72,7 +74,13 @@ namespace LD.Forms.Views.Dialogs
                 cmbCliente.DisplayMember = "Value";
                 cmbCliente.ValueMember = "Key";
                 cmbCliente.SelectedIndex = -1;
+
+
             }
+
+
+
+
         }
 
 
@@ -118,33 +126,30 @@ namespace LD.Forms.Views.Dialogs
         {
             try
             {
-                var response = await _categoryService.GetCategoryById(CategorySelect?.CategoriaId ?? 0);
+                _cargandoDatos = true;
+
+                var response = await _familyService.GetFamilyById(FamilySelect?.FamiliaId ?? 0);
 
                 if (!response.IsSuccess)
                 {
                     MessageBox.Show(response.Message);
                     return;
                 }
+
                 var unitI = response.Data;
-                txtId.Text = unitI.CategoryName;
-                txtNombre.Text = unitI.Description;
-                txtFrecuencia.Text = unitI.Frecuency.ToString();
-                txtId.Enabled = CategorySelect == null;
+
+                txtNombre.Text = unitI.FamilyName;
                 cmbCliente.SelectedValue = unitI.ClientId.ToString();
+
                 await SetCombosProjects(unitI.ProjectId.ToString());
-
-           
-
-
-
-
-
-
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                _cargandoDatos = false;
             }
         }
 
@@ -168,26 +173,24 @@ namespace LD.Forms.Views.Dialogs
         {
             this.Close();
         }
-        private Task<ApiResponseDto<string>> CreateCategory(CategoryRequest request) =>
-            _categoryService.CreateCategory(request);
+        private Task<ApiResponseDto<string>> CreateFamily(FamilyRequest request) =>
+            _familyService.CreateFamily(request);
 
-        private Task<ApiResponseDto<string>> EditCategory(int categoryId, CategoryRequest request) =>
-            _categoryService.UpdateCategory(categoryId, request);
-        private async Task<ApiResponseDto<string>> SaveCategory(CategoryRequest request)
+        private Task<ApiResponseDto<string>> EditFamily(int familyId, FamilyRequest request) =>
+            _familyService.UpdateFamily(familyId, request);
+        private async Task<ApiResponseDto<string>> SaveFamily(FamilyRequest request)
         {
-            return CategorySelect != null
-                ? await EditCategory(CategorySelect?.CategoriaId ?? 0, request)
-                : await CreateCategory(request);
+            return FamilySelect != null
+                ? await EditFamily(FamilySelect?.FamiliaId ?? 0, request)
+                : await CreateFamily(request);
         }
 
-        private CategoryRequest BuildRequest()
+        private FamilyRequest BuildRequest()
         {
 
-            return new CategoryRequest
-            {
-                CategoryName = CategorySelect != null ? CategorySelect.Categoria : txtId.Text,
-                Description = txtNombre.Text.Trim(),
-                Frecuency = int.TryParse(txtFrecuencia.Text, out int frec) ? frec : null,
+            return new FamilyRequest
+            {                
+                FamilyName = txtNombre.Text.Trim(),             
                 ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
                 ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0,
 
@@ -212,7 +215,7 @@ namespace LD.Forms.Views.Dialogs
 
                 var request = BuildRequest();
 
-                var result = await SaveCategory(request);
+                var result = await SaveFamily(request);
 
                 ShowResult(result);
 
@@ -234,11 +237,8 @@ namespace LD.Forms.Views.Dialogs
         {
             if (_cargandoDatos)
                 return;
+
             await SetCombosProjects();
-
-
-
-
         }
 
         private async void cmbCliente_SelectionChangeCommitted(object sender, EventArgs e)

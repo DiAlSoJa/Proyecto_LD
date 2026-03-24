@@ -11,7 +11,7 @@ namespace LD.Contracts.Requests
         public int FamilyId { get; set; }
         public string FamilyName { get; set; }
 
-        public int WarehouseId { get; set; }
+        public int ClientId { get; set; }
         public int ProjectId { get; set; }
 
 

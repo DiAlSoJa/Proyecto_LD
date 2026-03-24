@@ -23,9 +23,9 @@ namespace LD.Domain.Entities
         public int? ProjectId { get; set; }
 
         [Required]
-        public int? WarehouseId { get; set; }       
+        public int? ClientId { get; set; }       
 
         public Project? Project { get; set; }
-        public Warehouse? Warehouse { get; set; }
+        public Client? Client { get; set; }
     }
 }

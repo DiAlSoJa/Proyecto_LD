@@ -35,6 +35,7 @@ namespace LD.Forms.Views.Forms
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             tabPage1 = new TabPage();
             dtStatus = new DataGridView();
             panel2 = new Panel();
@@ -61,6 +62,12 @@ namespace LD.Forms.Views.Forms
             btnNuevoM = new Button();
             button13 = new Button();
             button11 = new Button();
+            tabPage5 = new TabPage();
+            dtFamilias = new DataGridView();
+            panel6 = new Panel();
+            btnNuevoF = new Button();
+            btnActualizarF = new Button();
+            btnEditarF = new Button();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtStatus).BeginInit();
             panel2.SuspendLayout();
@@ -75,6 +82,9 @@ namespace LD.Forms.Views.Forms
             tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtMoneda).BeginInit();
             panel4.SuspendLayout();
+            tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dtFamilias).BeginInit();
+            panel6.SuspendLayout();
             SuspendLayout();
             // 
             // tabPage1
@@ -156,6 +166,7 @@ namespace LD.Forms.Views.Forms
             tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tabPage3);
             tabControl1.Controls.Add(tabPage4);
+            tabControl1.Controls.Add(tabPage5);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -391,6 +402,79 @@ namespace LD.Forms.Views.Forms
             button11.UseVisualStyleBackColor = true;
             button11.Click += button11_Click;
             // 
+            // tabPage5
+            // 
+            tabPage5.Controls.Add(dtFamilias);
+            tabPage5.Controls.Add(panel6);
+            tabPage5.Location = new Point(4, 29);
+            tabPage5.Name = "tabPage5";
+            tabPage5.Padding = new Padding(3);
+            tabPage5.Size = new Size(1616, 845);
+            tabPage5.TabIndex = 4;
+            tabPage5.Text = "Familias";
+            tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // dtFamilias
+            // 
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(253, 252, 213);
+            dtFamilias.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dtFamilias.BackgroundColor = SystemColors.ButtonHighlight;
+            dtFamilias.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtFamilias.Dock = DockStyle.Fill;
+            dtFamilias.Location = new Point(3, 56);
+            dtFamilias.Name = "dtFamilias";
+            dtFamilias.RowHeadersWidth = 51;
+            dtFamilias.Size = new Size(1610, 786);
+            dtFamilias.TabIndex = 69;
+            dtFamilias.SelectionChanged += dtFamilias_SelectionChanged;
+            // 
+            // panel6
+            // 
+            panel6.Controls.Add(btnNuevoF);
+            panel6.Controls.Add(btnActualizarF);
+            panel6.Controls.Add(btnEditarF);
+            panel6.Dock = DockStyle.Top;
+            panel6.Location = new Point(3, 3);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(1610, 53);
+            panel6.TabIndex = 68;
+            // 
+            // btnNuevoF
+            // 
+            btnNuevoF.Image = Properties.Resources.plusM;
+            btnNuevoF.ImageAlign = ContentAlignment.MiddleLeft;
+            btnNuevoF.Location = new Point(125, 13);
+            btnNuevoF.Name = "btnNuevoF";
+            btnNuevoF.Size = new Size(113, 35);
+            btnNuevoF.TabIndex = 15;
+            btnNuevoF.Text = "Nuevo";
+            btnNuevoF.UseVisualStyleBackColor = true;
+            btnNuevoF.Click += btnNuevoF_Click;
+            // 
+            // btnActualizarF
+            // 
+            btnActualizarF.Image = Properties.Resources.update;
+            btnActualizarF.ImageAlign = ContentAlignment.MiddleLeft;
+            btnActualizarF.Location = new Point(11, 13);
+            btnActualizarF.Name = "btnActualizarF";
+            btnActualizarF.Size = new Size(108, 35);
+            btnActualizarF.TabIndex = 12;
+            btnActualizarF.Text = "Actualizar";
+            btnActualizarF.UseVisualStyleBackColor = true;
+            btnActualizarF.Click += btnActualizarF_Click;
+            // 
+            // btnEditarF
+            // 
+            btnEditarF.Image = Properties.Resources.editar;
+            btnEditarF.ImageAlign = ContentAlignment.MiddleLeft;
+            btnEditarF.Location = new Point(242, 13);
+            btnEditarF.Name = "btnEditarF";
+            btnEditarF.Size = new Size(108, 35);
+            btnEditarF.TabIndex = 13;
+            btnEditarF.Text = "Editar";
+            btnEditarF.UseVisualStyleBackColor = true;
+            btnEditarF.Click += btnEditarF_Click;
+            // 
             // FrmCatalogos
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -415,6 +499,9 @@ namespace LD.Forms.Views.Forms
             tabPage4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dtMoneda).EndInit();
             panel4.ResumeLayout(false);
+            tabPage5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dtFamilias).EndInit();
+            panel6.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -437,7 +524,7 @@ namespace LD.Forms.Views.Forms
         private TextBox textBox3;
         private Button button11;
         private Button button13;
-        private Button button2;
+        private Button btnActualizarF;
         private Button button3;
         private Button button8;
         private Button button9;
@@ -450,5 +537,10 @@ namespace LD.Forms.Views.Forms
         private Button btnNuevoCa;
         private Button btnNuevoU;
         private Button btnNuevoM;
+        private TabPage tabPage5;
+        private DataGridView dtFamilias;
+        private Panel panel6;
+        private Button btnNuevoF;
+        private Button btnEditarF;
     }
 }
