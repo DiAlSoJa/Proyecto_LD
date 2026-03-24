@@ -6,6 +6,7 @@ using LD.Application.Features.User.Commands;
 using LD.Application.Features.User.Queries;
 using LD.Application.Features.Warehouses.Queries;
 using LD.Contracts.Constants;
+using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,13 @@ namespace LD.Api.Controllers
             command.UserId = userId;
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
 
+        }
+
+        [HttpPut("{userId}/warehouses")]
+        public async Task<IActionResult> AssignWarehouses(string userId, [FromBody] AssignWarehousesCommand command)
+        {
+            command.UserId = userId;
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
         
     }

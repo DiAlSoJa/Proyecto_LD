@@ -40,6 +40,7 @@ namespace LD.Application.Common.Interfaces.Auth
         Task<bool> UpdateAsync(UserRequest user);
         Task<bool> CreateRoleAsync(RoleRequest user);
         Task<bool> UpdateRoleAsync(string idRole,RoleRequest user);
+        Task<bool> AssignWarehousesAsync(string userId, List<int> warehouseIds);
 
         //Task<IdentityResponse> HasClaimAsync(ApplicationUser user, Claim claim);
         //Task<IdentityResponse> CheckPasswordAsync(ApplicationUser user, string password);

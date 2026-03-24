@@ -353,6 +353,51 @@ namespace LD.Infrastructure
                 .ToListAsync();
         }
 
+        public async Task<bool> AssignWarehousesAsync(string userId, List<int> warehouseIds)
+        {
+            var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var existing = await _context.UserWarehouses
+                    .Where(uw => uw.UserId == userId)
+                    .Select(uw => uw.WarehouseId)
+                    .ToListAsync();
+
+                var toAdd    = warehouseIds.Except(existing.Select(x => x.GetValueOrDefault())).ToList();
+                var toRemove = existing.Select(x => x.GetValueOrDefault()).Except(warehouseIds).ToList();
+
+                if (toAdd.Any())
+                    await _context.UserWarehouses.AddRangeAsync(
+                        toAdd.Select(wId => new UserWarehouse
+                        {
+                            UserId    = userId,
+                            WarehouseId = wId,
+                            IsActive    = true,
+                            CreatedAt   = DateTime.UtcNow,
+                            CreatedByUserId = userId
+                        })
+                    );
+
+                if (toRemove.Any())
+                {
+                    var removeEntities = await _context.UserWarehouses
+                        .Where(uw => uw.UserId == userId && toRemove.Contains(uw.WarehouseId.GetValueOrDefault()))
+                        .ToListAsync();
+
+                    _context.UserWarehouses.RemoveRange(removeEntities);
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public Task<List<RolePermissionDto>> GetRolesWithPermissionsAsync()
         {
             return _roleManager.Roles
