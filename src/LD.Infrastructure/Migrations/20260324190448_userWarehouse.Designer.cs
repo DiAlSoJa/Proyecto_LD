@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    [Migration("20260324050510_userWarehouse")]
+    [Migration("20260324190448_userWarehouse")]
     partial class userWarehouse
     {
         /// <inheritdoc />
@@ -27,9 +27,19 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("LD.Domain.Entities.Category", b =>
                 {
-                    b.Property<string>("CategoryIdS")
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -48,6 +58,9 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<int>("Frecuency")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -57,7 +70,14 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("LastModifiedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CategoryIdS");
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("Categories");
                 });
@@ -1231,6 +1251,18 @@ namespace LD.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
+                    b.Property<string>("AlternateEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Costs")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -1243,10 +1275,25 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("DeletedByUserId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("DeliveryTime")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DistributionList")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsBOM")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsTemperatureControlled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsVMI")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModifiedAt")
@@ -1255,25 +1302,55 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("LastModifiedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaxUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MediumUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MinUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PartNumber")
+                    b.Property<string>("MaxUnitId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductName")
+                    b.Property<decimal?>("MaxUnitValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Maximums")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("MediumUnitId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MinUnitId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("MinUnitValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Minimus")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("NotificationRoute")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PartNumber")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("ProductionFactor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductionStatusId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductionUnitId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProjectId")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("Reorder")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool?>("RequestDeclarationNumber")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("RequestExchangeRate")
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("RequestExpirationDate")
                         .HasColumnType("bit");
@@ -1281,9 +1358,50 @@ namespace LD.Infrastructure.Migrations
                     b.Property<bool?>("RequestLotNumber")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("RequestNotificationEmail")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("RequestNotificationFiles")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("RequestNotificationMax")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("RequestNotificationMin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("RequestPurchaseOrder")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("RequestReference")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("StandardPackage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("StandardPackageValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("StorageTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UnitIdS")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal?>("WarehouseFactor")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("ProductId");
 
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ClientId");
+
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("StorageTypeId");
+
+                    b.HasIndex("UnitIdS");
 
                     b.ToTable("items");
                 });
@@ -1992,6 +2110,25 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("UserTokens", "Auth");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.Category", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.ClientContact", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Client", "Client")
@@ -2065,11 +2202,35 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("LD.Domain.Entities.Product", b =>
                 {
+                    b.HasOne("LD.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("LD.Domain.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("LD.Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId");
 
+                    b.HasOne("LD.Domain.Entities.StorageType", "StorageType")
+                        .WithMany()
+                        .HasForeignKey("StorageTypeId");
+
+                    b.HasOne("LD.Domain.Entities.Units", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitIdS");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Client");
+
                     b.Navigation("Project");
+
+                    b.Navigation("StorageType");
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Project", b =>
