@@ -48,6 +48,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Units> Units { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Warehouse>Warehouses{ get; set; }
+        public DbSet<Family> Families{ get; set; }
 
 
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
@@ -125,6 +126,18 @@ namespace LD.Infrastructure.Persistence
                     .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Category>()
+                .HasOne(c => c.Project)
+                .WithMany()
+                .HasForeignKey(c => c.ProjectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Family>()
+                    .HasOne(c => c.Warehouse)
+                    .WithMany()
+                    .HasForeignKey(c => c.WarehouseId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Family>()
                 .HasOne(c => c.Project)
                 .WithMany()
                 .HasForeignKey(c => c.ProjectId)

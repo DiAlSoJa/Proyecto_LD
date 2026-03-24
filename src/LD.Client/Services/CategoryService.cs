@@ -21,9 +21,9 @@ namespace LD.Client.Services
             _api = api;
             _apiEndpoints = apiEndpoints;
         }
-        public async Task<ApiResponseDto<CategoryRequest>> GetCategoryById(string categoryId)
+        public async Task<ApiResponseDto<CategoryRequest>> GetCategoryById(int categoryId)
         {
-            return await _api.GetAsync<ApiResponseDto<CategoryRequest>>(_apiEndpoints.Category_GetById.Replace("{categoryId}", categoryId));
+            return await _api.GetAsync<ApiResponseDto<CategoryRequest>>(_apiEndpoints.Category_GetById.Replace("{categoryId}", categoryId.ToString()));
         }
 
         public async Task<ApiResponseDto<List<CategoryDto>>> GetCategory()
@@ -36,9 +36,9 @@ namespace LD.Client.Services
             return await _api.PostAsync<CategoryRequest, ApiResponseDto<string>>(_apiEndpoints.Category_Create, request);
         }
 
-        public async Task<ApiResponseDto<string>> UpdateCategory(string categoryId, CategoryRequest request)
+        public async Task<ApiResponseDto<string>> UpdateCategory(int categoryId, CategoryRequest request)
         {
-            return await _api.PutAsync<CategoryRequest, ApiResponseDto<string>>(_apiEndpoints.Category_Update.Replace("{categoryId}", categoryId), request);
+            return await _api.PutAsync<CategoryRequest, ApiResponseDto<string>>(_apiEndpoints.Category_Update.Replace("{categoryId}", categoryId.ToString()), request);
         }
 
         public async Task<ApiResponseDto<List<DropDownDto>>> GetClientLookup()

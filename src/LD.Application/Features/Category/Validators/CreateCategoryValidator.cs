@@ -16,7 +16,7 @@ public class CreateCategoryValidator
     {
         RuleFor(x => x.CategoryName)
              .NotEmpty().WithMessage("El nombre de la categoría no debe estar vacia")
-             .MaximumLength(50).WithMessage("El nombre de la unidad no debe exceder de 50 caracteres");
+             .MaximumLength(50).WithMessage("El nombre de la categoría no debe exceder de 50 caracteres");
 
 
 

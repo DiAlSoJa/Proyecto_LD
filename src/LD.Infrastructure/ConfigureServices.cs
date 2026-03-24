@@ -73,6 +73,8 @@ public static class ConfigureServices
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<IModuleRepository, ModuleRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IFamilyRepository, FamilyRepository>();
 
 
 

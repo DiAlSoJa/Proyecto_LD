@@ -20,9 +20,9 @@ public class CategoryQuery : IRequest<Result<List<CategoryDto>?>>
 }
 public class CategoryQueryHandler : IRequestHandler<CategoryQuery, Result<List<CategoryDto>?>>
 {
-    private readonly IRepository<LD.Domain.Entities.Category> _categoryRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
-    public CategoryQueryHandler(IRepository<LD.Domain.Entities.Category> categoryRepository, IMapper mapper)
+    public CategoryQueryHandler(ICategoryRepository  categoryRepository, IMapper mapper)
     {
         _categoryRepository = categoryRepository;
         _mapper = mapper;
@@ -30,7 +30,7 @@ public class CategoryQueryHandler : IRequestHandler<CategoryQuery, Result<List<C
 
     public async Task<Result<List<CategoryDto>?>> Handle(CategoryQuery request, CancellationToken cancellationToken)
     {
-        var category = await _categoryRepository.GetManyAsync();
+        var category = await _categoryRepository.GetAllWithRelationsAsync();
         var categoryDtos = _mapper.Map<List<CategoryDto>>(category);
         return Result<List<CategoryDto>?>.Success(categoryDtos, "Categorías obtenidas correctamente");
     }

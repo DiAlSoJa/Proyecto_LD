@@ -45,7 +45,7 @@ namespace LD.Forms.Views.Dialogs
         public async void SetCategory(CategoryDto unitS)
         {
             CategorySelect = unitS;
-            await CargarDatosAsync();
+            //await CargarDatosAsync();
         }
 
 
@@ -73,7 +73,42 @@ namespace LD.Forms.Views.Dialogs
                 cmbCliente.ValueMember = "Key";
                 cmbCliente.SelectedIndex = -1;
 
+
             }
+
+
+
+
+        }
+
+
+        private async Task SetCombosProjects(string projectSel="")
+        {
+            if (cmbCliente.SelectedValue == null)
+                return;
+
+            if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
+                return;
+
+            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
+
+            if (proyectos.IsSuccess)
+            {
+                cmbProyecto.DataSource = proyectos.Data;
+                cmbProyecto.DisplayMember = "Value";
+                cmbProyecto.ValueMember = "Key";
+
+                if (proyectos.Data.Count > 1)
+                {
+                    cmbProyecto.SelectedIndex = -1;
+                }
+                if(projectSel.Length > 0)
+                {
+                    cmbProyecto.SelectedValue = projectSel;
+                }
+            }
+
+
 
 
         }
@@ -84,7 +119,7 @@ namespace LD.Forms.Views.Dialogs
         {
             try
             {
-                var response = await _categoryService.GetCategoryById(CategorySelect?.Categoria ?? "");
+                var response = await _categoryService.GetCategoryById(CategorySelect?.CategoriaId ?? 0);
 
                 if (!response.IsSuccess)
                 {
@@ -94,7 +129,19 @@ namespace LD.Forms.Views.Dialogs
                 var unitI = response.Data;
                 txtId.Text = unitI.CategoryName;
                 txtNombre.Text = unitI.Description;
+                txtFrecuencia.Text = unitI.Frecuency.ToString();
                 txtId.Enabled = CategorySelect == null;
+                cmbCliente.SelectedValue = unitI.ClientId.ToString();
+                SetCombosProjects(unitI.ProjectId.ToString());
+
+           
+
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -125,12 +172,12 @@ namespace LD.Forms.Views.Dialogs
         private Task<ApiResponseDto<string>> CreateCategory(CategoryRequest request) =>
             _categoryService.CreateCategory(request);
 
-        private Task<ApiResponseDto<string>> EditCategory(string categoryId, CategoryRequest request) =>
+        private Task<ApiResponseDto<string>> EditCategory(int categoryId, CategoryRequest request) =>
             _categoryService.UpdateCategory(categoryId, request);
         private async Task<ApiResponseDto<string>> SaveCategory(CategoryRequest request)
         {
             return CategorySelect != null
-                ? await EditCategory(CategorySelect?.Categoria ?? txtId.Text, request)
+                ? await EditCategory(CategorySelect?.CategoriaId ?? 0, request)
                 : await CreateCategory(request);
         }
 
@@ -186,25 +233,7 @@ namespace LD.Forms.Views.Dialogs
 
         private async void cmbCliente_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmbCliente.SelectedValue == null)
-                return;
-
-            if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
-                return;
-
-            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
-
-            if (proyectos.IsSuccess)
-            {
-                cmbProyecto.DataSource = proyectos.Data;
-                cmbProyecto.DisplayMember = "Value";
-                cmbProyecto.ValueMember = "Key";
-
-                if (proyectos.Data.Count > 1)
-                {
-                    cmbProyecto.SelectedIndex = -1;
-                }
-            }
+            SetCombosProjects();
 
 
 

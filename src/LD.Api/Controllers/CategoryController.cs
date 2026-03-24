@@ -27,7 +27,7 @@ namespace LD.Api.Controllers
 
         [HttpGet("{categoryId}")]
         [Permission(PermissionKeys.Category_View)]
-        public async Task<IActionResult> GeCategoryById(string categoryId)
+        public async Task<IActionResult> GeCategoryById(int categoryId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new CategoryByIdQuery(categoryId)));
 
 

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Category.Queries;
 
-public record CategoryByIdQuery(string categoryId)
+public record CategoryByIdQuery(int categoryId)
     : IRequest<Result<CategoryRequest?>>;
 
 

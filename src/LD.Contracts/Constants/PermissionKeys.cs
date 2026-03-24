@@ -81,6 +81,11 @@ public static class PermissionKeys
     public const string Vehicle_Update = "users.create";
     public const string Vehicle_Delete = "users.create";
 
+    public const string Family_View = "users.read";
+    public const string Family_Create = "users.create";
+    public const string Family_Update = "users.create";
+    public const string Family_Delete = "users.create";
+
 
 
 
