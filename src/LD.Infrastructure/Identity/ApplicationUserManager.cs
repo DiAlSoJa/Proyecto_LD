@@ -264,22 +264,30 @@ namespace LD.Infrastructure
                         .Select(x => x.PermissionId)
                         .ToListAsync();
 
-                var toAdd = roleRequest.Permissions.Select(x=>x.PermissionId.GetValueOrDefault(0)).Except(existing);
-                var toRemove = existing.Except(roleRequest.Permissions.Select(x => x.PermissionId.GetValueOrDefault(0)));
+                var incoming = roleRequest.Permissions
+                        .Select(x => x.PermissionId.GetValueOrDefault(0))
+                        .ToList();
 
-                await _context.RolePermissions.AddRangeAsync(
-                         toAdd.Select(p => new RolePermission
-                         {
-                             RoleId = roleId,
-                             PermissionId = p
-                         })
-                     );
+                var toAdd    = incoming.Except(existing).ToList();
+                var toRemove = existing.Except(incoming).ToList();
 
-                var removeEntities = await _context.RolePermissions
-                                            .Where(x => x.RoleId == roleId && toRemove.Contains(x.PermissionId))
-                                            .ToListAsync();
+                if (toAdd.Any())
+                    await _context.RolePermissions.AddRangeAsync(
+                        toAdd.Select(p => new RolePermission
+                        {
+                            RoleId = roleId,
+                            PermissionId = p
+                        })
+                    );
 
-                _context.RolePermissions.RemoveRange(removeEntities);
+                if (toRemove.Any())
+                {
+                    var removeEntities = await _context.RolePermissions
+                                                .Where(x => x.RoleId == roleId && toRemove.Contains(x.PermissionId))
+                                                .ToListAsync();
+
+                    _context.RolePermissions.RemoveRange(removeEntities);
+                }
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
