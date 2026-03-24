@@ -27,6 +27,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
+        public DbSet<UserWarehouse> UserWarehouses { get; set; }
 
 
         public DbSet<Category> Categories { get; set; }
@@ -116,6 +117,19 @@ namespace LD.Infrastructure.Persistence
             builder.Entity<Units>()
                 .HasIndex(u => u.UnitIdS)
                 .IsUnique(); 
+
+            builder.Entity<UserWarehouse>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(uw => uw.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserWarehouse>()
+                .HasOne(uw => uw.Warehouse)
+                .WithMany()
+                .HasForeignKey(uw => uw.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.Entity<StorageType>().HasData(
                 new StorageType
