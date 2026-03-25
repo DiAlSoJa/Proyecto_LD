@@ -31,5 +31,7 @@ namespace LD.Domain.Entities
         public string ZipCode { get; set; }
         public decimal Capacity { get; set; }
         public bool IsProduction { get; set; } = false;
+
+        public ICollection<UserWarehouse> UserWarehouses { get; set; } = new List<UserWarehouse>();
     }
 }

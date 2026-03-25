@@ -9,6 +9,8 @@ namespace LD.Infrastructure
         public string? FullName { get; set; }
         public bool IsActive { get; set; } = true;
         public ICollection<ApplicationUserRole> UserRoles { get; set; } = new List<ApplicationUserRole>();
+        public ICollection<UserWarehouse> UserWarehouses { get; set; } = new List<UserWarehouse>();
+
     }
-    
+
 }

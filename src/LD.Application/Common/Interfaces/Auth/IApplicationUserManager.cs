@@ -23,7 +23,7 @@ namespace LD.Application.Common.Interfaces.Auth
         Task<bool> PermissionExists(int permissionId);
         //Task<IList<string>> GetRolesAsync(UserDto user);
         //Task<IList<Claim>> GetClaimsAsync(UserDto user);
-        Task<List<UserDto>> GetUsersAsync();
+        Task<List<GetUserDto>> GetUsersAsync();
         Task<List<RolePermissionDto>> GetRolesWithPermissionsAsync();
 
         Task<RoleRequest?> GetRoleByIdAsync(string roleId);
@@ -40,6 +40,7 @@ namespace LD.Application.Common.Interfaces.Auth
         Task<bool> UpdateAsync(UserRequest user);
         Task<bool> CreateRoleAsync(RoleRequest user);
         Task<bool> UpdateRoleAsync(string idRole,RoleRequest user);
+        Task<bool> AssignWarehousesAsync(string userId, List<int> warehouseIds);
 
         //Task<IdentityResponse> HasClaimAsync(ApplicationUser user, Claim claim);
         //Task<IdentityResponse> CheckPasswordAsync(ApplicationUser user, string password);

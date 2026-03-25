@@ -6,16 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
+using MvvmHelpers.Commands;
 
 namespace MauiAppLogin.ViewModels
 {
-    public partial class LoginViewModel : BaseViewModel
+    public partial class LoginViewModel : OriginViewModel
     {
         [ObservableProperty]
         private string username;
         [ObservableProperty]
         private string password;
-
 
         public ICommand LoginCommand { get; }
 
@@ -23,13 +23,18 @@ namespace MauiAppLogin.ViewModels
         public LoginViewModel(AuthService authService)
         {
             _authService = authService;
-            LoginCommand = new Command(async () => await Login());
+            LoginCommand = new AsyncCommand(Login);
         }
 
         private async Task Login()
         {
+            if (IsBusy)
+                return;
+
             try
             {
+                IsBusy = true;
+
                 if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
                 {
                     await Shell.Current.DisplayAlertAsync("Error", "Captura el usuario y contraseña", "OK");
@@ -44,26 +49,14 @@ namespace MauiAppLogin.ViewModels
                     return;
                 }
 
-                await Shell.Current.GoToAsync("//DashboardPage");
+                 //🔹 Guardar tokens si quieres
+                 //UserSession.AccessToken = result.Data?.AccessToken;
 
-                ////UserSession.AccessToken = response.Data?.Accesstoken;
-                ////UserSession.RefreshToken = response.Data?.RefreshToken;
-
-                //var getMeResponse = await _authService.GetMeAsync();
-                //if (!getMeResponse.IsSuccess || getMeResponse.Data is null)
-                //{
-                //    //_dialogMessageService.Show(getMeResponse.Message, DialogMessageEnum.Warning);
-                //    return;
-                //}
-                //UserData.SetUserData(getMeResponse.Data);
-                //LoginSucceeded?.Invoke(this, EventArgs.Empty);
-
-                // Navegación limpia (elimina login del stack)
+                await Shell.Current.GoToAsync("//dashboard");
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
-
             }
             finally
             {
@@ -71,4 +64,6 @@ namespace MauiAppLogin.ViewModels
             }
         }
     }
+
+
 }

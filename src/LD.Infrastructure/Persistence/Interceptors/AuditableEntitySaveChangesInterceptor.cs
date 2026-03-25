@@ -56,17 +56,17 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
             }
 
             // SOFT DELETE
-            if (entry.State == EntityState.Deleted )
-            {
-                entry.State = EntityState.Modified;
+            //if (entry.State == EntityState.Deleted )
+            //{
+            //    entry.State = EntityState.Modified;
 
-                entry.Entity.IsActive = false;
-                entry.Entity.DeletedAt = DateTime.UtcNow;
-                entry.Entity.DeletedByUserId = userId;
+            //    entry.Entity.IsActive = false;
+            //    entry.Entity.DeletedAt = DateTime.UtcNow;
+            //    entry.Entity.DeletedByUserId = userId;
 
-                entry.Entity.LastModifiedAt = DateTime.UtcNow;
-                entry.Entity.LastModifiedByUserId = userId;
-            }
+            //    entry.Entity.LastModifiedAt = DateTime.UtcNow;
+            //    entry.Entity.LastModifiedByUserId = userId;
+            //}
         }
     }
 }

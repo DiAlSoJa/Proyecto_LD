@@ -55,10 +55,14 @@ namespace MauiAppLogin
             builder.Services.AddTransient<InventoryList>();
             builder.Services.AddTransient<ForkliftChecklistPage>();
             builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<TaskList>();
 
             //viewmodels
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<DashboardViewModel>();
+
+
+            builder.Services.AddSingleton<AppShell>();
 
 
             return builder.Build();

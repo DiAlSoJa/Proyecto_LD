@@ -4,14 +4,15 @@ namespace MauiAppLogin
 {
     public partial class App : Application
     {
-        public App()
+        private readonly AppShell _serviceProvider;
+        public App(AppShell serviceProvider)
         {
             InitializeComponent();
+            _serviceProvider = serviceProvider;
         }
-
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            return new Window(_serviceProvider);
         }
     }
 }
