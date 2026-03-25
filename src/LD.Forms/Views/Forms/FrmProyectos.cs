@@ -34,16 +34,21 @@ namespace LD.Forms.Views.Forms
             _gridFilter = new GridFilter<ProjectDto>(dataGridView1, _projectsBinding);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoProyecto>();
+            var form= _dialogFormService.ShowDialog<FrmNuevoProyecto>();
+            if (form.ResponseForm)
+                await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Proyectos");
         }
-        private void EditBtn_Click(object sender, EventArgs e)
+        private async void EditBtn_Click(object sender, EventArgs e)
         {
-            _dialogFormService.ShowDialog<FrmNuevoProyecto>(config =>
+            var form = _dialogFormService.ShowDialog<FrmNuevoProyecto>(config =>
             {
                 config.SetProject(selectedProject);
             });
+            if(form.ResponseForm)
+                await LoaderManager.Run(gridContainer, async () => await CargarDatosAsync(), "Trayendo Proyectos");
+
         }
         protected override async void OnShown(EventArgs e)
         {
