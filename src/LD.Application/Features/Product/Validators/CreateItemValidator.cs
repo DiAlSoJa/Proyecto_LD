@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using LD.Application.Features.Clients.Queries;
 using FluentValidation;
-using LD.Application.Features.Items.Comands;
+
+using LD.Application.Features.Product.Comands;
 
 namespace LD.Application.Features.Clients.Validators;
 

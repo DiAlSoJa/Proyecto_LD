@@ -32,6 +32,6 @@ public class FamilyQueryHandler : IRequestHandler<FamilyQuery, Result<List<Famil
     {
         var category = await _categoryRepository.GetAllWithRelationsAsync();
         var categoryDtos = _mapper.Map<List<FamilyDto>>(category);
-        return Result<List<FamilyDto>?>.Success(categoryDtos, "Famili   as obtenidas correctamente");
+        return Result<List<FamilyDto>?>.Success(categoryDtos, "Familias obtenidas correctamente");
     }
 }
