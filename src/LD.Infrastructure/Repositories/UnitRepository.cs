@@ -7,65 +7,74 @@ using LD.Application.Common.Interfaces.Repository;
 using LD.Contracts.DTOs;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace LD.Infrastructure.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class UnitRepository : IUnitRepository
     {
         public readonly LdProyectDbContext _context;
         public readonly IMapper _mapper;
-        public CategoryRepository(LdProyectDbContext context, IMapper mapper)
+        public UnitRepository(LdProyectDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
-        public Task<bool> CreateAsync(Category newModoe)
+        public Task<bool> CreateAsync(Unit newModoe)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<Category>> GetAllWithRelationsAsync()
-        {
-            return await _context.Categories
-                .Include(x => x.Client)
-                .Include(x => x.Project)
-                .ToListAsync();
-        }
-
-        public Task<Category?> GetByIdAsync(int id)
+        public Task<bool> CreateAsync(Units newModoe)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Category?> GetByIdAsync(string id)
+        public Task<Unit?> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<DropDownDto>> GetCategoryByClientAsync(int clientId, int projectId)
+        public Task<Unit?> GetByIdAsync(string id)
         {
-            return await _context.Categories
-              .AsNoTracking()
-              .Where(p => p.ClientId == clientId && p.ProjectId == projectId)
-              .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
-              .ToListAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<List<DropDownDto>> GetLookup()
         {
-            return await _context.Categories
+            return await _context.Units
                 .AsNoTracking()
                 .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
-        public Task<List<Category>?> GetManyAsync()
+        public Task<List<Unit>?> GetManyAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAsync(Category modelToUpdate)
+        public Task<bool> UpdateAsync(Unit modelToUpdate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAsync(Units modelToUpdate)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Units?> IRepository<Units>.GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Units?> IRepository<Units>.GetByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<List<Units>?> IRepository<Units>.GetManyAsync()
         {
             throw new NotImplementedException();
         }

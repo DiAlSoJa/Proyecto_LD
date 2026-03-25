@@ -31,61 +31,64 @@
             panel1 = new Panel();
             tabControl1 = new TabControl();
             tabGeneral = new TabPage();
-            checkBox10 = new CheckBox();
-            checkBox9 = new CheckBox();
-            checkBox8 = new CheckBox();
-            checkBox7 = new CheckBox();
+            cmbFamilia = new ComboBox();
+            label14 = new Label();
+            groupBox6 = new GroupBox();
+            txtPeso = new LD.Controls.TextBoxControl();
+            txtAncho = new LD.Controls.TextBoxControl();
+            txtLargo = new LD.Controls.TextBoxControl();
+            txtAlto = new LD.Controls.TextBoxControl();
+            label27 = new Label();
+            label28 = new Label();
+            label29 = new Label();
+            label30 = new Label();
+            chkBOM = new CheckBox();
+            chkVMI = new CheckBox();
+            chkActivo = new CheckBox();
+            chkTemperatura = new CheckBox();
             groupBox5 = new GroupBox();
-            textBox13 = new TextBox();
-            label24 = new Label();
-            comboBox12 = new ComboBox();
-            label23 = new Label();
-            comboBox11 = new ComboBox();
-            label22 = new Label();
+            txtTiempoEntrega = new LD.Controls.TextBoxControl();
+            txtMinimos = new LD.Controls.TextBoxControl();
             label21 = new Label();
-            radioButton6 = new RadioButton();
-            radioButton5 = new RadioButton();
-            textBox12 = new TextBox();
+            txtMaximos = new LD.Controls.TextBoxControl();
             label20 = new Label();
-            textBox11 = new TextBox();
             label19 = new Label();
-            textBox10 = new TextBox();
             label18 = new Label();
-            textBox9 = new TextBox();
+            txtOrden = new TextBox();
             label17 = new Label();
-            checkBox11 = new CheckBox();
-            checkBox12 = new CheckBox();
+            chkNotificacionMax = new CheckBox();
+            chkNotificacionMin = new CheckBox();
             groupBox3 = new GroupBox();
-            comboBox5 = new ComboBox();
+            txtFactorProduccion = new LD.Controls.TextBoxControl();
+            txtFactorAlmacen = new LD.Controls.TextBoxControl();
+            txtCostos = new LD.Controls.TextBoxControl();
+            cmbUnidadProduccion = new ComboBox();
             label16 = new Label();
-            comboBox4 = new ComboBox();
+            cmbEstatusProduccion = new ComboBox();
             label15 = new Label();
-            textBox8 = new TextBox();
             label4 = new Label();
-            textBox5 = new TextBox();
             label2 = new Label();
-            textBox4 = new TextBox();
             label3 = new Label();
             groupBox2 = new GroupBox();
-            checkBox2 = new CheckBox();
-            checkBox3 = new CheckBox();
-            checkBox6 = new CheckBox();
-            checkBox1 = new CheckBox();
-            checkBox4 = new CheckBox();
-            checkBox5 = new CheckBox();
+            chkSolicitarReferencia = new CheckBox();
+            chkSolicitarTipoCambio = new CheckBox();
+            chkSolicitarOC = new CheckBox();
+            chkSolicitarPedimento = new CheckBox();
+            chkSolicitarLote = new CheckBox();
+            chkSolicitarCaducidad = new CheckBox();
             groupBox4 = new GroupBox();
-            textBox3 = new TextBox();
-            textBox2 = new TextBox();
-            textBox1 = new TextBox();
-            comboBox7 = new ComboBox();
+            txtValorPaqueteEst = new LD.Controls.TextBoxControl();
+            txtValorUnidadMax = new LD.Controls.TextBoxControl();
+            txtValorUnidadMedia = new LD.Controls.TextBoxControl();
+            cmbPaqueteEstandar = new ComboBox();
             label10 = new Label();
-            comboBox8 = new ComboBox();
+            cmbUnidadMaxima = new ComboBox();
             label11 = new Label();
-            comboBox9 = new ComboBox();
+            cmbUnidadMedia = new ComboBox();
             label12 = new Label();
-            comboBox10 = new ComboBox();
+            cmbUnidadMinima = new ComboBox();
             label13 = new Label();
-            comboBox6 = new ComboBox();
+            cmbCategoria = new ComboBox();
             label9 = new Label();
             groupBox1 = new GroupBox();
             radioButton4 = new RadioButton();
@@ -93,18 +96,27 @@
             radioButton2 = new RadioButton();
             radioButton1 = new RadioButton();
             label6 = new Label();
-            textBox6 = new TextBox();
+            txtNoParte = new TextBox();
             label7 = new Label();
-            textBox7 = new TextBox();
+            txtDescripcion = new TextBox();
             tabAvanzada = new TabPage();
-            comboBox14 = new ComboBox();
+            txtNoParteProv = new TextBox();
+            groupBox7 = new GroupBox();
+            rdNotificacionEmail = new RadioButton();
+            txtCorreoAlterno = new TextBox();
+            rdNotificacionArchivos = new RadioButton();
+            label24 = new Label();
+            label22 = new Label();
+            cmbRutaNotificacion = new ComboBox();
+            cmbListaDistribucion = new ComboBox();
+            label23 = new Label();
             label26 = new Label();
-            comboBox13 = new ComboBox();
+            cmbProveedor = new ComboBox();
             label25 = new Label();
             panel3 = new Panel();
-            comboBox1 = new ComboBox();
+            cmbCliente = new ComboBox();
             label8 = new Label();
-            comboBox2 = new ComboBox();
+            cmbProyecto = new ComboBox();
             label5 = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button2 = new Button();
@@ -115,12 +127,14 @@
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabGeneral.SuspendLayout();
+            groupBox6.SuspendLayout();
             groupBox5.SuspendLayout();
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox4.SuspendLayout();
             groupBox1.SuspendLayout();
             tabAvanzada.SuspendLayout();
+            groupBox7.SuspendLayout();
             panel3.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -153,21 +167,24 @@
             // 
             // tabGeneral
             // 
-            tabGeneral.Controls.Add(checkBox10);
-            tabGeneral.Controls.Add(checkBox9);
-            tabGeneral.Controls.Add(checkBox8);
-            tabGeneral.Controls.Add(checkBox7);
+            tabGeneral.Controls.Add(cmbFamilia);
+            tabGeneral.Controls.Add(label14);
+            tabGeneral.Controls.Add(groupBox6);
+            tabGeneral.Controls.Add(chkBOM);
+            tabGeneral.Controls.Add(chkVMI);
+            tabGeneral.Controls.Add(chkActivo);
+            tabGeneral.Controls.Add(chkTemperatura);
             tabGeneral.Controls.Add(groupBox5);
             tabGeneral.Controls.Add(groupBox3);
             tabGeneral.Controls.Add(groupBox2);
             tabGeneral.Controls.Add(groupBox4);
-            tabGeneral.Controls.Add(comboBox6);
+            tabGeneral.Controls.Add(cmbCategoria);
             tabGeneral.Controls.Add(label9);
             tabGeneral.Controls.Add(groupBox1);
             tabGeneral.Controls.Add(label6);
-            tabGeneral.Controls.Add(textBox6);
+            tabGeneral.Controls.Add(txtNoParte);
             tabGeneral.Controls.Add(label7);
-            tabGeneral.Controls.Add(textBox7);
+            tabGeneral.Controls.Add(txtDescripcion);
             tabGeneral.Location = new Point(4, 29);
             tabGeneral.Name = "tabGeneral";
             tabGeneral.Padding = new Padding(3);
@@ -176,128 +193,208 @@
             tabGeneral.Text = "General";
             tabGeneral.UseVisualStyleBackColor = true;
             // 
-            // checkBox10
+            // cmbFamilia
             // 
-            checkBox10.AutoSize = true;
-            checkBox10.Location = new Point(385, 165);
-            checkBox10.Name = "checkBox10";
-            checkBox10.Size = new Size(64, 24);
-            checkBox10.TabIndex = 60;
-            checkBox10.Text = "BOM";
-            checkBox10.UseVisualStyleBackColor = true;
+            cmbFamilia.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbFamilia.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbFamilia.Font = new Font("Segoe UI", 9.75F);
+            cmbFamilia.FormattingEnabled = true;
+            cmbFamilia.Location = new Point(177, 145);
+            cmbFamilia.Name = "cmbFamilia";
+            cmbFamilia.Size = new Size(320, 29);
+            cmbFamilia.TabIndex = 6;
             // 
-            // checkBox9
+            // label14
             // 
-            checkBox9.AutoSize = true;
-            checkBox9.Location = new Point(322, 165);
-            checkBox9.Name = "checkBox9";
-            checkBox9.Size = new Size(57, 24);
-            checkBox9.TabIndex = 59;
-            checkBox9.Text = "VMI";
-            checkBox9.UseVisualStyleBackColor = true;
+            label14.AutoSize = true;
+            label14.Location = new Point(16, 154);
+            label14.Name = "label14";
+            label14.Size = new Size(59, 20);
+            label14.TabIndex = 63;
+            label14.Text = "Familia:";
             // 
-            // checkBox8
+            // groupBox6
             // 
-            checkBox8.AutoSize = true;
-            checkBox8.Location = new Point(234, 165);
-            checkBox8.Name = "checkBox8";
-            checkBox8.Size = new Size(73, 24);
-            checkBox8.TabIndex = 58;
-            checkBox8.Text = "Activo";
-            checkBox8.UseVisualStyleBackColor = true;
+            groupBox6.Controls.Add(txtPeso);
+            groupBox6.Controls.Add(txtAncho);
+            groupBox6.Controls.Add(txtLargo);
+            groupBox6.Controls.Add(txtAlto);
+            groupBox6.Controls.Add(label27);
+            groupBox6.Controls.Add(label28);
+            groupBox6.Controls.Add(label29);
+            groupBox6.Controls.Add(label30);
+            groupBox6.Location = new Point(646, 361);
+            groupBox6.Name = "groupBox6";
+            groupBox6.Size = new Size(655, 143);
+            groupBox6.TabIndex = 61;
+            groupBox6.TabStop = false;
             // 
-            // checkBox7
+            // txtPeso
             // 
-            checkBox7.AutoSize = true;
-            checkBox7.Location = new Point(37, 167);
-            checkBox7.Name = "checkBox7";
-            checkBox7.Size = new Size(191, 24);
-            checkBox7.TabIndex = 57;
-            checkBox7.Text = "Temperatura controlada";
-            checkBox7.UseVisualStyleBackColor = true;
+            txtPeso.BackColor = Color.White;
+            txtPeso.BorderColor = SystemColors.ControlDark;
+            txtPeso.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtPeso.IsNumber = true;
+            txtPeso.Location = new Point(356, 16);
+            txtPeso.Name = "txtPeso";
+            txtPeso.Padding = new Padding(7);
+            txtPeso.Size = new Size(109, 33);
+            txtPeso.TabIndex = 43;
+            // 
+            // txtAncho
+            // 
+            txtAncho.BackColor = Color.White;
+            txtAncho.BorderColor = SystemColors.ControlDark;
+            txtAncho.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtAncho.IsNumber = true;
+            txtAncho.Location = new Point(115, 90);
+            txtAncho.Name = "txtAncho";
+            txtAncho.Padding = new Padding(7);
+            txtAncho.Size = new Size(109, 33);
+            txtAncho.TabIndex = 42;
+            // 
+            // txtLargo
+            // 
+            txtLargo.BackColor = Color.White;
+            txtLargo.BorderColor = SystemColors.ControlDark;
+            txtLargo.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtLargo.IsNumber = true;
+            txtLargo.Location = new Point(115, 56);
+            txtLargo.Name = "txtLargo";
+            txtLargo.Padding = new Padding(7);
+            txtLargo.Size = new Size(109, 33);
+            txtLargo.TabIndex = 41;
+            // 
+            // txtAlto
+            // 
+            txtAlto.BackColor = Color.White;
+            txtAlto.BorderColor = SystemColors.ControlDark;
+            txtAlto.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtAlto.IsNumber = true;
+            txtAlto.Location = new Point(115, 23);
+            txtAlto.Name = "txtAlto";
+            txtAlto.Padding = new Padding(7);
+            txtAlto.Size = new Size(109, 33);
+            txtAlto.TabIndex = 40;
+            // 
+            // label27
+            // 
+            label27.AutoSize = true;
+            label27.Location = new Point(308, 29);
+            label27.Name = "label27";
+            label27.Size = new Size(42, 20);
+            label27.TabIndex = 64;
+            label27.Text = "Peso:";
+            // 
+            // label28
+            // 
+            label28.AutoSize = true;
+            label28.Location = new Point(25, 95);
+            label28.Name = "label28";
+            label28.Size = new Size(54, 20);
+            label28.TabIndex = 62;
+            label28.Text = "Ancho:";
+            // 
+            // label29
+            // 
+            label29.AutoSize = true;
+            label29.Location = new Point(22, 60);
+            label29.Name = "label29";
+            label29.Size = new Size(50, 20);
+            label29.TabIndex = 60;
+            label29.Text = "Largo:";
+            // 
+            // label30
+            // 
+            label30.AutoSize = true;
+            label30.Location = new Point(25, 30);
+            label30.Name = "label30";
+            label30.Size = new Size(40, 20);
+            label30.TabIndex = 58;
+            label30.Text = "Alto:";
+            // 
+            // chkBOM
+            // 
+            chkBOM.AutoSize = true;
+            chkBOM.Location = new Point(442, 182);
+            chkBOM.Name = "chkBOM";
+            chkBOM.Size = new Size(64, 24);
+            chkBOM.TabIndex = 10;
+            chkBOM.Text = "BOM";
+            chkBOM.UseVisualStyleBackColor = true;
+            // 
+            // chkVMI
+            // 
+            chkVMI.AutoSize = true;
+            chkVMI.Location = new Point(379, 182);
+            chkVMI.Name = "chkVMI";
+            chkVMI.Size = new Size(57, 24);
+            chkVMI.TabIndex = 9;
+            chkVMI.Text = "VMI";
+            chkVMI.UseVisualStyleBackColor = true;
+            // 
+            // chkActivo
+            // 
+            chkActivo.AutoSize = true;
+            chkActivo.Location = new Point(21, 181);
+            chkActivo.Name = "chkActivo";
+            chkActivo.Size = new Size(73, 24);
+            chkActivo.TabIndex = 7;
+            chkActivo.Text = "Activo";
+            chkActivo.UseVisualStyleBackColor = true;
+            // 
+            // chkTemperatura
+            // 
+            chkTemperatura.AutoSize = true;
+            chkTemperatura.Location = new Point(177, 182);
+            chkTemperatura.Name = "chkTemperatura";
+            chkTemperatura.Size = new Size(191, 24);
+            chkTemperatura.TabIndex = 8;
+            chkTemperatura.Text = "Temperatura controlada";
+            chkTemperatura.UseVisualStyleBackColor = true;
             // 
             // groupBox5
             // 
-            groupBox5.Controls.Add(textBox13);
-            groupBox5.Controls.Add(label24);
-            groupBox5.Controls.Add(comboBox12);
-            groupBox5.Controls.Add(label23);
-            groupBox5.Controls.Add(comboBox11);
-            groupBox5.Controls.Add(label22);
+            groupBox5.Controls.Add(txtTiempoEntrega);
+            groupBox5.Controls.Add(txtMinimos);
             groupBox5.Controls.Add(label21);
-            groupBox5.Controls.Add(radioButton6);
-            groupBox5.Controls.Add(radioButton5);
-            groupBox5.Controls.Add(textBox12);
+            groupBox5.Controls.Add(txtMaximos);
             groupBox5.Controls.Add(label20);
-            groupBox5.Controls.Add(textBox11);
             groupBox5.Controls.Add(label19);
-            groupBox5.Controls.Add(textBox10);
             groupBox5.Controls.Add(label18);
-            groupBox5.Controls.Add(textBox9);
+            groupBox5.Controls.Add(txtOrden);
             groupBox5.Controls.Add(label17);
-            groupBox5.Controls.Add(checkBox11);
-            groupBox5.Controls.Add(checkBox12);
-            groupBox5.Location = new Point(21, 373);
+            groupBox5.Controls.Add(chkNotificacionMax);
+            groupBox5.Controls.Add(chkNotificacionMin);
+            groupBox5.Location = new Point(16, 361);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(1280, 143);
+            groupBox5.Size = new Size(601, 143);
             groupBox5.TabIndex = 56;
             groupBox5.TabStop = false;
             // 
-            // textBox13
+            // txtTiempoEntrega
             // 
-            textBox13.BorderStyle = BorderStyle.FixedSingle;
-            textBox13.Font = new Font("Segoe UI", 9.75F);
-            textBox13.Location = new Point(846, 95);
-            textBox13.Name = "textBox13";
-            textBox13.Size = new Size(419, 29);
-            textBox13.TabIndex = 39;
+            txtTiempoEntrega.BackColor = Color.White;
+            txtTiempoEntrega.BorderColor = SystemColors.ControlDark;
+            txtTiempoEntrega.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtTiempoEntrega.IsNumber = true;
+            txtTiempoEntrega.Location = new Point(426, 90);
+            txtTiempoEntrega.Name = "txtTiempoEntrega";
+            txtTiempoEntrega.Padding = new Padding(7);
+            txtTiempoEntrega.Size = new Size(109, 33);
+            txtTiempoEntrega.TabIndex = 39;
             // 
-            // label24
+            // txtMinimos
             // 
-            label24.AutoSize = true;
-            label24.Location = new Point(732, 98);
-            label24.Name = "label24";
-            label24.Size = new Size(108, 20);
-            label24.TabIndex = 73;
-            label24.Text = "Correo alterno:";
-            // 
-            // comboBox12
-            // 
-            comboBox12.Font = new Font("Segoe UI", 9.75F);
-            comboBox12.FormattingEnabled = true;
-            comboBox12.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox12.Location = new Point(1007, 57);
-            comboBox12.Name = "comboBox12";
-            comboBox12.Size = new Size(258, 29);
-            comboBox12.TabIndex = 38;
-            // 
-            // label23
-            // 
-            label23.AutoSize = true;
-            label23.Location = new Point(841, 61);
-            label23.Name = "label23";
-            label23.Size = new Size(145, 20);
-            label23.TabIndex = 71;
-            label23.Text = "Ruta de notificación:";
-            // 
-            // comboBox11
-            // 
-            comboBox11.Font = new Font("Segoe UI", 9.75F);
-            comboBox11.FormattingEnabled = true;
-            comboBox11.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox11.Location = new Point(1007, 19);
-            comboBox11.Name = "comboBox11";
-            comboBox11.Size = new Size(258, 29);
-            comboBox11.TabIndex = 37;
-            // 
-            // label22
-            // 
-            label22.AutoSize = true;
-            label22.Location = new Point(841, 23);
-            label22.Name = "label22";
-            label22.Size = new Size(145, 20);
-            label22.TabIndex = 69;
-            label22.Text = "Lista de distribución:";
+            txtMinimos.BackColor = Color.White;
+            txtMinimos.BorderColor = SystemColors.ControlDark;
+            txtMinimos.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtMinimos.IsNumber = true;
+            txtMinimos.Location = new Point(426, 56);
+            txtMinimos.Name = "txtMinimos";
+            txtMinimos.Padding = new Padding(7);
+            txtMinimos.Size = new Size(109, 33);
+            txtMinimos.TabIndex = 38;
             // 
             // label21
             // 
@@ -308,36 +405,17 @@
             label21.TabIndex = 68;
             label21.Text = "días";
             // 
-            // radioButton6
+            // txtMaximos
             // 
-            radioButton6.AutoSize = true;
-            radioButton6.Location = new Point(625, 57);
-            radioButton6.Name = "radioButton6";
-            radioButton6.Size = new Size(192, 24);
-            radioButton6.TabIndex = 36;
-            radioButton6.TabStop = true;
-            radioButton6.Text = "Notificación via archivos";
-            radioButton6.UseVisualStyleBackColor = true;
-            // 
-            // radioButton5
-            // 
-            radioButton5.AutoSize = true;
-            radioButton5.Location = new Point(625, 27);
-            radioButton5.Name = "radioButton5";
-            radioButton5.Size = new Size(175, 24);
-            radioButton5.TabIndex = 35;
-            radioButton5.TabStop = true;
-            radioButton5.Text = "Notificación via email";
-            radioButton5.UseVisualStyleBackColor = true;
-            // 
-            // textBox12
-            // 
-            textBox12.BorderStyle = BorderStyle.FixedSingle;
-            textBox12.Font = new Font("Segoe UI", 9.75F);
-            textBox12.Location = new Point(426, 95);
-            textBox12.Name = "textBox12";
-            textBox12.Size = new Size(109, 29);
-            textBox12.TabIndex = 34;
+            txtMaximos.BackColor = Color.White;
+            txtMaximos.BorderColor = SystemColors.ControlDark;
+            txtMaximos.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtMaximos.IsNumber = true;
+            txtMaximos.Location = new Point(426, 22);
+            txtMaximos.Name = "txtMaximos";
+            txtMaximos.Padding = new Padding(7);
+            txtMaximos.Size = new Size(109, 33);
+            txtMaximos.TabIndex = 37;
             // 
             // label20
             // 
@@ -348,15 +426,6 @@
             label20.TabIndex = 64;
             label20.Text = "Tiempo de entrega:";
             // 
-            // textBox11
-            // 
-            textBox11.BorderStyle = BorderStyle.FixedSingle;
-            textBox11.Font = new Font("Segoe UI", 9.75F);
-            textBox11.Location = new Point(426, 61);
-            textBox11.Name = "textBox11";
-            textBox11.Size = new Size(109, 29);
-            textBox11.TabIndex = 33;
-            // 
             // label19
             // 
             label19.AutoSize = true;
@@ -365,15 +434,6 @@
             label19.Size = new Size(69, 20);
             label19.TabIndex = 62;
             label19.Text = "Mínimos:";
-            // 
-            // textBox10
-            // 
-            textBox10.BorderStyle = BorderStyle.FixedSingle;
-            textBox10.Font = new Font("Segoe UI", 9.75F);
-            textBox10.Location = new Point(426, 26);
-            textBox10.Name = "textBox10";
-            textBox10.Size = new Size(109, 29);
-            textBox10.TabIndex = 32;
             // 
             // label18
             // 
@@ -384,14 +444,14 @@
             label18.TabIndex = 60;
             label18.Text = "Máximos:";
             // 
-            // textBox9
+            // txtOrden
             // 
-            textBox9.BorderStyle = BorderStyle.FixedSingle;
-            textBox9.Font = new Font("Segoe UI", 9.75F);
-            textBox9.Location = new Point(106, 90);
-            textBox9.Name = "textBox9";
-            textBox9.Size = new Size(109, 29);
-            textBox9.TabIndex = 31;
+            txtOrden.BorderStyle = BorderStyle.FixedSingle;
+            txtOrden.Font = new Font("Segoe UI", 9.75F);
+            txtOrden.Location = new Point(106, 90);
+            txtOrden.Name = "txtOrden";
+            txtOrden.Size = new Size(109, 29);
+            txtOrden.TabIndex = 36;
             // 
             // label17
             // 
@@ -402,37 +462,37 @@
             label17.TabIndex = 58;
             label17.Text = "Reorden:";
             // 
-            // checkBox11
+            // chkNotificacionMax
             // 
-            checkBox11.AutoSize = true;
-            checkBox11.Location = new Point(18, 26);
-            checkBox11.Name = "checkBox11";
-            checkBox11.Size = new Size(197, 24);
-            checkBox11.TabIndex = 29;
-            checkBox11.Text = "Notificación de máximos";
-            checkBox11.UseVisualStyleBackColor = true;
+            chkNotificacionMax.AutoSize = true;
+            chkNotificacionMax.Location = new Point(18, 26);
+            chkNotificacionMax.Name = "chkNotificacionMax";
+            chkNotificacionMax.Size = new Size(197, 24);
+            chkNotificacionMax.TabIndex = 34;
+            chkNotificacionMax.Text = "Notificación de máximos";
+            chkNotificacionMax.UseVisualStyleBackColor = true;
             // 
-            // checkBox12
+            // chkNotificacionMin
             // 
-            checkBox12.AutoSize = true;
-            checkBox12.Location = new Point(18, 56);
-            checkBox12.Name = "checkBox12";
-            checkBox12.Size = new Size(194, 24);
-            checkBox12.TabIndex = 30;
-            checkBox12.Text = "Notificación de mínimos";
-            checkBox12.UseVisualStyleBackColor = true;
+            chkNotificacionMin.AutoSize = true;
+            chkNotificacionMin.Location = new Point(18, 56);
+            chkNotificacionMin.Name = "chkNotificacionMin";
+            chkNotificacionMin.Size = new Size(194, 24);
+            chkNotificacionMin.TabIndex = 35;
+            chkNotificacionMin.Text = "Notificación de mínimos";
+            chkNotificacionMin.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(comboBox5);
+            groupBox3.Controls.Add(txtFactorProduccion);
+            groupBox3.Controls.Add(txtFactorAlmacen);
+            groupBox3.Controls.Add(txtCostos);
+            groupBox3.Controls.Add(cmbUnidadProduccion);
             groupBox3.Controls.Add(label16);
-            groupBox3.Controls.Add(comboBox4);
+            groupBox3.Controls.Add(cmbEstatusProduccion);
             groupBox3.Controls.Add(label15);
-            groupBox3.Controls.Add(textBox8);
             groupBox3.Controls.Add(label4);
-            groupBox3.Controls.Add(textBox5);
             groupBox3.Controls.Add(label2);
-            groupBox3.Controls.Add(textBox4);
             groupBox3.Controls.Add(label3);
             groupBox3.Location = new Point(555, 212);
             groupBox3.Name = "groupBox3";
@@ -440,15 +500,51 @@
             groupBox3.TabIndex = 55;
             groupBox3.TabStop = false;
             // 
-            // comboBox5
+            // txtFactorProduccion
             // 
-            comboBox5.Font = new Font("Segoe UI", 9.75F);
-            comboBox5.FormattingEnabled = true;
-            comboBox5.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox5.Location = new Point(525, 95);
-            comboBox5.Name = "comboBox5";
-            comboBox5.Size = new Size(133, 29);
-            comboBox5.TabIndex = 28;
+            txtFactorProduccion.BackColor = Color.White;
+            txtFactorProduccion.BorderColor = SystemColors.ControlDark;
+            txtFactorProduccion.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtFactorProduccion.IsNumber = true;
+            txtFactorProduccion.Location = new Point(166, 95);
+            txtFactorProduccion.Name = "txtFactorProduccion";
+            txtFactorProduccion.Padding = new Padding(7);
+            txtFactorProduccion.Size = new Size(109, 33);
+            txtFactorProduccion.TabIndex = 30;
+            // 
+            // txtFactorAlmacen
+            // 
+            txtFactorAlmacen.BackColor = Color.White;
+            txtFactorAlmacen.BorderColor = SystemColors.ControlDark;
+            txtFactorAlmacen.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtFactorAlmacen.IsNumber = true;
+            txtFactorAlmacen.Location = new Point(166, 56);
+            txtFactorAlmacen.Name = "txtFactorAlmacen";
+            txtFactorAlmacen.Padding = new Padding(7);
+            txtFactorAlmacen.Size = new Size(109, 33);
+            txtFactorAlmacen.TabIndex = 29;
+            // 
+            // txtCostos
+            // 
+            txtCostos.BackColor = Color.White;
+            txtCostos.BorderColor = SystemColors.ControlDark;
+            txtCostos.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtCostos.IsNumber = true;
+            txtCostos.Location = new Point(166, 17);
+            txtCostos.Name = "txtCostos";
+            txtCostos.Padding = new Padding(7);
+            txtCostos.Size = new Size(109, 33);
+            txtCostos.TabIndex = 28;
+            // 
+            // cmbUnidadProduccion
+            // 
+            cmbUnidadProduccion.Font = new Font("Segoe UI", 9.75F);
+            cmbUnidadProduccion.FormattingEnabled = true;
+            cmbUnidadProduccion.Items.AddRange(new object[] { "PALLET", "PIEZA" });
+            cmbUnidadProduccion.Location = new Point(525, 95);
+            cmbUnidadProduccion.Name = "cmbUnidadProduccion";
+            cmbUnidadProduccion.Size = new Size(133, 29);
+            cmbUnidadProduccion.TabIndex = 33;
             // 
             // label16
             // 
@@ -459,15 +555,14 @@
             label16.TabIndex = 67;
             label16.Text = "Unidad de producción:";
             // 
-            // comboBox4
+            // cmbEstatusProduccion
             // 
-            comboBox4.Font = new Font("Segoe UI", 9.75F);
-            comboBox4.FormattingEnabled = true;
-            comboBox4.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox4.Location = new Point(525, 60);
-            comboBox4.Name = "comboBox4";
-            comboBox4.Size = new Size(206, 29);
-            comboBox4.TabIndex = 27;
+            cmbEstatusProduccion.Font = new Font("Segoe UI", 9.75F);
+            cmbEstatusProduccion.FormattingEnabled = true;
+            cmbEstatusProduccion.Location = new Point(525, 60);
+            cmbEstatusProduccion.Name = "cmbEstatusProduccion";
+            cmbEstatusProduccion.Size = new Size(206, 29);
+            cmbEstatusProduccion.TabIndex = 31;
             // 
             // label15
             // 
@@ -478,15 +573,6 @@
             label15.TabIndex = 65;
             label15.Text = "Estatus producción:";
             // 
-            // textBox8
-            // 
-            textBox8.BorderStyle = BorderStyle.FixedSingle;
-            textBox8.Font = new Font("Segoe UI", 9.75F);
-            textBox8.Location = new Point(166, 96);
-            textBox8.Name = "textBox8";
-            textBox8.Size = new Size(109, 29);
-            textBox8.TabIndex = 25;
-            // 
             // label4
             // 
             label4.AutoSize = true;
@@ -496,15 +582,6 @@
             label4.TabIndex = 60;
             label4.Text = "Factor producción:";
             // 
-            // textBox5
-            // 
-            textBox5.BorderStyle = BorderStyle.FixedSingle;
-            textBox5.Font = new Font("Segoe UI", 9.75F);
-            textBox5.Location = new Point(166, 61);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(109, 29);
-            textBox5.TabIndex = 24;
-            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -513,15 +590,6 @@
             label2.Size = new Size(112, 20);
             label2.TabIndex = 58;
             label2.Text = "Factor almacen:";
-            // 
-            // textBox4
-            // 
-            textBox4.BorderStyle = BorderStyle.FixedSingle;
-            textBox4.Font = new Font("Segoe UI", 9.75F);
-            textBox4.Location = new Point(166, 26);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(109, 29);
-            textBox4.TabIndex = 23;
             // 
             // label3
             // 
@@ -534,90 +602,90 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(checkBox2);
-            groupBox2.Controls.Add(checkBox3);
-            groupBox2.Controls.Add(checkBox6);
-            groupBox2.Controls.Add(checkBox1);
-            groupBox2.Controls.Add(checkBox4);
-            groupBox2.Controls.Add(checkBox5);
+            groupBox2.Controls.Add(chkSolicitarReferencia);
+            groupBox2.Controls.Add(chkSolicitarTipoCambio);
+            groupBox2.Controls.Add(chkSolicitarOC);
+            groupBox2.Controls.Add(chkSolicitarPedimento);
+            groupBox2.Controls.Add(chkSolicitarLote);
+            groupBox2.Controls.Add(chkSolicitarCaducidad);
             groupBox2.Location = new Point(16, 212);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(520, 143);
             groupBox2.TabIndex = 54;
             groupBox2.TabStop = false;
             // 
-            // checkBox2
+            // chkSolicitarReferencia
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(290, 86);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(155, 24);
-            checkBox2.TabIndex = 22;
-            checkBox2.Text = "Solicitar referencia";
-            checkBox2.UseVisualStyleBackColor = true;
+            chkSolicitarReferencia.AutoSize = true;
+            chkSolicitarReferencia.Location = new Point(290, 86);
+            chkSolicitarReferencia.Name = "chkSolicitarReferencia";
+            chkSolicitarReferencia.Size = new Size(155, 24);
+            chkSolicitarReferencia.TabIndex = 27;
+            chkSolicitarReferencia.Text = "Solicitar referencia";
+            chkSolicitarReferencia.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // chkSolicitarTipoCambio
             // 
-            checkBox3.AutoSize = true;
-            checkBox3.Location = new Point(290, 26);
-            checkBox3.Name = "checkBox3";
-            checkBox3.Size = new Size(191, 24);
-            checkBox3.TabIndex = 20;
-            checkBox3.Text = "Solicitar tipo de cambio";
-            checkBox3.UseVisualStyleBackColor = true;
+            chkSolicitarTipoCambio.AutoSize = true;
+            chkSolicitarTipoCambio.Location = new Point(290, 26);
+            chkSolicitarTipoCambio.Name = "chkSolicitarTipoCambio";
+            chkSolicitarTipoCambio.Size = new Size(191, 24);
+            chkSolicitarTipoCambio.TabIndex = 25;
+            chkSolicitarTipoCambio.Text = "Solicitar tipo de cambio";
+            chkSolicitarTipoCambio.UseVisualStyleBackColor = true;
             // 
-            // checkBox6
+            // chkSolicitarOC
             // 
-            checkBox6.AutoSize = true;
-            checkBox6.Location = new Point(290, 56);
-            checkBox6.Name = "checkBox6";
-            checkBox6.Size = new Size(204, 24);
-            checkBox6.TabIndex = 21;
-            checkBox6.Text = "Solicitar orden de compra";
-            checkBox6.UseVisualStyleBackColor = true;
+            chkSolicitarOC.AutoSize = true;
+            chkSolicitarOC.Location = new Point(290, 56);
+            chkSolicitarOC.Name = "chkSolicitarOC";
+            chkSolicitarOC.Size = new Size(204, 24);
+            chkSolicitarOC.TabIndex = 26;
+            chkSolicitarOC.Text = "Solicitar orden de compra";
+            chkSolicitarOC.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // chkSolicitarPedimento
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(18, 86);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(238, 24);
-            checkBox1.TabIndex = 19;
-            checkBox1.Text = "Solicitar número de pedimento";
-            checkBox1.UseVisualStyleBackColor = true;
+            chkSolicitarPedimento.AutoSize = true;
+            chkSolicitarPedimento.Location = new Point(18, 86);
+            chkSolicitarPedimento.Name = "chkSolicitarPedimento";
+            chkSolicitarPedimento.Size = new Size(238, 24);
+            chkSolicitarPedimento.TabIndex = 24;
+            chkSolicitarPedimento.Text = "Solicitar número de pedimento";
+            chkSolicitarPedimento.UseVisualStyleBackColor = true;
             // 
-            // checkBox4
+            // chkSolicitarLote
             // 
-            checkBox4.AutoSize = true;
-            checkBox4.Location = new Point(18, 26);
-            checkBox4.Name = "checkBox4";
-            checkBox4.Size = new Size(191, 24);
-            checkBox4.TabIndex = 17;
-            checkBox4.Text = "Solicitar número de lote";
-            checkBox4.UseVisualStyleBackColor = true;
+            chkSolicitarLote.AutoSize = true;
+            chkSolicitarLote.Location = new Point(18, 26);
+            chkSolicitarLote.Name = "chkSolicitarLote";
+            chkSolicitarLote.Size = new Size(191, 24);
+            chkSolicitarLote.TabIndex = 22;
+            chkSolicitarLote.Text = "Solicitar número de lote";
+            chkSolicitarLote.UseVisualStyleBackColor = true;
             // 
-            // checkBox5
+            // chkSolicitarCaducidad
             // 
-            checkBox5.AutoSize = true;
-            checkBox5.Location = new Point(18, 56);
-            checkBox5.Name = "checkBox5";
-            checkBox5.Size = new Size(219, 24);
-            checkBox5.TabIndex = 18;
-            checkBox5.Text = "Solicitar fecha de caducidad";
-            checkBox5.UseVisualStyleBackColor = true;
+            chkSolicitarCaducidad.AutoSize = true;
+            chkSolicitarCaducidad.Location = new Point(18, 56);
+            chkSolicitarCaducidad.Name = "chkSolicitarCaducidad";
+            chkSolicitarCaducidad.Size = new Size(219, 24);
+            chkSolicitarCaducidad.TabIndex = 23;
+            chkSolicitarCaducidad.Text = "Solicitar fecha de caducidad";
+            chkSolicitarCaducidad.UseVisualStyleBackColor = true;
             // 
             // groupBox4
             // 
-            groupBox4.Controls.Add(textBox3);
-            groupBox4.Controls.Add(textBox2);
-            groupBox4.Controls.Add(textBox1);
-            groupBox4.Controls.Add(comboBox7);
+            groupBox4.Controls.Add(txtValorPaqueteEst);
+            groupBox4.Controls.Add(txtValorUnidadMax);
+            groupBox4.Controls.Add(txtValorUnidadMedia);
+            groupBox4.Controls.Add(cmbPaqueteEstandar);
             groupBox4.Controls.Add(label10);
-            groupBox4.Controls.Add(comboBox8);
+            groupBox4.Controls.Add(cmbUnidadMaxima);
             groupBox4.Controls.Add(label11);
-            groupBox4.Controls.Add(comboBox9);
+            groupBox4.Controls.Add(cmbUnidadMedia);
             groupBox4.Controls.Add(label12);
-            groupBox4.Controls.Add(comboBox10);
+            groupBox4.Controls.Add(cmbUnidadMinima);
             groupBox4.Controls.Add(label13);
             groupBox4.Location = new Point(867, 22);
             groupBox4.Name = "groupBox4";
@@ -626,42 +694,53 @@
             groupBox4.TabStop = false;
             groupBox4.Text = "Unidades";
             // 
-            // textBox3
+            // txtValorPaqueteEst
             // 
-            textBox3.BorderStyle = BorderStyle.FixedSingle;
-            textBox3.Font = new Font("Segoe UI", 9.75F);
-            textBox3.Location = new Point(355, 141);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(64, 29);
-            textBox3.TabIndex = 16;
+            txtValorPaqueteEst.BackColor = Color.White;
+            txtValorPaqueteEst.BorderColor = SystemColors.ControlDark;
+            txtValorPaqueteEst.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtValorPaqueteEst.IsNumber = true;
+            txtValorPaqueteEst.Location = new Point(355, 140);
+            txtValorPaqueteEst.Name = "txtValorPaqueteEst";
+            txtValorPaqueteEst.Padding = new Padding(7);
+            txtValorPaqueteEst.Size = new Size(64, 33);
+            txtValorPaqueteEst.TabIndex = 18;
             // 
-            // textBox2
+            // txtValorUnidadMax
             // 
-            textBox2.BorderStyle = BorderStyle.FixedSingle;
-            textBox2.Font = new Font("Segoe UI", 9.75F);
-            textBox2.Location = new Point(355, 106);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(64, 29);
-            textBox2.TabIndex = 14;
+            txtValorUnidadMax.BackColor = Color.White;
+            txtValorUnidadMax.BorderColor = SystemColors.ControlDark;
+            txtValorUnidadMax.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtValorUnidadMax.IsNumber = true;
+            txtValorUnidadMax.Location = new Point(355, 105);
+            txtValorUnidadMax.Name = "txtValorUnidadMax";
+            txtValorUnidadMax.Padding = new Padding(7);
+            txtValorUnidadMax.Size = new Size(64, 33);
+            txtValorUnidadMax.TabIndex = 17;
             // 
-            // textBox1
+            // txtValorUnidadMedia
             // 
-            textBox1.BorderStyle = BorderStyle.FixedSingle;
-            textBox1.Font = new Font("Segoe UI", 9.75F);
-            textBox1.Location = new Point(355, 71);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(64, 29);
-            textBox1.TabIndex = 12;
+            txtValorUnidadMedia.BackColor = Color.White;
+            txtValorUnidadMedia.BorderColor = SystemColors.ControlDark;
+            txtValorUnidadMedia.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtValorUnidadMedia.IsNumber = true;
+            txtValorUnidadMedia.Location = new Point(355, 66);
+            txtValorUnidadMedia.Name = "txtValorUnidadMedia";
+            txtValorUnidadMedia.Padding = new Padding(7);
+            txtValorUnidadMedia.Size = new Size(64, 33);
+            txtValorUnidadMedia.TabIndex = 16;
             // 
-            // comboBox7
+            // cmbPaqueteEstandar
             // 
-            comboBox7.Font = new Font("Segoe UI", 9.75F);
-            comboBox7.FormattingEnabled = true;
-            comboBox7.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox7.Location = new Point(161, 140);
-            comboBox7.Name = "comboBox7";
-            comboBox7.Size = new Size(185, 29);
-            comboBox7.TabIndex = 15;
+            cmbPaqueteEstandar.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbPaqueteEstandar.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbPaqueteEstandar.Font = new Font("Segoe UI", 9.75F);
+            cmbPaqueteEstandar.FormattingEnabled = true;
+            cmbPaqueteEstandar.Items.AddRange(new object[] { "PALLET", "PIEZA" });
+            cmbPaqueteEstandar.Location = new Point(161, 140);
+            cmbPaqueteEstandar.Name = "cmbPaqueteEstandar";
+            cmbPaqueteEstandar.Size = new Size(185, 29);
+            cmbPaqueteEstandar.TabIndex = 20;
             // 
             // label10
             // 
@@ -672,15 +751,17 @@
             label10.TabIndex = 50;
             label10.Text = "Paquete estandar:";
             // 
-            // comboBox8
+            // cmbUnidadMaxima
             // 
-            comboBox8.Font = new Font("Segoe UI", 9.75F);
-            comboBox8.FormattingEnabled = true;
-            comboBox8.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox8.Location = new Point(161, 105);
-            comboBox8.Name = "comboBox8";
-            comboBox8.Size = new Size(185, 29);
-            comboBox8.TabIndex = 13;
+            cmbUnidadMaxima.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbUnidadMaxima.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbUnidadMaxima.Font = new Font("Segoe UI", 9.75F);
+            cmbUnidadMaxima.FormattingEnabled = true;
+            cmbUnidadMaxima.Items.AddRange(new object[] { "PALLET", "PIEZA" });
+            cmbUnidadMaxima.Location = new Point(161, 105);
+            cmbUnidadMaxima.Name = "cmbUnidadMaxima";
+            cmbUnidadMaxima.Size = new Size(185, 29);
+            cmbUnidadMaxima.TabIndex = 18;
             // 
             // label11
             // 
@@ -691,15 +772,17 @@
             label11.TabIndex = 48;
             label11.Text = "Unidad máxima:";
             // 
-            // comboBox9
+            // cmbUnidadMedia
             // 
-            comboBox9.Font = new Font("Segoe UI", 9.75F);
-            comboBox9.FormattingEnabled = true;
-            comboBox9.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox9.Location = new Point(161, 70);
-            comboBox9.Name = "comboBox9";
-            comboBox9.Size = new Size(185, 29);
-            comboBox9.TabIndex = 11;
+            cmbUnidadMedia.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbUnidadMedia.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbUnidadMedia.Font = new Font("Segoe UI", 9.75F);
+            cmbUnidadMedia.FormattingEnabled = true;
+            cmbUnidadMedia.Items.AddRange(new object[] { "PALLET", "PIEZA" });
+            cmbUnidadMedia.Location = new Point(161, 70);
+            cmbUnidadMedia.Name = "cmbUnidadMedia";
+            cmbUnidadMedia.Size = new Size(185, 29);
+            cmbUnidadMedia.TabIndex = 16;
             // 
             // label12
             // 
@@ -710,15 +793,17 @@
             label12.TabIndex = 46;
             label12.Text = "Unidad media:";
             // 
-            // comboBox10
+            // cmbUnidadMinima
             // 
-            comboBox10.Font = new Font("Segoe UI", 9.75F);
-            comboBox10.FormattingEnabled = true;
-            comboBox10.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            comboBox10.Location = new Point(161, 35);
-            comboBox10.Name = "comboBox10";
-            comboBox10.Size = new Size(185, 29);
-            comboBox10.TabIndex = 10;
+            cmbUnidadMinima.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbUnidadMinima.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbUnidadMinima.Font = new Font("Segoe UI", 9.75F);
+            cmbUnidadMinima.FormattingEnabled = true;
+            cmbUnidadMinima.Items.AddRange(new object[] { "PALLET", "PIEZA" });
+            cmbUnidadMinima.Location = new Point(161, 35);
+            cmbUnidadMinima.Name = "cmbUnidadMinima";
+            cmbUnidadMinima.Size = new Size(185, 29);
+            cmbUnidadMinima.TabIndex = 15;
             // 
             // label13
             // 
@@ -729,14 +814,16 @@
             label13.TabIndex = 22;
             label13.Text = "Unidad mínima:";
             // 
-            // comboBox6
+            // cmbCategoria
             // 
-            comboBox6.Font = new Font("Segoe UI", 9.75F);
-            comboBox6.FormattingEnabled = true;
-            comboBox6.Location = new Point(177, 110);
-            comboBox6.Name = "comboBox6";
-            comboBox6.Size = new Size(320, 29);
-            comboBox6.TabIndex = 5;
+            cmbCategoria.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbCategoria.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbCategoria.Font = new Font("Segoe UI", 9.75F);
+            cmbCategoria.FormattingEnabled = true;
+            cmbCategoria.Location = new Point(177, 110);
+            cmbCategoria.Name = "cmbCategoria";
+            cmbCategoria.Size = new Size(320, 29);
+            cmbCategoria.TabIndex = 5;
             // 
             // label9
             // 
@@ -766,7 +853,7 @@
             radioButton4.Location = new Point(22, 116);
             radioButton4.Name = "radioButton4";
             radioButton4.Size = new Size(162, 24);
-            radioButton4.TabIndex = 9;
+            radioButton4.TabIndex = 14;
             radioButton4.TabStop = true;
             radioButton4.Text = "Fecha de caducidad";
             radioButton4.UseVisualStyleBackColor = true;
@@ -777,7 +864,7 @@
             radioButton3.Location = new Point(22, 86);
             radioButton3.Name = "radioButton3";
             radioButton3.Size = new Size(135, 24);
-            radioButton3.TabIndex = 8;
+            radioButton3.TabIndex = 13;
             radioButton3.TabStop = true;
             radioButton3.Text = "Número de lote";
             radioButton3.UseVisualStyleBackColor = true;
@@ -788,7 +875,7 @@
             radioButton2.Location = new Point(22, 56);
             radioButton2.Name = "radioButton2";
             radioButton2.Size = new Size(174, 24);
-            radioButton2.TabIndex = 7;
+            radioButton2.TabIndex = 12;
             radioButton2.TabStop = true;
             radioButton2.Text = "LIFO - Last In First Out";
             radioButton2.UseVisualStyleBackColor = true;
@@ -799,7 +886,7 @@
             radioButton1.Location = new Point(22, 26);
             radioButton1.Name = "radioButton1";
             radioButton1.Size = new Size(175, 24);
-            radioButton1.TabIndex = 6;
+            radioButton1.TabIndex = 11;
             radioButton1.TabStop = true;
             radioButton1.Text = "FIFO - First In First Out";
             radioButton1.UseVisualStyleBackColor = true;
@@ -813,14 +900,14 @@
             label6.TabIndex = 36;
             label6.Text = "No. Parte:";
             // 
-            // textBox6
+            // txtNoParte
             // 
-            textBox6.BorderStyle = BorderStyle.FixedSingle;
-            textBox6.Font = new Font("Segoe UI", 9.75F);
-            textBox6.Location = new Point(177, 42);
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(405, 29);
-            textBox6.TabIndex = 3;
+            txtNoParte.BorderStyle = BorderStyle.FixedSingle;
+            txtNoParte.Font = new Font("Segoe UI", 9.75F);
+            txtNoParte.Location = new Point(177, 42);
+            txtNoParte.Name = "txtNoParte";
+            txtNoParte.Size = new Size(405, 29);
+            txtNoParte.TabIndex = 3;
             // 
             // label7
             // 
@@ -831,20 +918,21 @@
             label7.TabIndex = 38;
             label7.Text = "Descripción:";
             // 
-            // textBox7
+            // txtDescripcion
             // 
-            textBox7.BorderStyle = BorderStyle.FixedSingle;
-            textBox7.Font = new Font("Segoe UI", 9.75F);
-            textBox7.Location = new Point(177, 77);
-            textBox7.Name = "textBox7";
-            textBox7.Size = new Size(445, 29);
-            textBox7.TabIndex = 4;
+            txtDescripcion.BorderStyle = BorderStyle.FixedSingle;
+            txtDescripcion.Font = new Font("Segoe UI", 9.75F);
+            txtDescripcion.Location = new Point(177, 77);
+            txtDescripcion.Name = "txtDescripcion";
+            txtDescripcion.Size = new Size(445, 29);
+            txtDescripcion.TabIndex = 4;
             // 
             // tabAvanzada
             // 
-            tabAvanzada.Controls.Add(comboBox14);
+            tabAvanzada.Controls.Add(txtNoParteProv);
+            tabAvanzada.Controls.Add(groupBox7);
             tabAvanzada.Controls.Add(label26);
-            tabAvanzada.Controls.Add(comboBox13);
+            tabAvanzada.Controls.Add(cmbProveedor);
             tabAvanzada.Controls.Add(label25);
             tabAvanzada.Location = new Point(4, 29);
             tabAvanzada.Name = "tabAvanzada";
@@ -854,14 +942,107 @@
             tabAvanzada.Text = "Avanzada";
             tabAvanzada.UseVisualStyleBackColor = true;
             // 
-            // comboBox14
+            // txtNoParteProv
             // 
-            comboBox14.Font = new Font("Segoe UI", 9.75F);
-            comboBox14.FormattingEnabled = true;
-            comboBox14.Location = new Point(246, 60);
-            comboBox14.Name = "comboBox14";
-            comboBox14.Size = new Size(400, 29);
-            comboBox14.TabIndex = 41;
+            txtNoParteProv.BorderStyle = BorderStyle.FixedSingle;
+            txtNoParteProv.Font = new Font("Segoe UI", 9.75F);
+            txtNoParteProv.Location = new Point(246, 60);
+            txtNoParteProv.Name = "txtNoParteProv";
+            txtNoParteProv.Size = new Size(419, 29);
+            txtNoParteProv.TabIndex = 48;
+            // 
+            // groupBox7
+            // 
+            groupBox7.Controls.Add(rdNotificacionEmail);
+            groupBox7.Controls.Add(txtCorreoAlterno);
+            groupBox7.Controls.Add(rdNotificacionArchivos);
+            groupBox7.Controls.Add(label24);
+            groupBox7.Controls.Add(label22);
+            groupBox7.Controls.Add(cmbRutaNotificacion);
+            groupBox7.Controls.Add(cmbListaDistribucion);
+            groupBox7.Controls.Add(label23);
+            groupBox7.Location = new Point(21, 121);
+            groupBox7.Name = "groupBox7";
+            groupBox7.Size = new Size(709, 178);
+            groupBox7.TabIndex = 82;
+            groupBox7.TabStop = false;
+            // 
+            // rdNotificacionEmail
+            // 
+            rdNotificacionEmail.AutoSize = true;
+            rdNotificacionEmail.Location = new Point(42, 39);
+            rdNotificacionEmail.Name = "rdNotificacionEmail";
+            rdNotificacionEmail.Size = new Size(175, 24);
+            rdNotificacionEmail.TabIndex = 49;
+            rdNotificacionEmail.TabStop = true;
+            rdNotificacionEmail.Text = "Notificación via email";
+            rdNotificacionEmail.UseVisualStyleBackColor = true;
+            // 
+            // txtCorreoAlterno
+            // 
+            txtCorreoAlterno.BorderStyle = BorderStyle.FixedSingle;
+            txtCorreoAlterno.Font = new Font("Segoe UI", 9.75F);
+            txtCorreoAlterno.Location = new Point(263, 107);
+            txtCorreoAlterno.Name = "txtCorreoAlterno";
+            txtCorreoAlterno.Size = new Size(419, 29);
+            txtCorreoAlterno.TabIndex = 53;
+            // 
+            // rdNotificacionArchivos
+            // 
+            rdNotificacionArchivos.AutoSize = true;
+            rdNotificacionArchivos.Location = new Point(42, 69);
+            rdNotificacionArchivos.Name = "rdNotificacionArchivos";
+            rdNotificacionArchivos.Size = new Size(192, 24);
+            rdNotificacionArchivos.TabIndex = 50;
+            rdNotificacionArchivos.Text = "Notificación via archivos";
+            rdNotificacionArchivos.UseVisualStyleBackColor = true;
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new Point(149, 110);
+            label24.Name = "label24";
+            label24.Size = new Size(108, 20);
+            label24.TabIndex = 81;
+            label24.Text = "Correo alterno:";
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Location = new Point(258, 35);
+            label22.Name = "label22";
+            label22.Size = new Size(145, 20);
+            label22.TabIndex = 79;
+            label22.Text = "Lista de distribución:";
+            // 
+            // cmbRutaNotificacion
+            // 
+            cmbRutaNotificacion.Font = new Font("Segoe UI", 9.75F);
+            cmbRutaNotificacion.FormattingEnabled = true;
+            cmbRutaNotificacion.Items.AddRange(new object[] { "PALLET", "PIEZA" });
+            cmbRutaNotificacion.Location = new Point(424, 69);
+            cmbRutaNotificacion.Name = "cmbRutaNotificacion";
+            cmbRutaNotificacion.Size = new Size(258, 29);
+            cmbRutaNotificacion.TabIndex = 52;
+            // 
+            // cmbListaDistribucion
+            // 
+            cmbListaDistribucion.Font = new Font("Segoe UI", 9.75F);
+            cmbListaDistribucion.FormattingEnabled = true;
+            cmbListaDistribucion.Items.AddRange(new object[] { "PALLET", "PIEZA" });
+            cmbListaDistribucion.Location = new Point(424, 31);
+            cmbListaDistribucion.Name = "cmbListaDistribucion";
+            cmbListaDistribucion.Size = new Size(258, 29);
+            cmbListaDistribucion.TabIndex = 51;
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Location = new Point(258, 73);
+            label23.Name = "label23";
+            label23.Size = new Size(145, 20);
+            label23.TabIndex = 80;
+            label23.Text = "Ruta de notificación:";
             // 
             // label26
             // 
@@ -872,14 +1053,14 @@
             label26.TabIndex = 55;
             label26.Text = "Número de parte proveedor:";
             // 
-            // comboBox13
+            // cmbProveedor
             // 
-            comboBox13.Font = new Font("Segoe UI", 9.75F);
-            comboBox13.FormattingEnabled = true;
-            comboBox13.Location = new Point(246, 20);
-            comboBox13.Name = "comboBox13";
-            comboBox13.Size = new Size(400, 29);
-            comboBox13.TabIndex = 40;
+            cmbProveedor.Font = new Font("Segoe UI", 9.75F);
+            cmbProveedor.FormattingEnabled = true;
+            cmbProveedor.Location = new Point(246, 20);
+            cmbProveedor.Name = "cmbProveedor";
+            cmbProveedor.Size = new Size(400, 29);
+            cmbProveedor.TabIndex = 47;
             // 
             // label25
             // 
@@ -892,9 +1073,9 @@
             // 
             // panel3
             // 
-            panel3.Controls.Add(comboBox1);
+            panel3.Controls.Add(cmbCliente);
             panel3.Controls.Add(label8);
-            panel3.Controls.Add(comboBox2);
+            panel3.Controls.Add(cmbProyecto);
             panel3.Controls.Add(label5);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 35);
@@ -902,14 +1083,17 @@
             panel3.Size = new Size(1363, 65);
             panel3.TabIndex = 52;
             // 
-            // comboBox1
+            // cmbCliente
             // 
-            comboBox1.Font = new Font("Segoe UI", 9.75F);
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(105, 16);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(465, 29);
-            comboBox1.TabIndex = 1;
+            cmbCliente.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbCliente.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbCliente.Font = new Font("Segoe UI", 9.75F);
+            cmbCliente.FormattingEnabled = true;
+            cmbCliente.Location = new Point(105, 16);
+            cmbCliente.Name = "cmbCliente";
+            cmbCliente.Size = new Size(465, 29);
+            cmbCliente.TabIndex = 1;
+            cmbCliente.SelectedIndexChanged += cmbCliente_SelectedIndexChanged;
             // 
             // label8
             // 
@@ -920,14 +1104,17 @@
             label8.TabIndex = 34;
             label8.Text = "Cliente:";
             // 
-            // comboBox2
+            // cmbProyecto
             // 
-            comboBox2.Font = new Font("Segoe UI", 9.75F);
-            comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(684, 16);
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(465, 29);
-            comboBox2.TabIndex = 2;
+            cmbProyecto.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbProyecto.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbProyecto.Font = new Font("Segoe UI", 9.75F);
+            cmbProyecto.FormattingEnabled = true;
+            cmbProyecto.Location = new Point(684, 16);
+            cmbProyecto.Name = "cmbProyecto";
+            cmbProyecto.Size = new Size(465, 29);
+            cmbProyecto.TabIndex = 2;
+            cmbProyecto.SelectedIndexChanged += cmbProyecto_SelectedIndexChanged;
             // 
             // label5
             // 
@@ -958,7 +1145,7 @@
             button2.Location = new Point(1178, 8);
             button2.Name = "button2";
             button2.Size = new Size(172, 35);
-            button2.TabIndex = 43;
+            button2.TabIndex = 45;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
@@ -970,7 +1157,7 @@
             btnSave.Location = new Point(1000, 8);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(172, 35);
-            btnSave.TabIndex = 42;
+            btnSave.TabIndex = 44;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
@@ -1025,6 +1212,8 @@
             tabControl1.ResumeLayout(false);
             tabGeneral.ResumeLayout(false);
             tabGeneral.PerformLayout();
+            groupBox6.ResumeLayout(false);
+            groupBox6.PerformLayout();
             groupBox5.ResumeLayout(false);
             groupBox5.PerformLayout();
             groupBox3.ResumeLayout(false);
@@ -1037,6 +1226,8 @@
             groupBox1.PerformLayout();
             tabAvanzada.ResumeLayout(false);
             tabAvanzada.PerformLayout();
+            groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             flowLayoutPanel1.ResumeLayout(false);
@@ -1060,13 +1251,13 @@
         private RadioButton radioButton3;
         private RadioButton radioButton2;
         private RadioButton radioButton1;
-        private ComboBox comboBox2;
-        private ComboBox comboBox1;
-        private CheckBox checkBox5;
-        private CheckBox checkBox4;
-        private TextBox textBox7;
+        private ComboBox cmbProyecto;
+        private ComboBox cmbCliente;
+        private CheckBox chkSolicitarCaducidad;
+        private CheckBox chkSolicitarLote;
+        private TextBox txtDescripcion;
         private Label label7;
-        private TextBox textBox6;
+        private TextBox txtNoParte;
         private Label label6;
         private Label label5;
         private Label label8;
@@ -1074,63 +1265,77 @@
         private TabPage tabGeneral;
         private TabPage tabAvanzada;
         private Panel panel3;
-        private ComboBox comboBox6;
+        private ComboBox cmbCategoria;
         private Label label9;
         private GroupBox groupBox4;
-        private ComboBox comboBox7;
+        private ComboBox cmbPaqueteEstandar;
         private Label label10;
-        private ComboBox comboBox8;
+        private ComboBox cmbUnidadMaxima;
         private Label label11;
-        private ComboBox comboBox9;
+        private ComboBox cmbUnidadMedia;
         private Label label12;
-        private ComboBox comboBox10;
+        private ComboBox cmbUnidadMinima;
         private Label label13;
-        private TextBox textBox3;
-        private TextBox textBox2;
-        private TextBox textBox1;
         private GroupBox groupBox2;
-        private CheckBox checkBox1;
-        private CheckBox checkBox2;
-        private CheckBox checkBox3;
-        private CheckBox checkBox6;
+        private CheckBox chkSolicitarPedimento;
+        private CheckBox chkSolicitarReferencia;
+        private CheckBox chkSolicitarTipoCambio;
+        private CheckBox chkSolicitarOC;
         private GroupBox groupBox3;
         private TextBox textBox4;
         private Label label3;
-        private TextBox textBox8;
         private Label label4;
-        private TextBox textBox5;
         private Label label2;
         private ComboBox comboBox5;
         private Label label16;
-        private ComboBox comboBox4;
+        private ComboBox cmbEstatusProduccion;
         private Label label15;
         private GroupBox groupBox5;
-        private CheckBox checkBox11;
-        private CheckBox checkBox12;
-        private TextBox textBox9;
+        private CheckBox chkNotificacionMax;
+        private CheckBox chkNotificacionMin;
+        private TextBox txtOrden;
         private Label label17;
-        private TextBox textBox10;
         private Label label18;
-        private TextBox textBox12;
         private Label label20;
-        private TextBox textBox11;
         private Label label19;
-        private RadioButton radioButton6;
-        private RadioButton radioButton5;
         private Label label21;
-        private ComboBox comboBox11;
-        private Label label22;
-        private ComboBox comboBox12;
-        private Label label23;
-        private TextBox textBox13;
-        private Label label24;
-        private ComboBox comboBox13;
+        private ComboBox cmbProveedor;
         private Label label25;
-        private ComboBox comboBox14;
         private Label label26;
-        private CheckBox checkBox10;
-        private CheckBox checkBox9;
-        private CheckBox checkBox8;
-        private CheckBox checkBox7;
+        private CheckBox chkBOM;
+        private CheckBox chkVMI;
+        private CheckBox chkActivo;
+        private CheckBox chkTemperatura;
+        private TextBox txtCorreoAlterno;
+        private Label label24;
+        private ComboBox cmbRutaNotificacion;
+        private Label label23;
+        private ComboBox cmbListaDistribucion;
+        private Label label22;
+        private RadioButton rdNotificacionArchivos;
+        private RadioButton rdNotificacionEmail;
+        private GroupBox groupBox6;
+        private Label label27;
+        private Label label28;
+        private Label label29;
+        private Label label30;
+        private GroupBox groupBox7;
+        private ComboBox cmbFamilia;
+        private ComboBox cmbUnidadProduccion;
+        private Label label14;
+        private TextBox txtNoParteProv;
+        private LD.Controls.TextBoxControl txtCostos;
+        private LD.Controls.TextBoxControl txtFactorAlmacen;
+        private LD.Controls.TextBoxControl txtFactorProduccion;
+        private LD.Controls.TextBoxControl txtAncho;
+        private LD.Controls.TextBoxControl txtLargo;
+        private LD.Controls.TextBoxControl txtAlto;
+        private LD.Controls.TextBoxControl txtPeso;
+        private LD.Controls.TextBoxControl txtMaximos;
+        private LD.Controls.TextBoxControl txtMinimos;
+        private LD.Controls.TextBoxControl txtTiempoEntrega;
+        private LD.Controls.TextBoxControl txtValorPaqueteEst;
+        private LD.Controls.TextBoxControl txtValorUnidadMax;
+        private LD.Controls.TextBoxControl txtValorUnidadMedia;
     }
 }

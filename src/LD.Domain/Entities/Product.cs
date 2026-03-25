@@ -57,12 +57,19 @@ namespace LD.Domain.Entities
         public string? DistributionList { get; set; }
         public string? NotificationRoute { get; set; }
         public string? AlternateEmail { get; set; }
+        public int? FamilyId { get; set; }
+
+        public decimal? Height { get; set; }
+        public decimal? Width { get; set; }
+        public decimal? Length { get; set; }
+        public decimal? Weight { get; set; }
 
         public Project? Project { get; set; }
         public Category? Category { get; set; }
         public Units? Unit { get; set; }
         public Client? Client { get; set; }
         public StorageType? StorageType { get; set; }
+        public Family? Family { get; set; }
 
 
     }

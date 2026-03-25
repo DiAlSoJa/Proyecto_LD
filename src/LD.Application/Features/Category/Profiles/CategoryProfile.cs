@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using LD.Contracts.Category;
+using LD.Contracts.DTOs;
 using LD.Contracts.Requests;
 using LD.Contracts.Units;
 
@@ -36,6 +37,14 @@ namespace LD.Application.Features.Category.Profiles
                     opt => opt.MapFrom(src => src.Description));
 
             CreateMap<LD.Domain.Entities.Category, CategoryRequest>();
+
+            CreateMap<LD.Domain.Entities.Category, DropDownDto>()
+             .ForMember(dest => dest.Key,
+                 opt => opt.MapFrom(src => src.CategoryId))
+             .ForMember(dest => dest.Value,
+                 opt => opt.MapFrom(src => src.CategoryName));
+
+
         }
 
     }

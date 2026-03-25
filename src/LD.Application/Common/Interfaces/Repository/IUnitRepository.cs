@@ -8,10 +8,8 @@ using LD.Domain.Entities;
 
 namespace LD.Application.Common.Interfaces.Repository
 {
-    public interface IFamilyRepository : IRepository<Family>
+    public interface IUnitRepository : IRepository<Units>
     {
-        Task<List<Family>> GetAllWithRelationsAsync();
         Task<List<DropDownDto>> GetLookup();
-        Task<List<DropDownDto>> GetFamilyByClientAsync(int clientId, int projectId);
     }
 }

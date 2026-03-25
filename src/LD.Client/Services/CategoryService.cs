@@ -41,6 +41,12 @@ namespace LD.Client.Services
             return await _api.PutAsync<CategoryRequest, ApiResponseDto<string>>(_apiEndpoints.Category_Update.Replace("{categoryId}", categoryId.ToString()), request);
         }
 
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetCategoryLookup()
+        {
+            return await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Category);
+
+
+        }
         public async Task<ApiResponseDto<List<DropDownDto>>> GetClientLookup()
           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Client);
 

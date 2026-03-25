@@ -199,6 +199,9 @@ namespace LD.Forms.Configuration
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
         public string Lookup_Role => $"{_baseApi}/Lookup/role";
+        public string Lookup_Category => $"{_baseApi}/Lookup/category";
+        public string Lookup_Family => $"{_baseApi}/Lookup/family";
+        public string Lookup_Unit => $"{_baseApi}/Lookup/unit";
 
 
         // ======================

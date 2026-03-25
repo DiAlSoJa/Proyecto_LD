@@ -32,8 +32,19 @@ namespace LD.Client.Services
           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Role);
         public async Task<ApiResponseDto<List<DropDownDto>>> GetProjectLookup()
           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Project);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetUnitLookup()
+          => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Unit);
+
         public async Task<ApiResponseDto<List<DropDownDto>>> GetProjectClientLookup(int clientId)
                 => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>($"{_apiEndpoints.Lookup_ProjectClient}/{clientId}");
+
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetCategoryClientLookup(int clientId, int projectId)
+                => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>($"{_apiEndpoints.Lookup_Category}/{clientId}/{projectId}");
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetFamilyClientLookup(int clientId, int projectId)
+               => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>($"{_apiEndpoints.Lookup_Family}/{clientId}/{projectId}");
+
+
+
 
     }
 }

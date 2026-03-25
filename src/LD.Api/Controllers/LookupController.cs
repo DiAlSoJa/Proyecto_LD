@@ -41,10 +41,22 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetProjectLookup()
           => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjectLookupQuery()));
 
-
         [HttpGet("project/{clientId}")]        
         public async Task<IActionResult> GetProjectByClient(int clientId)
           => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjecClienttLookupQuery(clientId)));
+
+        [HttpGet("category/{clientId}/{projectId}")]
+        public async Task<IActionResult> GetCategoryByClientLookup(int clientId, int projectId)
+         => ResultExtensions.ToActionResult(await Mediator.Send(new GetCategoryLookupQuery(clientId, projectId)));
+
+        [HttpGet("family/{clientId}/{projectId}")]
+        public async Task<IActionResult> GetFamilyByClientLookup(int clientId, int projectId)
+         => ResultExtensions.ToActionResult(await Mediator.Send(new GetFamilyLookupQuery(clientId, projectId)));
+
+        [HttpGet("unit")]
+        public async Task<IActionResult> GetUnitLookup()
+         => ResultExtensions.ToActionResult(await Mediator.Send(new GetUnitLookupQuery()));
+
 
 
     }

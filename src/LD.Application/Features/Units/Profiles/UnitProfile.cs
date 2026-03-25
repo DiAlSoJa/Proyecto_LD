@@ -1,15 +1,16 @@
 ﻿
-using AutoMapper;
-using LD.Contracts.Units;
-using LD.Contracts.Project;
-using LD.Contracts.Requests;
-using LD.Contracts.Warehouse;
-using LD.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using LD.Contracts.DTOs;
+using LD.Contracts.Project;
+using LD.Contracts.Requests;
+using LD.Contracts.Units;
+using LD.Contracts.Warehouse;
+using LD.Domain.Entities;
 
 namespace LD.Application.Features.Clients.Profiles
 {
@@ -30,6 +31,12 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.Description));
 
             CreateMap<LD.Domain.Entities.Units, UnitRequest>();
+
+            CreateMap<LD.Domain.Entities.Units, DropDownDto>()
+             .ForMember(dest => dest.Key,
+                 opt => opt.MapFrom(src => src.UnitIdS))
+             .ForMember(dest => dest.Value,
+                 opt => opt.MapFrom(src => src.Description));
         }
 
     }

@@ -1,18 +1,11 @@
-﻿//using PinkSpace.Clases;
-//using PinkSpace.Dialogs;
-using LD.Forms.Views.Dialogs;
+﻿using LD.Forms.Views.Dialogs;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LD.Controls
 {
@@ -30,50 +23,55 @@ namespace LD.Controls
         private bool minusculas = false;
         private bool aceptaNegativos = false;
 
-
         public TextBoxControl()
         {
             InitializeComponent();
+            textBox1.TextChanged += textBox1_TextChanged;
+            textBox1.Enter += textBox1_Enter;
+            textBox1.Leave += textBox1_Leave;
+            textBox1.Click += textBox1_Click;
         }
 
         public event EventHandler _TextChanged;
 
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(typeof(Color), "MediumSlateBlue")]
         public Color BorderColor
         {
             get => borderColor;
             set
             {
                 borderColor = value;
-                this.Invalidate(); 
+                Invalidate();
             }
         }
+
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(false)]
         public bool Minusculas
         {
             get => minusculas;
             set
             {
                 minusculas = value;
-                this.Invalidate();
-            }
-        }
-        [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool AceptaNegativos
-        {
-            get => minusculas;
-            set
-            {
-                aceptaNegativos = value;
-                this.Invalidate();
+                Invalidate();
             }
         }
 
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(false)]
+        public bool AceptaNegativos
+        {
+            get => aceptaNegativos;
+            set
+            {
+                aceptaNegativos = value;
+                Invalidate();
+            }
+        }
+
+        [Category("LD_CONTROLS")]
+        [DefaultValue(true)]
         public bool IsEnabled
         {
             get => isEnabled;
@@ -81,35 +79,36 @@ namespace LD.Controls
             {
                 isEnabled = value;
                 textBox1.Enabled = value;
-                this.Invalidate();
+                Invalidate();
             }
         }
+
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(2)]
         public int BorderSize
         {
             get => borderSize;
             set
             {
                 borderSize = value;
-                this.Invalidate(); 
+                Invalidate();
             }
         }
 
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(false)]
         public bool UnderlinedStyle
         {
             get => underlinedStyle;
             set
             {
                 underlinedStyle = value;
-                this.Invalidate(); 
+                Invalidate();
             }
         }
 
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(false)]
         public bool PasswordChar
         {
             get => textBox1.UseSystemPasswordChar;
@@ -117,71 +116,72 @@ namespace LD.Controls
         }
 
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(false)]
         public bool Multiline
         {
             get => textBox1.Multiline;
-            set => textBox1.Multiline = value;
+            set
+            {
+                textBox1.Multiline = value;
+                UpdateControlHeight();
+            }
         }
 
         [Category("LD_CONTROLS")]
         public override Color BackColor
         {
-            get
-            {
-                return base.BackColor;
-            }
+            get => base.BackColor;
             set
             {
                 base.BackColor = value;
-                textBox1.BackColor = value;
+                if (textBox1 != null)
+                    textBox1.BackColor = value;
             }
         }
+
         [Category("LD_CONTROLS")]
         public override Color ForeColor
         {
-            get
-            {
-                return base.ForeColor;
-            }
+            get => base.ForeColor;
             set
             {
                 base.ForeColor = value;
-                textBox1.ForeColor = value;
-                if (this.DesignMode) UpdateControlHeight();
+                if (textBox1 != null)
+                    textBox1.ForeColor = value;
+                if (DesignMode)
+                    UpdateControlHeight();
             }
         }
+
         [Category("LD_CONTROLS")]
         public override Font Font
         {
-            get
-            {
-                return base.Font;
-            }
+            get => base.Font;
             set
             {
                 base.Font = value;
-                textBox1.Font = value;
+                if (textBox1 != null)
+                    textBox1.Font = value;
+
+                UpdateControlHeight();
             }
         }
+
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue("")]
         public string Texts
         {
-            get
-            {
-                return textBox1.Text;
-            }
+            get => textBox1.Text;
             set
             {
-
                 textBox1.Text = value;
-                FormatiarNumero();
+                if (isNumber)
+                    FormatearNumero();
             }
-
         }
+
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(false)]
         public bool IsNumber
         {
             get => isNumber;
@@ -189,33 +189,37 @@ namespace LD.Controls
             {
                 isNumber = value;
                 textBox1.TextAlign = isNumber ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+                Invalidate();
             }
         }
 
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color BorderFocusColor { get => borderFocusColor; set => borderFocusColor = value; }
+        [DefaultValue(typeof(Color), "Black")]
+        public Color BorderFocusColor
+        {
+            get => borderFocusColor;
+            set
+            {
+                borderFocusColor = value;
+                Invalidate();
+            }
+        }
 
         [Category("LD_CONTROLS")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DefaultValue(0)]
         public int BorderRadius
         {
-            get
-            {
-                return borderRadius;
-            }
+            get => borderRadius;
             set
             {
                 if (value >= 0)
                 {
                     borderRadius = value;
-                    this.Invalidate(); 
+                    Invalidate();
                 }
             }
         }
 
-
-        // sobreescrituras
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -223,88 +227,68 @@ namespace LD.Controls
 
             if (borderRadius > 1)
             {
-                var rectBorderSmooth = this.ClientRectangle;
+                var rectBorderSmooth = ClientRectangle;
                 var rectBorder = Rectangle.Inflate(rectBorderSmooth, -borderSize, -borderSize);
                 int smoothSize = borderSize > 0 ? borderSize : 1;
+                Color parentColor = Parent?.BackColor ?? SystemColors.Control;
 
                 using (GraphicsPath pathBorderSmooth = GetFigurePath(rectBorderSmooth, borderRadius))
-                using (GraphicsPath pathBorder = GetFigurePath(rectBorder, borderRadius - borderSize))
-                using (Pen penBorderSmooth = new Pen(this.Parent.BackColor, smoothSize))
-                using (Pen penBorder = new Pen(borderColor, borderSize))
+                using (GraphicsPath pathBorder = GetFigurePath(rectBorder, Math.Max(borderRadius - borderSize, 1)))
+                using (Pen penBorderSmooth = new Pen(parentColor, smoothSize))
+                using (Pen penBorder = new Pen(isFocused && IsEnabled ? borderFocusColor : borderColor, borderSize))
                 {
-                    // Drawing
-                    this.Region = new Region(pathBorderSmooth);
-                    if (borderRadius > 15) SetTextBoxRoundedRegion();
-                    graph.SmoothingMode = SmoothingMode.AntiAlias;
-                    penBorder.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                    Region = new Region(pathBorderSmooth);
 
-                    if (isFocused && IsEnabled) penBorder.Color = borderFocusColor;
+                    if (borderRadius > 15)
+                        SetTextBoxRoundedRegion();
+
+                    graph.SmoothingMode = SmoothingMode.AntiAlias;
+                    penBorder.Alignment = PenAlignment.Inset;
 
                     if (underlinedStyle)
                     {
-                        // Draw border smoothing
                         graph.DrawPath(penBorderSmooth, pathBorderSmooth);
-                        // Draw border
                         graph.SmoothingMode = SmoothingMode.None;
-                        graph.DrawLine(penBorder, 0, this.Height - 1, this.Width, this.Height - 1);
+                        graph.DrawLine(penBorder, 0, Height - 1, Width, Height - 1);
                     }
-                    else // Normal Style
+                    else
                     {
-                        // Draw border smoothing
                         graph.DrawPath(penBorderSmooth, pathBorderSmooth);
-                        // Draw border
                         graph.DrawPath(penBorder, pathBorder);
                     }
                 }
             }
             else
             {
-                using (Pen penBorder = new Pen(borderColor, borderSize))
+                using (Pen penBorder = new Pen(isFocused && IsEnabled ? borderFocusColor : borderColor, borderSize))
                 {
-                    this.Region = new Region(this.ClientRectangle);
-                    penBorder.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                    Region = new Region(ClientRectangle);
+                    penBorder.Alignment = PenAlignment.Inset;
 
-                    if (isFocused && IsEnabled)
-                    {
-                        penBorder.Color = borderFocusColor;
-                        if (underlinedStyle) 
-                            graph.DrawLine(penBorder, 0, this.Height - 1, this.Width, this.Height - 1);
-                        else 
-                            graph.DrawRectangle(penBorder, 0, 0, this.Width - 0.5F, this.Height - 0.5F);
-                    }
+                    if (underlinedStyle)
+                        graph.DrawLine(penBorder, 0, Height - 1, Width, Height - 1);
                     else
-                    {
-                        if (underlinedStyle) 
-                            graph.DrawLine(penBorder, 0, this.Height - 1, this.Width, this.Height - 1);
-                        else 
-                            graph.DrawRectangle(penBorder, 0, 0, this.Width - 0.5F, this.Height - 0.5F);
-                    }
+                        graph.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
                 }
-
             }
-
-
         }
+
         private void SetTextBoxRoundedRegion()
         {
             GraphicsPath pathTxt;
+
             if (Multiline)
-            {
-                pathTxt = GetFigurePath(textBox1.ClientRectangle, borderRadius - borderSize);
-                textBox1.Region = new Region(pathTxt);
-            }
+                pathTxt = GetFigurePath(textBox1.ClientRectangle, Math.Max(borderRadius - borderSize, 1));
             else
-            {
-                pathTxt = GetFigurePath(textBox1.ClientRectangle, borderSize * 2);
-                textBox1.Region = new Region(pathTxt);
-            }
+                pathTxt = GetFigurePath(textBox1.ClientRectangle, Math.Max(borderSize * 2, 1));
+
+            textBox1.Region = new Region(pathTxt);
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (this.DesignMode)
-                UpdateControlHeight();
+            UpdateControlHeight();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -318,156 +302,133 @@ namespace LD.Controls
             GraphicsPath path = new GraphicsPath();
             path.StartFigure();
             path.AddArc(rect.X, rect.Y, radius, radius, 180, 90);
-            path.AddArc(rect.Width - radius, rect.Y, radius, radius, 270, 90);
-            path.AddArc(rect.Width - radius, rect.Height - radius, radius, radius, 0, 90);
-            path.AddArc(rect.X, rect.Height - radius, radius, radius, 90, 90);
+            path.AddArc(rect.Right - radius, rect.Y, radius, radius, 270, 90);
+            path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - radius, radius, radius, 90, 90);
             path.CloseFigure();
             return path;
         }
 
         private void UpdateControlHeight()
         {
-            if (textBox1.Multiline == false)
+            if (textBox1 == null)
+                return;
+
+            if (!textBox1.Multiline)
             {
-                int txtHeight = TextRenderer.MeasureText("Text", this.Font).Height + 1;
+                int txtHeight = TextRenderer.MeasureText("Text", Font).Height + 1;
                 textBox1.Multiline = true;
                 textBox1.MinimumSize = new Size(0, txtHeight);
                 textBox1.Multiline = false;
-
-                this.Height = textBox1.Height + this.Padding.Top + this.Padding.Bottom;
+                Height = textBox1.Height + Padding.Top + Padding.Bottom;
             }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+            string textoOriginal = textBox1.Text;
+            string textoNuevo = textoOriginal;
+            int cursorPosition = textBox1.SelectionStart;
+
             if (isNumber)
+                textoNuevo = FiltrarTextoNumerico(textoNuevo);
+
+            if (!isNumber)
             {
-                // Filtrar el texto
-                string textoFiltrado = "";
-                if (aceptaNegativos)
-                {
-                    textoFiltrado = new string(textBox1.Text
-                                .Where((c, i) => char.IsDigit(c) || c == '.' || c == ',' || (c == '-' && i == 0))
-                                .ToArray());
-                }
-                else
-                {
-                    textoFiltrado = new string(textBox1.Text.Where(c => char.IsDigit(c) || c == '.' || c == ',' ).ToArray());
-
-                }
-               
-
-                //aqui cuando me lo pidan voy a poner algo que deje o no poner negativos
-
-                // Asegurarse de que haya solo un punto decimal
-                int firstDotIndex = textoFiltrado.IndexOf('.');
-                if (firstDotIndex >= 0)
-                {
-                    textoFiltrado = textoFiltrado.Substring(0, firstDotIndex + 1) +
-                                    textoFiltrado.Substring(firstDotIndex + 1).Replace(".", "");
-                }
-
-                // Si el texto es diferente, actualizamos el control y mostramos advertencia
-                if (textoFiltrado != textBox1.Text)
-                {
-
-                    //FrmWarning frmWarning = new FrmWarning($"Este campo solo permite números {(aceptaNegativos ? "" : "positivos")}");
-                    //frmWarning.ShowDialog();
-                    textBox1.Text = textoFiltrado;
-                    textBox1.SelectionStart = textoFiltrado.Length;
-                }
+                textoNuevo = minusculas
+                    ? textoNuevo.ToLower()
+                    : textoNuevo.ToUpper();
             }
 
-            if (!minusculas)
+            if (textoNuevo != textoOriginal)
             {
-
-                int cursorPosition = textBox1.SelectionStart;
-                textBox1.Text = textBox1.Text.ToUpper();
-                textBox1.SelectionStart = cursorPosition;
-                textBox1.SelectionLength = 0;
+                textBox1.Text = textoNuevo;
+                textBox1.SelectionStart = Math.Min(cursorPosition, textBox1.Text.Length);
             }
-
 
             _TextChanged?.Invoke(sender, e);
         }
 
-        //        // Filtrar el texto: permitir solo dígitos, un único punto decimal, y comas
-        //        string textoFiltrado = new string(textBox1.Text.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray());
+        private string FiltrarTextoNumerico(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return texto;
 
-        //        // Eliminar comas innecesarias para facilitar la validación
-        //        string textoSinComas = textoFiltrado.Replace(",", "");
+            string resultado = new string(texto
+                .Where((c, i) =>
+                    char.IsDigit(c) ||
+                    c == '.' ||
+                    c == ',' ||
+                    (aceptaNegativos && c == '-' && i == 0))
+                .ToArray());
 
-        //        // Asegurarse de que haya solo un punto decimal
-        //        int firstDotIndex = textoSinComas.IndexOf('.');
-        //                if (firstDotIndex >= 0)
-        //                {
-        //                    textoSinComas = textoSinComas.Substring(0, firstDotIndex + 1) +
-        //                                    textoSinComas.Substring(firstDotIndex + 1).Replace(".", "");
-        //    }
+            int firstDot = resultado.IndexOf('.');
+            if (firstDot >= 0)
+            {
+                resultado = resultado.Substring(0, firstDot + 1) +
+                            resultado.Substring(firstDot + 1).Replace(".", "");
+            }
 
-        //                // Si el texto es diferente, actualizar el control y mostrar advertencia
-        //                if (textoSinComas != textBox1.Text.Replace(",", ""))
-        //                {
-        //                    FrmWarning frmWarning = new FrmWarning("Este campo solo permite números en formato válido");
-        //    frmWarning.ShowDialog();
-        //                }
+            int firstComma = resultado.IndexOf(',');
+            if (firstComma >= 0)
+            {
+                resultado = resultado.Substring(0, firstComma + 1) +
+                            resultado.Substring(firstComma + 1).Replace(",", "");
+            }
 
-        //// Validar y formatear como número con separadores de miles y dos decimales
-        //if (decimal.TryParse(textoSinComas, out decimal numero))
-        //{
-        //    // Formatear con separadores de miles y dos decimales
-        //    textBox1.Text = numero.ToString("");
-        //}
+            return resultado;
+        }
 
         private void textBox1_Click(object sender, EventArgs e)
         {
-            this.OnClick(e);
+            OnClick(e);
         }
 
         private void textBox1_Enter(object sender, EventArgs e)
         {
+            isFocused = true;
+
             try
             {
-                isFocused = true;
                 if (isNumber && !string.IsNullOrWhiteSpace(textBox1.Text))
                 {
-                    // Eliminar las comas y restaurar el número en formato normal
-                    textBox1.Text = textBox1.Text.Replace(",", "");
+                    string groupSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator;
+                    if (!string.IsNullOrEmpty(groupSeparator))
+                        textBox1.Text = textBox1.Text.Replace(groupSeparator, "");
                 }
-
-            }catch(Exception ex)
+            }
+            catch
             {
-                /*ErrorForm errorForm = new ErrorForm("Hubo un error al formatear el numero");
-                errorForm.ShowDialog();*/
             }
 
-            this.Invalidate();
+            Invalidate();
         }
-        private void FormatiarNumero()
+
+        private void FormatearNumero()
         {
             try
             {
                 isFocused = false;
+
                 if (isNumber && !string.IsNullOrWhiteSpace(textBox1.Text))
                 {
-                    if (decimal.TryParse(textBox1.Text, out decimal number))
+                    string texto = textBox1.Text.Trim();
+
+                    if (decimal.TryParse(texto, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal number))
                     {
-                        // Formatear el número con comas y 2 decimales
                         textBox1.Text = number.ToString("N2", CultureInfo.CurrentCulture);
                     }
                 }
-
             }
-            catch (Exception ex)
+            catch
             {
-              /*  ErrorForm errorForm = new ErrorForm("Hubo un error al formatear el numero");
-                errorForm.ShowDialog();*/
             }
         }
+
         private void textBox1_Leave(object sender, EventArgs e)
         {
-            FormatiarNumero();
-            this.Invalidate();
+            FormatearNumero();
+            Invalidate();
         }
     }
 }

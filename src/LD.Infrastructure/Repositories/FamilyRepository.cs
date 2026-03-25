@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LD.Application.Common.Interfaces.Repository;
+using LD.Contracts.DTOs;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,24 @@ namespace LD.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<List<DropDownDto>> GetLookup()
+        {
+            return await _context.Families
+                .AsNoTracking()
+                .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<List<DropDownDto>> GetFamilyByClientAsync(int clientId, int projectId)
+        {
+            return await _context.Families
+              .AsNoTracking()
+              .Where(p => p.ClientId == clientId && p.ProjectId == projectId)
+              .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
+              .ToListAsync();
+        }
+
 
         public Task<List<Family>?> GetManyAsync()
         {
