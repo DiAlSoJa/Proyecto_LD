@@ -246,6 +246,7 @@ namespace LD.Forms.Views.Dialogs
 
                 ShowResult(result);
 
+                ResponseForm = result.IsSuccess;
                 if (result.IsSuccess)
                     this.Close();
             }

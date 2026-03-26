@@ -23,25 +23,36 @@ public class UpdateProjectCommand :ProjectRequest, IRequest<Result<string>>
 public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, Result<string>>
 {
 
-    private readonly IRepository<Project> _projectRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
-    public UpdateProjectCommandHandler(IRepository<Project> projectRepository,IMapper mapper)
+    public UpdateProjectCommandHandler(IProjectRepository projectRepository,IMapper mapper)
     {
         _projectRepository = projectRepository;
         _mapper = mapper;
     }
     public async Task<Result<string>> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
+
         try
         {
-            var result = await _projectRepository.CreateAsync(_mapper.Map<Project>(request));
-            return result ? Result<string>.Success("Projecto creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Projecto", new());
+            // 1️ Buscar proyecto
+            var project = await _projectRepository.GetByIdAsync(request.ProjectId.GetValueOrDefault(-1));
+            if (project is null)
+                return Result<string>.Failure("No existe el prjecto", new List<string> { "No existe el prjecto" }, 404);
 
+            // 2️⃣ Mapear datos básicos
+            _mapper.Map(request, project);
+
+            // 4️⃣ Guardar
+            var updated = await _projectRepository.UpdateAsync(project);
+
+            return updated ? 
+                Result<string>.Success("Projecto actualizado con exito", "") : 
+                Result<string>.Failure("Hubo un error al actualizar el Projecto", new());
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Projecto", new List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al actualizar el Projecto", new List<string> { ex.Message });
         }
-       
     }
 }

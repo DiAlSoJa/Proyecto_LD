@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    [Migration("20260324190448_userWarehouse")]
-    partial class userWarehouse
+    [Migration("20260325212707_userCategoryFamilies")]
+    partial class userCategoryFamilies
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -457,6 +457,55 @@ namespace LD.Infrastructure.Migrations
                     b.HasKey("DriverId");
 
                     b.ToTable("Drivers");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.Family", b =>
+                {
+                    b.Property<int>("FamilyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FamilyId"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FamilyName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FamilyId");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Families");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.InventaryStatus", b =>
@@ -1284,6 +1333,12 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("DistributionList")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("FamilyId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Height")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -1301,6 +1356,9 @@ namespace LD.Infrastructure.Migrations
 
                     b.Property<string>("LastModifiedByUserId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Length")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("MaxUnitId")
                         .HasColumnType("nvarchar(max)");
@@ -1391,11 +1449,19 @@ namespace LD.Infrastructure.Migrations
                     b.Property<decimal?>("WarehouseFactor")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal?>("Weight")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Width")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("ProductId");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("FamilyId");
 
                     b.HasIndex("ProjectId");
 
@@ -2151,6 +2217,25 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Client");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.Family", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
@@ -2210,6 +2295,10 @@ namespace LD.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ClientId");
 
+                    b.HasOne("LD.Domain.Entities.Family", "Family")
+                        .WithMany()
+                        .HasForeignKey("FamilyId");
+
                     b.HasOne("LD.Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId");
@@ -2225,6 +2314,8 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Client");
+
+                    b.Navigation("Family");
 
                     b.Navigation("Project");
 

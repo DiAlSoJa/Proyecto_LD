@@ -25,9 +25,20 @@ namespace LD.Infrastructure.Repositories
             _mapper = mapper;
         }
 
-        public Task<bool> CreateAsync(Project newModoe)
+        public async Task<bool> CreateAsync(Project newModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (newModel == null)
+                    return false;
+
+                await _context.Projects.AddAsync(newModel);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<Project?> GetByIdAsync(int id)
@@ -37,9 +48,11 @@ namespace LD.Infrastructure.Repositories
                 .FirstOrDefaultAsync(w => w.ProjectId == id);
         }
 
-        public Task<Project?> GetByIdAsync(string id)
+        public async Task<Project?> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            return await _context.Projects
+                 .AsNoTracking()
+                 .FirstOrDefaultAsync(w => w.ProjectId.ToString() == id);
         }
 
         public async Task<List<DropDownDto>> GetLookup()
@@ -64,9 +77,18 @@ namespace LD.Infrastructure.Repositories
                .ToListAsync();
         }
 
-        public Task<bool> UpdateAsync(Project modelToUpdate)
+        public async Task<bool> UpdateAsync(Project modelToUpdate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Projects.Update(modelToUpdate);
+
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
