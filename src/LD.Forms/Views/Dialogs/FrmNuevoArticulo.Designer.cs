@@ -124,6 +124,8 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
+            comboBox1 = new ComboBox();
+            label31 = new Label();
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabGeneral.SuspendLayout();
@@ -150,9 +152,8 @@
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1194, 561);
+            panel1.Size = new Size(1365, 748);
             panel1.TabIndex = 0;
             // 
             // tabControl1
@@ -160,11 +161,10 @@
             tabControl1.Controls.Add(tabGeneral);
             tabControl1.Controls.Add(tabAvanzada);
             tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(0, 75);
-            tabControl1.Margin = new Padding(3, 2, 3, 2);
+            tabControl1.Location = new Point(0, 100);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1192, 443);
+            tabControl1.Size = new Size(1363, 591);
             tabControl1.TabIndex = 51;
             // 
             // tabGeneral
@@ -187,11 +187,10 @@
             tabGeneral.Controls.Add(txtNoParte);
             tabGeneral.Controls.Add(label7);
             tabGeneral.Controls.Add(txtDescripcion);
-            tabGeneral.Location = new Point(4, 24);
-            tabGeneral.Margin = new Padding(3, 2, 3, 2);
+            tabGeneral.Location = new Point(4, 29);
             tabGeneral.Name = "tabGeneral";
-            tabGeneral.Padding = new Padding(3, 2, 3, 2);
-            tabGeneral.Size = new Size(1184, 415);
+            tabGeneral.Padding = new Padding(3, 3, 3, 3);
+            tabGeneral.Size = new Size(1355, 558);
             tabGeneral.TabIndex = 0;
             tabGeneral.Text = "General";
             tabGeneral.UseVisualStyleBackColor = true;
@@ -202,23 +201,24 @@
             cmbFamilia.AutoCompleteSource = AutoCompleteSource.ListItems;
             cmbFamilia.Font = new Font("Segoe UI", 9.75F);
             cmbFamilia.FormattingEnabled = true;
-            cmbFamilia.Location = new Point(155, 109);
-            cmbFamilia.Margin = new Padding(3, 2, 3, 2);
+            cmbFamilia.Location = new Point(177, 145);
             cmbFamilia.Name = "cmbFamilia";
-            cmbFamilia.Size = new Size(280, 25);
+            cmbFamilia.Size = new Size(319, 29);
             cmbFamilia.TabIndex = 6;
             // 
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(14, 116);
+            label14.Location = new Point(16, 155);
             label14.Name = "label14";
-            label14.Size = new Size(48, 15);
+            label14.Size = new Size(59, 20);
             label14.TabIndex = 63;
             label14.Text = "Familia:";
             // 
             // groupBox6
             // 
+            groupBox6.Controls.Add(comboBox1);
+            groupBox6.Controls.Add(label31);
             groupBox6.Controls.Add(txtPeso);
             groupBox6.Controls.Add(txtAncho);
             groupBox6.Controls.Add(txtLargo);
@@ -227,11 +227,9 @@
             groupBox6.Controls.Add(label28);
             groupBox6.Controls.Add(label29);
             groupBox6.Controls.Add(label30);
-            groupBox6.Location = new Point(565, 271);
-            groupBox6.Margin = new Padding(3, 2, 3, 2);
+            groupBox6.Location = new Point(646, 361);
             groupBox6.Name = "groupBox6";
-            groupBox6.Padding = new Padding(3, 2, 3, 2);
-            groupBox6.Size = new Size(573, 107);
+            groupBox6.Size = new Size(655, 143);
             groupBox6.TabIndex = 61;
             groupBox6.TabStop = false;
             // 
@@ -241,11 +239,10 @@
             txtPeso.BorderColor = SystemColors.ControlDark;
             txtPeso.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtPeso.IsNumber = true;
-            txtPeso.Location = new Point(312, 12);
-            txtPeso.Margin = new Padding(3, 2, 3, 2);
+            txtPeso.Location = new Point(357, 16);
             txtPeso.Name = "txtPeso";
-            txtPeso.Padding = new Padding(6, 5, 6, 5);
-            txtPeso.Size = new Size(95, 26);
+            txtPeso.Padding = new Padding(7, 7, 7, 7);
+            txtPeso.Size = new Size(109, 33);
             txtPeso.TabIndex = 43;
             // 
             // txtAncho
@@ -254,11 +251,10 @@
             txtAncho.BorderColor = SystemColors.ControlDark;
             txtAncho.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtAncho.IsNumber = true;
-            txtAncho.Location = new Point(101, 69);
-            txtAncho.Margin = new Padding(3, 2, 3, 2);
+            txtAncho.Location = new Point(115, 92);
             txtAncho.Name = "txtAncho";
-            txtAncho.Padding = new Padding(6, 5, 6, 5);
-            txtAncho.Size = new Size(95, 26);
+            txtAncho.Padding = new Padding(7, 7, 7, 7);
+            txtAncho.Size = new Size(109, 33);
             txtAncho.TabIndex = 42;
             // 
             // txtLargo
@@ -267,11 +263,10 @@
             txtLargo.BorderColor = SystemColors.ControlDark;
             txtLargo.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtLargo.IsNumber = true;
-            txtLargo.Location = new Point(101, 43);
-            txtLargo.Margin = new Padding(3, 2, 3, 2);
+            txtLargo.Location = new Point(115, 57);
             txtLargo.Name = "txtLargo";
-            txtLargo.Padding = new Padding(6, 5, 6, 5);
-            txtLargo.Size = new Size(95, 26);
+            txtLargo.Padding = new Padding(7, 7, 7, 7);
+            txtLargo.Size = new Size(109, 33);
             txtLargo.TabIndex = 41;
             // 
             // txtAlto
@@ -280,56 +275,54 @@
             txtAlto.BorderColor = SystemColors.ControlDark;
             txtAlto.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtAlto.IsNumber = true;
-            txtAlto.Location = new Point(101, 17);
-            txtAlto.Margin = new Padding(3, 2, 3, 2);
+            txtAlto.Location = new Point(115, 23);
             txtAlto.Name = "txtAlto";
-            txtAlto.Padding = new Padding(6, 5, 6, 5);
-            txtAlto.Size = new Size(95, 26);
+            txtAlto.Padding = new Padding(7, 7, 7, 7);
+            txtAlto.Size = new Size(109, 33);
             txtAlto.TabIndex = 40;
             // 
             // label27
             // 
             label27.AutoSize = true;
-            label27.Location = new Point(270, 22);
+            label27.Location = new Point(309, 29);
             label27.Name = "label27";
-            label27.Size = new Size(35, 15);
+            label27.Size = new Size(42, 20);
             label27.TabIndex = 64;
             label27.Text = "Peso:";
             // 
             // label28
             // 
             label28.AutoSize = true;
-            label28.Location = new Point(22, 74);
+            label28.Location = new Point(25, 99);
             label28.Name = "label28";
-            label28.Size = new Size(45, 15);
+            label28.Size = new Size(54, 20);
             label28.TabIndex = 62;
             label28.Text = "Ancho:";
             // 
             // label29
             // 
             label29.AutoSize = true;
-            label29.Location = new Point(29, 46);
+            label29.Location = new Point(33, 61);
             label29.Name = "label29";
-            label29.Size = new Size(40, 15);
+            label29.Size = new Size(50, 20);
             label29.TabIndex = 60;
             label29.Text = "Largo:";
             // 
             // label30
             // 
             label30.AutoSize = true;
-            label30.Location = new Point(35, 20);
+            label30.Location = new Point(40, 27);
             label30.Name = "label30";
-            label30.Size = new Size(32, 15);
+            label30.Size = new Size(40, 20);
             label30.TabIndex = 58;
             label30.Text = "Alto:";
             // 
             // chkBOM
             // 
             chkBOM.AutoSize = true;
-            chkBOM.Location = new Point(387, 136);
-            chkBOM.Margin = new Padding(3, 2, 3, 2);
+            chkBOM.Location = new Point(442, 181);
             chkBOM.Name = "chkBOM";
-            chkBOM.Size = new Size(53, 19);
+            chkBOM.Size = new Size(64, 24);
             chkBOM.TabIndex = 10;
             chkBOM.Text = "BOM";
             chkBOM.UseVisualStyleBackColor = true;
@@ -337,10 +330,9 @@
             // chkVMI
             // 
             chkVMI.AutoSize = true;
-            chkVMI.Location = new Point(332, 136);
-            chkVMI.Margin = new Padding(3, 2, 3, 2);
+            chkVMI.Location = new Point(379, 181);
             chkVMI.Name = "chkVMI";
-            chkVMI.Size = new Size(47, 19);
+            chkVMI.Size = new Size(57, 24);
             chkVMI.TabIndex = 9;
             chkVMI.Text = "VMI";
             chkVMI.UseVisualStyleBackColor = true;
@@ -348,10 +340,9 @@
             // chkActivo
             // 
             chkActivo.AutoSize = true;
-            chkActivo.Location = new Point(18, 136);
-            chkActivo.Margin = new Padding(3, 2, 3, 2);
+            chkActivo.Location = new Point(21, 181);
             chkActivo.Name = "chkActivo";
-            chkActivo.Size = new Size(60, 19);
+            chkActivo.Size = new Size(73, 24);
             chkActivo.TabIndex = 7;
             chkActivo.Text = "Activo";
             chkActivo.UseVisualStyleBackColor = true;
@@ -359,10 +350,9 @@
             // chkTemperatura
             // 
             chkTemperatura.AutoSize = true;
-            chkTemperatura.Location = new Point(155, 136);
-            chkTemperatura.Margin = new Padding(3, 2, 3, 2);
+            chkTemperatura.Location = new Point(177, 181);
             chkTemperatura.Name = "chkTemperatura";
-            chkTemperatura.Size = new Size(152, 19);
+            chkTemperatura.Size = new Size(191, 24);
             chkTemperatura.TabIndex = 8;
             chkTemperatura.Text = "Temperatura controlada";
             chkTemperatura.UseVisualStyleBackColor = true;
@@ -380,11 +370,9 @@
             groupBox5.Controls.Add(label17);
             groupBox5.Controls.Add(chkNotificacionMax);
             groupBox5.Controls.Add(chkNotificacionMin);
-            groupBox5.Location = new Point(14, 271);
-            groupBox5.Margin = new Padding(3, 2, 3, 2);
+            groupBox5.Location = new Point(16, 361);
             groupBox5.Name = "groupBox5";
-            groupBox5.Padding = new Padding(3, 2, 3, 2);
-            groupBox5.Size = new Size(526, 107);
+            groupBox5.Size = new Size(601, 143);
             groupBox5.TabIndex = 56;
             groupBox5.TabStop = false;
             // 
@@ -394,11 +382,10 @@
             txtTiempoEntrega.BorderColor = SystemColors.ControlDark;
             txtTiempoEntrega.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtTiempoEntrega.IsNumber = true;
-            txtTiempoEntrega.Location = new Point(373, 68);
-            txtTiempoEntrega.Margin = new Padding(3, 2, 3, 2);
+            txtTiempoEntrega.Location = new Point(426, 91);
             txtTiempoEntrega.Name = "txtTiempoEntrega";
-            txtTiempoEntrega.Padding = new Padding(6, 5, 6, 5);
-            txtTiempoEntrega.Size = new Size(95, 26);
+            txtTiempoEntrega.Padding = new Padding(7, 7, 7, 7);
+            txtTiempoEntrega.Size = new Size(109, 33);
             txtTiempoEntrega.TabIndex = 39;
             // 
             // txtMinimos
@@ -407,19 +394,18 @@
             txtMinimos.BorderColor = SystemColors.ControlDark;
             txtMinimos.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtMinimos.IsNumber = true;
-            txtMinimos.Location = new Point(373, 42);
-            txtMinimos.Margin = new Padding(3, 2, 3, 2);
+            txtMinimos.Location = new Point(426, 56);
             txtMinimos.Name = "txtMinimos";
-            txtMinimos.Padding = new Padding(6, 5, 6, 5);
-            txtMinimos.Size = new Size(95, 26);
+            txtMinimos.Padding = new Padding(7, 7, 7, 7);
+            txtMinimos.Size = new Size(109, 33);
             txtMinimos.TabIndex = 38;
             // 
             // label21
             // 
             label21.AutoSize = true;
-            label21.Location = new Point(473, 74);
+            label21.Location = new Point(541, 99);
             label21.Name = "label21";
-            label21.Size = new Size(28, 15);
+            label21.Size = new Size(36, 20);
             label21.TabIndex = 68;
             label21.Text = "días";
             // 
@@ -429,37 +415,36 @@
             txtMaximos.BorderColor = SystemColors.ControlDark;
             txtMaximos.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtMaximos.IsNumber = true;
-            txtMaximos.Location = new Point(373, 16);
-            txtMaximos.Margin = new Padding(3, 2, 3, 2);
+            txtMaximos.Location = new Point(426, 21);
             txtMaximos.Name = "txtMaximos";
-            txtMaximos.Padding = new Padding(6, 5, 6, 5);
-            txtMaximos.Size = new Size(95, 26);
+            txtMaximos.Padding = new Padding(7, 7, 7, 7);
+            txtMaximos.Size = new Size(109, 33);
             txtMaximos.TabIndex = 37;
             // 
             // label20
             // 
             label20.AutoSize = true;
-            label20.Location = new Point(240, 71);
+            label20.Location = new Point(274, 95);
             label20.Name = "label20";
-            label20.Size = new Size(109, 15);
+            label20.Size = new Size(139, 20);
             label20.TabIndex = 64;
             label20.Text = "Tiempo de entrega:";
             // 
             // label19
             // 
             label19.AutoSize = true;
-            label19.Location = new Point(240, 46);
+            label19.Location = new Point(274, 61);
             label19.Name = "label19";
-            label19.Size = new Size(57, 15);
+            label19.Size = new Size(69, 20);
             label19.TabIndex = 62;
             label19.Text = "Mínimos:";
             // 
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new Point(240, 20);
+            label18.Location = new Point(274, 27);
             label18.Name = "label18";
-            label18.Size = new Size(59, 15);
+            label18.Size = new Size(72, 20);
             label18.TabIndex = 60;
             label18.Text = "Máximos:";
             // 
@@ -467,28 +452,26 @@
             // 
             txtOrden.BorderStyle = BorderStyle.FixedSingle;
             txtOrden.Font = new Font("Segoe UI", 9.75F);
-            txtOrden.Location = new Point(93, 68);
-            txtOrden.Margin = new Padding(3, 2, 3, 2);
+            txtOrden.Location = new Point(106, 91);
             txtOrden.Name = "txtOrden";
-            txtOrden.Size = new Size(96, 25);
+            txtOrden.Size = new Size(109, 29);
             txtOrden.TabIndex = 36;
             // 
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(14, 70);
+            label17.Location = new Point(16, 93);
             label17.Name = "label17";
-            label17.Size = new Size(54, 15);
+            label17.Size = new Size(68, 20);
             label17.TabIndex = 58;
             label17.Text = "Reorden:";
             // 
             // chkNotificacionMax
             // 
             chkNotificacionMax.AutoSize = true;
-            chkNotificacionMax.Location = new Point(16, 20);
-            chkNotificacionMax.Margin = new Padding(3, 2, 3, 2);
+            chkNotificacionMax.Location = new Point(18, 27);
             chkNotificacionMax.Name = "chkNotificacionMax";
-            chkNotificacionMax.Size = new Size(159, 19);
+            chkNotificacionMax.Size = new Size(197, 24);
             chkNotificacionMax.TabIndex = 34;
             chkNotificacionMax.Text = "Notificación de máximos";
             chkNotificacionMax.UseVisualStyleBackColor = true;
@@ -496,10 +479,9 @@
             // chkNotificacionMin
             // 
             chkNotificacionMin.AutoSize = true;
-            chkNotificacionMin.Location = new Point(16, 42);
-            chkNotificacionMin.Margin = new Padding(3, 2, 3, 2);
+            chkNotificacionMin.Location = new Point(18, 56);
             chkNotificacionMin.Name = "chkNotificacionMin";
-            chkNotificacionMin.Size = new Size(157, 19);
+            chkNotificacionMin.Size = new Size(194, 24);
             chkNotificacionMin.TabIndex = 35;
             chkNotificacionMin.Text = "Notificación de mínimos";
             chkNotificacionMin.UseVisualStyleBackColor = true;
@@ -516,11 +498,9 @@
             groupBox3.Controls.Add(label4);
             groupBox3.Controls.Add(label2);
             groupBox3.Controls.Add(label3);
-            groupBox3.Location = new Point(486, 159);
-            groupBox3.Margin = new Padding(3, 2, 3, 2);
+            groupBox3.Location = new Point(555, 212);
             groupBox3.Name = "groupBox3";
-            groupBox3.Padding = new Padding(3, 2, 3, 2);
-            groupBox3.Size = new Size(653, 107);
+            groupBox3.Size = new Size(746, 143);
             groupBox3.TabIndex = 55;
             groupBox3.TabStop = false;
             // 
@@ -530,11 +510,10 @@
             txtFactorProduccion.BorderColor = SystemColors.ControlDark;
             txtFactorProduccion.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtFactorProduccion.IsNumber = true;
-            txtFactorProduccion.Location = new Point(145, 71);
-            txtFactorProduccion.Margin = new Padding(3, 2, 3, 2);
+            txtFactorProduccion.Location = new Point(166, 95);
             txtFactorProduccion.Name = "txtFactorProduccion";
-            txtFactorProduccion.Padding = new Padding(6, 5, 6, 5);
-            txtFactorProduccion.Size = new Size(95, 26);
+            txtFactorProduccion.Padding = new Padding(7, 7, 7, 7);
+            txtFactorProduccion.Size = new Size(109, 33);
             txtFactorProduccion.TabIndex = 30;
             // 
             // txtFactorAlmacen
@@ -543,11 +522,10 @@
             txtFactorAlmacen.BorderColor = SystemColors.ControlDark;
             txtFactorAlmacen.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtFactorAlmacen.IsNumber = true;
-            txtFactorAlmacen.Location = new Point(145, 42);
-            txtFactorAlmacen.Margin = new Padding(3, 2, 3, 2);
+            txtFactorAlmacen.Location = new Point(166, 56);
             txtFactorAlmacen.Name = "txtFactorAlmacen";
-            txtFactorAlmacen.Padding = new Padding(6, 5, 6, 5);
-            txtFactorAlmacen.Size = new Size(95, 26);
+            txtFactorAlmacen.Padding = new Padding(7, 7, 7, 7);
+            txtFactorAlmacen.Size = new Size(109, 33);
             txtFactorAlmacen.TabIndex = 29;
             // 
             // txtCostos
@@ -556,11 +534,10 @@
             txtCostos.BorderColor = SystemColors.ControlDark;
             txtCostos.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtCostos.IsNumber = true;
-            txtCostos.Location = new Point(145, 13);
-            txtCostos.Margin = new Padding(3, 2, 3, 2);
+            txtCostos.Location = new Point(166, 17);
             txtCostos.Name = "txtCostos";
-            txtCostos.Padding = new Padding(6, 5, 6, 5);
-            txtCostos.Size = new Size(95, 26);
+            txtCostos.Padding = new Padding(7, 7, 7, 7);
+            txtCostos.Size = new Size(109, 33);
             txtCostos.TabIndex = 28;
             // 
             // cmbUnidadProduccion
@@ -568,18 +545,17 @@
             cmbUnidadProduccion.Font = new Font("Segoe UI", 9.75F);
             cmbUnidadProduccion.FormattingEnabled = true;
             cmbUnidadProduccion.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            cmbUnidadProduccion.Location = new Point(459, 71);
-            cmbUnidadProduccion.Margin = new Padding(3, 2, 3, 2);
+            cmbUnidadProduccion.Location = new Point(525, 95);
             cmbUnidadProduccion.Name = "cmbUnidadProduccion";
-            cmbUnidadProduccion.Size = new Size(117, 25);
+            cmbUnidadProduccion.Size = new Size(133, 29);
             cmbUnidadProduccion.TabIndex = 33;
             // 
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(302, 74);
+            label16.Location = new Point(345, 99);
             label16.Name = "label16";
-            label16.Size = new Size(128, 15);
+            label16.Size = new Size(160, 20);
             label16.TabIndex = 67;
             label16.Text = "Unidad de producción:";
             // 
@@ -587,45 +563,44 @@
             // 
             cmbEstatusProduccion.Font = new Font("Segoe UI", 9.75F);
             cmbEstatusProduccion.FormattingEnabled = true;
-            cmbEstatusProduccion.Location = new Point(459, 45);
-            cmbEstatusProduccion.Margin = new Padding(3, 2, 3, 2);
+            cmbEstatusProduccion.Location = new Point(525, 60);
             cmbEstatusProduccion.Name = "cmbEstatusProduccion";
-            cmbEstatusProduccion.Size = new Size(181, 25);
+            cmbEstatusProduccion.Size = new Size(206, 29);
             cmbEstatusProduccion.TabIndex = 31;
             // 
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new Point(322, 48);
+            label15.Location = new Point(368, 64);
             label15.Name = "label15";
-            label15.Size = new Size(111, 15);
+            label15.Size = new Size(137, 20);
             label15.TabIndex = 65;
             label15.Text = "Estatus producción:";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(24, 74);
+            label4.Location = new Point(27, 99);
             label4.Name = "label4";
-            label4.Size = new Size(107, 15);
+            label4.Size = new Size(131, 20);
             label4.TabIndex = 60;
             label4.Text = "Factor producción:";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(24, 48);
+            label2.Location = new Point(27, 64);
             label2.Name = "label2";
-            label2.Size = new Size(91, 15);
+            label2.Size = new Size(112, 20);
             label2.TabIndex = 58;
             label2.Text = "Factor almacen:";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(24, 22);
+            label3.Location = new Point(27, 29);
             label3.Name = "label3";
-            label3.Size = new Size(46, 15);
+            label3.Size = new Size(56, 20);
             label3.TabIndex = 56;
             label3.Text = "Costos:";
             // 
@@ -637,21 +612,18 @@
             groupBox2.Controls.Add(chkSolicitarPedimento);
             groupBox2.Controls.Add(chkSolicitarLote);
             groupBox2.Controls.Add(chkSolicitarCaducidad);
-            groupBox2.Location = new Point(14, 159);
-            groupBox2.Margin = new Padding(3, 2, 3, 2);
+            groupBox2.Location = new Point(16, 212);
             groupBox2.Name = "groupBox2";
-            groupBox2.Padding = new Padding(3, 2, 3, 2);
-            groupBox2.Size = new Size(455, 107);
+            groupBox2.Size = new Size(520, 143);
             groupBox2.TabIndex = 54;
             groupBox2.TabStop = false;
             // 
             // chkSolicitarReferencia
             // 
             chkSolicitarReferencia.AutoSize = true;
-            chkSolicitarReferencia.Location = new Point(254, 64);
-            chkSolicitarReferencia.Margin = new Padding(3, 2, 3, 2);
+            chkSolicitarReferencia.Location = new Point(290, 85);
             chkSolicitarReferencia.Name = "chkSolicitarReferencia";
-            chkSolicitarReferencia.Size = new Size(123, 19);
+            chkSolicitarReferencia.Size = new Size(155, 24);
             chkSolicitarReferencia.TabIndex = 27;
             chkSolicitarReferencia.Text = "Solicitar referencia";
             chkSolicitarReferencia.UseVisualStyleBackColor = true;
@@ -659,10 +631,9 @@
             // chkSolicitarTipoCambio
             // 
             chkSolicitarTipoCambio.AutoSize = true;
-            chkSolicitarTipoCambio.Location = new Point(254, 20);
-            chkSolicitarTipoCambio.Margin = new Padding(3, 2, 3, 2);
+            chkSolicitarTipoCambio.Location = new Point(290, 27);
             chkSolicitarTipoCambio.Name = "chkSolicitarTipoCambio";
-            chkSolicitarTipoCambio.Size = new Size(151, 19);
+            chkSolicitarTipoCambio.Size = new Size(191, 24);
             chkSolicitarTipoCambio.TabIndex = 25;
             chkSolicitarTipoCambio.Text = "Solicitar tipo de cambio";
             chkSolicitarTipoCambio.UseVisualStyleBackColor = true;
@@ -670,10 +641,9 @@
             // chkSolicitarOC
             // 
             chkSolicitarOC.AutoSize = true;
-            chkSolicitarOC.Location = new Point(254, 42);
-            chkSolicitarOC.Margin = new Padding(3, 2, 3, 2);
+            chkSolicitarOC.Location = new Point(290, 56);
             chkSolicitarOC.Name = "chkSolicitarOC";
-            chkSolicitarOC.Size = new Size(162, 19);
+            chkSolicitarOC.Size = new Size(204, 24);
             chkSolicitarOC.TabIndex = 26;
             chkSolicitarOC.Text = "Solicitar orden de compra";
             chkSolicitarOC.UseVisualStyleBackColor = true;
@@ -681,10 +651,9 @@
             // chkSolicitarPedimento
             // 
             chkSolicitarPedimento.AutoSize = true;
-            chkSolicitarPedimento.Location = new Point(16, 64);
-            chkSolicitarPedimento.Margin = new Padding(3, 2, 3, 2);
+            chkSolicitarPedimento.Location = new Point(18, 85);
             chkSolicitarPedimento.Name = "chkSolicitarPedimento";
-            chkSolicitarPedimento.Size = new Size(190, 19);
+            chkSolicitarPedimento.Size = new Size(238, 24);
             chkSolicitarPedimento.TabIndex = 24;
             chkSolicitarPedimento.Text = "Solicitar número de pedimento";
             chkSolicitarPedimento.UseVisualStyleBackColor = true;
@@ -692,10 +661,9 @@
             // chkSolicitarLote
             // 
             chkSolicitarLote.AutoSize = true;
-            chkSolicitarLote.Location = new Point(16, 20);
-            chkSolicitarLote.Margin = new Padding(3, 2, 3, 2);
+            chkSolicitarLote.Location = new Point(18, 27);
             chkSolicitarLote.Name = "chkSolicitarLote";
-            chkSolicitarLote.Size = new Size(152, 19);
+            chkSolicitarLote.Size = new Size(191, 24);
             chkSolicitarLote.TabIndex = 22;
             chkSolicitarLote.Text = "Solicitar número de lote";
             chkSolicitarLote.UseVisualStyleBackColor = true;
@@ -703,10 +671,9 @@
             // chkSolicitarCaducidad
             // 
             chkSolicitarCaducidad.AutoSize = true;
-            chkSolicitarCaducidad.Location = new Point(16, 42);
-            chkSolicitarCaducidad.Margin = new Padding(3, 2, 3, 2);
+            chkSolicitarCaducidad.Location = new Point(18, 56);
             chkSolicitarCaducidad.Name = "chkSolicitarCaducidad";
-            chkSolicitarCaducidad.Size = new Size(174, 19);
+            chkSolicitarCaducidad.Size = new Size(219, 24);
             chkSolicitarCaducidad.TabIndex = 23;
             chkSolicitarCaducidad.Text = "Solicitar fecha de caducidad";
             chkSolicitarCaducidad.UseVisualStyleBackColor = true;
@@ -724,11 +691,9 @@
             groupBox4.Controls.Add(label12);
             groupBox4.Controls.Add(cmbUnidadMinima);
             groupBox4.Controls.Add(label13);
-            groupBox4.Location = new Point(759, 16);
-            groupBox4.Margin = new Padding(3, 2, 3, 2);
+            groupBox4.Location = new Point(867, 21);
             groupBox4.Name = "groupBox4";
-            groupBox4.Padding = new Padding(3, 2, 3, 2);
-            groupBox4.Size = new Size(380, 137);
+            groupBox4.Size = new Size(434, 183);
             groupBox4.TabIndex = 53;
             groupBox4.TabStop = false;
             groupBox4.Text = "Unidades";
@@ -739,11 +704,10 @@
             txtValorPaqueteEst.BorderColor = SystemColors.ControlDark;
             txtValorPaqueteEst.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtValorPaqueteEst.IsNumber = true;
-            txtValorPaqueteEst.Location = new Point(311, 105);
-            txtValorPaqueteEst.Margin = new Padding(3, 2, 3, 2);
+            txtValorPaqueteEst.Location = new Point(355, 140);
             txtValorPaqueteEst.Name = "txtValorPaqueteEst";
-            txtValorPaqueteEst.Padding = new Padding(6, 5, 6, 5);
-            txtValorPaqueteEst.Size = new Size(56, 26);
+            txtValorPaqueteEst.Padding = new Padding(7, 7, 7, 7);
+            txtValorPaqueteEst.Size = new Size(64, 33);
             txtValorPaqueteEst.TabIndex = 18;
             // 
             // txtValorUnidadMax
@@ -752,11 +716,10 @@
             txtValorUnidadMax.BorderColor = SystemColors.ControlDark;
             txtValorUnidadMax.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtValorUnidadMax.IsNumber = true;
-            txtValorUnidadMax.Location = new Point(311, 79);
-            txtValorUnidadMax.Margin = new Padding(3, 2, 3, 2);
+            txtValorUnidadMax.Location = new Point(355, 105);
             txtValorUnidadMax.Name = "txtValorUnidadMax";
-            txtValorUnidadMax.Padding = new Padding(6, 5, 6, 5);
-            txtValorUnidadMax.Size = new Size(56, 26);
+            txtValorUnidadMax.Padding = new Padding(7, 7, 7, 7);
+            txtValorUnidadMax.Size = new Size(64, 33);
             txtValorUnidadMax.TabIndex = 17;
             // 
             // txtValorUnidadMedia
@@ -765,11 +728,10 @@
             txtValorUnidadMedia.BorderColor = SystemColors.ControlDark;
             txtValorUnidadMedia.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtValorUnidadMedia.IsNumber = true;
-            txtValorUnidadMedia.Location = new Point(311, 50);
-            txtValorUnidadMedia.Margin = new Padding(3, 2, 3, 2);
+            txtValorUnidadMedia.Location = new Point(355, 67);
             txtValorUnidadMedia.Name = "txtValorUnidadMedia";
-            txtValorUnidadMedia.Padding = new Padding(6, 5, 6, 5);
-            txtValorUnidadMedia.Size = new Size(56, 26);
+            txtValorUnidadMedia.Padding = new Padding(7, 7, 7, 7);
+            txtValorUnidadMedia.Size = new Size(64, 33);
             txtValorUnidadMedia.TabIndex = 16;
             // 
             // cmbPaqueteEstandar
@@ -779,18 +741,17 @@
             cmbPaqueteEstandar.Font = new Font("Segoe UI", 9.75F);
             cmbPaqueteEstandar.FormattingEnabled = true;
             cmbPaqueteEstandar.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            cmbPaqueteEstandar.Location = new Point(141, 105);
-            cmbPaqueteEstandar.Margin = new Padding(3, 2, 3, 2);
+            cmbPaqueteEstandar.Location = new Point(161, 140);
             cmbPaqueteEstandar.Name = "cmbPaqueteEstandar";
-            cmbPaqueteEstandar.Size = new Size(162, 25);
+            cmbPaqueteEstandar.Size = new Size(185, 29);
             cmbPaqueteEstandar.TabIndex = 20;
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(20, 112);
+            label10.Location = new Point(23, 149);
             label10.Name = "label10";
-            label10.Size = new Size(101, 15);
+            label10.Size = new Size(126, 20);
             label10.TabIndex = 50;
             label10.Text = "Paquete estandar:";
             // 
@@ -801,18 +762,17 @@
             cmbUnidadMaxima.Font = new Font("Segoe UI", 9.75F);
             cmbUnidadMaxima.FormattingEnabled = true;
             cmbUnidadMaxima.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            cmbUnidadMaxima.Location = new Point(141, 79);
-            cmbUnidadMaxima.Margin = new Padding(3, 2, 3, 2);
+            cmbUnidadMaxima.Location = new Point(161, 105);
             cmbUnidadMaxima.Name = "cmbUnidadMaxima";
-            cmbUnidadMaxima.Size = new Size(162, 25);
+            cmbUnidadMaxima.Size = new Size(185, 29);
             cmbUnidadMaxima.TabIndex = 18;
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(20, 86);
+            label11.Location = new Point(23, 115);
             label11.Name = "label11";
-            label11.Size = new Size(94, 15);
+            label11.Size = new Size(117, 20);
             label11.TabIndex = 48;
             label11.Text = "Unidad máxima:";
             // 
@@ -823,18 +783,17 @@
             cmbUnidadMedia.Font = new Font("Segoe UI", 9.75F);
             cmbUnidadMedia.FormattingEnabled = true;
             cmbUnidadMedia.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            cmbUnidadMedia.Location = new Point(141, 52);
-            cmbUnidadMedia.Margin = new Padding(3, 2, 3, 2);
+            cmbUnidadMedia.Location = new Point(161, 69);
             cmbUnidadMedia.Name = "cmbUnidadMedia";
-            cmbUnidadMedia.Size = new Size(162, 25);
+            cmbUnidadMedia.Size = new Size(185, 29);
             cmbUnidadMedia.TabIndex = 16;
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(20, 59);
+            label12.Location = new Point(23, 79);
             label12.Name = "label12";
-            label12.Size = new Size(84, 15);
+            label12.Size = new Size(106, 20);
             label12.TabIndex = 46;
             label12.Text = "Unidad media:";
             // 
@@ -845,18 +804,17 @@
             cmbUnidadMinima.Font = new Font("Segoe UI", 9.75F);
             cmbUnidadMinima.FormattingEnabled = true;
             cmbUnidadMinima.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            cmbUnidadMinima.Location = new Point(141, 26);
-            cmbUnidadMinima.Margin = new Padding(3, 2, 3, 2);
+            cmbUnidadMinima.Location = new Point(161, 35);
             cmbUnidadMinima.Name = "cmbUnidadMinima";
-            cmbUnidadMinima.Size = new Size(162, 25);
+            cmbUnidadMinima.Size = new Size(185, 29);
             cmbUnidadMinima.TabIndex = 15;
             // 
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(20, 33);
+            label13.Location = new Point(23, 44);
             label13.Name = "label13";
-            label13.Size = new Size(92, 15);
+            label13.Size = new Size(114, 20);
             label13.TabIndex = 22;
             label13.Text = "Unidad mínima:";
             // 
@@ -866,18 +824,17 @@
             cmbCategoria.AutoCompleteSource = AutoCompleteSource.ListItems;
             cmbCategoria.Font = new Font("Segoe UI", 9.75F);
             cmbCategoria.FormattingEnabled = true;
-            cmbCategoria.Location = new Point(155, 82);
-            cmbCategoria.Margin = new Padding(3, 2, 3, 2);
+            cmbCategoria.Location = new Point(177, 109);
             cmbCategoria.Name = "cmbCategoria";
-            cmbCategoria.Size = new Size(280, 25);
+            cmbCategoria.Size = new Size(319, 29);
             cmbCategoria.TabIndex = 5;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(14, 89);
+            label9.Location = new Point(16, 119);
             label9.Name = "label9";
-            label9.Size = new Size(61, 15);
+            label9.Size = new Size(77, 20);
             label9.TabIndex = 51;
             label9.Text = "Categoria:";
             // 
@@ -887,11 +844,9 @@
             groupBox1.Controls.Add(radioButton3);
             groupBox1.Controls.Add(radioButton2);
             groupBox1.Controls.Add(radioButton1);
-            groupBox1.Location = new Point(565, 16);
-            groupBox1.Margin = new Padding(3, 2, 3, 2);
+            groupBox1.Location = new Point(646, 21);
             groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(3, 2, 3, 2);
-            groupBox1.Size = new Size(179, 137);
+            groupBox1.Size = new Size(205, 183);
             groupBox1.TabIndex = 45;
             groupBox1.TabStop = false;
             groupBox1.Text = "Tipo de almacenamiento";
@@ -899,10 +854,9 @@
             // radioButton4
             // 
             radioButton4.AutoSize = true;
-            radioButton4.Location = new Point(19, 87);
-            radioButton4.Margin = new Padding(3, 2, 3, 2);
+            radioButton4.Location = new Point(22, 116);
             radioButton4.Name = "radioButton4";
-            radioButton4.Size = new Size(130, 19);
+            radioButton4.Size = new Size(162, 24);
             radioButton4.TabIndex = 14;
             radioButton4.TabStop = true;
             radioButton4.Text = "Fecha de caducidad";
@@ -911,10 +865,9 @@
             // radioButton3
             // 
             radioButton3.AutoSize = true;
-            radioButton3.Location = new Point(19, 64);
-            radioButton3.Margin = new Padding(3, 2, 3, 2);
+            radioButton3.Location = new Point(22, 85);
             radioButton3.Name = "radioButton3";
-            radioButton3.Size = new Size(108, 19);
+            radioButton3.Size = new Size(135, 24);
             radioButton3.TabIndex = 13;
             radioButton3.TabStop = true;
             radioButton3.Text = "Número de lote";
@@ -923,10 +876,9 @@
             // radioButton2
             // 
             radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(19, 42);
-            radioButton2.Margin = new Padding(3, 2, 3, 2);
+            radioButton2.Location = new Point(22, 56);
             radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(142, 19);
+            radioButton2.Size = new Size(174, 24);
             radioButton2.TabIndex = 12;
             radioButton2.TabStop = true;
             radioButton2.Text = "LIFO - Last In First Out";
@@ -935,10 +887,9 @@
             // radioButton1
             // 
             radioButton1.AutoSize = true;
-            radioButton1.Location = new Point(19, 20);
-            radioButton1.Margin = new Padding(3, 2, 3, 2);
+            radioButton1.Location = new Point(22, 27);
             radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(143, 19);
+            radioButton1.Size = new Size(175, 24);
             radioButton1.TabIndex = 11;
             radioButton1.TabStop = true;
             radioButton1.Text = "FIFO - First In First Out";
@@ -947,9 +898,9 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(14, 37);
+            label6.Location = new Point(16, 49);
             label6.Name = "label6";
-            label6.Size = new Size(59, 15);
+            label6.Size = new Size(72, 20);
             label6.TabIndex = 36;
             label6.Text = "No. Parte:";
             // 
@@ -957,18 +908,17 @@
             // 
             txtNoParte.BorderStyle = BorderStyle.FixedSingle;
             txtNoParte.Font = new Font("Segoe UI", 9.75F);
-            txtNoParte.Location = new Point(155, 32);
-            txtNoParte.Margin = new Padding(3, 2, 3, 2);
+            txtNoParte.Location = new Point(177, 43);
             txtNoParte.Name = "txtNoParte";
-            txtNoParte.Size = new Size(355, 25);
+            txtNoParte.Size = new Size(405, 29);
             txtNoParte.TabIndex = 3;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(14, 63);
+            label7.Location = new Point(16, 84);
             label7.Name = "label7";
-            label7.Size = new Size(72, 15);
+            label7.Size = new Size(90, 20);
             label7.TabIndex = 38;
             label7.Text = "Descripción:";
             // 
@@ -976,10 +926,9 @@
             // 
             txtDescripcion.BorderStyle = BorderStyle.FixedSingle;
             txtDescripcion.Font = new Font("Segoe UI", 9.75F);
-            txtDescripcion.Location = new Point(155, 58);
-            txtDescripcion.Margin = new Padding(3, 2, 3, 2);
+            txtDescripcion.Location = new Point(177, 77);
             txtDescripcion.Name = "txtDescripcion";
-            txtDescripcion.Size = new Size(390, 25);
+            txtDescripcion.Size = new Size(445, 29);
             txtDescripcion.TabIndex = 4;
             // 
             // tabAvanzada
@@ -989,11 +938,10 @@
             tabAvanzada.Controls.Add(label26);
             tabAvanzada.Controls.Add(cmbProveedor);
             tabAvanzada.Controls.Add(label25);
-            tabAvanzada.Location = new Point(4, 24);
-            tabAvanzada.Margin = new Padding(3, 2, 3, 2);
+            tabAvanzada.Location = new Point(4, 29);
             tabAvanzada.Name = "tabAvanzada";
-            tabAvanzada.Padding = new Padding(3, 2, 3, 2);
-            tabAvanzada.Size = new Size(1185, 415);
+            tabAvanzada.Padding = new Padding(3, 3, 3, 3);
+            tabAvanzada.Size = new Size(1354, 558);
             tabAvanzada.TabIndex = 1;
             tabAvanzada.Text = "Avanzada";
             tabAvanzada.UseVisualStyleBackColor = true;
@@ -1002,10 +950,9 @@
             // 
             txtNoParteProv.BorderStyle = BorderStyle.FixedSingle;
             txtNoParteProv.Font = new Font("Segoe UI", 9.75F);
-            txtNoParteProv.Location = new Point(215, 45);
-            txtNoParteProv.Margin = new Padding(3, 2, 3, 2);
+            txtNoParteProv.Location = new Point(246, 60);
             txtNoParteProv.Name = "txtNoParteProv";
-            txtNoParteProv.Size = new Size(367, 25);
+            txtNoParteProv.Size = new Size(419, 29);
             txtNoParteProv.TabIndex = 48;
             // 
             // groupBox7
@@ -1018,21 +965,18 @@
             groupBox7.Controls.Add(cmbRutaNotificacion);
             groupBox7.Controls.Add(cmbListaDistribucion);
             groupBox7.Controls.Add(label23);
-            groupBox7.Location = new Point(18, 91);
-            groupBox7.Margin = new Padding(3, 2, 3, 2);
+            groupBox7.Location = new Point(21, 121);
             groupBox7.Name = "groupBox7";
-            groupBox7.Padding = new Padding(3, 2, 3, 2);
-            groupBox7.Size = new Size(620, 134);
+            groupBox7.Size = new Size(709, 179);
             groupBox7.TabIndex = 82;
             groupBox7.TabStop = false;
             // 
             // rdNotificacionEmail
             // 
             rdNotificacionEmail.AutoSize = true;
-            rdNotificacionEmail.Location = new Point(37, 29);
-            rdNotificacionEmail.Margin = new Padding(3, 2, 3, 2);
+            rdNotificacionEmail.Location = new Point(42, 39);
             rdNotificacionEmail.Name = "rdNotificacionEmail";
-            rdNotificacionEmail.Size = new Size(140, 19);
+            rdNotificacionEmail.Size = new Size(175, 24);
             rdNotificacionEmail.TabIndex = 49;
             rdNotificacionEmail.TabStop = true;
             rdNotificacionEmail.Text = "Notificación via email";
@@ -1042,19 +986,17 @@
             // 
             txtCorreoAlterno.BorderStyle = BorderStyle.FixedSingle;
             txtCorreoAlterno.Font = new Font("Segoe UI", 9.75F);
-            txtCorreoAlterno.Location = new Point(230, 80);
-            txtCorreoAlterno.Margin = new Padding(3, 2, 3, 2);
+            txtCorreoAlterno.Location = new Point(263, 107);
             txtCorreoAlterno.Name = "txtCorreoAlterno";
-            txtCorreoAlterno.Size = new Size(367, 25);
+            txtCorreoAlterno.Size = new Size(419, 29);
             txtCorreoAlterno.TabIndex = 53;
             // 
             // rdNotificacionArchivos
             // 
             rdNotificacionArchivos.AutoSize = true;
-            rdNotificacionArchivos.Location = new Point(37, 52);
-            rdNotificacionArchivos.Margin = new Padding(3, 2, 3, 2);
+            rdNotificacionArchivos.Location = new Point(42, 69);
             rdNotificacionArchivos.Name = "rdNotificacionArchivos";
-            rdNotificacionArchivos.Size = new Size(155, 19);
+            rdNotificacionArchivos.Size = new Size(192, 24);
             rdNotificacionArchivos.TabIndex = 50;
             rdNotificacionArchivos.Text = "Notificación via archivos";
             rdNotificacionArchivos.UseVisualStyleBackColor = true;
@@ -1062,18 +1004,18 @@
             // label24
             // 
             label24.AutoSize = true;
-            label24.Location = new Point(130, 82);
+            label24.Location = new Point(149, 109);
             label24.Name = "label24";
-            label24.Size = new Size(86, 15);
+            label24.Size = new Size(108, 20);
             label24.TabIndex = 81;
             label24.Text = "Correo alterno:";
             // 
             // label22
             // 
             label22.AutoSize = true;
-            label22.Location = new Point(226, 26);
+            label22.Location = new Point(258, 35);
             label22.Name = "label22";
-            label22.Size = new Size(116, 15);
+            label22.Size = new Size(145, 20);
             label22.TabIndex = 79;
             label22.Text = "Lista de distribución:";
             // 
@@ -1082,10 +1024,9 @@
             cmbRutaNotificacion.Font = new Font("Segoe UI", 9.75F);
             cmbRutaNotificacion.FormattingEnabled = true;
             cmbRutaNotificacion.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            cmbRutaNotificacion.Location = new Point(371, 52);
-            cmbRutaNotificacion.Margin = new Padding(3, 2, 3, 2);
+            cmbRutaNotificacion.Location = new Point(424, 69);
             cmbRutaNotificacion.Name = "cmbRutaNotificacion";
-            cmbRutaNotificacion.Size = new Size(226, 25);
+            cmbRutaNotificacion.Size = new Size(258, 29);
             cmbRutaNotificacion.TabIndex = 52;
             // 
             // cmbListaDistribucion
@@ -1093,27 +1034,26 @@
             cmbListaDistribucion.Font = new Font("Segoe UI", 9.75F);
             cmbListaDistribucion.FormattingEnabled = true;
             cmbListaDistribucion.Items.AddRange(new object[] { "PALLET", "PIEZA" });
-            cmbListaDistribucion.Location = new Point(371, 23);
-            cmbListaDistribucion.Margin = new Padding(3, 2, 3, 2);
+            cmbListaDistribucion.Location = new Point(424, 31);
             cmbListaDistribucion.Name = "cmbListaDistribucion";
-            cmbListaDistribucion.Size = new Size(226, 25);
+            cmbListaDistribucion.Size = new Size(258, 29);
             cmbListaDistribucion.TabIndex = 51;
             // 
             // label23
             // 
             label23.AutoSize = true;
-            label23.Location = new Point(226, 55);
+            label23.Location = new Point(258, 73);
             label23.Name = "label23";
-            label23.Size = new Size(116, 15);
+            label23.Size = new Size(145, 20);
             label23.TabIndex = 80;
             label23.Text = "Ruta de notificación:";
             // 
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new Point(18, 52);
+            label26.Location = new Point(21, 69);
             label26.Name = "label26";
-            label26.Size = new Size(157, 15);
+            label26.Size = new Size(199, 20);
             label26.TabIndex = 55;
             label26.Text = "Número de parte proveedor:";
             // 
@@ -1121,18 +1061,17 @@
             // 
             cmbProveedor.Font = new Font("Segoe UI", 9.75F);
             cmbProveedor.FormattingEnabled = true;
-            cmbProveedor.Location = new Point(215, 15);
-            cmbProveedor.Margin = new Padding(3, 2, 3, 2);
+            cmbProveedor.Location = new Point(246, 20);
             cmbProveedor.Name = "cmbProveedor";
-            cmbProveedor.Size = new Size(350, 25);
+            cmbProveedor.Size = new Size(399, 29);
             cmbProveedor.TabIndex = 47;
             // 
             // label25
             // 
             label25.AutoSize = true;
-            label25.Location = new Point(21, 22);
+            label25.Location = new Point(24, 29);
             label25.Name = "label25";
-            label25.Size = new Size(64, 15);
+            label25.Size = new Size(80, 20);
             label25.TabIndex = 53;
             label25.Text = "Proveedor:";
             // 
@@ -1143,10 +1082,9 @@
             panel3.Controls.Add(cmbProyecto);
             panel3.Controls.Add(label5);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 26);
-            panel3.Margin = new Padding(3, 2, 3, 2);
+            panel3.Location = new Point(0, 35);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1192, 49);
+            panel3.Size = new Size(1363, 65);
             panel3.TabIndex = 52;
             // 
             // cmbCliente
@@ -1155,19 +1093,18 @@
             cmbCliente.AutoCompleteSource = AutoCompleteSource.ListItems;
             cmbCliente.Font = new Font("Segoe UI", 9.75F);
             cmbCliente.FormattingEnabled = true;
-            cmbCliente.Location = new Point(92, 12);
-            cmbCliente.Margin = new Padding(3, 2, 3, 2);
+            cmbCliente.Location = new Point(105, 16);
             cmbCliente.Name = "cmbCliente";
-            cmbCliente.Size = new Size(407, 25);
+            cmbCliente.Size = new Size(465, 29);
             cmbCliente.TabIndex = 1;
             cmbCliente.SelectedIndexChanged += cmbCliente_SelectedIndexChanged;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(22, 19);
+            label8.Location = new Point(25, 25);
             label8.Name = "label8";
-            label8.Size = new Size(47, 15);
+            label8.Size = new Size(58, 20);
             label8.TabIndex = 34;
             label8.Text = "Cliente:";
             // 
@@ -1177,19 +1114,18 @@
             cmbProyecto.AutoCompleteSource = AutoCompleteSource.ListItems;
             cmbProyecto.Font = new Font("Segoe UI", 9.75F);
             cmbProyecto.FormattingEnabled = true;
-            cmbProyecto.Location = new Point(598, 12);
-            cmbProyecto.Margin = new Padding(3, 2, 3, 2);
+            cmbProyecto.Location = new Point(683, 16);
             cmbProyecto.Name = "cmbProyecto";
-            cmbProyecto.Size = new Size(407, 25);
+            cmbProyecto.Size = new Size(465, 29);
             cmbProyecto.TabIndex = 2;
             cmbProyecto.SelectedIndexChanged += cmbProyecto_SelectedIndexChanged;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(522, 15);
+            label5.Location = new Point(597, 20);
             label5.Name = "label5";
-            label5.Size = new Size(57, 15);
+            label5.Size = new Size(70, 20);
             label5.TabIndex = 35;
             label5.Text = "Proyecto:";
             // 
@@ -1200,21 +1136,19 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 518);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
+            flowLayoutPanel1.Location = new Point(0, 691);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(4, 4, 4, 4);
-            flowLayoutPanel1.Size = new Size(1192, 41);
+            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
+            flowLayoutPanel1.Size = new Size(1363, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
             // button2
             // 
             button2.Image = Properties.Resources.cancel;
             button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.Location = new Point(1031, 6);
-            button2.Margin = new Padding(3, 2, 3, 2);
+            button2.Location = new Point(1179, 8);
             button2.Name = "button2";
-            button2.Size = new Size(150, 26);
+            button2.Size = new Size(171, 35);
             button2.TabIndex = 45;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
@@ -1224,10 +1158,9 @@
             // 
             btnSave.Image = Properties.Resources.save;
             btnSave.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSave.Location = new Point(875, 6);
-            btnSave.Margin = new Padding(3, 2, 3, 2);
+            btnSave.Location = new Point(1002, 8);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(150, 26);
+            btnSave.Size = new Size(171, 35);
             btnSave.TabIndex = 44;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
@@ -1240,9 +1173,8 @@
             panel2.Controls.Add(pictureBox2);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
-            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1192, 26);
+            panel2.Size = new Size(1363, 35);
             panel2.TabIndex = 1;
             panel2.DoubleClick += panel2_DoubleClick;
             // 
@@ -1251,9 +1183,9 @@
             label1.AutoSize = true;
             label1.Font = new Font("Arial Narrow", 9.75F, FontStyle.Bold);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(18, 4);
+            label1.Location = new Point(21, 5);
             label1.Name = "label1";
-            label1.Size = new Size(90, 16);
+            label1.Size = new Size(119, 22);
             label1.TabIndex = 3;
             label1.Text = "Nuevo artcículo";
             // 
@@ -1262,23 +1194,39 @@
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.cancelar;
-            pictureBox2.Location = new Point(1160, 0);
-            pictureBox2.Margin = new Padding(3, 2, 3, 2);
+            pictureBox2.Location = new Point(1326, 0);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Padding = new Padding(4, 8, 0, 0);
-            pictureBox2.Size = new Size(32, 26);
+            pictureBox2.Padding = new Padding(5, 11, 0, 0);
+            pictureBox2.Size = new Size(37, 35);
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
+            // comboBox1
+            // 
+            comboBox1.Font = new Font("Segoe UI", 9.75F);
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(417, 74);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(206, 29);
+            comboBox1.TabIndex = 66;
+            // 
+            // label31
+            // 
+            label31.AutoSize = true;
+            label31.Location = new Point(260, 78);
+            label31.Name = "label31";
+            label31.Size = new Size(137, 20);
+            label31.TabIndex = 67;
+            label31.Text = "Estatus producción:";
+            // 
             // FrmNuevoArticulo
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1194, 561);
+            ClientSize = new Size(1365, 748);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmNuevoArticulo";
             StartPosition = FormStartPosition.CenterParent;
             Text = "FrmWarning";
@@ -1411,5 +1359,7 @@
         private LD.Controls.TextBoxControl txtValorPaqueteEst;
         private LD.Controls.TextBoxControl txtValorUnidadMax;
         private LD.Controls.TextBoxControl txtValorUnidadMedia;
+        private ComboBox comboBox1;
+        private Label label31;
     }
 }

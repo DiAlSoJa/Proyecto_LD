@@ -11,7 +11,7 @@ namespace LD.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
+            /*migrationBuilder.AddColumn<int>(
                 name: "FamilyId",
                 table: "items",
                 type: "int",
@@ -39,9 +39,9 @@ namespace LD.Infrastructure.Migrations
                 name: "Width",
                 table: "items",
                 type: "decimal(18,2)",
-                nullable: true);
+                nullable: true);*/
 
-            migrationBuilder.CreateTable(
+          /*  migrationBuilder.CreateTable(
                 name: "Families",
                 columns: table => new
                 {
@@ -71,7 +71,7 @@ namespace LD.Infrastructure.Migrations
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "ProjectId");
-                });
+                });*/
 
             migrationBuilder.CreateTable(
                 name: "UserWarehouses",
@@ -120,7 +120,7 @@ namespace LD.Infrastructure.Migrations
                         principalColumn: "WarehouseId");
                 });
 
-            migrationBuilder.CreateIndex(
+         /*   migrationBuilder.CreateIndex(
                 name: "IX_items_FamilyId",
                 table: "items",
                 column: "FamilyId");
@@ -133,7 +133,7 @@ namespace LD.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Families_ProjectId",
                 table: "Families",
-                column: "ProjectId");
+                column: "ProjectId");*/
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserWarehouses_ApplicationUserId",
@@ -154,29 +154,29 @@ namespace LD.Infrastructure.Migrations
                 name: "IX_UserWarehouses_WarehouseId1",
                 table: "UserWarehouses",
                 column: "WarehouseId1");
-
+/*
             migrationBuilder.AddForeignKey(
                 name: "FK_items_Families_FamilyId",
                 table: "items",
                 column: "FamilyId",
                 principalTable: "Families",
-                principalColumn: "FamilyId");
+                principalColumn: "FamilyId");*/
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
+           /* migrationBuilder.DropForeignKey(
                 name: "FK_items_Families_FamilyId",
                 table: "items");
 
             migrationBuilder.DropTable(
-                name: "Families");
+                name: "Families");**/
 
             migrationBuilder.DropTable(
                 name: "UserWarehouses");
 
-            migrationBuilder.DropIndex(
+           /* migrationBuilder.DropIndex(
                 name: "IX_items_FamilyId",
                 table: "items");
 
@@ -198,7 +198,7 @@ namespace LD.Infrastructure.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Width",
-                table: "items");
+                table: "items");*/
         }
     }
 }

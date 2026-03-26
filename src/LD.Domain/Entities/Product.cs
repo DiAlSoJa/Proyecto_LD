@@ -70,6 +70,7 @@ namespace LD.Domain.Entities
         public Client? Client { get; set; }
         public StorageType? StorageType { get; set; }
         public Family? Family { get; set; }
+        public Dimensioner? Dimensioner { get; set; }   
 
 
     }

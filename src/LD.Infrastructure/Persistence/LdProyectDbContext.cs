@@ -50,6 +50,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Warehouse>Warehouses{ get; set; }
         public DbSet<Family> Families{ get; set; }
+        public DbSet<Dimensioner> Dimensioner{ get; set; }
 
 
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
