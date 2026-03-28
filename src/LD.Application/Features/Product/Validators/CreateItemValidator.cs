@@ -32,20 +32,6 @@ public class CreateItemValidator
             .NotEmpty().WithMessage("La descripción es obligatoria.")
             .MaximumLength(250).WithMessage("La descripción no puede exceder 250 caracteres.");
 
-        // 🔹 Units
-        RuleFor(x => x.MinUnitId)
-            .NotNull().WithMessage("La unidad mínima es obligatoria.")
-            .GreaterThan(0).WithMessage("La unidad mínima debe ser válida.");
-
-        RuleFor(x => x.MediumUnitId)
-            .GreaterThan(0)
-            .When(x => x.MediumUnitId.HasValue)
-            .WithMessage("La unidad media debe ser válida.");
-
-        RuleFor(x => x.MaxUnitId)
-            .GreaterThan(0)
-            .When(x => x.MaxUnitId.HasValue)
-            .WithMessage("La unidad máxima debe ser válida.");
 
 
     }

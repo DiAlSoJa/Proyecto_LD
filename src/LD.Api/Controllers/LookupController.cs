@@ -57,6 +57,10 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetUnitLookup()
          => ResultExtensions.ToActionResult(await Mediator.Send(new GetUnitLookupQuery()));
 
+        [HttpGet("dimensioner")]
+        public async Task<IActionResult> GetDimensionerLookup()
+         => ResultExtensions.ToActionResult(await Mediator.Send(new GetDimensionerLookupQuery()));
+
 
 
     }

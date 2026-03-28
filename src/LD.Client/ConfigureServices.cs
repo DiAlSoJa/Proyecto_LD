@@ -34,6 +34,7 @@ namespace LD.Client
             services.AddScoped<CurrencyService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<FamilyService>();
+            services.AddScoped<DimensionerService>();
 
             services.AddScoped<LookupService>();
 

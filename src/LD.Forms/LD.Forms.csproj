@@ -50,6 +50,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmNewDimensioner.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmNewFamily.cs">
       <SubType>Form</SubType>
     </Compile>

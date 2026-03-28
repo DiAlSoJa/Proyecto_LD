@@ -1,4 +1,11 @@
-﻿using LD.Client.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using LD.Client.Services;
 using LD.Contracts.Client;
 using LD.Contracts.Enums;
 using LD.Contracts.Product;
@@ -7,13 +14,7 @@ using LD.Contracts.Responses;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+using Microsoft.Extensions.Hosting;
 
 namespace LD.Forms.Views.Dialogs
 {
@@ -56,6 +57,15 @@ namespace LD.Forms.Views.Dialogs
                     cmbCliente.DisplayMember = "Value";
                     cmbCliente.ValueMember = "Key";
                     cmbCliente.SelectedIndex = -1;
+                }
+                // dimensioners
+                var dimensioner = await _lookupService.GetDimensionerLookup();
+                if (dimensioner.IsSuccess)
+                {
+                    cmbDimension.DataSource = dimensioner.Data;
+                    cmbDimension.DisplayMember = "Value";
+                    cmbDimension.ValueMember = "Key";
+                    cmbDimension.SelectedIndex = -1;
                 }
                 //unidades
                 var unidades = await _lookupService.GetUnitLookup();
@@ -271,6 +281,52 @@ namespace LD.Forms.Views.Dialogs
                     return;
                 }
                 var client = response.Data;
+                cmbCliente.SelectedValue = client.Cliente.ToString();
+                /*
+
+                ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
+                ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0,
+                PartNumber = txtNoParte.Text,
+                Description = txtDescripcion.Text,
+                CategoryId = int.TryParse(cmbCategoria.SelectedValue?.ToString(), out int categoryId) ? categoryId : 0,
+                FamilyId = int.TryParse(cmbFamilia.SelectedValue?.ToString(), out int familyId) ? familyId : 0,
+                // active = chkActivo.Checked FALTA
+                IsTemperatureControlled = chkTemperatura.Checked,
+                IsVMI = chkVMI.Checked,
+                IsBOM = chkBOM.Checked,
+                StorageTypeId = storageType,
+                MinUnitId = cmbUnidadMinima.SelectedValue?.ToString(),
+                MediumUnitId = cmbUnidadMedia.SelectedValue?.ToString(),
+                MaxUnitId = cmbUnidadMaxima.SelectedValue?.ToString(),
+                StandardPackage = cmbPaqueteEstandar.SelectedValue?.ToString(),
+                MediumUnitValue = decimal.TryParse(txtValorUnidadMedia.Texts?.ToString(), out decimal valorMedia) ? valorMedia : 0,
+                MaxUnitValue = decimal.TryParse(txtValorUnidadMax.Texts?.ToString(), out decimal valorMax) ? valorMax : 0,
+                StandardPackageValue = decimal.TryParse(txtValorPaqueteEst.Texts?.ToString(), out decimal valorEstandar) ? valorEstandar : 0,
+                RequestLotNumber = chkSolicitarLote.Checked,
+                RequestExpirationDate = chkSolicitarCaducidad.Checked,
+                RequestDeclarationNumber = chkSolicitarPedimento.Checked,
+                RequestExchangeRate = chkSolicitarTipoCambio.Checked,
+                RequestPurchaseOrder = chkSolicitarOC.Checked,
+                RequestReference = chkSolicitarReferencia.Checked,
+                Costs = decimal.TryParse(txtCostos.Texts?.ToString(), out decimal costos) ? costos : 0,
+                WarehouseFactor = decimal.TryParse(txtFactorAlmacen.Texts?.ToString(), out decimal factorAlmacen) ? factorAlmacen : 0,
+                ProductionStatusId = cmbEstatusProduccion.SelectedValue?.ToString(),
+                ProductionUnitId = cmbUnidadProduccion.SelectedValue?.ToString(),
+                RequestNotificationMax = chkNotificacionMax.Checked,
+                RequestNotificationMin = chkNotificacionMin.Checked,
+                Reorder = decimal.TryParse(txtOrden.Text?.ToString(), out decimal reorden) ? reorden : 0,
+                Maximums = decimal.TryParse(txtMaximos.Texts?.ToString(), out decimal maximos) ? maximos : 0,
+                Minimus = decimal.TryParse(txtMinimos.Texts?.ToString(), out decimal minimos) ? minimos : 0,
+                DeliveryTime = int.TryParse(txtTiempoEntrega.Texts?.ToString(), out int tiempoEntrega) ? tiempoEntrega : 0,
+                Height = decimal.TryParse(txtAlto.Texts?.ToString(), out decimal alto) ? alto : 0,
+                Weight = decimal.TryParse(txtPeso.Texts?.ToString(), out decimal peso) ? peso : 0,
+                Length = decimal.TryParse(txtLargo.Texts?.ToString(), out decimal largo) ? largo : 0,
+                Width = decimal.TryParse(txtAncho.Texts?.ToString(), out decimal ancho) ? ancho : 0,
+                DimensionerId = cmbDimension.SelectedValue?.ToString(),
+                */
+
+
+
 
             }
             catch (Exception ex)
@@ -312,8 +368,55 @@ namespace LD.Forms.Views.Dialogs
         }
         private ProductRequest BuildRequest()
         {
+            int storageType = rdFifo.Checked ? 1 : rdLifo.Checked ? 2
+                : rdLote.Checked ? 3 : rdCaducidad.Checked?4:0;
             return new ProductRequest
-            {
+            {                              
+                ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
+                ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0,
+                PartNumber= txtNoParte.Text,
+                Description =txtDescripcion.Text,
+                CategoryId = int.TryParse(cmbCategoria.SelectedValue?.ToString(), out int categoryId) ? categoryId : 0,
+                FamilyId = int.TryParse(cmbFamilia.SelectedValue?.ToString(), out int familyId) ? familyId : 0,
+                // active = chkActivo.Checked FALTA
+                IsTemperatureControlled = chkTemperatura.Checked,
+                IsVMI = chkVMI.Checked,
+                IsBOM = chkBOM.Checked,
+                StorageTypeId= storageType,
+                MinUnitId = cmbUnidadMinima.SelectedValue?.ToString(),
+                MediumUnitId = cmbUnidadMedia.SelectedValue?.ToString(),
+                MaxUnitId = cmbUnidadMaxima.SelectedValue?.ToString(),
+                StandardPackage = cmbPaqueteEstandar.SelectedValue?.ToString(),
+                MediumUnitValue = decimal.TryParse(txtValorUnidadMedia.Texts?.ToString(), out decimal valorMedia)?valorMedia: 0,
+                MaxUnitValue = decimal.TryParse(txtValorUnidadMax.Texts?.ToString(), out decimal valorMax)? valorMax : 0,
+                StandardPackageValue = decimal.TryParse(txtValorPaqueteEst.Texts?.ToString(), out decimal valorEstandar)? valorEstandar : 0,
+                RequestLotNumber = chkSolicitarLote.Checked,
+                RequestExpirationDate = chkSolicitarCaducidad.Checked,
+                RequestDeclarationNumber= chkSolicitarPedimento.Checked,
+                RequestExchangeRate = chkSolicitarTipoCambio.Checked,
+                RequestPurchaseOrder = chkSolicitarOC.Checked,
+                RequestReference = chkSolicitarReferencia.Checked,
+                Costs= decimal.TryParse(txtCostos.Texts?.ToString(), out decimal costos)? costos : 0,
+                WarehouseFactor = decimal.TryParse(txtFactorAlmacen.Texts?.ToString(), out decimal factorAlmacen)? factorAlmacen : 0,
+                ProductionStatusId = cmbEstatusProduccion.SelectedValue?.ToString(),
+                ProductionUnitId = cmbUnidadProduccion.SelectedValue?.ToString(),
+                RequestNotificationMax = chkNotificacionMax.Checked,
+                RequestNotificationMin = chkNotificacionMin.Checked,
+                Reorder = decimal.TryParse(txtOrden.Text?.ToString(), out decimal reorden)? reorden : 0,
+                Maximums = decimal.TryParse(txtMaximos.Texts?.ToString(), out decimal maximos)? maximos : 0,
+                Minimus = decimal.TryParse(txtMinimos.Texts?.ToString(), out decimal minimos)? minimos : 0,
+                DeliveryTime = int.TryParse(txtTiempoEntrega.Texts?.ToString(), out int tiempoEntrega)? tiempoEntrega : 0,
+                Height = decimal.TryParse(txtAlto.Texts?.ToString(), out decimal alto)? alto : 0,
+                Weight = decimal.TryParse(txtPeso.Texts?.ToString(), out decimal peso)? peso : 0,
+                Length = decimal.TryParse(txtLargo.Texts?.ToString(), out decimal largo)? largo : 0,
+                Width = decimal.TryParse(txtAncho.Texts?.ToString(), out decimal ancho)? ancho : 0,
+                DimensionerId = cmbDimension.SelectedValue?.ToString(),
+
+
+
+
+
+
 
             };
         }

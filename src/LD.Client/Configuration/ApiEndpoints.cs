@@ -202,6 +202,7 @@ namespace LD.Forms.Configuration
         public string Lookup_Category => $"{_baseApi}/Lookup/category";
         public string Lookup_Family => $"{_baseApi}/Lookup/family";
         public string Lookup_Unit => $"{_baseApi}/Lookup/unit";
+        public string Lookup_Dimensioner => $"{_baseApi}/Lookup/dimensioner";
 
 
         // ======================
@@ -232,6 +233,19 @@ namespace LD.Forms.Configuration
         public string Family_Create => $"{_baseApi}/family";
         public string Family_Update => $"{_baseApi}/family/{{familyId}}";
         public string Family_Delete => $"{_baseApi}/family/{{familyId}}";
+
+        // ======================
+        // DIMENSIONER
+        // ======================
+
+        public string Dimensioner_GetAll => $"{_baseApi}/dimensioner";
+        public string Dimensioner_GetById => $"{_baseApi}/dimensioner/{{dimensionerId}}";
+        public string Dimensioner_Create => $"{_baseApi}/dimensioner";
+        public string Dimensioner_Update => $"{_baseApi}/dimensioner/{{dimensionerId}}";
+        public string Dimensioner_Delete => $"{_baseApi}/dimensioner/{{dimensioner}}";
+
+
+
 
     }
 }

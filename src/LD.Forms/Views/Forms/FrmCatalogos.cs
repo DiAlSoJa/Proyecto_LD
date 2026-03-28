@@ -9,6 +9,7 @@ using LD.Client.Services;
 using LD.Contracts.Category;
 using LD.Contracts.Client;
 using LD.Contracts.Currency;
+using LD.Contracts.Dimensioner;
 using LD.Contracts.DTOs.Family;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Requests;
@@ -30,6 +31,7 @@ public partial class FrmCatalogos : Form
     private readonly CurrencyService _currencyService;
     private readonly CategoryService _categoryService;
     private readonly FamilyService _familyService;
+    private readonly DimensionerService _dimensionerService;
     private GridFilter<UnitDto> _gridFilterU;
     private BindingSource _unitsBinding = new();
     private UnitDto? selectedUnit { get; set; }
@@ -50,11 +52,16 @@ public partial class FrmCatalogos : Form
     private BindingSource _familyBinding = new();
     private FamilyDto? selectedFamily { get; set; }
 
+    private GridFilter<DimensionerDto> _gridFilterD;
+    private BindingSource _dimensionerBinding = new();
+    private DimensionerDto? selectedDimensioner { get; set; }
+
 
 
 
     public FrmCatalogos(UnitService unitService, InventaryStatusService statusService,
         CurrencyService currencyService, CategoryService categoryService, FamilyService familyService,
+        DimensionerService dimensionerService,
         DialogFormService dialogFormService)
     {
         InitializeComponent();
@@ -64,16 +71,19 @@ public partial class FrmCatalogos : Form
         _currencyService = currencyService;
         _categoryService = categoryService;
         _familyService = familyService;
+        _dimensionerService = dimensionerService;
         dtUnidad.DataSource = _unitsBinding;
         dtStatus.DataSource = _statusBinding;
         dtMoneda.DataSource = _currencyBinding;
         dtCategoria.DataSource = _categoryBinding;
         dtFamilias.DataSource = _familyBinding;
+        dtDimensionador.DataSource = _dimensionerBinding;
         _gridFilterU = new GridFilter<UnitDto>(dtUnidad, _unitsBinding);
         _gridFilterS = new GridFilter<InventaryStatusDto>(dtStatus, _statusBinding);
         _gridFilterC = new GridFilter<CurrencyDto>(dtMoneda, _currencyBinding);
         _gridFilterCa = new GridFilter<CategoryDto>(dtCategoria, _categoryBinding);
         _gridFilterFa = new GridFilter<FamilyDto>(dtFamilias, _familyBinding);
+        _gridFilterD = new GridFilter<DimensionerDto>(dtDimensionador, _dimensionerBinding);
 
     }
 
@@ -151,6 +161,25 @@ public partial class FrmCatalogos : Form
         dtFamilias = _gridFilterFa.BuildFilterColumns();
         dtFamilias.ApplyColumnHeadersFromDisplayName<FamilyDto>();
     }
+
+
+
+    private async Task CargarDimensionadorAsync()
+    {
+        var result = await _dimensionerService.GetDimensioners();
+
+        if (!result.IsSuccess)
+        {
+            MessageBox.Show(result.Message);
+            return;
+        }
+
+        _dimensionerBinding.DataSource = result.Data;
+        _gridFilterD.SetData(result.Data);
+        dtDimensionador = _gridFilterD.BuildFilterColumns();
+    }
+
+
 
     private async void btnActualizarS_Click(object sender, EventArgs e)
     {
@@ -333,6 +362,7 @@ public partial class FrmCatalogos : Form
         await LoaderManager.Run(dtUnidad, async () => await CargarCategoriasAsync(), "Obteniendo Categorías");
         await LoaderManager.Run(dtStatus, async () => await CargarStatusAsync(), "Obteniendo Status");
         await LoaderManager.Run(dtFamilias, async () => await CargarFamiliasAsync(), "Obteniendo Familias");
+        await LoaderManager.Run(dtDimensionador, async () => await CargarDimensionadorAsync(), "Obteniendo Dimensionador");
     }
 
     private async void btnActualizarF_Click(object sender, EventArgs e)
@@ -374,5 +404,46 @@ public partial class FrmCatalogos : Form
     {
         var form = _dialogFormService.ShowDialog<FrmNewFamily>();
         if (form.ResponseForm) await LoaderManager.Run(dtFamilias, async () => await CargarFamiliasAsync(), "Obteniendo Familias");
+    }
+
+    private async void btnActualizarD_Click(object sender, EventArgs e)
+    {
+        await LoaderManager.Run(dtDimensionador, async () => await CargarDimensionadorAsync(), "Obteniendo Dimensiones");
+    }
+
+    private async void btnNuevoD_Click(object sender, EventArgs e)
+    {
+        var form = _dialogFormService.ShowDialog<FrmNewDimensioner>();
+        if (form.ResponseForm) await LoaderManager.Run(dtFamilias, async () => await CargarDimensionadorAsync(), "Obteniendo Dimensiones");
+    }
+
+    private async void btnEditarD_Click(object sender, EventArgs e)
+    {
+        if (selectedDimensioner is null) return;
+        var form = _dialogFormService.ShowDialog<FrmNewDimensioner>(frm =>
+        {
+            frm.SetDimensioner(selectedDimensioner);
+        });
+        if (form.ResponseForm) await LoaderManager.Run(dtFamilias, async () => await CargarDimensionadorAsync(), "Obteniendo Dimensiones");
+    }
+
+    private async void dtDimensionador_SelectionChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (dtDimensionador.CurrentRow == null)
+                return;
+
+            var cate = dtDimensionador.CurrentRow.DataBoundItem as DimensionerDto;
+
+            if (cate == null)
+                return;
+
+            selectedDimensioner = cate;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
     }
 }

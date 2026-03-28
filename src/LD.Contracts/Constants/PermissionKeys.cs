@@ -86,6 +86,11 @@ public static class PermissionKeys
     public const string Family_Update = "users.create";
     public const string Family_Delete = "users.create";
 
+    public const string Dimensioner_View = "users.read";
+    public const string Dimensioner_Create = "users.create";
+    public const string Dimensioner_Update = "users.create";
+    public const string Dimensioner_Delete = "users.create";
+
 
 
 

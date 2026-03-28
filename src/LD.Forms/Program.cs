@@ -121,6 +121,7 @@ namespace LD
             services.AddTransient<FrmNewCurrency>();
             services.AddTransient<FrmNewCategory>();
             services.AddTransient<FrmNewFamily>();
+            services.AddTransient<FrmNewDimensioner>();
 
 
             

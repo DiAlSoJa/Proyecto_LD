@@ -34,6 +34,8 @@
             cmbFamilia = new ComboBox();
             label14 = new Label();
             groupBox6 = new GroupBox();
+            cmbDimension = new ComboBox();
+            label31 = new Label();
             txtPeso = new LD.Controls.TextBoxControl();
             txtAncho = new LD.Controls.TextBoxControl();
             txtLargo = new LD.Controls.TextBoxControl();
@@ -91,10 +93,10 @@
             cmbCategoria = new ComboBox();
             label9 = new Label();
             groupBox1 = new GroupBox();
-            radioButton4 = new RadioButton();
-            radioButton3 = new RadioButton();
-            radioButton2 = new RadioButton();
-            radioButton1 = new RadioButton();
+            rdCaducidad = new RadioButton();
+            rdLote = new RadioButton();
+            rdLifo = new RadioButton();
+            rdFifo = new RadioButton();
             label6 = new Label();
             txtNoParte = new TextBox();
             label7 = new Label();
@@ -124,8 +126,6 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
-            comboBox1 = new ComboBox();
-            label31 = new Label();
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabGeneral.SuspendLayout();
@@ -189,7 +189,7 @@
             tabGeneral.Controls.Add(txtDescripcion);
             tabGeneral.Location = new Point(4, 29);
             tabGeneral.Name = "tabGeneral";
-            tabGeneral.Padding = new Padding(3, 3, 3, 3);
+            tabGeneral.Padding = new Padding(3);
             tabGeneral.Size = new Size(1355, 558);
             tabGeneral.TabIndex = 0;
             tabGeneral.Text = "General";
@@ -217,7 +217,7 @@
             // 
             // groupBox6
             // 
-            groupBox6.Controls.Add(comboBox1);
+            groupBox6.Controls.Add(cmbDimension);
             groupBox6.Controls.Add(label31);
             groupBox6.Controls.Add(txtPeso);
             groupBox6.Controls.Add(txtAncho);
@@ -233,6 +233,24 @@
             groupBox6.TabIndex = 61;
             groupBox6.TabStop = false;
             // 
+            // cmbDimension
+            // 
+            cmbDimension.Font = new Font("Segoe UI", 9.75F);
+            cmbDimension.FormattingEnabled = true;
+            cmbDimension.Location = new Point(357, 65);
+            cmbDimension.Name = "cmbDimension";
+            cmbDimension.Size = new Size(166, 29);
+            cmbDimension.TabIndex = 44;
+            // 
+            // label31
+            // 
+            label31.AutoSize = true;
+            label31.Location = new Point(268, 74);
+            label31.Name = "label31";
+            label31.Size = new Size(83, 20);
+            label31.TabIndex = 67;
+            label31.Text = "Dimensión:";
+            // 
             // txtPeso
             // 
             txtPeso.BackColor = Color.White;
@@ -241,7 +259,7 @@
             txtPeso.IsNumber = true;
             txtPeso.Location = new Point(357, 16);
             txtPeso.Name = "txtPeso";
-            txtPeso.Padding = new Padding(7, 7, 7, 7);
+            txtPeso.Padding = new Padding(7);
             txtPeso.Size = new Size(109, 33);
             txtPeso.TabIndex = 43;
             // 
@@ -253,7 +271,7 @@
             txtAncho.IsNumber = true;
             txtAncho.Location = new Point(115, 92);
             txtAncho.Name = "txtAncho";
-            txtAncho.Padding = new Padding(7, 7, 7, 7);
+            txtAncho.Padding = new Padding(7);
             txtAncho.Size = new Size(109, 33);
             txtAncho.TabIndex = 42;
             // 
@@ -265,7 +283,7 @@
             txtLargo.IsNumber = true;
             txtLargo.Location = new Point(115, 57);
             txtLargo.Name = "txtLargo";
-            txtLargo.Padding = new Padding(7, 7, 7, 7);
+            txtLargo.Padding = new Padding(7);
             txtLargo.Size = new Size(109, 33);
             txtLargo.TabIndex = 41;
             // 
@@ -277,7 +295,7 @@
             txtAlto.IsNumber = true;
             txtAlto.Location = new Point(115, 23);
             txtAlto.Name = "txtAlto";
-            txtAlto.Padding = new Padding(7, 7, 7, 7);
+            txtAlto.Padding = new Padding(7);
             txtAlto.Size = new Size(109, 33);
             txtAlto.TabIndex = 40;
             // 
@@ -384,7 +402,7 @@
             txtTiempoEntrega.IsNumber = true;
             txtTiempoEntrega.Location = new Point(426, 91);
             txtTiempoEntrega.Name = "txtTiempoEntrega";
-            txtTiempoEntrega.Padding = new Padding(7, 7, 7, 7);
+            txtTiempoEntrega.Padding = new Padding(7);
             txtTiempoEntrega.Size = new Size(109, 33);
             txtTiempoEntrega.TabIndex = 39;
             // 
@@ -396,7 +414,7 @@
             txtMinimos.IsNumber = true;
             txtMinimos.Location = new Point(426, 56);
             txtMinimos.Name = "txtMinimos";
-            txtMinimos.Padding = new Padding(7, 7, 7, 7);
+            txtMinimos.Padding = new Padding(7);
             txtMinimos.Size = new Size(109, 33);
             txtMinimos.TabIndex = 38;
             // 
@@ -417,7 +435,7 @@
             txtMaximos.IsNumber = true;
             txtMaximos.Location = new Point(426, 21);
             txtMaximos.Name = "txtMaximos";
-            txtMaximos.Padding = new Padding(7, 7, 7, 7);
+            txtMaximos.Padding = new Padding(7);
             txtMaximos.Size = new Size(109, 33);
             txtMaximos.TabIndex = 37;
             // 
@@ -512,7 +530,7 @@
             txtFactorProduccion.IsNumber = true;
             txtFactorProduccion.Location = new Point(166, 95);
             txtFactorProduccion.Name = "txtFactorProduccion";
-            txtFactorProduccion.Padding = new Padding(7, 7, 7, 7);
+            txtFactorProduccion.Padding = new Padding(7);
             txtFactorProduccion.Size = new Size(109, 33);
             txtFactorProduccion.TabIndex = 30;
             // 
@@ -524,7 +542,7 @@
             txtFactorAlmacen.IsNumber = true;
             txtFactorAlmacen.Location = new Point(166, 56);
             txtFactorAlmacen.Name = "txtFactorAlmacen";
-            txtFactorAlmacen.Padding = new Padding(7, 7, 7, 7);
+            txtFactorAlmacen.Padding = new Padding(7);
             txtFactorAlmacen.Size = new Size(109, 33);
             txtFactorAlmacen.TabIndex = 29;
             // 
@@ -536,7 +554,7 @@
             txtCostos.IsNumber = true;
             txtCostos.Location = new Point(166, 17);
             txtCostos.Name = "txtCostos";
-            txtCostos.Padding = new Padding(7, 7, 7, 7);
+            txtCostos.Padding = new Padding(7);
             txtCostos.Size = new Size(109, 33);
             txtCostos.TabIndex = 28;
             // 
@@ -548,7 +566,7 @@
             cmbUnidadProduccion.Location = new Point(525, 95);
             cmbUnidadProduccion.Name = "cmbUnidadProduccion";
             cmbUnidadProduccion.Size = new Size(133, 29);
-            cmbUnidadProduccion.TabIndex = 33;
+            cmbUnidadProduccion.TabIndex = 32;
             // 
             // label16
             // 
@@ -706,9 +724,9 @@
             txtValorPaqueteEst.IsNumber = true;
             txtValorPaqueteEst.Location = new Point(355, 140);
             txtValorPaqueteEst.Name = "txtValorPaqueteEst";
-            txtValorPaqueteEst.Padding = new Padding(7, 7, 7, 7);
+            txtValorPaqueteEst.Padding = new Padding(7);
             txtValorPaqueteEst.Size = new Size(64, 33);
-            txtValorPaqueteEst.TabIndex = 18;
+            txtValorPaqueteEst.TabIndex = 21;
             // 
             // txtValorUnidadMax
             // 
@@ -718,9 +736,9 @@
             txtValorUnidadMax.IsNumber = true;
             txtValorUnidadMax.Location = new Point(355, 105);
             txtValorUnidadMax.Name = "txtValorUnidadMax";
-            txtValorUnidadMax.Padding = new Padding(7, 7, 7, 7);
+            txtValorUnidadMax.Padding = new Padding(7);
             txtValorUnidadMax.Size = new Size(64, 33);
-            txtValorUnidadMax.TabIndex = 17;
+            txtValorUnidadMax.TabIndex = 19;
             // 
             // txtValorUnidadMedia
             // 
@@ -730,9 +748,9 @@
             txtValorUnidadMedia.IsNumber = true;
             txtValorUnidadMedia.Location = new Point(355, 67);
             txtValorUnidadMedia.Name = "txtValorUnidadMedia";
-            txtValorUnidadMedia.Padding = new Padding(7, 7, 7, 7);
+            txtValorUnidadMedia.Padding = new Padding(7);
             txtValorUnidadMedia.Size = new Size(64, 33);
-            txtValorUnidadMedia.TabIndex = 16;
+            txtValorUnidadMedia.TabIndex = 17;
             // 
             // cmbPaqueteEstandar
             // 
@@ -840,10 +858,10 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(radioButton4);
-            groupBox1.Controls.Add(radioButton3);
-            groupBox1.Controls.Add(radioButton2);
-            groupBox1.Controls.Add(radioButton1);
+            groupBox1.Controls.Add(rdCaducidad);
+            groupBox1.Controls.Add(rdLote);
+            groupBox1.Controls.Add(rdLifo);
+            groupBox1.Controls.Add(rdFifo);
             groupBox1.Location = new Point(646, 21);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(205, 183);
@@ -851,49 +869,49 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Tipo de almacenamiento";
             // 
-            // radioButton4
+            // rdCaducidad
             // 
-            radioButton4.AutoSize = true;
-            radioButton4.Location = new Point(22, 116);
-            radioButton4.Name = "radioButton4";
-            radioButton4.Size = new Size(162, 24);
-            radioButton4.TabIndex = 14;
-            radioButton4.TabStop = true;
-            radioButton4.Text = "Fecha de caducidad";
-            radioButton4.UseVisualStyleBackColor = true;
+            rdCaducidad.AutoSize = true;
+            rdCaducidad.Location = new Point(22, 116);
+            rdCaducidad.Name = "rdCaducidad";
+            rdCaducidad.Size = new Size(162, 24);
+            rdCaducidad.TabIndex = 14;
+            rdCaducidad.TabStop = true;
+            rdCaducidad.Text = "Fecha de caducidad";
+            rdCaducidad.UseVisualStyleBackColor = true;
             // 
-            // radioButton3
+            // rdLote
             // 
-            radioButton3.AutoSize = true;
-            radioButton3.Location = new Point(22, 85);
-            radioButton3.Name = "radioButton3";
-            radioButton3.Size = new Size(135, 24);
-            radioButton3.TabIndex = 13;
-            radioButton3.TabStop = true;
-            radioButton3.Text = "Número de lote";
-            radioButton3.UseVisualStyleBackColor = true;
+            rdLote.AutoSize = true;
+            rdLote.Location = new Point(22, 85);
+            rdLote.Name = "rdLote";
+            rdLote.Size = new Size(135, 24);
+            rdLote.TabIndex = 13;
+            rdLote.TabStop = true;
+            rdLote.Text = "Número de lote";
+            rdLote.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // rdLifo
             // 
-            radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(22, 56);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(174, 24);
-            radioButton2.TabIndex = 12;
-            radioButton2.TabStop = true;
-            radioButton2.Text = "LIFO - Last In First Out";
-            radioButton2.UseVisualStyleBackColor = true;
+            rdLifo.AutoSize = true;
+            rdLifo.Location = new Point(22, 56);
+            rdLifo.Name = "rdLifo";
+            rdLifo.Size = new Size(174, 24);
+            rdLifo.TabIndex = 12;
+            rdLifo.TabStop = true;
+            rdLifo.Text = "LIFO - Last In First Out";
+            rdLifo.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // rdFifo
             // 
-            radioButton1.AutoSize = true;
-            radioButton1.Location = new Point(22, 27);
-            radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(175, 24);
-            radioButton1.TabIndex = 11;
-            radioButton1.TabStop = true;
-            radioButton1.Text = "FIFO - First In First Out";
-            radioButton1.UseVisualStyleBackColor = true;
+            rdFifo.AutoSize = true;
+            rdFifo.Location = new Point(22, 27);
+            rdFifo.Name = "rdFifo";
+            rdFifo.Size = new Size(175, 24);
+            rdFifo.TabIndex = 11;
+            rdFifo.TabStop = true;
+            rdFifo.Text = "FIFO - First In First Out";
+            rdFifo.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -940,8 +958,8 @@
             tabAvanzada.Controls.Add(label25);
             tabAvanzada.Location = new Point(4, 29);
             tabAvanzada.Name = "tabAvanzada";
-            tabAvanzada.Padding = new Padding(3, 3, 3, 3);
-            tabAvanzada.Size = new Size(1354, 558);
+            tabAvanzada.Padding = new Padding(3);
+            tabAvanzada.Size = new Size(1355, 558);
             tabAvanzada.TabIndex = 1;
             tabAvanzada.Text = "Avanzada";
             tabAvanzada.UseVisualStyleBackColor = true;
@@ -1138,7 +1156,7 @@
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
             flowLayoutPanel1.Location = new Point(0, 691);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
+            flowLayoutPanel1.Padding = new Padding(5);
             flowLayoutPanel1.Size = new Size(1363, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
@@ -1149,7 +1167,7 @@
             button2.Location = new Point(1179, 8);
             button2.Name = "button2";
             button2.Size = new Size(171, 35);
-            button2.TabIndex = 45;
+            button2.TabIndex = 46;
             button2.Text = "Cerrar";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
@@ -1161,7 +1179,7 @@
             btnSave.Location = new Point(1002, 8);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(171, 35);
-            btnSave.TabIndex = 44;
+            btnSave.TabIndex = 45;
             btnSave.Text = "Guardar";
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
@@ -1201,24 +1219,6 @@
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
-            // 
-            // comboBox1
-            // 
-            comboBox1.Font = new Font("Segoe UI", 9.75F);
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(417, 74);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(206, 29);
-            comboBox1.TabIndex = 66;
-            // 
-            // label31
-            // 
-            label31.AutoSize = true;
-            label31.Location = new Point(260, 78);
-            label31.Name = "label31";
-            label31.Size = new Size(137, 20);
-            label31.TabIndex = 67;
-            label31.Text = "Estatus producción:";
             // 
             // FrmNuevoArticulo
             // 
@@ -1269,10 +1269,10 @@
         private Button btnSave;
         private FlowLayoutPanel flowLayoutPanel1;
         private GroupBox groupBox1;
-        private RadioButton radioButton4;
+        private RadioButton rdCaducidad;
         private RadioButton radioButton3;
         private RadioButton radioButton2;
-        private RadioButton radioButton1;
+        private RadioButton rdFifo;
         private ComboBox cmbProyecto;
         private ComboBox cmbCliente;
         private CheckBox chkSolicitarCaducidad;
@@ -1336,6 +1336,8 @@
         private Label label22;
         private RadioButton rdNotificacionArchivos;
         private RadioButton rdNotificacionEmail;
+        private RadioButton rdLote;
+        private RadioButton rdLifo;
         private GroupBox groupBox6;
         private Label label27;
         private Label label28;
@@ -1359,7 +1361,7 @@
         private LD.Controls.TextBoxControl txtValorPaqueteEst;
         private LD.Controls.TextBoxControl txtValorUnidadMax;
         private LD.Controls.TextBoxControl txtValorUnidadMedia;
-        private ComboBox comboBox1;
+        private ComboBox cmbDimension;
         private Label label31;
     }
 }

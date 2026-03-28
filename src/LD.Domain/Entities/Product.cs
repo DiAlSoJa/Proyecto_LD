@@ -16,6 +16,7 @@ namespace LD.Domain.Entities
         public int? ProjectId { get; set; }
         public int? ClientId { get; set; }
         public int? CategoryId { get; set; }
+        public string? DimensionerId { get; set; }
 
 
 
@@ -38,7 +39,7 @@ namespace LD.Domain.Entities
         public string? MediumUnitId { get; set; }
         public string? MaxUnitId { get; set; }
         public string? StandardPackage { get; set; }
-        public decimal? MinUnitValue { get; set; }
+        public decimal? MediumUnitValue { get; set; }
         public decimal? MaxUnitValue { get; set; }
         public decimal? StandardPackageValue { get; set; }
         public decimal? Costs { get; set; }
