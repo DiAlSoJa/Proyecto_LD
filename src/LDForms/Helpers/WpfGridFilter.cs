@@ -1,0 +1,179 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using System.Windows.Data;
+
+namespace LD.FormsX.Helpers
+{
+    public class WpfGridFilter<T> where T : class
+    {
+        private readonly DataGrid _dataGrid;
+        private readonly TextBox? _searchTextBox;
+
+        private List<T> _data = new();
+        private ICollectionView? _collectionView;
+
+        private HashSet<string> _hiddenColumns = new();
+        private Dictionary<string, double> _columnWidths = new();
+        private List<string> _columnOrder = new();
+
+        public T? SelectedItem => _dataGrid.SelectedItem as T;
+
+        public WpfGridFilter(DataGrid dataGrid, TextBox? searchTextBox = null)
+        {
+            _dataGrid = dataGrid;
+            _searchTextBox = searchTextBox;
+
+            ConfigurarGrid();
+
+            if (_searchTextBox != null)
+                _searchTextBox.TextChanged += SearchTextBox_TextChanged;
+        }
+
+        private void ConfigurarGrid()
+        {
+            _dataGrid.AutoGenerateColumns = true;
+            _dataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
+            _dataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
+        }
+
+        public void SetData(IEnumerable<T>? data)
+        {
+            _data = data?.ToList() ?? new List<T>();
+
+            _collectionView = CollectionViewSource.GetDefaultView(_data);
+            _collectionView.Filter = FilterPredicate;
+
+            _dataGrid.ItemsSource = _collectionView;
+            _collectionView.Refresh();
+        }
+
+        public void Refresh()
+        {
+            _collectionView?.Refresh();
+        }
+
+        public void ClearFilter()
+        {
+            if (_searchTextBox != null)
+                _searchTextBox.Text = string.Empty;
+
+            _collectionView?.Refresh();
+        }
+
+        public void SetHiddenColumns(params string[] propertyNames)
+        {
+            _hiddenColumns = propertyNames != null
+                ? new HashSet<string>(propertyNames)
+                : new HashSet<string>();
+        }
+
+        public void SetColumnWidths(Dictionary<string, double> widths)
+        {
+            _columnWidths = widths ?? new Dictionary<string, double>();
+        }
+
+        public void SetColumnOrder(params string[] propertyNames)
+        {
+            _columnOrder = propertyNames?.ToList() ?? new List<string>();
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _collectionView?.Refresh();
+        }
+
+        private bool FilterPredicate(object obj)
+        {
+            if (obj is not T item)
+                return false;
+
+            if (_searchTextBox == null)
+                return true;
+
+            var searchText = _searchTextBox.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(searchText))
+                return true;
+
+            searchText = searchText.ToLowerInvariant();
+
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                      .Where(p => p.CanRead);
+
+            foreach (var prop in properties)
+            {
+                var value = prop.GetValue(item);
+
+                if (value == null)
+                    continue;
+
+                var text = value.ToString();
+
+                if (!string.IsNullOrWhiteSpace(text) &&
+                    text.ToLowerInvariant().Contains(searchText))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void DataGrid_AutoGeneratingColumn(object? sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (_hiddenColumns.Contains(e.PropertyName))
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            var prop = typeof(T).GetProperty(e.PropertyName);
+
+            if (prop != null)
+            {
+                var displayName = prop.GetCustomAttribute<DisplayNameAttribute>();
+                if (displayName != null)
+                    e.Column.Header = displayName.DisplayName;
+                else
+                    e.Column.Header = SplitCamelCase(e.PropertyName);
+
+                if (e.PropertyType == typeof(bool) || e.PropertyType == typeof(bool?))
+                {
+                    e.Column = new DataGridCheckBoxColumn
+                    {
+                        Header = e.Column.Header,
+                        Binding = new Binding(e.PropertyName),
+                        IsReadOnly = _dataGrid.IsReadOnly
+                    };
+                }
+
+                if (_columnWidths.TryGetValue(e.PropertyName, out double width))
+                    e.Column.Width = width;
+
+                if (_columnOrder.Any())
+                {
+                    int index = _columnOrder.IndexOf(e.PropertyName);
+                    if (index >= 0)
+                        e.Column.DisplayIndex = index;
+                }
+            }
+            else
+            {
+                e.Column.Header = SplitCamelCase(e.PropertyName);
+            }
+        }
+
+        private static string SplitCamelCase(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return string.Empty;
+
+            return Regex.Replace(text, "([a-z])([A-Z])", "$1 $2");
+        }
+    }
+}

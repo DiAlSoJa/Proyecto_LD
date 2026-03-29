@@ -1,0 +1,253 @@
+﻿<Window x:Class="LD.FormsX.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LMS 2.0"
+        Height="500"
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,0,10,0"/>
+            <Setter Property="BorderBrush" Value="#D6D6D6"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedPasswordBoxStyle" TargetType="PasswordBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,0,10,0"/>
+            <Setter Property="BorderBrush" Value="#D6D6D6"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#1D4B9F"/>
+            <Setter Property="BorderBrush" Value="#1D4B9F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#1D4B9F"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Border Margin="16"
+                Background="#F7F7F7"
+                CornerRadius="12"
+                MouseDown="Border_MouseDown">
+            <Grid Margin="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.05*"/>
+                    <ColumnDefinition Width="1.35*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Panel izquierdo -->
+                <Grid Grid.Column="0" Margin="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Encabezado -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Border Width="28" Height="18" CornerRadius="3" Background="#1D4B9F"/>
+                            <TextBlock Text="LMS 2.0"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="28"
+                                       FontWeight="SemiBold"
+                                       Foreground="#111111"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="1"
+                                x:Name="BtnClose"
+                                Content="X"
+                                Style="{StaticResource CloseButtonStyle}"
+                                Click="BtnClose_Click"/>
+                    </Grid>
+
+                    <!-- Formulario -->
+                    <Border x:Name="LoginPanel"
+                            Grid.Row="1"
+                            Background="White"
+                            CornerRadius="12"
+                            Padding="24"
+                            Margin="0,10,0,20">
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" Width="250">
+
+                                <TextBlock Text="Usuario"
+                                           FontSize="13"
+                                           Foreground="#222222"
+                                           Margin="0,0,0,6"/>
+
+                                <TextBox x:Name="txtUsuario" Text="1"
+                                         Style="{StaticResource RoundedTextBoxStyle}"/>
+
+                                <TextBlock Text="Contraseña"
+                                           FontSize="13"
+                                           Foreground="#222222"
+                                           Margin="0,18,0,6"/>
+
+                                <PasswordBox x:Name="txtPassword" Password="Pa$$w0rd" 
+                                             Style="{StaticResource RoundedPasswordBoxStyle}"
+                                             KeyDown="txtPassword_KeyDown" Cursor=""/>
+
+                                <Button x:Name="btnLogin" 
+                                        Content="Iniciar sesión"
+                                        Margin="0,24,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="BtnLogin_Click"/>
+
+                                <TextBlock x:Name="lblMensaje"
+                                           Margin="0,20,0,0"
+                                           TextWrapping="Wrap"
+                                           Foreground="Red"
+                                           FontSize="12"
+                                           TextAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Overlay de carga -->
+                            <Border x:Name="LoadingOverlay"
+                                    Background="#AAFFFFFF"
+                                    CornerRadius="12"
+                                    Visibility="Collapsed">
+                                <StackPanel HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                    <ProgressBar Width="180"
+                                                 Height="8"
+                                                 IsIndeterminate="True"/>
+                                    <TextBlock Text="Validando credenciales..."
+                                               Margin="0,10,0,0"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#1D4B9F"
+                                               FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Footer -->
+                    <TextBlock x:Name="lblVersion"
+                               Grid.Row="2"
+                               Text="Versión: -"
+                               FontSize="12"
+                               Foreground="#666666"
+                               HorizontalAlignment="Left"/>
+                </Grid>
+
+                <!-- Panel derecho -->
+                <Border Grid.Column="1"
+                        Background="#1D4B9F"
+                        CornerRadius="12"
+                        Margin="10,0,0,0">
+                    <Grid>
+                        <Rectangle Opacity="0.08">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/Resources/Images/logo.png"
+                                            Stretch="Uniform"
+                                            AlignmentX="Center"
+                                            AlignmentY="Center"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <Image Source="/Resources/Images/logo.png"
+                                   Width="220"
+                                   Margin="0,0,0,20"
+                                   Opacity="0.95">
+                                <Image.Effect>
+                                    <DropShadowEffect Color="#1D4B9F"
+                              BlurRadius="35"
+                              ShadowDepth="0"/>
+                                </Image.Effect>
+                            </Image>
+
+                            <TextBlock Text="LMS 2.0"
+                                       Foreground="White"
+                                       FontSize="22"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"/>
+
+                            <TextBlock Text="Warehouse System"
+                                       Foreground="#D6D6D6"
+                                       FontSize="13"
+                                       Margin="0,8,0,0"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

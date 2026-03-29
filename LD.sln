@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD.Client", "src\LD.Client\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD.MobileApp", "src\LD.MobileApp\LD.MobileApp.csproj", "{E0B2AFE9-4F9D-2739-C279-A516F5D603B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD.FormsX", "src\LDForms\LD.FormsX.csproj", "{BFCF3191-18E6-1873-7692-AF160FBDB4CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +130,18 @@ Global
 		{E0B2AFE9-4F9D-2739-C279-A516F5D603B1}.Release|x64.Build.0 = Release|Any CPU
 		{E0B2AFE9-4F9D-2739-C279-A516F5D603B1}.Release|x86.ActiveCfg = Release|Any CPU
 		{E0B2AFE9-4F9D-2739-C279-A516F5D603B1}.Release|x86.Build.0 = Release|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Debug|x64.Build.0 = Debug|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Debug|x86.Build.0 = Debug|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Release|x64.ActiveCfg = Release|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Release|x64.Build.0 = Release|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{BFCF3191-18E6-1873-7692-AF160FBDB4CA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

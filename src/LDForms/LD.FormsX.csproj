@@ -1,0 +1,93 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Noto\NotoSans-Bold.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Noto\NotoSans-BoldItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Noto\NotoSans-Italic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Noto\NotoSans-Regular.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-Black.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-BlackItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-Bold.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-BoldItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-Italic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-Light.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-LightItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-Medium.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-MediumItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-Regular.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-Thin.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\Roboto-ThinItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\RobotoCondensed-Bold.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\RobotoCondensed-BoldItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\RobotoCondensed-Italic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\RobotoCondensed-Light.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\RobotoCondensed-LightItalic.ttf" />
+    <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Roboto\RobotoCondensed-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignColors" Version="5.3.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Resources\Fonts\" />
+    <Folder Include="Resources\Styles\" />
+    <Folder Include="Views\Inventario\" />
+    <Folder Include="Views\Movimientos\" />
+    <Folder Include="Views\ASN\" />
+    <Folder Include="Views\Auditar\" />
+    <Folder Include="Views\InventarioAleatorio\" />
+    <Folder Include="Views\CheckList\" />
+    <Folder Include="Views\Embarques\" />
+    <Folder Include="Views\ControlPatio\" />
+    <Folder Include="Views\Reportes\" />
+    <Folder Include="Views\Surtido\" />
+    <Folder Include="Views\Usuarios\" />
+    <Folder Include="Views\Proyectos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LD.Client\LD.Client.csproj" />
+    <ProjectReference Include="..\LD.Contracts\LD.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

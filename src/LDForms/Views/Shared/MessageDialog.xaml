@@ -1,0 +1,262 @@
+﻿<Window x:Class="LDForms.MessageDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Message"
+        Width="420"
+        Height="311"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False">
+
+    <Grid Background="Transparent">
+        <Border x:Name="MainBorder"
+                Width="360"
+                Height="290"
+                Background="White"
+                CornerRadius="18"
+                Padding="25"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MouseLeftButtonDown="MainBorder_MouseLeftButtonDown">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20"
+                                  ShadowDepth="4"
+                                  Opacity="0.20"
+                                  Color="Black"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Botón cerrar -->
+                <Button x:Name="BtnClose"
+                        Width="24"
+                        Height="24"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#888888"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Click="BtnClose_Click"
+                        Content="✕"/>
+
+                <StackPanel Grid.Row="1"
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Center">
+
+                    <!-- Fondo del icono -->
+                    <Border x:Name="IconBackground"
+                            Width="56"
+                            Height="56"
+                            CornerRadius="28"
+                            Background="#E8F8F1"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,16">
+
+                        <Grid>
+                            <!-- Success -->
+                            <Grid x:Name="SuccessIcon" Visibility="Collapsed">
+                                <Ellipse Width="22"
+                                         Height="22"
+                                         Stroke="#58C29C"
+                                         StrokeThickness="2"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
+                                <Path Data="M 19 28 L 24 33 L 36 21"
+                                      Stroke="#58C29C"
+                                      StrokeThickness="2.2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"/>
+                            </Grid>
+
+                            <!-- Warning -->
+                            <Grid x:Name="WarningIcon" Visibility="Collapsed">
+                                <Path Data="M28,12 L44,42 L12,42 Z"
+                                      Stroke="#F0AD4E"
+                                      Fill="Transparent"
+                                      StrokeThickness="2"/>
+                                <Rectangle Width="3"
+                                           Height="12"
+                                           RadiusX="1.5"
+                                           RadiusY="1.5"
+                                           Fill="#F0AD4E"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="0,-5,0,0"/>
+                                <Ellipse Width="4"
+                                         Height="4"
+                                         Fill="#F0AD4E"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Bottom"
+                                         Margin="0,0,0,12"/>
+                            </Grid>
+
+                            <!-- Error -->
+                            <Grid x:Name="ErrorIcon" Visibility="Collapsed">
+                                <Ellipse Width="22"
+                                         Height="22"
+                                         Stroke="#E05A5A"
+                                         StrokeThickness="2"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
+                                <Path Data="M 21 21 L 35 35 M 35 21 L 21 35"
+                                      Stroke="#E05A5A"
+                                      StrokeThickness="2.4"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"/>
+                            </Grid>
+
+                            <!-- Confirm -->
+                            <Grid x:Name="ConfirmIcon" Visibility="Collapsed">
+                                <Ellipse Width="22"
+                                         Height="22"
+                                         Stroke="#4A90E2"
+                                         StrokeThickness="2"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
+                                <TextBlock Text="?"
+                                           Foreground="#4A90E2"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Grid x:Name="InfoIcon" Visibility="Collapsed">
+                                <Ellipse Width="22"
+                                     Height="22"
+                                     Stroke="#4A90E2"
+                                     StrokeThickness="2"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"/>
+
+                                <TextBlock Text="i"
+                                   Foreground="#4A90E2"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock x:Name="TxtTitle"
+                               Text="Title"
+                               FontSize="26"
+                               FontWeight="SemiBold"
+                               Foreground="#111111"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,6"/>
+
+                    <TextBlock x:Name="TxtMessage"
+                               Text="Message"
+                               FontSize="15"
+                               Foreground="#666666"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Width="280"
+                               Margin="0,0,0,24"/>
+                </StackPanel>
+
+                <!-- Un botón -->
+                <Button x:Name="BtnAccept"
+                        Grid.Row="3"
+                        Content="Confirm"
+                        Width="270"
+                        Height="42"
+                        HorizontalAlignment="Center"
+                        Background="#58C29C"
+                        Foreground="White"
+                        BorderThickness="0"
+                        FontSize="15"
+                        Cursor="Hand"
+                        Click="BtnAccept_Click"
+                          IsDefault="True"
+                        IsCancel="True"
+                        Visibility="Visible">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="10">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- Dos botones -->
+                <Grid x:Name="ConfirmButtonsPanel"
+                      Grid.Row="3"
+                      Visibility="Collapsed"
+                      HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="BtnCancel"
+                            Grid.Column="0"
+                            Content="Cancel"
+                            Width="125"
+                            Height="42"
+                            Background="#EAEAEA"
+                            Foreground="#333333"
+                            BorderThickness="0"
+                            FontSize="15"
+                            Cursor="Hand"
+                             IsCancel="True"
+                            Click="BtnCancel_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="BtnYes"
+                            Grid.Column="2"
+                            Content="Accept"
+                            Width="125"
+                            Height="42"
+                            Background="#4A90E2"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="15"
+                            Cursor="Hand"
+                             IsDefault="True"
+                            IsCancel="True"
+                            Click="BtnYes_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
