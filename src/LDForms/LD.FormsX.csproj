@@ -71,15 +71,7 @@
     <Folder Include="ViewModels\" />
     <Folder Include="Resources\Fonts\" />
     <Folder Include="Resources\Styles\" />
-    <Folder Include="Views\Inventario\" />
-    <Folder Include="Views\Movimientos\" />
-    <Folder Include="Views\ASN\" />
-    <Folder Include="Views\Auditar\" />
-    <Folder Include="Views\InventarioAleatorio\" />
-    <Folder Include="Views\CheckList\" />
     <Folder Include="Views\Embarques\" />
-    <Folder Include="Views\ControlPatio\" />
-    <Folder Include="Views\Reportes\" />
     <Folder Include="Views\Surtido\" />
     <Folder Include="Views\Usuarios\" />
     <Folder Include="Views\Proyectos\" />

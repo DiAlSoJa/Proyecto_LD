@@ -5,9 +5,18 @@ using System.Windows.Input;
 
 using System.Windows.Media;
 using LD.Contracts.Enums;
+
 using LD.FormsX.Helpers;
+using LD.FormsX.Movimientos;
 using LD.FormsX.Views;
+using LD.FormsX.Views.ASN;
+using LD.FormsX.Views.Auditar;
 using LD.FormsX.Views.Catalogos;
+using LD.FormsX.Views.CheckList;
+using LD.FormsX.Views.ControlPatio;
+using LD.FormsX.Views.Inventario;
+using LD.FormsX.Views.InventarioAleatorio;
+using LD.FormsX.Views.Reportes;
 using LD.Formx.Core;
 using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -140,6 +149,30 @@ namespace LDForms
                 case "Catalogos":
                     AbrirTab("Catalogos", _serviceProvider.GetRequiredService<CatalogosView>());
                     break;
+                case "Inventario":
+                    AbrirTab("Inventario", _serviceProvider.GetRequiredService<InventarioView>());
+                    break;
+                case "Movimientos":
+                    AbrirTab("Movimientos", _serviceProvider.GetRequiredService<MovimientosView>());
+                    break;
+                case "ASN":
+                    AbrirTab("ASN", _serviceProvider.GetRequiredService<ASNView>());
+                    break;
+                case "Auditar":
+                    AbrirTab("Auditar", _serviceProvider.GetRequiredService<AuditarView>());
+                    break;
+                case "Aleatorio":
+                    AbrirTab("Aleatorio", _serviceProvider.GetRequiredService<InventarioCiclicoView>());
+                    break;
+                case "CheckList":
+                    AbrirTab("CheckList", _serviceProvider.GetRequiredService<CheckListView>());
+                    break;
+                case "Reportes":
+                    AbrirTab("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
+                    break;
+                case "Patio":
+                    AbrirTab("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());
+                    break;
             }
         }
 
@@ -156,7 +189,7 @@ namespace LDForms
                     break;
 
                 case "Proyectos":
-                    AbrirVentana("Proyectos", _serviceProvider.GetRequiredService<ProductosView>());
+                   
                     break;
 
                 case "Ubicaciones":
@@ -169,6 +202,32 @@ namespace LDForms
 
                 case "Catalogos":
                     AbrirVentana("Catalogos", _serviceProvider.GetRequiredService<CatalogosView>());
+                    break;
+
+                case "Inventario":
+                    AbrirVentana("Inventario", _serviceProvider.GetRequiredService<InventarioView>());
+                    break;
+
+                case "Movimientos":
+                    AbrirVentana("Movimientos", _serviceProvider.GetRequiredService<MovimientosView>());
+                    break;
+                case "ASN":
+                    AbrirVentana("ASN", _serviceProvider.GetRequiredService<ASNView>());
+                    break;
+                case "Auditar":
+                    AbrirVentana("Auditar", _serviceProvider.GetRequiredService<AuditarView>());
+                    break;
+                case "Aleatorio":
+                    AbrirVentana("Aleatorio", _serviceProvider.GetRequiredService<InventarioCiclicoView>());
+                    break;
+                case "CheckList":
+                    AbrirVentana("CheckList", _serviceProvider.GetRequiredService<CheckListView>());
+                    break;
+                case "Reportes":
+                    AbrirVentana("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
+                    break;
+                case "Patio":
+                    AbrirVentana("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());
                     break;
             }
         }

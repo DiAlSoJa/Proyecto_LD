@@ -29,17 +29,17 @@ namespace LD.Forms.Views.Forms
         {
             base.OnShown(e);
 
-    
+
             clientBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Clients);
             projectBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Projects);
             warehouseBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Warehouses);
             locationBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Locations);
             productBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Products);
-            movementBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Movements);   
+            movementBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Movements);
             asnBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ASN);
             checkListBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ChecklistLift);
             yardControlBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.YardControl);
-            catalogBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Catalogs); 
+            catalogBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Catalogs);
             pickingBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Picking);
             shipmentBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Shipments);
             inventoryBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Inventory);
@@ -132,7 +132,12 @@ namespace LD.Forms.Views.Forms
         private void button14_Click(object sender, EventArgs e)
         {
             _tabService.Open(AppRoutes.Reportes);
-            
+
+        }
+
+        private void pickingBtn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

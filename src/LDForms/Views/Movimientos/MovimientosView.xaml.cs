@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LDForms
+namespace LD.FormsX.Movimientos
 {
     /// <summary>
-    /// Lógica de interacción para ProductosView.xaml
+    /// Lógica de interacción para MovimientosView.xaml
     /// </summary>
-    public partial class ProductosView : UserControl
+    public partial class MovimientosView : UserControl
     {
-        public ProductosView()
+        public MovimientosView()
         {
             InitializeComponent();
         }

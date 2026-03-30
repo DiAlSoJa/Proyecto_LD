@@ -1,0 +1,1082 @@
+﻿<UserControl x:Class="LD.FormsX.Views.CheckList.CheckListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Loaded="UserControl_Loaded"
+             Background="#F8FAFC">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="TabActiveBg" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TabInactiveBg" Color="#EEF2F7"/>
+        <SolidColorBrush x:Key="TabHoverBg" Color="#E7EDF5"/>
+        <SolidColorBrush x:Key="TabBorderBrush" Color="#D9E1EC"/>
+        <SolidColorBrush x:Key="TabActiveBorder" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="TabTextActive" Color="#0F172A"/>
+        <SolidColorBrush x:Key="TabTextInactive" Color="#475569"/>
+
+        <Style x:Key="ElegantTabControlStyle" TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid KeyboardNavigation.TabNavigation="Local">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0"
+                                    Background="#F8FAFC"
+                                    BorderBrush="{StaticResource TabBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12,12,0,0"
+                                    Padding="8,8,8,0">
+                                <TabPanel x:Name="HeaderPanel"
+                                          IsItemsHost="True"
+                                          Background="Transparent"/>
+                            </Border>
+
+                            <Border Grid.Row="1"
+                                    Background="White"
+                                    BorderBrush="{StaticResource TabBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="0,0,12,12"
+                                    Padding="10">
+                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                  ContentSource="SelectedContent"
+                                                  Margin="0"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ElegantTabItemStyle" TargetType="TabItem">
+            <Setter Property="Foreground" Value="{StaticResource TabTextInactive}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="Background" Value="{StaticResource TabInactiveBg}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="5,5,0,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentSite"
+                                              ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource TabActiveBorder}"/>
+                                <Setter Property="Foreground" Value="{StaticResource TabTextActive}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabHoverBg}"/>
+                            </Trigger>
+
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#EEF1F5"/>
+            <Setter Property="Foreground" Value="#16263D"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#D9DEE7"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="GridCellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderBrush" Value="#E4E8EE"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="GridRowStyle" TargetType="DataGridRow">
+            <Setter Property="BorderBrush" Value="#E4E8EE"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="12">
+        <TabControl x:Name="MainTabControl"
+                    Style="{StaticResource ElegantTabControlStyle}">
+
+            <!-- TAB EQUIPO -->
+            <TabItem Style="{StaticResource ElegantTabItemStyle}">
+                <TabItem.Header>
+                    <TextBlock Text="Equipo"/>
+                </TabItem.Header>
+
+                <Grid Background="#F8FAFC">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0"
+                            Background="White"
+                            CornerRadius="12"
+                            Padding="16"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="110"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Vertical"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="Checklist de equipos"
+                                           FontSize="24"
+                                           FontWeight="SemiBold"
+                                           Foreground="#1F2937"/>
+                                <TextBlock Text="Administración de equipos y usuarios"
+                                           FontSize="13"
+                                           Foreground="#6B7280"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <Button x:Name="BtnActualizarEquipo"
+                                    Grid.Column="1"
+                                    Height="38"
+                                    Content="Actualizar"
+                                    Click="BtnActualizarEquipo_Click"
+                                    Background="White"
+                                    Foreground="#111827"
+                                    BorderBrush="#D1D5DB"
+                                    BorderThickness="1"
+                                    Cursor="Hand"/>
+
+                            <Button x:Name="BtnAsignarUsuario"
+                                    Grid.Column="3"
+                                    Height="38"
+                                    Content="Asignar Usuario"
+                                    Click="BtnAsignarUsuario_Click"
+                                    Background="White"
+                                    Foreground="#111827"
+                                    BorderBrush="#D1D5DB"
+                                    BorderThickness="1"
+                                    Cursor="Hand"/>
+
+                            <Button x:Name="BtnNuevoEquipo"
+                                    Grid.Column="5"
+                                    Height="38"
+                                    Content="Nuevo Equipo"
+                                    Click="BtnNuevoEquipo_Click"
+                                    Background="#2563EB"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+
+                            <Button x:Name="BtnEditarEquipo"
+                                    Grid.Column="7"
+                                    Height="38"
+                                    Content="Editar"
+                                    Click="BtnEditarEquipo_Click"
+                                    Background="White"
+                                    Foreground="#111827"
+                                    BorderBrush="#D1D5DB"
+                                    BorderThickness="1"
+                                    Cursor="Hand"/>
+
+                            <Button x:Name="BtnEliminarEquipo"
+                                    Grid.Column="9"
+                                    Height="38"
+                                    Content="Eliminar"
+                                    Click="BtnEliminarEquipo_Click"
+                                    Background="White"
+                                    Foreground="#B91C1C"
+                                    BorderBrush="#FCA5A5"
+                                    BorderThickness="1"
+                                    Cursor="Hand"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="2"
+                            Background="White"
+                            CornerRadius="12"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1"
+                            Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="txtStatusEquipo"
+                                       Grid.Row="0"
+                                       Text="Sin equipos para mostrar"
+                                       FontSize="12"
+                                       Foreground="#6B7280"
+                                       Margin="4,0,0,8"/>
+
+                            <Border Grid.Row="2"
+                                    BorderBrush="#D9DEE7"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Background="White">
+                                <DataGrid x:Name="dgEquipo"
+                                          AutoGenerateColumns="False"
+                                          SelectionMode="Single"
+                                          SelectionUnit="FullRow"
+                                          CanUserAddRows="False"
+                                          CanUserDeleteRows="False"
+                                          IsReadOnly="True"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="Vertical"
+                                          RowHeight="28"
+                                          ColumnHeaderHeight="40"
+                                          FontSize="12"
+                                          VerticalGridLinesBrush="#D9D9D9"
+                                          HorizontalGridLinesBrush="#E4E8EE"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                          SelectionChanged="dgEquipo_SelectionChanged">
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="130"/>
+                                        <DataGridTextColumn Header="No. de Equipo" Binding="{Binding NoEquipo}" Width="140"/>
+                                        <DataGridTextColumn Header="Serie" Binding="{Binding Serie}" Width="130"/>
+                                        <DataGridTextColumn Header="Marca" Binding="{Binding Marca}" Width="130"/>
+                                        <DataGridTextColumn Header="Operativo" Binding="{Binding Operativo}" Width="130"/>
+                                        <DataGridTextColumn Header="Proveedor" Binding="{Binding Proveedor}" Width="130"/>
+                                        <DataGridTextColumn Header="Turno 1" Binding="{Binding Turno1}" Width="125"/>
+                                        <DataGridTextColumn Header="Turno 2" Binding="{Binding Turno2}" Width="125"/>
+                                        <DataGridTextColumn Header="Turno 3" Binding="{Binding Turno3}" Width="125"/>
+                                    </DataGrid.Columns>
+
+                                    <DataGrid.Resources>
+                                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                                        <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
+                                    </DataGrid.Resources>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB RESÚMEN -->
+            <TabItem Style="{StaticResource ElegantTabItemStyle}">
+                <TabItem.Header>
+                    <TextBlock Text="Resúmen"/>
+                </TabItem.Header>
+
+                <Grid Background="#F8FAFC">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0"
+                            Background="White"
+                            CornerRadius="12"
+                            Padding="16"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="55"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Desde:"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       Foreground="#374151"/>
+
+                            <DatePicker x:Name="dpResumenDesde"
+                                        Grid.Column="1"
+                                        Height="38"
+                                        FontSize="13"
+                                        SelectedDateFormat="Short"
+                                        BorderBrush="#D1D5DB"
+                                        Background="White"/>
+
+                            <TextBlock Grid.Column="3"
+                                       Text="Hasta:"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       Foreground="#374151"/>
+
+                            <DatePicker x:Name="dpResumenHasta"
+                                        Grid.Column="4"
+                                        Height="38"
+                                        FontSize="13"
+                                        SelectedDateFormat="Short"
+                                        BorderBrush="#D1D5DB"
+                                        Background="White"/>
+
+                            <Button x:Name="BtnBuscarResumen"
+                                    Grid.Column="6"
+                                    Height="38"
+                                    Content="Buscar"
+                                    Click="BtnBuscarResumen_Click"
+                                    Background="#2563EB"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.65*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="1.1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Background="White"
+                                CornerRadius="12"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="txtStatusResumen"
+                                           Grid.Row="0"
+                                           Text="Sin registros para mostrar"
+                                           FontSize="12"
+                                           Foreground="#6B7280"
+                                           Margin="4,0,0,8"/>
+
+                                <Border Grid.Row="2"
+                                        BorderBrush="#D9DEE7"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Background="White">
+                                    <DataGrid x:Name="dgResumen"
+                                              AutoGenerateColumns="False"
+                                              SelectionMode="Single"
+                                              SelectionUnit="FullRow"
+                                              CanUserAddRows="False"
+                                              CanUserDeleteRows="False"
+                                              IsReadOnly="True"
+                                              HeadersVisibility="Column"
+                                              GridLinesVisibility="Vertical"
+                                              RowHeight="28"
+                                              ColumnHeaderHeight="40"
+                                              FontSize="12"
+                                              VerticalGridLinesBrush="#D9D9D9"
+                                              HorizontalGridLinesBrush="#E4E8EE"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              SelectionChanged="dgResumen_SelectionChanged">
+
+                                        <DataGrid.Columns>
+                                            <DataGridCheckBoxColumn Header="Checklist Tomado" Binding="{Binding ChecklistTomado}" Width="130"/>
+                                            <DataGridTextColumn Header="Horometro" Binding="{Binding Horometro}" Width="110"/>
+                                            <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="100"/>
+                                            <DataGridTextColumn Header="Turno" Binding="{Binding Turno}" Width="100"/>
+                                            <DataGridTextColumn Header="Usuario" Binding="{Binding Usuario}" Width="100"/>
+                                            <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="220"/>
+                                            <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="110"/>
+                                            <DataGridTextColumn Header="No. de Equipo" Binding="{Binding NoEquipo}" Width="130"/>
+                                            <DataGridTextColumn Header="Serie" Binding="{Binding Serie}" Width="110"/>
+                                            <DataGridTextColumn Header="Marca" Binding="{Binding Marca}" Width="110"/>
+                                            <DataGridTextColumn Header="Operativo" Binding="{Binding Operativo}" Width="110"/>
+                                            <DataGridTextColumn Header="Proveedor" Binding="{Binding Proveedor}" Width="120"/>
+                                        </DataGrid.Columns>
+
+                                        <DataGrid.Resources>
+                                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
+                                        </DataGrid.Resources>
+                                    </DataGrid>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <Grid Grid.Column="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="12"/>
+                                <RowDefinition Height="1.3*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0"
+                                    Background="White"
+                                    CornerRadius="12"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    Padding="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="150"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="Detalle"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="12"
+                                                   Foreground="#6B7280"
+                                                   Margin="4,0,0,0"/>
+
+                                        <Button x:Name="BtnVerImagenes"
+                                                Grid.Column="1"
+                                                Height="34"
+                                                Content="Ver imágenes"
+                                                Click="BtnVerImagenes_Click"
+                                                Background="White"
+                                                Foreground="#111827"
+                                                BorderBrush="#D1D5DB"
+                                                BorderThickness="1"
+                                                Cursor="Hand"/>
+                                    </Grid>
+
+                                    <Border Grid.Row="2"
+                                            BorderBrush="#D9DEE7"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Background="White">
+                                        <DataGrid x:Name="dgResumenDetalle"
+                                                  AutoGenerateColumns="False"
+                                                  SelectionMode="Single"
+                                                  SelectionUnit="FullRow"
+                                                  CanUserAddRows="False"
+                                                  CanUserDeleteRows="False"
+                                                  IsReadOnly="True"
+                                                  HeadersVisibility="Column"
+                                                  GridLinesVisibility="Vertical"
+                                                  RowHeight="28"
+                                                  ColumnHeaderHeight="40"
+                                                  FontSize="12"
+                                                  VerticalGridLinesBrush="#D9D9D9"
+                                                  HorizontalGridLinesBrush="#E4E8EE">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="140"/>
+                                                <DataGridTextColumn Header="Valor" Binding="{Binding Valor}" Width="220"/>
+                                            </DataGrid.Columns>
+
+                                            <DataGrid.Resources>
+                                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                                <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                                                <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
+                                            </DataGrid.Resources>
+                                        </DataGrid>
+                                    </Border>
+
+                                    <StackPanel Grid.Row="4">
+                                        <TextBlock Text="Observaciones"
+                                                   FontSize="13"
+                                                   Foreground="#374151"
+                                                   Margin="0,0,0,6"/>
+                                        <TextBox x:Name="txtObservacionesResumen"
+                                                 Height="80"
+                                                 TextWrapping="Wrap"
+                                                 AcceptsReturn="True"
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 BorderBrush="#D1D5DB"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="2"
+                                    Background="White"
+                                    CornerRadius="12"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    Padding="16">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="12"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Vista del equipo"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"
+                                               Foreground="#1F2937"/>
+
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="12"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0"
+                                                CornerRadius="10"
+                                                BorderBrush="#D1D5DB"
+                                                BorderThickness="1"
+                                                Background="#F9FAFB"
+                                                Padding="8">
+                                            <Grid>
+                                                <Image x:Name="imgMontacargasIzq"
+                                                       Stretch="Uniform"/>
+                                                <TextBlock Text="X"
+                                                           Foreground="#DC2626"
+                                                           FontSize="28"
+                                                           FontWeight="Bold"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+
+                                        <Border Grid.Column="2"
+                                                CornerRadius="10"
+                                                BorderBrush="#D1D5DB"
+                                                BorderThickness="1"
+                                                Background="#F9FAFB"
+                                                Padding="8">
+                                            <Grid>
+                                                <Image x:Name="imgMontacargasDer"
+                                                       Stretch="Uniform"/>
+                                                <TextBlock Text="X"
+                                                           Foreground="#DC2626"
+                                                           FontSize="28"
+                                                           FontWeight="Bold"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB RESÚMEN BATERÍAS -->
+            <TabItem Style="{StaticResource ElegantTabItemStyle}">
+                <TabItem.Header>
+                    <TextBlock Text="Resúmen Baterías"/>
+                </TabItem.Header>
+
+                <Grid Background="#F8FAFC">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0"
+                            Background="White"
+                            CornerRadius="12"
+                            Padding="16"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="55"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Desde:"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       Foreground="#374151"/>
+
+                            <DatePicker x:Name="dpBateriaDesde"
+                                        Grid.Column="1"
+                                        Height="38"
+                                        FontSize="13"
+                                        SelectedDateFormat="Short"
+                                        BorderBrush="#D1D5DB"
+                                        Background="White"/>
+
+                            <TextBlock Grid.Column="3"
+                                       Text="Hasta:"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       Foreground="#374151"/>
+
+                            <DatePicker x:Name="dpBateriaHasta"
+                                        Grid.Column="4"
+                                        Height="38"
+                                        FontSize="13"
+                                        SelectedDateFormat="Short"
+                                        BorderBrush="#D1D5DB"
+                                        Background="White"/>
+
+                            <Button x:Name="BtnBuscarBaterias"
+                                    Grid.Column="6"
+                                    Height="38"
+                                    Content="Buscar"
+                                    Click="BtnBuscarBaterias_Click"
+                                    Background="#2563EB"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.65*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="1.1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Background="White"
+                                CornerRadius="12"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="txtStatusBaterias"
+                                           Grid.Row="0"
+                                           Text="Sin registros para mostrar"
+                                           FontSize="12"
+                                           Foreground="#6B7280"
+                                           Margin="4,0,0,8"/>
+
+                                <Border Grid.Row="2"
+                                        BorderBrush="#D9DEE7"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Background="White">
+                                    <DataGrid x:Name="dgBaterias"
+                                              AutoGenerateColumns="False"
+                                              SelectionMode="Single"
+                                              SelectionUnit="FullRow"
+                                              CanUserAddRows="False"
+                                              CanUserDeleteRows="False"
+                                              IsReadOnly="True"
+                                              HeadersVisibility="Column"
+                                              GridLinesVisibility="Vertical"
+                                              RowHeight="28"
+                                              ColumnHeaderHeight="40"
+                                              FontSize="12"
+                                              VerticalGridLinesBrush="#D9D9D9"
+                                              HorizontalGridLinesBrush="#E4E8EE"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              SelectionChanged="dgBaterias_SelectionChanged">
+
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="No. Batería" Binding="{Binding NoBateria}" Width="130"/>
+                                            <DataGridTextColumn Header="Serie" Binding="{Binding Serie}" Width="120"/>
+                                            <DataGridTextColumn Header="Fecha Inicio Carga" Binding="{Binding FechaInicioCarga}" Width="145"/>
+                                            <DataGridTextColumn Header="Hora Inicio de Carga" Binding="{Binding HoraInicioCarga}" Width="145"/>
+                                            <DataGridTextColumn Header="Fecha Fin de Carga" Binding="{Binding FechaFinCarga}" Width="135"/>
+                                            <DataGridTextColumn Header="Hora Fin de Carga" Binding="{Binding HoraFinCarga}" Width="140"/>
+                                            <DataGridTextColumn Header="Tiempo de Carga" Binding="{Binding TiempoCarga}" Width="130"/>
+                                            <DataGridTextColumn Header="Nivel de Agua" Binding="{Binding NivelAgua}" Width="120"/>
+                                            <DataGridCheckBoxColumn Header="Cargada" Binding="{Binding Cargada}" Width="100"/>
+                                        </DataGrid.Columns>
+
+                                        <DataGrid.Resources>
+                                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
+                                        </DataGrid.Resources>
+                                    </DataGrid>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <Grid Grid.Column="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="12"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0"
+                                    Background="White"
+                                    CornerRadius="12"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    Padding="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Detalle"
+                                               FontSize="12"
+                                               Foreground="#6B7280"
+                                               Margin="4,0,0,8"/>
+
+                                    <Border Grid.Row="2"
+                                            BorderBrush="#D9DEE7"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Background="White">
+                                        <DataGrid x:Name="dgBateriaDetalle"
+                                                  AutoGenerateColumns="False"
+                                                  SelectionMode="Single"
+                                                  SelectionUnit="FullRow"
+                                                  CanUserAddRows="False"
+                                                  CanUserDeleteRows="False"
+                                                  IsReadOnly="True"
+                                                  HeadersVisibility="Column"
+                                                  GridLinesVisibility="Vertical"
+                                                  RowHeight="28"
+                                                  ColumnHeaderHeight="40"
+                                                  FontSize="12"
+                                                  VerticalGridLinesBrush="#D9D9D9"
+                                                  HorizontalGridLinesBrush="#E4E8EE">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="140"/>
+                                                <DataGridTextColumn Header="Valor" Binding="{Binding Valor}" Width="220"/>
+                                            </DataGrid.Columns>
+
+                                            <DataGrid.Resources>
+                                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                                <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                                                <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
+                                            </DataGrid.Resources>
+                                        </DataGrid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="2"
+                                    Background="White"
+                                    CornerRadius="12"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    Padding="12">
+                                <StackPanel>
+                                    <TextBlock Text="Observaciones"
+                                               FontSize="13"
+                                               Foreground="#374151"
+                                               Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtObservacionesBateria"
+                                             Height="90"
+                                             TextWrapping="Wrap"
+                                             AcceptsReturn="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             BorderBrush="#D1D5DB"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB CONFIGURACIÓN PREGUNTAS -->
+            <TabItem Style="{StaticResource ElegantTabItemStyle}">
+                <TabItem.Header>
+                    <TextBlock Text="Configuración-Preguntas"/>
+                </TabItem.Header>
+
+                <Grid Background="#F8FAFC">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0"
+                            Background="White"
+                            CornerRadius="12"
+                            Padding="16"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Tipo:"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       Foreground="#374151"/>
+
+                            <ComboBox x:Name="cmbTipoPregunta"
+                                      Grid.Column="1"
+                                      Height="38"
+                                      FontSize="13"
+                                      VerticalContentAlignment="Center"
+                                      SelectedIndex="0">
+                                <ComboBoxItem Content="HP"/>
+                                <ComboBoxItem Content="HS"/>
+                                <ComboBoxItem Content="Combustión"/>
+                                <ComboBoxItem Content="Genie"/>
+                                <ComboBoxItem Content="Traspaleta Eléctrica"/>
+                                <ComboBoxItem Content="Litio"/>
+                                <ComboBoxItem Content="Lavadora"/>
+                                <ComboBoxItem Content="Batería"/>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0"
+                                Background="White"
+                                CornerRadius="12"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Padding="16">
+                            <GroupBox Header="Preguntas"
+                                      FontWeight="SemiBold"
+                                      Foreground="#1F2937">
+                                <Grid Margin="8">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="12"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="12"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="16"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110"/>
+                                            <ColumnDefinition Width="400"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Pregunta:"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="13"
+                                                   Foreground="#374151"/>
+
+                                        <TextBox x:Name="txtPregunta"
+                                                 Grid.Column="1"
+                                                 Height="38"
+                                                 FontSize="13"
+                                                 VerticalContentAlignment="Center"
+                                                 Padding="10,0"
+                                                 BorderBrush="#D1D5DB"/>
+                                    </Grid>
+
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110"/>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="280"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Respuesta:"
+                                                   VerticalAlignment="Top"
+                                                   FontSize="13"
+                                                   Foreground="#374151"/>
+
+                                        <RadioButton x:Name="rbSiNo"
+                                                     Grid.Column="1"
+                                                     Content="Si / No"
+                                                     VerticalAlignment="Center"
+                                                     IsChecked="True"/>
+
+                                        <RadioButton x:Name="rbOpciones"
+                                                     Grid.Column="3"
+                                                     Content="Opciones (una por línea)"
+                                                     VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <TextBox x:Name="txtOpciones"
+                                             Grid.Row="4"
+                                             Width="420"
+                                             HorizontalAlignment="Left"
+                                             TextWrapping="Wrap"
+                                             AcceptsReturn="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             MinHeight="120"
+                                             BorderBrush="#D1D5DB"/>
+
+                                    <Button x:Name="BtnGuardarPregunta"
+                                            Grid.Row="6"
+                                            Width="180"
+                                            Height="38"
+                                            Content="Guardar Pregunta"
+                                            Click="BtnGuardarPregunta_Click"
+                                            Background="#2563EB"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            HorizontalAlignment="Left"
+                                            Cursor="Hand"/>
+                                </Grid>
+                            </GroupBox>
+                        </Border>
+
+                        <Border Grid.Row="2"
+                                Background="White"
+                                CornerRadius="12"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="110"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="Preguntas configuradas"
+                                               FontSize="12"
+                                               Foreground="#6B7280"
+                                               Margin="4,0,0,8"
+                                               VerticalAlignment="Center"/>
+
+                                    <Button x:Name="BtnEditarPregunta"
+                                            Grid.Column="1"
+                                            Height="34"
+                                            Content="Editar"
+                                            Click="BtnEditarPregunta_Click"
+                                            Background="White"
+                                            Foreground="#111827"
+                                            BorderBrush="#D1D5DB"
+                                            BorderThickness="1"
+                                            Cursor="Hand"/>
+
+                                    <Button x:Name="BtnEliminarPregunta"
+                                            Grid.Column="3"
+                                            Height="34"
+                                            Content="Eliminar"
+                                            Click="BtnEliminarPregunta_Click"
+                                            Background="White"
+                                            Foreground="#B91C1C"
+                                            BorderBrush="#FCA5A5"
+                                            BorderThickness="1"
+                                            Cursor="Hand"/>
+                                </Grid>
+
+                                <Border Grid.Row="2"
+                                        BorderBrush="#D9DEE7"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Background="White">
+                                    <DataGrid x:Name="dgPreguntas"
+                                              AutoGenerateColumns="False"
+                                              SelectionMode="Single"
+                                              SelectionUnit="FullRow"
+                                              CanUserAddRows="False"
+                                              CanUserDeleteRows="False"
+                                              IsReadOnly="True"
+                                              HeadersVisibility="Column"
+                                              GridLinesVisibility="Vertical"
+                                              RowHeight="28"
+                                              ColumnHeaderHeight="40"
+                                              FontSize="12"
+                                              VerticalGridLinesBrush="#D9D9D9"
+                                              HorizontalGridLinesBrush="#E4E8EE"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              SelectionChanged="dgPreguntas_SelectionChanged">
+
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Pregunta" Binding="{Binding Pregunta}" Width="420"/>
+                                            <DataGridTextColumn Header="Opciones" Binding="{Binding Opciones}" Width="320"/>
+                                        </DataGrid.Columns>
+
+                                        <DataGrid.Resources>
+                                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
+                                        </DataGrid.Resources>
+                                    </DataGrid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</UserControl>

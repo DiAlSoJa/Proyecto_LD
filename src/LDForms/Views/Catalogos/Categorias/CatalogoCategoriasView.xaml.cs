@@ -15,6 +15,9 @@ using LD.Contracts.Category;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Location;
 using LD.FormsX.Helpers;
+using LD.FormsX.Views.Categorias;
+using LD.FormsX.Views.Ubicaciones;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
 {
@@ -118,82 +121,34 @@ namespace LD.FormsX.Views
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                /*
-                var win = _serviceProvider.GetRequiredService<NuevoAlmacenWindow>();
-                win.Owner = Window.GetWindow(this);
+            var dialog = _serviceProvider.GetRequiredService<NuevaCategoriaView>();
+            dialog.Owner = Window.GetWindow(this);
 
-                var result = win.ShowDialog();
+            var result = dialog.ShowDialog();
 
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo almacenes...");
-                */
-            }
-            catch (Exception ex)
+            if (result == true)
             {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosAsync();
             }
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (_selectedX is null)
+                return;
+
+            var dialog = _serviceProvider.GetRequiredService<NuevaCategoriaView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetCategory(_selectedX);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
             {
-                /*
-                if (_selectedWarehouse == null)
-                {
-                    DialogHelper.ShowInfo("Selecciona un almacén.");
-                    return;
-                }
-
-                var win = _serviceProvider.GetRequiredService<NuevoAlmacenWindow>();
-                win.Owner = Window.GetWindow(this);
-                win.SetWarehouse(_selectedWarehouse);
-
-                var result = win.ShowDialog();
-
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo almacenes...");
-                */
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosAsync();
             }
         }
 
-        private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (_selectedX == null)
-                {
-                    DialogHelper.ShowInfo("Selecciona un almacén.");
-                    return;
-                }
-
-                bool confirmar = DialogHelper.ShowConfirm("¿Estás seguro de eliminar el almacén seleccionado?");
-
-                if (!confirmar)
-                    return;
-
-                // Ajusta este bloque al método real de tu servicio:
-                // var result = await _warehouseService.DeleteWarehouse(_selectedWarehouse.Id);
-
-                // if (!result.IsSuccess)
-                // {
-                //     DialogHelper.ShowWarning(result.Message);
-                //     return;
-                // }
-
-                DialogHelper.ShowSuccess("El almacén se eliminó correctamente.");
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-        }
+      
     }
 }

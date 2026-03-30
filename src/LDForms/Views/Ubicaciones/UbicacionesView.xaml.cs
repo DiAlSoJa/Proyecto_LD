@@ -15,6 +15,9 @@ using LD.Client.Services;
 using LD.Contracts.Location;
 using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
+using LD.FormsX.Views.Dialogs;
+using LD.FormsX.Views.Ubicaciones;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
 {
@@ -122,48 +125,44 @@ namespace LD.FormsX.Views
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            try
+            var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();
+            dialog.Owner = Window.GetWindow(this);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
             {
-                /*
-                var win = _serviceProvider.GetRequiredService<NuevoAlmacenWindow>();
-                win.Owner = Window.GetWindow(this);
-
-                var result = win.ShowDialog();
-
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo almacenes...");
-                */
+                await CargarDatosAsync();
             }
-            catch (Exception ex)
+        }
+        private async void BtnNuevoMasivo_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionMasivaView>();
+            dialog.Owner = Window.GetWindow(this);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
             {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosAsync();
             }
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            try
+
+            if (_selectedX is null)
+                return;
+
+            var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetLocation(_selectedX);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
             {
-                /*
-                if (_selectedWarehouse == null)
-                {
-                    DialogHelper.ShowInfo("Selecciona un almacén.");
-                    return;
-                }
-
-                var win = _serviceProvider.GetRequiredService<NuevoAlmacenWindow>();
-                win.Owner = Window.GetWindow(this);
-                win.SetWarehouse(_selectedWarehouse);
-
-                var result = win.ShowDialog();
-
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo almacenes...");
-                */
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosAsync();
             }
         }
 

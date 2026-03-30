@@ -1,0 +1,428 @@
+﻿<UserControl x:Class="LD.FormsX.Views.ASN.ASNView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Loaded="UserControl_Loaded">
+
+    <Grid Background="#F8FAFC">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="2.2*"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="2.3*"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra superior -->
+        <Border Grid.Row="0"
+                Background="White"
+                CornerRadius="12"
+                Padding="16"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="130"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="220"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="ASN"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937"/>
+                    <TextBlock Text="Administración y recepción de ASN"
+                               FontSize="13"
+                               Foreground="#6B7280"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <Button x:Name="BtnActualizar"
+                        Grid.Column="1"
+                        Height="38"
+                        Content="Actualizar"
+                        Click="BtnActualizar_Click"
+                        Background="White"
+                        Foreground="#111827"
+                        BorderBrush="#D1D5DB"
+                        BorderThickness="1"
+                        Cursor="Hand"/>
+
+                <Button x:Name="BtnNuevoASN"
+                        Grid.Column="3"
+                        Height="38"
+                        Content="Nuevo ASN"
+                        Click="BtnNuevoASN_Click"
+                        Background="#2563EB"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+
+                <Button x:Name="BtnRegistrarArribo"
+                        Grid.Column="5"
+                        Height="38"
+                        Content="Registrar arribo"
+                        Click="BtnRegistrarArribo_Click"
+                        Background="White"
+                        Foreground="#111827"
+                        BorderBrush="#D1D5DB"
+                        BorderThickness="1"
+                        Cursor="Hand"/>
+            </Grid>
+        </Border>
+
+        <!-- Grid ASN principal -->
+        <Border Grid.Row="2"
+                Background="White"
+                CornerRadius="12"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="txtStatusASN"
+                           Grid.Row="0"
+                           Text="Sin ASN para mostrar"
+                           FontSize="12"
+                           Foreground="#6B7280"
+                           Margin="4,0,0,8"/>
+
+                <Border Grid.Row="2"
+                        BorderBrush="#D9DEE7"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Background="White">
+                    <Grid>
+                        <DataGrid x:Name="dgASN"
+                                  AutoGenerateColumns="False"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="28"
+                                  ColumnHeaderHeight="40"
+                                  FontSize="12"
+                                  VerticalGridLinesBrush="#D9D9D9"
+                                  HorizontalGridLinesBrush="#E4E8EE"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  SelectionChanged="dgASN_SelectionChanged">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ASN" Binding="{Binding ASN}" Width="120"/>
+                                <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="130"/>
+                                <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="130"/>
+                                <DataGridTextColumn Header="Factura" Binding="{Binding Factura}" Width="120"/>
+                                <DataGridTextColumn Header="Guía" Binding="{Binding Guia}" Width="120"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
+                                <DataGridTextColumn Header="Bultos" Binding="{Binding Bultos}" Width="70"/>
+                                <DataGridTextColumn Header="Origen" Binding="{Binding Origen}" Width="120"/>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="90"/>
+                                <DataGridTextColumn Header="Hora" Binding="{Binding Hora}" Width="70"/>
+                                <DataGridTextColumn Header="ETA" Binding="{Binding ETA}" Width="120"/>
+                                <DataGridTextColumn Header="Orden de compra" Binding="{Binding OrdenCompra}" Width="130"/>
+                            </DataGrid.Columns>
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#EEF1F5"/>
+                                    <Setter Property="Foreground" Value="#16263D"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                    <Setter Property="Padding" Value="8,6"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                    <Setter Property="Padding" Value="8,4"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="Background" Value="White"/>
+                                </Style>
+                            </DataGrid.Resources>
+                        </DataGrid>
+
+                        <Border x:Name="LoadingOverlayASN"
+                                Background="#80FFFFFF"
+                                Visibility="Collapsed">
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True"
+                                             Width="220"
+                                             Height="18"/>
+                                <TextBlock x:Name="TxtLoadingASN"
+                                           Text="Cargando ASN..."
+                                           HorizontalAlignment="Center"
+                                           Margin="0,12,0,0"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#24344D"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Grid detalle / escaneo -->
+        <Border Grid.Row="4"
+                Background="White"
+                CornerRadius="12"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="BtnEscanear"
+                            Grid.Column="0"
+                            Height="38"
+                            Content="Escanear"
+                            Click="BtnEscanear_Click"
+                            Background="White"
+                            Foreground="#111827"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand"/>
+
+                    <TextBlock x:Name="txtStatusDetalle"
+                               Grid.Column="1"
+                               Text="Sin detalle para mostrar"
+                               FontSize="12"
+                               Foreground="#6B7280"
+                               VerticalAlignment="Center"
+                               Margin="12,0,0,0"/>
+                </Grid>
+
+                <Border Grid.Row="2"
+                        BorderBrush="#D9DEE7"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Background="White">
+                    <Grid>
+                        <DataGrid x:Name="dgDetalleASN"
+                                  AutoGenerateColumns="False"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="28"
+                                  ColumnHeaderHeight="40"
+                                  FontSize="12"
+                                  VerticalGridLinesBrush="#D9D9D9"
+                                  HorizontalGridLinesBrush="#E4E8EE"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  SelectionChanged="dgDetalleASN_SelectionChanged">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="160"/>
+                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="170"/>
+                                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="90"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80"/>
+                                <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="120"/>
+                                <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="130"/>
+                                <DataGridTextColumn Header="Referencia de Cliente" Binding="{Binding ReferenciaCliente}" Width="130"/>
+                                <DataGridTextColumn Header="Tipo de Cambio" Binding="{Binding TipoCambio}" Width="120"/>
+                                <DataGridTextColumn Header="Orden de Compra" Binding="{Binding OrdenCompra}" Width="125"/>
+                                <DataGridTextColumn Header="Pedimento" Binding="{Binding Pedimento}" Width="110"/>
+                                <DataGridTextColumn Header="Split" Binding="{Binding Split}" Width="80"/>
+                            </DataGrid.Columns>
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#EEF1F5"/>
+                                    <Setter Property="Foreground" Value="#16263D"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                    <Setter Property="Padding" Value="8,6"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                    <Setter Property="Padding" Value="8,4"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="Background" Value="White"/>
+                                </Style>
+                            </DataGrid.Resources>
+                        </DataGrid>
+
+                        <Border x:Name="LoadingOverlayDetalle"
+                                Background="#80FFFFFF"
+                                Visibility="Collapsed">
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True"
+                                             Width="220"
+                                             Height="18"/>
+                                <TextBlock x:Name="TxtLoadingDetalle"
+                                           Text="Cargando detalle..."
+                                           HorizontalAlignment="Center"
+                                           Margin="0,12,0,0"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#24344D"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Grid recepción -->
+        <Border Grid.Row="6"
+                Background="White"
+                CornerRadius="12"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="txtStatusRecepcion"
+                           Grid.Row="0"
+                           Text="Sin partidas recibidas"
+                           FontSize="12"
+                           Foreground="#6B7280"
+                           Margin="4,0,0,8"/>
+
+                <Border Grid.Row="2"
+                        BorderBrush="#D9DEE7"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Background="White">
+                    <Grid>
+                        <DataGrid x:Name="dgRecepcionASN"
+                                  AutoGenerateColumns="False"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="28"
+                                  ColumnHeaderHeight="40"
+                                  FontSize="12"
+                                  VerticalGridLinesBrush="#D9D9D9"
+                                  HorizontalGridLinesBrush="#E4E8EE"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="EstandarID" Binding="{Binding EstandarID}" Width="110"/>
+                                <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="170"/>
+                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="180"/>
+                                <DataGridTextColumn Header="Estandar" Binding="{Binding Estandar}" Width="110"/>
+                                <DataGridTextColumn Header="Maxima" Binding="{Binding Maxima}" Width="110"/>
+                                <DataGridTextColumn Header="Enviado" Binding="{Binding Enviado}" Width="100"/>
+                                <DataGridTextColumn Header="SD" Binding="{Binding SD}" Width="80"/>
+                                <DataGridTextColumn Header="Recibida" Binding="{Binding Recibida}" Width="100"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
+                                <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="110"/>
+                                <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="125"/>
+                                <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="130"/>
+                                <DataGridTextColumn Header="Referencia" Binding="{Binding Referencia}" Width="120"/>
+                            </DataGrid.Columns>
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#EEF1F5"/>
+                                    <Setter Property="Foreground" Value="#16263D"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                    <Setter Property="Padding" Value="8,6"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                    <Setter Property="Padding" Value="8,4"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="Background" Value="White"/>
+                                </Style>
+                            </DataGrid.Resources>
+                        </DataGrid>
+
+                        <Border x:Name="LoadingOverlayRecepcion"
+                                Background="#80FFFFFF"
+                                Visibility="Collapsed">
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True"
+                                             Width="220"
+                                             Height="18"/>
+                                <TextBlock x:Name="TxtLoadingRecepcion"
+                                           Text="Cargando recepción..."
+                                           HorizontalAlignment="Center"
+                                           Margin="0,12,0,0"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#24344D"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

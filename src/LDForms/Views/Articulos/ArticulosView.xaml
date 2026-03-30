@@ -34,11 +34,11 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                    <TextBlock Text="Ubicaciones"
+                    <TextBlock Text="Artículos"
                                FontSize="24"
                                FontWeight="SemiBold"
                                Foreground="#1F2937"/>
-                    <TextBlock Text="Consulta, crea y edita ubicaciones"
+                    <TextBlock Text="Consulta, crea y edita artículos"
                                FontSize="13"
                                Foreground="#6B7280"
                                Margin="0,4,0,0"/>

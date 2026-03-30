@@ -1,13 +1,14 @@
-﻿using LD.Client.Services;
-using LD.Contracts.Client;
-
-using LD.FormsX.Helpers;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using LD.Client.Services;
+using LD.Contracts.Client;
+using LD.FormsX.Helpers;
+
+using LD.FormsX.Views.Dialogs;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
 {
@@ -138,44 +139,31 @@ namespace LD.FormsX.Views
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-               /* var win = _serviceProvider.GetRequiredService<NuevoClienteWindow>();
-                win.Owner = Window.GetWindow(this);
+            var dialog = _serviceProvider.GetRequiredService<NuevoClienteView>();
+            dialog.Owner = Window.GetWindow(this);
 
-                var result = win.ShowDialog();
+            var result = dialog.ShowDialog();
 
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo clientes...");*/
-            }
-            catch (Exception ex)
+            if (result == true)
             {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosAsync();
             }
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (_selectedClient is null)
+                return;
+
+            var dialog = _serviceProvider.GetRequiredService<NuevoClienteView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetClient(_selectedClient);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
             {
-               /* if (_selectedClient == null)
-                {
-                    DialogHelper.ShowInfo("Selecciona un cliente.");
-                    return;
-                }
-
-                var win = _serviceProvider.GetRequiredService<NuevoClienteWindow>();
-                win.Owner = Window.GetWindow(this);
-                win.SetClient(_selectedClient);
-
-                var result = win.ShowDialog();
-
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo clientes...");*/
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosAsync();
             }
         }
 

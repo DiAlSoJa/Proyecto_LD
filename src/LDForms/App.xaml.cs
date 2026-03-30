@@ -1,10 +1,29 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using LD.Client;
 using LD.Client.Services;
 using LD.Forms.Configuration;
+using LD.FormsX.Movimientos;
 using LD.FormsX.Views;
+using LD.FormsX.Views.Almacen;
+using LD.FormsX.Views.Articulos;
+using LD.FormsX.Views.ASN;
+using LD.FormsX.Views.Auditar;
 using LD.FormsX.Views.Catalogos;
+using LD.FormsX.Views.Categorias;
+using LD.FormsX.Views.CheckList;
+using LD.FormsX.Views.Common;
+using LD.FormsX.Views.ControlPatio;
+using LD.FormsX.Views.Dialogs;
+using LD.FormsX.Views.Familias;
+using LD.FormsX.Views.Inventario;
+using LD.FormsX.Views.InventarioAleatorio;
+using LD.FormsX.Views.Monedas;
+using LD.FormsX.Views.Reportes;
+using LD.FormsX.Views.Status;
+using LD.FormsX.Views.Ubicaciones;
+using LD.FormsX.Views.Unidades;
 using LDForms;
 using LDForms.Views;
 using Microsoft.Extensions.Configuration;
@@ -84,6 +103,29 @@ namespace LD.FormsX
             services.AddTransient<CatalogoMonedasView>();
             services.AddTransient<CatalogoFamiliasView>();
             services.AddTransient<CatalogosView>();
+            services.AddTransient<InventarioView>();
+            services.AddTransient<MovimientosView>();
+            services.AddTransient<ASNView>();
+            services.AddTransient<AuditarView>();
+            services.AddTransient<InventarioCiclicoView>();
+            services.AddTransient<CheckListView>();
+            services.AddTransient<ReportesView>();
+            services.AddTransient<ControlPatioView>();
+
+            // dialogs
+            services.AddTransient<DialogWindow>();
+            services.AddTransient<NuevoClienteView>();
+            services.AddTransient<NuevoAlmacenView>();
+            services.AddTransient<NuevaUbicacionView>();
+            services.AddTransient<NuevaUbicacionMasivaView>();
+            services.AddTransient<NuevoStatusView>();
+            services.AddTransient<NuevaCategoriaView>();
+            services.AddTransient<NuevaUnidadView>();
+            services.AddTransient<NuevaMonedaView>();
+            services.AddTransient<NuevaFamiliaView>();
+            services.AddTransient<NuevoArticuloView>();
+            services.AddTransient<NuevaAuditoriaView>();
+            services.AddTransient<NuevoEquipoCheckListView>();
         }
     }
 }

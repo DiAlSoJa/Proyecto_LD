@@ -33,7 +33,6 @@
             lblClose = new Label();
             pictureBox1 = new PictureBox();
             flwMenu = new FlowLayoutPanel();
-
             clientBtn = new Button();
             projectBtn = new Button();
             warehouseBtn = new Button();
@@ -51,7 +50,6 @@
             shipmentBtn = new Button();
             reportBtn = new Button();
             yardControlBtn = new Button();
-
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             flwMenu.SuspendLayout();
@@ -65,21 +63,19 @@
             panel1.Controls.Add(pictureBox1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1285, 131);
+            panel1.Size = new Size(1469, 175);
             panel1.TabIndex = 1;
             // 
             // searchWindow
             // 
             searchWindow.BorderStyle = BorderStyle.None;
             searchWindow.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-
-            searchWindow.Location = new Point(431, 36);
-
+            searchWindow.Location = new Point(493, 48);
+            searchWindow.Margin = new Padding(3, 4, 3, 4);
             searchWindow.Name = "searchWindow";
             searchWindow.PlaceholderText = "Escriba para buscar";
-            searchWindow.Size = new Size(534, 22);
+            searchWindow.Size = new Size(610, 27);
             searchWindow.TabIndex = 0;
             // 
             // lblClose
@@ -87,30 +83,24 @@
             lblClose.AutoSize = true;
             lblClose.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblClose.ForeColor = SystemColors.ControlDarkDark;
-
-            lblClose.Location = new Point(1061, 41);
-
+            lblClose.Location = new Point(1213, 55);
             lblClose.Name = "lblClose";
-            lblClose.Size = new Size(17, 19);
+            lblClose.Size = new Size(20, 23);
             lblClose.TabIndex = 3;
             lblClose.Text = "X";
             // 
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.searchBar;
-            pictureBox1.Location = new Point(317, 15);
-            pictureBox1.Margin = new Padding(3, 2, 3, 2);
+            pictureBox1.Location = new Point(362, 20);
             pictureBox1.Name = "pictureBox1";
-
-            pictureBox1.Size = new Size(767, 62);
-
+            pictureBox1.Size = new Size(877, 83);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
             // flwMenu
             // 
             flwMenu.BackColor = Color.White;
-
             flwMenu.Controls.Add(clientBtn);
             flwMenu.Controls.Add(projectBtn);
             flwMenu.Controls.Add(warehouseBtn);
@@ -128,203 +118,189 @@
             flwMenu.Controls.Add(shipmentBtn);
             flwMenu.Controls.Add(reportBtn);
             flwMenu.Controls.Add(yardControlBtn);
-
             flwMenu.Dock = DockStyle.Fill;
-            flwMenu.Location = new Point(0, 131);
-            flwMenu.Margin = new Padding(3, 2, 3, 2);
+            flwMenu.Location = new Point(0, 175);
             flwMenu.Name = "flwMenu";
-            flwMenu.Padding = new Padding(9, 8, 9, 8);
-            flwMenu.Size = new Size(1285, 470);
+            flwMenu.Padding = new Padding(10, 11, 10, 11);
+            flwMenu.Size = new Size(1469, 626);
             flwMenu.TabIndex = 1;
             // 
             // clientBtn
             // 
-
             clientBtn.Cursor = Cursors.Hand;
             clientBtn.Image = Properties.Resources.clientes;
-            clientBtn.Location = new Point(13, 14);
+            clientBtn.Location = new Point(13, 15);
+            clientBtn.Margin = new Padding(3, 4, 3, 4);
             clientBtn.Name = "clientBtn";
-            clientBtn.Size = new Size(175, 80);
+            clientBtn.Size = new Size(200, 107);
             clientBtn.TabIndex = 1;
             clientBtn.Text = "Clientes";
             clientBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             clientBtn.UseVisualStyleBackColor = true;
             clientBtn.Click += button1_Click;
-
             // 
             // projectBtn
             // 
-
             projectBtn.Cursor = Cursors.Hand;
             projectBtn.Image = Properties.Resources.proyectos;
-            projectBtn.Location = new Point(194, 14);
+            projectBtn.Location = new Point(219, 15);
+            projectBtn.Margin = new Padding(3, 4, 3, 4);
             projectBtn.Name = "projectBtn";
-            projectBtn.Size = new Size(175, 80);
+            projectBtn.Size = new Size(200, 107);
             projectBtn.TabIndex = 2;
             projectBtn.Text = "Proyectos";
             projectBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             projectBtn.UseVisualStyleBackColor = true;
             projectBtn.Click += button2_Click;
-
             // 
             // warehouseBtn
             // 
-
             warehouseBtn.Cursor = Cursors.Hand;
             warehouseBtn.Image = Properties.Resources.almacen;
-            warehouseBtn.Location = new Point(375, 14);
+            warehouseBtn.Location = new Point(425, 15);
+            warehouseBtn.Margin = new Padding(3, 4, 3, 4);
             warehouseBtn.Name = "warehouseBtn";
-            warehouseBtn.Size = new Size(175, 80);
+            warehouseBtn.Size = new Size(200, 107);
             warehouseBtn.TabIndex = 3;
             warehouseBtn.Text = "Almacenes";
             warehouseBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             warehouseBtn.UseVisualStyleBackColor = true;
             warehouseBtn.Click += button3_Click;
-
             // 
             // locationBtn
             // 
-
             locationBtn.Cursor = Cursors.Hand;
             locationBtn.Image = Properties.Resources.ubicaciones;
-            locationBtn.Location = new Point(556, 14);
+            locationBtn.Location = new Point(631, 15);
+            locationBtn.Margin = new Padding(3, 4, 3, 4);
             locationBtn.Name = "locationBtn";
-            locationBtn.Size = new Size(175, 80);
+            locationBtn.Size = new Size(200, 107);
             locationBtn.TabIndex = 4;
             locationBtn.Text = "Ubicaciones";
             locationBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             locationBtn.UseVisualStyleBackColor = true;
             locationBtn.Click += button4_Click;
-
             // 
             // productBtn
             // 
-
             productBtn.Cursor = Cursors.Hand;
             productBtn.Image = Properties.Resources.articulos;
-            productBtn.Location = new Point(737, 14);
+            productBtn.Location = new Point(837, 15);
+            productBtn.Margin = new Padding(3, 4, 3, 4);
             productBtn.Name = "productBtn";
-            productBtn.Size = new Size(175, 80);
+            productBtn.Size = new Size(200, 107);
             productBtn.TabIndex = 5;
             productBtn.Text = "Artículos";
             productBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             productBtn.UseVisualStyleBackColor = true;
             productBtn.Click += button5_Click;
-
             // 
             // inventoryBtn
             // 
-
             inventoryBtn.Cursor = Cursors.Hand;
             inventoryBtn.Image = Properties.Resources.inventario;
-            inventoryBtn.Location = new Point(918, 14);
+            inventoryBtn.Location = new Point(1043, 15);
+            inventoryBtn.Margin = new Padding(3, 4, 3, 4);
             inventoryBtn.Name = "inventoryBtn";
-            inventoryBtn.Size = new Size(175, 80);
+            inventoryBtn.Size = new Size(200, 107);
             inventoryBtn.TabIndex = 16;
             inventoryBtn.Text = "Inventario";
             inventoryBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             inventoryBtn.UseVisualStyleBackColor = true;
             inventoryBtn.Click += button16_Click;
-
             // 
             // movementBtn
             // 
-
             movementBtn.Cursor = Cursors.Hand;
             movementBtn.Image = Properties.Resources.transaccion;
-            movementBtn.Location = new Point(1099, 14);
+            movementBtn.Location = new Point(1249, 15);
+            movementBtn.Margin = new Padding(3, 4, 3, 4);
             movementBtn.Name = "movementBtn";
-            movementBtn.Size = new Size(175, 80);
+            movementBtn.Size = new Size(200, 107);
             movementBtn.TabIndex = 15;
             movementBtn.Text = "Movimientos";
             movementBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             movementBtn.UseVisualStyleBackColor = true;
             movementBtn.Click += button15_Click;
-
             // 
             // asnBtn
             // 
-
             asnBtn.Cursor = Cursors.Hand;
             asnBtn.Image = Properties.Resources.asn;
-            asnBtn.Location = new Point(1280, 14);
+            asnBtn.Location = new Point(13, 130);
+            asnBtn.Margin = new Padding(3, 4, 3, 4);
             asnBtn.Name = "asnBtn";
-            asnBtn.Size = new Size(175, 80);
+            asnBtn.Size = new Size(200, 107);
             asnBtn.TabIndex = 7;
             asnBtn.Text = "ASN";
             asnBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             asnBtn.UseVisualStyleBackColor = true;
             asnBtn.Click += button7_Click;
-
             // 
             // auditBtn
             // 
-
             auditBtn.Cursor = Cursors.Hand;
             auditBtn.Image = Properties.Resources.auditar;
-            auditBtn.Location = new Point(13, 100);
+            auditBtn.Location = new Point(219, 130);
+            auditBtn.Margin = new Padding(3, 4, 3, 4);
             auditBtn.Name = "auditBtn";
-            auditBtn.Size = new Size(175, 80);
+            auditBtn.Size = new Size(200, 107);
             auditBtn.TabIndex = 11;
             auditBtn.Text = "Auditar";
             auditBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             auditBtn.UseVisualStyleBackColor = true;
             auditBtn.Click += button11_Click;
-
             // 
             // randomInventoryBtn
             // 
-
             randomInventoryBtn.Cursor = Cursors.Hand;
             randomInventoryBtn.Image = Properties.Resources.aleatorio;
-            randomInventoryBtn.Location = new Point(194, 100);
+            randomInventoryBtn.Location = new Point(425, 130);
+            randomInventoryBtn.Margin = new Padding(3, 4, 3, 4);
             randomInventoryBtn.Name = "randomInventoryBtn";
-            randomInventoryBtn.Size = new Size(175, 80);
+            randomInventoryBtn.Size = new Size(200, 107);
             randomInventoryBtn.TabIndex = 13;
             randomInventoryBtn.Text = "Inventario Aleatorio";
             randomInventoryBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             randomInventoryBtn.UseVisualStyleBackColor = true;
             randomInventoryBtn.Click += button13_Click;
-
             // 
             // userBtn
             // 
-
             userBtn.Cursor = Cursors.Hand;
             userBtn.Image = Properties.Resources.acceso;
-            userBtn.Location = new Point(375, 100);
+            userBtn.Location = new Point(631, 130);
+            userBtn.Margin = new Padding(3, 4, 3, 4);
             userBtn.Name = "userBtn";
-            userBtn.Size = new Size(175, 80);
+            userBtn.Size = new Size(200, 107);
             userBtn.TabIndex = 17;
             userBtn.Text = "Usuarios";
             userBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             userBtn.UseVisualStyleBackColor = true;
             userBtn.Click += button17_Click;
-
             // 
             // checkListBtn
             // 
-
             checkListBtn.Cursor = Cursors.Hand;
             checkListBtn.Image = Properties.Resources.montacargas;
-            checkListBtn.Location = new Point(556, 100);
+            checkListBtn.Location = new Point(837, 130);
+            checkListBtn.Margin = new Padding(3, 4, 3, 4);
             checkListBtn.Name = "checkListBtn";
-            checkListBtn.Size = new Size(175, 80);
+            checkListBtn.Size = new Size(200, 107);
             checkListBtn.TabIndex = 6;
             checkListBtn.Text = "CheckList Montacargas";
             checkListBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             checkListBtn.UseVisualStyleBackColor = true;
             checkListBtn.Click += button6_Click;
-
             // 
             // catalogBtn
             // 
-
             catalogBtn.Cursor = Cursors.Hand;
             catalogBtn.Image = Properties.Resources.catalogos;
-            catalogBtn.Location = new Point(737, 100);
+            catalogBtn.Location = new Point(1043, 130);
+            catalogBtn.Margin = new Padding(3, 4, 3, 4);
             catalogBtn.Name = "catalogBtn";
-            catalogBtn.Size = new Size(175, 80);
+            catalogBtn.Size = new Size(200, 107);
             catalogBtn.TabIndex = 20;
             catalogBtn.Text = "Catálogos";
             catalogBtn.TextImageRelation = TextImageRelation.ImageAboveText;
@@ -335,23 +311,24 @@
             // 
             pickingBtn.Cursor = Cursors.Hand;
             pickingBtn.Image = Properties.Resources.surtido;
-            pickingBtn.Location = new Point(918, 100);
+            pickingBtn.Location = new Point(1249, 130);
+            pickingBtn.Margin = new Padding(3, 4, 3, 4);
             pickingBtn.Name = "pickingBtn";
-            pickingBtn.Size = new Size(175, 80);
+            pickingBtn.Size = new Size(200, 107);
             pickingBtn.TabIndex = 10;
             pickingBtn.Text = "Surtido";
             pickingBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             pickingBtn.UseVisualStyleBackColor = true;
-
+            pickingBtn.Click += pickingBtn_Click;
             // 
             // shipmentBtn
             // 
-
             shipmentBtn.Cursor = Cursors.Hand;
             shipmentBtn.Image = Properties.Resources.salida1;
-            shipmentBtn.Location = new Point(1099, 100);
+            shipmentBtn.Location = new Point(13, 245);
+            shipmentBtn.Margin = new Padding(3, 4, 3, 4);
             shipmentBtn.Name = "shipmentBtn";
-            shipmentBtn.Size = new Size(175, 80);
+            shipmentBtn.Size = new Size(200, 107);
             shipmentBtn.TabIndex = 12;
             shipmentBtn.Text = "Embarques";
             shipmentBtn.TextImageRelation = TextImageRelation.ImageAboveText;
@@ -361,9 +338,10 @@
             // 
             reportBtn.Cursor = Cursors.Hand;
             reportBtn.Image = Properties.Resources.grafica1;
-            reportBtn.Location = new Point(1280, 100);
+            reportBtn.Location = new Point(219, 245);
+            reportBtn.Margin = new Padding(3, 4, 3, 4);
             reportBtn.Name = "reportBtn";
-            reportBtn.Size = new Size(175, 80);
+            reportBtn.Size = new Size(200, 107);
             reportBtn.TabIndex = 14;
             reportBtn.Text = "Reportes";
             reportBtn.TextImageRelation = TextImageRelation.ImageAboveText;
@@ -373,24 +351,23 @@
             // 
             yardControlBtn.Cursor = Cursors.Hand;
             yardControlBtn.Image = Properties.Resources.controlPatio;
-            yardControlBtn.Location = new Point(13, 186);
+            yardControlBtn.Location = new Point(425, 245);
+            yardControlBtn.Margin = new Padding(3, 4, 3, 4);
             yardControlBtn.Name = "yardControlBtn";
-            yardControlBtn.Size = new Size(175, 80);
+            yardControlBtn.Size = new Size(200, 107);
             yardControlBtn.TabIndex = 19;
             yardControlBtn.Text = "Control de Patio";
             yardControlBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             yardControlBtn.UseVisualStyleBackColor = true;
             // 
-
             // FrmMenu
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1285, 601);
+            ClientSize = new Size(1469, 801);
             Controls.Add(flwMenu);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmMenu";
             Text = "FrmMenu";
             panel1.ResumeLayout(false);

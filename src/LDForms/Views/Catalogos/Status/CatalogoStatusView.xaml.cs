@@ -13,35 +13,37 @@ using System.Windows.Shapes;
 using LD.Client.Services;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Location;
-using LD.Contracts.Units;
 using LD.FormsX.Helpers;
+using LD.FormsX.Views.Almacen;
+using LD.FormsX.Views.Dialogs;
+using LD.FormsX.Views.Status;
+using LD.FormsX.Views.Ubicaciones;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
 {
     /// <summary>
     /// Lógica de interacción para CatalogoStatusView.xaml
     /// </summary>
-    public partial class CatalogoUnidadesView : UserControl
+    public partial class CatalogoStatusView : UserControl
     {
-        private readonly UnitService _service;
+        private readonly InventaryStatusService _service;
         private readonly IServiceProvider _serviceProvider;
 
-        private readonly WpfGridFilter<UnitDto> _gridFilter;
+        private readonly WpfGridFilter<InventaryStatusDto> _gridFilter;
 
-        private UnitDto? _selectedX;
+        private InventaryStatusDto? _selectedX;
         private bool _loaded;
-        public CatalogoUnidadesView(UnitService serviceX, IServiceProvider serviceProvider)
+        public CatalogoStatusView(InventaryStatusService serviceX, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _service = serviceX;
             _serviceProvider = serviceProvider;
-            _gridFilter = new WpfGridFilter<UnitDto>(dg, txtBuscar);
+            _gridFilter = new WpfGridFilter<InventaryStatusDto>(dg, txtBuscar);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
-                
-                 { "Unidad", 150 },
+                { "Unidad", 150 },
                  { "Descripcion", 250 }
-                
             });
 
         }
@@ -51,7 +53,7 @@ namespace LD.FormsX.Views
             if (_loaded) return;
             _loaded = true;
 
-            await CargarDatosConLoaderAsync("Trayendo unidades...");
+            await CargarDatosConLoaderAsync("Trayendo estatus...");
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -79,7 +81,7 @@ namespace LD.FormsX.Views
 
         private async Task CargarDatosAsync()
         {
-            var result = await _service.GetUnits();
+            var result = await _service.GetInventaryStatus();
 
             if (!result.IsSuccess)
             {
@@ -94,7 +96,7 @@ namespace LD.FormsX.Views
 
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
-            await CargarDatosConLoaderAsync("Trayendo unidades...");
+            await CargarDatosConLoaderAsync("Trayendo estatus...");
         }
 
         private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
@@ -116,82 +118,34 @@ namespace LD.FormsX.Views
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                /*
-                var win = _serviceProvider.GetRequiredService<NuevoAlmacenWindow>();
-                win.Owner = Window.GetWindow(this);
+            var dialog = _serviceProvider.GetRequiredService<NuevoStatusView>();
+            dialog.Owner = Window.GetWindow(this);
 
-                var result = win.ShowDialog();
+            var result = dialog.ShowDialog();
 
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo almacenes...");
-                */
-            }
-            catch (Exception ex)
+            if (result == true)
             {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosAsync();
             }
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (_selectedX is null)
+                return;
+
+            var dialog = _serviceProvider.GetRequiredService<NuevoStatusView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetInventaryStatus(_selectedX);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
             {
-                /*
-                if (_selectedWarehouse == null)
-                {
-                    DialogHelper.ShowInfo("Selecciona un almacén.");
-                    return;
-                }
-
-                var win = _serviceProvider.GetRequiredService<NuevoAlmacenWindow>();
-                win.Owner = Window.GetWindow(this);
-                win.SetWarehouse(_selectedWarehouse);
-
-                var result = win.ShowDialog();
-
-                if (result == true)
-                    await CargarDatosConLoaderAsync("Trayendo almacenes...");
-                */
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
+                await CargarDatosConLoaderAsync("Trayendo estatus...");
             }
         }
 
-        private async void BtnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (_selectedX == null)
-                {
-                    DialogHelper.ShowInfo("Selecciona un almacén.");
-                    return;
-                }
-
-                bool confirmar = DialogHelper.ShowConfirm("¿Estás seguro de eliminar el almacén seleccionado?");
-
-                if (!confirmar)
-                    return;
-
-                // Ajusta este bloque al método real de tu servicio:
-                // var result = await _warehouseService.DeleteWarehouse(_selectedWarehouse.Id);
-
-                // if (!result.IsSuccess)
-                // {
-                //     DialogHelper.ShowWarning(result.Message);
-                //     return;
-                // }
-
-                DialogHelper.ShowSuccess("El almacén se eliminó correctamente.");
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-        }
+       
     }
 }
