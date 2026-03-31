@@ -16,6 +16,7 @@ using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
+using LD.FormsX.Views.Proyectos;
 using LD.FormsX.Views.Reportes;
 using LD.FormsX.Views.Usuarios;
 using LD.Formx.Core;
@@ -139,7 +140,7 @@ namespace LDForms
                     break;
 
                 case "Proyectos":
-                    AbrirTab("Proyectos", _serviceProvider.GetRequiredService<projec>());
+                    AbrirTab("Proyectos", _serviceProvider.GetRequiredService<ProyectosView>());
                     break;
                 case "Ubicaciones":
                     AbrirTab("Ubicaciones", _serviceProvider.GetRequiredService<UbicacionesView>());
@@ -193,7 +194,7 @@ namespace LDForms
                     break;
 
                 case "Proyectos":
-                   
+                    AbrirVentana("Proyectos", _serviceProvider.GetRequiredService<ProyectosView>());
                     break;
 
                 case "Ubicaciones":
