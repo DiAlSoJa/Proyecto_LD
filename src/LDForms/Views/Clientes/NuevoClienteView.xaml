@@ -45,7 +45,7 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#16A34A"/>
+            <Setter Property="Background" Value="#233167"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="18,0"/>
@@ -152,14 +152,14 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="52"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="72"/>
                 </Grid.RowDefinitions>
 
                 <!-- Header -->
                 <Border Grid.Row="0"
-                        Background="#16A34A"
+                        Background="#233167"
                         CornerRadius="16,16,0,0"
                         MouseLeftButtonDown="Header_MouseLeftButtonDown">
                     <Grid Margin="16,0,10,0">
