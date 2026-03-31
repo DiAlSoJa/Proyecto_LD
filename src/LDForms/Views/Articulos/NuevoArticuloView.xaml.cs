@@ -156,7 +156,7 @@ namespace LD.FormsX.Views.Articulos
             }
         }
 
-        private async Task SetCombosCategoriesFam(string selectedValue = "")
+        private async Task SetCombosCategories(string selectedValue = "")
         {
             try
             {
@@ -195,6 +195,41 @@ namespace LD.FormsX.Views.Articulos
                 {
                     cmbCategoria.ItemsSource = null;
                 }
+
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _cargandoDatos = false;
+            }
+        }
+        private async Task SetCombosFamilias(string selectedValue = "")
+        {
+            try
+            {
+                _cargandoDatos = true;
+
+                if (cmbCliente.SelectedValue == null || cmbProyecto.SelectedValue == null)
+                {
+                    cmbCategoria.ItemsSource = null;
+                    cmbFamilia.ItemsSource = null;
+                    return;
+                }
+
+                if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
+                    return;
+
+                if (!int.TryParse(cmbProyecto.SelectedValue.ToString(), out int proyectoId) || proyectoId <= 0)
+                {
+                    cmbCategoria.ItemsSource = null;
+                    cmbFamilia.ItemsSource = null;
+                    return;
+                }
+
+              
 
                 var familias = await _lookupService.GetFamilyClientLookup(clienteId, proyectoId);
                 if (familias.IsSuccess && familias.Data != null)
@@ -240,18 +275,22 @@ namespace LD.FormsX.Views.Articulos
                 var item = response.Data;
 
                 // Encabezado
-                cmbCliente.SelectedValue = item.Cliente.ToString();
-              /*  await SetCombosProjects(item.ProjectId.ToString());
-                await SetCombosCategoriesFam();
+                cmbCliente.SelectedValue = item.ClientId.ToString();
+                await SetCombosProjects(item.ProjectId.ToString());
+                
 
                 // Generales
-                txtNoParte.Text = item.NumeroParte ?? string.Empty;
-                txtDescripcion.Text = item.Descripcion ?? string.Empty;
-
-                cmbCategoria.SelectedValue = item..ToString();
+                txtNoParte.Text = item.PartNumber ?? string.Empty;
+                txtDescripcion.Text = item.Description ?? string.Empty;
+                
+                cmbCategoria.SelectedValue = item.CategoryId.ToString();
                 cmbFamilia.SelectedValue = item.FamilyId.ToString();
+                await SetCombosFamilias(item.FamilyId.ToString());
+                await SetCombosCategories(item.CategoryId.ToString());
+                
+                
 
-                chkActivo.IsChecked = item.Active;
+                //chkActivo.IsChecked = item.a
                 chkTemperatura.IsChecked = item.IsTemperatureControlled;
                 chkVMI.IsChecked = item.IsVMI;
                 chkBOM.IsChecked = item.IsBOM;
@@ -304,7 +343,7 @@ namespace LD.FormsX.Views.Articulos
                 cmbDimension.SelectedValue = item.DimensionerId;
 
                 // Avanzada
-                cmbProveedor.SelectedValue = item.SupplierId?.ToString();
+              /*  cmbProveedor.SelectedValue = item.SupplierId?.ToString();
                 txtNoParteProv.Text = item.SupplierPartNumber ?? string.Empty;
 
                 rdNotificacionEmail.IsChecked = item.NotificationTypeId == 1;
@@ -409,6 +448,7 @@ namespace LD.FormsX.Views.Articulos
                 {
                     DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
                     ResponseForm = true;
+                    this.DialogResult = true;
                     Close();
                 }
                 else
@@ -435,7 +475,8 @@ namespace LD.FormsX.Views.Articulos
         private async void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_cargandoDatos) return;
-            await SetCombosCategoriesFam();
+            await SetCombosCategories();
+            await SetCombosFamilias();
         }
 
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)

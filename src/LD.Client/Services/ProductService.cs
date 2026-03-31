@@ -21,9 +21,9 @@ namespace LD.Client.Services
             return await _api.GetAsync<ApiResponseDto<List<ProductDto?>>>(_apiEndpoints.Product_GetAll);
         }
 
-        public async Task<ApiResponseDto<ProductDto>> GetItemById(int itemId)
+        public async Task<ApiResponseDto<ProductRequest>> GetItemById(int itemId)
         {
-            return await _api.GetAsync<ApiResponseDto<ProductDto>>(_apiEndpoints.Product_GetById.Replace("{id}", itemId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<ProductRequest>>(_apiEndpoints.Product_GetById.Replace("{id}", itemId.ToString()));
         }
 
         public async Task<ApiResponseDto<string>> CreateItem(ProductRequest request)

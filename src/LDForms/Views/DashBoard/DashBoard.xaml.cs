@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,6 +21,7 @@ using LD.FormsX.Views.Reportes;
 using LD.Formx.Core;
 using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
+using System.Windows.Interop;
 
 namespace LDForms
 {
@@ -27,6 +29,13 @@ namespace LDForms
     {
         private bool _omitNextClick;
         private readonly IServiceProvider _serviceProvider;
+        private const int MONITOR_DEFAULTTONEAREST = 0x00000002;
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, int dwFlags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
         public DashBoard(IServiceProvider serviceProvider)
         {
@@ -38,6 +47,124 @@ namespace LDForms
         {
             SetVisibility();
         }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            var handle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+            System.Windows.Interop.HwndSource.FromHwnd(handle)?.AddHook(WindowProc);
+        }
+
+        private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            const int WM_GETMINMAXINFO = 0x0024;
+
+            if (msg == WM_GETMINMAXINFO)
+            {
+                WmGetMinMaxInfo(hwnd, lParam);
+                handled = true;
+            }
+
+            return IntPtr.Zero;
+        }
+
+        private void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+        {
+            var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+
+            IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            if (monitor != IntPtr.Zero)
+            {
+                MONITORINFO monitorInfo = new MONITORINFO();
+                GetMonitorInfo(monitor, ref monitorInfo);
+
+                RECT rcWorkArea = monitorInfo.rcWork;
+                RECT rcMonitorArea = monitorInfo.rcMonitor;
+
+                mmi.ptMaxPosition.x = rcWorkArea.left - rcMonitorArea.left;
+                mmi.ptMaxPosition.y = rcWorkArea.top - rcMonitorArea.top;
+                mmi.ptMaxSize.x = rcWorkArea.right - rcWorkArea.left;
+                mmi.ptMaxSize.y = rcWorkArea.bottom - rcWorkArea.top;
+            }
+
+            Marshal.StructureToPtr(mmi, lParam, true);
+        }
+
+     
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int x;
+            public int y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MONITORINFO
+        {
+            public int cbSize;
+            public RECT rcMonitor;
+            public RECT rcWork;
+            public int dwFlags;
+
+            public MONITORINFO()
+            {
+                cbSize = Marshal.SizeOf(typeof(MONITORINFO));
+                rcMonitor = new RECT();
+                rcWork = new RECT();
+                dwFlags = 0;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+
+       
+
+        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void BtnMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleMaximize();
+        }
+
+        private void ToggleMaximize()
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+                btnMaximize.Content = "□";
+            }
+            else
+            {
+                WindowState = WindowState.Maximized;
+                btnMaximize.Content = "❐";
+            }
+        }
+
+
+
+
         private void SetVisibility()
         {
             ClientesBtn.Visibility = HasModule(Module_e.Clients);
@@ -79,29 +206,6 @@ namespace LDForms
                 DragMove();
         }
 
-        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void BtnMaximize_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleMaximize();
-        }
-
-        private void ToggleMaximize()
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                btnMaximize.Content = "□";
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-                btnMaximize.Content = "❐";
-            }
-        }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {

@@ -34,6 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\montacargas_hp_der.png" />
+    <None Remove="Resources\Images\montacargas_hp_izq.png" />
     <None Remove="Resources\logo.png" />
   </ItemGroup>
 
@@ -63,6 +65,8 @@
     <Resource Include="Resources\Images\logo.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\montacargas_hp_der.png" />
+    <Resource Include="Resources\Images\montacargas_hp_izq.png" />
   </ItemGroup>
 
   <ItemGroup>

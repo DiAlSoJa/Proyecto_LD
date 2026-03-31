@@ -157,7 +157,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="10"/>
-                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="160"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="10"/>
@@ -178,59 +178,161 @@
                                            Margin="0,4,0,0"/>
                             </StackPanel>
 
-                            <Button x:Name="BtnActualizarEquipo"
-                                    Grid.Column="1"
-                                    Height="38"
-                                    Content="Actualizar"
-                                    Click="BtnActualizarEquipo_Click"
-                                    Background="White"
-                                    Foreground="#111827"
-                                    BorderBrush="#D1D5DB"
-                                    BorderThickness="1"
-                                    Cursor="Hand"/>
+                            <Button x:Name="BtnActualizare"
+		                        Grid.Column="1"
+		                        Height="38"
+		                        Padding="12,0"
+		                        
+		                        Background="#F3F4F6"
+		                        Foreground="#374151"
+		                        BorderBrush="#D1D5DB"
+		                        BorderThickness="1"
+		                        Cursor="Hand">
 
-                            <Button x:Name="BtnAsignarUsuario"
-                                    Grid.Column="3"
-                                    Height="38"
-                                    Content="Asignar Usuario"
-                                    Click="BtnAsignarUsuario_Click"
-                                    Background="White"
-                                    Foreground="#111827"
-                                    BorderBrush="#D1D5DB"
-                                    BorderThickness="1"
-                                    Cursor="Hand"/>
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
 
-                            <Button x:Name="BtnNuevoEquipo"
-                                    Grid.Column="5"
-                                    Height="38"
-                                    Content="Nuevo Equipo"
-                                    Click="BtnNuevoEquipo_Click"
-                                    Background="#2563EB"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Cursor="Hand"/>
+                                <StackPanel Orientation="Horizontal"
+		                        VerticalAlignment="Center"
+		                        HorizontalAlignment="Center">
 
-                            <Button x:Name="BtnEditarEquipo"
-                                    Grid.Column="7"
-                                    Height="38"
-                                    Content="Editar"
-                                    Click="BtnEditarEquipo_Click"
-                                    Background="White"
-                                    Foreground="#111827"
-                                    BorderBrush="#D1D5DB"
-                                    BorderThickness="1"
-                                    Cursor="Hand"/>
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+		                           Text="&#xE895;"
+		                           Foreground="#10B981"
+		                           Margin="0,0,6,0"
+		                           FontSize="14"/>
 
-                            <Button x:Name="BtnEliminarEquipo"
-                                    Grid.Column="9"
-                                    Height="38"
-                                    Content="Eliminar"
-                                    Click="BtnEliminarEquipo_Click"
-                                    Background="White"
-                                    Foreground="#B91C1C"
-                                    BorderBrush="#FCA5A5"
-                                    BorderThickness="1"
-                                    Cursor="Hand"/>
+                                    <TextBlock Text="Actualizar"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="BtnActualizarss"
+		                        Grid.Column="3"
+		                        Height="38"
+		                        Padding="12,0"
+		                       
+		                        Background="#F3F4F6"
+		                        Foreground="#374151"
+		                        BorderBrush="#D1D5DB"
+		                        BorderThickness="3"
+		                        Cursor="Hand">
+
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                <StackPanel Orientation="Horizontal"
+		                        VerticalAlignment="Center"
+		                        HorizontalAlignment="Center">
+
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+		                           Text="&#xE716;"
+		                           Foreground="#10B981"
+		                           Margin="0,0,6,0"
+		                           FontSize="14"/>
+
+                                    <TextBlock Text="Asignar usuario"/>
+                                </StackPanel>
+                            </Button>
+
+
+
+                            <Button x:Name="btnNuevo"
+	                            Grid.Column="5"
+	                            Height="38"
+	                            Padding="12,0"
+	                            
+	                            Background="#F3F4F6"
+	                            Foreground="#374151"
+	                            BorderBrush="#D1D5DB"
+	                            BorderThickness="1"
+	                            Cursor="Hand">
+
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                <StackPanel Orientation="Horizontal"
+		                            VerticalAlignment="Center"
+		                            HorizontalAlignment="Center">
+
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+		                               Text="&#xE710;"
+		                               Foreground="#2563EB"
+		                               Margin="0,0,6,0"
+		                               FontSize="14"/>
+
+                                    <TextBlock Text="Nuevo"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="btnEditar"
+	                            Grid.Column="7"
+	                            Height="38"
+	                            Padding="12,0"
+	                            
+	                            Background="#F3F4F6"
+	                            Foreground="#374151"
+	                            BorderBrush="#D1D5DB"
+	                            BorderThickness="1"
+	                            Cursor="Hand">
+
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                <StackPanel Orientation="Horizontal"
+		                            VerticalAlignment="Center"
+		                            HorizontalAlignment="Center">
+
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+		                               Text="&#xE70F;"
+		                               Foreground="#F59E0B"
+		                               Margin="0,0,6,0"
+		                               FontSize="14"/>
+
+                                    <TextBlock Text="Editar"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="BtnActualizar"
+		                    Grid.Column="9"
+		                    Height="38"
+		                    Padding="12,0"
+		                    
+		                    Background="#F3F4F6"
+		                    Foreground="#374151"
+		                    BorderBrush="#D1D5DB"
+		                    BorderThickness="1"
+		                    Cursor="Hand">
+
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                <StackPanel Orientation="Horizontal"
+		                    VerticalAlignment="Center"
+		                    HorizontalAlignment="Center">
+
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+		                       Text="&#xE74D;"
+		                       Foreground="#B91C1C"
+		                       Margin="0,0,6,0"
+		                       FontSize="14"/>
+
+                                    <TextBlock Text="Eliminar"/>
+                                </StackPanel>
+                            </Button>
+
                         </Grid>
                     </Border>
 
@@ -360,15 +462,36 @@
                                         BorderBrush="#D1D5DB"
                                         Background="White"/>
 
-                            <Button x:Name="BtnBuscarResumen"
-                                    Grid.Column="6"
-                                    Height="38"
-                                    Content="Buscar"
-                                    Click="BtnBuscarResumen_Click"
-                                    Background="#2563EB"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Cursor="Hand"/>
+                            <Button x:Name="btnBuscarXX"
+	                            Grid.Column="6"
+	                            Height="38"
+	                            Padding="12,0"
+	                          
+	                            Background="#F3F4F6"
+	                            Foreground="#374151"
+	                            BorderBrush="#D1D5DB"
+	                            BorderThickness="1"
+	                            Cursor="Hand">
+
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                <StackPanel Orientation="Horizontal"
+		                            VerticalAlignment="Center"
+		                            HorizontalAlignment="Center">
+
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+		                               Text="&#xE721;"
+		                               Foreground="#2563EB"
+		                               Margin="0,0,6,0"
+		                               FontSize="14"/>
+
+                                    <TextBlock Text="Buscar"/>
+                                </StackPanel>
+                            </Button>
                         </Grid>
                     </Border>
 
@@ -531,7 +654,7 @@
                                                    Foreground="#374151"
                                                    Margin="0,0,0,6"/>
                                         <TextBox x:Name="txtObservacionesResumen"
-                                                 Height="80"
+                                                 Height="40"
                                                  TextWrapping="Wrap"
                                                  AcceptsReturn="True"
                                                  VerticalScrollBarVisibility="Auto"
@@ -545,18 +668,13 @@
                                     CornerRadius="12"
                                     BorderBrush="#E5E7EB"
                                     BorderThickness="1"
-                                    Padding="16">
+                                    Padding="1">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="12"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-
-                                    <TextBlock Text="Vista del equipo"
-                                               FontSize="18"
-                                               FontWeight="SemiBold"
-                                               Foreground="#1F2937"/>
 
                                     <Grid Grid.Row="2">
                                         <Grid.ColumnDefinitions>
@@ -570,9 +688,12 @@
                                                 BorderBrush="#D1D5DB"
                                                 BorderThickness="1"
                                                 Background="#F9FAFB"
-                                                Padding="8">
+                                                Padding="2">
                                             <Grid>
                                                 <Image x:Name="imgMontacargasIzq"
+                                                       Source="/Resources/Images/montacargas_hp_izq.png"
+                                                       Width="193"
+                                                       Height="331"
                                                        Stretch="Uniform"/>
                                                 <TextBlock Text="X"
                                                            Foreground="#DC2626"
@@ -591,6 +712,10 @@
                                                 Padding="8">
                                             <Grid>
                                                 <Image x:Name="imgMontacargasDer"
+                                                       Source="/Resources/Images/montacargas_hp_der.png"                                                       
+                                                       
+                                                         Width="193"
+                                                            Height="331"
                                                        Stretch="Uniform"/>
                                                 <TextBlock Text="X"
                                                            Foreground="#DC2626"
@@ -667,15 +792,36 @@
                                         BorderBrush="#D1D5DB"
                                         Background="White"/>
 
-                            <Button x:Name="BtnBuscarBaterias"
-                                    Grid.Column="6"
-                                    Height="38"
-                                    Content="Buscar"
-                                    Click="BtnBuscarBaterias_Click"
-                                    Background="#2563EB"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Cursor="Hand"/>
+                            <Button x:Name="btnBuscarXXx"
+                                     Grid.Column="6"
+                                     Height="38"
+                                     Padding="12,0"
+                                   
+                                     Background="#F3F4F6"
+                                     Foreground="#374151"
+                                     BorderBrush="#D1D5DB"
+                                     BorderThickness="1"
+                                     Cursor="Hand">
+
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                <StackPanel Orientation="Horizontal"
+                                         VerticalAlignment="Center"
+                                         HorizontalAlignment="Center">
+
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                                            Text="&#xE721;"
+                                            Foreground="#2563EB"
+                                            Margin="0,0,6,0"
+                                            FontSize="14"/>
+
+                                    <TextBlock Text="Buscar"/>
+                                </StackPanel>
+                            </Button>
                         </Grid>
                     </Border>
 
@@ -971,17 +1117,36 @@
                                              MinHeight="120"
                                              BorderBrush="#D1D5DB"/>
 
-                                    <Button x:Name="BtnGuardarPregunta"
-                                            Grid.Row="6"
-                                            Width="180"
-                                            Height="38"
-                                            Content="Guardar Pregunta"
-                                            Click="BtnGuardarPregunta_Click"
-                                            Background="#2563EB"
-                                            Foreground="White"
-                                            BorderThickness="0"
-                                            HorizontalAlignment="Left"
-                                            Cursor="Hand"/>
+                                    <Button x:Name="btndccNuevo"
+	                                        Grid.Row="6"
+	                                        Height="38"
+	                                        Padding="2,0"
+	                                        
+	                                        Background="#F3F4F6"
+	                                        Foreground="#374151"
+	                                        BorderBrush="#D1D5DB"
+	                                        BorderThickness="1"
+	                                        Cursor="Hand" Margin="0,0,521,0">
+
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="6"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        <StackPanel Orientation="Horizontal"
+		                                        VerticalAlignment="Center"
+		                                        HorizontalAlignment="Center">
+
+                                            <TextBlock FontFamily="Segoe MDL2 Assets"
+		                                           Text="&#xE74E;"
+		                                           Foreground="#2563EB"
+		                                           Margin="0,0,6,0"
+		                                           FontSize="14"/>
+
+                                            <TextBlock Text="Guardar"/>
+                                        </StackPanel>
+                                    </Button>
                                 </Grid>
                             </GroupBox>
                         </Border>
@@ -1013,27 +1178,66 @@
                                                Margin="4,0,0,8"
                                                VerticalAlignment="Center"/>
 
-                                    <Button x:Name="BtnEditarPregunta"
-                                            Grid.Column="1"
-                                            Height="34"
-                                            Content="Editar"
-                                            Click="BtnEditarPregunta_Click"
-                                            Background="White"
-                                            Foreground="#111827"
+                                    <Button x:Name="btnEditarFF"
+                                                Grid.Column="1"
+                                                Height="38"
+                                                Padding="12,0"
+                                               
+                                                Background="#F3F4F6"
+                                                Foreground="#374151"
+                                                BorderBrush="#D1D5DB"
+                                                BorderThickness="1"
+                                                Cursor="Hand">
+
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="6"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        <StackPanel Orientation="Horizontal"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center">
+
+                                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                                       Text="&#xE70F;"
+                                                       Foreground="#F59E0B"
+                                                       Margin="0,0,6,0"
+                                                       FontSize="14"/>
+
+                                            <TextBlock Text="Editar"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnEliminarFF"
+                                            Grid.Column="9"
+                                            Height="38"
+                                            Padding="12,0"
+                                         
+                                            Background="#F3F4F6"
+                                            Foreground="#374151"
                                             BorderBrush="#D1D5DB"
                                             BorderThickness="1"
-                                            Cursor="Hand"/>
+                                            Cursor="Hand">
 
-                                    <Button x:Name="BtnEliminarPregunta"
-                                            Grid.Column="3"
-                                            Height="34"
-                                            Content="Eliminar"
-                                            Click="BtnEliminarPregunta_Click"
-                                            Background="White"
-                                            Foreground="#B91C1C"
-                                            BorderBrush="#FCA5A5"
-                                            BorderThickness="1"
-                                            Cursor="Hand"/>
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="6"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+
+                                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                               Text="&#xE74D;"
+                                               Foreground="#B91C1C"
+                                               Margin="0,0,6,0"
+                                               FontSize="14"/>
+
+                                            <TextBlock Text="Eliminar"/>
+                                        </StackPanel>
+                                    </Button>
                                 </Grid>
 
                                 <Border Grid.Row="2"

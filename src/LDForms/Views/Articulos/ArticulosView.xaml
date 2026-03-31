@@ -53,15 +53,15 @@
                          ToolTip="Buscar almacén..." />
 
                 <Button x:Name="btnNuevo"
-Grid.Column="3"
-Height="38"
-Padding="12,0"
-Click="BtnNuevo_Click"
-Background="#F3F4F6"
-Foreground="#374151"
-BorderBrush="#D1D5DB"
-BorderThickness="1"
-Cursor="Hand">
+                    Grid.Column="3"
+                    Height="38"
+                    Padding="12,0"
+                    Click="BtnNuevo_Click"
+                    Background="#F3F4F6"
+                    Foreground="#374151"
+                    BorderBrush="#D1D5DB"
+                    BorderThickness="1"
+                    Cursor="Hand">
 
                     <Button.Resources>
                         <Style TargetType="Border">
@@ -70,29 +70,29 @@ Cursor="Hand">
                     </Button.Resources>
 
                     <StackPanel Orientation="Horizontal"
-        VerticalAlignment="Center"
-        HorizontalAlignment="Center">
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
 
                         <TextBlock FontFamily="Segoe MDL2 Assets"
-           Text="&#xE710;"
-           Foreground="#2563EB"
-           Margin="0,0,6,0"
-           FontSize="14"/>
+                               Text="&#xE710;"
+                               Foreground="#2563EB"
+                               Margin="0,0,6,0"
+                               FontSize="14"/>
 
                         <TextBlock Text="Nuevo"/>
                     </StackPanel>
                 </Button>
 
                 <Button x:Name="btnEditar"
-Grid.Column="5"
-Height="38"
-Padding="12,0"
-Click="BtnEditar_Click"
-Background="#F3F4F6"
-Foreground="#374151"
-BorderBrush="#D1D5DB"
-BorderThickness="1"
-Cursor="Hand">
+                        Grid.Column="5"
+                        Height="38"
+                        Padding="12,0"
+                        Click="BtnEditar_Click"
+                        Background="#F3F4F6"
+                        Foreground="#374151"
+                        BorderBrush="#D1D5DB"
+                        BorderThickness="1"
+                        Cursor="Hand">
 
                     <Button.Resources>
                         <Style TargetType="Border">
@@ -101,29 +101,29 @@ Cursor="Hand">
                     </Button.Resources>
 
                     <StackPanel Orientation="Horizontal"
-        VerticalAlignment="Center"
-        HorizontalAlignment="Center">
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
 
                         <TextBlock FontFamily="Segoe MDL2 Assets"
-           Text="&#xE70F;"
-           Foreground="#F59E0B"
-           Margin="0,0,6,0"
-           FontSize="14"/>
+                               Text="&#xE70F;"
+                               Foreground="#F59E0B"
+                               Margin="0,0,6,0"
+                               FontSize="14"/>
 
                         <TextBlock Text="Editar"/>
                     </StackPanel>
                 </Button>
 
                 <Button x:Name="BtnActualizar"
-Grid.Column="7"
-Height="38"
-Padding="12,0"
-Click="BtnActualizar_Click"
-Background="#F3F4F6"
-Foreground="#374151"
-BorderBrush="#D1D5DB"
-BorderThickness="1"
-Cursor="Hand">
+                            Grid.Column="7"
+                            Height="38"
+                            Padding="12,0"
+                            Click="BtnActualizar_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
 
                     <Button.Resources>
                         <Style TargetType="Border">
@@ -132,14 +132,14 @@ Cursor="Hand">
                     </Button.Resources>
 
                     <StackPanel Orientation="Horizontal"
-        VerticalAlignment="Center"
-        HorizontalAlignment="Center">
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
 
                         <TextBlock FontFamily="Segoe MDL2 Assets"
-           Text="&#xE895;"
-           Foreground="#10B981"
-           Margin="0,0,6,0"
-           FontSize="14"/>
+                               Text="&#xE895;"
+                               Foreground="#10B981"
+                               Margin="0,0,6,0"
+                               FontSize="14"/>
 
                         <TextBlock Text="Actualizar"/>
                     </StackPanel>

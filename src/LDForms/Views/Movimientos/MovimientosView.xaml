@@ -153,17 +153,36 @@
                                 BorderBrush="#D1D5DB"
                                 Background="White"/>
 
-                    <Button x:Name="btnBuscar"
-                            Grid.Column="6"
-                            Height="38"
-                            Width="120"
-                            Content="Buscar"
-                          
-                            Background="#2563EB"
-                            Foreground="White"
-                            BorderThickness="0"
-                            Cursor="Hand"
-                            FontWeight="SemiBold"/>
+                   <Button x:Name="btnNuevo"
+	                    Grid.Column="6"
+	                    Height="38"
+	                    Padding="12,0"
+	                   
+	                    Background="#F3F4F6"
+	                    Foreground="#374151"
+	                    BorderBrush="#D1D5DB"
+	                    BorderThickness="1"
+	                    Cursor="Hand">
+
+	                    <Button.Resources>
+		                    <Style TargetType="Border">
+			                    <Setter Property="CornerRadius" Value="6"/>
+		                    </Style>
+	                    </Button.Resources>
+
+	                    <StackPanel Orientation="Horizontal"
+		                    VerticalAlignment="Center"
+		                    HorizontalAlignment="Center">
+
+		                    <TextBlock FontFamily="Segoe MDL2 Assets"
+		                       Text="&#xE721;"
+		                       Foreground="#2563EB"
+		                       Margin="0,0,6,0"
+		                       FontSize="14"/>
+
+		                    <TextBlock Text="Buscar"/>
+	                    </StackPanel>
+                    </Button>
                 </Grid>
             </Grid>
         </Border>
