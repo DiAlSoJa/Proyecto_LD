@@ -29,5 +29,10 @@ namespace LD.FormsX.Views.ASN
         private void BtnEscanear_Click(object sender, RoutedEventArgs e) { }
         private void dgASN_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
         private void dgDetalleASN_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+
+        private void btnNuevo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

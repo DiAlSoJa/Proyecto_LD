@@ -55,37 +55,97 @@
                          ToolTip="Buscar almacén..." />
 
                 <Button x:Name="btnNuevo"
-                        Grid.Column="3"
-                        Width="110"
-                        Height="38"
-                        Content="Nuevo"
-                        Click="BtnNuevo_Click"
-                        Background="#2563EB"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand"/>
+	                Grid.Column="3"
+	                Height="38"
+	                Padding="12,0"
+	                Click="BtnNuevo_Click"
+	                Background="#F3F4F6"
+	                Foreground="#374151"
+	                BorderBrush="#D1D5DB"
+	                BorderThickness="1"
+	                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE710;"
+		                   Foreground="#2563EB"
+		                   Margin="0,0,6,0"
+		                   FontSize="14"/>
+
+		                <TextBlock Text="Nuevo"/>
+	                </StackPanel>
+                </Button>
 
                 <Button x:Name="btnEditar"
-                        Grid.Column="5"
-                        Width="110"
-                        Height="38"
-                        Content="Editar"
-                        Click="BtnEditar_Click"
-                        Background="#F59E0B"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand"/>
+	                Grid.Column="5"
+	                Height="38"
+	                Padding="12,0"
+	                Click="BtnEditar_Click"
+	                Background="#F3F4F6"
+	                Foreground="#374151"
+	                BorderBrush="#D1D5DB"
+	                BorderThickness="1"
+	                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE70F;"
+		                   Foreground="#F59E0B"
+		                   Margin="0,0,6,0"
+		                   FontSize="14"/>
+
+		                <TextBlock Text="Editar"/>
+	                </StackPanel>
+                </Button>
 
                 <Button x:Name="BtnActualizar"
-                        Grid.Column="7"
-                        Width="110"
-                        Height="38"
-                        Content="Actualizar"
-                        Click="BtnActualizar_Click"
-                        Background="#10B981"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand"/>
+		                Grid.Column="7"
+		                Height="38"
+		                Padding="12,0"
+		                Click="BtnActualizar_Click"
+		                Background="#F3F4F6"
+		                Foreground="#374151"
+		                BorderBrush="#D1D5DB"
+		                BorderThickness="1"
+		                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE895;"
+		                   Foreground="#10B981"
+		                   Margin="0,0,6,0"
+		                   FontSize="14"/>
+
+		                <TextBlock Text="Actualizar"/>
+	                </StackPanel>
+                </Button>
             </Grid>
         </Border>
 
@@ -129,7 +189,8 @@
                    SelectionChanged="DgClientes_SelectionChanged"
                    RowHeight="28"
                   ColumnHeaderHeight="40"
-                
+                 AlternatingRowBackground="#F8FAFC"
+          AlternationCount="2"
                   FontSize="12"
                    VerticalGridLinesBrush="#D9D9D9"
                    Margin="0">

@@ -16,6 +16,7 @@ using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.Common;
 using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.Dialogs;
+using LD.FormsX.Views.Dimensionador;
 using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
@@ -105,6 +106,7 @@ namespace LD.FormsX
             services.AddTransient<CatalogoMonedasView>();
             services.AddTransient<CatalogoFamiliasView>();
             services.AddTransient<CatalogosView>();
+            services.AddTransient<CatalogoDimensionadorView>();
             services.AddTransient<InventarioView>();
             services.AddTransient<MovimientosView>();
             services.AddTransient<ASNView>();
@@ -115,6 +117,7 @@ namespace LD.FormsX
             services.AddTransient<ControlPatioView>();
             services.AddTransient<UsuariosView>();
             services.AddTransient<ProyectosView>();
+
 
 
             // dialogs
@@ -131,9 +134,11 @@ namespace LD.FormsX
             services.AddTransient<NuevoArticuloView>();
             services.AddTransient<NuevaAuditoriaView>();
             services.AddTransient<NuevoEquipoCheckListView>();
+
             services.AddTransient<NuevoUsuarioView>();
             services.AddTransient < NuevoProyectoView>();
 
+            services.AddTransient<NuevoDimensionadorView>();
 
         }
     }

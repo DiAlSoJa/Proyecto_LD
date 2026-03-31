@@ -25,32 +25,61 @@ namespace LD.Contracts.Product
         [DisplayName("Descripción")]
         public string Descripcion { get; set; } = string.Empty;
 
-        [DisplayName("FIFO")]
-        public bool Fifo { get; set; }
+        [DisplayName("Categoría")]
+        public string Categoria { get; set; } = string.Empty;
 
-        [DisplayName("LIFO")]
-        public bool Lifo { get; set; }
+        [DisplayName("Familia")]
+        public string Familia { get; set; } = string.Empty;     
 
-        [DisplayName("Número de lote")]
-        public bool ManejaNumeroLote { get; set; }
+        [DisplayName("Tipo de almacenamiento")]
+        public string TipoDeAlmacenamiento { get; set; }
 
-        [DisplayName("Fecha de caducidad")]
-        public bool ManejaFechaCaducidad { get; set; }
+       
 
         [DisplayName("Unidad mínima")]
-        public int UnidadMinima { get; set; }
+        public string UnidadMinima { get; set; }
 
         [DisplayName("Unidad medida")]
-        public int UnidadMedia { get; set; }
+        public string UnidadMedia { get; set; }
 
         [DisplayName("Unidad máxima")]
-        public int UnidadMaxima { get; set; }
+        public string UnidadMaxima { get; set; }
+
+        [DisplayName("Paquete estándar")]
+        public string PaqueteEstandar { get; set; }
 
         [DisplayName("Solicitar número de lote")]
         public bool SolicitarNumeroLote { get; set; }
 
         [DisplayName("Solicitar fecha de caducidad")]
         public bool SolicitarFechaCaducidad { get; set; }
+
+        [DisplayName("Solicitar número de pedimento")]
+        public bool SolicitarPedimento { get; set; }
+
+        [DisplayName("Solicitar tipo de cambio")]
+        public bool SolicitarTipoCambio { get; set; }
+
+        [DisplayName("Solicitar orden de compra")]
+        public bool SolicitarOrdenCompra { get; set; }
+
+        [DisplayName("Solicitar referencia")]
+        public bool SolicitarReferencia { get; set; }
+
+        [DisplayName("Alto")]
+        public decimal Alto { get; set; }
+
+        [DisplayName("Ancho")]
+        public decimal Ancho { get; set; }
+
+        [DisplayName("Largo")]
+        public decimal Largo { get; set; }
+
+        [DisplayName("Peso")]
+        public decimal Peso { get; set; }
+
+        [DisplayName("Dimension")]
+        public string Dimension { get; set; }
     }
 
 

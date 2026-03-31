@@ -32,14 +32,11 @@ namespace LD.FormsX.Views.Catalogos
                 TabUnidades.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoUnidadesView>());
                 TabMonedas.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoMonedasView>());
                 TabFamilias.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoFamiliasView>());
+                TabDimensionador.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoDimensionadorView>());
             }
             catch (Exception ex)
             {
-                TabFamilias.Content = new TextBlock
-                {
-                    Text = $"Error al cargar catálogos: {ex.Message}",
-                    Margin = new System.Windows.Thickness(20)
-                };
+               
             }
         }
 

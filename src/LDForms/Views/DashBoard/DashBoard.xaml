@@ -12,8 +12,7 @@
         WindowStyle="None"
         ResizeMode="CanResize"
         Background="#DDE3E8"
-        Loaded="Window_Loaded"
-        >
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <SolidColorBrush x:Key="AppBg" Color="#DDE3E8"/>
@@ -22,7 +21,7 @@
         <SolidColorBrush x:Key="BorderSoft" Color="#E1E7EF"/>
         <SolidColorBrush x:Key="TextPrimary" Color="#1F2937"/>
         <SolidColorBrush x:Key="TextSecondary" Color="#6B7280"/>
-        <SolidColorBrush x:Key="AccentBlue" Color="#2B6EF3"/>
+        <SolidColorBrush x:Key="AccentBlue" Color="#1D4B9F"/>
 
         <DropShadowEffect x:Key="CardShadow"
                           BlurRadius="12"
@@ -312,11 +311,11 @@
                         <Border Width="22"
                                 Height="22"
                                 CornerRadius="5"
-                                Background="{StaticResource AccentBlue}"/>
+                                Background="#233167"/>
                         <TextBlock Text="LD Warehouse"
                                    Margin="10,0,0,0"
                                    VerticalAlignment="Center"
-                                   Foreground="#374151"
+                                   Foreground="#233167"
                                    FontSize="13"
                                    FontWeight="SemiBold"/>
                     </StackPanel>
@@ -404,7 +403,7 @@
                                 Click="BtnClose_Click"/>
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Row="1" Margin="4">
+                <Grid Grid.Row="1" Margin="0">
                     <Grid.RowDefinitions>
                         
                         <RowDefinition Height="*"/>

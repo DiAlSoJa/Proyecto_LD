@@ -45,46 +45,129 @@
                 </StackPanel>
 
                 <Button x:Name="BtnActualizar"
-                        Grid.Column="1"
-                        Height="38"
-                        Content="Actualizar"
-                        Click="BtnActualizar_Click"
-                        Background="White"
-                        Foreground="#111827"
-                        BorderBrush="#D1D5DB"
-                        BorderThickness="1"
-                        Cursor="Hand"/>
+		            Grid.Column="1"
+		            Height="38"
+		            Padding="12,0"
+		            Click="BtnActualizar_Click"
+		            Background="#F3F4F6"
+		            Foreground="#374151"
+		            BorderBrush="#D1D5DB"
+		            BorderThickness="1"
+		            Cursor="Hand">
 
-                <Button x:Name="BtnNuevaAuditoria"
-                        Grid.Column="3"
-                        Content="Nueva auditoría"
-                        Click="BtnNuevo_Click"
-                        Background="#2563EB"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand" Margin="0,8,0,7"/>
+	            <Button.Resources>
+		            <Style TargetType="Border">
+			            <Setter Property="CornerRadius" Value="6"/>
+		            </Style>
+	            </Button.Resources>
 
-                <Button x:Name="BtnEnviar"
-                        Grid.Column="5"
-                        Height="38"
-                        Content="Enviar"
-                       
-                        Background="White"
-                        Foreground="#111827"
-                        BorderBrush="#D1D5DB"
-                        BorderThickness="1"
-                        Cursor="Hand"/>
+	            <StackPanel Orientation="Horizontal"
+		            VerticalAlignment="Center"
+		            HorizontalAlignment="Center">
 
-                <Button x:Name="BtnEditar"
-                        Grid.Column="7"
-                        Height="38"
-                        Content="Editar"
-                        Click="BtnEditar_Click"
-                        Background="White"
-                        Foreground="#111827"
-                        BorderBrush="#D1D5DB"
-                        BorderThickness="1"
-                        Cursor="Hand"/>
+		            <TextBlock FontFamily="Segoe MDL2 Assets"
+		               Text="&#xE895;"
+		               Foreground="#10B981"
+		               Margin="0,0,6,0"
+		               FontSize="14"/>
+
+		            <TextBlock Text="Actualizar"/>
+	            </StackPanel>
+            </Button>
+
+
+               <Button x:Name="btnNuevo"
+	                Grid.Column="3"
+	                Height="38"
+	                Padding="12,0"
+	                
+	                Background="#F3F4F6"
+	                Foreground="#374151"
+	                BorderBrush="#D1D5DB"
+	                BorderThickness="1"
+	                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE710;"
+		                   Foreground="#2563EB"
+		                   Margin="0,0,6,0"
+		                   FontSize="14"/>
+
+		                <TextBlock Text="Nuevo"/>
+	                </StackPanel>
+                </Button>
+
+               <Button x:Name="btnEnviar"
+	                Grid.Column="5"
+	                Height="38"
+	                Padding="12,0"
+	              
+	                Background="#F3F4F6"
+	                Foreground="#374151"
+	                BorderBrush="#D1D5DB"
+	                BorderThickness="1"
+	                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE70F;"
+		                   Foreground="#F59E0B"
+		                   Margin="0,0,6,0"
+		                   FontSize="14"/>
+
+		                <TextBlock Text="Editar"/>
+	                </StackPanel>
+                </Button>
+
+              <Button x:Name="btnEditar"
+	                Grid.Column="7"
+	                Height="38"
+	                Padding="12,0"
+	              
+	                Background="#F3F4F6"
+	                Foreground="#374151"
+	                BorderBrush="#D1D5DB"
+	                BorderThickness="1"
+	                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE70;"
+		                   Foreground="#233167"
+		                   Margin="0,0,6,0"
+		                   FontSize="14"/>
+
+		                <TextBlock Text="Enviar"/>
+	                </StackPanel>
+                </Button>
             </Grid>
         </Border>
 
