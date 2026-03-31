@@ -164,6 +164,7 @@ namespace LD.Forms.Configuration
         public string User_Create => $"{_baseApi}/user";
         public string User_Update => $"{_baseApi}/user/{{id}}";
         public string User_Delete => $"{_baseApi}/user/{{id}}";
+        public string User_AssignWarehouses => $"{_baseApi}/user/{{id}}/warehouses";
         
 
         // ======================

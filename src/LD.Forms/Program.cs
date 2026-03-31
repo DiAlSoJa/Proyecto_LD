@@ -122,9 +122,11 @@ namespace LD
             services.AddTransient<FrmNewCategory>();
             services.AddTransient<FrmNewFamily>();
             services.AddTransient<FrmNewDimensioner>();
+            services.AddTransient<FrmUserWarehouse>();
 
 
-            
+
+
             services.AddTransient<FrmParametersQuery>();
 
 

@@ -43,5 +43,11 @@ namespace LD.Client.Services
         {
             return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.User_Delete.Replace("{id}", userId));
         }
+
+        public async Task<ApiResponseDto<string>> AssignWarehouses(string userId, UserWarehouseRequest request)
+        {
+            return await _api.PutAsync<UserWarehouseRequest, ApiResponseDto<string>>(
+                _apiEndpoints.User_AssignWarehouses.Replace("{id}", userId), request);
+        }
     }
 }

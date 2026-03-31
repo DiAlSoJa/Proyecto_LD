@@ -1,6 +1,7 @@
 ﻿
 using LD.Client.Services;
 using LD.Contracts.Client;
+using LD.Contracts.DTOs.User;
 using LD.Contracts.Requests;
 using LD.Contracts.Requests.Client;
 using LD.Contracts.Responses;
@@ -27,7 +28,7 @@ namespace LD.Forms.Views.Dialogs
         private readonly UserService _userService;
         private readonly LookupService _lookupService;
 
-        private UserDto? UserSelected{ get; set; }
+        private GetUserDto? UserSelected{ get; set; }
         public FrmNuevoUsuario(UserService userService, LookupService lookupService)
         {
             InitializeComponent();
@@ -67,7 +68,7 @@ namespace LD.Forms.Views.Dialogs
             cmbRol.DisplayMember = "Value";
             cmbRol.ValueMember = "Key";
         }
-        public async void SetUser(UserDto? user)
+        public async void SetUser(GetUserDto? user)
         {
             UserSelected = user;
           
@@ -77,7 +78,7 @@ namespace LD.Forms.Views.Dialogs
         {
             try
             {
-                var response = await _userService.GetUserById(UserSelected?.Id??"");
+                var response = await _userService.GetUserById(UserSelected?.User?.Id ?? "");
 
                 if (!response.IsSuccess)
                 {
@@ -153,7 +154,7 @@ namespace LD.Forms.Views.Dialogs
         private async Task<ApiResponseDto<string>> SaveUser(UserRequest request)
         {
             return UserSelected != null
-                ? await EditUser(UserSelected?.Id, request)
+                ? await EditUser(UserSelected?.User?.Id ?? "", request)
                 : await CreateUser(request);
         }
 

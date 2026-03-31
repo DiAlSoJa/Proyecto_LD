@@ -1,79 +1,68 @@
 ﻿using LD.Client.Services;
-using LD.Contracts.Client;
 using LD.Contracts.DTOs.User;
 using LD.Contracts.Requests;
-using LD.Contracts.Requests.Client;
-using LD.Contracts.Responses;
-using LD.Contracts.User;
 using LD.Contracts.Warehouse;
 using LD.Forms.Classes;
 using LD.Forms.Services;
-using LD.Forms.Services.FormServices;
 using LD.Forms.Views.Common;
-using LD.Forms.Views.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;   
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace LD.Forms.Views.Dialogs
 {
     public partial class FrmUserWarehouse : DraggableForm
     {
+        private readonly WarehouseService _warehouseService;
+        private readonly UserService _userService;
 
-        private readonly DialogFormService _dialogFormService;
-        private readonly RoleService _roleService;
+        private GridFilter<WarehouseDto> _addedFilter;
+        private BindingSource _addedBinding = new();
 
-        private GridFilter<RoleDto> _gridRoleFilter;
-        private BindingSource _rolesBinding = new();
+        private GridFilter<WarehouseDto> _availableFilter;
+        private BindingSource _availableBinding = new();
 
-        private GridFilter<PermissionDto> _gridPermissionFilter;
-        private BindingSource _permissionsBinding = new();
+        private GetUserDto? _selectedUser { get; set; }
 
+        private List<WarehouseDto> _allWarehouses = new();
+        private List<WarehouseDto> _addedWarehouses = new();
+        private List<WarehouseDto> _availableWarehouses = new();
 
-        private RoleDto? selectedRole { get; set; }
-        private List<RolePermissionDto>? _allRoles { get; set; }
-        public FrmUserWarehouse(DialogFormService dialogFormService, RoleService roleService)
+        private WarehouseDto? _selectedAdded { get; set; }
+        private WarehouseDto? _selectedAvailable { get; set; }
+
+        public FrmUserWarehouse(WarehouseService warehouseService, UserService userService)
         {
             InitializeComponent();
-            _dialogFormService = dialogFormService;
-            _roleService = roleService;
+            _warehouseService = warehouseService;
+            _userService = userService;
 
             EnableDrag(panel2);
             EnableDrag(panel1);
+            gridWarehouseAdded .DataSource = _addedBinding;
+            gridWarehouseFaltantes.DataSource = _availableBinding;
 
-            gridWarehouseAdded.DataSource = _rolesBinding;
-            gridWarehouseFaltantes.DataSource = _permissionsBinding;
-
-            _gridRoleFilter = new GridFilter<RoleDto>(gridWarehouseAdded, _rolesBinding);
-            _gridPermissionFilter = new GridFilter<PermissionDto>(gridWarehouseFaltantes, _permissionsBinding);
-
+            _addedFilter = new GridFilter<WarehouseDto>(gridWarehouseAdded, _addedBinding);
+            _availableFilter = new GridFilter<WarehouseDto>(gridWarehouseFaltantes, _availableBinding);
         }
 
-
+        public void SetUser(GetUserDto user)
+        {
+            _selectedUser = user;
+        }
 
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
-
-            await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo roles");
-
-
-
+            await LoaderManager.Run(panelContainer, CargarDatosAsync, "Trayendo almacenes");
         }
-
-
 
         private async Task CargarDatosAsync()
         {
             try
             {
-                var response = await _roleService.GetRols();
+                var response = await _warehouseService.GetWarehouses();
 
                 if (response.IsFailure)
                 {
@@ -81,90 +70,90 @@ namespace LD.Forms.Views.Dialogs
                     return;
                 }
 
-                _allRoles = response.Data;
+                _allWarehouses = response.Data ?? new List<WarehouseDto>();
 
-                _rolesBinding.DataSource = _allRoles;
-                var roleDtos = _allRoles.Select(r => new RoleDto { RoleId = r.Id, RoleName = r.RoleName }).ToList();
-                _gridRoleFilter.SetData(roleDtos);
-                gridWarehouseAdded = _gridRoleFilter.BuildFilterColumns();
+                var assignedIds = _selectedUser?.Warehouse?
+                    .Select(w => w.Id)
+                    .ToHashSet() ?? new HashSet<int>();
 
+                _addedWarehouses     = _allWarehouses.Where(w =>  assignedIds.Contains(w.Id)).ToList();
+                _availableWarehouses = _allWarehouses.Where(w => !assignedIds.Contains(w.Id)).ToList();
+
+                RefreshGrids();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-        private void gridRoles_SelectionChanged(object sender, EventArgs e)
+
+        private void RefreshGrids()
         {
-            if (gridWarehouseAdded.CurrentRow?.DataBoundItem is not RoleDto roleDto)
+            _addedBinding.DataSource = _addedWarehouses.ToList();
+            _addedFilter.SetData(_addedWarehouses.ToList());
+            gridWarehouseAdded = _addedFilter.BuildFilterColumns();
+
+            _availableBinding.DataSource = _availableWarehouses.ToList();
+            _availableFilter.SetData(_availableWarehouses.ToList());
+            gridWarehouseFaltantes = _availableFilter.BuildFilterColumns();
+        }
+
+        private async Task SaveAsync()
+        {
+            if (_selectedUser?.User?.Id is null) return;
+
+            var request = new UserWarehouseRequest
             {
-                selectedRole = null;
-                _gridPermissionFilter.SetData(new List<PermissionDto>());
-                gridWarehouseFaltantes = _gridPermissionFilter.BuildFilterColumns();
-                return;
-            }
+                WarehouseIds = _addedWarehouses.Select(w => w.Id).ToList()
+            };
 
+            var result = await _userService.AssignWarehouses(_selectedUser.User.Id, request);
 
-            var selectedRoleData = _allRoles?
-                .FirstOrDefault(r => string.Equals(r.Id, roleDto.RoleId, StringComparison.OrdinalIgnoreCase));
-
-            var permissions = selectedRoleData?.Permissions ?? new List<PermissionDto>();
-
-            selectedRole = roleDto;
-
-            _gridPermissionFilter.SetData(permissions.ToList());
-            gridWarehouseFaltantes = _gridPermissionFilter.BuildFilterColumns();
+            if (result.IsFailure)
+                MessageBox.Show(result.Message);
+            ResponseForm=true;
         }
 
-        private void btnAceptar_Click(object sender, EventArgs e)
+        // << agregar almacén al usuario
+        private async void addWBtn_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (_selectedAvailable is null) return;
+
+            _addedWarehouses.Add(_selectedAvailable);
+            _availableWarehouses.Remove(_selectedAvailable);
+            _selectedAvailable = null;
+
+            RefreshGrids();
+            await SaveAsync();
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        // >> quitar almacén del usuario
+        private async void removeBtn_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (_selectedAdded is null) return;
+
+            _availableWarehouses.Add(_selectedAdded);
+            _addedWarehouses.Remove(_selectedAdded);
+            _selectedAdded = null;
+
+            RefreshGrids();
+            await SaveAsync();
         }
 
-        private void panel2_DoubleClick(object sender, EventArgs e)
+        private void gridWarehouseAdded_SelectionChanged(object sender, EventArgs e)
         {
-
+            _selectedAdded = gridWarehouseAdded.CurrentRow?.DataBoundItem as WarehouseDto;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void gridWarehouseFaltantes_SelectionChanged(object sender, EventArgs e)
         {
-            this.Close();
+            _selectedAvailable = gridWarehouseFaltantes.CurrentRow?.DataBoundItem as WarehouseDto;
         }
 
-
-        private async void addBtn_Click(object sender, EventArgs e)
-        {
-            var form = _dialogFormService.ShowDialog<FrmNuevoRol>();
-            if (form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo roles");
-        }
-
-        private async void editBtn_Click(object sender, EventArgs e)
-        {
-            var form = _dialogFormService.ShowDialog<FrmNuevoRol>(config =>
-            {
-                config.SetRole(selectedRole);
-            });
-            if (form.ResponseForm) await LoaderManager.Run(panelContainer, async () => await CargarDatosAsync(), "Trayendo roles");
-        }
-
-        private void gridRoles_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void addWBtn_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void removeBtn_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void btnAceptar_Click(object sender, EventArgs e)    => this.Close();
+        private void pictureBox2_Click(object sender, EventArgs e)   => this.Close();
+        private void button2_Click(object sender, EventArgs e)       => this.Close();
+        private void panel2_DoubleClick(object sender, EventArgs e)  { }
     }
 }
+

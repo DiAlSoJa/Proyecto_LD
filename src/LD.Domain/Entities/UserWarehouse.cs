@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace LD.Domain.Entities
 {
-    public class UserWarehouse :AuditableEntity
+    public class UserWarehouse : AuditableEntity
     {
         public int UserWarehouseId { get; set; }
         public string? UserId { get; set; }
-        public int? WarehouseId { get; set; }
 
+        public int? WarehouseId { get; set; }
         public Warehouse? Warehouse { get; set; }
 
     }

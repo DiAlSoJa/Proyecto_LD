@@ -147,14 +147,14 @@ namespace LD.Infrastructure.Persistence
 
 
             builder.Entity<UserWarehouse>()
-                .HasOne<ApplicationUser>()
-                .WithMany()
+                .HasOne<ApplicationUser>() 
+                .WithMany(u => u.UserWarehouses)
                 .HasForeignKey(uw => uw.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<UserWarehouse>()
                 .HasOne(uw => uw.Warehouse)
-                .WithMany()
+                .WithMany(w => w.UserWarehouses)
                 .HasForeignKey(uw => uw.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
 

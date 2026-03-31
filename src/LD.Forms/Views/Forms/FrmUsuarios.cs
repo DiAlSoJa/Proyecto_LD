@@ -2,6 +2,7 @@
 using LD.Contracts.Client;
 using LD.Contracts.DTOs.User;
 using LD.Contracts.User;
+using LD.Contracts.Warehouse;
 using LD.Forms.Classes;
 using LD.Forms.Services;
 using LD.Forms.Services.FormServices;
@@ -24,9 +25,12 @@ namespace LD.Forms.Views.Forms
         private GridFilter<PermissionDto> _permissionFilter;
         private BindingSource _permissionSource = new();
 
+        private GridFilter<WarehouseDto> _warehouseFilter;
+        private BindingSource _warehouseSource = new();
+
         private GridFilter<UserDto> _gridFilter;
         private BindingSource _userBinding = new();
-        private UserDto? userSelected { get; set; }
+        private GetUserDto? userSelected { get; set; }
 
         private List<GetUserDto> _allUsers = new();
 
@@ -41,6 +45,9 @@ namespace LD.Forms.Views.Forms
 
             permissionGrid.DataSource = _permissionSource;
             _permissionFilter = new GridFilter<PermissionDto>(permissionGrid, _permissionSource);
+
+            warehouseGrid.DataSource = _warehouseSource;
+            _warehouseFilter = new GridFilter<WarehouseDto>(warehouseGrid, _warehouseSource);
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -90,23 +97,27 @@ namespace LD.Forms.Views.Forms
 
             _permissionFilter.SetData(new List<PermissionDto>());
             permissionGrid = _permissionFilter.BuildFilterColumns();
+
+            _warehouseFilter.SetData(new List<WarehouseDto>());
+            warehouseGrid = _warehouseFilter.BuildFilterColumns();
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             try
             {
-                if (usersGrid.CurrentRow?.DataBoundItem is not UserDto user)
+                if (usersGrid.CurrentRow?.DataBoundItem is not UserDto userDto)
                     return;
 
-                userSelected = user;
+                userSelected = _allUsers.FirstOrDefault(x => x.User?.Id == userDto.Id);
 
-                var permissions = _allUsers
-                    .FirstOrDefault(x => x.User?.Id == user.Id)
-                    ?.Permissions ?? new List<PermissionDto>();
-
+                var permissions = userSelected?.Permissions ?? new List<PermissionDto>();
                 _permissionFilter.SetData(permissions);
                 permissionGrid = _permissionFilter.BuildFilterColumns();
+
+                var warehouses = userSelected?.Warehouse ?? new List<WarehouseDto>();
+                _warehouseFilter.SetData(warehouses);
+                warehouseGrid = _warehouseFilter.BuildFilterColumns();
             }
             catch (Exception ex)
             {
@@ -127,6 +138,23 @@ namespace LD.Forms.Views.Forms
         private void btnRoles_Click(object sender, EventArgs e)
         {
             var form = _dialogFormService.ShowDialog<FrmRoles>();
+        }
+
+        private void FrmUsuarios_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void warehouseBtn_Click(object sender, EventArgs e)
+        {
+
+            var form = _dialogFormService.ShowDialog<FrmUserWarehouse>(config =>
+            {
+                config.SetUser(userSelected);
+            });
+            
+            if(form.ResponseForm) await LoaderManager.Run(panelContainer, CargarDatosAsync, "Trayendo usuarios");
+
         }
     }
 }

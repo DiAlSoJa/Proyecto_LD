@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel1 = new Panel();
             panelContainer = new Panel();
+            removeBtn = new Button();
+            addWBtn = new Button();
             gridWarehouseFaltantes = new DataGridView();
             gridWarehouseAdded = new DataGridView();
             flowLayoutPanel1 = new FlowLayoutPanel();
@@ -39,8 +41,6 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
-            addWBtn = new Button();
-            removeBtn = new Button();
             panel1.SuspendLayout();
             panelContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridWarehouseFaltantes).BeginInit();
@@ -73,10 +73,30 @@
             panelContainer.Size = new Size(1042, 435);
             panelContainer.TabIndex = 11;
             // 
+            // removeBtn
+            // 
+            removeBtn.Location = new Point(489, 58);
+            removeBtn.Name = "removeBtn";
+            removeBtn.Size = new Size(55, 32);
+            removeBtn.TabIndex = 13;
+            removeBtn.Text = ">>";
+            removeBtn.UseVisualStyleBackColor = true;
+            removeBtn.Click += removeBtn_Click;
+            // 
+            // addWBtn
+            // 
+            addWBtn.Location = new Point(489, 18);
+            addWBtn.Name = "addWBtn";
+            addWBtn.Size = new Size(55, 34);
+            addWBtn.TabIndex = 12;
+            addWBtn.Text = "<<";
+            addWBtn.UseVisualStyleBackColor = true;
+            addWBtn.Click += addWBtn_Click;
+            // 
             // gridWarehouseFaltantes
             // 
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(253, 252, 213);
-            gridWarehouseFaltantes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            gridWarehouseFaltantes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             gridWarehouseFaltantes.BackgroundColor = SystemColors.ButtonHighlight;
             gridWarehouseFaltantes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gridWarehouseFaltantes.Dock = DockStyle.Right;
@@ -85,11 +105,12 @@
             gridWarehouseFaltantes.RowHeadersWidth = 51;
             gridWarehouseFaltantes.Size = new Size(492, 435);
             gridWarehouseFaltantes.TabIndex = 11;
+            gridWarehouseFaltantes.SelectionChanged += gridWarehouseFaltantes_SelectionChanged;
             // 
             // gridWarehouseAdded
             // 
-            dataGridViewCellStyle4.BackColor = Color.FromArgb(253, 252, 213);
-            gridWarehouseAdded.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
+            gridWarehouseAdded.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             gridWarehouseAdded.BackgroundColor = SystemColors.ButtonHighlight;
             gridWarehouseAdded.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gridWarehouseAdded.Dock = DockStyle.Left;
@@ -98,8 +119,7 @@
             gridWarehouseAdded.RowHeadersWidth = 51;
             gridWarehouseAdded.Size = new Size(483, 435);
             gridWarehouseAdded.TabIndex = 10;
-            gridWarehouseAdded.CellContentClick += gridRoles_CellContentClick;
-            gridWarehouseAdded.SelectionChanged += gridRoles_SelectionChanged;
+            gridWarehouseAdded.SelectionChanged += gridWarehouseAdded_SelectionChanged;
             // 
             // flowLayoutPanel1
             // 
@@ -160,26 +180,6 @@
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
-            // 
-            // addWBtn
-            // 
-            addWBtn.Location = new Point(489, 18);
-            addWBtn.Name = "addWBtn";
-            addWBtn.Size = new Size(55, 34);
-            addWBtn.TabIndex = 12;
-            addWBtn.Text = "<<";
-            addWBtn.UseVisualStyleBackColor = true;
-            addWBtn.Click += addWBtn_Click;
-            // 
-            // removeBtn
-            // 
-            removeBtn.Location = new Point(489, 58);
-            removeBtn.Name = "removeBtn";
-            removeBtn.Size = new Size(55, 32);
-            removeBtn.TabIndex = 13;
-            removeBtn.Text = ">>";
-            removeBtn.UseVisualStyleBackColor = true;
-            removeBtn.Click += removeBtn_Click;
             // 
             // FrmUserWarehouse
             // 

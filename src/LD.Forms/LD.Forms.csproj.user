@@ -58,6 +58,9 @@
     <Compile Update="Views\Dialogs\FrmSuccess.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\FrmUserWarehouse.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\Dialogs\FrmWarning.cs">
       <SubType>Form</SubType>
     </Compile>
