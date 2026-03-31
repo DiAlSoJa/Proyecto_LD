@@ -20,10 +20,12 @@ using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Monedas;
+using LD.FormsX.Views.Proyectos;
 using LD.FormsX.Views.Reportes;
 using LD.FormsX.Views.Status;
 using LD.FormsX.Views.Ubicaciones;
 using LD.FormsX.Views.Unidades;
+using LD.FormsX.Views.Usuarios;
 using LDForms;
 using LDForms.Views;
 using Microsoft.Extensions.Configuration;
@@ -98,7 +100,7 @@ namespace LD.FormsX
             services.AddTransient<UbicacionesView>();
             services.AddTransient<ArticulosView>();
             services.AddTransient<CatalogoStatusView>();
-            services.AddTransient<CatalogoCategoriasView>(); 
+            services.AddTransient<CatalogoCategoriasView>();
             services.AddTransient<CatalogoUnidadesView>();
             services.AddTransient<CatalogoMonedasView>();
             services.AddTransient<CatalogoFamiliasView>();
@@ -111,6 +113,9 @@ namespace LD.FormsX
             services.AddTransient<CheckListView>();
             services.AddTransient<ReportesView>();
             services.AddTransient<ControlPatioView>();
+            services.AddTransient<UsuariosView>();
+            services.AddTransient<ProyectosView>();
+
 
             // dialogs
             services.AddTransient<DialogWindow>();
@@ -126,6 +131,10 @@ namespace LD.FormsX
             services.AddTransient<NuevoArticuloView>();
             services.AddTransient<NuevaAuditoriaView>();
             services.AddTransient<NuevoEquipoCheckListView>();
+            services.AddTransient<NuevoUsuarioView>();
+            services.AddTransient < NuevoProyectoView>();
+
+
         }
     }
 }

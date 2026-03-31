@@ -17,6 +17,7 @@ using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Reportes;
+using LD.FormsX.Views.Usuarios;
 using LD.Formx.Core;
 using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -138,7 +139,7 @@ namespace LDForms
                     break;
 
                 case "Proyectos":
-                  //  AbrirTab("Proyectos", _serviceProvider.GetRequiredService<ProductosView>());
+                    AbrirTab("Proyectos", _serviceProvider.GetRequiredService<projec>());
                     break;
                 case "Ubicaciones":
                     AbrirTab("Ubicaciones", _serviceProvider.GetRequiredService<UbicacionesView>());
@@ -172,6 +173,9 @@ namespace LDForms
                     break;
                 case "Patio":
                     AbrirTab("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());
+                    break;
+                case "Usuarios":
+                    AbrirTab("Usuarios", _serviceProvider.GetRequiredService<UsuariosView>());
                     break;
             }
         }
@@ -228,6 +232,9 @@ namespace LDForms
                     break;
                 case "Patio":
                     AbrirVentana("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());
+                    break;
+                case "Usuarios":
+                    AbrirVentana("Usuarios", _serviceProvider.GetRequiredService<UsuariosView>());
                     break;
             }
         }
