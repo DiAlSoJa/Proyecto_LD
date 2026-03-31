@@ -189,7 +189,8 @@
                    SelectionChanged="DgClientes_SelectionChanged"
                    RowHeight="28"
                   ColumnHeaderHeight="40"
-                
+                 AlternatingRowBackground="#F8FAFC"
+          AlternationCount="2"
                   FontSize="12"
                    VerticalGridLinesBrush="#D9D9D9"
                    Margin="0">
