@@ -29,7 +29,7 @@ namespace LD.Application.Features.Product.Profiles
                .ForMember(dest => dest.Familia,
                opt => opt.MapFrom(src => src.Family.FamilyName))
                 .ForMember(dest => dest.TipoDeAlmacenamiento,
-                opt => opt.MapFrom(src => src.StorageType))
+                opt => opt.MapFrom(src => src.StorageType.Code))
                 .ForMember(dest => dest.UnidadMinima,
                 opt => opt.MapFrom(src => src.MinUnitId))
                 .ForMember(dest => dest.UnidadMedia,

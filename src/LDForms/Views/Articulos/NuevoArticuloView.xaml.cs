@@ -75,7 +75,7 @@ namespace LD.FormsX.Views.Articulos
                 if (dimensioner.IsSuccess && dimensioner.Data != null)
                 {
                     cmbDimension.ItemsSource = dimensioner.Data;
-                    cmbDimension.DisplayMemberPath = "Value";
+                    cmbDimension.DisplayMemberPath = "Key";
                     cmbDimension.SelectedValuePath = "Key";
                     cmbDimension.SelectedIndex = -1;
                 }
