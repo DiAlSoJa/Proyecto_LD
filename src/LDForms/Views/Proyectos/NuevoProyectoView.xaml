@@ -1,0 +1,473 @@
+﻿<Window x:Class="LD.FormsX.Views.Proyectos.NuevoProyectoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Nuevo proyecto"
+        Height="640" Width="960"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+        </Style>
+        <Style x:Key="InputStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Background" Value="#F9FAFB"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="ComboStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="Background" Value="#F9FAFB"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="CheckStyle" TargetType="CheckBox">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,4,0,4"/>
+        </Style>
+        <Style x:Key="RadioStyle" TargetType="RadioButton">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Margin" Value="0,4,0,4"/>
+        </Style>
+        <Style x:Key="GroupLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#233167"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SecondaryBtn" TargetType="Button">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8,8,0,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              ContentSource="Header"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="White"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#D1D5DB"/>
+                                <Setter Property="Foreground" Value="#111827"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Border Width="940"
+                Background="White" CornerRadius="16"
+                BorderBrush="#E5E7EB" BorderThickness="1" SnapsToDevicePixels="True">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.18"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="52"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="68"/>
+                </Grid.RowDefinitions>
+
+                <!-- ── Header ── -->
+                <Border Grid.Row="0" Background="#233167"
+                        CornerRadius="16,16,0,0"
+                        MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                    <Grid Margin="16,0,10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="txtHeaderTitle" Text="Nuevo proyecto"
+                                   VerticalAlignment="Center" Foreground="White"
+                                   FontSize="16" FontWeight="SemiBold"/>
+                        <Button Grid.Column="1" Width="30" Height="30"
+                                Background="Transparent" BorderThickness="0"
+                                Foreground="White" FontSize="18" FontWeight="Bold"
+                                Cursor="Hand" Click="BtnClose_Click" Content="×"/>
+                    </Grid>
+                </Border>
+
+                <!-- ── Body con tabs ── -->
+                <TabControl Grid.Row="1" Margin="16,12,16,0">
+
+                    <!-- ─ Tab 1: Datos Generales ─ -->
+                    <TabItem Header="Datos generales">
+                        <Border Background="White" BorderBrush="#E5E7EB"
+                                BorderThickness="1" CornerRadius="0,8,8,8" Padding="20,16">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+
+                                    <!-- Fila 1: Cliente / Almacén / Nombre -->
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="260"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="220"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Cliente:" Style="{StaticResource LabelStyle}"/>
+                                        <ComboBox x:Name="cmbCliente" Grid.Column="1"
+                                                  Style="{StaticResource ComboStyle}"
+                                                  DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                                        <TextBlock Grid.Column="3" Text="Almacén:" Style="{StaticResource LabelStyle}"/>
+                                        <ComboBox x:Name="cmbAlmacen" Grid.Column="4"
+                                                  Style="{StaticResource ComboStyle}"
+                                                  DisplayMemberPath="Value" SelectedValuePath="Key"/>
+                                        <TextBlock Grid.Column="6" Text="Proyecto:" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox x:Name="txtProjectName" Grid.Column="7" Style="{StaticResource InputStyle}"/>
+                                    </Grid>
+
+                                    <!-- Fila 2: Activo / AutoPicking -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                        <CheckBox x:Name="checkActivo" Content="Activo"
+                                                  Style="{StaticResource CheckStyle}" Margin="0,0,24,0"/>
+                                        <CheckBox x:Name="checkAutoPicking" Content="AutoPicking"
+                                                  Style="{StaticResource CheckStyle}"/>
+                                    </StackPanel>
+
+                                    <!-- Fila 3: tres grupos lado a lado -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="16"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="16"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Tipo de almacenamiento -->
+                                        <Border Grid.Column="0" BorderBrush="#E5E7EB"
+                                                BorderThickness="1" CornerRadius="8" Padding="14,10">
+                                            <StackPanel>
+                                                <TextBlock Text="TIPO DE ALMACENAMIENTO" Style="{StaticResource GroupLabelStyle}"/>
+                                                <RadioButton x:Name="radioFifo"    Content="FIFO (First In - First Out)"  Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                                <RadioButton x:Name="radioLifo"    Content="LIFO (Last In - First Out)"   Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                                <RadioButton x:Name="radioLote"    Content="Número de Lote"               Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                                <RadioButton x:Name="radioCaducidad" Content="Fecha de Caducidad"         Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Opciones de almacenamiento -->
+                                        <Border Grid.Column="2" BorderBrush="#E5E7EB"
+                                                BorderThickness="1" CornerRadius="8" Padding="14,10">
+                                            <StackPanel>
+                                                <TextBlock Text="OPCIONES" Style="{StaticResource GroupLabelStyle}"/>
+                                                <CheckBox x:Name="checkBackorder"      Content="Backorder"       Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox x:Name="checkDistribucion"   Content="Distribución"    Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox x:Name="checkAlmacenFiscal"  Content="Almacén Fiscal"  Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox x:Name="checkSobredimension" Content="Sobredimensión"  Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox x:Name="checkEtiquetas"      Content="Etiquetas"       Style="{StaticResource CheckStyle}"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Unidades -->
+                                        <Border Grid.Column="4" BorderBrush="#E5E7EB"
+                                                BorderThickness="1" CornerRadius="8" Padding="14,10">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="110"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                                                           Text="UNIDADES" Style="{StaticResource GroupLabelStyle}"/>
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Entrada:"      Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
+                                                <ComboBox  x:Name="cmbEntrada"         Grid.Row="1" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
+                                                </ComboBox>
+                                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Almacenamiento:" Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
+                                                <ComboBox  x:Name="cmbAlmacenamiento"  Grid.Row="2" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
+                                                </ComboBox>
+                                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Retrabajo:"    Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
+                                                <ComboBox  x:Name="cmbRetrabajo"       Grid.Row="3" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
+                                                </ComboBox>
+                                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Salida:"       Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
+                                                <ComboBox  x:Name="cmbSalida"          Grid.Row="4" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
+                                                </ComboBox>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+                    </TabItem>
+
+                    <!-- ─ Tab 2: Notificaciones ─ -->
+                    <TabItem Header="Notificaciones">
+                        <Border Background="White" BorderBrush="#E5E7EB"
+                                BorderThickness="1" CornerRadius="0,8,8,8" Padding="20,16">
+                            <StackPanel>
+
+                                <!-- Tipos de notificación -->
+                                <Border BorderBrush="#E5E7EB" BorderThickness="1"
+                                        CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="220"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                                                   Text="NOTIFICACIONES" Style="{StaticResource GroupLabelStyle}"/>
+                                        <CheckBox x:Name="checkNotRecibo"    Grid.Row="2" Grid.Column="0"
+                                                  Content="Notificación de Recibo"   Style="{StaticResource CheckStyle}"/>
+                                        <ComboBox x:Name="cmbNotRecibo"      Grid.Row="2" Grid.Column="1"
+                                                  Style="{StaticResource ComboStyle}" IsEditable="True" MaxWidth="280" HorizontalAlignment="Left">
+                                            <ComboBoxItem Content="EMAIL"/><ComboBoxItem Content="SMS"/><ComboBoxItem Content="NINGUNO"/>
+                                        </ComboBox>
+                                        <CheckBox x:Name="checkNotEmbarque"  Grid.Row="4" Grid.Column="0"
+                                                  Content="Notificación de Embarque" Style="{StaticResource CheckStyle}"/>
+                                        <ComboBox x:Name="cmbNotEmbarque"    Grid.Row="4" Grid.Column="1"
+                                                  Style="{StaticResource ComboStyle}" IsEditable="True" MaxWidth="280" HorizontalAlignment="Left">
+                                            <ComboBoxItem Content="EMAIL"/><ComboBoxItem Content="SMS"/><ComboBoxItem Content="NINGUNO"/>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+
+                                <Border BorderBrush="#E5E7EB" BorderThickness="1"
+                                        CornerRadius="8" Padding="16">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="220"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                                                   Text="TIEMPOS DE RESPUESTA (hrs)" Style="{StaticResource GroupLabelStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Normal:"  Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtTiempoNormal"   Grid.Row="2" Grid.Column="1"
+                                                   Style="{StaticResource InputStyle}" Width="120" HorizontalAlignment="Left"/>
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Urgente:" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtTiempoUrgente"  Grid.Row="4" Grid.Column="1"
+                                                   Style="{StaticResource InputStyle}" Width="120" HorizontalAlignment="Left"/>
+                                    </Grid>
+                                </Border>
+
+                            </StackPanel>
+                        </Border>
+                    </TabItem>
+
+                    <!-- ─ Tab 3: Prefijos ─ -->
+                    <TabItem Header="Prefijos">
+                        <Border Background="White" BorderBrush="#E5E7EB"
+                                BorderThickness="1" CornerRadius="0,8,8,8" Padding="20,16">
+                            <StackPanel>
+
+                                <!-- ASN -->
+                                <Border BorderBrush="#E5E7EB" BorderThickness="1"
+                                        CornerRadius="8" Padding="16" Margin="0,0,0,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="160"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="5"
+                                                   Text="ASN" Style="{StaticResource GroupLabelStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Número:"  Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtNumeroAsn"   Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="3" Text="Prefijo:" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtPrefijoAsn"  Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Kitting -->
+                                <Border BorderBrush="#E5E7EB" BorderThickness="1"
+                                        CornerRadius="8" Padding="16" Margin="0,0,0,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="160"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="5"
+                                                   Text="KITTING" Style="{StaticResource GroupLabelStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Número:"  Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtNumeroKitting"  Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="3" Text="Prefijo:" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtPrefijoKitting" Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Orden de entrega DO -->
+                                <Border BorderBrush="#E5E7EB" BorderThickness="1"
+                                        CornerRadius="8" Padding="16">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="7"
+                                                   Text="ORDEN DE ENTREGA (DO)" Style="{StaticResource GroupLabelStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Número:"  Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtNumeroDo"   Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="3" Text="Prefijo:" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox   x:Name="txtPrefijoDo"  Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"/>
+                                        <CheckBox  x:Name="checkRegistroRequerido"
+                                                   Grid.Row="2" Grid.Column="6"
+                                                   Content="Requiere registro de llegadas"
+                                                   Style="{StaticResource CheckStyle}"/>
+                                    </Grid>
+                                </Border>
+
+                            </StackPanel>
+                        </Border>
+                    </TabItem>
+
+                </TabControl>
+
+                <!-- ── Footer ── -->
+                <Border Grid.Row="2" Background="#F9FAFB"
+                        BorderBrush="#E5E7EB" BorderThickness="0,1,0,0"
+                        CornerRadius="0,0,16,16">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Margin="0,0,24,0">
+                        <Button x:Name="btnSave" Content="Guardar"
+                                Style="{StaticResource PrimaryBtn}"
+                                Margin="0,0,10,0" Click="BtnSave_Click"/>
+                        <Button Content="Cancelar"
+                                Style="{StaticResource SecondaryBtn}"
+                                Click="BtnClose_Click"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
+                  

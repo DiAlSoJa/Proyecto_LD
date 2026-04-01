@@ -77,8 +77,6 @@
     <Folder Include="Resources\Styles\" />
     <Folder Include="Views\Embarques\" />
     <Folder Include="Views\Surtido\" />
-    <Folder Include="Views\Usuarios\" />
-    <Folder Include="Views\Proyectos\" />
   </ItemGroup>
 
   <ItemGroup>
