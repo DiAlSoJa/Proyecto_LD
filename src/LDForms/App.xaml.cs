@@ -137,7 +137,9 @@ namespace LD.FormsX
 
             services.AddTransient<NuevoUsuarioView>();
             services.AddTransient<UsuarioAlmacenView>();
-            services.AddTransient < NuevoProyectoView>();
+            services.AddTransient<RolesView>();
+            services.AddTransient<NuevoRolView>();
+            services.AddTransient<NuevoProyectoView>();
 
             services.AddTransient<NuevoDimensionadorView>();
 

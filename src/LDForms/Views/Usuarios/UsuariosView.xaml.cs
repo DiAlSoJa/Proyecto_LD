@@ -163,6 +163,22 @@ namespace LD.FormsX.Views.Usuarios
             if (result == true)
                 await CargarDatosConLoaderAsync("Trayendo usuarios...");
         }
+
+        private void BtnRoles_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = _serviceProvider.GetRequiredService<RolesView>();
+            var window = new Window
+            {
+                Title = "Roles",
+                Content = dialog,
+                Width = 1000,
+                Height = 660,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = Window.GetWindow(this),
+                Background = System.Windows.Media.Brushes.White,
+            };
+            window.ShowDialog();
+        }
     }
 }
 
