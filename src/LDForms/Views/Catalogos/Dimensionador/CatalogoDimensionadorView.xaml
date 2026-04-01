@@ -34,11 +34,11 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                    <TextBlock Text="Familias"
+                    <TextBlock Text="Dimensionador"
                                FontSize="24"
                                FontWeight="SemiBold"
                                Foreground="#1F2937"/>
-                    <TextBlock Text="Consulta, crea y edita familias"
+                    <TextBlock Text="Consulta, crea y edita dimensiones"
                                FontSize="13"
                                Foreground="#6B7280"
                                Margin="0,4,0,0"/>
@@ -50,7 +50,7 @@
                          VerticalContentAlignment="Center"
                          Padding="10,0"
                          FontSize="13"                      
-                         ToolTip="Buscar almacén..." />
+                         ToolTip="Buscar dimension..." />
 
                 <Button x:Name="btnNuevo"
                     Grid.Column="3"

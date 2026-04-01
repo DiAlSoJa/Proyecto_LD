@@ -28,6 +28,9 @@ namespace LD.Infrastructure.Repositories
             return await _context.items
                 .Include(x => x.Client)
                 .Include(x => x.Project)
+                .Include(x=> x.Category)
+                .Include(x=>x.Family)
+                .Include(x=>x.StorageType)
                 .ToListAsync();
         }
 
