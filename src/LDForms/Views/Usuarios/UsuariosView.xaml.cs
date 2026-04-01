@@ -1,47 +1,49 @@
 ﻿using LD.Client.Services;
+using LD.Contracts.DTOs.User;
+using LD.Contracts.User;
 using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
-using LD.FormsX.Views.Almacen;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LD.FormsX.Views.Usuarios
 {
-    /// <summary>
-    /// Lógica de interacción para UsuariosView.xaml
-    /// </summary>
     public partial class UsuariosView : UserControl
     {
-        private readonly WarehouseService _warehouseService;
+        private readonly UserService _userService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly WpfGridFilter<UserDto> _gridFilter;
 
-        private readonly WpfGridFilter<WarehouseDto> _gridFilter;
-        private ICollectionView _almacenesView;
-
-        private WarehouseDto? _selectedWarehouse;
+        private List<GetUserDto> _allUsers = new();
+        private GetUserDto? _selectedUser;
         private bool _loaded;
-        public UsuariosView()
+
+        public UsuariosView(UserService userService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            _userService = userService;
+            _serviceProvider = serviceProvider;
+            _gridFilter = new WpfGridFilter<UserDto>(dgUsuarios, txtBuscar);
+            _gridFilter.SetColumnWidths(new Dictionary<string, double>
+            {
+                { "Activo", 70 },
+                { "Id",     120 },
+                { "Nombre", 220 },
+                { "UserName", 180 },
+                { "Rol",    140 },
+            });
         }
+
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (_loaded) return;
             _loaded = true;
-
-            await CargarDatosConLoaderAsync("Trayendo almacenes...");
+            await CargarDatosConLoaderAsync("Trayendo usuarios...");
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -69,7 +71,7 @@ namespace LD.FormsX.Views.Usuarios
 
         private async Task CargarDatosAsync()
         {
-            var result = await _warehouseService.GetWarehouses();
+            var result = await _userService.GetUsers();
 
             if (!result.IsSuccess)
             {
@@ -77,26 +79,37 @@ namespace LD.FormsX.Views.Usuarios
                 return;
             }
 
-            _gridFilter.SetData(result.Data);
-            _selectedWarehouse = null;
-            txtStatus.Text = $"Registros: {result.Data.Count}";
+            _allUsers = result.Data ?? new List<GetUserDto>();
+
+            var users = _allUsers
+                .Where(x => x.User != null)
+                .Select(x => x.User!)
+                .ToList();
+
+            _gridFilter.SetData(users);
+            _selectedUser = null;
+            txtStatus.Text = $"Registros: {users.Count}";
+            ActualizarPanelDetalle(null);
+        }
+
+        private void ActualizarPanelDetalle(GetUserDto? user)
+        {
+            dgPermisos.ItemsSource = user?.Permissions ?? new List<PermissionDto>();
+            dgAlmacenes.ItemsSource = user?.Warehouse ?? new List<WarehouseDto>();
         }
 
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
-            await CargarDatosConLoaderAsync("Trayendo almacenes...");
+            await CargarDatosConLoaderAsync("Trayendo usuarios...");
         }
 
-        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-        {
-            _gridFilter.ClearFilter();
-        }
-
-        private void dgAlmacenes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                _selectedWarehouse = _gridFilter.SelectedItem;
+                var selectedDto = _gridFilter.SelectedItem;
+                _selectedUser = _allUsers.FirstOrDefault(x => x.User?.Id == selectedDto?.Id);
+                ActualizarPanelDetalle(_selectedUser);
             }
             catch (Exception ex)
             {
@@ -106,45 +119,50 @@ namespace LD.FormsX.Views.Usuarios
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
+            var dialog = _serviceProvider.GetRequiredService<NuevoUsuarioView>();
             dialog.Owner = Window.GetWindow(this);
 
             var result = dialog.ShowDialog();
 
             if (result == true)
-            {
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
+                await CargarDatosConLoaderAsync("Trayendo usuarios...");
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedWarehouse is null)
+            if (_selectedUser is null)
+            {
+                DialogHelper.ShowWarning("Selecciona un usuario para editar.");
                 return;
+            }
 
-            var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
+            var dialog = _serviceProvider.GetRequiredService<NuevoUsuarioView>();
             dialog.Owner = Window.GetWindow(this);
-            dialog.SetWarehouse(_selectedWarehouse);
+            dialog.SetUser(_selectedUser);
 
             var result = dialog.ShowDialog();
 
             if (result == true)
-            {
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
+                await CargarDatosConLoaderAsync("Trayendo usuarios...");
         }
-        private void DgClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private async void BtnAlmacenes_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (_selectedUser is null)
             {
-                _selectedWarehouse = _gridFilter.SelectedItem;
-                _selectedWarehouse = _gridFilter.SelectedItem;
-                _selectedWarehouse = _gridFilter.SelectedItem;
+                DialogHelper.ShowWarning("Selecciona un usuario para gestionar sus almacenes.");
+                return;
             }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
+
+            var dialog = _serviceProvider.GetRequiredService<UsuarioAlmacenView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetUser(_selectedUser);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
+                await CargarDatosConLoaderAsync("Trayendo usuarios...");
         }
     }
 }
+

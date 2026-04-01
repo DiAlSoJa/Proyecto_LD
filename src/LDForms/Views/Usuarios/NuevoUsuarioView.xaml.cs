@@ -1,46 +1,54 @@
 ﻿using LD.Client.Services;
-using LD.Contracts.Client;
-using LD.Contracts.Requests.Client;
+using LD.Contracts.DTOs.User;
+using LD.Contracts.Requests;
+using LD.Contracts.Responses;
 using LD.FormsX.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LD.FormsX.Views.Usuarios
 {
-    /// <summary>
-    /// Lógica de interacción para NuevoUsuarioView.xaml
-    /// </summary>
     public partial class NuevoUsuarioView : Window
     {
-        private readonly ClientService _clientService;
-        private ClientDto? ClientSelected { get; set; }
+        private readonly UserService _userService;
+        private readonly LookupService _lookupService;
 
+        private GetUserDto? _userSelected;
         public bool ResponseForm { get; private set; }
 
-        public NuevoUsuarioView()
+        public NuevoUsuarioView(UserService userService, LookupService lookupService)
         {
             InitializeComponent();
+            _userService = userService;
+            _lookupService = lookupService;
         }
-        public async void SetClient(ClientDto client)
+
+        public async void SetUser(GetUserDto? user)
         {
-            ClientSelected = client;
+            _userSelected = user;
+            txtHeaderTitle.Text = "Editar usuario";
             await CargarDatosAsync();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await CargarCombosAsync();
+        }
+
+        private async Task CargarCombosAsync()
+        {
+            var response = await _lookupService.GetRoleLookup();
+            if (response.IsSuccess)
+                cmbRol.ItemsSource = response.Data;
         }
 
         private async Task CargarDatosAsync()
         {
             try
             {
-                var response = await _clientService.GetClientById(ClientSelected?.Id ?? 0);
+                var response = await _userService.GetUserById(_userSelected?.User?.Id ?? "");
 
                 if (!response.IsSuccess)
                 {
@@ -48,25 +56,15 @@ namespace LD.FormsX.Views.Usuarios
                     return;
                 }
 
-                var client = response.Data;
-                txtId.Text = client.ClientId.ToString();
-                txtComercialName.Text = client.CommercialName;
-                txtCiudadComercial.Text = client.City;
-                txtCPComercial.Text = client.ZipCode;
-                txtTelefonoComercial.Text = client.Phone;
-                txtColoniaComercial.Text = client.Neightbourhoud;
-                checkIsActive.IsChecked = client.IsActive;
-                checkIsProvider.IsChecked = client.IsProvider;
-                txtDomicilioComercial.Text = client.CommercialAddress;
+                var user = response.Data;
+                txtUsername.Text = user.Username;
+                txtName.Text = user.Name;
+                isActive.IsChecked = user.IsActive;
 
-                txtRazonSocial.Text = client.FiscalData?.BusinessName ?? string.Empty;
-                txtRFC.Text = client.FiscalData?.Rfc ?? string.Empty;
-                txtDomicilioFiscal.Text = client.FiscalData?.FiscalAddress ?? string.Empty;
-                txtColonia.Text = client.FiscalData?.Neightbourhoud ?? string.Empty;
-                txtCiudadFiscal.Text = client.FiscalData?.City ?? string.Empty;
-                txtCPFiscal.Text = client.FiscalData?.ZipCode ?? string.Empty;
-                txtEmail.Text = client.FiscalData?.Email ?? string.Empty;
-                txtTelefonoFiscal.Text = client.FiscalData?.Phone ?? string.Empty;
+                if (user.Role is not null)
+                    cmbRol.SelectedValue = user.Role;
+                else
+                    cmbRol.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -74,69 +72,44 @@ namespace LD.FormsX.Views.Usuarios
             }
         }
 
-        private ClientRequest BuildRequest()
+        private UserRequest BuildRequest() => new()
         {
-            return new ClientRequest
-            {
-                ClientId = ClientSelected != null ? ClientSelected.Id : 0,
-                CommercialName = txtComercialName.Text.Trim(),
-                CommercialAddress = txtDomicilioComercial.Text.Trim(),
-                Neightbourhoud = txtColoniaComercial.Text.Trim(),
-                City = txtCiudadComercial.Text.Trim(),
-                ZipCode = txtCPComercial.Text.Trim(),
-                Phone = txtTelefonoComercial.Text.Trim(),
-                IsActive = checkIsActive.IsChecked == true,
-                IsProvider = checkIsProvider.IsChecked == true,
-                FiscalData = HasFiscalData()
-                    ? new ClientFiscalDataRequest
-                    {
-                        BusinessName = txtRazonSocial.Text.Trim(),
-                        Rfc = txtRFC.Text.Trim(),
-                        FiscalAddress = txtDomicilioFiscal.Text.Trim(),
-                        Neightbourhoud = txtColonia.Text.Trim(),
-                        City = txtCiudadFiscal.Text.Trim(),
-                        ZipCode = txtCPFiscal.Text.Trim(),
-                        Email = txtEmail.Text.Trim(),
-                        Phone = txtTelefonoFiscal.Text.Trim()
-                    }
-                    : null
-            };
-        }
+            Username = txtUsername.Text.Trim(),
+            Name = txtName.Text.Trim(),
+            Password = txtPassword.Password,
+            ConfirmPassword = txtConfirmPassword.Password,
+            Role = cmbRol.SelectedValue?.ToString(),
+            IsActive = isActive.IsChecked ?? false,
+        };
 
-        private bool HasFiscalData()
-        {
-            return !string.IsNullOrWhiteSpace(txtRazonSocial.Text) ||
-                   !string.IsNullOrWhiteSpace(txtRFC.Text) ||
-                   !string.IsNullOrWhiteSpace(txtDomicilioFiscal.Text) ||
-                   !string.IsNullOrWhiteSpace(txtColonia.Text) ||
-                   !string.IsNullOrWhiteSpace(txtCiudadFiscal.Text) ||
-                   !string.IsNullOrWhiteSpace(txtCPFiscal.Text) ||
-                   !string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                   !string.IsNullOrWhiteSpace(txtTelefonoFiscal.Text);
-        }
+        private Task<ApiResponseDto<string>> CreateUser(UserRequest request) =>
+            _userService.CreateUser(request);
 
-        private async void btnSave_Click(object sender, RoutedEventArgs e)
+        private Task<ApiResponseDto<string>> EditUser(string userId, UserRequest request) =>
+            _userService.UpdateUser(userId, request);
+
+        private Task<ApiResponseDto<string>> SaveUser(UserRequest request) =>
+            _userSelected != null
+                ? EditUser(_userSelected.User?.Id ?? "", request)
+                : CreateUser(request);
+
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 btnSave.IsEnabled = false;
-
                 var request = BuildRequest();
-
-                var result = ClientSelected != null
-                    ? await _clientService.UpdateClient(ClientSelected.Id, request)
-                    : await _clientService.CreateClient(request);
+                var result = await SaveUser(request);
 
                 if (result.IsSuccess)
                 {
+                    DialogHelper.ShowSuccess(result.Data ?? "Operación realizada correctamente.");
                     ResponseForm = true;
-                    DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente");
                     DialogResult = true;
-                    Close();
                 }
                 else
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Ocurrió un error");
+                    DialogHelper.ShowError(result.Message);
                 }
             }
             catch (Exception ex)
@@ -149,17 +122,12 @@ namespace LD.FormsX.Views.Usuarios
             }
         }
 
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-            Close();
-        }
+        private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();
 
         private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
         }
-
     }
 }

@@ -1,47 +1,45 @@
 ﻿using LD.Client.Services;
-using LD.Contracts.Warehouse;
+using LD.Contracts.Project;
 using LD.FormsX.Helpers;
-using LD.FormsX.Views.Almacen;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LD.FormsX.Views.Proyectos
 {
-    /// <summary>
-    /// Lógica de interacción para ProyectosView.xaml
-    /// </summary>
     public partial class ProyectosView : UserControl
     {
-        private readonly WarehouseService _warehouseService;
+        private readonly ProjectService _projectService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly WpfGridFilter<ProjectDto> _gridFilter;
 
-        private readonly WpfGridFilter<WarehouseDto> _gridFilter;
-        private ICollectionView _almacenesView;
-
-        private WarehouseDto? _selectedWarehouse;
+        private ProjectDto? _selectedProject;
         private bool _loaded;
-        public ProyectosView()
+
+        public ProyectosView(ProjectService projectService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            _projectService = projectService;
+            _serviceProvider = serviceProvider;
+            _gridFilter = new WpfGridFilter<ProjectDto>(dgProyectos, txtBuscar);
+            _gridFilter.SetColumnWidths(new Dictionary<string, double>
+            {
+                { "Activo",    70 },
+                { "ProjectId", 80 },
+                { "Proyecto",  260 },
+                { "Cliente",   200 },
+                { "Almacen",   180 },
+            });
         }
+
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (_loaded) return;
             _loaded = true;
-
-            await CargarDatosConLoaderAsync("Trayendo almacenes...");
+            await CargarDatosConLoaderAsync("Trayendo proyectos...");
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -69,7 +67,7 @@ namespace LD.FormsX.Views.Proyectos
 
         private async Task CargarDatosAsync()
         {
-            var result = await _warehouseService.GetWarehouses();
+            var result = await _projectService.GetProjects();
 
             if (!result.IsSuccess)
             {
@@ -77,26 +75,22 @@ namespace LD.FormsX.Views.Proyectos
                 return;
             }
 
-            _gridFilter.SetData(result.Data);
-            _selectedWarehouse = null;
-            txtStatus.Text = $"Registros: {result.Data.Count}";
+            var data = result.Data ?? new List<ProjectDto?>();
+            _gridFilter.SetData(data.Where(x => x != null).Select(x => x!).ToList());
+            _selectedProject = null;
+            txtStatus.Text = $"Registros: {data.Count}";
         }
 
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
-            await CargarDatosConLoaderAsync("Trayendo almacenes...");
+            await CargarDatosConLoaderAsync("Trayendo proyectos...");
         }
 
-        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-        {
-            _gridFilter.ClearFilter();
-        }
-
-        private void dgAlmacenes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DgProyectos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                _selectedWarehouse = _gridFilter.SelectedItem;
+                _selectedProject = _gridFilter.SelectedItem;
             }
             catch (Exception ex)
             {
@@ -106,44 +100,31 @@ namespace LD.FormsX.Views.Proyectos
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
+            var dialog = _serviceProvider.GetRequiredService<NuevoProyectoView>();
             dialog.Owner = Window.GetWindow(this);
 
             var result = dialog.ShowDialog();
-
             if (result == true)
-            {
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
+                await CargarDatosConLoaderAsync("Trayendo proyectos...");
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedWarehouse is null)
+            if (_selectedProject is null)
+            {
+                DialogHelper.ShowWarning("Selecciona un proyecto para editar.");
                 return;
+            }
 
-            var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
+            var dialog = _serviceProvider.GetRequiredService<NuevoProyectoView>();
             dialog.Owner = Window.GetWindow(this);
-            dialog.SetWarehouse(_selectedWarehouse);
+            dialog.SetProject(_selectedProject);
 
             var result = dialog.ShowDialog();
-
             if (result == true)
-            {
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
+                await CargarDatosConLoaderAsync("Trayendo proyectos...");
         }
-        private void DgClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                _selectedWarehouse = _gridFilter.SelectedItem;
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-        }
-
     }
 }
+
+

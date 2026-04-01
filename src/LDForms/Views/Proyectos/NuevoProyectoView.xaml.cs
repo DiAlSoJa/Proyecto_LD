@@ -1,46 +1,63 @@
 ﻿using LD.Client.Services;
-using LD.Contracts.Client;
-using LD.Contracts.Requests.Client;
+using LD.Contracts.Project;
+using LD.Contracts.Requests;
+using LD.Contracts.Responses;
 using LD.FormsX.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LD.FormsX.Views.Proyectos
 {
-    /// <summary>
-    /// Lógica de interacción para NuevoProyectoView.xaml
-    /// </summary>
     public partial class NuevoProyectoView : Window
     {
-        private readonly ClientService _clientService;
-        private ClientDto? ClientSelected { get; set; }
+        private readonly ProjectService _projectService;
+        private readonly LookupService _lookupService;
 
+        private ProjectDto? _projectSelected;
         public bool ResponseForm { get; private set; }
 
-        public NuevoProyectoView()
+        public NuevoProyectoView(ProjectService projectService, LookupService lookupService)
         {
             InitializeComponent();
+            _projectService = projectService;
+            _lookupService = lookupService;
         }
-        public async void SetClient(ClientDto client)
+
+        public async void SetProject(ProjectDto? project)
         {
-            ClientSelected = client;
-            await CargarDatosAsync();
+            _projectSelected = project;
+            txtHeaderTitle.Text = "Editar proyecto";
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await CargarCombosAsync();
+            if (_projectSelected != null)
+                await CargarDatosAsync();
+        }
+
+        private async Task CargarCombosAsync()
+        {
+            var clientes = await _lookupService.GetClientLookup();
+            var almacenes = await _lookupService.GetWarehouseLookup();
+
+            if (clientes.IsSuccess)
+            {
+                cmbCliente.ItemsSource = clientes.Data;
+            }
+            if (almacenes.IsSuccess)
+            {
+                cmbAlmacen.ItemsSource = almacenes.Data;
+            }
         }
 
         private async Task CargarDatosAsync()
         {
             try
             {
-                var response = await _clientService.GetClientById(ClientSelected?.Id ?? 0);
+                var response = await _projectService.GetProjectById(_projectSelected?.ProjectId ?? 0);
 
                 if (!response.IsSuccess)
                 {
@@ -48,25 +65,46 @@ namespace LD.FormsX.Views.Proyectos
                     return;
                 }
 
-                var client = response.Data;
-                txtId.Text = client.ClientId.ToString();
-                txtComercialName.Text = client.CommercialName;
-                txtCiudadComercial.Text = client.City;
-                txtCPComercial.Text = client.ZipCode;
-                txtTelefonoComercial.Text = client.Phone;
-                txtColoniaComercial.Text = client.Neightbourhoud;
-                checkIsActive.IsChecked = client.IsActive;
-                checkIsProvider.IsChecked = client.IsProvider;
-                txtDomicilioComercial.Text = client.CommercialAddress;
+                var p = response.Data;
 
-                txtRazonSocial.Text = client.FiscalData?.BusinessName ?? string.Empty;
-                txtRFC.Text = client.FiscalData?.Rfc ?? string.Empty;
-                txtDomicilioFiscal.Text = client.FiscalData?.FiscalAddress ?? string.Empty;
-                txtColonia.Text = client.FiscalData?.Neightbourhoud ?? string.Empty;
-                txtCiudadFiscal.Text = client.FiscalData?.City ?? string.Empty;
-                txtCPFiscal.Text = client.FiscalData?.ZipCode ?? string.Empty;
-                txtEmail.Text = client.FiscalData?.Email ?? string.Empty;
-                txtTelefonoFiscal.Text = client.FiscalData?.Phone ?? string.Empty;
+                cmbCliente.SelectedValue  = p.ClientId?.ToString();
+                cmbAlmacen.SelectedValue  = p.WarehouseId?.ToString();
+                txtProjectName.Text        = p.ProjectName;
+
+                checkActivo.IsChecked       = p.IsActive;
+                checkAutoPicking.IsChecked  = p.AutoPicking;
+
+                radioFifo.IsChecked      = p.StorageTypeId == 1;
+                radioLifo.IsChecked      = p.StorageTypeId == 2;
+                radioLote.IsChecked      = p.StorageTypeId == 3;
+                radioCaducidad.IsChecked = p.StorageTypeId == 4;
+
+                checkBackorder.IsChecked      = p.AllowsBackorder;
+                checkDistribucion.IsChecked   = p.IsDistributionArea;
+                checkAlmacenFiscal.IsChecked  = p.IsFiscalWarehouse;
+                checkSobredimension.IsChecked = p.AllowsOversizedItems;
+                checkEtiquetas.IsChecked      = p.RequiresLabels;
+
+                cmbEntrada.Text        = p.Entrada;
+                cmbAlmacenamiento.Text = p.StorageArea;
+                cmbRetrabajo.Text      = p.ReworkArea;
+                cmbSalida.Text         = p.Salida;
+
+                checkNotRecibo.IsChecked   = p.ReceiptNotificationEnabled;
+                cmbNotRecibo.Text          = p.ReceiptNotificationMethod ?? "";
+                checkNotEmbarque.IsChecked = p.ShipmentNotificationEnabled;
+                cmbNotEmbarque.Text        = p.ShipmentNotificationMethod ?? "";
+
+                txtTiempoNormal.Text  = p.NormalHrs?.ToString() ?? "";
+                txtTiempoUrgente.Text = p.UrgentHrs?.ToString() ?? "";
+
+                txtNumeroAsn.Text   = p.AsnNumber   ?? "";
+                txtPrefijoAsn.Text  = p.AsnPrefix   ?? "";
+                txtNumeroKitting.Text  = p.KittingNumber  ?? "";
+                txtPrefijoKitting.Text = p.KittingPrefix  ?? "";
+                txtNumeroDo.Text    = p.DoNumber  ?? p.DeliveryOrderNumber ?? "";
+                txtPrefijoDo.Text   = p.DoPrefix  ?? p.DeliveryOrderPrefix ?? "";
+                checkRegistroRequerido.IsChecked = p.ReciveRequired;
             }
             catch (Exception ex)
             {
@@ -74,69 +112,74 @@ namespace LD.FormsX.Views.Proyectos
             }
         }
 
-        private ClientRequest BuildRequest()
+        private ProjectRequest BuildRequest() => new()
         {
-            return new ClientRequest
-            {
-                ClientId = ClientSelected != null ? ClientSelected.Id : 0,
-                CommercialName = txtComercialName.Text.Trim(),
-                CommercialAddress = txtDomicilioComercial.Text.Trim(),
-                Neightbourhoud = txtColoniaComercial.Text.Trim(),
-                City = txtCiudadComercial.Text.Trim(),
-                ZipCode = txtCPComercial.Text.Trim(),
-                Phone = txtTelefonoComercial.Text.Trim(),
-                IsActive = checkIsActive.IsChecked == true,
-                IsProvider = checkIsProvider.IsChecked == true,
-                FiscalData = HasFiscalData()
-                    ? new ClientFiscalDataRequest
-                    {
-                        BusinessName = txtRazonSocial.Text.Trim(),
-                        Rfc = txtRFC.Text.Trim(),
-                        FiscalAddress = txtDomicilioFiscal.Text.Trim(),
-                        Neightbourhoud = txtColonia.Text.Trim(),
-                        City = txtCiudadFiscal.Text.Trim(),
-                        ZipCode = txtCPFiscal.Text.Trim(),
-                        Email = txtEmail.Text.Trim(),
-                        Phone = txtTelefonoFiscal.Text.Trim()
-                    }
-                    : null
-            };
-        }
+            ProjectId   = _projectSelected?.ProjectId,
+            ClientId    = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int cId) ? cId : null,
+            WarehouseId = int.TryParse(cmbAlmacen.SelectedValue?.ToString(), out int wId) ? wId : null,
+            ProjectName = txtProjectName.Text.Trim(),
+            IsActive    = checkActivo.IsChecked    ?? false,
+            AutoPicking = checkAutoPicking.IsChecked ?? false,
 
-        private bool HasFiscalData()
-        {
-            return !string.IsNullOrWhiteSpace(txtRazonSocial.Text) ||
-                   !string.IsNullOrWhiteSpace(txtRFC.Text) ||
-                   !string.IsNullOrWhiteSpace(txtDomicilioFiscal.Text) ||
-                   !string.IsNullOrWhiteSpace(txtColonia.Text) ||
-                   !string.IsNullOrWhiteSpace(txtCiudadFiscal.Text) ||
-                   !string.IsNullOrWhiteSpace(txtCPFiscal.Text) ||
-                   !string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                   !string.IsNullOrWhiteSpace(txtTelefonoFiscal.Text);
-        }
+            StorageTypeId = radioFifo.IsChecked      == true ? 1 :
+                            radioLifo.IsChecked      == true ? 2 :
+                            radioLote.IsChecked      == true ? 3 :
+                            radioCaducidad.IsChecked == true ? 4 : null,
 
-        private async void btnSave_Click(object sender, RoutedEventArgs e)
+            AllowsBackorder      = checkBackorder.IsChecked      ?? false,
+            IsDistributionArea   = checkDistribucion.IsChecked   ?? false,
+            IsFiscalWarehouse    = checkAlmacenFiscal.IsChecked  ?? false,
+            AllowsOversizedItems = checkSobredimension.IsChecked ?? false,
+            RequiresLabels       = checkEtiquetas.IsChecked      ?? false,
+
+            Entrada      = cmbEntrada.Text,
+            StorageArea  = cmbAlmacenamiento.Text,
+            ReworkArea   = cmbRetrabajo.Text,
+            Salida       = cmbSalida.Text,
+
+            ReceiptNotificationEnabled   = checkNotRecibo.IsChecked    ?? false,
+            ReceiptNotificationMethod    = cmbNotRecibo.Text,
+            ShipmentNotificationEnabled  = checkNotEmbarque.IsChecked  ?? false,
+            ShipmentNotificationMethod   = cmbNotEmbarque.Text,
+            InternalNotificationEnabled  = false,
+            InternalNotificationMethod   = null,
+
+            NormalHrs  = decimal.TryParse(txtTiempoNormal.Text,  out decimal n) ? n : null,
+            UrgentHrs  = decimal.TryParse(txtTiempoUrgente.Text, out decimal u) ? u : null,
+
+            AsnNumber      = txtNumeroAsn.Text,
+            AsnPrefix      = txtPrefijoAsn.Text,
+            KittingNumber  = txtNumeroKitting.Text,
+            KittingPrefix  = txtPrefijoKitting.Text,
+            DoNumber       = txtNumeroDo.Text,
+            DoPrefix       = txtPrefijoDo.Text,
+            DeliveryOrderNumber = txtNumeroDo.Text,
+            DeliveryOrderPrefix = txtPrefijoDo.Text,
+            ReciveRequired = checkRegistroRequerido.IsChecked ?? false,
+        };
+
+        private Task<ApiResponseDto<string>> SaveProject(ProjectRequest request) =>
+            _projectSelected != null
+                ? _projectService.UpdateProject(_projectSelected.ProjectId, request)
+                : _projectService.CreateProject(request);
+
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 btnSave.IsEnabled = false;
-
                 var request = BuildRequest();
-
-                var result = ClientSelected != null
-                    ? await _clientService.UpdateClient(ClientSelected.Id, request)
-                    : await _clientService.CreateClient(request);
+                var result  = await SaveProject(request);
 
                 if (result.IsSuccess)
                 {
+                    DialogHelper.ShowSuccess(result.Data ?? "Operación realizada correctamente.");
                     ResponseForm = true;
-                    DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente");
                     DialogResult = true;
-                    Close();
                 }
                 else
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Ocurrió un error");
+                    DialogHelper.ShowError(result.Message);
                 }
             }
             catch (Exception ex)
@@ -149,16 +192,14 @@ namespace LD.FormsX.Views.Proyectos
             }
         }
 
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-            Close();
-        }
+        private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();
 
         private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
         }
     }
 }
+
+              
