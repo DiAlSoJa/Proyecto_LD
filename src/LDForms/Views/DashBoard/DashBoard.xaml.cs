@@ -1,12 +1,7 @@
-﻿using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-
-using System.Windows.Media;
+﻿using LD.Client.Services;
 using LD.Contracts.Enums;
-
+using LD.Forms.Core;
+using LD.FormsX;
 using LD.FormsX.Helpers;
 using LD.FormsX.Movimientos;
 using LD.FormsX.Views;
@@ -23,7 +18,13 @@ using LD.FormsX.Views.Usuarios;
 using LD.Formx.Core;
 using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace LDForms
 {
@@ -467,14 +468,25 @@ namespace LDForms
             }
         }
 
-       
-       
+        private void BtnAccount_Click(object sender, RoutedEventArgs e)
+        {
+            txtPopupUserName.Text = UserData.UserName ?? "Usuario";
+            AccountPopup.IsOpen = !AccountPopup.IsOpen;
+        }
 
+        private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
+        {
+            AccountPopup.IsOpen = false;
 
+            if (!DialogHelper.ShowConfirm("¿Está seguro de cerrar sesión?"))
+                return;
 
-       
+            UserSession.LogOut();
+            _serviceProvider.GetRequiredService<ApiService>().ClearToken();
 
-
-
+            var login = App.Services.GetRequiredService<MainWindow>();
+            login.Show();
+            Close();
+        }
     }
 }
