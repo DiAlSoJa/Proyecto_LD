@@ -340,13 +340,17 @@
                                        Foreground="#6B7280"
                                        FontSize="14"/>
 
-                            <TextBox Grid.Column="1"
+                            <TextBox x:Name="txtBuscarGlobal"
+                                     Grid.Column="1"
                                      BorderThickness="0"
                                      Background="Transparent"
                                      FontSize="13"
                                      VerticalContentAlignment="Center"
                                      Foreground="#6B7280"
-                                     Text="Buscar..."/>
+                                     TextChanged="TxtBuscarGlobal_TextChanged"
+                                     GotFocus="TxtBuscarGlobal_GotFocus"
+                                     LostFocus="TxtBuscarGlobal_LostFocus"
+                                     Tag="Buscar módulo..."/>
                         </Grid>
                     </Border>
 

@@ -170,31 +170,30 @@ namespace LDForms
 
         private void SetVisibility()
         {
-            ClientesBtn.Visibility = HasModule(Module_e.Clients);
-            ProyectosBtn.Visibility = HasModule(Module_e.Projects);
-            AlmacenesBtn.Visibility = HasModule(Module_e.Warehouses);
-            UbicacionesBtn.Visibility = HasModule(Module_e.Locations);
-            ArticulosBtn.Visibility = HasModule(Module_e.Products);
-            MovimientosBtn.Visibility = HasModule(Module_e.Movements);
-            AsnBtn.Visibility = HasModule(Module_e.ASN);
-            ChecklistBtn.Visibility = HasModule(Module_e.ChecklistLift);
-            PatioBtn.Visibility = HasModule(Module_e.YardControl);
-            CatalogosBtn.Visibility = HasModule(Module_e.Catalogs);
-            SurtidoBtn.Visibility = HasModule(Module_e.Picking);
-            EmbarquesBtn.Visibility = HasModule(Module_e.Shipments);
-            InventarioBtn.Visibility = HasModule(Module_e.Inventory);
-            InventarioRandomBtn.Visibility = HasModule(Module_e.RandomInventory);
-            ReportesBtn.Visibility = HasModule(Module_e.Reports);
-            UsuariosBtn.Visibility = HasModule(Module_e.Users);
-            AuditoriaBtn.Visibility = HasModule(Module_e.Auditing);
+            RemoveIfNoModule(ClientesBtn,        Module_e.Clients);
+            RemoveIfNoModule(ProyectosBtn,       Module_e.Projects);
+            RemoveIfNoModule(AlmacenesBtn,       Module_e.Warehouses);
+            RemoveIfNoModule(UbicacionesBtn,     Module_e.Locations);
+            RemoveIfNoModule(ArticulosBtn,       Module_e.Products);
+            RemoveIfNoModule(MovimientosBtn,     Module_e.Movements);
+            RemoveIfNoModule(AsnBtn,             Module_e.ASN);
+            RemoveIfNoModule(ChecklistBtn,       Module_e.ChecklistLift);
+            RemoveIfNoModule(PatioBtn,           Module_e.YardControl);
+            RemoveIfNoModule(CatalogosBtn,       Module_e.Catalogs);
+            RemoveIfNoModule(SurtidoBtn,         Module_e.Picking);
+            RemoveIfNoModule(EmbarquesBtn,       Module_e.Shipments);
+            RemoveIfNoModule(InventarioBtn,      Module_e.Inventory);
+            RemoveIfNoModule(InventarioRandomBtn,Module_e.RandomInventory);
+            RemoveIfNoModule(ReportesBtn,        Module_e.Reports);
+            RemoveIfNoModule(UsuariosBtn,        Module_e.Users);
+            RemoveIfNoModule(AuditoriaBtn,       Module_e.Auditing);
         }
 
-        private Visibility HasModule(Module_e module)
+        private void RemoveIfNoModule(Button btn, Module_e module)
         {
-            bool has = UserData.Authorization.Modules
-                .Any(m => m.ModuleId == (int)module);
-
-            return has ? Visibility.Visible : Visibility.Collapsed;
+            bool has = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)module);
+            if (!has)
+                DashboardPanel.Children.Remove(btn);
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -468,8 +467,56 @@ namespace LDForms
             }
         }
 
-        private void BtnAccount_Click(object sender, RoutedEventArgs e)
+        private void TxtBuscarGlobal_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (sender is not TextBox tb) return;
+
+            var query = tb.Text.Trim().ToLowerInvariant();
+            var esPlaceholder = query == ((string)tb.Tag).ToLowerInvariant();
+
+            foreach (var tile in DashboardPanel.Children.OfType<Button>())
+            {
+                if (string.IsNullOrEmpty(query) || esPlaceholder)
+                {
+                    tile.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    var tag  = tile.Tag?.ToString()?.ToLowerInvariant() ?? "";
+                    var text = (tile.Content as StackPanel)
+                                   ?.Children.OfType<TextBlock>()
+                                   .LastOrDefault()
+                                   ?.Text?.ToLowerInvariant() ?? "";
+
+                    tile.Visibility = (tag.Contains(query) || text.Contains(query))
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void TxtBuscarGlobal_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Text == (string)tb.Tag)
+            {
+                tb.Text = string.Empty;
+                tb.Foreground = new SolidColorBrush(Color.FromRgb(31, 41, 55));
+            }
+        }
+
+        private void TxtBuscarGlobal_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox tb && string.IsNullOrWhiteSpace(tb.Text))
+            {
+                tb.Text = (string)tb.Tag;
+                tb.Foreground = new SolidColorBrush(Color.FromRgb(107, 114, 128));
+
+                foreach (var tile in DashboardPanel.Children.OfType<Button>())
+                    tile.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void BtnAccount_Click(object sender, RoutedEventArgs e) { 
             txtPopupUserName.Text = UserData.UserName ?? "Usuario";
             AccountPopup.IsOpen = !AccountPopup.IsOpen;
         }
