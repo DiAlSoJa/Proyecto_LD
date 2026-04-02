@@ -9,10 +9,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using LD.Client.Services;
 using LD.Contracts.Client;
+using LD.Contracts.Constants;
 using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
 using LD.FormsX.Views.Almacen;
 using LD.FormsX.Views.Dialogs;
+using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LDForms.Views
@@ -54,11 +56,25 @@ namespace LDForms.Views
             if (_loaded) return;
             _loaded = true;
 
+            AplicarPermisos();
             await CargarDatosConLoaderAsync("Trayendo almacenes...");
+        }
+
+        private void AplicarPermisos()
+        {
+            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.Warehouse_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.Warehouse_Update) ? Visibility.Visible : Visibility.Collapsed;
+            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Warehouse_View)   ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
         {
+            if (!UserData.HasPermission(PermissionKeys.Warehouse_View))
+            {
+                dgAlmacenes.Visibility = Visibility.Collapsed;
+                return;
+            }
+
             try
             {
                 MostrarLoader(true, mensaje);

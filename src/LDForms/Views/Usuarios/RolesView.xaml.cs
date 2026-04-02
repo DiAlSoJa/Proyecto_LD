@@ -1,6 +1,8 @@
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.DTOs.User;
 using LD.FormsX.Helpers;
+using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -38,11 +40,25 @@ namespace LD.FormsX.Views.Usuarios
         {
             if (_loaded) return;
             _loaded = true;
+            AplicarPermisos();
             await CargarDatosConLoaderAsync("Trayendo roles...");
+        }
+
+        private void AplicarPermisos()
+        {
+            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.User_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.User_Update) ? Visibility.Visible : Visibility.Collapsed;
+            btnActualizar.Visibility = UserData.HasPermission(PermissionKeys.User_View)   ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
         {
+            if (!UserData.HasPermission(PermissionKeys.User_View))
+            {
+                dgRoles.Visibility = Visibility.Collapsed;
+                return;
+            }
+
             txtLoadingMsg.Text = mensaje;
             LoadingOverlay.Visibility = Visibility.Visible;
             try { await CargarDatosAsync(); }

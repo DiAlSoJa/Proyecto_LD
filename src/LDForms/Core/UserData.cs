@@ -10,6 +10,8 @@ namespace LD.Formx.Core
 
         public static string? Email { get; set; }
         public static AuthorizationDto Authorization { get; set; }
+        public static bool HasPermission(string key) =>
+            Authorization?.Modules?.SelectMany(m => m.Permissions).Any(p => p.Key == key) ?? false;
 
 
         public static void SetUserData(GetMeReponse user)

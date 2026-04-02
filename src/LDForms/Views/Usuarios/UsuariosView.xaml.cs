@@ -1,8 +1,10 @@
 ﻿using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.DTOs.User;
 using LD.Contracts.User;
 using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
+using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -43,11 +45,27 @@ namespace LD.FormsX.Views.Usuarios
         {
             if (_loaded) return;
             _loaded = true;
+            AplicarPermisos();
             await CargarDatosConLoaderAsync("Trayendo usuarios...");
+        }
+
+        private void AplicarPermisos()
+        {
+            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.User_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.User_Update) ? Visibility.Visible : Visibility.Collapsed;
+            btnAlmacenes.Visibility  = UserData.HasPermission(PermissionKeys.User_Update) ? Visibility.Visible : Visibility.Collapsed;
+            btnRoles.Visibility      = UserData.HasPermission(PermissionKeys.User_View)   ? Visibility.Visible : Visibility.Collapsed;
+            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.User_View)   ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
         {
+            if (!UserData.HasPermission(PermissionKeys.User_View))
+            {
+                dgUsuarios.Visibility = Visibility.Collapsed;
+                return;
+            }
+
             try
             {
                 MostrarLoader(true, mensaje);

@@ -5,9 +5,12 @@ using System.Windows;
 using System.Windows.Controls;
 using LD.Client.Services;
 using LD.Contracts.Client;
+using LD.Contracts.DTOs.Auth;
 using LD.FormsX.Helpers;
 
+using LD.Contracts.Constants;
 using LD.FormsX.Views.Dialogs;
+using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
@@ -74,11 +77,27 @@ namespace LD.FormsX.Views
             if (_loaded) return;
             _loaded = true;
 
+            AplicarPermisos();
             await CargarDatosConLoaderAsync("Trayendo clientes...");
         }
 
+        private void AplicarPermisos()
+        {
+
+            btnNuevo.Visibility    = UserData.HasPermission(PermissionKeys.Client_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility   = UserData.HasPermission(PermissionKeys.Client_Update) ? Visibility.Visible : Visibility.Collapsed;
+            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Client_View) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+     
         private async Task CargarDatosConLoaderAsync(string mensaje)
         {
+            if (!UserData.HasPermission(PermissionKeys.Client_View))
+            {
+                dgClientes.Visibility = Visibility.Collapsed;
+                return;
+            }
+
             try
             {
                 MostrarLoader(true, mensaje);

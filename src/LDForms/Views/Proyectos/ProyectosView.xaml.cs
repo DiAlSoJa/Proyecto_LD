@@ -1,6 +1,8 @@
 ﻿using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.Project;
 using LD.FormsX.Helpers;
+using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -39,11 +41,25 @@ namespace LD.FormsX.Views.Proyectos
         {
             if (_loaded) return;
             _loaded = true;
+            AplicarPermisos();
             await CargarDatosConLoaderAsync("Trayendo proyectos...");
+        }
+
+        private void AplicarPermisos()
+        {
+            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.Project_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.Project_Update) ? Visibility.Visible : Visibility.Collapsed;
+            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Project_View)   ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
         {
+            if (!UserData.HasPermission(PermissionKeys.Project_View))
+            {
+                dgProyectos.Visibility = Visibility.Collapsed;
+                return;
+            }
+
             try
             {
                 MostrarLoader(true, mensaje);
