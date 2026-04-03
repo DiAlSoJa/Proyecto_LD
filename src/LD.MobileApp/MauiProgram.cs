@@ -26,7 +26,7 @@ namespace MauiAppLogin
 
             builder.Services.AddLDClient(options =>
             {
-                options.BaseUrl = "http://192.168.1.74:8050/api";
+                options.BaseUrl = "http://192.168.0.101:8050/api";
             });
 
             #if DEBUG

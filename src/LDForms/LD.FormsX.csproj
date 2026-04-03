@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Compile Remove="Resources\Fonts\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Resources\Fonts\**" />
+    <None Remove="Models\**" />
+    <None Remove="Resources\Fonts\**" />
+    <Page Remove="Models\**" />
+    <Page Remove="Resources\Fonts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Noto\NotoSans-Bold.ttf" />
     <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Noto\NotoSans-BoldItalic.ttf" />
     <Content Remove="C:\Users\juan.parvol\.nuget\packages\materialdesignthemes\5.3.1\contentFiles\any\net10.0-windows7.0\Resources\Noto\NotoSans-Italic.ttf" />
@@ -70,10 +81,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Services\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="Resources\Fonts\" />
     <Folder Include="Resources\Styles\" />
     <Folder Include="Views\Embarques\" />
     <Folder Include="Views\Surtido\" />

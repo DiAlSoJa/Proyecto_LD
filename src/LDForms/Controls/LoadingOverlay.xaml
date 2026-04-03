@@ -1,0 +1,19 @@
+<UserControl x:Class="LD.FormsX.Controls.LoadingOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed">
+    <Border Background="#80FFFFFF">
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <ProgressBar IsIndeterminate="True"
+                         Width="220"
+                         Height="18"/>
+            <TextBlock x:Name="TxtLoadingText"
+                       HorizontalAlignment="Center"
+                       Margin="0,12,0,0"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Foreground="#24344D"/>
+        </StackPanel>
+    </Border>
+</UserControl>
