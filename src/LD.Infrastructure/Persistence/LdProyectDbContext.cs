@@ -52,6 +52,11 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Family> Families{ get; set; }
         public DbSet<Dimensioner> Dimensioner{ get; set; }
 
+        // ASN related tables
+        public DbSet<Asn> Asns { get; set; }
+        public DbSet<AsnDetail> AsnDetails { get; set; }
+        public DbSet<AsnReceiptDetail> AsnReceiptDetails { get; set; }
+
 
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
         {
@@ -157,6 +162,47 @@ namespace LD.Infrastructure.Persistence
                 .WithMany(w => w.UserWarehouses)
                 .HasForeignKey(uw => uw.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Asn>()
+                .HasOne(a => a.Client)
+                .WithMany()
+                .HasForeignKey(a => a.ClientId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Asn>()
+                .HasOne(a => a.Project)
+                .WithMany()
+                .HasForeignKey(a => a.ProjectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AsnDetail>()
+            .HasOne(d => d.Asn)
+            .WithMany(a => a.AsnDetails)
+            .HasForeignKey(d => d.AsnId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<AsnDetail>()
+                    .HasOne(d => d.Product)
+                    .WithMany()
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AsnReceiptDetail>()
+                .HasOne(r => r.Product)
+                .WithMany()
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+            builder.Entity<AsnReceiptDetail>()
+                .HasOne(r => r.Location)
+                .WithMany()
+                .HasForeignKey(r => r.LocationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+
+
 
 
             builder.Entity<StorageType>().HasData(

@@ -281,7 +281,7 @@ namespace LD.Forms.Views.Dialogs
                     return;
                 }
                 var client = response.Data;
-                cmbCliente.SelectedValue = client.Cliente.ToString();
+                //cmbCliente.SelectedValue = client.Cliente.ToString();
                 /*
 
                 ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,

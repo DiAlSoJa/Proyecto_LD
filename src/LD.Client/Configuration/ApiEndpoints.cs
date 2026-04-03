@@ -245,7 +245,27 @@ namespace LD.Forms.Configuration
         public string Dimensioner_Update => $"{_baseApi}/dimensioner/{{dimensionerId}}";
         public string Dimensioner_Delete => $"{_baseApi}/dimensioner/{{dimensioner}}";
 
+        // ======================
+        // ASN
+        // ======================
 
+        public string Asn_GetAll => $"{_baseApi}/asn";
+        public string Asn_GetById => $"{_baseApi}/asn/{{asnId}}";
+        public string Asn_Create => $"{_baseApi}/asn";
+        public string Asn_Update => $"{_baseApi}/asn/{{asnId}}";
+        public string Asn_Delete => $"{_baseApi}/asn/{{asnId}}";
+
+        public string AsnDetail_GetAll => $"{_baseApi}/asnDetail";
+        public string AsnDetail_GetById => $"{_baseApi}/asnDetail/{{asnId}}";
+        public string AsnDetail_Create => $"{_baseApi}/asnDetail";
+        public string AsnDetail_Update => $"{_baseApi}/asnDetail/{{asnId}}";
+        public string AsnDetail_Delete => $"{_baseApi}/asnDetail/{{asnId}}";
+
+        public string AsnReceipt_GetAll => $"{_baseApi}/AsnReceipt";
+        public string AsnReceipt_GetById => $"{_baseApi}/AsnReceipt/{{asnId}}";
+        public string AsnReceipt_Create => $"{_baseApi}/AsnReceipt";
+        public string AsnReceipt_Update => $"{_baseApi}/AsnReceipt/{{asnId}}";
+        public string AsnReceipt_Delete => $"{_baseApi}/AsnReceipt/{{asnId}}";
 
 
     }

@@ -38,16 +38,7 @@ public static class PermissionKeys
     public const string Product_Update = "products.update";
     public const string Product_Delete = "products.delete";
 
-    public const string Movements_View = "movements.read";
-    public const string Asn_View = "asn.read";
-    public const string Material_Receiving_View = "material-receiving.read";
-    public const string Yard_Control_View = "yard-control.read";
-    public const string Receiving_Validation_View = "receiving-validation.read";
-    public const string Picking_View = "picking.read";
-    public const string Audit_View = "audit.read";
-    public const string Shipments_View = "shipments.read";
-    public const string Cycle_Count_View = "cycle-count.read";
-    public const string Reports_View  = "reports.read";
+    
 
 
     public const string User_View = "users.read";
@@ -90,6 +81,12 @@ public static class PermissionKeys
     public const string Dimensioner_Create = "users.create";
     public const string Dimensioner_Update = "users.create";
     public const string Dimensioner_Delete = "users.create";
+
+
+    public const string Asn_View = "users.read";
+    public const string Asn_Create = "users.create";
+    public const string Asn_Update = "users.update";
+    public const string Asn_Delete = "users.delete";
 
 
 
