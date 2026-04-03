@@ -2,14 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
              x:Class="MauiAppLogin.DashboardPage"
              Title="DashboardPage"
              BackgroundColor="#1F3A5F">
 
     <ScrollView>
         <VerticalStackLayout Padding="20,60,20,30"
-                             Spacing="20"
-                             Background="#F4F6F9">
+                             Spacing="5"
+                             Background="#F4F6F9"
+                             x:Name="DashboardPanel">
 
             <!-- HEADER -->
             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -18,12 +20,13 @@
                   Margin="-20,-60,-20,0">
 
                 <Label Grid.Column="1"
-                       Text="juanm.parvol"
+                       Text="[username]"
                        FontSize="20"
                        FontAttributes="Bold"
                        TextColor="White"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
+                       VerticalOptions="Center"
+                       x:Name="UserLabel"/>
 
                 <Border Grid.Column="2"
                         BackgroundColor="#2F5DA8"
@@ -46,17 +49,8 @@
                 
             </Grid>
 
-            <!-- CARD PRINCIPAL -->
-            <Border BackgroundColor="White"
-                    Stroke="#E2E8F0"
-                    StrokeShape="RoundRectangle 25"
-                    Padding="10">
-
-                <VerticalStackLayout Spacing="10">
-
-                    <!-- =========================
-                         ALMACENISTA
-                         ========================= -->
+            <!-- ALMACENISTA -->
+            <controls:Card>
                     <toolkit:Expander>
                         <toolkit:Expander.Header>
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -251,10 +245,10 @@
                             </VerticalStackLayout>
                         </toolkit:Expander.Content>
                     </toolkit:Expander>
+            </controls:Card>
 
-                    <!-- =========================
-                         SEGURIDAD
-                         ========================= -->
+            <!-- SEGURIDAD -->
+            <controls:Card>
                     <toolkit:Expander>
                         <toolkit:Expander.Header>
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -372,10 +366,10 @@
                             </VerticalStackLayout>
                         </toolkit:Expander.Content>
                     </toolkit:Expander>
+            </controls:Card>
 
-                    <!-- =========================
-                         CONSULTAS
-                         ========================= -->
+            <!-- CONSULTAS -->
+            <controls:Card>
                     <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
                         <Border Stroke="Transparent"
                             BackgroundColor="White">
@@ -405,13 +399,13 @@
                         </Border>
 
                     </VerticalStackLayout>
+            </controls:Card>
 
 
 
-                    <!-- =========================
-                          REPORTE DE DAÑOS
-                          ========================= -->
-                    <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
+                    <!-- REPORTE DE DAÑOS -->
+                    <controls:Card>
+                            <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
                         <Border Stroke="Transparent"
                                 BackgroundColor="White">
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -439,12 +433,12 @@
                             </Border.GestureRecognizers>
                         </Border>
                     </VerticalStackLayout>
+            </controls:Card>
 
 
-                    <!-- =========================
-                           OPERACIONES
-                           ========================= -->
-                    <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
+                    <!-- OPERACIONES -->
+                    <controls:Card>
+                            <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
                         <Border Stroke="Transparent"
                                 BackgroundColor="White">
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -472,17 +466,10 @@
                             </Border.GestureRecognizers>
                         </Border>
                     </VerticalStackLayout>
+            </controls:Card>
 
-
-
-
-
-
-
-
-                    <!-- =========================
-                        INVENTARIOS
-                        ========================= -->
+            <!-- INVENTARIOS -->
+            <controls:Card>
                     <toolkit:Expander>
                         <toolkit:Expander.Header>
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -559,10 +546,10 @@
                             </VerticalStackLayout>
                         </toolkit:Expander.Content>
                     </toolkit:Expander>
+            </controls:Card>
 
-                    <!-- =========================
-                            CHECLIST DE MONTACARGAS
-                            ========================= -->
+            <!-- CHECKLIST DE MONTACARGAS -->
+            <controls:Card>
                     <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
                         <Border Stroke="Transparent"
                                 BackgroundColor="White">
@@ -591,12 +578,7 @@
                             </Border.GestureRecognizers>
                         </Border>
                     </VerticalStackLayout>
-
-
-
-
-                </VerticalStackLayout>
-            </Border>
+            </controls:Card>
 
             <!-- BANNER -->
             <Button Text="Cerrar sesión" Command="{Binding LogoutCommand}"/>

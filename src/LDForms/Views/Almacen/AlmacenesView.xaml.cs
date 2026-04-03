@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Client;
 using LD.Contracts.Constants;
@@ -14,7 +15,6 @@ using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
 using LD.FormsX.Views.Almacen;
 using LD.FormsX.Views.Dialogs;
-using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LDForms.Views

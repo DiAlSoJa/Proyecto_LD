@@ -3,10 +3,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using LD.Client.Configuration;
 using LD.Client.Services;
-using LD.Forms.Core;
 using LD.FormsX.Helpers;
-using LD.Formx.Core;
 using LDForms;
 using Microsoft.Extensions.DependencyInjection;
 

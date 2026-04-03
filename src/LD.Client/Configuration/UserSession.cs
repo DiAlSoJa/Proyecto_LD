@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using LD.Formx.Core;
 
-namespace LD.Forms.Core
+namespace LD.Client.Configuration
 {
     public static class UserSession
     {

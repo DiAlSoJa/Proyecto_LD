@@ -1,6 +1,6 @@
 ﻿using LD.Contracts.DTOs.Auth;
 using LD.Contracts.Responses;
-namespace LD.Formx.Core
+namespace LD.Client.Configuration
 {
     public static class UserData
     {

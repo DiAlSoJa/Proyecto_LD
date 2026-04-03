@@ -10,8 +10,8 @@ using LD.FormsX.Helpers;
 
 using LD.Contracts.Constants;
 using LD.FormsX.Views.Dialogs;
-using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
+using LD.Client.Configuration;
 
 namespace LD.FormsX.Views
 {

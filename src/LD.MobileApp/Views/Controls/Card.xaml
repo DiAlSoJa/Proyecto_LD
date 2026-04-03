@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+        x:Class="MauiAppLogin.Views.Controls.Card" 
+        BackgroundColor="White" 
+        Stroke="#E2E8F0" 
+        StrokeThickness="1">
+    <Border.StrokeShape>
+        <RoundRectangle x:Name="ShapeRect" CornerRadius="16"/>
+    </Border.StrokeShape>
+</Border>

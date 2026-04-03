@@ -1,12 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Enums;
 using LD.Contracts.User;
+using MvvmHelpers.Commands;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
-using MvvmHelpers.Commands;
 
 namespace MauiAppLogin.ViewModels
 {
@@ -41,16 +42,24 @@ namespace MauiAppLogin.ViewModels
                     return;
                 }
 
-                var result = await _authService.LoginAsync(Username, Password);
+                var response = await _authService.LoginAsync(Username, Password);
 
-                if (!result.IsSuccess)
+                if (!response.IsSuccess)
                 {
-                    await Shell.Current.DisplayAlertAsync("Error", result.Message, "OK");
+                    await Shell.Current.DisplayAlertAsync("Error", response.Message, "OK");
+                    return;
+                }
+                UserSession.AccessToken = response.Data?.Accesstoken;
+                UserSession.RefreshToken = response.Data?.RefreshToken;
+
+                var getMeResponse = await _authService.GetMeAsync();
+                if (!getMeResponse.IsSuccess || getMeResponse.Data is null)
+                {
+                    await Shell.Current.DisplayAlertAsync("Error", getMeResponse.Message, "OK");
                     return;
                 }
 
-                 //🔹 Guardar tokens si quieres
-                 //UserSession.AccessToken = result.Data?.AccessToken;
+                UserData.SetUserData(getMeResponse.Data);
 
                 await Shell.Current.GoToAsync("//dashboard");
             }

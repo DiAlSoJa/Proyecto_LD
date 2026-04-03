@@ -1,6 +1,6 @@
-﻿using LD.Client.Services;
+﻿using LD.Client.Configuration;
+using LD.Client.Services;
 using LD.Contracts.Enums;
-using LD.Forms.Core;
 using LD.FormsX;
 using LD.FormsX.Helpers;
 using LD.FormsX.Movimientos;
@@ -15,7 +15,6 @@ using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Proyectos;
 using LD.FormsX.Views.Reportes;
 using LD.FormsX.Views.Usuarios;
-using LD.Formx.Core;
 using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;

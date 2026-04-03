@@ -1,8 +1,8 @@
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Constants;
 using LD.Contracts.DTOs.User;
 using LD.FormsX.Helpers;
-using LD.Formx.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
