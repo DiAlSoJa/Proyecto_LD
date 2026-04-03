@@ -50,7 +50,7 @@
             </Grid>
 
             <!-- ALMACENISTA -->
-            <controls:Card>
+            <controls:Card x:Name="AlmacenistaCard">
                     <toolkit:Expander>
                         <toolkit:Expander.Header>
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -248,7 +248,7 @@
             </controls:Card>
 
             <!-- SEGURIDAD -->
-            <controls:Card>
+            <controls:Card x:Name="SecurityCard">
                     <toolkit:Expander>
                         <toolkit:Expander.Header>
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -369,7 +369,7 @@
             </controls:Card>
 
             <!-- CONSULTAS -->
-            <controls:Card>
+            <controls:Card x:Name="ConsultasCard">
                     <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
                         <Border Stroke="Transparent"
                             BackgroundColor="White">
@@ -403,73 +403,73 @@
 
 
 
-                    <!-- REPORTE DE DAÑOS -->
-                    <controls:Card>
-                            <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
-                        <Border Stroke="Transparent"
-                                BackgroundColor="White">
-                            <Grid ColumnDefinitions="Auto,*,Auto"
-                               Padding="15"
-                               BackgroundColor="#F8FAFC">
+                <!-- REPORTE DE DAÑOS -->
+            <controls:Card x:Name="DamageReportCard">
+                <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
+                    <Border Stroke="Transparent"
+                            BackgroundColor="White">
+                        <Grid ColumnDefinitions="Auto,*,Auto"
+                            Padding="15"
+                            BackgroundColor="#F8FAFC">
 
-                                <Label Text="📸"
-                                 FontSize="18"
-                                 VerticalOptions="Center"/>
+                            <Label Text="📸"
+                                FontSize="18"
+                                VerticalOptions="Center"/>
 
-                                <Label Grid.Column="1"
-                                    Text="Reporte de Daños"
+                            <Label Grid.Column="1"
+                                Text="Reporte de Daños"
+                                FontAttributes="Bold"
+                                TextColor="#1E293B"
+                                VerticalOptions="Center"
+                                Padding="10"/>
+
+                            <Label Grid.Column="2"
+                                Text=">"
+                                TextColor="#64748B"
+                                VerticalOptions="Center"/>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRDClicked"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </VerticalStackLayout>
+            </controls:Card>
+
+
+                    <!-- OPERACIONES -->
+            <controls:Card x:Name="OperationsCard">
+                <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
+                    <Border Stroke="Transparent"
+                            BackgroundColor="White">
+                        <Grid ColumnDefinitions="Auto,*,Auto"
+                            Padding="15"
+                            BackgroundColor="#F8FAFC">
+
+                            <Label Text="🚚"
+                                FontSize="18"
+                                VerticalOptions="Center"/>
+
+                            <Label Grid.Column="1"
+                                    Text="Operaciones"
                                     FontAttributes="Bold"
                                     TextColor="#1E293B"
                                     VerticalOptions="Center"
                                     Padding="10"/>
 
-                                <Label Grid.Column="2"
+                            <Label Grid.Column="2"
                                     Text=">"
                                     TextColor="#64748B"
                                     VerticalOptions="Center"/>
-                            </Grid>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnRDClicked"/>
-                            </Border.GestureRecognizers>
-                        </Border>
-                    </VerticalStackLayout>
-            </controls:Card>
-
-
-                    <!-- OPERACIONES -->
-                    <controls:Card>
-                            <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
-                        <Border Stroke="Transparent"
-                                BackgroundColor="White">
-                            <Grid ColumnDefinitions="Auto,*,Auto"
-                                Padding="15"
-                                BackgroundColor="#F8FAFC">
-
-                                <Label Text="🚚"
-                                  FontSize="18"
-                                  VerticalOptions="Center"/>
-
-                                <Label Grid.Column="1"
-                                     Text="Operaciones"
-                                     FontAttributes="Bold"
-                                     TextColor="#1E293B"
-                                     VerticalOptions="Center"
-                                     Padding="10"/>
-
-                                <Label Grid.Column="2"
-                                     Text=">"
-                                     TextColor="#64748B"
-                                     VerticalOptions="Center"/>
-                            </Grid>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnAuditClicked"/>
-                            </Border.GestureRecognizers>
-                        </Border>
-                    </VerticalStackLayout>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnAuditClicked"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </VerticalStackLayout>
             </controls:Card>
 
             <!-- INVENTARIOS -->
-            <controls:Card>
+            <controls:Card x:Name="InventoryCard">
                     <toolkit:Expander>
                         <toolkit:Expander.Header>
                             <Grid ColumnDefinitions="Auto,*,Auto"
@@ -549,7 +549,7 @@
             </controls:Card>
 
             <!-- CHECKLIST DE MONTACARGAS -->
-            <controls:Card>
+            <controls:Card x:Name="ChecklistCard">
                     <VerticalStackLayout Padding="0" Spacing="0" BackgroundColor="White">
                         <Border Stroke="Transparent"
                                 BackgroundColor="White">

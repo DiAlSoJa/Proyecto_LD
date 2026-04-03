@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Views;
 using LD.Client.Configuration;
 using LD.Contracts.Enums;
 using MauiAppLogin.ViewModels;
+using MauiAppLogin.Views.Controls;
 
 namespace MauiAppLogin;
 
@@ -12,29 +13,23 @@ public partial class DashboardPage : ContentPage
 		InitializeComponent();
         BindingContext = dashboardViewModel;
         UserLabel.Text = UserData.UserName;
-	}
+        SetVisibility();
+
+    }
 
     private void SetVisibility()
     {
-        RemoveIfNoModule(ClientesBtn, Module_e.Clients);
-        RemoveIfNoModule(ProyectosBtn, Module_e.Projects);
-        RemoveIfNoModule(AlmacenesBtn, Module_e.Warehouses);
-        RemoveIfNoModule(UbicacionesBtn, Module_e.Locations);
-        RemoveIfNoModule(ArticulosBtn, Module_e.Products);
-        RemoveIfNoModule(MovimientosBtn, Module_e.Movements);
-        RemoveIfNoModule(AsnBtn, Module_e.ASN);
-        RemoveIfNoModule(ChecklistBtn, Module_e.ChecklistLift);
-        RemoveIfNoModule(PatioBtn, Module_e.YardControl);
-        RemoveIfNoModule(CatalogosBtn, Module_e.Catalogs);
-        RemoveIfNoModule(SurtidoBtn, Module_e.Picking);
-        RemoveIfNoModule(EmbarquesBtn, Module_e.Shipments);
-        RemoveIfNoModule(InventarioBtn, Module_e.Inventory);
-        RemoveIfNoModule(InventarioRandomBtn, Module_e.RandomInventory);
-        RemoveIfNoModule(ReportesBtn, Module_e.Reports);
-        RemoveIfNoModule(UsuariosBtn, Module_e.Users);
-        RemoveIfNoModule(AuditoriaBtn, Module_e.Auditing);
+        RemoveIfNoModule(AlmacenistaCard, Module_e.Warehouse_staff);
+        RemoveIfNoModule(SecurityCard, Module_e.Security);
+        RemoveIfNoModule(ConsultasCard, Module_e.Consultas);
+        RemoveIfNoModule(DamageReportCard, Module_e.Damage_report);
+        RemoveIfNoModule(OperationsCard, Module_e.Operations);
+        RemoveIfNoModule(InventoryCard, Module_e.Inventory);
+        RemoveIfNoModule(ChecklistCard, Module_e.ChecklistLift);
+
+
     }
-    private void RemoveIfNoModule(Button btn, Module_e module)
+    private void RemoveIfNoModule(Card btn, Module_e module)
     {
         bool has = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)module);
         if (!has)

@@ -26,6 +26,13 @@ namespace LD.Contracts.Enums
         Inventory = 14,
         RandomInventory = 15,
         Reports = 16,
-        Users = 17
+        Users = 17,
+
+        Warehouse_staff = 18,
+        Security = 19,
+        Consultas = 20,
+        Damage_report = 21,
+        Operations = 22,
+
     }
 }
