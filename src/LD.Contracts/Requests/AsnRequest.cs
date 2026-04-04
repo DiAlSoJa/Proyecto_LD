@@ -5,7 +5,7 @@ namespace LD.Contracts.Requests
     public class AsnRequest
     {
         public int AsnId { get; set; }
-        public string AsnCode { get; set; }
+        public string? AsnCode { get; set; }
         public string? PreAsnCode { get; set; }
 
         public int ClientId { get; set; }

@@ -7,8 +7,7 @@ namespace LD.Application.Features.Asn.Validators
     {
         public UpdateAsnValidator()
         {
-            RuleFor(x => x.AsnId).GreaterThan(0).WithMessage("AsnId invalido");
-            RuleFor(x => x.AsnCode).NotEmpty().WithMessage("ASN es obligatorio");
+            RuleFor(x => x.AsnId).GreaterThan(0).WithMessage("AsnId invalido");            
         }
     }
 }

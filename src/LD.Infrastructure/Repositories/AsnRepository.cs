@@ -16,10 +16,25 @@ namespace LD.Infrastructure.Repositories
     {
         public readonly LdProyectDbContext _context;
         public readonly IMapper _mapper;
-        Task<bool> IRepository<Asn>.CreateAsync(Asn newModoe)
+
+        public async Task<bool> CreateAsync(Asn newModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (newModel == null)
+                    return false;
+
+                await _context.Asns.AddAsync(newModel);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
+
+
+      
 
         async Task<List<Asn>> IAsnRepository.GetAsnByClientAsync(int clientId, int projectId)
         {

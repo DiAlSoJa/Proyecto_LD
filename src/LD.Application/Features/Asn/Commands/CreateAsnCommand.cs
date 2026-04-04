@@ -36,7 +36,7 @@ public class CreateAsnCommandHandler : IRequestHandler<CreateAsnCommand, Result<
          try
         {
             var result = await _asnRepository.CreateAsync(_mapper.Map<LD.Domain.Entities.Asn>(request));
-            return result ? Result<string>.Success("Asn creadO con exito", "") : Result<string>.Failure("Hubo un error al crear el Asn", new());
+            return result ? Result<string>.Success("Asn creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Asn", new());
 
         }
         catch (Exception ex)
