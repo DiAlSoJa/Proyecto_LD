@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,6 +8,8 @@ using LD.Contracts.ASN;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.FormsX.Helpers;
+using LD.FormsX.ViewModels.ASN;
+using LD.FormsX.Views.Articulos;
 
 namespace LD.FormsX.Views.Dialogs
 {
@@ -15,16 +18,19 @@ namespace LD.FormsX.Views.Dialogs
         private readonly AsnService _asnService;
         private readonly IServiceProvider _serviceProvider;
         private readonly LookupService _lookupService;
+        private readonly ProductService _productService;
         private AsnDto? AsnSelected;
         private bool _cargandoDatos = false;
+        public ObservableCollection<AsnDetailRowVm> DetailItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, LookupService lookupService,IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService,ProductService productService, LookupService lookupService,IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
             _serviceProvider = serviceProvider;
             _lookupService = lookupService;
-
+            _productService = productService;
+            DataContext = this;
             HideScanSection();
         }
 
@@ -33,11 +39,56 @@ namespace LD.FormsX.Views.Dialogs
             AsnSelected = _asnSelected;
 
             // Si es edición y quieres mostrar la sección:
-            // if (AsnSelected != null)
-            //     ShowScanSection();
+             if (AsnSelected != null)
+                 ShowScanSection();
 
-            // await CargarDatosAsync();
+            if (DetailItems.Count == 0)
+                DetailItems.Add(new AsnDetailRowVm());
+
+            await CargarDatosAsync();
         }
+
+        private async Task CargarDatosAsync()
+        {
+            try
+            {
+                _cargandoDatos = true;
+
+                var response = await _asnService.GetAsnById(AsnSelected?.AsnId ?? 0);
+
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.Message ?? "No se pudo cargar la familia.");
+                    return;
+                }
+
+                var item = response.Data;
+                
+                cmbCliente.SelectedValue = item.ClientId.ToString();
+                await SetCombosProjects(item.ProjectId.ToString());
+                txtNumeroFactura.Text = item.InvoiceNumber;
+                txtNumeroGuia.Text = item.GuideNumber;
+                dpEta.SelectedDate = item.Eta;
+                txtBultos.Text = item.PackagesQty?.ToString() ?? string.Empty;
+                chkEsDevolucion.IsChecked = item.IsReturn;
+                chkMovimientoRequeridoCliente.IsChecked = item.IsCustomerMovementRequired;
+                txtLineaTransporte.Text = item.TransportLine;
+                txtTipoVehiculo.Text = item.VehicleType;
+                txtChofer.Text = item.DriverName;
+                txtPlacasVehiculo.Text = item.VehiclePlate;
+                txtSelloTransporte.Text = item.SealNumber;
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _cargandoDatos = false;
+            }
+        }
+
+
         protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
@@ -54,8 +105,8 @@ namespace LD.FormsX.Views.Dialogs
 
                 await SetCombos();
 
-                /*if (AsnSelected != null)
-                    await CargarDatosAsync();*/
+                if (AsnSelected != null)
+                    await CargarDatosAsync();
             }
             finally
             {
@@ -197,7 +248,41 @@ namespace LD.FormsX.Views.Dialogs
         {
             // Guardar ASN
         }
+        private async void BtnBuscarProductoDetalle_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (cmbCliente.SelectedValue == null || !int.TryParse(cmbCliente.SelectedValue.ToString(), out int clientId) || clientId <= 0)
+                {
+                    DialogHelper.ShowWarning("Primero selecciona un cliente.");
+                    return;
+                }
 
+                if (cmbProyecto.SelectedValue == null || !int.TryParse(cmbProyecto.SelectedValue.ToString(), out int projectId) || projectId <= 0)
+                {
+                    DialogHelper.ShowWarning("Primero selecciona un proyecto.");
+                    return;
+                }
+
+                if (sender is not FrameworkElement fe || fe.Tag is not AsnDetailRowVm row)
+                    return;
+
+                var dlg = new ProductLookupWindow(_productService, clientId, projectId);
+                dlg.Owner = this;
+
+                var result = dlg.ShowDialog();
+                if (result == true && dlg.SelectedProduct != null)
+                {
+                    row.ProductId = dlg.SelectedProduct.ProductId;
+                    row.NumeroParte = dlg.SelectedProduct.PartNumber ?? string.Empty;
+                    row.Descripcion = dlg.SelectedProduct.Description ?? string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
         private void HideScanSection()
         {
             btnEscanear.Visibility = Visibility.Collapsed;

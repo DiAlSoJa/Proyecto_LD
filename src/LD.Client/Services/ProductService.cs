@@ -1,4 +1,5 @@
 ﻿using LD.Contracts.Client;
+using LD.Contracts.DTOs;
 using LD.Contracts.Product;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
@@ -20,6 +21,9 @@ namespace LD.Client.Services
         {
             return await _api.GetAsync<ApiResponseDto<List<ProductDto?>>>(_apiEndpoints.Product_GetAll);
         }
+        public async Task<ApiResponseDto<List<ProductDto>>> GetProductByClientId(int clientId, int projectId)
+                => await _api.GetAsync<ApiResponseDto<List<ProductDto>>>($"{_apiEndpoints.Product_GetByClientId}/{clientId}/{projectId}");
+
 
         public async Task<ApiResponseDto<ProductRequest>> GetItemById(int itemId)
         {

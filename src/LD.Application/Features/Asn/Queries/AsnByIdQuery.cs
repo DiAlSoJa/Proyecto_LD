@@ -1,33 +1,39 @@
+using AutoMapper;
+using LD.Application.Common.Interfaces.Auth;
+using LD.Application.Common.Interfaces.Repository;
+using LD.Application.Common.Models;
 using LD.Application.Common.Results;
-using LD.Contracts.ASN;
-using MediatR;
+using LD.Contracts.Client;
+using LD.Contracts.Requests;
 
-namespace LD.Application.Features.Asn.Queries
+using LD.Domain.Entities;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LD.Application.Features.Asn.Queries;
+
+public record AsnByIdQuery(int AsnId)
+    : IRequest<Result<AsnRequest?>>;
+
+
+public class AsnByIdQueryHandler : IRequestHandler<AsnByIdQuery, Result<AsnRequest?>>
 {
-    public class AsnByIdQuery : IRequest<Result<AsnDto?>>
+    private readonly IRepository<LD.Domain.Entities.Asn> _asnRepository;
+    private readonly IMapper _mapper;
+    public AsnByIdQueryHandler(IRepository<LD.Domain.Entities.Asn> asnRepository, IMapper mapper)
     {
-        public int AsnId { get; set; }
+        _asnRepository = asnRepository;
+        _mapper = mapper;
     }
 
-    public class AsnByIdQueryHandler : IRequestHandler<AsnByIdQuery, Result<AsnDto?>>
+    public async Task<Result<AsnRequest?>> Handle(AsnByIdQuery request, CancellationToken cancellationToken)
     {
-        private readonly LD.Application.Common.Interfaces.Repository.IRepository<LD.Domain.Entities.Asn> _asnRepository;
-        private readonly AutoMapper.IMapper _mapper;
-
-        public AsnByIdQueryHandler(LD.Application.Common.Interfaces.Repository.IRepository<LD.Domain.Entities.Asn> asnRepository, AutoMapper.IMapper mapper)
-        {
-            _asnRepository = asnRepository;
-            _mapper = mapper;
-        }
-
-        public async Task<Result<AsnDto?>> Handle(AsnByIdQuery request, CancellationToken cancellationToken)
-        {
-            var asn = await _asnRepository.GetByIdAsync(request.AsnId);
-            if (asn is null)
-                return Result<AsnDto?>.Failure("No existe el ASN", new System.Collections.Generic.List<string> { "No existe el ASN" }, 404);
-
-            var dto = _mapper.Map<AsnDto>(asn);
-            return Result<AsnDto?>.Success(dto, "ASN obtenido correctamente");
-        }
+        var categoryDb = await _asnRepository.GetByIdAsync(request.AsnId);
+        if (categoryDb == null) return Result<AsnRequest?>.Failure("Asn no encontrada", new(), 404);
+        return Result<AsnRequest?>.Success(_mapper.Map<AsnRequest>(categoryDb), "Asn obtenida con exito");
     }
 }

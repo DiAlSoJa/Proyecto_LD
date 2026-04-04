@@ -30,7 +30,8 @@ public class UpdateAsnCommandHandler : IRequestHandler<UpdateAsnCommand, Result<
             var asn = await _asnRepository.GetByIdAsync(request.AsnId);
             if (asn is null)
                 return Result<string>.Failure("No existe el ASN", new System.Collections.Generic.List<string> { "No existe el ASN" }, 404);
-
+            request.AsnCode= asn.AsnCode;
+            request.PreAsnCode= asn.PreAsnCode;
             _mapper.Map(request, asn);
 
             var updated = await _asnRepository.UpdateAsync(asn);

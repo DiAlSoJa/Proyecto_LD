@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,9 +15,9 @@ using LD.Client.Services;
 using LD.Contracts.ASN;
 using LD.FormsX.Helpers;
 using LD.FormsX.Views.Dialogs;
+using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Ubicaciones;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 
 namespace LD.FormsX.Views.ASN
 {
@@ -131,6 +132,22 @@ namespace LD.FormsX.Views.ASN
             {
                 // recargar datos
                 _ = CargarDatosAsync();
+            }
+        }
+        private void BtnEditar_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedX is null)
+                return;
+
+            var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetAsn(_selectedX);
+
+            var result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                CargarDatosConLoaderAsync("Trayendo asns...");
             }
         }
 
