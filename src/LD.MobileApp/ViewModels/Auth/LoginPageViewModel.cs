@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
+using Command = MvvmHelpers.Commands.Command;
 
 namespace MauiAppLogin.ViewModels
 {
@@ -17,6 +18,10 @@ namespace MauiAppLogin.ViewModels
         private string username;
         [ObservableProperty]
         private string password;
+        [ObservableProperty]
+        private bool isPasswordVisible = false;
+
+        public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordVisible = !IsPasswordVisible);
 
         public ICommand LoginCommand { get; }
 
