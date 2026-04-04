@@ -12,6 +12,8 @@
         Loaded="Window_Loaded">
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
         <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
             <Setter Property="Height" Value="38"/>
             <Setter Property="FontSize" Value="13"/>
@@ -150,7 +152,8 @@
                                            Foreground="#222222"
                                            Margin="0,0,0,6"/>
 
-                                <TextBox x:Name="txtUsuario" Text="1"
+                                <TextBox x:Name="txtUsuario"
+                                         Text="{Binding Usuario, UpdateSourceTrigger=PropertyChanged}"
                                          Style="{StaticResource RoundedTextBoxStyle}"/>
 
                                 <TextBlock Text="Contraseña"
@@ -158,29 +161,25 @@
                                            Foreground="#222222"
                                            Margin="0,18,0,6"/>
 
-                                <PasswordBox x:Name="txtPassword" Password="Pa$$w0rd" 
+                                <PasswordBox x:Name="txtPassword"
                                              Style="{StaticResource RoundedPasswordBoxStyle}"
-                                             KeyDown="txtPassword_KeyDown" Cursor=""/>
+                                             PasswordChanged="txtPassword_PasswordChanged">
+                                    <PasswordBox.InputBindings>
+                                        <KeyBinding Key="Enter" Command="{Binding LoginCommand}"/>
+                                    </PasswordBox.InputBindings>
+                                </PasswordBox>
 
-                                <Button x:Name="btnLogin" 
-                                        Content="Iniciar sesión"
+                                <Button Content="Iniciar sesión"
                                         Margin="0,24,0,0"
                                         Style="{StaticResource PrimaryButtonStyle}"
-                                        Click="BtnLogin_Click"/>
+                                        Command="{Binding LoginCommand}"/>
 
-                                <TextBlock x:Name="lblMensaje"
-                                           Margin="0,20,0,0"
-                                           TextWrapping="Wrap"
-                                           Foreground="Red"
-                                           FontSize="12"
-                                           TextAlignment="Center"/>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <!-- Overlay de carga -->
-                            <Border x:Name="LoadingOverlay"
-                                    Background="#AAFFFFFF"
-                                    CornerRadius="12"
-                                    Visibility="Collapsed">
+                                <!-- Overlay de carga -->
+                                <Border Background="#AAFFFFFF"
+                                        CornerRadius="12"
+                                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
                                 <StackPanel HorizontalAlignment="Center"
                                             VerticalAlignment="Center">
                                     <ProgressBar Width="180"

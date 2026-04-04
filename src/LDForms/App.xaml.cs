@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows;
-using LD.Client;
+﻿using LD.Client;
 using LD.Client.Services;
 using LD.Forms.Configuration;
 using LD.FormsX.Movimientos;
@@ -20,6 +17,7 @@ using LD.FormsX.Views.Dimensionador;
 using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
+using LD.FormsX.Views.Login.ViewModels;
 using LD.FormsX.Views.Monedas;
 using LD.FormsX.Views.Proyectos;
 using LD.FormsX.Views.Reportes;
@@ -32,6 +30,10 @@ using LDForms.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using System;
+using System.ComponentModel;
+using System.Windows;
 
 namespace LD.FormsX
 {
@@ -43,29 +45,44 @@ namespace LD.FormsX
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
+            try
+            {
+                base.OnStartup(e);
 
-            HostContainer = Host.CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
-                    env = "Development";
+                Log.Logger = new LoggerConfiguration()
+                   .MinimumLevel.Information()
+                   .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+                   .CreateLogger();
 
-                    config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
-                    config.AddJsonFile("appsettings.json", optional: false);
-                    config.AddJsonFile($"appsettings.{env}.json", optional: true);
-                })
-                .ConfigureServices((context, services) =>
-                {
-                    Configuration = context.Configuration;
-                    RegisterServices(services, context.Configuration);
-                })
-                .Build();
+                Log.Information("App iniciada");
 
-            await HostContainer.StartAsync();
+                HostContainer = Host.CreateDefaultBuilder()
+                    .ConfigureAppConfiguration((context, config) =>
+                    {
+                        var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
+                        env = "Development";
 
-            var login = Services.GetRequiredService<MainWindow>();
-            login.Show();
+                        config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
+                        config.AddJsonFile("appsettings.json", optional: false);
+                        config.AddJsonFile($"appsettings.{env}.json", optional: true);
+                    })
+                    .UseSerilog()
+                    .ConfigureServices((context, services) =>
+                    {
+                        Configuration = context.Configuration;
+                        RegisterServices(services, context.Configuration);
+                    })
+                    .Build();
+
+                await HostContainer.StartAsync();
+
+                var login = Services.GetRequiredService<MainWindow>();
+                login.Show();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Error fatal al iniciar");
+            }
         }
 
         protected override async void OnExit(ExitEventArgs e)
@@ -76,6 +93,8 @@ namespace LD.FormsX
                 HostContainer.Dispose();
             }
 
+            Log.Information("App cerrada");
+            Log.CloseAndFlush();
             base.OnExit(e);
         }
 
@@ -94,6 +113,7 @@ namespace LD.FormsX
             //services.AddSingleton<DialogMessageService>();
             //services.AddSingleton<TabService>();
 
+            services.AddTransient<LoginViewModel>();
             services.AddTransient<MainWindow>();
             services.AddTransient<DashBoard>();
             services.AddTransient<CatalogosClientesView>();
