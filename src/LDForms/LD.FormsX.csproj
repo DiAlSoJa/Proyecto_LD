@@ -86,6 +86,9 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
+
+
+    <Folder Include="Resources\Fonts\" />
     <Folder Include="Resources\Styles\" />
     <Folder Include="Views\Embarques\" />
     <Folder Include="Views\Surtido\" />

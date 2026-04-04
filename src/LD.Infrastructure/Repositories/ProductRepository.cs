@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
@@ -31,6 +32,14 @@ namespace LD.Infrastructure.Repositories
                 .Include(x=> x.Category)
                 .Include(x=>x.Family)
                 .Include(x=>x.StorageType)
+                .ToListAsync();
+        }
+        async Task<List<Product>> IProductRepository.GetProductByClientAsync(int clientId, int projectId)
+        {
+            return await _context.items
+                .AsNoTracking()
+                .Where(p => p.ClientId == clientId && p.ProjectId == projectId)
+                .ProjectTo<Product>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

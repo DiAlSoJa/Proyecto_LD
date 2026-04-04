@@ -3,6 +3,7 @@ using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Features.Asn.Commands;
 using LD.Application.Features.Asn.Queries;
+using LD.Application.Features.Family.Queries;
 using LD.Contracts.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -21,11 +22,15 @@ namespace LD.Api.Controllers
             return ResultExtensions.ToActionResult(await Mediator.Send(new AsnQuery()));
         }
 
+    
         [HttpGet("{asnId}")]
         [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnById(int asnId)
-            => ResultExtensions.ToActionResult(await Mediator.Send(new AsnByIdQuery { AsnId = asnId }));
-      
+            => ResultExtensions.ToActionResult(await Mediator.Send(new AsnByIdQuery(asnId)));
+
+
+
+
         [HttpGet("{clientId}/{projectId}")]
         [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnByClient(int clientId, int projectId)

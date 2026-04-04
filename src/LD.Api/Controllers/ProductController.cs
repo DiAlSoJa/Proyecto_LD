@@ -1,6 +1,7 @@
 ﻿using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
+using LD.Application.Features.Asn.Queries;
 using LD.Application.Features.Auth.Commands;
 using LD.Application.Features.Clients.Queries;
 using LD.Application.Features.Product.Comands;
@@ -29,6 +30,15 @@ namespace LD.Api.Controllers
         [Permission(PermissionKeys.Product_View)]
         public async Task<IActionResult> GetProductById(int productId)
              => ResultExtensions.ToActionResult(await Mediator.Send(new ProductByIdQuery(productId)));
+
+        [HttpGet("{clientId}/{projectId}")]
+        [Permission(PermissionKeys.Product_View)]
+        public async Task<IActionResult> GetProductByClient(int clientId, int projectId)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new ProductByClientIdQuery { ClientId = clientId, ProjectId = projectId }));
+        }
+
+
 
         [HttpPost]
         [Permission(PermissionKeys.Product_Create)]

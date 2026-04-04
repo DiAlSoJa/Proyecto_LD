@@ -27,5 +27,6 @@ namespace LD.Contracts.Requests
         public string? SealNumber { get; set; }
 
         public string? Status { get; set; }
+
     }
 }

@@ -11,18 +11,16 @@ namespace LD.Contracts.ASN
         [DisplayName("ASN")]
         public string AsnCode { get; set; } = string.Empty;
 
-        [DisplayName("Pre ASN")]
-        public string PreAsnCode { get; set; } = string.Empty;
+       
 
         [DisplayName("Cliente")]
         public string Client { get; set; } = string.Empty;
 
-        public int ClientId { get; set; }
-
+      
         [DisplayName("Proyecto")]
         public string Project { get; set; } = string.Empty;
 
-        public int ProjectId { get; set; }
+    
 
         [DisplayName("Factura")]
         public string InvoiceNumber { get; set; } = string.Empty;

@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260404051446_UpdateTables_PRoject_AsnDetail")]
+    partial class UpdateTables_PRoject_AsnDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +24,6 @@ namespace LD.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
 
             modelBuilder.Entity("LD.Domain.Entities.Asn", b =>
                 {
@@ -304,7 +306,6 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("AsnReceiptDetails");
                 });
 
->>>>>>> origin/J_ASN
             modelBuilder.Entity("LD.Domain.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -359,7 +360,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Client", b =>
@@ -426,7 +427,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.ClientContact", b =>
@@ -495,7 +496,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("ClientContacts", (string)null);
+                    b.ToTable("ClientContacts");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.ClientFiscalData", b =>
@@ -572,7 +573,7 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("ClientId")
                         .IsUnique();
 
-                    b.ToTable("ClientFiscalData", (string)null);
+                    b.ToTable("ClientFiscalData");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Currency", b =>
@@ -609,7 +610,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("CurrencyIdS");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Dimensioner", b =>
@@ -658,7 +659,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DimensionerId");
 
-                    b.ToTable("Dimensioner", (string)null);
+                    b.ToTable("Dimensioner");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.DireccionEntrega", b =>
@@ -731,7 +732,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DireccionEntregaId");
 
-                    b.ToTable("DireccionEntregas", (string)null);
+                    b.ToTable("DireccionEntregas");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Driver", b =>
@@ -785,7 +786,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DriverId");
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Family", b =>
@@ -834,7 +835,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Families", (string)null);
+                    b.ToTable("Families");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.InventaryStatus", b =>
@@ -874,7 +875,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("InventoryStatusIdS");
 
-                    b.ToTable("inventaryStatuses", (string)null);
+                    b.ToTable("inventaryStatuses");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
@@ -977,7 +978,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Module", b =>
@@ -1574,7 +1575,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("PickingZones", (string)null);
+                    b.ToTable("PickingZones");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Printer", b =>
@@ -1618,7 +1619,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("PrinterId");
 
-                    b.ToTable("Printers", (string)null);
+                    b.ToTable("Printers");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Product", b =>
@@ -1803,7 +1804,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("UnitIdS");
 
-                    b.ToTable("items", (string)null);
+                    b.ToTable("items");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Project", b =>
@@ -1946,7 +1947,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.RolePermission", b =>
@@ -2024,7 +2025,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("StorageTypeId");
 
-                    b.ToTable("StorageTypes", (string)null);
+                    b.ToTable("StorageTypes");
 
                     b.HasData(
                         new
@@ -2102,7 +2103,7 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("UnitIdS")
                         .IsUnique();
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.UserWarehouse", b =>
@@ -2146,7 +2147,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("UserWarehouses", (string)null);
+                    b.ToTable("UserWarehouses");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Vehicle", b =>
@@ -2205,7 +2206,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("Plates");
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Warehouse", b =>
@@ -2270,7 +2271,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("WarehouseId");
 
-                    b.ToTable("Warehouses", (string)null);
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("LD.Infrastructure.ApplicationRole", b =>
@@ -2498,6 +2499,68 @@ namespace LD.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", "Auth");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.Asn", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.AsnDetail", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Asn", "Asn")
+                        .WithMany("AsnDetails")
+                        .HasForeignKey("AsnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Asn");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.AsnReceiptDetail", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.AsnDetail", "AsnDetail")
+                        .WithMany("AsnReceiptDetails")
+                        .HasForeignKey("AsnDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("LD.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("AsnDetail");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Category", b =>
@@ -2766,6 +2829,16 @@ namespace LD.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.Asn", b =>
+                {
+                    b.Navigation("AsnDetails");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.AsnDetail", b =>
+                {
+                    b.Navigation("AsnReceiptDetails");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Client", b =>

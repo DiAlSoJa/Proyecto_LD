@@ -32,6 +32,7 @@ namespace LD.Forms.Configuration
 
         public string Product_GetAll => $"{_baseApi}/Product";
         public string Product_GetById => $"{_baseApi}/Product/{{id}}";
+        public string Product_GetByClientId => $"{_baseApi}/Product/{{clientId}}/{{projectId}}";
         public string Product_Create => $"{_baseApi}/Product";
         public string Product_Update => $"{_baseApi}/Product/{{id}}";
         public string Product_Delete => $"{_baseApi}/Product/{{id}}";
