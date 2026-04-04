@@ -24,7 +24,7 @@ namespace LD.Application.Features.AsnDetails.Profiles
                 .ForMember(dest => dest.ExchangeRate, opt => opt.MapFrom(src => src.ExchangeRate))
                 .ForMember(dest => dest.PurchaseOrder, opt => opt.MapFrom(src => src.PurchaseOrder))
                 .ForMember(dest => dest.CustomsDeclarationNumber, opt => opt.MapFrom(src => src.CustomsDeclarationNumber))
-                .ForMember(dest => dest.Split, opt => opt.MapFrom(src => src.IsSplit));
+                .ForMember(dest => dest.Split, opt => opt.MapFrom(src => src.Split));
 
             CreateMap<AsnDetailRequest, LD.Domain.Entities.AsnDetail>()
                 .ForMember(dest => dest.AsnDetailId, opt => opt.Ignore());

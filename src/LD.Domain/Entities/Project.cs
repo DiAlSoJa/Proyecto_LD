@@ -58,7 +58,7 @@ namespace LD.Domain.Entities
         public decimal? NormalHrs { get; set; }
         public decimal? UrgentHrs { get; set; }
 
-        public string? AsnNumber { get; set; }
+        public int? AsnNumber { get; set; }
         public string? AsnPrefix { get; set; }
 
         // Kitting

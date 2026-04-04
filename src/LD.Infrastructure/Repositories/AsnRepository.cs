@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LD.Application.Common.Interfaces.Repository;
-using LD.Contracts.ASN;
-using LD.Contracts.DTOs;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -14,38 +9,71 @@ namespace LD.Infrastructure.Repositories
 {
     public class AsnRepository : IAsnRepository
     {
-        public readonly LdProyectDbContext _context;
-        public readonly IMapper _mapper;
+        private readonly LdProyectDbContext _context;
+        private readonly IMapper _mapper;
 
-        public async Task<bool> CreateAsync(Asn newModel)
+        public AsnRepository(LdProyectDbContext context, IMapper mapper)
         {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        async Task<bool> IRepository<Asn>.CreateAsync(Asn newModel)
+        {
+            return await CreateWithSequenceAsync(newModel);
+        }
+
+        public async Task<bool> CreateWithSequenceAsync(Asn entity)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                if (newModel == null)
-                    return false;
+                var project = await _context.Set<Project>()
+                    .FirstOrDefaultAsync(p => p.ProjectId == entity.ProjectId);
 
-                await _context.Asns.AddAsync(newModel);
-                return await _context.SaveChangesAsync() > 0;
+                if (project is null)
+                    throw new Exception("No se encontró el proyecto.");
+
+                if (string.IsNullOrWhiteSpace(project.AsnPrefix))
+                    throw new Exception("El proyecto no tiene configurado AsnPrefix.");
+
+                var currentNumber = 1;
+
+                if (!string.IsNullOrWhiteSpace(project.AsnNumber?.ToString()))
+                {
+                    currentNumber = Convert.ToInt32(project.AsnNumber);
+                }
+
+                entity.AsnCode = $"{project.AsnPrefix}{currentNumber:D5}";
+                entity.PreAsnCode = entity.AsnCode;
+
+                _context.Set<Asn>().Add(entity);
+
+                project.AsnNumber = (currentNumber + 1);
+
+                _context.Set<Project>().Update(project);
+
+                var result = await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return result > 0;
             }
             catch
             {
-                return false;
+                await transaction.RollbackAsync();
+                throw;
             }
         }
-
-
-      
 
         async Task<List<Asn>> IAsnRepository.GetAsnByClientAsync(int clientId, int projectId)
         {
             return await _context.Asns
-            .AsNoTracking()
-            .Where(p => p.ClientId == clientId && p.ProjectId==projectId ) 
-            .ProjectTo<Asn>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+                .AsNoTracking()
+                .Where(p => p.ClientId == clientId && p.ProjectId == projectId)
+                .ProjectTo<Asn>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
-
-        
 
         Task<Asn?> IRepository<Asn>.GetByIdAsync(int id)
         {

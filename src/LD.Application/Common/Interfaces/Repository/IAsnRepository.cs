@@ -12,5 +12,6 @@ namespace LD.Application.Common.Interfaces.Repository
     {       
         
         Task<List<Asn>> GetAsnByClientAsync(int clientId, int projectId);
+        Task<bool> CreateWithSequenceAsync(Asn entity);
     }
 }

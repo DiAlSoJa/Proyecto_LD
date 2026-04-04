@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
@@ -15,11 +12,10 @@ public class CreateAsnCommand : AsnRequest, IRequest<Result<string>>
 
 public class CreateAsnCommandHandler : IRequestHandler<CreateAsnCommand, Result<string>>
 {
-
-    private readonly IRepository<LD.Domain.Entities.Asn> _asnRepository;
+    private readonly IAsnRepository _asnRepository;
     private readonly IMapper _mapper;
 
-    public CreateAsnCommandHandler(IRepository<LD.Domain.Entities.Asn> asnRepository, AutoMapper.IMapper mapper)
+    public CreateAsnCommandHandler(IAsnRepository asnRepository, IMapper mapper)
     {
         _asnRepository = asnRepository;
         _mapper = mapper;
@@ -27,21 +23,20 @@ public class CreateAsnCommandHandler : IRequestHandler<CreateAsnCommand, Result<
 
     public async Task<Result<string>> Handle(CreateAsnCommand request, CancellationToken cancellationToken)
     {
-        /*try
+        try
         {
             var entity = _mapper.Map<LD.Domain.Entities.Asn>(request);
-            var result = await _asnRepository.CreateAsync(entity);
-            return result ? Result<string>.Success("ASN creado con exito", "") : Result<string>.Failure("Hubo un error al crear el ASN", new());
-        }*/
-         try
-        {
-            var result = await _asnRepository.CreateAsync(_mapper.Map<LD.Domain.Entities.Asn>(request));
-            return result ? Result<string>.Success("Asn creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Asn", new());
 
+            var result = await _asnRepository.CreateWithSequenceAsync(entity);
+
+            return result
+                ? Result<string>.Success("Asn creado con éxito", entity.AsnCode ?? string.Empty)
+                : Result<string>.Failure("Hubo un error al crear el ASN", new());
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el ASN", new System.Collections.Generic.List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al crear el ASN",
+                new List<string> { ex.Message });
         }
     }
 }
