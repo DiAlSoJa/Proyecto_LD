@@ -7,7 +7,7 @@ namespace LD.Application.Features.AsnDetails.Queries
 {
     public class AsnDetailQuery : IRequest<Result<List<AsnDetailDto>?>>
     {
-        public int AsnId { get; set; }
+      
     }
 
     public class AsnDetailQueryHandler : IRequestHandler<AsnDetailQuery, Result<List<AsnDetailDto>?>>

@@ -46,6 +46,6 @@ namespace LD.Contracts.ASN
         public string CustomsDeclarationNumber { get; set; } = string.Empty;
 
         [DisplayName("Split")]
-        public bool IsSplit { get; set; }
+        public decimal Split { get; set; }
     }
 }

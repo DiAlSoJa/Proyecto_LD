@@ -25,6 +25,14 @@ namespace LD.Api.Controllers
         [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnById(int asnId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new AsnByIdQuery { AsnId = asnId }));
+      
+        [HttpGet("{clientId}/{projectId}")]
+        [Permission(PermissionKeys.Asn_View)]
+        public async Task<IActionResult> GetAsnByClient(int clientId, int projectId)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new AsnByClientIdQuery { ClientId = clientId, ProjectId=projectId }));
+        }
+
 
         [HttpPost]
         [Permission(PermissionKeys.Asn_Create)]
@@ -41,5 +49,9 @@ namespace LD.Api.Controllers
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }
+
+       
+
+
     }
 }

@@ -29,6 +29,10 @@ namespace LD.Client.Services
         {
             return await _api.GetAsync<ApiResponseDto<List<AsnDetailDto>>>(_apiEndpoints.AsnDetail_GetAll);
         }
+        public async Task<ApiResponseDto<List<AsnDetailDto>>> GetAsnDetailsByAsn(int asnId)
+        {
+            return await _api.GetAsync<ApiResponseDto<List<AsnDetailDto>>>(_apiEndpoints.AsnDetail_GetByAsnId.Replace("{asnId}", asnId.ToString()));
+        }
 
         public async Task<ApiResponseDto<string>> CreateAsnDetail(AsnDetailRequest request)
         {

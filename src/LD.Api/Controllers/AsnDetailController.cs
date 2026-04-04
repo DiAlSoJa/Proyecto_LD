@@ -17,7 +17,7 @@ namespace LD.Api.Controllers
     [Route("api/[controller]")]
     public class AsnDetailController : CommonController
     {
-        [HttpGet]
+        [HttpGet()]
         [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnDetail()
         {
@@ -28,6 +28,14 @@ namespace LD.Api.Controllers
         [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnDetailById(int asnDetailId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new AsnDetailByIdQuery { AsnDetailId = asnDetailId }));
+        
+        [HttpGet("asn/{asnId}")]
+        [Permission(PermissionKeys.Asn_View)]
+        public async Task<IActionResult> GetAsnDetailByAsn(int asnId)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new AsnDetailByAsnIdQuery { AsnId = asnId }));
+        }
+
 
         [HttpPost]
         [Permission(PermissionKeys.Asn_Create)]

@@ -10,7 +10,7 @@ namespace LD.Application.Features.Asn.Validators
         {
             RuleFor(x => x.ClientId).NotEmpty().WithMessage("Cliente es obligatorio");
             RuleFor(x => x.ProjectId).NotEmpty().WithMessage("Proyecto es obligatorio");
-            RuleFor(x => x.AsnCode).NotEmpty().WithMessage("ASN es obligatorio");
+            
         }
     }
 }

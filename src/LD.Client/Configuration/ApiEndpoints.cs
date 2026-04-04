@@ -257,6 +257,7 @@ namespace LD.Forms.Configuration
 
         public string AsnDetail_GetAll => $"{_baseApi}/asnDetail";
         public string AsnDetail_GetById => $"{_baseApi}/asnDetail/{{asnId}}";
+        public string AsnDetail_GetByAsnId => $"{_baseApi}/asnDetail/asn/{{asnId}}";
         public string AsnDetail_Create => $"{_baseApi}/asnDetail";
         public string AsnDetail_Update => $"{_baseApi}/asnDetail/{{asnId}}";
         public string AsnDetail_Delete => $"{_baseApi}/asnDetail/{{asnId}}";

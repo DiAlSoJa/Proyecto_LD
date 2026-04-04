@@ -6,14 +6,15 @@
         mc:Ignorable="d"
         Title="ASN"
         Height="900"
-        Width="1600"
+        Width="1300"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
-        Background="#F3F4F6">
+         AllowsTransparency="True"
+        Background="Transparent">
 
     <Window.Resources>
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#15803D"/>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#111827"/>
         <SolidColorBrush x:Key="BorderBrushSoft" Color="#D1D5DB"/>
         <SolidColorBrush x:Key="HeaderBrush" Color="#F9FAFB"/>
         <SolidColorBrush x:Key="AltRowBrush" Color="#FDFCD5"/>
@@ -37,7 +38,7 @@
         </Style>
 
         <Style TargetType="ComboBox" x:Key="InputComboBoxStyle">
-            <Setter Property="Height" Value="34"/>
+            <Setter Property="Height" Value="24"/>
             <Setter Property="Padding" Value="6,2"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
@@ -102,27 +103,39 @@
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
         </Style>
     </Window.Resources>
+    <Grid>
+        <Border
+         
+         Background="White"
+         CornerRadius="16"
+         BorderBrush="#000"
+         BorderThickness="1"
+         SnapsToDevicePixels="True">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="22"
+                           ShadowDepth="0"
+                           Opacity="0.18"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="55"/>
+                </Grid.RowDefinitions>
 
-    <Border BorderBrush="#D1D5DB" BorderThickness="1" Background="#F3F4F6">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="35"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="55"/>
-            </Grid.RowDefinitions>
+                <!-- Barra superior -->
+                <Border Grid.Row="0"
+                    Background="#233167"
+                    CornerRadius="16,16,0,0"
+                     MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
 
-            <!-- Barra superior -->
-            <Border Grid.Row="0"
-                    Background="{StaticResource PrimaryBrush}"
-                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="40"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock x:Name="txtTituloVentana"
+                        <TextBlock x:Name="txtTituloVentana"
                                Text="ASN"
                                Foreground="White"
                                FontWeight="Bold"
@@ -130,7 +143,7 @@
                                VerticalAlignment="Center"
                                Margin="16,0,0,0"/>
 
-                    <Button x:Name="btnCerrarVentana"
+                        <Button x:Name="btnCerrarVentana"
                             Grid.Column="1"
                             Content="✕"
                             Click="BtnCerrarVentana_Click"
@@ -139,36 +152,42 @@
                             BorderThickness="0"
                             FontSize="14"
                             Cursor="Hand"/>
-                </Grid>
-            </Border>
+                    </Grid>
+                </Border>
 
-            <!-- Encabezado de captura -->
-            <Border Grid.Row="1"
+                <!-- Encabezado -->
+                <Border Grid.Row="1"
                     Background="White"
                     BorderBrush="{StaticResource BorderBrushSoft}"
                     BorderThickness="0,0,0,1"
                     Padding="20,18,20,8">
-                <StackPanel>
-                    <Grid Margin="0,0,0,12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="140"/>
-                            <ColumnDefinition Width="500"/>
-                            <ColumnDefinition Width="30"/>
-                            <ColumnDefinition Width="140"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="500"/>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Cliente:" Style="{StaticResource LabelStyle}" Margin="0,7,0,0"/>
-                        <ComboBox x:Name="cmbCliente"
+                            <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="Cliente:"
+                                   Style="{StaticResource LabelStyle}"
+                                   Margin="0,7,0,0"/>
+
+                            <ComboBox x:Name="cmbCliente"
                                   Grid.Row="0"
                                   Grid.Column="1"
-                                  Style="{StaticResource InputComboBoxStyle}"/>
+                                  Style="{StaticResource InputComboBoxStyle}"
+                                      SelectionChanged="cmbCliente_SelectionChanged"/>
 
-                        <Border x:Name="bdPreAsn"
+                            <Border x:Name="bdPreAsn"
                                 Grid.Row="0"
                                 Grid.Column="4"
                                 Background="#FDE68A"
@@ -178,229 +197,376 @@
                                 HorizontalAlignment="Left"
                                 Padding="12,6"
                                 Visibility="Collapsed">
-                            <TextBlock x:Name="txtPreAsn"
+                                <TextBlock x:Name="txtPreAsn"
                                        Text="PREASN000001"
                                        FontSize="18"
                                        FontWeight="Bold"
                                        Foreground="#111827"/>
-                        </Border>
+                            </Border>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Proyecto:" Style="{StaticResource LabelStyle}" Margin="0,11,0,0"/>
-                        <ComboBox x:Name="cmbProyecto"
+                            <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="Proyecto:"
+                                   Style="{StaticResource LabelStyle}"
+                                   Margin="0,11,0,0"/>
+
+                            <ComboBox x:Name="cmbProyecto"
                                   Grid.Row="1"
                                   Grid.Column="1"
                                   Margin="0,4,0,0"
                                   Style="{StaticResource InputComboBoxStyle}"/>
-                    </Grid>
+                        </Grid>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="460"/>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="460"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Grupo ASN -->
-                        <GroupBox Grid.Column="0" Header="ASN">
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="110"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                            <!-- Grupo ASN -->
+                            <GroupBox Grid.Column="0" Header="ASN">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="No. Factura:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <TextBox x:Name="txtNumeroFactura" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="No. Factura:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                    <TextBox x:Name="txtNumeroFactura" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="No. Guía:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <TextBox x:Name="txtNumeroGuia" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="No. Guía:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                    <TextBox x:Name="txtNumeroGuia" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="ETA:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <DatePicker x:Name="dpEta" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}" Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="ETA:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                    <DatePicker x:Name="dpEta" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}"/>
 
-                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Bultos:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <TextBox x:Name="txtBultos" Grid.Row="3" Grid.Column="1" Width="120" HorizontalAlignment="Left" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Bultos:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                    <TextBox x:Name="txtBultos"
+                                         Grid.Row="3"
+                                         Grid.Column="1"
+                                         Width="120"
+                                         HorizontalAlignment="Left"
+                                         Style="{StaticResource InputTextBoxStyle}"/>
 
-                                <CheckBox x:Name="chkEsDevolucion"
+                                    <CheckBox x:Name="chkEsDevolucion"
                                           Grid.Row="4"
                                           Grid.Column="1"
                                           Content="Devolución"
                                           Margin="0,4,0,10"/>
 
-                                <CheckBox x:Name="chkMovimientoRequeridoCliente"
+                                    <CheckBox x:Name="chkMovimientoRequeridoCliente"
                                           Grid.Row="5"
                                           Grid.Column="1"
-                                          Content="Movimiento requerido por cliente"
-                                          Margin="0,0,0,0"/>
-                            </Grid>
-                        </GroupBox>
+                                          Content="Movimiento requerido por cliente"/>
+                                </Grid>
+                            </GroupBox>
 
-                        <!-- Grupo Transporte -->
-                        <GroupBox Grid.Column="2" Header="Transporte">
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                            <!-- Grupo Transporte -->
+                            <GroupBox Grid.Column="2" Header="Transporte">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="51*"/>
+                                        <ColumnDefinition Width="97*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <Button x:Name="btnBuscarVehiculo"
-                                        Grid.Row="0"
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Left"
-                                        Width="170"
-                                        Content="Buscar vehículo"
-                                        Style="{StaticResource SecondaryButtonStyle}"
-                                        Click="BtnBuscarVehiculo_Click"
-                                        Margin="0,0,0,10"/>
+                                    <Button x:Name="btnBuscarVehiculo"
+            Grid.Row="0"
+            Grid.Column="1"
+            Height="38"
+            Padding="12,0"
+            Click="BtnBuscarVehiculo_Click"
+            Background="#F3F4F6"
+            Foreground="#374151"
+            BorderBrush="#D1D5DB"
+            BorderThickness="1"
+            Cursor="Hand">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="6"/>
+                                            </Style>
+                                        </Button.Resources>
 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Línea de Transporte:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <TextBox x:Name="txtLineaTransporte" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,0,10"/>
+                                        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+                                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                       Text="&#xE721;"
+                       Foreground="#2563EB"
+                       Margin="0,0,6,0"
+                       FontSize="14"/>
+                                            <TextBlock Text="Buscar Vehiculo"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Tipo de vehículo:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <TextBox x:Name="txtTipoVehiculo" Grid.Row="2" Grid.Column="1" Width="260" HorizontalAlignment="Left" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Row="1"
+               Grid.Column="0"
+               Text="Línea de Transporte:"
+               Style="{StaticResource LabelStyle}"
+               Margin="0,12,8,0"
+               VerticalAlignment="Top"/>
+                                    <TextBox x:Name="txtLineaTransporte"
+             Grid.Row="1"
+             Grid.Column="1"
+             Grid.ColumnSpan="2"
+             Style="{StaticResource InputTextBoxStyle}"/>
 
-                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Nombre de chofer:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <ComboBox x:Name="cmbChofer" Grid.Row="3" Grid.Column="1" Style="{StaticResource InputComboBoxStyle}" Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Row="2"
+               Grid.Column="0"
+               Text="Tipo de vehículo:"
+               Style="{StaticResource LabelStyle}"
+               Margin="0,12,8,0"
+               VerticalAlignment="Top"/>
+                                    <TextBox x:Name="txtTipoVehiculo"
+             Grid.Row="2"
+             Grid.Column="1"
+             Width="200"
+             HorizontalAlignment="Left"
+             Style="{StaticResource InputTextBoxStyle}"/>
 
-                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Placas:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <TextBox x:Name="txtPlacasVehiculo" Grid.Row="4" Grid.Column="1" Width="140" HorizontalAlignment="Left" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Row="3"
+               Grid.Column="0"
+               Text="Nombre de chofer:"
+               Style="{StaticResource LabelStyle}"
+               Margin="0,8,8,0"
+               VerticalAlignment="Top"/>
 
-                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Sello:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                <TextBox x:Name="txtSelloTransporte" Grid.Row="5" Grid.Column="1" Width="300" HorizontalAlignment="Left" Style="{StaticResource InputTextBoxStyle}"/>
-                            </Grid>
-                        </GroupBox>
+                                    <!-- CAMBIO AQUÍ -->
+                                    <TextBox x:Name="txtChofer"
+             Grid.Row="3"
+             Grid.Column="1"
+             Grid.ColumnSpan="2"
+             Margin="0,1,0,0"
+             Style="{StaticResource InputTextBoxStyle}"/>
+
+                                    <TextBlock Grid.Row="4"
+               Grid.Column="0"
+               Text="Placas:"
+               Style="{StaticResource LabelStyle}"
+               Margin="0,13,8,0"
+               VerticalAlignment="Top"/>
+                                    <TextBox x:Name="txtPlacasVehiculo"
+             Grid.Row="3"
+             Grid.Column="1"
+             Grid.RowSpan="2"
+             Width="140"
+             HorizontalAlignment="Left"
+             Margin="0,35,0,0"
+             Style="{StaticResource InputTextBoxStyle}"/>
+
+                                    <TextBlock Grid.Row="5"
+               Grid.Column="0"
+               Text="Sello:"
+               Style="{StaticResource LabelStyle}"
+               Margin="0,13,8,0"
+               VerticalAlignment="Top"/>
+                                    <TextBox x:Name="txtSelloTransporte"
+             Grid.Row="4"
+             Grid.Column="1"
+             Grid.RowSpan="2"
+             Width="200"
+             HorizontalAlignment="Left"
+             Margin="0,34,0,0"
+             Style="{StaticResource InputTextBoxStyle}"/>
+                                </Grid>
+                            </GroupBox>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Sección central -->
+                <Grid Grid.Row="2" Margin="20,1,20,1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button x:Name="btnGuardar"
+                            Height="38"
+                            Padding="12,0"
+                            Click="BtnGuardar_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+
+                            <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE74E;"
+                                       Foreground="#15803D"
+                                       Margin="0,0,6,0"
+                                       FontSize="14"/>
+                                <TextBlock Text="Guardar y continuar"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="btnEscanear"
+                            Height="38"
+                            Padding="12,0"
+                            Click="BtnEscanear_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Margin="8,0,0,0"
+                            Cursor="Hand"
+                            Visibility="Collapsed">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+
+                            <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xEC5A;"
+                                       Foreground="#2563EB"
+                                       Margin="0,0,6,0"
+                                       FontSize="14"/>
+                                <TextBlock Text="Escanear"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <Grid x:Name="gridScanSection"
+                      Grid.Row="1"
+                      Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1.1*"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border x:Name="bdPartidasAsn"
+                            Grid.Row="0"
+                            Background="White"
+                            BorderBrush="{StaticResource BorderBrushSoft}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="220">
+                            <DataGrid x:Name="dgPartidasAsn"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="False"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  AlternatingRowBackground="{StaticResource AltRowBrush}"
+                                  RowBackground="White"
+                                  BorderThickness="0"
+                                  RowHeight="30"
+                                  ColumnHeaderHeight="38"
+                                  FontSize="12"
+                                  Margin="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="200"/>
+                                    <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="220"/>
+                                    <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="90"/>
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
+                                    <DataGridTextColumn Header="SD" Binding="{Binding Sd}" Width="100"/>
+                                    <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="140"/>
+                                    <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="150"/>
+                                    <DataGridTextColumn Header="Referencia de Cliente" Binding="{Binding ReferenciaCliente}" Width="160"/>
+                                    <DataGridTextColumn Header="Tipo de Cambio" Binding="{Binding TipoCambio}" Width="120"/>
+                                    <DataGridTextColumn Header="Orden de Compra" Binding="{Binding OrdenCompra}" Width="140"/>
+                                    <DataGridTextColumn Header="Pedimento" Binding="{Binding Pedimento}" Width="120"/>
+                                    <DataGridTextColumn Header="Split" Binding="{Binding Split}" Width="90"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+
+                        <Border x:Name="bdUbicacionesAsignadas"
+                            Grid.Row="2"
+                            Background="White"
+                            BorderBrush="{StaticResource BorderBrushSoft}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="200">
+                            <DataGrid x:Name="dgUbicacionesAsignadas"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="False"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  AlternatingRowBackground="{StaticResource AltRowBrush}"
+                                  RowBackground="White"
+                                  BorderThickness="0"
+                                  RowHeight="30"
+                                  ColumnHeaderHeight="38"
+                                  FontSize="12"
+                                  Margin="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Borrar" Binding="{Binding Borrar}" Width="90"/>
+                                    <DataGridTextColumn Header="EstandarID" Binding="{Binding EstandarId}" Width="100"/>
+                                    <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="180"/>
+                                    <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="220"/>
+                                    <DataGridTextColumn Header="Estandar" Binding="{Binding Estandar}" Width="100"/>
+                                    <DataGridTextColumn Header="Máxima" Binding="{Binding Maxima}" Width="100"/>
+                                    <DataGridTextColumn Header="SD" Binding="{Binding Sd}" Width="90"/>
+                                    <DataGridTextColumn Header="Recibida" Binding="{Binding Recibida}" Width="100"/>
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                                    <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
+                                    <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="140"/>
+                                    <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="150"/>
+                                    <DataGridTextColumn Header="Referencia" Binding="{Binding Referencia}" Width="120"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
                     </Grid>
-                </StackPanel>
-            </Border>
+                </Grid>
 
-            <!-- Grids -->
-            <Grid Grid.Row="2" Margin="20,14,20,14">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="1.1*"/>
-                    <RowDefinition Height="12"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
-                    <Button x:Name="btnEscanear"
-                            Content="Escanear"
-                            Width="150"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            Click="BtnEscanear_Click"/>
-                </StackPanel>
-
-                <Border Grid.Row="1"
-                        Background="White"
-                        BorderBrush="{StaticResource BorderBrushSoft}"
-                        BorderThickness="1"
-                        CornerRadius="6">
-                    <DataGrid x:Name="dgPartidasAsn"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              IsReadOnly="False"
-                              HeadersVisibility="Column"
-                              GridLinesVisibility="Vertical"
-                              AlternatingRowBackground="{StaticResource AltRowBrush}"
-                              RowBackground="White"
-                              BorderThickness="0"
-                              RowHeight="30"
-                              ColumnHeaderHeight="38"
-                              FontSize="12"
-                              Margin="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="200"/>
-                            <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="220"/>
-                            <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="90"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
-                            <DataGridTextColumn Header="SD" Binding="{Binding Sd}" Width="100"/>
-                            <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="140"/>
-                            <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="150"/>
-                            <DataGridTextColumn Header="Referencia de Cliente" Binding="{Binding ReferenciaCliente}" Width="160"/>
-                            <DataGridTextColumn Header="Tipo de Cambio" Binding="{Binding TipoCambio}" Width="120"/>
-                            <DataGridTextColumn Header="Orden de Compra" Binding="{Binding OrdenCompra}" Width="140"/>
-                            <DataGridTextColumn Header="Pedimento" Binding="{Binding Pedimento}" Width="120"/>
-                            <DataGridTextColumn Header="Split" Binding="{Binding Split}" Width="90"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Border>
-
+                <!-- Botones inferiores -->
                 <Border Grid.Row="3"
-                        Background="White"
-                        BorderBrush="{StaticResource BorderBrushSoft}"
-                        BorderThickness="1"
-                        CornerRadius="6">
-                    <DataGrid x:Name="dgUbicacionesAsignadas"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              IsReadOnly="False"
-                              HeadersVisibility="Column"
-                              GridLinesVisibility="Vertical"
-                              AlternatingRowBackground="{StaticResource AltRowBrush}"
-                              RowBackground="White"
-                              BorderThickness="0"
-                              RowHeight="30"
-                              ColumnHeaderHeight="38"
-                              FontSize="12"
-                              Margin="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Borrar" Binding="{Binding Borrar}" Width="90"/>
-                            <DataGridTextColumn Header="EstandarID" Binding="{Binding EstandarId}" Width="100"/>
-                            <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="180"/>
-                            <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="220"/>
-                            <DataGridTextColumn Header="Estandar" Binding="{Binding Estandar}" Width="100"/>
-                            <DataGridTextColumn Header="Máxima" Binding="{Binding Maxima}" Width="100"/>
-                            <DataGridTextColumn Header="SD" Binding="{Binding Sd}" Width="90"/>
-                            <DataGridTextColumn Header="Recibida" Binding="{Binding Recibida}" Width="100"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
-                            <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
-                            <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="140"/>
-                            <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="150"/>
-                            <DataGridTextColumn Header="Referencia" Binding="{Binding Referencia}" Width="120"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Border>
-            </Grid>
-
-            <!-- Botones inferiores -->
-            <Border Grid.Row="3"
                     Background="#F3F4F6"
                     BorderBrush="{StaticResource BorderBrushSoft}"
                     BorderThickness="1,1,0,0"
                     Padding="12,8">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="btnCrearAsn"
-                            Content="Crear ASN"
-                            Width="150"
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            Click="BtnCrearAsn_Click"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
-                    <Button x:Name="btnCerrar"
+
+                        <Button x:Name="btnCerrar"
                             Content="Cerrar"
                             Width="130"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Margin="0"
                             Click="BtnCerrar_Click"/>
-                </StackPanel>
-            </Border>
-        </Grid>
-    </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>
