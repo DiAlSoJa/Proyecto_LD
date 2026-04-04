@@ -176,7 +176,7 @@ namespace LDForms
             RemoveIfNoModule(ArticulosBtn,       Module_e.Products);
             RemoveIfNoModule(MovimientosBtn,     Module_e.Movements);
             RemoveIfNoModule(AsnBtn,             Module_e.ASN);
-            RemoveIfNoModule(ChecklistBtn,       Module_e.ChecklistLift);
+            RemoveIfNoModule(ChecklistBtn,       Module_e.ForkliftChecklist);
             RemoveIfNoModule(PatioBtn,           Module_e.YardControl);
             RemoveIfNoModule(CatalogosBtn,       Module_e.Catalogs);
             RemoveIfNoModule(SurtidoBtn,         Module_e.Picking);

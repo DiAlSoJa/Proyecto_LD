@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using LD.Client.Configuration;
+using LD.Contracts.Enums;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views.Catalogos
@@ -20,7 +22,25 @@ namespace LD.FormsX.Views.Catalogos
         private void CatalogosView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             Loaded -= CatalogosView_Loaded;
+            SetVisibility();
             CargarVistas();
+        }
+
+        private void SetVisibility()
+        {
+            RemoveIfNoModule(TabEstatus,       Module_e.Status);
+            RemoveIfNoModule(TabCategorias,    Module_e.Categories);
+            RemoveIfNoModule(TabUnidades,      Module_e.Units);
+            RemoveIfNoModule(TabMonedas,       Module_e.Currencies);
+            RemoveIfNoModule(TabFamilias,      Module_e.Families);
+            RemoveIfNoModule(TabDimensionador, Module_e.Dimensioner);
+        }
+
+        private void RemoveIfNoModule(TabItem tab, Module_e module)
+        {
+            bool has = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)module);
+            if (!has)
+                MainTabControl.Items.Remove(tab);
         }
 
         private void CargarVistas()

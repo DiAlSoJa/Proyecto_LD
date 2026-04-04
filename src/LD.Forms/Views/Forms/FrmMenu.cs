@@ -37,7 +37,7 @@ namespace LD.Forms.Views.Forms
             productBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Products);
             movementBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Movements);
             asnBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ASN);
-            checkListBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ChecklistLift);
+            checkListBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ForkliftChecklist);
             yardControlBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.YardControl);
             catalogBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Catalogs);
             pickingBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Picking);

@@ -19,13 +19,13 @@ public partial class DashboardPage : ContentPage
 
     private void SetVisibility()
     {
-        RemoveIfNoModule(AlmacenistaCard, Module_e.Warehouse_staff);
+        RemoveIfNoModule(AlmacenistaCard, Module_e.WarehouseStaff);
         RemoveIfNoModule(SecurityCard, Module_e.Security);
-        RemoveIfNoModule(ConsultasCard, Module_e.Consultas);
-        RemoveIfNoModule(DamageReportCard, Module_e.Damage_report);
+        RemoveIfNoModule(ConsultasCard, Module_e.Queries);
+        RemoveIfNoModule(DamageReportCard, Module_e.DamageReport);
         RemoveIfNoModule(OperationsCard, Module_e.Operations);
         RemoveIfNoModule(InventoryCard, Module_e.Inventory);
-        RemoveIfNoModule(ChecklistCard, Module_e.ChecklistLift);
+        RemoveIfNoModule(ChecklistCard, Module_e.ForkliftChecklist);
 
 
     }

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace LD.Contracts.Enums
 {
-   
     public enum Module_e
     {
         Clients = 1,
@@ -17,22 +16,26 @@ namespace LD.Contracts.Enums
         Products = 5,
         Movements = 6,
         ASN = 7,
-        ChecklistLift = 8,
+        ForkliftChecklist = 8,
         YardControl = 9,
         Catalogs = 10,
-        Picking = 11,
-        Auditing = 12,
-        Shipments = 13,
-        Inventory = 14,
-        RandomInventory = 15,
-        Reports = 16,
-        Users = 17,
-
-        Warehouse_staff = 18,
-        Security = 19,
-        Consultas = 20,
-        Damage_report = 21,
-        Operations = 22,
-
+        Categories = 11,
+        Dimensioner = 12,
+        Families = 13,
+        Currencies = 14,
+        Status = 15,
+        Units = 16,
+        Picking = 17,
+        Auditing = 18,
+        Shipments = 19,
+        Inventory = 20,
+        RandomInventory = 21,
+        Reports = 22,
+        Users = 23,
+        WarehouseStaff = 24,
+        Security = 25,
+        Queries = 26,
+        DamageReport = 27,
+        Operations = 28
     }
 }

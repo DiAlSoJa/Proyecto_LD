@@ -10,7 +10,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.Currency;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Location;
@@ -54,7 +56,15 @@ namespace LD.FormsX.Views
             if (_loaded) return;
             _loaded = true;
 
+            AplicarPermisos();
             await CargarDatosConLoaderAsync("Trayendo monedas...");
+        }
+
+        private void AplicarPermisos()
+        {
+            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.Currency_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.Currency_Update) ? Visibility.Visible : Visibility.Collapsed;
+            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Currency_View)   ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)

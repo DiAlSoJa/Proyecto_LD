@@ -47,46 +47,39 @@ public static class PermissionKeys
     public const string User_Delete = "users.delete";
 
 
-    public const string Unit_View = "users.read";
-    public const string Unit_Create = "users.create";
-    public const string Unit_Update = "users.create";
-    public const string Unit_Delete = "users.create";
+    public const string Category_View   = "categories.read";
+    public const string Category_Create = "categories.create";
+    public const string Category_Update = "categories.update";
 
-    public const string Currency_View = "users.read";
-    public const string Currency_Create = "users.create";
-    public const string Currency_Update = "users.create";
-    public const string Currency_Delete = "users.create";
+    public const string Dimensioner_View   = "dimensioner.read";
+    public const string Dimensioner_Create = "dimensioner.create";
+    public const string Dimensioner_Update = "dimensioner.update";
 
-    public const string Category_View = "users.read";
-    public const string Category_Create = "users.create";
-    public const string Category_Update = "users.create";
-    public const string Category_Delete = "users.create";
+    public const string Family_View   = "families.read";
+    public const string Family_Create = "families.create";
+    public const string Family_Update = "families.update";
 
-    public const string Status_View = "users.read";
-    public const string Status_Create = "users.create";
-    public const string Status_Update = "users.create";
-    public const string Status_Delete = "users.create";
+    public const string Currency_View   = "currencies.read";
+    public const string Currency_Create = "currencies.create";
+    public const string Currency_Update = "currencies.update";
 
-    public const string Vehicle_View = "users.read";
-    public const string Vehicle_Create = "users.create";
-    public const string Vehicle_Update = "users.create";
-    public const string Vehicle_Delete = "users.create";
+    public const string Status_View   = "status.read";
+    public const string Status_Create = "status.create";
+    public const string Status_Update = "status.update";
 
-    public const string Family_View = "users.read";
-    public const string Family_Create = "users.create";
-    public const string Family_Update = "users.create";
-    public const string Family_Delete = "users.create";
+    public const string Unit_View   = "units.read";
+    public const string Unit_Create = "units.create";
+    public const string Unit_Update = "units.update";
 
-    public const string Dimensioner_View = "users.read";
-    public const string Dimensioner_Create = "users.create";
-    public const string Dimensioner_Update = "users.create";
-    public const string Dimensioner_Delete = "users.create";
+    public const string Vehicle_View   = "security.vehicles.read";
+    public const string Vehicle_Create = "security.vehicles.create";
+    public const string Vehicle_Update = "security.vehicles.update";
+    public const string Vehicle_Delete = "security.vehicles.delete";
 
-
-    public const string Asn_View = "users.read";
-    public const string Asn_Create = "users.create";
-    public const string Asn_Update = "users.update";
-    public const string Asn_Delete = "users.delete";
+    public const string Asn_View   = "asn.read";
+    public const string Asn_Create = "asn.create";
+    public const string Asn_Update = "asn.update";
+    public const string Asn_Delete = "asn.delete";
 
 
 

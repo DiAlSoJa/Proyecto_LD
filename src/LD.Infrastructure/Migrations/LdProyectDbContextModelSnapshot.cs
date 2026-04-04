@@ -22,7 +22,6 @@ namespace LD.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-
             modelBuilder.Entity("LD.Domain.Entities.Asn", b =>
                 {
                     b.Property<int>("AsnId")
@@ -304,7 +303,6 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("AsnReceiptDetails");
                 });
 
->>>>>>> origin/J_ASN
             modelBuilder.Entity("LD.Domain.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -359,7 +357,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Client", b =>
@@ -426,7 +424,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.ClientContact", b =>
@@ -495,7 +493,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("ClientContacts", (string)null);
+                    b.ToTable("ClientContacts");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.ClientFiscalData", b =>
@@ -572,7 +570,7 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("ClientId")
                         .IsUnique();
 
-                    b.ToTable("ClientFiscalData", (string)null);
+                    b.ToTable("ClientFiscalData");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Currency", b =>
@@ -609,7 +607,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("CurrencyIdS");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Dimensioner", b =>
@@ -658,7 +656,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DimensionerId");
 
-                    b.ToTable("Dimensioner", (string)null);
+                    b.ToTable("Dimensioner");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.DireccionEntrega", b =>
@@ -731,7 +729,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DireccionEntregaId");
 
-                    b.ToTable("DireccionEntregas", (string)null);
+                    b.ToTable("DireccionEntregas");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Driver", b =>
@@ -785,7 +783,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("DriverId");
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Family", b =>
@@ -834,7 +832,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Families", (string)null);
+                    b.ToTable("Families");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.InventaryStatus", b =>
@@ -874,7 +872,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("InventoryStatusIdS");
 
-                    b.ToTable("inventaryStatuses", (string)null);
+                    b.ToTable("inventaryStatuses");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
@@ -977,7 +975,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Module", b =>
@@ -1078,7 +1076,7 @@ namespace LD.Infrastructure.Migrations
                             ModuleId = 8,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "CheckList Montacargas"
+                            ModuleName = "Checklist de Montacargas"
                         },
                         new
                         {
@@ -1099,49 +1097,132 @@ namespace LD.Infrastructure.Migrations
                             ModuleId = 11,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "Surtido"
+                            ModuleName = "Categorias",
+                            ParentModuleId = 10
                         },
                         new
                         {
                             ModuleId = 12,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "Auditar"
+                            ModuleName = "Dimensionador",
+                            ParentModuleId = 10
                         },
                         new
                         {
                             ModuleId = 13,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "Embarques"
+                            ModuleName = "Familias",
+                            ParentModuleId = 10
                         },
                         new
                         {
                             ModuleId = 14,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "Inventario"
+                            ModuleName = "Monedas",
+                            ParentModuleId = 10
                         },
                         new
                         {
                             ModuleId = 15,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "Inventario Aleatorio"
+                            ModuleName = "Status",
+                            ParentModuleId = 10
                         },
                         new
                         {
                             ModuleId = 16,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "Reportes"
+                            ModuleName = "Unidades",
+                            ParentModuleId = 10
                         },
                         new
                         {
                             ModuleId = 17,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
+                            ModuleName = "Surtido"
+                        },
+                        new
+                        {
+                            ModuleId = 18,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Auditar"
+                        },
+                        new
+                        {
+                            ModuleId = 19,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Embarques"
+                        },
+                        new
+                        {
+                            ModuleId = 20,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Inventario"
+                        },
+                        new
+                        {
+                            ModuleId = 21,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Inventario Aleatorio"
+                        },
+                        new
+                        {
+                            ModuleId = 22,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Reportes"
+                        },
+                        new
+                        {
+                            ModuleId = 23,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
                             ModuleName = "Usuarios"
+                        },
+                        new
+                        {
+                            ModuleId = 24,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Almacenista"
+                        },
+                        new
+                        {
+                            ModuleId = 25,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Seguridad"
+                        },
+                        new
+                        {
+                            ModuleId = 26,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Consultas"
+                        },
+                        new
+                        {
+                            ModuleId = 27,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Reporte de Daños"
+                        },
+                        new
+                        {
+                            ModuleId = 28,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Operaciones"
                         });
                 });
 
@@ -1397,9 +1478,54 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 23,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "checklist-lift.read",
+                            Key = "forklift-checklist.read",
                             ModuleId = 8,
-                            PermissionName = "Ver checklist montacargas"
+                            PermissionName = "Ver checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 59,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.create",
+                            ModuleId = 8,
+                            PermissionName = "Crear checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 60,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.update",
+                            ModuleId = 8,
+                            PermissionName = "Actualizar checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 61,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.delete",
+                            ModuleId = 8,
+                            PermissionName = "Eliminar checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 62,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.execute",
+                            ModuleId = 8,
+                            PermissionName = "Ejecutar checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 63,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.approve",
+                            ModuleId = 8,
+                            PermissionName = "Aprobar checklist de montacargas"
                         },
                         new
                         {
@@ -1417,7 +1543,7 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "catalogs.read",
                             ModuleId = 10,
-                            PermissionName = "Ver catalogos"
+                            PermissionName = "Ver catálogos"
                         },
                         new
                         {
@@ -1425,7 +1551,7 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "picking.read",
-                            ModuleId = 11,
+                            ModuleId = 17,
                             PermissionName = "Ver surtido"
                         },
                         new
@@ -1433,8 +1559,8 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 27,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "audit.read",
-                            ModuleId = 12,
+                            Key = "auditing.read",
+                            ModuleId = 18,
                             PermissionName = "Ver auditoría"
                         },
                         new
@@ -1443,7 +1569,7 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "shipments.read",
-                            ModuleId = 13,
+                            ModuleId = 19,
                             PermissionName = "Ver embarques"
                         },
                         new
@@ -1452,8 +1578,44 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "inventory.read",
-                            ModuleId = 14,
+                            ModuleId = 20,
                             PermissionName = "Ver inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 55,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.audit.read",
+                            ModuleId = 20,
+                            PermissionName = "Ver auditoría de inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 56,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.audit.execute",
+                            ModuleId = 20,
+                            PermissionName = "Ejecutar auditoría de inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 57,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.list.read",
+                            ModuleId = 20,
+                            PermissionName = "Ver listado de inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 58,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.list.export",
+                            ModuleId = 20,
+                            PermissionName = "Exportar listado de inventario"
                         },
                         new
                         {
@@ -1461,7 +1623,7 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "cycle-count.read",
-                            ModuleId = 15,
+                            ModuleId = 21,
                             PermissionName = "Ver inventario aleatorio"
                         },
                         new
@@ -1470,7 +1632,7 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "reports.read",
-                            ModuleId = 16,
+                            ModuleId = 22,
                             PermissionName = "Ver reportes"
                         },
                         new
@@ -1479,8 +1641,8 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "users.read",
-                            ModuleId = 17,
-                            PermissionName = "Ver Usuarios"
+                            ModuleId = 23,
+                            PermissionName = "Ver usuarios"
                         },
                         new
                         {
@@ -1488,8 +1650,8 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "users.create",
-                            ModuleId = 17,
-                            PermissionName = "Crear Usuarios"
+                            ModuleId = 23,
+                            PermissionName = "Crear usuarios"
                         },
                         new
                         {
@@ -1497,8 +1659,8 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "users.update",
-                            ModuleId = 17,
-                            PermissionName = "Editar Usuarios"
+                            ModuleId = 23,
+                            PermissionName = "Editar usuarios"
                         },
                         new
                         {
@@ -1506,8 +1668,341 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Key = "users.delete",
-                            ModuleId = 17,
-                            PermissionName = "Eliminar Usuarios"
+                            ModuleId = 23,
+                            PermissionName = "Eliminar usuarios"
+                        },
+                        new
+                        {
+                            PermissionId = 36,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.read",
+                            ModuleId = 24,
+                            PermissionName = "Ver almacenista"
+                        },
+                        new
+                        {
+                            PermissionId = 37,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.location-change.execute",
+                            ModuleId = 24,
+                            PermissionName = "Ejecutar cambio de ubicación"
+                        },
+                        new
+                        {
+                            PermissionId = 38,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.supply.execute",
+                            ModuleId = 24,
+                            PermissionName = "Ejecutar surtido de mercancía"
+                        },
+                        new
+                        {
+                            PermissionId = 39,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.asn.read",
+                            ModuleId = 24,
+                            PermissionName = "Ver ASN por ubicar"
+                        },
+                        new
+                        {
+                            PermissionId = 40,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.asn.execute",
+                            ModuleId = 24,
+                            PermissionName = "Ejecutar ASN por ubicar"
+                        },
+                        new
+                        {
+                            PermissionId = 41,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.tasks.read",
+                            ModuleId = 24,
+                            PermissionName = "Ver task manager de almacenista"
+                        },
+                        new
+                        {
+                            PermissionId = 42,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.tasks.manage",
+                            ModuleId = 24,
+                            PermissionName = "Gestionar task manager de almacenista"
+                        },
+                        new
+                        {
+                            PermissionId = 43,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.read",
+                            ModuleId = 25,
+                            PermissionName = "Ver seguridad"
+                        },
+                        new
+                        {
+                            PermissionId = 44,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.create",
+                            ModuleId = 25,
+                            PermissionName = "Registrar vehículo"
+                        },
+                        new
+                        {
+                            PermissionId = 45,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.read",
+                            ModuleId = 25,
+                            PermissionName = "Ver vehículos"
+                        },
+                        new
+                        {
+                            PermissionId = 46,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.update",
+                            ModuleId = 25,
+                            PermissionName = "Actualizar vehículos"
+                        },
+                        new
+                        {
+                            PermissionId = 47,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.delete",
+                            ModuleId = 25,
+                            PermissionName = "Eliminar vehículos"
+                        },
+                        new
+                        {
+                            PermissionId = 48,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.tasks.read",
+                            ModuleId = 25,
+                            PermissionName = "Ver task manager de seguridad"
+                        },
+                        new
+                        {
+                            PermissionId = 49,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.tasks.manage",
+                            ModuleId = 25,
+                            PermissionName = "Gestionar task manager de seguridad"
+                        },
+                        new
+                        {
+                            PermissionId = 50,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "queries.read",
+                            ModuleId = 26,
+                            PermissionName = "Ver consultas"
+                        },
+                        new
+                        {
+                            PermissionId = 51,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "damage-report.read",
+                            ModuleId = 27,
+                            PermissionName = "Ver reporte de daños"
+                        },
+                        new
+                        {
+                            PermissionId = 52,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "damage-report.create",
+                            ModuleId = 27,
+                            PermissionName = "Crear reporte de daños"
+                        },
+                        new
+                        {
+                            PermissionId = 53,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "operations.read",
+                            ModuleId = 28,
+                            PermissionName = "Ver operaciones"
+                        },
+                        new
+                        {
+                            PermissionId = 54,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "operations.execute",
+                            ModuleId = 28,
+                            PermissionName = "Ejecutar operaciones"
+                        },
+                        new
+                        {
+                            PermissionId = 64,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "categories.read",
+                            ModuleId = 11,
+                            PermissionName = "Ver categorías"
+                        },
+                        new
+                        {
+                            PermissionId = 65,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "categories.create",
+                            ModuleId = 11,
+                            PermissionName = "Crear categorías"
+                        },
+                        new
+                        {
+                            PermissionId = 66,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "categories.update",
+                            ModuleId = 11,
+                            PermissionName = "Editar categorías"
+                        },
+                        new
+                        {
+                            PermissionId = 67,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "dimensioner.read",
+                            ModuleId = 12,
+                            PermissionName = "Ver dimensionador"
+                        },
+                        new
+                        {
+                            PermissionId = 68,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "dimensioner.create",
+                            ModuleId = 12,
+                            PermissionName = "Crear dimensionador"
+                        },
+                        new
+                        {
+                            PermissionId = 69,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "dimensioner.update",
+                            ModuleId = 12,
+                            PermissionName = "Editar dimensionador"
+                        },
+                        new
+                        {
+                            PermissionId = 70,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "families.read",
+                            ModuleId = 13,
+                            PermissionName = "Ver familias"
+                        },
+                        new
+                        {
+                            PermissionId = 71,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "families.create",
+                            ModuleId = 13,
+                            PermissionName = "Crear familias"
+                        },
+                        new
+                        {
+                            PermissionId = 72,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "families.update",
+                            ModuleId = 13,
+                            PermissionName = "Editar familias"
+                        },
+                        new
+                        {
+                            PermissionId = 73,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "currencies.read",
+                            ModuleId = 14,
+                            PermissionName = "Ver monedas"
+                        },
+                        new
+                        {
+                            PermissionId = 74,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "currencies.create",
+                            ModuleId = 14,
+                            PermissionName = "Crear monedas"
+                        },
+                        new
+                        {
+                            PermissionId = 75,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "currencies.update",
+                            ModuleId = 14,
+                            PermissionName = "Editar monedas"
+                        },
+                        new
+                        {
+                            PermissionId = 76,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "status.read",
+                            ModuleId = 15,
+                            PermissionName = "Ver estatus"
+                        },
+                        new
+                        {
+                            PermissionId = 77,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "status.create",
+                            ModuleId = 15,
+                            PermissionName = "Crear estatus"
+                        },
+                        new
+                        {
+                            PermissionId = 78,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "status.update",
+                            ModuleId = 15,
+                            PermissionName = "Editar estatus"
+                        },
+                        new
+                        {
+                            PermissionId = 79,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "units.read",
+                            ModuleId = 16,
+                            PermissionName = "Ver unidades"
+                        },
+                        new
+                        {
+                            PermissionId = 80,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "units.create",
+                            ModuleId = 16,
+                            PermissionName = "Crear unidades"
+                        },
+                        new
+                        {
+                            PermissionId = 81,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "units.update",
+                            ModuleId = 16,
+                            PermissionName = "Editar unidades"
                         });
                 });
 
@@ -1574,7 +2069,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("PickingZones", (string)null);
+                    b.ToTable("PickingZones");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Printer", b =>
@@ -1618,7 +2113,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("PrinterId");
 
-                    b.ToTable("Printers", (string)null);
+                    b.ToTable("Printers");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Product", b =>
@@ -1803,7 +2298,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("UnitIdS");
 
-                    b.ToTable("items", (string)null);
+                    b.ToTable("items");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Project", b =>
@@ -1946,7 +2441,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.RolePermission", b =>
@@ -1983,6 +2478,776 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions", "Auth");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 4,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 7,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 8,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 9,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 10,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 11,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 12,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 13,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 14,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 15,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 16,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 17,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 18,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 19,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 20,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 21,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 22,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 23,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 24,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 25,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 26,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 27,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 28,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 29,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 30,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 31,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 32,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 33,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 34,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 35,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 36,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 37,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 38,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 39,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 40,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 41,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 42,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 43,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 44,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 45,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 46,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 47,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 48,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 49,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 50,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 51,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 52,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 53,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 54,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 55,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 56,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 57,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 58,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 59,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 60,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 61,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 62,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 63,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 64,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 65,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 66,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 67,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 68,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 69,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 70,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 71,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 72,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 73,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 74,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 75,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 76,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 77,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 78,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 79,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 80,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 81,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        });
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.ScanConfiguration", b =>
+                {
+                    b.Property<int>("ScanConfigurationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScanConfigurationId"));
+
+                    b.Property<string>("ClientField")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SaveTypeScanSaveTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SaveValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScanTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ScanValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SystemFieldId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ScanConfigurationId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("SaveTypeScanSaveTypeId");
+
+                    b.HasIndex("ScanTypeId");
+
+                    b.HasIndex("SystemFieldId");
+
+                    b.ToTable("ScanConfigurations");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.ScanSaveType", b =>
+                {
+                    b.Property<int>("ScanSaveTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScanSaveTypeId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ScanSaveTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ScanSaveTypeId");
+
+                    b.ToTable("ScanSaveTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            ScanSaveTypeId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "remove_first",
+                            ScanSaveTypeName = "Quitar primeros dígitos"
+                        },
+                        new
+                        {
+                            ScanSaveTypeId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "remove_last",
+                            ScanSaveTypeName = "Quitar últimos dígitos"
+                        });
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.ScanType", b =>
+                {
+                    b.Property<int>("ScanTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScanTypeId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ScanTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ScanTypeId");
+
+                    b.ToTable("ScanTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            ScanTypeId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "starts_with",
+                            ScanTypeName = "Empieza con"
+                        },
+                        new
+                        {
+                            ScanTypeId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "length",
+                            ScanTypeName = "Cantidad de dígitos"
+                        },
+                        new
+                        {
+                            ScanTypeId = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "less_than",
+                            ScanTypeName = "Es número menor a"
+                        });
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.StorageType", b =>
@@ -2024,7 +3289,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("StorageTypeId");
 
-                    b.ToTable("StorageTypes", (string)null);
+                    b.ToTable("StorageTypes");
 
                     b.HasData(
                         new
@@ -2065,6 +3330,98 @@ namespace LD.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.SystemField", b =>
+                {
+                    b.Property<int>("SystemFieldId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SystemFieldId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SystemFieldName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SystemFieldId");
+
+                    b.ToTable("SystemField");
+
+                    b.HasData(
+                        new
+                        {
+                            SystemFieldId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Número de lote",
+                            IsActive = true,
+                            Order = 1,
+                            SystemFieldName = "lot_number"
+                        },
+                        new
+                        {
+                            SystemFieldId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Referencia del cliente",
+                            IsActive = true,
+                            Order = 2,
+                            SystemFieldName = "customer_reference"
+                        },
+                        new
+                        {
+                            SystemFieldId = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Orden de compra",
+                            IsActive = true,
+                            Order = 3,
+                            SystemFieldName = "purchase_order"
+                        },
+                        new
+                        {
+                            SystemFieldId = 4,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Orden de pedimento",
+                            IsActive = true,
+                            Order = 4,
+                            SystemFieldName = "customs_declaration"
+                        },
+                        new
+                        {
+                            SystemFieldId = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Cantidad",
+                            IsActive = true,
+                            Order = 5,
+                            SystemFieldName = "qty"
+                        });
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.Units", b =>
                 {
                     b.Property<string>("UnitIdS")
@@ -2102,7 +3459,7 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("UnitIdS")
                         .IsUnique();
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.UserWarehouse", b =>
@@ -2146,7 +3503,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("UserWarehouses", (string)null);
+                    b.ToTable("UserWarehouses");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Vehicle", b =>
@@ -2205,7 +3562,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("Plates");
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Warehouse", b =>
@@ -2270,7 +3627,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("WarehouseId");
 
-                    b.ToTable("Warehouses", (string)null);
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("LD.Infrastructure.ApplicationRole", b =>
@@ -2306,20 +3663,6 @@ namespace LD.Infrastructure.Migrations
                             ConcurrencyStamp = "1",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
-                        },
-                        new
-                        {
-                            Id = "006be5c9-bd8c-4d39-bc11-88c04640df25",
-                            ConcurrencyStamp = "2",
-                            Name = "Supervisor",
-                            NormalizedName = "SUPERVISOR"
-                        },
-                        new
-                        {
-                            Id = "3d8628b6-676a-4a82-858e-898f0fd623fe",
-                            ConcurrencyStamp = "3",
-                            Name = "Operador",
-                            NormalizedName = "OPERADOR"
                         });
                 });
 
@@ -2498,6 +3841,68 @@ namespace LD.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", "Auth");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.Asn", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.AsnDetail", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Asn", "Asn")
+                        .WithMany("AsnDetails")
+                        .HasForeignKey("AsnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Asn");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.AsnReceiptDetail", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.AsnDetail", "AsnDetail")
+                        .WithMany("AsnReceiptDetails")
+                        .HasForeignKey("AsnDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("LD.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("AsnDetail");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Category", b =>
@@ -2698,6 +4103,41 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Permission");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.ScanConfiguration", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.ScanSaveType", "SaveType")
+                        .WithMany()
+                        .HasForeignKey("SaveTypeScanSaveTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.ScanType", "ScanType")
+                        .WithMany()
+                        .HasForeignKey("ScanTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.SystemField", "SystemField")
+                        .WithMany()
+                        .HasForeignKey("SystemFieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("SaveType");
+
+                    b.Navigation("ScanType");
+
+                    b.Navigation("SystemField");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.UserWarehouse", b =>
                 {
                     b.HasOne("LD.Infrastructure.ApplicationUser", null)
@@ -2718,13 +4158,13 @@ namespace LD.Infrastructure.Migrations
                     b.HasOne("LD.Infrastructure.ApplicationRole", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LD.Infrastructure.ApplicationUser", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -2766,6 +4206,16 @@ namespace LD.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.Asn", b =>
+                {
+                    b.Navigation("AsnDetails");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.AsnDetail", b =>
+                {
+                    b.Navigation("AsnReceiptDetails");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Client", b =>
