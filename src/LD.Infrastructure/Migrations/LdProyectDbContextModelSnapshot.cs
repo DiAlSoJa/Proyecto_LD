@@ -1076,7 +1076,7 @@ namespace LD.Infrastructure.Migrations
                             ModuleId = 8,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "CheckList Montacargas"
+                            ModuleName = "Checklist de Montacargas"
                         },
                         new
                         {
@@ -1140,6 +1140,41 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             ModuleName = "Usuarios"
+                        },
+                        new
+                        {
+                            ModuleId = 18,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Almacenista"
+                        },
+                        new
+                        {
+                            ModuleId = 19,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Seguridad"
+                        },
+                        new
+                        {
+                            ModuleId = 20,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Consultas"
+                        },
+                        new
+                        {
+                            ModuleId = 21,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Reporte de Daños"
+                        },
+                        new
+                        {
+                            ModuleId = 22,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Operaciones"
                         });
                 });
 
@@ -1395,9 +1430,54 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 23,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "checklist-lift.read",
+                            Key = "forklift-checklist.read",
                             ModuleId = 8,
-                            PermissionName = "Ver checklist montacargas"
+                            PermissionName = "Ver checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 59,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.create",
+                            ModuleId = 8,
+                            PermissionName = "Crear checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 60,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.update",
+                            ModuleId = 8,
+                            PermissionName = "Actualizar checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 61,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.delete",
+                            ModuleId = 8,
+                            PermissionName = "Eliminar checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 62,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.execute",
+                            ModuleId = 8,
+                            PermissionName = "Ejecutar checklist de montacargas"
+                        },
+                        new
+                        {
+                            PermissionId = 63,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "forklift-checklist.approve",
+                            ModuleId = 8,
+                            PermissionName = "Aprobar checklist de montacargas"
                         },
                         new
                         {
@@ -1415,7 +1495,7 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "catalogs.read",
                             ModuleId = 10,
-                            PermissionName = "Ver catalogos"
+                            PermissionName = "Ver catálogos"
                         },
                         new
                         {
@@ -1431,7 +1511,7 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 27,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            Key = "audit.read",
+                            Key = "auditing.read",
                             ModuleId = 12,
                             PermissionName = "Ver auditoría"
                         },
@@ -1452,6 +1532,42 @@ namespace LD.Infrastructure.Migrations
                             Key = "inventory.read",
                             ModuleId = 14,
                             PermissionName = "Ver inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 55,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.audit.read",
+                            ModuleId = 14,
+                            PermissionName = "Ver auditoría de inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 56,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.audit.execute",
+                            ModuleId = 14,
+                            PermissionName = "Ejecutar auditoría de inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 57,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.list.read",
+                            ModuleId = 14,
+                            PermissionName = "Ver listado de inventario"
+                        },
+                        new
+                        {
+                            PermissionId = 58,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "inventory.list.export",
+                            ModuleId = 14,
+                            PermissionName = "Exportar listado de inventario"
                         },
                         new
                         {
@@ -1478,7 +1594,7 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "users.read",
                             ModuleId = 17,
-                            PermissionName = "Ver Usuarios"
+                            PermissionName = "Ver usuarios"
                         },
                         new
                         {
@@ -1487,7 +1603,7 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "users.create",
                             ModuleId = 17,
-                            PermissionName = "Crear Usuarios"
+                            PermissionName = "Crear usuarios"
                         },
                         new
                         {
@@ -1496,7 +1612,7 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "users.update",
                             ModuleId = 17,
-                            PermissionName = "Editar Usuarios"
+                            PermissionName = "Editar usuarios"
                         },
                         new
                         {
@@ -1505,7 +1621,178 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "users.delete",
                             ModuleId = 17,
-                            PermissionName = "Eliminar Usuarios"
+                            PermissionName = "Eliminar usuarios"
+                        },
+                        new
+                        {
+                            PermissionId = 36,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.read",
+                            ModuleId = 18,
+                            PermissionName = "Ver almacenista"
+                        },
+                        new
+                        {
+                            PermissionId = 37,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.location-change.execute",
+                            ModuleId = 18,
+                            PermissionName = "Ejecutar cambio de ubicación"
+                        },
+                        new
+                        {
+                            PermissionId = 38,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.supply.execute",
+                            ModuleId = 18,
+                            PermissionName = "Ejecutar surtido de mercancía"
+                        },
+                        new
+                        {
+                            PermissionId = 39,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.asn.read",
+                            ModuleId = 18,
+                            PermissionName = "Ver ASN por ubicar"
+                        },
+                        new
+                        {
+                            PermissionId = 40,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.asn.execute",
+                            ModuleId = 18,
+                            PermissionName = "Ejecutar ASN por ubicar"
+                        },
+                        new
+                        {
+                            PermissionId = 41,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.tasks.read",
+                            ModuleId = 18,
+                            PermissionName = "Ver task manager de almacenista"
+                        },
+                        new
+                        {
+                            PermissionId = 42,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "warehouse-staff.tasks.manage",
+                            ModuleId = 18,
+                            PermissionName = "Gestionar task manager de almacenista"
+                        },
+                        new
+                        {
+                            PermissionId = 43,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.read",
+                            ModuleId = 19,
+                            PermissionName = "Ver seguridad"
+                        },
+                        new
+                        {
+                            PermissionId = 44,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.create",
+                            ModuleId = 19,
+                            PermissionName = "Registrar vehículo"
+                        },
+                        new
+                        {
+                            PermissionId = 45,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.read",
+                            ModuleId = 19,
+                            PermissionName = "Ver vehículos"
+                        },
+                        new
+                        {
+                            PermissionId = 46,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.update",
+                            ModuleId = 19,
+                            PermissionName = "Actualizar vehículos"
+                        },
+                        new
+                        {
+                            PermissionId = 47,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.vehicles.delete",
+                            ModuleId = 19,
+                            PermissionName = "Eliminar vehículos"
+                        },
+                        new
+                        {
+                            PermissionId = 48,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.tasks.read",
+                            ModuleId = 19,
+                            PermissionName = "Ver task manager de seguridad"
+                        },
+                        new
+                        {
+                            PermissionId = 49,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "security.tasks.manage",
+                            ModuleId = 19,
+                            PermissionName = "Gestionar task manager de seguridad"
+                        },
+                        new
+                        {
+                            PermissionId = 50,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "queries.read",
+                            ModuleId = 20,
+                            PermissionName = "Ver consultas"
+                        },
+                        new
+                        {
+                            PermissionId = 51,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "damage-report.read",
+                            ModuleId = 21,
+                            PermissionName = "Ver reporte de daños"
+                        },
+                        new
+                        {
+                            PermissionId = 52,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "damage-report.create",
+                            ModuleId = 21,
+                            PermissionName = "Crear reporte de daños"
+                        },
+                        new
+                        {
+                            PermissionId = 53,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "operations.read",
+                            ModuleId = 22,
+                            PermissionName = "Ver operaciones"
+                        },
+                        new
+                        {
+                            PermissionId = 54,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "operations.execute",
+                            ModuleId = 22,
+                            PermissionName = "Ejecutar operaciones"
                         });
                 });
 
@@ -1981,6 +2268,449 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions", "Auth");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 4,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 7,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 8,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 9,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 10,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 11,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 12,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 13,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 14,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 15,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 16,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 17,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 18,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 19,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 20,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 21,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 22,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 23,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 24,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 25,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 26,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 27,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 28,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 29,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 30,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 31,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 32,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 33,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 34,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 35,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 36,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 37,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 38,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 39,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 40,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 41,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 42,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 43,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 44,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 45,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 46,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 47,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 48,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 49,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 50,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 51,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 52,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 53,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 54,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 55,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 56,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 57,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 58,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 59,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 60,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 61,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 62,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 63,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        });
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.StorageType", b =>
@@ -2304,20 +3034,6 @@ namespace LD.Infrastructure.Migrations
                             ConcurrencyStamp = "1",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
-                        },
-                        new
-                        {
-                            Id = "006be5c9-bd8c-4d39-bc11-88c04640df25",
-                            ConcurrencyStamp = "2",
-                            Name = "Supervisor",
-                            NormalizedName = "SUPERVISOR"
-                        },
-                        new
-                        {
-                            Id = "3d8628b6-676a-4a82-858e-898f0fd623fe",
-                            ConcurrencyStamp = "3",
-                            Name = "Operador",
-                            NormalizedName = "OPERADOR"
                         });
                 });
 
@@ -2400,7 +3116,12 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationRoleId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("ApplicationRoleId");
 
                     b.HasIndex("RoleId");
 
@@ -2775,10 +3496,14 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("LD.Infrastructure.ApplicationUserRole", b =>
                 {
-                    b.HasOne("LD.Infrastructure.ApplicationRole", "Role")
+                    b.HasOne("LD.Infrastructure.ApplicationRole", null)
                         .WithMany("UserRoles")
+                        .HasForeignKey("ApplicationRoleId");
+
+                    b.HasOne("LD.Infrastructure.ApplicationRole", "Role")
+                        .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LD.Infrastructure.ApplicationUser", "User")

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Windows.Input;
 
@@ -26,7 +27,15 @@ namespace LD.FormsX.Views.Login.ViewModels
 
         [ObservableProperty]
         private bool isLoading;
+
+        [ObservableProperty]
+        private string appVersion;
+
+        [ObservableProperty]
+        private bool isPasswordVisible;
+
         public ICommand LoginCommand { get; }
+        public ICommand TogglePasswordVisibilityCommand { get; }
 
         public LoginViewModel(AuthService authService, IServiceProvider serviceProvider, ILogger<LoginViewModel> logger)
         {
@@ -34,7 +43,11 @@ namespace LD.FormsX.Views.Login.ViewModels
             _serviceProvider = serviceProvider;
             _logger = logger;
 
+            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            AppVersion = $"Versión: {assemblyVersion}";
+
             LoginCommand = new AsyncRelayCommand(LoginAsync);
+            TogglePasswordVisibilityCommand = new RelayCommand(() => IsPasswordVisible = !IsPasswordVisible);
         }
 
         private async Task LoginAsync()

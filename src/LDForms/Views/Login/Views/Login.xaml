@@ -12,86 +12,81 @@
         Loaded="Window_Loaded">
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/DialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10,0,10,0"/>
-            <Setter Property="BorderBrush" Value="#D6D6D6"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6">
-                            <ScrollViewer x:Name="PART_ContentHost"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-        <Style x:Key="RoundedPasswordBoxStyle" TargetType="PasswordBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10,0,10,0"/>
-            <Setter Property="BorderBrush" Value="#D6D6D6"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="PasswordBox">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6">
-                            <ScrollViewer x:Name="PART_ContentHost"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <!-- Login: Botón primario (#1D4B9F) con hover/pressed -->
+            <Style x:Key="LoginPrimaryButtonStyle" TargetType="Button">
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Background" Value="#1D4B9F"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="6">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#163D8A"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#0F2D6E"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#1D4B9F"/>
-            <Setter Property="BorderBrush" Value="#1D4B9F"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="34"/>
-            <Setter Property="Height" Value="34"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="#1D4B9F"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
+            <!-- Login: Botón cerrar con hover -->
+            <Style x:Key="LoginCloseButtonStyle" TargetType="Button">
+                <Setter Property="Width" Value="34"/>
+                <Setter Property="Height" Value="34"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="6">
+                                <TextBlock Text="&#xE711;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="12"
+                                           Foreground="#1D4B9F"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#E8E8E8"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#D0D0D0"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
@@ -99,6 +94,9 @@
                 Background="#F7F7F7"
                 CornerRadius="12"
                 MouseDown="Border_MouseDown">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="2" Opacity="0.25" Direction="270"/>
+            </Border.Effect>
             <Grid Margin="24">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1.05*"/>
@@ -132,8 +130,7 @@
 
                         <Button Grid.Column="1"
                                 x:Name="BtnClose"
-                                Content="X"
-                                Style="{StaticResource CloseButtonStyle}"
+                                Style="{StaticResource LoginCloseButtonStyle}"
                                 Click="BtnClose_Click"/>
                     </Grid>
 
@@ -154,25 +151,89 @@
 
                                 <TextBox x:Name="txtUsuario"
                                          Text="{Binding Usuario, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource RoundedTextBoxStyle}"/>
+                                         Tag="Ingrese su usuario"
+                                         Style="{StaticResource RoundedTextBoxStyle}"
+                                         KeyDown="txtUsuario_KeyDown"/>
 
                                 <TextBlock Text="Contraseña"
                                            FontSize="13"
                                            Foreground="#222222"
-                                           Margin="0,18,0,6"/>
+                                           Margin="0,18,0,6"
+                                            Tag="Ingrese su contraseña"/>
 
-                                <PasswordBox x:Name="txtPassword"
-                                             Style="{StaticResource RoundedPasswordBoxStyle}"
-                                             PasswordChanged="txtPassword_PasswordChanged">
-                                    <PasswordBox.InputBindings>
-                                        <KeyBinding Key="Enter" Command="{Binding LoginCommand}"/>
-                                    </PasswordBox.InputBindings>
-                                </PasswordBox>
+                                <Grid>
+                                    <PasswordBox x:Name="txtPassword"
+                                                 PasswordChanged="txtPassword_PasswordChanged">
+                                        <PasswordBox.Style>
+                                            <Style TargetType="PasswordBox" BasedOn="{StaticResource RoundedPasswordBoxStyle}">
+                                                <Setter Property="Padding" Value="10,0,34,0"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPasswordVisible}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </PasswordBox.Style>
+                                        <PasswordBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding LoginCommand}"/>
+                                        </PasswordBox.InputBindings>
+                                    </PasswordBox>
+
+                                    <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                            >
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox" BasedOn="{StaticResource RoundedTextBoxStyle}">
+                                                <Setter Property="Padding" Value="10,0,34,0"/>
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPasswordVisible}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding LoginCommand}"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+
+                                    <Button HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Width="28" Height="28"
+                                            Margin="0,0,5,0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Focusable="False"
+                                            Command="{Binding TogglePasswordVisibilityCommand}">
+                                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#888888">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="&#xE7B3;"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsPasswordVisible}" Value="True">
+                                                            <Setter Property="Text" Value="&#xED1A;"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Button>
+                                </Grid>
 
                                 <Button Content="Iniciar sesión"
                                         Margin="0,24,0,0"
-                                        Style="{StaticResource PrimaryButtonStyle}"
-                                        Command="{Binding LoginCommand}"/>
+                                        Command="{Binding LoginCommand}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource LoginPrimaryButtonStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
 
                                 </StackPanel>
 
@@ -196,9 +257,8 @@
                     </Border>
 
                     <!-- Footer -->
-                    <TextBlock x:Name="lblVersion"
-                               Grid.Row="2"
-                               Text="Versión: -"
+                    <TextBlock Grid.Row="2"
+                               Text="{Binding Version}"
                                FontSize="12"
                                Foreground="#666666"
                                HorizontalAlignment="Left"/>

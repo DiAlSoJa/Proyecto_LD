@@ -102,6 +102,12 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(ur => ur.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<ApplicationUserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany()
+                .HasForeignKey(ur => ur.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<Module>()
                 .HasOne(m => m.ParentModule)
                 .WithMany(m => m.Children)
