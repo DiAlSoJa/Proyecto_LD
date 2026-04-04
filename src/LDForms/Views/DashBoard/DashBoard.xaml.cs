@@ -190,8 +190,7 @@ namespace LDForms
 
         private void RemoveIfNoModule(Button btn, Module_e module)
         {
-            bool has = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)module);
-            if (!has)
+            if (!UserData.HasModule((int)module))
                 DashboardPanel.Children.Remove(btn);
         }
 

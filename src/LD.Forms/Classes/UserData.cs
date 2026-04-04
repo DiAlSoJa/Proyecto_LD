@@ -4,6 +4,7 @@ using LD.Contracts.Responses;
 using LD.Contracts.User;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LD.Forms.Classes
@@ -17,6 +18,9 @@ namespace LD.Forms.Classes
         public static string? Email { get; set; }
         public static AuthorizationDto Authorization { get; set; }
 
+        public static bool HasModule(int moduleId) =>
+            Authorization?.Modules?.Any(m => m.ModuleId == moduleId
+                || (m.SubModules?.Any(s => s.ModuleId == moduleId) ?? false)) ?? false;
 
         public static void SetUserData(GetMeReponse user)
         {

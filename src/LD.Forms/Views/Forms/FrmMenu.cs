@@ -30,23 +30,23 @@ namespace LD.Forms.Views.Forms
             base.OnShown(e);
 
 
-            clientBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Clients);
-            projectBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Projects);
-            warehouseBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Warehouses);
-            locationBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Locations);
-            productBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Products);
-            movementBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Movements);
-            asnBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ASN);
-            checkListBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.ForkliftChecklist);
-            yardControlBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.YardControl);
-            catalogBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Catalogs);
-            pickingBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Picking);
-            shipmentBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Shipments);
-            inventoryBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Inventory);
-            randomInventoryBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.RandomInventory);
-            reportBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Reports);
-            userBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Users);
-            auditBtn.Visible = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)Module_e.Auditing);
+            clientBtn.Visible = UserData.HasModule((int)Module_e.Clients);
+            projectBtn.Visible = UserData.HasModule((int)Module_e.Projects);
+            warehouseBtn.Visible = UserData.HasModule((int)Module_e.Warehouses);
+            locationBtn.Visible = UserData.HasModule((int)Module_e.Locations);
+            productBtn.Visible = UserData.HasModule((int)Module_e.Products);
+            movementBtn.Visible = UserData.HasModule((int)Module_e.Movements);
+            asnBtn.Visible = UserData.HasModule((int)Module_e.ASN);
+            checkListBtn.Visible = UserData.HasModule((int)Module_e.ForkliftChecklist);
+            yardControlBtn.Visible = UserData.HasModule((int)Module_e.YardControl);
+            catalogBtn.Visible = UserData.HasModule((int)Module_e.Catalogs);
+            pickingBtn.Visible = UserData.HasModule((int)Module_e.Picking);
+            shipmentBtn.Visible = UserData.HasModule((int)Module_e.Shipments);
+            inventoryBtn.Visible = UserData.HasModule((int)Module_e.Inventory);
+            randomInventoryBtn.Visible = UserData.HasModule((int)Module_e.RandomInventory);
+            reportBtn.Visible = UserData.HasModule((int)Module_e.Reports);
+            userBtn.Visible = UserData.HasModule((int)Module_e.Users);
+            auditBtn.Visible = UserData.HasModule((int)Module_e.Auditing);
 
         }
 

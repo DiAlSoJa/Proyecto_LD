@@ -11,7 +11,14 @@ namespace LD.Client.Configuration
         public static string? Email { get; set; }
         public static AuthorizationDto Authorization { get; set; }
         public static bool HasPermission(string key) =>
-            Authorization?.Modules?.SelectMany(m => m.Permissions).Any(p => p.Key == key) ?? false;
+            Authorization?.Modules?
+                .SelectMany(m => m.Permissions
+                    .Concat(m.SubModules?.SelectMany(s => s.Permissions) ?? []))
+                .Any(p => p.Key == key) ?? false;
+
+        public static bool HasModule(int moduleId) =>
+            Authorization?.Modules?.Any(m => m.ModuleId == moduleId
+                || (m.SubModules?.Any(s => s.ModuleId == moduleId) ?? false)) ?? false;
 
 
         public static void SetUserData(GetMeReponse user)

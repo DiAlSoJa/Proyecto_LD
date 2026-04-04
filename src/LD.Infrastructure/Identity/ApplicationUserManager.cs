@@ -319,18 +319,42 @@ namespace LD.Infrastructure
                 .Where(p => permissionIds.Contains(p.PermissionId))
                 .ToListAsync();
 
-            var modules = permissions
+            var flatModules = permissions
                 .GroupBy(p => p.Module)
-                .Select(g => new ModuleAuthorizationDto
+                .Select(g => new
                 {
-                    ModuleId = g.Key.ModuleId,
-                    ModuleName = g.Key.ModuleName,
-                    Permissions = g.Select(p => new PermissionAuthorizationDto
+                    Module = g.Key,
+                    Dto = new ModuleAuthorizationDto
                     {
-                        PermissionName = p.PermissionName,
-                        Key = p.Key
-                    }).ToList()
+                        ModuleId = g.Key.ModuleId,
+                        ModuleName = g.Key.ModuleName,
+                        Permissions = g.Select(p => new PermissionAuthorizationDto
+                        {
+                            PermissionName = p.PermissionName,
+                            Key = p.Key
+                        }).ToList()
+                    }
                 }).ToList();
+
+            var childModuleIds = flatModules
+                .Where(m => m.Module.ParentModuleId != null)
+                .Select(m => m.Module.ModuleId)
+                .ToHashSet();
+
+            foreach (var child in flatModules.Where(m => m.Module.ParentModuleId != null))
+            {
+                var parent = flatModules.FirstOrDefault(m => m.Module.ModuleId == child.Module.ParentModuleId);
+                if (parent != null)
+                {
+                    parent.Dto.SubModules ??= [];
+                    parent.Dto.SubModules.Add(child.Dto);
+                }
+            }
+
+            var modules = flatModules
+                .Where(m => !childModuleIds.Contains(m.Module.ModuleId))
+                .Select(m => m.Dto)
+                .ToList();
 
             var response = new GetMeReponse
             {

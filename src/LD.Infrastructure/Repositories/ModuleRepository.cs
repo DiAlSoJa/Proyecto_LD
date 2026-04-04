@@ -22,17 +22,34 @@ namespace LD.Infrastructure.Repositories
 
         public async Task<List<ModuleAuthorizationDto>> GetModules()
         {
-            var modules = await _context.Modules.Include(m => m.Permissions).Select(m => new ModuleAuthorizationDto
-            {
-                ModuleId = m.ModuleId,
-                ModuleName = m.ModuleName,
-                Permissions = m.Permissions.Select(p => new PermissionAuthorizationDto
+            var modules = await _context.Modules
+                .Include(m => m.Permissions)
+                .Include(m => m.Children)!
+                    .ThenInclude(c => c.Permissions)
+                .Where(m => m.ParentModuleId == null)
+                .Select(m => new ModuleAuthorizationDto
                 {
-                    PermissionId = p.PermissionId,
-                    Key = p.Key,
-                    PermissionName = p.PermissionName
-                }).ToList()
-            }).ToListAsync();
+                    ModuleId = m.ModuleId,
+                    ModuleName = m.ModuleName,
+                    Permissions = m.Permissions.Select(p => new PermissionAuthorizationDto
+                    {
+                        PermissionId = p.PermissionId,
+                        Key = p.Key,
+                        PermissionName = p.PermissionName
+                    }).ToList(),
+                    SubModules = m.Children.Select(c => new ModuleAuthorizationDto
+                    {
+                        ModuleId = c.ModuleId,
+                        ModuleName = c.ModuleName,
+                        Permissions = c.Permissions.Select(p => new PermissionAuthorizationDto
+                        {
+                            PermissionId = p.PermissionId,
+                            Key = p.Key,
+                            PermissionName = p.PermissionName
+                        }).ToList()
+                    }).ToList()
+                }).ToListAsync();
+
             return modules;
         }
     }

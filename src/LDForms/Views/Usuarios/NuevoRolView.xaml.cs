@@ -20,6 +20,7 @@ namespace LD.FormsX.Views.Usuarios
         private readonly RoleService _roleService;
 
         private RoleDto? _roleSelected;
+        private bool _updatingChecks;
 
         public NuevoRolView(ModuleService moduleService, RoleService roleService)
         {
@@ -51,48 +52,145 @@ namespace LD.FormsX.Views.Usuarios
 
             foreach (var module in allModules)
             {
-                var moduleCheckBox = new CheckBox
-                {
-                    Content = module.ModuleName,
-                    FontWeight = FontWeights.SemiBold,
-                    FontSize = 13,
-                    Foreground = new SolidColorBrush(Color.FromRgb(31, 41, 55)),
-                    Margin = new Thickness(2, 2, 0, 2),
-                };
+                var moduleItem = CrearModuloItem(module);
 
-                var moduleItem = new TreeViewItem
+                if (module.SubModules is { Count: > 0 })
                 {
-                    Header = moduleCheckBox,
-                    IsExpanded = true,
-                };
-
-                foreach (var perm in module.Permissions)
-                {
-                    var permCheckBox = new CheckBox
+                    foreach (var sub in module.SubModules)
                     {
-                        Content = perm.PermissionName,
-                        Tag = perm.PermissionId,
-                        FontSize = 12,
-                        Foreground = new SolidColorBrush(Color.FromRgb(55, 65, 81)),
-                        Margin = new Thickness(2, 1, 0, 1),
-                    };
-
-                    moduleItem.Items.Add(new TreeViewItem { Header = permCheckBox });
+                        var subItem = CrearModuloItem(sub);
+                        moduleItem.Items.Add(subItem);
+                    }
                 }
-
-                moduleCheckBox.Checked += (_, _) =>
-                {
-                    foreach (TreeViewItem permItem in moduleItem.Items)
-                        if (permItem.Header is CheckBox cb) cb.IsChecked = true;
-                };
-                moduleCheckBox.Unchecked += (_, _) =>
-                {
-                    foreach (TreeViewItem permItem in moduleItem.Items)
-                        if (permItem.Header is CheckBox cb) cb.IsChecked = false;
-                };
 
                 treePermisos.Items.Add(moduleItem);
             }
+        }
+
+        private TreeViewItem CrearModuloItem(ModuleAuthorizationDto module)
+        {
+            var moduleCheckBox = new CheckBox
+            {
+                Content = module.ModuleName,
+                FontWeight = FontWeights.SemiBold,
+                FontSize = 13,
+                Foreground = new SolidColorBrush(Color.FromRgb(31, 41, 55)),
+                Margin = new Thickness(2, 2, 0, 2),
+            };
+
+            var moduleItem = new TreeViewItem
+            {
+                Header = moduleCheckBox,
+                IsExpanded = true,
+            };
+
+            foreach (var perm in module.Permissions)
+            {
+                var permCheckBox = new CheckBox
+                {
+                    Content = perm.PermissionName,
+                    Tag = perm.PermissionId,
+                    FontSize = 12,
+                    Foreground = new SolidColorBrush(Color.FromRgb(55, 65, 81)),
+                    Margin = new Thickness(2, 1, 0, 1),
+                };
+
+                permCheckBox.Checked += (_, _) => ActualizarCheckPadre(moduleItem);
+                permCheckBox.Unchecked += (_, _) => ActualizarCheckPadre(moduleItem);
+
+                moduleItem.Items.Add(new TreeViewItem { Header = permCheckBox });
+            }
+
+            moduleCheckBox.Checked += (_, _) => MarcarTodosHijos(moduleItem, true);
+            moduleCheckBox.Unchecked += (_, _) => MarcarTodosHijos(moduleItem, false);
+
+            return moduleItem;
+        }
+
+        private void MarcarTodosHijos(TreeViewItem parentItem, bool isChecked)
+        {
+            if (_updatingChecks) return;
+            _updatingChecks = true;
+
+            try
+            {
+                foreach (TreeViewItem child in parentItem.Items)
+                {
+                    if (child.Header is CheckBox cb)
+                    {
+                        if (cb.Tag is int)
+                            cb.IsChecked = isChecked;
+                        else
+                        {
+                            cb.IsChecked = isChecked;
+                            MarcarTodosHijosInterno(child, isChecked);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                _updatingChecks = false;
+            }
+        }
+
+        private void MarcarTodosHijosInterno(TreeViewItem parentItem, bool isChecked)
+        {
+            foreach (TreeViewItem child in parentItem.Items)
+            {
+                if (child.Header is CheckBox cb)
+                {
+                    cb.IsChecked = isChecked;
+
+                    if (cb.Tag is not int)
+                        MarcarTodosHijosInterno(child, isChecked);
+                }
+            }
+        }
+
+        private void ActualizarCheckPadre(TreeViewItem moduleItem)
+        {
+            if (_updatingChecks) return;
+            _updatingChecks = true;
+
+            try
+            {
+                ActualizarCheckPadreInterno(moduleItem);
+
+                if (moduleItem.Parent is TreeViewItem grandParent
+                    && grandParent.Header is CheckBox)
+                {
+                    ActualizarCheckPadreInterno(grandParent);
+                }
+            }
+            finally
+            {
+                _updatingChecks = false;
+            }
+        }
+
+        private void ActualizarCheckPadreInterno(TreeViewItem moduleItem)
+        {
+            if (moduleItem.Header is not CheckBox moduleCb) return;
+
+            bool allChecked = true;
+            bool hasChildren = false;
+
+            foreach (TreeViewItem child in moduleItem.Items)
+            {
+                if (child.Header is CheckBox cb)
+                {
+                    hasChildren = true;
+                    if (cb.IsChecked != true)
+                    {
+                        allChecked = false;
+                        break;
+                    }
+                }
+            }
+
+            if (hasChildren)
+                moduleCb.IsChecked = allChecked;
         }
 
         private async Task CargarDatosAsync()
@@ -113,14 +211,7 @@ namespace LD.FormsX.Views.Usuarios
                     .Select(p => p.PermissionId)
                     .ToHashSet() ?? new HashSet<int?>();
 
-                foreach (TreeViewItem moduleItem in treePermisos.Items)
-                {
-                    foreach (TreeViewItem permItem in moduleItem.Items)
-                    {
-                        if (permItem.Header is CheckBox cb && cb.Tag is int permId)
-                            cb.IsChecked = checkedIds.Contains(permId);
-                    }
-                }
+                MarcarPermisosRecursivo(treePermisos.Items, checkedIds);
             }
             catch (Exception ex)
             {
@@ -128,26 +219,55 @@ namespace LD.FormsX.Views.Usuarios
             }
         }
 
+        private void MarcarPermisosRecursivo(ItemCollection items, HashSet<int?> checkedIds)
+        {
+            _updatingChecks = true;
+            try
+            {
+                foreach (TreeViewItem item in items)
+                {
+                    if (item.Header is CheckBox cb && cb.Tag is int permId)
+                        cb.IsChecked = checkedIds.Contains(permId);
+
+                    if (item.Items.Count > 0)
+                        MarcarPermisosRecursivo(item.Items, checkedIds);
+                }
+
+                foreach (TreeViewItem item in items)
+                {
+                    if (item.Header is CheckBox cb && cb.Tag is not int && item.Items.Count > 0)
+                        ActualizarCheckPadreInterno(item);
+                }
+            }
+            finally
+            {
+                _updatingChecks = false;
+            }
+        }
+
         private List<PermissionDto> GetPermissions()
         {
             var permissions = new List<PermissionDto>();
-
-            foreach (TreeViewItem moduleItem in treePermisos.Items)
-            {
-                foreach (TreeViewItem permItem in moduleItem.Items)
-                {
-                    if (permItem.Header is CheckBox cb && cb.IsChecked == true && cb.Tag is int permId)
-                    {
-                        permissions.Add(new PermissionDto
-                        {
-                            PermissionId = permId,
-                            PermissionName = cb.Content?.ToString(),
-                        });
-                    }
-                }
-            }
-
+            RecolectarPermisosRecursivo(treePermisos.Items, permissions);
             return permissions;
+        }
+
+        private void RecolectarPermisosRecursivo(ItemCollection items, List<PermissionDto> permissions)
+        {
+            foreach (TreeViewItem item in items)
+            {
+                if (item.Header is CheckBox cb && cb.IsChecked == true && cb.Tag is int permId)
+                {
+                    permissions.Add(new PermissionDto
+                    {
+                        PermissionId = permId,
+                        PermissionName = cb.Content?.ToString(),
+                    });
+                }
+
+                if (item.Items.Count > 0)
+                    RecolectarPermisosRecursivo(item.Items, permissions);
+            }
         }
 
         private RoleRequest BuildRequest() => new()

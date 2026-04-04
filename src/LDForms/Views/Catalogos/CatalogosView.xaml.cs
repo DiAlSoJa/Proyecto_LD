@@ -38,8 +38,7 @@ namespace LD.FormsX.Views.Catalogos
 
         private void RemoveIfNoModule(TabItem tab, Module_e module)
         {
-            bool has = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)module);
-            if (!has)
+            if (!UserData.HasModule((int)module))
                 MainTabControl.Items.Remove(tab);
         }
 

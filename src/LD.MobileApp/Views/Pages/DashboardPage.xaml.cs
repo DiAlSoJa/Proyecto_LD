@@ -32,8 +32,7 @@ public partial class DashboardPage : ContentPage
 
     private void RemoveIfNoModule(Card btn, Module_e module)
     {
-        bool has = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)module);
-        if (!has)
+        if (!UserData.HasModule((int)module))
             DashboardPanel.Children.Remove(btn);
     }
     private async void OnAsnPorUbicarClicked(object sender, EventArgs e)
