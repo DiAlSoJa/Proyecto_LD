@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel1 = new Panel();
             splitContainer2 = new SplitContainer();
             dataGridView2 = new DataGridView();
@@ -48,22 +48,10 @@
             panel4 = new Panel();
             button5 = new Button();
             dataGridView3 = new DataGridView();
-            Borr = new DataGridViewTextBoxColumn();
-            Esta = new DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn11 = new DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn12 = new DataGridViewTextBoxColumn();
-            Estandar = new DataGridViewTextBoxColumn();
-            Maxima = new DataGridViewTextBoxColumn();
-            SD = new DataGridViewTextBoxColumn();
-            Recibida = new DataGridViewTextBoxColumn();
-            Statuss = new DataGridViewTextBoxColumn();
-            Ubic = new DataGridViewTextBoxColumn();
-            Lote = new DataGridViewTextBoxColumn();
-            Cad = new DataGridViewTextBoxColumn();
-            Rf = new DataGridViewTextBoxColumn();
             panel3 = new Panel();
             label13 = new Label();
             groupBox2 = new GroupBox();
+            comboBox3 = new ComboBox();
             button3 = new Button();
             label12 = new Label();
             textBox7 = new TextBox();
@@ -75,6 +63,8 @@
             label11 = new Label();
             textBox5 = new TextBox();
             groupBox1 = new GroupBox();
+            checkBox2 = new CheckBox();
+            checkBox1 = new CheckBox();
             label4 = new Label();
             textBox2 = new TextBox();
             dateTimePicker1 = new DateTimePicker();
@@ -93,9 +83,19 @@
             panel2 = new Panel();
             label1 = new Label();
             pictureBox2 = new PictureBox();
-            comboBox3 = new ComboBox();
-            checkBox1 = new CheckBox();
-            checkBox2 = new CheckBox();
+            Borr = new DataGridViewTextBoxColumn();
+            Esta = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn11 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn12 = new DataGridViewTextBoxColumn();
+            Estandar = new DataGridViewTextBoxColumn();
+            Maxima = new DataGridViewTextBoxColumn();
+            SD = new DataGridViewTextBoxColumn();
+            Recibida = new DataGridViewTextBoxColumn();
+            Statuss = new DataGridViewTextBoxColumn();
+            Ubic = new DataGridViewTextBoxColumn();
+            Lote = new DataGridViewTextBoxColumn();
+            Cad = new DataGridViewTextBoxColumn();
+            Rf = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
@@ -151,8 +151,8 @@
             // 
             // dataGridView2
             // 
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, SDd, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10, Spl });
@@ -271,8 +271,8 @@
             // 
             // dataGridView3
             // 
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(253, 252, 213);
-            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(253, 252, 213);
+            dataGridView3.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dataGridView3.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView3.Columns.AddRange(new DataGridViewColumn[] { Borr, Esta, dataGridViewTextBoxColumn11, dataGridViewTextBoxColumn12, Estandar, Maxima, SD, Recibida, Statuss, Ubic, Lote, Cad, Rf });
@@ -282,97 +282,6 @@
             dataGridView3.RowHeadersWidth = 51;
             dataGridView3.Size = new Size(1673, 170);
             dataGridView3.TabIndex = 3;
-            // 
-            // Borr
-            // 
-            Borr.HeaderText = "Borrar";
-            Borr.MinimumWidth = 6;
-            Borr.Name = "Borr";
-            Borr.Width = 125;
-            // 
-            // Esta
-            // 
-            Esta.HeaderText = "EstandarID";
-            Esta.MinimumWidth = 6;
-            Esta.Name = "Esta";
-            Esta.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn11
-            // 
-            dataGridViewTextBoxColumn11.HeaderText = "Número de PArte";
-            dataGridViewTextBoxColumn11.MinimumWidth = 6;
-            dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            dataGridViewTextBoxColumn11.Width = 200;
-            // 
-            // dataGridViewTextBoxColumn12
-            // 
-            dataGridViewTextBoxColumn12.HeaderText = "Descripción";
-            dataGridViewTextBoxColumn12.MinimumWidth = 6;
-            dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            dataGridViewTextBoxColumn12.Width = 200;
-            // 
-            // Estandar
-            // 
-            Estandar.HeaderText = "Estandar";
-            Estandar.MinimumWidth = 6;
-            Estandar.Name = "Estandar";
-            Estandar.Width = 125;
-            // 
-            // Maxima
-            // 
-            Maxima.HeaderText = "Maxima";
-            Maxima.MinimumWidth = 6;
-            Maxima.Name = "Maxima";
-            Maxima.Width = 125;
-            // 
-            // SD
-            // 
-            SD.HeaderText = "SD";
-            SD.MinimumWidth = 6;
-            SD.Name = "SD";
-            SD.Width = 125;
-            // 
-            // Recibida
-            // 
-            Recibida.HeaderText = "Recibida";
-            Recibida.MinimumWidth = 6;
-            Recibida.Name = "Recibida";
-            Recibida.Width = 125;
-            // 
-            // Statuss
-            // 
-            Statuss.HeaderText = "Status";
-            Statuss.MinimumWidth = 6;
-            Statuss.Name = "Statuss";
-            Statuss.Width = 125;
-            // 
-            // Ubic
-            // 
-            Ubic.HeaderText = "Ubicación";
-            Ubic.MinimumWidth = 6;
-            Ubic.Name = "Ubic";
-            Ubic.Width = 125;
-            // 
-            // Lote
-            // 
-            Lote.HeaderText = "Número de Lote";
-            Lote.MinimumWidth = 6;
-            Lote.Name = "Lote";
-            Lote.Width = 125;
-            // 
-            // Cad
-            // 
-            Cad.HeaderText = "Fecha de Caducidad";
-            Cad.MinimumWidth = 6;
-            Cad.Name = "Cad";
-            Cad.Width = 125;
-            // 
-            // Rf
-            // 
-            Rf.HeaderText = "Referencia";
-            Rf.MinimumWidth = 6;
-            Rf.Name = "Rf";
-            Rf.Width = 125;
             // 
             // panel3
             // 
@@ -421,6 +330,15 @@
             groupBox2.TabIndex = 46;
             groupBox2.TabStop = false;
             groupBox2.Text = "Transporte:";
+            // 
+            // comboBox3
+            // 
+            comboBox3.Font = new Font("Segoe UI", 9.75F);
+            comboBox3.FormattingEnabled = true;
+            comboBox3.Location = new Point(192, 140);
+            comboBox3.Name = "comboBox3";
+            comboBox3.Size = new Size(465, 29);
+            comboBox3.TabIndex = 51;
             // 
             // button3
             // 
@@ -533,6 +451,26 @@
             groupBox1.TabIndex = 45;
             groupBox1.TabStop = false;
             groupBox1.Text = "ASN";
+            // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new Point(139, 205);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new Size(255, 24);
+            checkBox2.TabIndex = 50;
+            checkBox2.Text = "Movimiento requerido por cliente";
+            checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(139, 175);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(106, 24);
+            checkBox1.TabIndex = 49;
+            checkBox1.Text = "Devolución";
+            checkBox1.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -650,7 +588,7 @@
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
             flowLayoutPanel1.Location = new Point(0, 858);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
+            flowLayoutPanel1.Padding = new Padding(5);
             flowLayoutPanel1.Size = new Size(1673, 55);
             flowLayoutPanel1.TabIndex = 8;
             // 
@@ -716,34 +654,96 @@
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
             // 
-            // comboBox3
+            // Borr
             // 
-            comboBox3.Font = new Font("Segoe UI", 9.75F);
-            comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(192, 140);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(465, 29);
-            comboBox3.TabIndex = 51;
+            Borr.HeaderText = "Borrar";
+            Borr.MinimumWidth = 6;
+            Borr.Name = "Borr";
+            Borr.Width = 80;
             // 
-            // checkBox1
+            // Esta
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(139, 175);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(106, 24);
-            checkBox1.TabIndex = 49;
-            checkBox1.Text = "Devolución";
-            checkBox1.UseVisualStyleBackColor = true;
+            Esta.HeaderText = "EstandarID";
+            Esta.MinimumWidth = 6;
+            Esta.Name = "Esta";
+            Esta.Width = 125;
             // 
-            // checkBox2
+            // dataGridViewTextBoxColumn11
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(139, 205);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(255, 24);
-            checkBox2.TabIndex = 50;
-            checkBox2.Text = "Movimiento requerido por cliente";
-            checkBox2.UseVisualStyleBackColor = true;
+            dataGridViewTextBoxColumn11.HeaderText = "Número de PArte";
+            dataGridViewTextBoxColumn11.MinimumWidth = 6;
+            dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
+            dataGridViewTextBoxColumn11.Width = 80;
+            // 
+            // dataGridViewTextBoxColumn12
+            // 
+            dataGridViewTextBoxColumn12.HeaderText = "Descripción";
+            dataGridViewTextBoxColumn12.MinimumWidth = 6;
+            dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
+            dataGridViewTextBoxColumn12.Width = 80;
+            // 
+            // Estandar
+            // 
+            Estandar.HeaderText = "Estandar";
+            Estandar.MinimumWidth = 6;
+            Estandar.Name = "Estandar";
+            Estandar.Width = 125;
+            // 
+            // Maxima
+            // 
+            Maxima.HeaderText = "Maxima";
+            Maxima.MinimumWidth = 6;
+            Maxima.Name = "Maxima";
+            Maxima.Width = 125;
+            // 
+            // SD
+            // 
+            SD.HeaderText = "SD";
+            SD.MinimumWidth = 6;
+            SD.Name = "SD";
+            SD.Width = 125;
+            // 
+            // Recibida
+            // 
+            Recibida.HeaderText = "Recibida";
+            Recibida.MinimumWidth = 6;
+            Recibida.Name = "Recibida";
+            Recibida.Width = 125;
+            // 
+            // Statuss
+            // 
+            Statuss.HeaderText = "Status";
+            Statuss.MinimumWidth = 6;
+            Statuss.Name = "Statuss";
+            Statuss.Width = 125;
+            // 
+            // Ubic
+            // 
+            Ubic.HeaderText = "Ubicación";
+            Ubic.MinimumWidth = 6;
+            Ubic.Name = "Ubic";
+            Ubic.Width = 125;
+            // 
+            // Lote
+            // 
+            Lote.HeaderText = "Número de Lote";
+            Lote.MinimumWidth = 6;
+            Lote.Name = "Lote";
+            Lote.Width = 125;
+            // 
+            // Cad
+            // 
+            Cad.HeaderText = "Fecha de Caducidad";
+            Cad.MinimumWidth = 6;
+            Cad.Name = "Cad";
+            Cad.Width = 125;
+            // 
+            // Rf
+            // 
+            Rf.HeaderText = "Referencia";
+            Rf.MinimumWidth = 6;
+            Rf.Name = "Rf";
+            Rf.Width = 125;
             // 
             // FrmNuevoASN
             // 
@@ -828,6 +828,9 @@
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
         private DataGridViewTextBoxColumn Spl;
+        private ComboBox comboBox3;
+        private CheckBox checkBox1;
+        private CheckBox checkBox2;
         private DataGridViewTextBoxColumn Borr;
         private DataGridViewTextBoxColumn Esta;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
@@ -841,8 +844,5 @@
         private DataGridViewTextBoxColumn Lote;
         private DataGridViewTextBoxColumn Cad;
         private DataGridViewTextBoxColumn Rf;
-        private ComboBox comboBox3;
-        private CheckBox checkBox1;
-        private CheckBox checkBox2;
     }
 }

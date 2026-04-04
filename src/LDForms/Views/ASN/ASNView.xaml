@@ -9,11 +9,11 @@
     <Grid Background="#F8FAFC">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="12"/>
+            <RowDefinition Height="2"/>
             <RowDefinition Height="2.2*"/>
-            <RowDefinition Height="12"/>
+            <RowDefinition Height="2"/>
             <RowDefinition Height="2.3*"/>
-            <RowDefinition Height="12"/>
+            <RowDefinition Height="2"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
@@ -21,12 +21,12 @@
         <Border Grid.Row="0"
                 Background="White"
                 CornerRadius="12"
-                Padding="16"
+                Padding="6"
                 BorderBrush="#E5E7EB"
                 BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>                    
                     <ColumnDefinition Width="130"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="140"/>
@@ -40,10 +40,7 @@
                                FontSize="24"
                                FontWeight="SemiBold"
                                Foreground="#1F2937"/>
-                    <TextBlock Text="Administración y recepción de ASN"
-                               FontSize="13"
-                               Foreground="#6B7280"
-                               Margin="0,4,0,0"/>
+                   
                 </StackPanel>
 
                <Button x:Name="BtnActualizar"
@@ -156,13 +153,6 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="txtStatusASN"
-                           Grid.Row="0"
-                           Text="Sin ASN para mostrar"
-                           FontSize="12"
-                           Foreground="#6B7280"
-                           Margin="4,0,0,8"/>
-
                 <Border Grid.Row="2"
                         BorderBrush="#D9DEE7"
                         BorderThickness="1"
@@ -187,20 +177,7 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   SelectionChanged="dgASN_SelectionChanged">
 
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="ASN" Binding="{Binding ASN}" Width="120"/>
-                                <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="130"/>
-                                <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="130"/>
-                                <DataGridTextColumn Header="Factura" Binding="{Binding Factura}" Width="120"/>
-                                <DataGridTextColumn Header="Guía" Binding="{Binding Guia}" Width="120"/>
-                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
-                                <DataGridTextColumn Header="Bultos" Binding="{Binding Bultos}" Width="70"/>
-                                <DataGridTextColumn Header="Origen" Binding="{Binding Origen}" Width="120"/>
-                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="90"/>
-                                <DataGridTextColumn Header="Hora" Binding="{Binding Hora}" Width="70"/>
-                                <DataGridTextColumn Header="ETA" Binding="{Binding ETA}" Width="120"/>
-                                <DataGridTextColumn Header="Orden de compra" Binding="{Binding OrdenCompra}" Width="130"/>
-                            </DataGrid.Columns>
+                        
 
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridColumnHeader">
@@ -315,20 +292,7 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   SelectionChanged="dgDetalleASN_SelectionChanged">
 
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="160"/>
-                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="170"/>
-                                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="90"/>
-                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80"/>
-                                <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="120"/>
-                                <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="130"/>
-                                <DataGridTextColumn Header="Referencia de Cliente" Binding="{Binding ReferenciaCliente}" Width="130"/>
-                                <DataGridTextColumn Header="Tipo de Cambio" Binding="{Binding TipoCambio}" Width="120"/>
-                                <DataGridTextColumn Header="Orden de Compra" Binding="{Binding OrdenCompra}" Width="125"/>
-                                <DataGridTextColumn Header="Pedimento" Binding="{Binding Pedimento}" Width="110"/>
-                                <DataGridTextColumn Header="Split" Binding="{Binding Split}" Width="80"/>
-                            </DataGrid.Columns>
-
+                         
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="Background" Value="#EEF1F5"/>

@@ -29,6 +29,7 @@ public partial class DashboardPage : ContentPage
 
 
     }
+
     private void RemoveIfNoModule(Card btn, Module_e module)
     {
         bool has = UserData.Authorization.Modules.Any(m => m.ModuleId == (int)module);

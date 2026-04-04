@@ -37,6 +37,9 @@ namespace LD.Client
             services.AddScoped<DimensionerService>();
 
             services.AddScoped<LookupService>();
+            services.AddScoped<AsnService>();
+            services.AddScoped<AsnDetailService>();
+            services.AddScoped<AsnReceiptService>();
 
             return services;
         }
