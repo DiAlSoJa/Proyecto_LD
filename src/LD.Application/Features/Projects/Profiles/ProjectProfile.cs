@@ -16,13 +16,9 @@ namespace LD.Application.Features.Clients.Profiles
                 .ForMember(dest => dest.Activo,
                     opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.Cliente,
-                    opt => opt.MapFrom(src => src.Client.CommercialName))
-                .ForMember(dest => dest.ClienteId,
-                    opt => opt.MapFrom(src => src.ClientId))
+                    opt => opt.MapFrom(src => src.Client.CommercialName))                
                 .ForMember(dest => dest.Proyecto,
-                    opt => opt.MapFrom(src => src.ProjectName))
-                .ForMember(dest => dest.AlmacenId,
-                    opt => opt.MapFrom(src => src.WarehouseId))
+                    opt => opt.MapFrom(src => src.ProjectName))                
                 .ForMember(dest => dest.Almacen,
                     opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
                 ;

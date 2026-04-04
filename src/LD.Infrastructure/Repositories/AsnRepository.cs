@@ -74,6 +74,15 @@ namespace LD.Infrastructure.Repositories
                 .ProjectTo<Asn>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
+        public async Task<List<Asn>> GetAllWithRelationsAsync()
+        {
+            return await _context.Asns
+                .AsNoTracking()
+                .Include(x => x.Project)
+                .Include(x => x.Client)
+                .ToListAsync();
+        }
+
 
         Task<Asn?> IRepository<Asn>.GetByIdAsync(int id)
         {
