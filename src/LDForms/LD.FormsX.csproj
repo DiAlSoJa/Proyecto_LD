@@ -85,20 +85,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Almacen\ViewModels\" />
     <Folder Include="Features\Articulos\ViewModels\" />
     <Folder Include="Features\Auditar\ViewModels\" />
     <Folder Include="Features\CheckList\ViewModels\" />
-    <Folder Include="Features\Clientes\ViewModels\" />
     <Folder Include="Features\ControlPatio\ViewModels\" />
     <Folder Include="Features\DashBoard\ViewModels\" />
     <Folder Include="Features\InventarioAleatorio\ViewModels\" />
     <Folder Include="Features\Inventario\ViewModels\" />
     <Folder Include="Features\Movimientos\ViewModels\" />
-    <Folder Include="Features\Proyectos\ViewModels\" />
     <Folder Include="Features\Reportes\ViewModels\" />
     <Folder Include="Features\Shared\ViewModels\" />
-    <Folder Include="Features\Ubicaciones\ViewModels\" />
     <Folder Include="Services\" />
 
 

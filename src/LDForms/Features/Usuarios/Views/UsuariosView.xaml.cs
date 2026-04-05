@@ -1,35 +1,27 @@
-﻿using LD.Client.Configuration;
-using LD.Client.Services;
-using LD.Contracts.Constants;
-using LD.Contracts.DTOs.User;
-using LD.Contracts.User;
-using LD.Contracts.Warehouse;
-using LD.FormsX.Helpers;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using LD.Contracts.User;
+using LD.FormsX.Features.Usuarios.ViewModels;
+using LD.FormsX.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views.Usuarios
 {
     public partial class UsuariosView : UserControl
     {
-        private readonly UserService _userService;
         private readonly IServiceProvider _serviceProvider;
         private readonly WpfGridFilter<UserDto> _gridFilter;
-
-        private List<GetUserDto> _allUsers = new();
-        private GetUserDto? _selectedUser;
         private bool _loaded;
 
-        public UsuariosView(UserService userService, IServiceProvider serviceProvider)
+        private UsuariosViewModel ViewModel => (UsuariosViewModel)DataContext;
+
+        public UsuariosView(UsuariosViewModel viewModel, IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _userService = userService;
+            DataContext = viewModel;
             _serviceProvider = serviceProvider;
+
             _gridFilter = new WpfGridFilter<UserDto>(dgUsuarios, txtBuscar);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
@@ -39,100 +31,21 @@ namespace LD.FormsX.Views.Usuarios
                 { "UserName", 180 },
                 { "Rol",    140 },
             });
+
+            viewModel.OnDataLoaded += data => _gridFilter.SetData(data);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (_loaded) return;
             _loaded = true;
-            AplicarPermisos();
-            await CargarDatosConLoaderAsync("Trayendo usuarios...");
-        }
 
-        private void AplicarPermisos()
-        {
-            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.User_Create) ? Visibility.Visible : Visibility.Collapsed;
-            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.User_Update) ? Visibility.Visible : Visibility.Collapsed;
-            btnAlmacenes.Visibility  = UserData.HasPermission(PermissionKeys.User_Update) ? Visibility.Visible : Visibility.Collapsed;
-            btnRoles.Visibility      = UserData.HasPermission(PermissionKeys.User_View)   ? Visibility.Visible : Visibility.Collapsed;
-            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.User_View)   ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private async Task CargarDatosConLoaderAsync(string mensaje)
-        {
-            if (!UserData.HasPermission(PermissionKeys.User_View))
-            {
-                dgUsuarios.Visibility = Visibility.Collapsed;
-                return;
-            }
-
-            try
-            {
-                MostrarLoader(true, mensaje);
-                await CargarDatosAsync();
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-            finally
-            {
-                MostrarLoader(false);
-            }
-        }
-
-        private void MostrarLoader(bool mostrar, string mensaje = "Cargando...")
-        {
-            TxtLoading.Text = mensaje;
-            LoadingOverlay.Visibility = mostrar ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private async Task CargarDatosAsync()
-        {
-            var result = await _userService.GetUsers();
-
-            if (!result.IsSuccess)
-            {
-                DialogHelper.ShowWarning(result.Message);
-                return;
-            }
-
-            _allUsers = result.Data ?? new List<GetUserDto>();
-
-            var users = _allUsers
-                .Where(x => x.User != null)
-                .Select(x => x.User!)
-                .ToList();
-
-            _gridFilter.SetData(users);
-            _selectedUser = null;
-            txtStatus.Text = $"Registros: {users.Count}";
-            ActualizarPanelDetalle(null);
-        }
-
-        private void ActualizarPanelDetalle(GetUserDto? user)
-        {
-            dgPermisos.ItemsSource = user?.Permissions ?? new List<PermissionDto>();
-            dgAlmacenes.ItemsSource = user?.Warehouse ?? new List<WarehouseDto>();
-        }
-
-        private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
-        {
-            await CargarDatosConLoaderAsync("Trayendo usuarios...");
+            await ViewModel.CargarDatosAsync();
         }
 
         private void DgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
-            {
-                var selectedDto = _gridFilter.SelectedItem;
-                _selectedUser = _allUsers.FirstOrDefault(x => x.User?.Id == selectedDto?.Id);
-                ActualizarPanelDetalle(_selectedUser);
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
+            ViewModel.SelectUserByDto(_gridFilter.SelectedItem);
         }
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
@@ -140,15 +53,13 @@ namespace LD.FormsX.Views.Usuarios
             var dialog = _serviceProvider.GetRequiredService<NuevoUsuarioView>();
             dialog.Owner = Window.GetWindow(this);
 
-            var result = dialog.ShowDialog();
-
-            if (result == true)
-                await CargarDatosConLoaderAsync("Trayendo usuarios...");
+            if (dialog.ShowDialog() == true)
+                await ViewModel.CargarDatosAsync();
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedUser is null)
+            if (ViewModel.SelectedUser is null)
             {
                 DialogHelper.ShowWarning("Selecciona un usuario para editar.");
                 return;
@@ -156,17 +67,15 @@ namespace LD.FormsX.Views.Usuarios
 
             var dialog = _serviceProvider.GetRequiredService<NuevoUsuarioView>();
             dialog.Owner = Window.GetWindow(this);
-            dialog.SetUser(_selectedUser);
+            dialog.SetUser(ViewModel.SelectedUser);
 
-            var result = dialog.ShowDialog();
-
-            if (result == true)
-                await CargarDatosConLoaderAsync("Trayendo usuarios...");
+            if (dialog.ShowDialog() == true)
+                await ViewModel.CargarDatosAsync();
         }
 
         private async void BtnAlmacenes_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedUser is null)
+            if (ViewModel.SelectedUser is null)
             {
                 DialogHelper.ShowWarning("Selecciona un usuario para gestionar sus almacenes.");
                 return;
@@ -174,12 +83,10 @@ namespace LD.FormsX.Views.Usuarios
 
             var dialog = _serviceProvider.GetRequiredService<UsuarioAlmacenView>();
             dialog.Owner = Window.GetWindow(this);
-            dialog.SetUser(_selectedUser);
+            dialog.SetUser(ViewModel.SelectedUser);
 
-            var result = dialog.ShowDialog();
-
-            if (result == true)
-                await CargarDatosConLoaderAsync("Trayendo usuarios...");
+            if (dialog.ShowDialog() == true)
+                await ViewModel.CargarDatosAsync();
         }
 
         private void BtnRoles_Click(object sender, RoutedEventArgs e)
@@ -199,4 +106,3 @@ namespace LD.FormsX.Views.Usuarios
         }
     }
 }
-

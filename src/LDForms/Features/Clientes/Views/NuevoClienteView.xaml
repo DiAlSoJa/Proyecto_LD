@@ -11,7 +11,8 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
-        Background="Transparent">
+        Background="Transparent"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <Style x:Key="LabelStyle" TargetType="TextBlock">
@@ -168,7 +169,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Nuevo cliente"
+                        <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
                                    Foreground="White"
                                    FontSize="16"
@@ -226,54 +227,54 @@
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Id:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtId"
-                                                 Grid.Row="0" Grid.Column="1"
+                                        <TextBox Grid.Row="0" Grid.Column="1"
                                                  Width="120"
                                                  HorizontalAlignment="Left"
+                                                 Text="{Binding ClientIdText}"
                                                  Style="{StaticResource ReadOnlyInputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Nombre comercial:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtComercialName"
-                                                 Grid.Row="2" Grid.Column="1"
+                                        <TextBox Grid.Row="2" Grid.Column="1"
+                                                 Text="{Binding CommercialName, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Domicilio comercial:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtDomicilioComercial"
-                                                 Grid.Row="4" Grid.Column="1"
+                                        <TextBox Grid.Row="4" Grid.Column="1"
+                                                 Text="{Binding CommercialAddress, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="6" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtColoniaComercial"
-                                                 Grid.Row="6" Grid.Column="1"
+                                        <TextBox Grid.Row="6" Grid.Column="1"
+                                                 Text="{Binding CommercialNeighborhood, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="8" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtCiudadComercial"
-                                                 Grid.Row="8" Grid.Column="1"
+                                        <TextBox Grid.Row="8" Grid.Column="1"
+                                                 Text="{Binding CommercialCity, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="10" Grid.Column="0" Text="CP:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtCPComercial"
-                                                 Grid.Row="10" Grid.Column="1"
+                                        <TextBox Grid.Row="10" Grid.Column="1"
                                                  Width="140"
                                                  HorizontalAlignment="Left"
+                                                 Text="{Binding CommercialZipCode, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="12" Grid.Column="0" Text="Teléfono:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtTelefonoComercial"
-                                                 Grid.Row="12" Grid.Column="1"
+                                        <TextBox Grid.Row="12" Grid.Column="1"
                                                  Width="220"
                                                  HorizontalAlignment="Left"
+                                                 Text="{Binding CommercialPhone, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
-                                        <CheckBox x:Name="checkIsActive"
-                                                  Grid.Row="14" Grid.Column="1"
+                                        <CheckBox Grid.Row="14" Grid.Column="1"
                                                   Content="Activo"
+                                                  IsChecked="{Binding IsActive}"
                                                   Style="{StaticResource CheckStyle}"/>
 
-                                        <CheckBox x:Name="checkIsProvider"
-                                                  Grid.Row="16" Grid.Column="1"
+                                        <CheckBox Grid.Row="16" Grid.Column="1"
                                                   Content="Proveedor VMI"
+                                                  IsChecked="{Binding IsProvider}"
                                                   Style="{StaticResource CheckStyle}"/>
                                     </Grid>
                                 </ScrollViewer>
@@ -312,51 +313,51 @@
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Razón social:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtRazonSocial"
-                                                 Grid.Row="0" Grid.Column="1"
+                                        <TextBox Grid.Row="0" Grid.Column="1"
+                                                 Text="{Binding BusinessName, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="RFC:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtRFC"
-                                                 Grid.Row="2" Grid.Column="1"
+                                        <TextBox Grid.Row="2" Grid.Column="1"
                                                  Width="260"
                                                  HorizontalAlignment="Left"
+                                                 Text="{Binding Rfc, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Domicilio fiscal:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtDomicilioFiscal"
-                                                 Grid.Row="4" Grid.Column="1"
+                                        <TextBox Grid.Row="4" Grid.Column="1"
+                                                 Text="{Binding FiscalAddress, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="6" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtColonia"
-                                                 Grid.Row="6" Grid.Column="1"
+                                        <TextBox Grid.Row="6" Grid.Column="1"
+                                                 Text="{Binding FiscalNeighborhood, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="8" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtCiudadFiscal"
-                                                 Grid.Row="8" Grid.Column="1"
+                                        <TextBox Grid.Row="8" Grid.Column="1"
+                                                 Text="{Binding FiscalCity, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="10" Grid.Column="0" Text="CP:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtCPFiscal"
-                                                 Grid.Row="10" Grid.Column="1"
+                                        <TextBox Grid.Row="10" Grid.Column="1"
                                                  Width="140"
                                                  HorizontalAlignment="Left"
+                                                 Text="{Binding FiscalZipCode, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="12" Grid.Column="0" Text="Email:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtEmail"
-                                                 Grid.Row="12" Grid.Column="1"
+                                        <TextBox Grid.Row="12" Grid.Column="1"
                                                  Width="420"
                                                  HorizontalAlignment="Left"
+                                                 Text="{Binding FiscalEmail, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
 
                                         <TextBlock Grid.Row="14" Grid.Column="0" Text="Teléfono:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtTelefonoFiscal"
-                                                 Grid.Row="14" Grid.Column="1"
+                                        <TextBox Grid.Row="14" Grid.Column="1"
                                                  Width="220"
                                                  HorizontalAlignment="Left"
+                                                 Text="{Binding FiscalPhone, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputTextBoxStyle}"/>
                                     </Grid>
                                 </ScrollViewer>
@@ -375,11 +376,10 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Margin="0,0,24,0">
-                        <Button x:Name="btnSave"
-                                Content="Guardar"
+                        <Button Content="Guardar"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="0,0,10,0"
-                                Click="btnSave_Click"/>
+                                Command="{Binding SaveCommand}"/>
 
                         <Button x:Name="button2"
                                 Content="Cerrar"

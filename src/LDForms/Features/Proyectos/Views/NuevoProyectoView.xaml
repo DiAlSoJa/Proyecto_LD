@@ -161,7 +161,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtHeaderTitle" Text="Nuevo proyecto"
+                        <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center" Foreground="White"
                                    FontSize="16" FontWeight="SemiBold"/>
                         <Button Grid.Column="1" Width="30" Height="30"
@@ -194,22 +194,29 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0" Text="Cliente:" Style="{StaticResource LabelStyle}"/>
-                                        <ComboBox x:Name="cmbCliente" Grid.Column="1"
+                                        <ComboBox Grid.Column="1"
                                                   Style="{StaticResource ComboStyle}"
+                                                  ItemsSource="{Binding ClientsSource}"
+                                                  SelectedValue="{Binding SelectedClientId}"
                                                   DisplayMemberPath="Value" SelectedValuePath="Key"/>
                                         <TextBlock Grid.Column="3" Text="Almacén:" Style="{StaticResource LabelStyle}"/>
-                                        <ComboBox x:Name="cmbAlmacen" Grid.Column="4"
+                                        <ComboBox Grid.Column="4"
                                                   Style="{StaticResource ComboStyle}"
+                                                  ItemsSource="{Binding WarehousesSource}"
+                                                  SelectedValue="{Binding SelectedWarehouseId}"
                                                   DisplayMemberPath="Value" SelectedValuePath="Key"/>
                                         <TextBlock Grid.Column="6" Text="Proyecto:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox x:Name="txtProjectName" Grid.Column="7" Style="{StaticResource InputStyle}"/>
+                                        <TextBox Grid.Column="7" Style="{StaticResource InputStyle}"
+                                                 Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
                                     </Grid>
 
                                     <!-- Fila 2: Activo / AutoPicking -->
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                                        <CheckBox x:Name="checkActivo" Content="Activo"
+                                        <CheckBox Content="Activo"
+                                                  IsChecked="{Binding IsActive}"
                                                   Style="{StaticResource CheckStyle}" Margin="0,0,24,0"/>
-                                        <CheckBox x:Name="checkAutoPicking" Content="AutoPicking"
+                                        <CheckBox Content="AutoPicking"
+                                                  IsChecked="{Binding AutoPicking}"
                                                   Style="{StaticResource CheckStyle}"/>
                                     </StackPanel>
 
@@ -228,10 +235,10 @@
                                                 BorderThickness="1" CornerRadius="8" Padding="14,10">
                                             <StackPanel>
                                                 <TextBlock Text="TIPO DE ALMACENAMIENTO" Style="{StaticResource GroupLabelStyle}"/>
-                                                <RadioButton x:Name="radioFifo"    Content="FIFO (First In - First Out)"  Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
-                                                <RadioButton x:Name="radioLifo"    Content="LIFO (Last In - First Out)"   Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
-                                                <RadioButton x:Name="radioLote"    Content="Número de Lote"               Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
-                                                <RadioButton x:Name="radioCaducidad" Content="Fecha de Caducidad"         Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                                <RadioButton Content="FIFO (First In - First Out)"  IsChecked="{Binding IsFifo}"      Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                                <RadioButton Content="LIFO (Last In - First Out)"   IsChecked="{Binding IsLifo}"      Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                                <RadioButton Content="Número de Lote"               IsChecked="{Binding IsLote}"      Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
+                                                <RadioButton Content="Fecha de Caducidad"           IsChecked="{Binding IsCaducidad}" Style="{StaticResource RadioStyle}" GroupName="StorageType"/>
                                             </StackPanel>
                                         </Border>
 
@@ -240,11 +247,11 @@
                                                 BorderThickness="1" CornerRadius="8" Padding="14,10">
                                             <StackPanel>
                                                 <TextBlock Text="OPCIONES" Style="{StaticResource GroupLabelStyle}"/>
-                                                <CheckBox x:Name="checkBackorder"      Content="Backorder"       Style="{StaticResource CheckStyle}"/>
-                                                <CheckBox x:Name="checkDistribucion"   Content="Distribución"    Style="{StaticResource CheckStyle}"/>
-                                                <CheckBox x:Name="checkAlmacenFiscal"  Content="Almacén Fiscal"  Style="{StaticResource CheckStyle}"/>
-                                                <CheckBox x:Name="checkSobredimension" Content="Sobredimensión"  Style="{StaticResource CheckStyle}"/>
-                                                <CheckBox x:Name="checkEtiquetas"      Content="Etiquetas"       Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox Content="Backorder"       IsChecked="{Binding AllowsBackorder}"      Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox Content="Distribución"    IsChecked="{Binding IsDistributionArea}"   Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox Content="Almacén Fiscal"  IsChecked="{Binding IsFiscalWarehouse}"    Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox Content="Sobredimensión"  IsChecked="{Binding AllowsOversizedItems}" Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox Content="Etiquetas"       IsChecked="{Binding RequiresLabels}"       Style="{StaticResource CheckStyle}"/>
                                             </StackPanel>
                                         </Border>
 
@@ -266,19 +273,23 @@
                                                 <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
                                                            Text="UNIDADES" Style="{StaticResource GroupLabelStyle}"/>
                                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Entrada:"      Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
-                                                <ComboBox  x:Name="cmbEntrada"         Grid.Row="1" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                <ComboBox  Grid.Row="1" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
+                                                           IsEditable="True" Text="{Binding Entrada, UpdateSourceTrigger=PropertyChanged}">
                                                     <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
                                                 </ComboBox>
                                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Almacenamiento:" Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
-                                                <ComboBox  x:Name="cmbAlmacenamiento"  Grid.Row="2" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                <ComboBox  Grid.Row="2" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
+                                                           IsEditable="True" Text="{Binding StorageArea, UpdateSourceTrigger=PropertyChanged}">
                                                     <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
                                                 </ComboBox>
                                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Retrabajo:"    Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
-                                                <ComboBox  x:Name="cmbRetrabajo"       Grid.Row="3" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                <ComboBox  Grid.Row="3" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
+                                                           IsEditable="True" Text="{Binding ReworkArea, UpdateSourceTrigger=PropertyChanged}">
                                                     <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
                                                 </ComboBox>
                                                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Salida:"       Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
-                                                <ComboBox  x:Name="cmbSalida"          Grid.Row="4" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4">
+                                                <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
+                                                           IsEditable="True" Text="{Binding Salida, UpdateSourceTrigger=PropertyChanged}">
                                                     <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
                                                 </ComboBox>
                                             </Grid>
@@ -313,16 +324,20 @@
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
                                                    Text="NOTIFICACIONES" Style="{StaticResource GroupLabelStyle}"/>
-                                        <CheckBox x:Name="checkNotRecibo"    Grid.Row="2" Grid.Column="0"
-                                                  Content="Notificación de Recibo"   Style="{StaticResource CheckStyle}"/>
-                                        <ComboBox x:Name="cmbNotRecibo"      Grid.Row="2" Grid.Column="1"
-                                                  Style="{StaticResource ComboStyle}" IsEditable="True" MaxWidth="280" HorizontalAlignment="Left">
+                                        <CheckBox Grid.Row="2" Grid.Column="0"
+                                                  Content="Notificación de Recibo"   Style="{StaticResource CheckStyle}"
+                                                  IsChecked="{Binding ReceiptNotificationEnabled}"/>
+                                        <ComboBox Grid.Row="2" Grid.Column="1"
+                                                  Style="{StaticResource ComboStyle}" IsEditable="True" MaxWidth="280" HorizontalAlignment="Left"
+                                                  Text="{Binding ReceiptNotificationMethod, UpdateSourceTrigger=PropertyChanged}">
                                             <ComboBoxItem Content="EMAIL"/><ComboBoxItem Content="SMS"/><ComboBoxItem Content="NINGUNO"/>
                                         </ComboBox>
-                                        <CheckBox x:Name="checkNotEmbarque"  Grid.Row="4" Grid.Column="0"
-                                                  Content="Notificación de Embarque" Style="{StaticResource CheckStyle}"/>
-                                        <ComboBox x:Name="cmbNotEmbarque"    Grid.Row="4" Grid.Column="1"
-                                                  Style="{StaticResource ComboStyle}" IsEditable="True" MaxWidth="280" HorizontalAlignment="Left">
+                                        <CheckBox Grid.Row="4" Grid.Column="0"
+                                                  Content="Notificación de Embarque" Style="{StaticResource CheckStyle}"
+                                                  IsChecked="{Binding ShipmentNotificationEnabled}"/>
+                                        <ComboBox Grid.Row="4" Grid.Column="1"
+                                                  Style="{StaticResource ComboStyle}" IsEditable="True" MaxWidth="280" HorizontalAlignment="Left"
+                                                  Text="{Binding ShipmentNotificationMethod, UpdateSourceTrigger=PropertyChanged}">
                                             <ComboBoxItem Content="EMAIL"/><ComboBoxItem Content="SMS"/><ComboBoxItem Content="NINGUNO"/>
                                         </ComboBox>
                                     </Grid>
@@ -345,11 +360,13 @@
                                         <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
                                                    Text="TIEMPOS DE RESPUESTA (hrs)" Style="{StaticResource GroupLabelStyle}"/>
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Normal:"  Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtTiempoNormal"   Grid.Row="2" Grid.Column="1"
-                                                   Style="{StaticResource InputStyle}" Width="120" HorizontalAlignment="Left"/>
+                                        <TextBox   Grid.Row="2" Grid.Column="1"
+                                                   Style="{StaticResource InputStyle}" Width="120" HorizontalAlignment="Left"
+                                                   Text="{Binding TiempoNormal, UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Urgente:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtTiempoUrgente"  Grid.Row="4" Grid.Column="1"
-                                                   Style="{StaticResource InputStyle}" Width="120" HorizontalAlignment="Left"/>
+                                        <TextBox   Grid.Row="4" Grid.Column="1"
+                                                   Style="{StaticResource InputStyle}" Width="120" HorizontalAlignment="Left"
+                                                   Text="{Binding TiempoUrgente, UpdateSourceTrigger=PropertyChanged}"/>
                                     </Grid>
                                 </Border>
 
@@ -382,9 +399,11 @@
                                         <TextBlock Grid.Row="0" Grid.ColumnSpan="5"
                                                    Text="ASN" Style="{StaticResource GroupLabelStyle}"/>
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Número:"  Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtNumeroAsn"   Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"/>
+                                        <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"
+                                                   Text="{Binding AsnNumber, UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock Grid.Row="2" Grid.Column="3" Text="Prefijo:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtPrefijoAsn"  Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"/>
+                                        <TextBox   Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"
+                                                   Text="{Binding AsnPrefix, UpdateSourceTrigger=PropertyChanged}"/>
                                     </Grid>
                                 </Border>
 
@@ -407,9 +426,11 @@
                                         <TextBlock Grid.Row="0" Grid.ColumnSpan="5"
                                                    Text="KITTING" Style="{StaticResource GroupLabelStyle}"/>
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Número:"  Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtNumeroKitting"  Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"/>
+                                        <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"
+                                                   Text="{Binding KittingNumber, UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock Grid.Row="2" Grid.Column="3" Text="Prefijo:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtPrefijoKitting" Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"/>
+                                        <TextBox   Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"
+                                                   Text="{Binding KittingPrefix, UpdateSourceTrigger=PropertyChanged}"/>
                                     </Grid>
                                 </Border>
 
@@ -434,12 +455,14 @@
                                         <TextBlock Grid.Row="0" Grid.ColumnSpan="7"
                                                    Text="ORDEN DE ENTREGA (DO)" Style="{StaticResource GroupLabelStyle}"/>
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Número:"  Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtNumeroDo"   Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"/>
+                                        <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource InputStyle}"
+                                                   Text="{Binding DoNumber, UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock Grid.Row="2" Grid.Column="3" Text="Prefijo:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox   x:Name="txtPrefijoDo"  Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"/>
-                                        <CheckBox  x:Name="checkRegistroRequerido"
-                                                   Grid.Row="2" Grid.Column="6"
+                                        <TextBox   Grid.Row="2" Grid.Column="4" Style="{StaticResource InputStyle}"
+                                                   Text="{Binding DoPrefix, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <CheckBox  Grid.Row="2" Grid.Column="6"
                                                    Content="Requiere registro de llegadas"
+                                                   IsChecked="{Binding ReciveRequired}"
                                                    Style="{StaticResource CheckStyle}"/>
                                     </Grid>
                                 </Border>
@@ -458,9 +481,9 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Margin="0,0,24,0">
-                        <Button x:Name="btnSave" Content="Guardar"
+                        <Button Content="Guardar"
                                 Style="{StaticResource PrimaryBtn}"
-                                Margin="0,0,10,0" Click="BtnSave_Click"/>
+                                Margin="0,0,10,0" Command="{Binding SaveCommand}"/>
                         <Button Content="Cancelar"
                                 Style="{StaticResource SecondaryBtn}"
                                 Click="BtnClose_Click"/>

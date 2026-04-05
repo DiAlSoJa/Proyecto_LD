@@ -6,9 +6,13 @@
              xmlns:local="clr-namespace:LD.FormsX.Views.Usuarios"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1300"
-             Loaded="UserControl_Loaded">
+                       Loaded="UserControl_Loaded">
 
-    <Grid>
+             <UserControl.Resources>
+                 <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+             </UserControl.Resources>
+
+             <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
@@ -55,6 +59,7 @@
                 <Button x:Name="btnNuevo" Grid.Column="3"
                         Height="38" Padding="12,0"
                         Click="BtnNuevo_Click"
+                        Visibility="{Binding CanCreate, Converter={StaticResource BoolToVis}}"
                         Background="#F3F4F6" Foreground="#374151"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
@@ -71,6 +76,7 @@
                 <Button x:Name="btnEditar" Grid.Column="5"
                         Height="38" Padding="12,0"
                         Click="BtnEditar_Click"
+                        Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}"
                         Background="#F3F4F6" Foreground="#374151"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
@@ -87,6 +93,7 @@
                 <Button x:Name="btnAlmacenes" Grid.Column="7"
                         Height="38" Padding="12,0"
                         Click="BtnAlmacenes_Click"
+                        Visibility="{Binding CanManageWarehouses, Converter={StaticResource BoolToVis}}"
                         Background="#F3F4F6" Foreground="#374151"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
@@ -103,6 +110,7 @@
                 <Button x:Name="btnRoles" Grid.Column="9"
                         Height="38" Padding="12,0"
                         Click="BtnRoles_Click"
+                        Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
                         Background="#F3F4F6" Foreground="#374151"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
@@ -118,7 +126,8 @@
                 <!-- Actualizar -->
                 <Button x:Name="BtnActualizar" Grid.Column="11"
                         Height="38" Padding="12,0"
-                        Click="BtnActualizar_Click"
+                        Command="{Binding CargarDatosCommand}"
+                        Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
                         Background="#F3F4F6" Foreground="#374151"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
@@ -151,8 +160,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="txtStatus"
-                               Text="Cargando usuarios..."
+                    <TextBlock Text="{Binding StatusText}"
                                FontSize="12" Foreground="#6B7280" Margin="4,0,0,8"/>
 
                     <Border Grid.Row="1"
@@ -166,6 +174,7 @@
                                       IsReadOnly="True" HeadersVisibility="Column"
                                       GridLinesVisibility="Vertical"
                                       SelectionChanged="DgUsuarios_SelectionChanged"
+                                      Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
                                       RowHeight="28" ColumnHeaderHeight="40"
                                       FontSize="12" VerticalGridLinesBrush="#D9D9D9">
                                 <DataGrid.Resources>
@@ -185,12 +194,11 @@
                             </DataGrid>
 
                             <!-- Loader -->
-                            <Border x:Name="LoadingOverlay"
-                                    Background="#80FFFFFF" Visibility="Collapsed">
+                            <Border Background="#80FFFFFF"
+                                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <ProgressBar IsIndeterminate="True" Width="220" Height="18"/>
-                                    <TextBlock x:Name="TxtLoading"
-                                               Text="Trayendo usuarios..."
+                                    <TextBlock Text="{Binding LoadingMessage}"
                                                HorizontalAlignment="Center"
                                                Margin="0,12,0,0" FontSize="14"
                                                FontWeight="SemiBold" Foreground="#24344D"/>
@@ -230,6 +238,7 @@
                                 BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="4">
                             <DataGrid x:Name="dgPermisos"
                                       AutoGenerateColumns="True"
+                                      ItemsSource="{Binding Permissions}"
                                       SelectionMode="Single" SelectionUnit="FullRow"
                                       CanUserAddRows="False" CanUserDeleteRows="False"
                                       IsReadOnly="True" HeadersVisibility="Column"
@@ -276,6 +285,7 @@
                                 BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="4">
                             <DataGrid x:Name="dgAlmacenes"
                                       AutoGenerateColumns="True"
+                                      ItemsSource="{Binding Warehouses}"
                                       SelectionMode="Single" SelectionUnit="FullRow"
                                       CanUserAddRows="False" CanUserDeleteRows="False"
                                       IsReadOnly="True" HeadersVisibility="Column"

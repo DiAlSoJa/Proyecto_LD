@@ -11,7 +11,8 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
-        Background="Transparent">
+        Background="Transparent"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <Style x:Key="LabelStyle" TargetType="TextBlock">
@@ -142,7 +143,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Nueva ubicación"
+                        <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
                                    Foreground="White"
                                    FontSize="16"
@@ -179,8 +180,11 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Almacén:" Style="{StaticResource LabelStyle}"/>
                             <ComboBox Grid.Column="1"
-                                      x:Name="cmbAlmacen"
-                                      Style="{StaticResource InputComboBoxStyle}"/>
+                                      Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{Binding WarehousesSource}"
+                                      SelectedValue="{Binding SelectedWarehouseId}"
+                                      DisplayMemberPath="Value" SelectedValuePath="Key"
+                                      IsEnabled="{Binding CanEditFields}"/>
                         </Grid>
 
                         <Grid Margin="0,0,0,14">
@@ -190,20 +194,20 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Ubicación:" Style="{StaticResource LabelStyle}"/>
                             <TextBox Grid.Column="1"
-                                     x:Name="txtNombreUbicacion"
-                                     Style="{StaticResource InputTextBoxStyle}"/>
+                                     Style="{StaticResource InputTextBoxStyle}"
+                                     Text="{Binding LocationName, UpdateSourceTrigger=PropertyChanged}"
+                                     IsEnabled="{Binding CanEditFields}"/>
                         </Grid>
 
                         <StackPanel Margin="140,0,0,18">
-                            <CheckBox x:Name="checkIsActive"
-                                      Content="Activo"
-                                      IsChecked="True"
+                            <CheckBox Content="Activo"
+                                      IsChecked="{Binding IsActive}"
                                       Style="{StaticResource CheckStyle}"/>
-                            <CheckBox x:Name="checkIsFiscal"
-                                      Content="Fiscal"
+                            <CheckBox Content="Fiscal"
+                                      IsChecked="{Binding IsFiscal}"
                                       Style="{StaticResource CheckStyle}"/>
-                            <CheckBox x:Name="checkTemperatura"
-                                      Content="Temperatura controlada"
+                            <CheckBox Content="Temperatura controlada"
+                                      IsChecked="{Binding HasControlledTemperature}"
                                       Style="{StaticResource CheckStyle}"/>
                         </StackPanel>
 
@@ -225,8 +229,8 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Alto:" Style="{StaticResource LabelStyle}" Margin="0"/>
                                     <TextBox Grid.Column="1"
-                                             x:Name="txtAltoCm"
-                                             Style="{StaticResource InputTextBoxStyle}"/>
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Grid.Column="2"
                                                Text="cm."
                                                VerticalAlignment="Center"
@@ -242,8 +246,8 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Ancho:" Style="{StaticResource LabelStyle}" Margin="0"/>
                                     <TextBox Grid.Column="1"
-                                             x:Name="txtAnchoCm"
-                                             Style="{StaticResource InputTextBoxStyle}"/>
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Grid.Column="2"
                                                Text="cm."
                                                VerticalAlignment="Center"
@@ -259,8 +263,8 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Profundidad:" Style="{StaticResource LabelStyle}" Margin="0"/>
                                     <TextBox Grid.Column="1"
-                                             x:Name="txtProfundidadCm"
-                                             Style="{StaticResource InputTextBoxStyle}"/>
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Text="{Binding Depth, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Grid.Column="2"
                                                Text="cm."
                                                VerticalAlignment="Center"
@@ -298,36 +302,41 @@
                                             Margin="0,0,12,0"
                                             Background="White">
                                         <StackPanel>
-                                            <RadioButton x:Name="radioRack"
-                                                         Content="Rack"
-                                                         IsChecked="True"
-                                                         Style="{StaticResource RadioStyle}"/>
-                                            <RadioButton x:Name="radioCompartidoType"
-                                                         Content="Compartido"
-                                                         Style="{StaticResource RadioStyle}"/>
+                                            <RadioButton Content="Rack"
+                                                         IsChecked="{Binding IsRack}"
+                                                         Style="{StaticResource RadioStyle}"
+                                                         GroupName="TipoUbicacion"/>
+                                            <RadioButton Content="Compartido"
+                                                         IsChecked="{Binding IsCompartidoType}"
+                                                         Style="{StaticResource RadioStyle}"
+                                                         GroupName="TipoUbicacion"/>
                                         </StackPanel>
                                     </Border>
 
                                     <StackPanel Grid.Column="1" Margin="0,0,12,0">
-                                        <RadioButton x:Name="radioGeneral"
-                                                     Content="General"
-                                                     IsChecked="True"
-                                                     Style="{StaticResource RadioStyle}"/>
-                                        <RadioButton x:Name="radioCompartido"
-                                                     Content="Compartido"
-                                                     Style="{StaticResource RadioStyle}"/>
-                                        <RadioButton x:Name="radioReciboEmbarque"
-                                                     Content="Recibo y embarque"
-                                                     Style="{StaticResource RadioStyle}"/>
+                                        <RadioButton Content="General"
+                                                     IsChecked="{Binding IsGeneral}"
+                                                     Style="{StaticResource RadioStyle}"
+                                                     GroupName="SubTipo"/>
+                                        <RadioButton Content="Compartido"
+                                                     IsChecked="{Binding IsCompartido}"
+                                                     Style="{StaticResource RadioStyle}"
+                                                     GroupName="SubTipo"/>
+                                        <RadioButton Content="Recibo y embarque"
+                                                     IsChecked="{Binding IsReciboYEmbarque}"
+                                                     Style="{StaticResource RadioStyle}"
+                                                     GroupName="SubTipo"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2">
-                                        <RadioButton x:Name="radioCuarentena"
-                                                     Content="Cuarentena"
-                                                     Style="{StaticResource RadioStyle}"/>
-                                        <RadioButton x:Name="radioEmbarque"
-                                                     Content="Embarque"
-                                                     Style="{StaticResource RadioStyle}"/>
+                                        <RadioButton Content="Cuarentena"
+                                                     IsChecked="{Binding IsCuarentena}"
+                                                     Style="{StaticResource RadioStyle}"
+                                                     GroupName="SubTipo"/>
+                                        <RadioButton Content="Embarque"
+                                                     IsChecked="{Binding IsEmbarque}"
+                                                     Style="{StaticResource RadioStyle}"
+                                                     GroupName="SubTipo"/>
                                     </StackPanel>
                                 </Grid>
 
@@ -340,13 +349,14 @@
                                         Width="210"
                                         HorizontalAlignment="Left">
                                     <StackPanel>
-                                        <RadioButton x:Name="radioDoble"
-                                                     Content="Doble"
-                                                     Style="{StaticResource RadioStyle}"/>
-                                        <RadioButton x:Name="radioSencillo"
-                                                     Content="Sencillo"
-                                                     IsChecked="True"
-                                                     Style="{StaticResource RadioStyle}"/>
+                                        <RadioButton Content="Doble"
+                                                     IsChecked="{Binding IsDoble}"
+                                                     Style="{StaticResource RadioStyle}"
+                                                     GroupName="Tamano"/>
+                                        <RadioButton Content="Sencillo"
+                                                     IsChecked="{Binding IsSencillo}"
+                                                     Style="{StaticResource RadioStyle}"
+                                                     GroupName="Tamano"/>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -358,12 +368,12 @@
                                 Background="#FCFCFD"
                                 Padding="16">
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox x:Name="checkPaso"
-                                          Content="Paso"
+                                <CheckBox Content="Paso"
+                                          IsChecked="{Binding HasPaso}"
                                           Style="{StaticResource CheckStyle}"
                                           Margin="0,0,26,0"/>
-                                <CheckBox x:Name="checkCortina"
-                                          Content="Cortina"
+                                <CheckBox Content="Cortina"
+                                          IsChecked="{Binding HasCortina}"
                                           Style="{StaticResource CheckStyle}"
                                           Margin="0"/>
                             </StackPanel>
@@ -381,11 +391,10 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Margin="0,0,24,0">
-                        <Button x:Name="btnSave"
-                                Content="Guardar"
+                        <Button Content="Guardar"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="0,0,10,0"
-                                Click="btnSave_Click"/>
+                                Command="{Binding SaveCommand}"/>
                         <Button Content="Cerrar"
                                 Style="{StaticResource SecondaryButtonStyle}"
                                 Click="BtnCerrar_Click"/>

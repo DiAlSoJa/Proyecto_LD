@@ -7,6 +7,10 @@
              
              Loaded="UserControl_Loaded">
 
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -53,16 +57,17 @@
                          Padding="10,0"
                          FontSize="13"                      
                          ToolTip="Buscar almacén..." />
-                <Button x:Name="btnNuevo"
-	                Grid.Column="3"
-	                Height="38"
-	                Padding="12,0"
-	                Click="BtnNuevo_Click"
-	                Background="#F3F4F6"
-	                Foreground="#374151"
-	                BorderBrush="#D1D5DB"
-	                BorderThickness="1"
-	                Cursor="Hand">
+				<Button x:Name="btnNuevo"
+					Grid.Column="3"
+					Height="38"
+					Padding="12,0"
+					Click="BtnNuevo_Click"
+					Visibility="{Binding CanCreate, Converter={StaticResource BoolToVis}}"
+					Background="#F3F4F6"
+					Foreground="#374151"
+					BorderBrush="#D1D5DB"
+					BorderThickness="1"
+					Cursor="Hand">
 
 	                <Button.Resources>
 		                <Style TargetType="Border">
@@ -90,6 +95,7 @@
                     Height="38"
                     Padding="12,0"
                     Click="BtnNuevoMasivo_Click"
+                    Visibility="{Binding CanCreate, Converter={StaticResource BoolToVis}}"
                     Background="#F3F4F6"
                     Foreground="#374151"
                     BorderBrush="#D1D5DB"
@@ -116,16 +122,17 @@
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="btnEditar"
-	                Grid.Column="7"
-	                Height="38"
-	                Padding="12,0"
-	                Click="BtnEditar_Click"
-	                Background="#F3F4F6"
-	                Foreground="#374151"
-	                BorderBrush="#D1D5DB"
-	                BorderThickness="1"
-	                Cursor="Hand">
+				<Button x:Name="btnEditar"
+					Grid.Column="7"
+					Height="38"
+					Padding="12,0"
+					Click="BtnEditar_Click"
+					Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}"
+					Background="#F3F4F6"
+					Foreground="#374151"
+					BorderBrush="#D1D5DB"
+					BorderThickness="1"
+					Cursor="Hand">
 
 	                <Button.Resources>
 		                <Style TargetType="Border">
@@ -147,16 +154,17 @@
 	                </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnActualizar"
-		                Grid.Column="9"
-		                Height="38"
-		                Padding="12,0"
-		                Click="BtnActualizar_Click"
-		                Background="#F3F4F6"
-		                Foreground="#374151"
-		                BorderBrush="#D1D5DB"
-		                BorderThickness="1"
-		                Cursor="Hand">
+				<Button x:Name="BtnActualizar"
+						Grid.Column="9"
+						Height="38"
+						Padding="12,0"
+						Command="{Binding CargarDatosCommand}"
+						Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
+						Background="#F3F4F6"
+						Foreground="#374151"
+						BorderBrush="#D1D5DB"
+						BorderThickness="1"
+						Cursor="Hand">
 
 	                <Button.Resources>
 		                <Style TargetType="Border">
@@ -194,8 +202,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="txtStatus"
-                           Text="Cargando ubicaciones..."
+                <TextBlock Text="{Binding StatusText}"
                            FontSize="12"
                            Foreground="#6B7280"
                            Margin="4,0,0,8"/>
@@ -219,6 +226,7 @@
                    HeadersVisibility="Column"
                    GridLinesVisibility="Vertical"                                
                    SelectionChanged="dg_SelectionChanged"
+                   Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
                    RowHeight="28"
                    ColumnHeaderHeight="40"
                                AlternatingRowBackground="#F8FAFC"
@@ -245,16 +253,14 @@
                         </DataGrid>
 
                         <!-- Loader -->
-                        <Border x:Name="LoadingOverlay"
-                                 Background="#80FFFFFF"
-                                 Visibility="Collapsed">
+                        <Border Background="#80FFFFFF"
+                                 Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
                             <StackPanel HorizontalAlignment="Center"
                          VerticalAlignment="Center">
                                 <ProgressBar IsIndeterminate="True"
                               Width="220"
                               Height="18"/>
-                                <TextBlock x:Name="TxtLoading"
-                            Text="Trayendo Almacenes..."
+                                <TextBlock Text="{Binding LoadingMessage}"
                             HorizontalAlignment="Center"
                             Margin="0,12,0,0"
                             FontSize="14"

@@ -4,8 +4,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             
+
              Loaded="UserControl_Loaded">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
 
     <Grid >
         <Grid.RowDefinitions>
@@ -56,6 +60,7 @@
         Height="38"
         Padding="12,0"
         Click="BtnNuevo_Click"
+        Visibility="{Binding CanCreate, Converter={StaticResource BoolToVis}}"
         Background="#F3F4F6"
         Foreground="#374151"
         BorderBrush="#D1D5DB"
@@ -87,6 +92,7 @@
         Height="38"
         Padding="12,0"
         Click="BtnEditar_Click"
+        Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}"
         Background="#F3F4F6"
         Foreground="#374151"
         BorderBrush="#D1D5DB"
@@ -117,7 +123,8 @@
         Grid.Column="7"
         Height="38"
         Padding="12,0"
-        Click="BtnActualizar_Click"
+        Command="{Binding CargarDatosCommand}"
+        Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
         Background="#F3F4F6"
         Foreground="#374151"
         BorderBrush="#D1D5DB"
@@ -159,8 +166,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="txtStatus"
-                           Text="Cargando almacenes..."
+                <TextBlock Text="{Binding StatusText}"
                            FontSize="12"
                            Foreground="#6B7280"
                            Margin="4,0,0,8"/>
@@ -184,6 +190,7 @@
                    HeadersVisibility="Column"
                    GridLinesVisibility="Vertical"                                
                    SelectionChanged="dgAlmacenes_SelectionChanged"
+                   Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
                    RowHeight="28"
                    ColumnHeaderHeight="40"
                     AlternatingRowBackground="#F8FAFC"
@@ -210,16 +217,14 @@
                         </DataGrid>
 
                         <!-- Loader -->
-                        <Border x:Name="LoadingOverlay"
-                                 Background="#80FFFFFF"
-                                 Visibility="Collapsed">
+                        <Border Background="#80FFFFFF"
+                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
                             <StackPanel HorizontalAlignment="Center"
                          VerticalAlignment="Center">
                                 <ProgressBar IsIndeterminate="True"
                               Width="220"
                               Height="18"/>
-                                <TextBlock x:Name="TxtLoading"
-                            Text="Trayendo Almacenes..."
+                                <TextBlock Text="{Binding LoadingMessage}"
                             HorizontalAlignment="Center"
                             Margin="0,12,0,0"
                             FontSize="14"

@@ -1,39 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using LD.Client.Configuration;
-using LD.Client.Services;
-using LD.Contracts.Client;
-using LD.Contracts.Constants;
 using LD.Contracts.Warehouse;
+using LD.FormsX.Features.Almacen.ViewModels;
 using LD.FormsX.Helpers;
 using LD.FormsX.Views.Almacen;
-using LD.FormsX.Views.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LDForms.Views
 {
     public partial class AlmacenesView : UserControl
     {
-        private readonly WarehouseService _warehouseService;
         private readonly IServiceProvider _serviceProvider;
-
         private readonly WpfGridFilter<WarehouseDto> _gridFilter;
-        private ICollectionView _almacenesView;
-
-        private WarehouseDto? _selectedWarehouse;
         private bool _loaded;
-        public AlmacenesView(WarehouseService warehouseService, IServiceProvider serviceProvider)
+
+        private AlmacenesViewModel ViewModel => (AlmacenesViewModel)DataContext;
+
+        public AlmacenesView(AlmacenesViewModel viewModel, IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _warehouseService = warehouseService;
+            DataContext = viewModel;
             _serviceProvider = serviceProvider;
+
             _gridFilter = new WpfGridFilter<WarehouseDto>(dgAlmacenes, txtBuscar);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
@@ -49,6 +38,7 @@ namespace LDForms.Views
                 { "IsProvider", 120 }
             });
 
+            viewModel.OnDataLoaded += data => _gridFilter.SetData(data);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -56,81 +46,12 @@ namespace LDForms.Views
             if (_loaded) return;
             _loaded = true;
 
-            AplicarPermisos();
-            await CargarDatosConLoaderAsync("Trayendo almacenes...");
-        }
-
-        private void AplicarPermisos()
-        {
-            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.Warehouse_Create) ? Visibility.Visible : Visibility.Collapsed;
-            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.Warehouse_Update) ? Visibility.Visible : Visibility.Collapsed;
-            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Warehouse_View)   ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private async Task CargarDatosConLoaderAsync(string mensaje)
-        {
-            if (!UserData.HasPermission(PermissionKeys.Warehouse_View))
-            {
-                dgAlmacenes.Visibility = Visibility.Collapsed;
-                return;
-            }
-
-            try
-            {
-                MostrarLoader(true, mensaje);
-                await CargarDatosAsync();
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-            finally
-            {
-                MostrarLoader(false);
-            }
-        }
-
-        private void MostrarLoader(bool mostrar, string mensaje = "Cargando...")
-        {
-            TxtLoading.Text = mensaje;
-            LoadingOverlay.Visibility = mostrar ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private async Task CargarDatosAsync()
-        {
-            var result = await _warehouseService.GetWarehouses();
-
-            if (!result.IsSuccess)
-            {
-                DialogHelper.ShowWarning(result.Message);
-                return;
-            }
-
-            _gridFilter.SetData(result.Data);
-            _selectedWarehouse = null;
-            txtStatus.Text = $"Registros: {result.Data.Count}";
-        }
-
-        private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
-        {
-            await CargarDatosConLoaderAsync("Trayendo almacenes...");
-        }
-
-        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
-        {
-            _gridFilter.ClearFilter();
+            await ViewModel.CargarDatosAsync();
         }
 
         private void dgAlmacenes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
-            {
-                _selectedWarehouse = _gridFilter.SelectedItem;
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
+            ViewModel.SelectedWarehouse = _gridFilter.SelectedItem;
         }
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
@@ -138,31 +59,21 @@ namespace LDForms.Views
             var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
             dialog.Owner = Window.GetWindow(this);
 
-            var result = dialog.ShowDialog();
-
-            if (result == true)
-            {
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
+            if (dialog.ShowDialog() == true)
+                await ViewModel.CargarDatosAsync();
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedWarehouse is null)
+            if (ViewModel.SelectedWarehouse is null)
                 return;
 
             var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
             dialog.Owner = Window.GetWindow(this);
-            dialog.SetWarehouse(_selectedWarehouse);
+            dialog.SetWarehouse(ViewModel.SelectedWarehouse);
 
-            var result = dialog.ShowDialog();
-
-            if (result == true)
-            {
-                await CargarDatosConLoaderAsync("Trayendo almacenes...");
-            }
+            if (dialog.ShowDialog() == true)
+                await ViewModel.CargarDatosAsync();
         }
-
-       
     }
 }

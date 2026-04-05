@@ -126,8 +126,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtHeaderTitle"
-                                   Text="Nuevo usuario"
+                        <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
                                    Foreground="White"
                                    FontSize="16" FontWeight="SemiBold"/>
@@ -161,11 +160,13 @@
 
                     <!-- Nombre de usuario -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre de usuario:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox x:Name="txtUsername" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"
+                             Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!-- Nombre completo -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Nombre completo:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox x:Name="txtName" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"
+                             Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!-- Contraseña -->
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Contraseña:" Style="{StaticResource LabelStyle}"/>
@@ -177,17 +178,18 @@
 
                     <!-- Rol -->
                     <TextBlock Grid.Row="8" Grid.Column="0" Text="Rol:" Style="{StaticResource LabelStyle}"/>
-                    <ComboBox x:Name="cmbRol" Grid.Row="8" Grid.Column="1"
+                    <ComboBox Grid.Row="8" Grid.Column="1"
                               Style="{StaticResource InputComboStyle}"
+                              ItemsSource="{Binding RolesSource}"
+                              SelectedValue="{Binding SelectedRoleId}"
                               DisplayMemberPath="Value"
                               SelectedValuePath="Key"/>
 
                     <!-- Activo -->
-                    <CheckBox x:Name="isActive"
-                              Grid.Row="10" Grid.Column="1"
+                    <CheckBox Grid.Row="10" Grid.Column="1"
                               Content="Activo"
                               FontSize="14"
-                              IsChecked="True"
+                              IsChecked="{Binding IsActive}"
                               VerticalAlignment="Center"/>
                 </Grid>
 
@@ -201,8 +203,7 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Margin="0,0,24,0">
-                        <Button x:Name="btnSave"
-                                Content="Guardar"
+                        <Button Content="Guardar"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="0,0,10,0"
                                 Click="BtnSave_Click"/>

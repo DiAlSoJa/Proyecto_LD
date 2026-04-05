@@ -1,6 +1,11 @@
 ﻿using LD.Client;
 using LD.Client.Services;
 using LD.Forms.Configuration;
+using LD.FormsX.Features.Almacen.ViewModels;
+using LD.FormsX.Features.Clientes.ViewModels;
+using LD.FormsX.Features.Proyectos.ViewModels;
+using LD.FormsX.Features.Ubicaciones.ViewModels;
+using LD.FormsX.Features.Usuarios.ViewModels;
 using LD.FormsX.Movimientos;
 using LD.FormsX.Views;
 using LD.FormsX.Views.Almacen;
@@ -114,6 +119,17 @@ namespace LD.FormsX
             //services.AddSingleton<TabService>();
 
             services.AddTransient<LoginViewModel>();
+            services.AddTransient<AlmacenesViewModel>();
+            services.AddTransient<NuevoAlmacenViewModel>();
+            services.AddTransient<ProyectosViewModel>();
+            services.AddTransient<NuevoProyectoViewModel>();
+            services.AddTransient<ClientesViewModel>();
+            services.AddTransient<NuevoClienteViewModel>();
+            services.AddTransient<UbicacionesViewModel>();
+            services.AddTransient<NuevaUbicacionViewModel>();
+            services.AddTransient<UsuariosViewModel>();
+            services.AddTransient<NuevoUsuarioViewModel>();
+            services.AddTransient<UsuarioAlmacenViewModel>();
             services.AddTransient<MainWindow>();
             services.AddTransient<DashBoard>();
             services.AddTransient<CatalogosClientesView>();

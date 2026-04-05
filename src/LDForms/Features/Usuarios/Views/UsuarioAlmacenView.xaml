@@ -107,8 +107,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtHeaderTitle"
-                                   Text="Almacenes del usuario"
+                        <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
                                    Foreground="White"
                                    FontSize="16" FontWeight="SemiBold"/>
@@ -146,6 +145,7 @@
                                 BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="6">
                             <DataGrid x:Name="dgDisponibles"
                                       AutoGenerateColumns="True"
+                                      ItemsSource="{Binding Disponibles}"
                                       SelectionMode="Single" SelectionUnit="FullRow"
                                       CanUserAddRows="False" CanUserDeleteRows="False"
                                       IsReadOnly="True" HeadersVisibility="Column"
@@ -175,19 +175,17 @@
                     <StackPanel Grid.Column="1"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center">
-                        <Button x:Name="btnAgregar"
-                                Content="›"
+                        <Button Content="›"
                                 Style="{StaticResource ActionButtonStyle}"
                                 Background="#2563EB" Foreground="White"
                                 Margin="0,0,0,10"
                                 ToolTip="Asignar almacén"
-                                Click="BtnAgregar_Click"/>
-                        <Button x:Name="btnQuitar"
-                                Content="‹"
+                                Command="{Binding AgregarCommand}"/>
+                        <Button Content="‹"
                                 Style="{StaticResource ActionButtonStyle}"
                                 Background="#EF4444" Foreground="White"
                                 ToolTip="Quitar almacén"
-                                Click="BtnQuitar_Click"/>
+                                Command="{Binding QuitarCommand}"/>
                     </StackPanel>
 
                     <!-- Almacenes asignados -->
@@ -208,6 +206,7 @@
                                 BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="6">
                             <DataGrid x:Name="dgAsignados"
                                       AutoGenerateColumns="True"
+                                      ItemsSource="{Binding Asignados}"
                                       SelectionMode="Single" SelectionUnit="FullRow"
                                       CanUserAddRows="False" CanUserDeleteRows="False"
                                       IsReadOnly="True" HeadersVisibility="Column"

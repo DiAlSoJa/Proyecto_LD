@@ -11,7 +11,8 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
-        Background="Transparent">
+        Background="Transparent"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <Style x:Key="LabelStyle" TargetType="TextBlock">
@@ -120,7 +121,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Nuevo almacén"
+                        <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
                                    Foreground="White"
                                    FontSize="16"
@@ -164,26 +165,34 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre del almacén:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtWarehouseName" Style="{StaticResource InputTextBoxStyle}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"
+                             Text="{Binding WarehouseName, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Domicilio:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtAddress" Style="{StaticResource InputTextBoxStyle}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"
+                             Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtcolonia" Style="{StaticResource InputTextBoxStyle}"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"
+                             Text="{Binding Neighborhood, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Row="6" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox Grid.Row="6" Grid.Column="1" x:Name="txtCity" Style="{StaticResource InputTextBoxStyle}"/>
+                    <TextBox Grid.Row="6" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"
+                             Text="{Binding City, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Row="8" Grid.Column="0" Text="CP:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox Grid.Row="8" Grid.Column="1" x:Name="txtZipCode" Style="{StaticResource InputTextBoxStyle}" Width="140" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Row="8" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Width="140" HorizontalAlignment="Left"
+                             Text="{Binding ZipCode, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Row="10" Grid.Column="0" Text="Capacidad:" Style="{StaticResource LabelStyle}"/>
-                    <TextBox Grid.Row="10" Grid.Column="1" x:Name="txtCapacity" Style="{StaticResource InputTextBoxStyle}" Width="140" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Row="10" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Width="140" HorizontalAlignment="Left"
+                             Text="{Binding Capacity, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <StackPanel Grid.Row="12" Grid.Column="1" Margin="0,4,0,0">
-                        <CheckBox x:Name="isProduction" Content="Producción" Style="{StaticResource CheckStyle}"/>
-                        <CheckBox x:Name="isActive" Content="Activo" Style="{StaticResource CheckStyle}"/>
+                        <CheckBox Content="Producción" Style="{StaticResource CheckStyle}"
+                                  IsChecked="{Binding IsProduction}"/>
+                        <CheckBox Content="Activo" Style="{StaticResource CheckStyle}"
+                                  IsChecked="{Binding IsActive}"/>
                     </StackPanel>
                 </Grid>
 
@@ -197,11 +206,10 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Margin="0,0,24,0">
-                        <Button x:Name="btnSave"
-                                Content="Guardar"
+                        <Button Content="Guardar"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="0,0,10,0"
-                                Click="btnSave_Click"/>
+                                Command="{Binding SaveCommand}"/>
                         <Button Content="Cerrar"
                                 Style="{StaticResource SecondaryButtonStyle}"
                                 Click="BtnCerrar_Click"/>

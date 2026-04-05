@@ -8,6 +8,10 @@
              d:DesignHeight="700" d:DesignWidth="1200"
              Loaded="UserControl_Loaded">
 
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -45,6 +49,7 @@
                 <!-- Nuevo -->
                 <Button x:Name="btnNuevo" Grid.Column="3" Height="38" Padding="12,0"
                         Click="BtnNuevo_Click" Background="#F3F4F6" Foreground="#374151"
+                        Visibility="{Binding CanCreate, Converter={StaticResource BoolToVis}}"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
@@ -59,6 +64,7 @@
                 <!-- Editar -->
                 <Button x:Name="btnEditar" Grid.Column="5" Height="38" Padding="12,0"
                         Click="BtnEditar_Click" Background="#F3F4F6" Foreground="#374151"
+                        Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
@@ -72,7 +78,9 @@
 
                 <!-- Actualizar -->
                 <Button x:Name="BtnActualizar" Grid.Column="7" Height="38" Padding="12,0"
-                        Click="BtnActualizar_Click" Background="#F3F4F6" Foreground="#374151"
+                        Command="{Binding CargarDatosCommand}"
+                        Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
+                        Background="#F3F4F6" Foreground="#374151"
                         BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
@@ -96,8 +104,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="txtStatus"
-                           Text="Cargando proyectos..."
+                <TextBlock Text="{Binding StatusText}"
                            FontSize="12" Foreground="#6B7280" Margin="4,0,0,8"/>
 
                 <Border Grid.Row="1"
@@ -111,8 +118,9 @@
                                   IsReadOnly="True" HeadersVisibility="Column"
                                   GridLinesVisibility="Vertical"
                                   SelectionChanged="DgProyectos_SelectionChanged"
-                                  RowHeight="28" ColumnHeaderHeight="40"
-                                  FontSize="12" VerticalGridLinesBrush="#D9D9D9">
+                                    Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
+                                    RowHeight="28" ColumnHeaderHeight="40"
+                                    FontSize="12" VerticalGridLinesBrush="#D9D9D9">
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="Background" Value="#EEF1F5"/>
@@ -130,12 +138,11 @@
                         </DataGrid>
 
                         <!-- Loader -->
-                        <Border x:Name="LoadingOverlay"
-                                Background="#80FFFFFF" Visibility="Collapsed">
+                        <Border Background="#80FFFFFF"
+                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <ProgressBar IsIndeterminate="True" Width="220" Height="18"/>
-                                <TextBlock x:Name="TxtLoading"
-                                           Text="Trayendo proyectos..."
+                                <TextBlock Text="{Binding LoadingMessage}"
                                            HorizontalAlignment="Center" Margin="0,12,0,0"
                                            FontSize="14" FontWeight="SemiBold" Foreground="#24344D"/>
                             </StackPanel>
