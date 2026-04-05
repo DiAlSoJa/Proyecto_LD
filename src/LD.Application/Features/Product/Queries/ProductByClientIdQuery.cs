@@ -7,13 +7,13 @@ using MediatR;
 
 namespace LD.Application.Features.Product.Queries
 {
-    public class ProductByClientIdQuery : IRequest<Result<List<DropDownDto>?>>
+    public class ProductByClientIdQuery : IRequest<Result<List<ProductAutocompleteDto>?>>
     {
         public int ClientId { get; set; }
         public int ProjectId { get; set; }
     }
 
-    public class ProductByClientIdQueryHandler : IRequestHandler<ProductByClientIdQuery, Result<List<DropDownDto>?>>
+    public class ProductByClientIdQueryHandler : IRequestHandler<ProductByClientIdQuery, Result<List<ProductAutocompleteDto>?>>
     {
         private readonly IProductRepository _productRepository;
         private readonly AutoMapper.IMapper _mapper;
@@ -24,14 +24,14 @@ namespace LD.Application.Features.Product.Queries
             _mapper = mapper;
         }
 
-        public async Task<Result<List<DropDownDto>?>> Handle(ProductByClientIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<ProductAutocompleteDto>?>> Handle(ProductByClientIdQuery request, CancellationToken cancellationToken)
         {
             var asn = await _productRepository.GetProductByClientAsync(request.ClientId, request.ProjectId);
             if (asn is null)
-                return Result<List<DropDownDto>?>.Failure("No existe el ProductDto", new System.Collections.Generic.List<string> { "No existe el ProductDto" }, 404);
+                return Result<List<ProductAutocompleteDto>?>.Failure("No existe el Producto", new System.Collections.Generic.List<string> { "No existe el Producto" }, 404);
 
-            var dto = _mapper.Map<List<DropDownDto>>(asn);
-            return Result<List<DropDownDto>?>.Success(dto, "ProductDto obtenido correctamente");
+            var dto = _mapper.Map<List<ProductAutocompleteDto>>(asn);
+            return Result<List<ProductAutocompleteDto>?>.Success(dto, "ProductDto obtenido correctamente");
         }
     }
 }

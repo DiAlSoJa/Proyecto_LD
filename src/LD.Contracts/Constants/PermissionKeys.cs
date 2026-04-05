@@ -76,10 +76,10 @@ public static class PermissionKeys
     public const string Vehicle_Update = "security.vehicles.update";
     public const string Vehicle_Delete = "security.vehicles.delete";
 
-    public const string Asn_View   = "asn.read";
-    public const string Asn_Create = "asn.create";
-    public const string Asn_Update = "asn.update";
-    public const string Asn_Delete = "asn.delete";
+    public const string Asn_View   = "users.read";//"asn.read";
+    public const string Asn_Create = "users.read";//"asn.create";
+    public const string Asn_Update = "users.read";//"asn.update";
+    public const string Asn_Delete = "users.read";//"asn.delete";
 
 
 

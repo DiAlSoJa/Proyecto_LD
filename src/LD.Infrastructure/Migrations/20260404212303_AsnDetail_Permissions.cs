@@ -735,7 +735,7 @@ namespace LD.Infrastructure.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
-            migrationBuilder.AddForeignKey(
+            /*migrationBuilder.AddForeignKey(
                 name: "FK_UserRoles_Roles_RoleId",
                 schema: "Auth",
                 table: "UserRoles",
@@ -743,7 +743,7 @@ namespace LD.Infrastructure.Migrations
                 principalSchema: "Auth",
                 principalTable: "Roles",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade);*/
         }
 
         /// <inheritdoc />

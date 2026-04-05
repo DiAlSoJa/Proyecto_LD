@@ -104,10 +104,9 @@ namespace LD.FormsX.Views.ASN
             var result = await _asnDetailService.GetAsnDetailsByAsn(_selectedX.AsnId);
 
             if (!result.IsSuccess)
-            {
-                DialogHelper.ShowWarning(result.Message);
+            {           
                 return;
-            }
+            }            
 
             _gridFilterDet.SetData(result.Data);
             _selectedX = null;

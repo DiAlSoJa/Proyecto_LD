@@ -1,36 +1,48 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
 using LD.Client.Services;
 using LD.Contracts.ASN;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.FormsX.Helpers;
-using LD.FormsX.ViewModels.ASN;
+using LD.FormsX.Model;
+using LD.FormsX.Model.Lookup;
 using LD.FormsX.Views.Articulos;
+using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace LD.FormsX.Views.Dialogs
 {
     public partial class NuevoASNView : Window
     {
         private readonly AsnService _asnService;
+        private readonly AsnDetailService _asnDetailService;
         private readonly IServiceProvider _serviceProvider;
         private readonly LookupService _lookupService;
         private readonly ProductService _productService;
         private AsnDto? AsnSelected;
         private bool _cargandoDatos = false;
-        public ObservableCollection<AsnDetailRowVm> DetailItems { get; set; } = new();
+        
+        private List<LookupItem> _productLookupSource = new();
+        private readonly WpfGridFilter<AsnDetailDto> _gridFilterDet;
+        private bool _isUpdatingProductText;
 
-        public NuevoASNView(AsnService asnService,ProductService productService, LookupService lookupService,IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService,IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
+            _asnDetailService = asnDetailService;
             _serviceProvider = serviceProvider;
             _lookupService = lookupService;
             _productService = productService;
             DataContext = this;
+            _gridFilterDet = new WpfGridFilter<AsnDetailDto>(dgDetail);
             HideScanSection();
         }
 
@@ -46,6 +58,7 @@ namespace LD.FormsX.Views.Dialogs
                 DetailItems.Add(new AsnDetailRowVm());*/
 
             await CargarDatosAsync();
+            await CargarDatosAsyncDet();
         }
 
         private async Task CargarDatosAsync()
@@ -77,6 +90,13 @@ namespace LD.FormsX.Views.Dialogs
                 txtChofer.Text = item.DriverName;
                 txtPlacasVehiculo.Text = item.VehiclePlate;
                 txtSelloTransporte.Text = item.SealNumber;
+
+
+
+               
+
+                await LoadProductsForSelectedClientProjectAsync();
+
             }
             catch (Exception ex)
             {
@@ -87,6 +107,20 @@ namespace LD.FormsX.Views.Dialogs
                 _cargandoDatos = false;
             }
         }
+
+        private async Task CargarDatosAsyncDet()
+        {
+            var items = await _asnDetailService.GetAsnDetailsByAsn(AsnSelected.AsnId);
+
+            if (!items.IsSuccess)
+            {               
+                return;
+            }
+           
+            
+        //_gridFilterDet.SetData(result.Data);
+        }
+
 
 
         protected override async void OnContentRendered(EventArgs e)
@@ -167,6 +201,14 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             await SetCombosProjects();
+            
+        }
+        private async void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_cargandoDatos)
+                return;
+
+            await LoadProductsForSelectedClientProjectAsync();
         }
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -248,41 +290,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             // Guardar ASN
         }
-        private async void BtnBuscarProductoDetalle_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (cmbCliente.SelectedValue == null || !int.TryParse(cmbCliente.SelectedValue.ToString(), out int clientId) || clientId <= 0)
-                {
-                    DialogHelper.ShowWarning("Primero selecciona un cliente.");
-                    return;
-                }
-
-                if (cmbProyecto.SelectedValue == null || !int.TryParse(cmbProyecto.SelectedValue.ToString(), out int projectId) || projectId <= 0)
-                {
-                    DialogHelper.ShowWarning("Primero selecciona un proyecto.");
-                    return;
-                }
-
-                if (sender is not FrameworkElement fe || fe.Tag is not AsnDetailRowVm row)
-                    return;
-
-                var dlg = new ProductLookupWindow(_productService, clientId, projectId);
-                dlg.Owner = this;
-
-                var result = dlg.ShowDialog();
-                if (result == true && dlg.SelectedProduct != null)
-                {
-                    row.ProductId = dlg.SelectedProduct.ProductId;
-                    row.NumeroParte = dlg.SelectedProduct.PartNumber ?? string.Empty;
-                    row.Descripcion = dlg.SelectedProduct.Description ?? string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-        }
+       
         private void HideScanSection()
         {
             btnEscanear.Visibility = Visibility.Collapsed;
@@ -330,7 +338,61 @@ namespace LD.FormsX.Views.Dialogs
                 SealNumber = txtSelloTransporte.Text.Trim()
             };
         }
+        private void dgDetail_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
+        {
+           
+        }
 
+        private async Task LoadProductsForSelectedClientProjectAsync()
+        {
+            try
+            {
+                _productLookupSource.Clear();
+
+                if (cmbCliente.SelectedValue == null || cmbProyecto.SelectedValue == null)
+                    return;
+
+                if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clientId) || clientId <= 0)
+                    return;
+
+                if (!int.TryParse(cmbProyecto.SelectedValue.ToString(), out int projectId) || projectId <= 0)
+                    return;
+
+                var response = await _productService.GetProductByClientId(clientId, projectId); // ajusta al método real
+
+                if (!response.IsSuccess || response.Data == null)
+                    return;
+                _productLookupSource = response.Data                 
+                 .Select(x => new LookupItem
+                 {
+                     Id = x.ItemId,
+                     Code = x.NumeroParte ?? string.Empty,
+                     Description = x.Descripcion ?? string.Empty,
+                     Data = x
+                 })
+                 .OrderBy(x => x.Code)
+                 .ToList();
+
+              
+
+                dgDetail.Items.Refresh();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+
+
+
+
+
+
+       
 
 
     }

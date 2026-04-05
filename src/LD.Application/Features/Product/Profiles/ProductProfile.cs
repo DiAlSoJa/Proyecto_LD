@@ -77,10 +77,12 @@ namespace LD.Application.Features.Product.Profiles
 
             CreateMap<LD.Domain.Entities.Product, ProductRequest>();
 
-            CreateMap<LD.Domain.Entities.Product, DropDownDto>()
-             .ForMember(dest => dest.Key,
+            CreateMap<LD.Domain.Entities.Product, ProductAutocompleteDto>()
+             .ForMember(dest => dest.ItemId,
+                 opt => opt.MapFrom(src => src.ProductId))
+             .ForMember(dest => dest.NumeroParte,
                  opt => opt.MapFrom(src => src.PartNumber))
-             .ForMember(dest => dest.Value,
+             .ForMember(dest => dest.Descripcion,
                  opt => opt.MapFrom(src => src.Description));
 
 

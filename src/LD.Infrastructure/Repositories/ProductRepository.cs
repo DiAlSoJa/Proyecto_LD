@@ -36,11 +36,11 @@ namespace LD.Infrastructure.Repositories
                 .Include(x=>x.StorageType)
                 .ToListAsync();
         }
-        async Task<List<DropDownDto>> IProductRepository.GetProductByClientAsync(int clientId, int projectId)
+        async Task<List<ProductAutocompleteDto>> IProductRepository.GetProductByClientAsync(int clientId, int projectId)
         {
             return await _context.items                
                 .Where(p => p.ClientId == clientId && p.ProjectId == projectId)
-                .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<ProductAutocompleteDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
