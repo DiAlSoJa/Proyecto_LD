@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:LD.FormsX.Controls"
+        xmlns:common="clr-namespace:LD.FormsX.Features.Common"  
         mc:Ignorable="d"
         Title="ASN"
         Height="900"
@@ -292,16 +292,16 @@
                                     </Grid.RowDefinitions>
 
                                     <Button x:Name="btnBuscarVehiculo"
-            Grid.Row="0"
-            Grid.Column="1"
-            Height="38"
-            Padding="12,0"
-            Click="BtnBuscarVehiculo_Click"
-            Background="#F3F4F6"
-            Foreground="#374151"
-            BorderBrush="#D1D5DB"
-            BorderThickness="1"
-            Cursor="Hand">
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Height="38"
+                                        Padding="12,0"
+                                        Click="BtnBuscarVehiculo_Click"
+                                        Background="#F3F4F6"
+                                        Foreground="#374151"
+                                        BorderBrush="#D1D5DB"
+                                        BorderThickness="1"
+                                        Cursor="Hand">
                                         <Button.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="CornerRadius" Value="6"/>
@@ -309,86 +309,86 @@
                                         </Button.Resources>
 
                                         <StackPanel Orientation="Horizontal"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
                                             <TextBlock FontFamily="Segoe MDL2 Assets"
-                       Text="&#xE721;"
-                       Foreground="#2563EB"
-                       Margin="0,0,6,0"
-                       FontSize="14"/>
+                                               Text="&#xE721;"
+                                               Foreground="#2563EB"
+                                               Margin="0,0,6,0"
+                                               FontSize="14"/>
                                             <TextBlock Text="Buscar Vehiculo"/>
                                         </StackPanel>
                                     </Button>
 
                                     <TextBlock Grid.Row="1"
-               Grid.Column="0"
-               Text="Línea de Transporte:"
-               Style="{StaticResource LabelStyle}"
-               Margin="0,12,8,0"
-               VerticalAlignment="Top"/>
+                                           Grid.Column="0"
+                                           Text="Línea de Transporte:"
+                                           Style="{StaticResource LabelStyle}"
+                                           Margin="0,12,8,0"
+                                           VerticalAlignment="Top"/>
                                     <TextBox x:Name="txtLineaTransporte"
-             Grid.Row="1"
-             Grid.Column="1"
-             Grid.ColumnSpan="2"
-             Style="{StaticResource InputTextBoxStyle}"/>
+                                         Grid.Row="1"
+                                         Grid.Column="1"
+                                         Grid.ColumnSpan="2"
+                                         Style="{StaticResource InputTextBoxStyle}"/>
 
                                     <TextBlock Grid.Row="2"
-               Grid.Column="0"
-               Text="Tipo de vehículo:"
-               Style="{StaticResource LabelStyle}"
-               Margin="0,12,8,0"
-               VerticalAlignment="Top"/>
+                                       Grid.Column="0"
+                                       Text="Tipo de vehículo:"
+                                       Style="{StaticResource LabelStyle}"
+                                       Margin="0,12,8,0"
+                                       VerticalAlignment="Top"/>
                                     <TextBox x:Name="txtTipoVehiculo"
-             Grid.Row="2"
-             Grid.Column="1"
-             Width="200"
-             HorizontalAlignment="Left"
-             Style="{StaticResource InputTextBoxStyle}"/>
+                                         Grid.Row="2"
+                                         Grid.Column="1"
+                                         Width="200"
+                                         HorizontalAlignment="Left"
+                                         Style="{StaticResource InputTextBoxStyle}"/>
 
                                     <TextBlock Grid.Row="3"
-               Grid.Column="0"
-               Text="Nombre de chofer:"
-               Style="{StaticResource LabelStyle}"
-               Margin="0,8,8,0"
-               VerticalAlignment="Top"/>
+                                       Grid.Column="0"
+                                       Text="Nombre de chofer:"
+                                       Style="{StaticResource LabelStyle}"
+                                       Margin="0,8,8,0"
+                                       VerticalAlignment="Top"/>
 
                                     <!-- CAMBIO AQUÍ -->
                                     <TextBox x:Name="txtChofer"
-             Grid.Row="3"
-             Grid.Column="1"
-             Grid.ColumnSpan="2"
-             Margin="0,1,0,0"
-             Style="{StaticResource InputTextBoxStyle}"/>
+                                         Grid.Row="3"
+                                         Grid.Column="1"
+                                         Grid.ColumnSpan="2"
+                                         Margin="0,1,0,0"
+                                         Style="{StaticResource InputTextBoxStyle}"/>
 
                                     <TextBlock Grid.Row="4"
-               Grid.Column="0"
-               Text="Placas:"
-               Style="{StaticResource LabelStyle}"
-               Margin="0,13,8,0"
-               VerticalAlignment="Top"/>
+                                           Grid.Column="0"
+                                           Text="Placas:"
+                                           Style="{StaticResource LabelStyle}"
+                                           Margin="0,13,8,0"
+                                           VerticalAlignment="Top"/>
                                     <TextBox x:Name="txtPlacasVehiculo"
-             Grid.Row="3"
-             Grid.Column="1"
-             Grid.RowSpan="2"
-             Width="140"
-             HorizontalAlignment="Left"
-             Margin="0,35,0,0"
-             Style="{StaticResource InputTextBoxStyle}"/>
+                                         Grid.Row="3"
+                                         Grid.Column="1"
+                                         Grid.RowSpan="2"
+                                         Width="140"
+                                         HorizontalAlignment="Left"
+                                         Margin="0,35,0,0"
+                                         Style="{StaticResource InputTextBoxStyle}"/>
 
                                     <TextBlock Grid.Row="5"
-               Grid.Column="0"
-               Text="Sello:"
-               Style="{StaticResource LabelStyle}"
-               Margin="0,13,8,0"
-               VerticalAlignment="Top"/>
+                                       Grid.Column="0"
+                                       Text="Sello:"
+                                       Style="{StaticResource LabelStyle}"
+                                       Margin="0,13,8,0"
+                                       VerticalAlignment="Top"/>
                                     <TextBox x:Name="txtSelloTransporte"
-             Grid.Row="4"
-             Grid.Column="1"
-             Grid.RowSpan="2"
-             Width="200"
-             HorizontalAlignment="Left"
-             Margin="0,34,0,0"
-             Style="{StaticResource InputTextBoxStyle}"/>
+                                         Grid.Row="4"
+                                         Grid.Column="1"
+                                         Grid.RowSpan="2"
+                                         Width="200"
+                                         HorizontalAlignment="Left"
+                                         Margin="0,34,0,0"
+                                         Style="{StaticResource InputTextBoxStyle}"/>
                                 </Grid>
                             </GroupBox>
                         </Grid>
@@ -478,11 +478,13 @@
                             MinHeight="220">
                             <DataGrid x:Name="dgDetail"
                               AutoGenerateColumns="False"
-                              CanUserAddRows="True"
+                              CanUserAddRows="False"
                               CanUserDeleteRows="True"
                               IsReadOnly="False"
                               ItemsSource="{Binding DetailItems}"
                               InitializingNewItem="dgDetail_InitializingNewItem"
+                              CellEditEnding="dgDetail_CellEditEnding"
+                              PreviewKeyDown="dgDetail_PreviewKeyDown"
                               HeadersVisibility="Column"
                               GridLinesVisibility="Vertical"
                               AlternatingRowBackground="{StaticResource AltRowBrush}"
@@ -496,18 +498,53 @@
                               ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="No Parte"
-                                         Binding="{Binding NumeroParte}"
-                                         Width="220"
-                                         IsReadOnly="True"/>
+                                   <DataGridTemplateColumn Header="Número de Parte" Width="220">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="34"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBox Text="{Binding PartNumber}"
+                                                             IsReadOnly="True"
+                                                             BorderThickness="0"
+                                                             Background="Transparent"
+                                                             VerticalContentAlignment="Center"/>
+
+                                                    <Button Grid.Column="1"
+                                                            Width="28"
+                                                            Height="28"
+                                                            Margin="4,0,0,0"
+                                                            Click="BtnBuscarProductoEnFila_Click"
+                                                            Cursor="Hand">
+                                                        <Button.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="CornerRadius" Value="6"/>
+                                                            </Style>
+                                                        </Button.Resources>
+
+                                                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                                                   Text="&#xE721;"
+                                                                   FontSize="13"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
                                     <DataGridTextColumn Header="Descripción"
-                                        Binding="{Binding Descripcion}"
+                                       Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                                         Width="220"
                                         IsReadOnly="True"/>
 
+                                
+
                                     <DataGridTextColumn Header="Cantidad"
-                                        Binding="{Binding Cantidad, UpdateSourceTrigger=PropertyChanged}"
+                                        Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
                                         Width="90"/>
 
                                     <DataGridTextColumn Header="Status"
@@ -515,31 +552,31 @@
                                         Width="90"/>
 
                                     <DataGridTextColumn Header="SD"
-                                        Binding="{Binding Sd, UpdateSourceTrigger=PropertyChanged}"
+                                        Binding="{Binding SD, UpdateSourceTrigger=PropertyChanged}"
                                         Width="100"/>
 
                                     <DataGridTextColumn Header="Número de Lote"
-                                        Binding="{Binding NumeroLote, UpdateSourceTrigger=PropertyChanged}"
+                                        Binding="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}"
                                         Width="140"/>
 
                                     <DataGridTextColumn Header="Fecha de Caducidad"
-                                        Binding="{Binding FechaCaducidad, UpdateSourceTrigger=PropertyChanged, StringFormat=dd/MM/yyyy}"
+                                        Binding="{Binding ExpirationDate, UpdateSourceTrigger=PropertyChanged, StringFormat=dd/MM/yyyy}"
                                         Width="150"/>
 
                                     <DataGridTextColumn Header="Referencia de Cliente"
-                                        Binding="{Binding ReferenciaCliente, UpdateSourceTrigger=PropertyChanged}"
+                                        Binding="{Binding CustomerReference, UpdateSourceTrigger=PropertyChanged}"
                                         Width="160"/>
 
                                     <DataGridTextColumn Header="Tipo de Cambio"
-                                        Binding="{Binding TipoCambio, UpdateSourceTrigger=PropertyChanged}"
+                                        Binding="{Binding ExchangeRate, UpdateSourceTrigger=PropertyChanged}"
                                         Width="120"/>
 
                                     <DataGridTextColumn Header="Orden de Compra"
-                                        Binding="{Binding OrdenCompra, UpdateSourceTrigger=PropertyChanged}"
+                                        Binding="{Binding PurchaseOrder, UpdateSourceTrigger=PropertyChanged}"
                                         Width="140"/>
 
                                     <DataGridTextColumn Header="Pedimento"
-                                        Binding="{Binding Pedimento, UpdateSourceTrigger=PropertyChanged}"
+                                        Binding="{Binding CustomsDeclarationNumber, UpdateSourceTrigger=PropertyChanged}"
                                         Width="120"/>
 
                                     <DataGridTextColumn Header="Split"
@@ -590,6 +627,20 @@
                             </DataGrid>
                         </Border>
                     </Grid>
+
+                    <Popup x:Name="popupProductoLookup"
+                           Placement="Bottom"
+                           HorizontalOffset="-2"
+                           VerticalOffset="2"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           PopupAnimation="Fade"
+                           Closed="popupProductoLookup_Closed">
+                        <Border Background="Transparent">
+                            <ContentControl x:Name="lookupPopupHost"/>
+                        </Border>
+                    </Popup>
+
                 </Grid>
 
                 <!-- Botones inferiores -->

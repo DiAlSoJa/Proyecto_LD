@@ -6,7 +6,7 @@ namespace LD.Contracts.Requests
     {
         public int AsnDetailId { get; set; }
         public int AsnId { get; set; }
-        public int? ProductId { get; set; }
+        public int ProductId { get; set; }
 
         public string PartNumber { get; set; } = string.Empty;
         public string? Description { get; set; }
@@ -24,6 +24,6 @@ namespace LD.Contracts.Requests
         public string? PurchaseOrder { get; set; }
         public string? CustomsDeclarationNumber { get; set; }
 
-        public bool IsSplit { get; set; }
+        public decimal Split { get; set; }
     }
 }

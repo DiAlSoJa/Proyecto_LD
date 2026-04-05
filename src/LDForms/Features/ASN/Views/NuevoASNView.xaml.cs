@@ -11,6 +11,7 @@ using LD.Client.Services;
 using LD.Contracts.ASN;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
+using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model;
 using LD.FormsX.Model.Lookup;
@@ -32,6 +33,8 @@ namespace LD.FormsX.Views.Dialogs
         private List<LookupItem> _productLookupSource = new();
         private readonly WpfGridFilter<AsnDetailDto> _gridFilterDet;
         private bool _isUpdatingProductText;
+        private AsnDetailItem? _currentLookupRow;
+        public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
 
         public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService,IServiceProvider serviceProvider)
         {
@@ -42,7 +45,7 @@ namespace LD.FormsX.Views.Dialogs
             _lookupService = lookupService;
             _productService = productService;
             DataContext = this;
-            _gridFilterDet = new WpfGridFilter<AsnDetailDto>(dgDetail);
+            
             HideScanSection();
         }
 
@@ -54,8 +57,7 @@ namespace LD.FormsX.Views.Dialogs
              if (AsnSelected != null)
                  ShowScanSection();
 
-           /* if (DetailItems.Count == 0)
-                DetailItems.Add(new AsnDetailRowVm());*/
+          
 
             await CargarDatosAsync();
             await CargarDatosAsyncDet();
@@ -110,15 +112,39 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task CargarDatosAsyncDet()
         {
-            var items = await _asnDetailService.GetAsnDetailsByAsn(AsnSelected.AsnId);
+            var result = await _asnDetailService.GetAsnDetailsByAsn(AsnSelected.AsnId);
 
-            if (!items.IsSuccess)
-            {               
-                return;
+            /*if (!result.IsSuccess || result.Data == null)
+                return;*/
+
+            DetailItems.Clear();
+            if (result.Data != null)
+            {
+
+                foreach (var dto in result.Data)
+                {
+                    DetailItems.Add(AsnDetailItem.FromRequest(new AsnDetailRequest
+                    {
+                        AsnDetailId = dto.AsnDetailId,
+                        AsnId = dto.AsnId,
+                        ProductId = dto.ProductId ?? 0,
+                        PartNumber = dto.PartNumber,
+                        Description = dto.Description,
+                        Quantity = dto.Quantity,
+                        Status = dto.Status,
+                        SD = dto.SD,
+                        LotNumber = dto.LotNumber,
+                        ExpirationDate = dto.ExpirationDate,
+                        CustomerReference = dto.CustomerReference
+                    }));
+                }
             }
-           
-            
-        //_gridFilterDet.SetData(result.Data);
+
+        
+            if (!DetailItems.Any())
+            {
+                DetailItems.Add(new AsnDetailItem());
+            }
         }
 
 
@@ -372,13 +398,127 @@ namespace LD.FormsX.Views.Dialogs
                  })
                  .OrderBy(x => x.Code)
                  .ToList();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+        private void BtnBuscarProductoEnFila_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is not FrameworkElement element)
+                    return;
 
-              
+                if (element.DataContext is not AsnDetailItem row)
+                    return;
 
-                dgDetail.Items.Refresh();
+                if (_productLookupSource == null || !_productLookupSource.Any())
+                {
+                    DialogHelper.ShowWarning("No hay productos cargados para el cliente/proyecto seleccionado.");
+                    return;
+                }
+
+                _currentLookupRow = row;
+
+                var control = new LookupPopupControl(
+                    _productLookupSource,
+                    hiddenColumns: new[] { "ItemId" },
+                    searchColumns: new[] { "NumeroParte", "Descripcion" });
+
+                control.SelectionConfirmed += OnLookupSelectionConfirmed;
+                control.Cancelled += OnLookupCancelled;
+
+                lookupPopupHost.Content = control;
+
+                popupProductoLookup.PlacementTarget = element;
+                popupProductoLookup.IsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private void OnLookupSelectionConfirmed(LookupItem? selected)
+        {
+            if (_currentLookupRow == null || selected == null)
+            {
+                popupProductoLookup.IsOpen = false;
+                return;
+            }
+
+            _currentLookupRow.ProductId = (int)selected.Id;
+            _currentLookupRow.PartNumber = selected.Code;
+            _currentLookupRow.Description = selected.Description;
+
+            popupProductoLookup.IsOpen = false;
+        }
+
+        private void OnLookupCancelled()
+        {
+            popupProductoLookup.IsOpen = false;
+        }
+
+        private void popupProductoLookup_Closed(object sender, EventArgs e)
+        {
+            lookupPopupHost.Content = null;
+            _currentLookupRow = null;
+        }
 
 
 
+
+
+
+        private void dgDetail_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (DetailItems == null)
+                return;        
+        }
+        private void dgDetail_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (popupProductoLookup.IsOpen)
+                    return;
+
+                if (e.Key != Key.F4 && e.Key != Key.Enter)
+                    return;
+
+                if (dgDetail.CurrentCell == null || dgDetail.CurrentItem is not AsnDetailItem row)
+                    return;
+
+                var currentColumn = dgDetail.CurrentCell.Column;
+                if (currentColumn == null)
+                    return;
+
+                var header = currentColumn.Header?.ToString() ?? string.Empty;
+                if (!header.Equals("Número de Parte", StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                if (_productLookupSource == null || !_productLookupSource.Any())
+                {
+                    DialogHelper.ShowWarning("No hay productos cargados para el cliente/proyecto seleccionado.");
+                    return;
+                }
+
+                _currentLookupRow = row;
+
+                var control = new LookupPopupControl(
+                    _productLookupSource,
+                    hiddenColumns: new[] { "ItemId" },
+                    searchColumns: new[] { "NumeroParte", "Descripcion" });
+
+                control.SelectionConfirmed += OnLookupSelectionConfirmed;
+                control.Cancelled += OnLookupCancelled;
+
+                lookupPopupHost.Content = control;
+                popupProductoLookup.PlacementTarget = dgDetail;
+                popupProductoLookup.IsOpen = true;
+
+                e.Handled = true;
             }
             catch (Exception ex)
             {
@@ -387,12 +527,6 @@ namespace LD.FormsX.Views.Dialogs
         }
 
 
-
-
-
-
-
-       
 
 
     }

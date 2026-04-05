@@ -2,7 +2,7 @@
 {
     public class LookupItem
     {
-        public object? Id { get; set; }
+        public object Id { get; set; }
         public string Code { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public object? Data { get; set; }
