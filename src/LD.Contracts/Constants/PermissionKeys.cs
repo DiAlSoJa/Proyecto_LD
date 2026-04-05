@@ -38,48 +38,116 @@ public static class PermissionKeys
     public const string Product_Update = "products.update";
     public const string Product_Delete = "products.delete";
 
-    
+    // MOVEMENTS
+    public const string Movement_View = "movements.read";
 
+    // ASN
+    public const string Asn_View   = "asn.read";
+    public const string Asn_Create = "asn.create";
+    public const string Asn_Update = "asn.update";
+    public const string Asn_Delete = "asn.delete";
 
+    // FORKLIFT CHECKLIST
+    public const string ForkliftChecklist_View    = "forklift-checklist.read";
+    public const string ForkliftChecklist_Create  = "forklift-checklist.create";
+    public const string ForkliftChecklist_Update  = "forklift-checklist.update";
+    public const string ForkliftChecklist_Delete  = "forklift-checklist.delete";
+    public const string ForkliftChecklist_Execute = "forklift-checklist.execute";
+    public const string ForkliftChecklist_Approve = "forklift-checklist.approve";
+
+    // YARD CONTROL
+    public const string YardControl_View = "yard-control.read";
+
+    // CATALOGS
+    public const string Catalog_View = "catalogs.read";
+
+    // PICKING
+    public const string Picking_View = "picking.read";
+
+    // AUDITING
+    public const string Auditing_View = "auditing.read";
+
+    // SHIPMENTS
+    public const string Shipment_View = "shipments.read";
+
+    // INVENTORY
+    public const string Inventory_View         = "inventory.read";
+    public const string Inventory_Audit_View   = "inventory.audit.read";
+    public const string Inventory_Audit_Execute = "inventory.audit.execute";
+    public const string Inventory_List_View    = "inventory.list.read";
+    public const string Inventory_List_Export  = "inventory.list.export";
+
+    // CYCLE COUNT
+    public const string CycleCount_View = "cycle-count.read";
+
+    // REPORTS
+    public const string Report_View = "reports.read";
+
+    // USERS
     public const string User_View = "users.read";
     public const string User_Create = "users.create";
     public const string User_Update = "users.update";
     public const string User_Delete = "users.delete";
 
+    // WAREHOUSE STAFF / ALMACENISTA
+    public const string WarehouseStaff_View                  = "warehouse-staff.read";
+    public const string WarehouseStaff_LocationChange_Execute = "warehouse-staff.location-change.execute";
+    public const string WarehouseStaff_Supply_Execute         = "warehouse-staff.supply.execute";
+    public const string WarehouseStaff_Asn_View              = "warehouse-staff.asn.read";
+    public const string WarehouseStaff_Asn_Execute           = "warehouse-staff.asn.execute";
+    public const string WarehouseStaff_Tasks_View            = "warehouse-staff.tasks.read";
+    public const string WarehouseStaff_Tasks_Manage          = "warehouse-staff.tasks.manage";
 
-    public const string Category_View   = "categories.read";
-    public const string Category_Create = "categories.create";
-    public const string Category_Update = "categories.update";
-
-    public const string Dimensioner_View   = "dimensioner.read";
-    public const string Dimensioner_Create = "dimensioner.create";
-    public const string Dimensioner_Update = "dimensioner.update";
-
-    public const string Family_View   = "families.read";
-    public const string Family_Create = "families.create";
-    public const string Family_Update = "families.update";
-
-    public const string Currency_View   = "currencies.read";
-    public const string Currency_Create = "currencies.create";
-    public const string Currency_Update = "currencies.update";
-
-    public const string Status_View   = "status.read";
-    public const string Status_Create = "status.create";
-    public const string Status_Update = "status.update";
-
-    public const string Unit_View   = "units.read";
-    public const string Unit_Create = "units.create";
-    public const string Unit_Update = "units.update";
+    // SECURITY / SEGURIDAD
+    public const string Security_View         = "security.read";
+    public const string Security_Tasks_View   = "security.tasks.read";
+    public const string Security_Tasks_Manage = "security.tasks.manage";
 
     public const string Vehicle_View   = "security.vehicles.read";
     public const string Vehicle_Create = "security.vehicles.create";
     public const string Vehicle_Update = "security.vehicles.update";
     public const string Vehicle_Delete = "security.vehicles.delete";
 
-    public const string Asn_View   = "asn.read";
-    public const string Asn_Create = "asn.create";
-    public const string Asn_Update = "asn.update";
-    public const string Asn_Delete = "asn.delete";
+    // QUERIES / CONSULTAS
+    public const string Query_View = "queries.read";
+
+    // DAMAGE REPORT / REPORTE DE DAÑOS
+    public const string DamageReport_View   = "damage-report.read";
+    public const string DamageReport_Create = "damage-report.create";
+
+    // OPERATIONS / OPERACIONES
+    public const string Operation_View    = "operations.read";
+    public const string Operation_Execute = "operations.execute";
+
+    // CATEGORIES / CATEGORÍAS
+    public const string Category_View   = "categories.read";
+    public const string Category_Create = "categories.create";
+    public const string Category_Update = "categories.update";
+
+    // DIMENSIONER / DIMENSIONADOR
+    public const string Dimensioner_View   = "dimensioner.read";
+    public const string Dimensioner_Create = "dimensioner.create";
+    public const string Dimensioner_Update = "dimensioner.update";
+
+    // FAMILIES / FAMILIAS
+    public const string Family_View   = "families.read";
+    public const string Family_Create = "families.create";
+    public const string Family_Update = "families.update";
+
+    // CURRENCIES / MONEDAS
+    public const string Currency_View   = "currencies.read";
+    public const string Currency_Create = "currencies.create";
+    public const string Currency_Update = "currencies.update";
+
+    // STATUS / ESTATUS
+    public const string Status_View   = "status.read";
+    public const string Status_Create = "status.create";
+    public const string Status_Update = "status.update";
+
+    // UNITS / UNIDADES
+    public const string Unit_View   = "units.read";
+    public const string Unit_Create = "units.create";
+    public const string Unit_Update = "units.update";
 
 
 

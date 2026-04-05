@@ -121,7 +121,7 @@
 	  <MauiXaml Update="Features\Pages\DamageReportPrintPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Features\Pages\DashboardPage.xaml">
+	  <MauiXaml Update="Features\Dashboard\Views\DashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Features\Pages\ForkliftChecklistPage.xaml">
@@ -181,6 +181,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Features\Dashboard\ViewModels\" />
 	  <Folder Include="ViewModels\Auth\" />
 	</ItemGroup>
 
