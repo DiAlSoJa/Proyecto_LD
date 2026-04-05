@@ -140,7 +140,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
     // ── Prefijos ──
     [ObservableProperty]
-    private string asnNumber = "";
+    private int asnNumber = 0;
 
     [ObservableProperty]
     private string asnPrefix = "";
@@ -296,7 +296,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
             TiempoNormal = p.NormalHrs?.ToString() ?? "";
             TiempoUrgente = p.UrgentHrs?.ToString() ?? "";
 
-            AsnNumber = p.AsnNumber ?? "";
+            AsnNumber = p.AsnNumber.GetValueOrDefault(0);
             AsnPrefix = p.AsnPrefix ?? "";
             KittingNumber = p.KittingNumber ?? "";
             KittingPrefix = p.KittingPrefix ?? "";
