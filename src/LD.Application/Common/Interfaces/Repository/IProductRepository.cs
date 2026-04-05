@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LD.Contracts.DTOs;
+using LD.Contracts.Product;
 using LD.Domain.Entities;
 
 namespace LD.Application.Common.Interfaces.Repository
@@ -10,6 +12,6 @@ namespace LD.Application.Common.Interfaces.Repository
     public interface IProductRepository : IRepository<Product>
     {
         Task<List<Product>> GetAllWithRelationsAsync();
-        Task<List<Product>> GetProductByClientAsync(int clientId, int projectId);
+        Task<List<DropDownDto>> GetProductByClientAsync(int clientId, int projectId);
     }
 }

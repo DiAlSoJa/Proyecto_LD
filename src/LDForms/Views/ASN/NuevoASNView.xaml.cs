@@ -42,8 +42,8 @@ namespace LD.FormsX.Views.Dialogs
              if (AsnSelected != null)
                  ShowScanSection();
 
-            if (DetailItems.Count == 0)
-                DetailItems.Add(new AsnDetailRowVm());
+           /* if (DetailItems.Count == 0)
+                DetailItems.Add(new AsnDetailRowVm());*/
 
             await CargarDatosAsync();
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using LD.Contracts.DTOs;
 using LD.Contracts.DTOs.Family;
 using LD.Contracts.Product;
 using LD.Contracts.Requests;
@@ -75,6 +76,14 @@ namespace LD.Application.Features.Product.Profiles
                     opt => opt.MapFrom(src => src.PartNumber));
 
             CreateMap<LD.Domain.Entities.Product, ProductRequest>();
+
+            CreateMap<LD.Domain.Entities.Product, DropDownDto>()
+             .ForMember(dest => dest.Key,
+                 opt => opt.MapFrom(src => src.PartNumber))
+             .ForMember(dest => dest.Value,
+                 opt => opt.MapFrom(src => src.Description));
+
+
         }
 
     }
