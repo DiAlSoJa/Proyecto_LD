@@ -118,7 +118,7 @@ namespace LD.Forms.Views.Dialogs
                 textTiempoNormal.Text = project.NormalHrs.ToString();
                 textTiempoUrgente.Text = project.UrgentHrs.ToString();
 
-                textNumeroAsn.Text = project.AsnNumber;
+                textNumeroAsn.Text = project.AsnNumber?.ToString() ?? "";
                 textPrefijoAsn.Text = project.AsnPrefix;
 
                 // Kitting
@@ -211,7 +211,7 @@ namespace LD.Forms.Views.Dialogs
                 NormalHrs = decimal.TryParse( textTiempoNormal.Text,out decimal nHrs)? nHrs :0,
                 UrgentHrs = decimal.TryParse(textTiempoUrgente.Text, out decimal uHrs) ? uHrs : 0,
 
-                AsnNumber = textNumeroAsn.Text,
+                AsnNumber = int.TryParse(textNumeroAsn.Text, out int asnNum) ? asnNum : 0,
                 AsnPrefix = textPrefijoAsn.Text,
 
                 // Kitting

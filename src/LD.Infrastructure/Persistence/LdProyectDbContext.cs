@@ -221,9 +221,17 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(r => r.LocationId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<ScanConfiguration>()
+                .HasOne(sc => sc.ScanType)
+                .WithMany()
+                .HasForeignKey(sc => sc.ScanTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-
-
+            builder.Entity<ScanConfiguration>()
+                .HasOne(sc => sc.SaveType)
+                .WithMany()
+                .HasForeignKey(sc => sc.SaveTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             builder.Entity<StorageType>().HasData(
@@ -480,7 +488,7 @@ namespace LD.Infrastructure.Persistence
             };
             builder.Entity<ApplicationUser>().HasData(devUser);
             builder.Entity<ApplicationUserRole>().HasData(new ApplicationUserRole { UserId = devUserId, RoleId = superAdminRoleId });
-
+             
             builder.Entity<SystemField>().HasData(
                 new SystemField { SystemFieldId = 1, SystemFieldName = "lot_number", DisplayName = "Número de lote", Order = 1 },
                 new SystemField { SystemFieldId = 2, SystemFieldName = "customer_reference", DisplayName = "Referencia del cliente", Order = 2 },

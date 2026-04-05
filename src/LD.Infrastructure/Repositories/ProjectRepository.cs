@@ -45,6 +45,8 @@ namespace LD.Infrastructure.Repositories
         {
             return await _context.Projects
                 .AsNoTracking()
+                .Include(p => p.ScanConfigurations)
+                    .ThenInclude(sc => sc.SystemField)
                 .FirstOrDefaultAsync(w => w.ProjectId == id);
         }
 
@@ -52,7 +54,17 @@ namespace LD.Infrastructure.Repositories
         {
             return await _context.Projects
                  .AsNoTracking()
+                 .Include(p => p.ScanConfigurations)
+                    .ThenInclude(sc => sc.SystemField)
                  .FirstOrDefaultAsync(w => w.ProjectId.ToString() == id);
+        }
+
+        public async Task<Project?> GetByIdWithConfigsAsync(int id)
+        {
+            return await _context.Projects
+                .Include(p => p.ScanConfigurations)
+                    .ThenInclude(sc => sc.SystemField)
+                .FirstOrDefaultAsync(p => p.ProjectId == id);
         }
 
         public async Task<List<DropDownDto>> GetLookup()

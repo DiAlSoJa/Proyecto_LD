@@ -35,13 +35,18 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
 
         try
         {
-            // 1️ Buscar proyecto
-            var project = await _projectRepository.GetByIdAsync(request.ProjectId.GetValueOrDefault(-1));
+            // 1️ Buscar proyecto con configuraciones de escaneo
+            var project = await _projectRepository.GetByIdWithConfigsAsync(request.ProjectId.GetValueOrDefault(-1));
             if (project is null)
                 return Result<string>.Failure("No existe el prjecto", new List<string> { "No existe el prjecto" }, 404);
 
-            // 2️⃣ Mapear datos básicos
+            // 2️⃣ Mapear datos básicos (sin ScanConfigurations)
             _mapper.Map(request, project);
+
+            // 3️⃣ Sincronizar configuraciones de escaneo
+            project.ScanConfigurations.Clear();
+            foreach (var scanReq in request.ScanConfigurations)
+                project.ScanConfigurations.Add(_mapper.Map<ScanConfiguration>(scanReq));
 
             // 4️⃣ Guardar
             var updated = await _projectRepository.UpdateAsync(project);

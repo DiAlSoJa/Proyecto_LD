@@ -1,6 +1,7 @@
 ﻿using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Models;
+using LD.Domain.Entities;
 using LD.Application.Features.Auth.Commands;
 using LD.Infrastructure.Persistence;
 using LD.Infrastructure.Persistence.Interceptors;
@@ -81,6 +82,8 @@ public static class ConfigureServices
         services.AddScoped<IAsnDetailRepository, AsnDetailRepository>();
         services.AddScoped<IAsnRepository, AsnRepository>();
         services.AddScoped<ISystemFieldRepository, SystemFieldRepository>();
+        services.AddScoped<ILookupRepository<ScanType>, ScanTypeLookupRepository>();
+        services.AddScoped<ILookupRepository<ScanSaveType>, ScanSaveTypeLookupRepository>();
 
 
 

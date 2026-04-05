@@ -23,9 +23,9 @@ public class CreateProjectCommand :ProjectRequest, IRequest<Result<string>>
 public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Result<string>>
 {
 
-    private readonly IRepository<Project> _projectRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
-    public CreateProjectCommandHandler(IRepository<Project> projectRepository,IMapper mapper)
+    public CreateProjectCommandHandler(IProjectRepository projectRepository, IMapper mapper)
     {
         _projectRepository = projectRepository;
         _mapper = mapper;
@@ -34,7 +34,12 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
     {
         try
         {
-            var result = await _projectRepository.CreateAsync(_mapper.Map<Project>(request));
+            var project = _mapper.Map<Project>(request);
+
+            foreach (var scanReq in request.ScanConfigurations)
+                project.ScanConfigurations.Add(_mapper.Map<ScanConfiguration>(scanReq));
+
+            var result = await _projectRepository.CreateAsync(project);
             return result ? Result<string>.Success("Projecto creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Projecto", new List<string> { "No se pudo encontrar el projecto" });
 
         }
@@ -42,6 +47,6 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         {
             return Result<string>.Failure("Hubo un error al crear el Projecto", new List<string> { ex.Message });
         }
-       
+
     }
 }

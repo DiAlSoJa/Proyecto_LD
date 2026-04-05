@@ -26,7 +26,25 @@ namespace LD.Application.Features.Clients.Profiles
 
             CreateMap<ProjectRequest, Project>()
                  .ForMember(dest => dest.ProjectId,
+                    opt => opt.Ignore())
+                 .ForMember(dest => dest.ScanConfigurations,
                     opt => opt.Ignore());
+
+            CreateMap<ScanConfigurationRequest, ScanConfiguration>()
+                .ForMember(dest => dest.ScanConfigurationId, opt => opt.Ignore())
+                .ForMember(dest => dest.ProjectId, opt => opt.Ignore())
+                .ForMember(dest => dest.ScanTypeId, opt => opt.MapFrom(src => src.ScanTypeId ?? 0))
+                .ForMember(dest => dest.SaveTypeId, opt => opt.MapFrom(src => src.SaveTypeId ?? 0))
+                .ForMember(dest => dest.ScanType, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveType, opt => opt.Ignore())
+                .ForMember(dest => dest.SystemField, opt => opt.Ignore())
+                .ForMember(dest => dest.Project, opt => opt.Ignore());
+
+            CreateMap<ScanConfiguration, ScanConfigurationRequest>()
+                .ForMember(dest => dest.ScanTypeId, opt => opt.MapFrom(src => src.ScanTypeId))
+                .ForMember(dest => dest.SaveTypeId, opt => opt.MapFrom(src => src.SaveTypeId))
+                .ForMember(dest => dest.SystemFieldName,
+                    opt => opt.MapFrom(src => src.SystemField != null ? src.SystemField.SystemFieldName : ""));
 
             CreateMap<Project, DropDownDto>()
               .ForMember(dest => dest.Key,

@@ -207,6 +207,8 @@ namespace LD.Forms.Configuration
         public string Lookup_Family => $"{_baseApi}/Lookup/family";
         public string Lookup_Unit => $"{_baseApi}/Lookup/unit";
         public string Lookup_Dimensioner => $"{_baseApi}/Lookup/dimensioner";
+        public string Lookup_ScanType => $"{_baseApi}/Lookup/scantype";
+        public string Lookup_ScanSaveType => $"{_baseApi}/Lookup/scansavetype";
 
 
         // ======================

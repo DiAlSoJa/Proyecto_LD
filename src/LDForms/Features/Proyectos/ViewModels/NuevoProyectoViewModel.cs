@@ -37,7 +37,10 @@ public partial class NuevoProyectoViewModel : ObservableObject
     private List<DropDownDto> warehousesSource = [];
     [ObservableProperty]
     private List<DropDownDto> systemFieldsSource = [];
-
+    [ObservableProperty]
+    private List<DropDownDto> scanTypeSource = [];
+    [ObservableProperty]
+    private List<DropDownDto> saveScanTypeSource = [];
     // ── Datos generales ──
     [ObservableProperty]
     private string? selectedClientId;
@@ -195,6 +198,9 @@ public partial class NuevoProyectoViewModel : ObservableObject
         var clientes = await _lookupService.GetClientLookup();
         var almacenes = await _lookupService.GetWarehouseLookup();
         var systemFields = await _lookupService.GetSystemFieldLookup();
+        var scanSaves = await _lookupService.GetScanSaveTypeLookup();
+        var scanTypes = await _lookupService.GetScanTypeLookup();
+
 
         if (clientes.IsSuccess)
             ClientsSource = clientes.Data ?? [];
@@ -205,6 +211,16 @@ public partial class NuevoProyectoViewModel : ObservableObject
         if (systemFields.IsSuccess)
         {
             SystemFieldsSource = systemFields.Data ?? [];
+            PopulateAvailableFields();
+        }
+        if (scanSaves.IsSuccess)
+        {
+            ScanTypeSource =scanTypes.Data ?? [];
+            PopulateAvailableFields();
+        }
+        if (scanTypes.IsSuccess)
+        {
+            SaveScanTypeSource = scanSaves.Data ?? [];
             PopulateAvailableFields();
         }
     }
@@ -303,6 +319,12 @@ public partial class NuevoProyectoViewModel : ObservableObject
             DoNumber = p.DoNumber ?? p.DeliveryOrderNumber ?? "";
             DoPrefix = p.DoPrefix ?? p.DeliveryOrderPrefix ?? "";
             ReciveRequired = p.ReciveRequired;
+
+            // Cargar configuraciones de escaneo
+            ScanConfigurations.Clear();
+            foreach (var sc in p.ScanConfigurations)
+                ScanConfigurations.Add(sc);
+            PopulateAvailableFields();
         }
         catch (Exception ex)
         {

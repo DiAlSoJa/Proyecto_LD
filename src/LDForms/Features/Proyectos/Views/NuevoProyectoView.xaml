@@ -386,12 +386,62 @@
                                                               RowHeight="26" ColumnHeaderHeight="32"
                                                               FontSize="12" VerticalGridLinesBrush="#D9D9D9"
                                                               MinHeight="140">
+
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn Header="Orden" Binding="{Binding Order}" Width="55" IsReadOnly="True"/>
-                                                            <DataGridTextColumn Header="Campo del sistema" Binding="{Binding SystemFieldName}" Width="140" IsReadOnly="True"/>
-                                                            <DataGridTextColumn Header="Campo del cliente" Binding="{Binding ClientField}" Width="140"/>
-                                                            <DataGridTextColumn Header="Valor para escaneo" Binding="{Binding ScanValue}" Width="130"/>
+
+                                                            <!-- Orden -->
+                                                            <DataGridTextColumn Header="Orden"
+                                                                                Binding="{Binding Order}"
+                                                                                Width="55"
+                                                                                IsReadOnly="True"/>
+
+                                                            <!-- Campo sistema -->
+                                                            <DataGridTextColumn Header="Campo del sistema"
+                                                                                Binding="{Binding SystemFieldName}"
+                                                                                Width="140"
+                                                                                IsReadOnly="True"/>                                                 
+
+                                                            <!-- Campo cliente -->
+                                                            <DataGridTextColumn Header="Campo del cliente"
+                                                                                Binding="{Binding ClientField}"
+                                                                                Width="140"/>                                               
+
+                                                            <!-- Config de escaneo (Combo) -->
+                                                            <DataGridTemplateColumn Header="Config escaneo" Width="150">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <ComboBox
+                                                                                ItemsSource="{Binding DataContext.ScanTypeSource, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                                                DisplayMemberPath="Value"
+                                                                                SelectedValuePath="Key"
+                                                                                SelectedValue="{Binding ScanTypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                Padding="2"/>               
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
+                                                            <!-- Valor escaneo -->
+                                                            <DataGridTextColumn Header="Valor para escaneo"
+                                                                                Binding="{Binding ScanValue}"
+                                                                                Width="130"/>
+
+                                                            <!-- Config guardado (Combo) -->
+                                                            <DataGridTemplateColumn Header="Config guardado" Width="160">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <ComboBox
+                                                                                ItemsSource="{Binding DataContext.SaveScanTypeSource, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                                                DisplayMemberPath="Value"
+                                                                                SelectedValuePath="Key"
+                                                                                SelectedValue="{Binding SaveTypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                Padding="2"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
                                                         </DataGrid.Columns>
+
+                                                        <!-- Tus estilos (los dejo intactos 👍) -->
                                                         <DataGrid.Resources>
                                                             <Style TargetType="DataGridColumnHeader">
                                                                 <Setter Property="Background" Value="#EEF1F5"/>
@@ -401,11 +451,13 @@
                                                                 <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                                                 <Setter Property="Padding" Value="8,4"/>
                                                             </Style>
+
                                                             <Style TargetType="DataGridRow">
                                                                 <Setter Property="BorderBrush" Value="#E4E8EE"/>
                                                                 <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                                             </Style>
                                                         </DataGrid.Resources>
+
                                                     </DataGrid>
                                                 </Border>
                                             </Grid>

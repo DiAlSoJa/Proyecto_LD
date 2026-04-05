@@ -23,9 +23,9 @@ public record ProjectByIdQuery(int projectId)
 public class ProjectByIdQueryHandler : IRequestHandler<ProjectByIdQuery, Result<ProjectRequest?>>
 {
 
-    private readonly IRepository<Project> _projectRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
-    public ProjectByIdQueryHandler(IRepository<Project> projectRepository, IMapper mapper)
+    public ProjectByIdQueryHandler(IProjectRepository projectRepository, IMapper mapper)
     {
         _projectRepository = projectRepository;
         _mapper = mapper;
@@ -35,7 +35,13 @@ public class ProjectByIdQueryHandler : IRequestHandler<ProjectByIdQuery, Result<
 
         var prjectDb = await _projectRepository.GetByIdAsync(request.projectId);
         if (prjectDb == null) return Result<ProjectRequest?>.Failure("Proyecto no encontrado", new(), 404);
-        return Result<ProjectRequest?>.Success(_mapper.Map<ProjectRequest>(prjectDb), "Proyecto obtenido con exito");
+
+        var projectDto = _mapper.Map<ProjectRequest>(prjectDb);
+        projectDto.ScanConfigurations = prjectDb.ScanConfigurations
+            .Select(sc => _mapper.Map<ScanConfigurationRequest>(sc))
+            .ToList();
+
+        return Result<ProjectRequest?>.Success(projectDto, "Proyecto obtenido con exito");
 
     }
 }

@@ -66,7 +66,12 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetDimensionerLookup()
          => ResultExtensions.ToActionResult(await Mediator.Send(new GetDimensionerLookupQuery()));
 
+        [HttpGet("scantype")]
+        public async Task<IActionResult> GetScanTypeLookup()
+         => ResultExtensions.ToActionResult(await Mediator.Send(new GetScanTypeLookupQuery()));
 
-
+        [HttpGet("scansavetype")]
+        public async Task<IActionResult> GetScanSaveTypeLookup()
+         => ResultExtensions.ToActionResult(await Mediator.Send(new GetScanSaveTypeLookupQuery()));
     }
 }

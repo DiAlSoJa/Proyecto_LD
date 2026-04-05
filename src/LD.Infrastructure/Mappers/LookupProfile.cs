@@ -37,6 +37,18 @@ namespace LD.Infrastructure.Mappers
                     opt => opt.MapFrom(src => src.SystemFieldId))
                 .ForMember(dest => dest.Value,
                     opt => opt.MapFrom(src => src.DisplayName));
+
+            CreateMap<ScanType, DropDownDto>()
+                .ForMember(dest => dest.Key,
+                    opt => opt.MapFrom(src => src.ScanTypeId))
+                .ForMember(dest => dest.Value,
+                    opt => opt.MapFrom(src => src.ScanTypeName));
+
+            CreateMap<ScanSaveType, DropDownDto>()
+                .ForMember(dest => dest.Key,
+                    opt => opt.MapFrom(src => src.ScanSaveTypeId))
+                .ForMember(dest => dest.Value,
+                    opt => opt.MapFrom(src => src.ScanSaveTypeName));
         }
     }
 }

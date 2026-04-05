@@ -37,7 +37,11 @@ namespace LD.Client.Services
         public async Task<ApiResponseDto<List<DropDownDto>>> GetUnitLookup()
           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Unit);
         public async Task<ApiResponseDto<List<DropDownDto>>> GetDimensionerLookup()
-          => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Dimensioner);
+           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Dimensioner);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetScanTypeLookup()
+           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_ScanType);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetScanSaveTypeLookup()
+           => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_ScanSaveType);
 
         public async Task<ApiResponseDto<List<DropDownDto>>> GetProjectClientLookup(int clientId)
                 => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>($"{_apiEndpoints.Lookup_ProjectClient}/{clientId}");

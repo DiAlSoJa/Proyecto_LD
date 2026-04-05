@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    [Migration("20260405060900_InitialClean")]
+    [Migration("20260405215712_InitialClean")]
     partial class InitialClean
     {
         /// <inheritdoc />
@@ -3091,7 +3091,7 @@ namespace LD.Infrastructure.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SaveTypeScanSaveTypeId")
+                    b.Property<int>("SaveTypeId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SaveValue")
@@ -3110,7 +3110,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("SaveTypeScanSaveTypeId");
+                    b.HasIndex("SaveTypeId");
 
                     b.HasIndex("ScanTypeId");
 
@@ -4143,14 +4143,14 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasOne("LD.Domain.Entities.ScanSaveType", "SaveType")
                         .WithMany()
-                        .HasForeignKey("SaveTypeScanSaveTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("SaveTypeId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("LD.Domain.Entities.ScanType", "ScanType")
                         .WithMany()
                         .HasForeignKey("ScanTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("LD.Domain.Entities.SystemField", "SystemField")

@@ -960,7 +960,7 @@ namespace LD.Infrastructure.Migrations
                     ClientField = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ScanTypeId = table.Column<int>(type: "int", nullable: false),
                     ScanValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SaveTypeScanSaveTypeId = table.Column<int>(type: "int", nullable: false),
+                    SaveTypeId = table.Column<int>(type: "int", nullable: false),
                     SaveValue = table.Column<int>(type: "int", nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -981,17 +981,15 @@ namespace LD.Infrastructure.Migrations
                         principalColumn: "ProjectId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ScanConfigurations_ScanSaveTypes_SaveTypeScanSaveTypeId",
-                        column: x => x.SaveTypeScanSaveTypeId,
+                        name: "FK_ScanConfigurations_ScanSaveTypes_SaveTypeId",
+                        column: x => x.SaveTypeId,
                         principalTable: "ScanSaveTypes",
-                        principalColumn: "ScanSaveTypeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ScanSaveTypeId");
                     table.ForeignKey(
                         name: "FK_ScanConfigurations_ScanTypes_ScanTypeId",
                         column: x => x.ScanTypeId,
                         principalTable: "ScanTypes",
-                        principalColumn: "ScanTypeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ScanTypeId");
                     table.ForeignKey(
                         name: "FK_ScanConfigurations_SystemFields_SystemFieldId",
                         column: x => x.SystemFieldId,
@@ -1667,9 +1665,9 @@ namespace LD.Infrastructure.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScanConfigurations_SaveTypeScanSaveTypeId",
+                name: "IX_ScanConfigurations_SaveTypeId",
                 table: "ScanConfigurations",
-                column: "SaveTypeScanSaveTypeId");
+                column: "SaveTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ScanConfigurations_ScanTypeId",
