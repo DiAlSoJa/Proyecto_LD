@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Nuevo proyecto"
-        Height="640" Width="960"
+        Height="740" Width="960"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -296,6 +296,122 @@
                                         </Border>
                                     </Grid>
 
+                                    <!-- ── Configuraciones de escaneo ── -->
+                                    <Border BorderBrush="#E5E7EB" BorderThickness="1"
+                                            CornerRadius="8" Padding="14,10" Margin="0,16,0,0">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="8"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Text="CONFIGURACIONES DE ESCANEO" Style="{StaticResource GroupLabelStyle}"/>
+
+                                            <Grid Grid.Row="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="220"/>
+                                                    <ColumnDefinition Width="46"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Campos del sistema -->
+                                                <Border Grid.Column="0" BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="4">
+                                                    <DataGrid x:Name="dgCamposSistema"
+                                                              AutoGenerateColumns="False"
+                                                              ItemsSource="{Binding AvailableSystemFields}"
+                                                              SelectedItem="{Binding SelectedSystemField}"
+                                                              SelectionMode="Single" SelectionUnit="FullRow"
+                                                              CanUserAddRows="False" CanUserDeleteRows="False"
+                                                              IsReadOnly="True" HeadersVisibility="Column"
+                                                              GridLinesVisibility="Vertical"
+                                                              RowHeight="26" ColumnHeaderHeight="32"
+                                                              FontSize="12" VerticalGridLinesBrush="#D9D9D9"
+                                                              MinHeight="140">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Campos del sistema" Binding="{Binding Value}" Width="*"/>
+                                                        </DataGrid.Columns>
+                                                        <DataGrid.Resources>
+                                                            <Style TargetType="DataGridColumnHeader">
+                                                                <Setter Property="Background" Value="#EEF1F5"/>
+                                                                <Setter Property="Foreground" Value="#16263D"/>
+                                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                                <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                                <Setter Property="Padding" Value="8,4"/>
+                                                            </Style>
+                                                            <Style TargetType="DataGridRow">
+                                                                <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                            </Style>
+                                                        </DataGrid.Resources>
+                                                    </DataGrid>
+                                                </Border>
+
+                                                <!-- Botones agregar / quitar -->
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Button x:Name="btnAgregarCampo" Content="›"
+                                                            Width="32" Height="32" FontSize="16" FontWeight="Bold"
+                                                            Background="#2563EB" Foreground="White"
+                                                            BorderThickness="0" Cursor="Hand"
+                                                            Margin="0,0,0,8"
+                                                            ToolTip="Agregar campo"
+                                                            Command="{Binding AgregarCampoCommand}">
+                                                        <Button.Resources>
+                                                            <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
+                                                        </Button.Resources>
+                                                    </Button>
+                                                    <Button x:Name="btnQuitarCampo" Content="‹"
+                                                            Width="32" Height="32" FontSize="16" FontWeight="Bold"
+                                                            Background="#EF4444" Foreground="White"
+                                                            BorderThickness="0" Cursor="Hand"
+                                                            ToolTip="Quitar campo"
+                                                            Command="{Binding QuitarCampoCommand}">
+                                                        <Button.Resources>
+                                                            <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
+                                                        </Button.Resources>
+                                                    </Button>
+                                                </StackPanel>
+
+                                                <!-- Campos del cliente -->
+                                                <Border Grid.Column="2" BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="4">
+                                                    <DataGrid x:Name="dgCamposCliente"
+                                                              AutoGenerateColumns="False"
+                                                              ItemsSource="{Binding ScanConfigurations}"
+                                                              SelectedItem="{Binding SelectedScanConfig}"
+                                                              SelectionMode="Single" SelectionUnit="FullRow"
+                                                              CanUserAddRows="False" CanUserDeleteRows="False"
+                                                              IsReadOnly="False" HeadersVisibility="Column"
+                                                              GridLinesVisibility="Vertical"
+                                                              RowHeight="26" ColumnHeaderHeight="32"
+                                                              FontSize="12" VerticalGridLinesBrush="#D9D9D9"
+                                                              MinHeight="140">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="Orden" Binding="{Binding Order}" Width="55" IsReadOnly="True"/>
+                                                            <DataGridTextColumn Header="Campo del sistema" Binding="{Binding SystemFieldName}" Width="140" IsReadOnly="True"/>
+                                                            <DataGridTextColumn Header="Campo del cliente" Binding="{Binding ClientField}" Width="140"/>
+                                                            <DataGridTextColumn Header="Valor para escaneo" Binding="{Binding ScanValue}" Width="130"/>
+                                                        </DataGrid.Columns>
+                                                        <DataGrid.Resources>
+                                                            <Style TargetType="DataGridColumnHeader">
+                                                                <Setter Property="Background" Value="#EEF1F5"/>
+                                                                <Setter Property="Foreground" Value="#16263D"/>
+                                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                                <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                                <Setter Property="Padding" Value="8,4"/>
+                                                            </Style>
+                                                            <Style TargetType="DataGridRow">
+                                                                <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                            </Style>
+                                                        </DataGrid.Resources>
+                                                    </DataGrid>
+                                                </Border>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                    
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
@@ -470,7 +586,7 @@
                             </StackPanel>
                         </Border>
                     </TabItem>
-
+                    
                 </TabControl>
 
                 <!-- ── Footer ── -->

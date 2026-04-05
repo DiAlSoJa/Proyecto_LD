@@ -31,6 +31,12 @@ namespace LD.Infrastructure.Mappers
                     opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Value,
                     opt => opt.MapFrom(src => src.Name));
+
+            CreateMap<SystemField, DropDownDto>()
+                .ForMember(dest => dest.Key,
+                    opt => opt.MapFrom(src => src.SystemFieldId))
+                .ForMember(dest => dest.Value,
+                    opt => opt.MapFrom(src => src.DisplayName));
         }
     }
 }

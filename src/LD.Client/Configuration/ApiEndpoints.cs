@@ -198,6 +198,8 @@ namespace LD.Forms.Configuration
         public string Lookup_Client => $"{_baseApi}/Lookup/client";
         public string Lookup_Project => $"{_baseApi}/Lookup/project";
         public string Lookup_ProjectClient => $"{_baseApi}/Lookup/project";
+        public string Lookup_SystemField => $"{_baseApi}/Lookup/systemfield";
+
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
         public string Lookup_Role => $"{_baseApi}/Lookup/role";

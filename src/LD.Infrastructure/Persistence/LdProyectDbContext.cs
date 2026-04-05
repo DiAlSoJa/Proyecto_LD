@@ -59,6 +59,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<ScanConfiguration> ScanConfigurations { get; set; }
         public DbSet<ScanSaveType> ScanSaveTypes { get; set; }
         public DbSet<ScanType> ScanTypes { get; set; }
+        public DbSet<SystemField> SystemFields { get; set; }
 
 
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
@@ -460,6 +461,38 @@ namespace LD.Infrastructure.Persistence
                         PermissionId  = id
                     })
                     .ToArray()
+            );
+
+            // ── Usuario dev  ──
+            const string devUserId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+            var devUser = new ApplicationUser
+            {
+                Id = devUserId,
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@ld.com",
+                NormalizedEmail = "ADMIN@LD.COM",
+                EmailConfirmed = true,
+                FullName = "Administrador Dev",
+                IsActive = true,
+                SecurityStamp = "STATIC-SECURITY-STAMP-DEV",
+                ConcurrencyStamp = "00000000-0000-0000-0000-000000000001",
+                LockoutEnabled = false,
+                PasswordHash = "AQAAAAIAAYagAAAAEBsEGuxCTBQnsaAlTAGyys8SQq/Iq7c9IMbnTuC43NYnnKiLpTc+X8UbLr4VPWAt9w=="
+            };
+
+            //devUser.PasswordHash = new PasswordHasher<ApplicationUser>()
+            //    .HashPassword(devUser, "Admin123!");
+
+            builder.Entity<ApplicationUser>().HasData(devUser);
+
+            builder.Entity<ApplicationUserRole>().HasData(
+                new ApplicationUserRole
+                {
+                    UserId = devUserId,
+                    RoleId = superAdminRoleId
+                }
             );
 
 

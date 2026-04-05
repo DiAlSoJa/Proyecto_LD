@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    [Migration("20260404212303_AsnDetail_Permissions")]
-    partial class AsnDetail_Permissions
+    [Migration("20260405053642_InitialClean")]
+    partial class InitialClean
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -3375,7 +3375,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("SystemFieldId");
 
-                    b.ToTable("SystemField");
+                    b.ToTable("SystemFields");
 
                     b.HasData(
                         new
@@ -3738,6 +3738,26 @@ namespace LD.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AppUsers", "Auth");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000001",
+                            Email = "admin@ld.com",
+                            EmailConfirmed = true,
+                            FullName = "Administrador Dev",
+                            IsActive = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@LD.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHbKXdX2gy2kSm4DQ3HkQsgtX4f05cdOrm2hWDUVaZfvFYH8XTTSdByNfTmh48IGfQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "STATIC-SECURITY-STAMP-DEV",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("LD.Infrastructure.ApplicationUserRole", b =>
@@ -3753,6 +3773,13 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles", "Auth");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -4109,7 +4136,7 @@ namespace LD.Infrastructure.Migrations
             modelBuilder.Entity("LD.Domain.Entities.ScanConfiguration", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Project", "Project")
-                        .WithMany()
+                        .WithMany("ScanConfigurations")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4231,6 +4258,11 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.Project", b =>
+                {
+                    b.Navigation("ScanConfigurations");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Warehouse", b =>

@@ -59,6 +59,8 @@ namespace LD.Contracts.Requests
         public bool ReciveRequired { get; set; }
 
         public bool IsActive { get; set; }
+
+        public List<ScanConfigurationRequest> ScanConfigurations { get; set; } = [];
     }
 
 }

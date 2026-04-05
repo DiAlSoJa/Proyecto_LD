@@ -7,6 +7,8 @@ using LD.Contracts.Requests;
 using LD.FormsX.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LD.FormsX.Features.Proyectos.ViewModels;
@@ -33,6 +35,8 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
     [ObservableProperty]
     private List<DropDownDto> warehousesSource = [];
+    [ObservableProperty]
+    private List<DropDownDto> systemFieldsSource = [];
 
     // ── Datos generales ──
     [ObservableProperty]
@@ -156,6 +160,16 @@ public partial class NuevoProyectoViewModel : ObservableObject
     [ObservableProperty]
     private bool reciveRequired;
 
+    // ── Configuraciones de escaneo ──
+    public ObservableCollection<DropDownDto> AvailableSystemFields { get; } = [];
+    public ObservableCollection<ScanConfigurationRequest> ScanConfigurations { get; } = [];
+
+    [ObservableProperty]
+    private DropDownDto? selectedSystemField;
+
+    [ObservableProperty]
+    private ScanConfigurationRequest? selectedScanConfig;
+
     public NuevoProyectoViewModel(ProjectService projectService, LookupService lookupService)
     {
         _projectService = projectService;
@@ -180,12 +194,64 @@ public partial class NuevoProyectoViewModel : ObservableObject
     {
         var clientes = await _lookupService.GetClientLookup();
         var almacenes = await _lookupService.GetWarehouseLookup();
+        var systemFields = await _lookupService.GetSystemFieldLookup();
 
         if (clientes.IsSuccess)
             ClientsSource = clientes.Data ?? [];
 
         if (almacenes.IsSuccess)
             WarehousesSource = almacenes.Data ?? [];
+
+        if (systemFields.IsSuccess)
+        {
+            SystemFieldsSource = systemFields.Data ?? [];
+            PopulateAvailableFields();
+        }
+    }
+
+    private void PopulateAvailableFields()
+    {
+        var usedIds = ScanConfigurations.Select(s => s.SystemFieldId).ToHashSet();
+        AvailableSystemFields.Clear();
+        foreach (var field in SystemFieldsSource.Where(f => !usedIds.Contains(int.TryParse(f.Key, out var id) ? id : -1)))
+            AvailableSystemFields.Add(field);
+    }
+
+    [RelayCommand]
+    private void AgregarCampo()
+    {
+        if (SelectedSystemField is null) return;
+
+        ScanConfigurations.Add(new ScanConfigurationRequest
+        {
+            SystemFieldId = int.TryParse(SelectedSystemField.Key, out var id) ? id : 0,
+            SystemFieldName = SelectedSystemField.Value ?? "",
+            Order = ScanConfigurations.Count + 1
+        });
+
+        AvailableSystemFields.Remove(SelectedSystemField);
+        SelectedSystemField = null;
+    }
+
+    [RelayCommand]
+    private void QuitarCampo()
+    {
+        if (SelectedScanConfig is null) return;
+
+        var removed = SelectedScanConfig;
+        ScanConfigurations.Remove(removed);
+
+        // Devolver al listado disponible
+        var original = SystemFieldsSource.FirstOrDefault(f => f.Key == removed.SystemFieldId.ToString());
+        if (original is not null)
+            AvailableSystemFields.Add(original);
+
+        // Reordenar
+        int i = 1;
+        foreach (var sc in ScanConfigurations)
+            sc.Order = i++;
+
+        SelectedScanConfig = null;
     }
 
     private async Task CargarDatosAsync()
@@ -285,6 +351,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
         DeliveryOrderNumber = DoNumber,
         DeliveryOrderPrefix = DoPrefix,
         ReciveRequired = ReciveRequired,
+        ScanConfigurations = ScanConfigurations.ToList(),
     };
 
     [RelayCommand]

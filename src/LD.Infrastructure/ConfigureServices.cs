@@ -80,6 +80,7 @@ public static class ConfigureServices
         services.AddScoped<IDimensionerRepository, DimensionerRepository>();
         services.AddScoped<IAsnDetailRepository, AsnDetailRepository>();
         services.AddScoped<IAsnRepository, AsnRepository>();
+        services.AddScoped<ISystemFieldRepository, SystemFieldRepository>();
 
 
 

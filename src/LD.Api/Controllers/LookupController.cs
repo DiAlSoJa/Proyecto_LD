@@ -33,9 +33,14 @@ namespace LD.Api.Controllers
         [HttpGet("client")]
         public async Task<IActionResult> GetClientLookup()
             => ResultExtensions.ToActionResult(await Mediator.Send(new GetClientLookupQuery()));
+
         [HttpGet("role")]
         public async Task<IActionResult> GetRoleLookup()
           => ResultExtensions.ToActionResult(await Mediator.Send(new GetRoleLookupQuery()));
+
+        [HttpGet("systemfield")]
+        public async Task<IActionResult> GetSystemFieldLookup()
+        => ResultExtensions.ToActionResult(await Mediator.Send(new GetSystemFieldLookupQuery()));
 
         [HttpGet("project")]
         public async Task<IActionResult> GetProjectLookup()

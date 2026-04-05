@@ -77,7 +77,7 @@ namespace LD.Domain.Entities
         public Warehouse? Warehouse { get; set; }
         public StorageType? StorageType{ get; set; }
 
-
+        public ICollection<ScanConfiguration> ScanConfigurations { get; set; } = new List<ScanConfiguration>();
 
     }
 
