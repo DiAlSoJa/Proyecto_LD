@@ -4,6 +4,8 @@ using System.Text;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LD.Application.Common.Interfaces.Repository;
+using LD.Contracts.DTOs;
+using LD.Contracts.Product;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -34,12 +36,11 @@ namespace LD.Infrastructure.Repositories
                 .Include(x=>x.StorageType)
                 .ToListAsync();
         }
-        async Task<List<Product>> IProductRepository.GetProductByClientAsync(int clientId, int projectId)
+        async Task<List<DropDownDto>> IProductRepository.GetProductByClientAsync(int clientId, int projectId)
         {
-            return await _context.items
-                .AsNoTracking()
+            return await _context.items                
                 .Where(p => p.ClientId == clientId && p.ProjectId == projectId)
-                .ProjectTo<Product>(_mapper.ConfigurationProvider)
+                .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

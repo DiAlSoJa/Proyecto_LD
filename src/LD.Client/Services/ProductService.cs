@@ -21,9 +21,12 @@ namespace LD.Client.Services
         {
             return await _api.GetAsync<ApiResponseDto<List<ProductDto?>>>(_apiEndpoints.Product_GetAll);
         }
-        public async Task<ApiResponseDto<List<ProductDto>>> GetProductByClientId(int clientId, int projectId)
-                => await _api.GetAsync<ApiResponseDto<List<ProductDto>>>($"{_apiEndpoints.Product_GetByClientId}/{clientId}/{projectId}");
 
+        
+
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetProductByClientId(int clientId, int projectId)
+            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(
+                $"{_apiEndpoints.Product_GetAll}/{clientId}/{projectId}");
 
         public async Task<ApiResponseDto<ProductRequest>> GetItemById(int itemId)
         {

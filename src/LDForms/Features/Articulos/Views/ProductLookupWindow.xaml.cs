@@ -53,16 +53,14 @@ namespace LD.FormsX.Views.Articulos
                         return;
                     }
 
-                   /* _allItems = response.Data
-                        .Where(x => (x.Cliente ?? 0) == _clientId && (x.ProjectId ?? 0) == _projectId)
+                    _allItems = response.Data                       
                         .Select(x => new ProductLookupItemVm
-                        {
-                            ProductId = x.ProductId,
-                            PartNumber = x.PartNumber ?? string.Empty,
-                            Description = x.Description ?? string.Empty
+                        {                            
+                            PartNumber = x.Key ?? string.Empty,
+                            Description = x.Value ?? string.Empty
                         })
                         .OrderBy(x => x.PartNumber)
-                        .ToList();*/
+                        .ToList();
 
                     dgProductos.ItemsSource = _allItems;
                 }
