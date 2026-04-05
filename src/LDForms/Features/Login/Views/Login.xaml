@@ -159,11 +159,11 @@
                                            FontSize="13"
                                            Foreground="#222222"
                                            Margin="0,18,0,6"
-                                            Tag="Ingrese su contraseña"/>
+                                            Tag="Ingrese su contraseña" />
 
                                 <Grid>
                                     <PasswordBox x:Name="txtPassword"
-                                                 PasswordChanged="txtPassword_PasswordChanged">
+                                                 PasswordChanged="txtPassword_PasswordChanged" >
                                         <PasswordBox.Style>
                                             <Style TargetType="PasswordBox" BasedOn="{StaticResource RoundedPasswordBoxStyle}">
                                                 <Setter Property="Padding" Value="10,0,34,0"/>

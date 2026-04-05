@@ -62,6 +62,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<SystemField> SystemFields { get; set; }
 
 
+
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
         {
             
@@ -462,39 +463,23 @@ namespace LD.Infrastructure.Persistence
                     })
                     .ToArray()
             );
-
-            // ── Usuario dev  ──
-            const string devUserId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
-
-            var devUser = new ApplicationUser
-            {
-                Id = devUserId,
-                UserName = "admin",
+            const string devUserId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"; 
+            var devUser = new ApplicationUser { 
+                Id = devUserId, 
+                UserName = "admin", 
                 NormalizedUserName = "ADMIN",
-                Email = "admin@ld.com",
-                NormalizedEmail = "ADMIN@LD.COM",
-                EmailConfirmed = true,
-                FullName = "Administrador Dev",
-                IsActive = true,
-                SecurityStamp = "STATIC-SECURITY-STAMP-DEV",
-                ConcurrencyStamp = "00000000-0000-0000-0000-000000000001",
-                LockoutEnabled = false,
-                PasswordHash = "AQAAAAIAAYagAAAAEBsEGuxCTBQnsaAlTAGyys8SQq/Iq7c9IMbnTuC43NYnnKiLpTc+X8UbLr4VPWAt9w=="
+                Email = "admin@ld.com", 
+                NormalizedEmail = "ADMIN@LD.COM", 
+                EmailConfirmed = true, 
+                FullName = "Administrador Dev", 
+                IsActive = true, 
+                SecurityStamp = "STATIC-SECURITY-STAMP-DEV", 
+                ConcurrencyStamp = "00000000-0000-0000-0000-000000000001", 
+                LockoutEnabled = false, 
+                PasswordHash= "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA=="
             };
-
-            //devUser.PasswordHash = new PasswordHasher<ApplicationUser>()
-            //    .HashPassword(devUser, "Admin123!");
-
             builder.Entity<ApplicationUser>().HasData(devUser);
-
-            builder.Entity<ApplicationUserRole>().HasData(
-                new ApplicationUserRole
-                {
-                    UserId = devUserId,
-                    RoleId = superAdminRoleId
-                }
-            );
-
+            builder.Entity<ApplicationUserRole>().HasData(new ApplicationUserRole { UserId = devUserId, RoleId = superAdminRoleId });
 
             builder.Entity<SystemField>().HasData(
                 new SystemField { SystemFieldId = 1, SystemFieldName = "lot_number", DisplayName = "Número de lote", Order = 1 },

@@ -1198,7 +1198,7 @@ namespace LD.Infrastructure.Migrations
                 schema: "Auth",
                 table: "AppUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FullName", "IsActive", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "a1b2c3d4-e5f6-7890-abcd-ef1234567890", 0, "00000000-0000-0000-0000-000000000001", "admin@ld.com", true, "Administrador Dev", true, false, null, "ADMIN@LD.COM", "ADMIN", "AQAAAAIAAYagAAAAEHbKXdX2gy2kSm4DQ3HkQsgtX4f05cdOrm2hWDUVaZfvFYH8XTTSdByNfTmh48IGfQ==", null, false, "STATIC-SECURITY-STAMP-DEV", false, "admin" });
+                values: new object[] { "a1b2c3d4-e5f6-7890-abcd-ef1234567890", 0, "00000000-0000-0000-0000-000000000001", "admin@ld.com", true, "Administrador Dev", true, false, null, "ADMIN@LD.COM", "ADMIN", "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==", null, false, "STATIC-SECURITY-STAMP-DEV", false, "admin" });
 
             migrationBuilder.InsertData(
                 schema: "Auth",

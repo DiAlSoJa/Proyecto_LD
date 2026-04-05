@@ -3749,7 +3749,7 @@ namespace LD.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LD.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHbKXdX2gy2kSm4DQ3HkQsgtX4f05cdOrm2hWDUVaZfvFYH8XTTSdByNfTmh48IGfQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "STATIC-SECURITY-STAMP-DEV",
                             TwoFactorEnabled = false,

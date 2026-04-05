@@ -27,6 +27,7 @@ namespace LD.FormsX
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            txtPassword.Password = _viewModel.Password ?? string.Empty;
             txtUsuario.Focus();
         }
 

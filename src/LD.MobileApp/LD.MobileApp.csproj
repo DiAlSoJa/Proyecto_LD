@@ -130,7 +130,7 @@
 	  <MauiXaml Update="Features\Pages\InventoryList.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Features\Pages\Auth\LoginPage.xaml">
+	  <MauiXaml Update="Features\Auth\Views\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Features\Pages\MovementDetail.xaml">
@@ -178,6 +178,10 @@
 	  <MauiXaml Update="Features\Pages\WarehouseOperations.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ViewModels\Auth\" />
 	</ItemGroup>
 
 </Project>

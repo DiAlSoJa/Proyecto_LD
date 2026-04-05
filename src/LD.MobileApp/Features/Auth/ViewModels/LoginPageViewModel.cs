@@ -30,6 +30,8 @@ namespace MauiAppLogin.ViewModels
         {
             _authService = authService;
             LoginCommand = new AsyncCommand(Login);
+            Username = "admin";
+            Password = "Pa$$w0rd";
         }
 
         private async Task Login()

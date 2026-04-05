@@ -48,6 +48,9 @@ namespace LD.FormsX.Views.Login.ViewModels
 
             LoginCommand = new AsyncRelayCommand(LoginAsync);
             TogglePasswordVisibilityCommand = new RelayCommand(() => IsPasswordVisible = !IsPasswordVisible);
+
+            Usuario = "admin";
+            Password = "Pa$$w0rd";
         }
 
         private async Task LoginAsync()
