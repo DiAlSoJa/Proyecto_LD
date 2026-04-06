@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace MauiAppLogin.ViewModels
 {
-    public partial class DashboardViewModel : OriginViewModel
+    public partial class DashboardViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
 
@@ -50,6 +50,8 @@ namespace MauiAppLogin.ViewModels
         private bool canAudit;
         [ObservableProperty]
         private bool canViewInventoryList;
+        [ObservableProperty]
+        private bool isBusy;
 
         public ICommand LogoutCommand { get; }
         public ICommand NavigateToChangeLocationCommand { get; }

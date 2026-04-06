@@ -12,7 +12,7 @@ using Command = MvvmHelpers.Commands.Command;
 
 namespace MauiAppLogin.ViewModels
 {
-    public partial class LoginViewModel : OriginViewModel
+    public partial class LoginViewModel : ObservableObject
     {
         [ObservableProperty]
         private string username;
@@ -21,6 +21,8 @@ namespace MauiAppLogin.ViewModels
         [ObservableProperty]
         private bool isPasswordVisible = false;
 
+        [ObservableProperty]
+        private bool isBusy = false;
         public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordVisible = !IsPasswordVisible);
 
         public ICommand LoginCommand { get; }
