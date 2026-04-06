@@ -108,6 +108,7 @@ public static class PermissionKeys
     public const string Vehicle_Update = "security.vehicles.update";
     public const string Vehicle_Delete = "security.vehicles.delete";
 
+<<<<<<< HEAD
     // QUERIES / CONSULTAS
     public const string Query_View = "queries.read";
 
@@ -148,6 +149,12 @@ public static class PermissionKeys
     public const string Unit_View   = "units.read";
     public const string Unit_Create = "units.create";
     public const string Unit_Update = "units.update";
+=======
+    public const string Asn_View   = "users.read";//"asn.read";
+    public const string Asn_Create = "users.read";//"asn.create";
+    public const string Asn_Update = "users.read";//"asn.update";
+    public const string Asn_Delete = "users.read";//"asn.delete";
+>>>>>>> origin/J_ASNDetalle
 
 
 

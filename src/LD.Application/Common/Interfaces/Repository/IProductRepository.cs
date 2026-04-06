@@ -12,6 +12,6 @@ namespace LD.Application.Common.Interfaces.Repository
     public interface IProductRepository : IRepository<Product>
     {
         Task<List<Product>> GetAllWithRelationsAsync();
-        Task<List<DropDownDto>> GetProductByClientAsync(int clientId, int projectId);
+        Task<List<ProductAutocompleteDto>> GetProductByClientAsync(int clientId, int projectId);
     }
 }
