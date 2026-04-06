@@ -477,61 +477,42 @@
                             CornerRadius="6"
                             MinHeight="220">
                             <DataGrid x:Name="dgDetail"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="True"
-                              IsReadOnly="False"
-                              ItemsSource="{Binding DetailItems}"
-                              InitializingNewItem="dgDetail_InitializingNewItem"
-                              CellEditEnding="dgDetail_CellEditEnding"
-                              PreviewKeyDown="dgDetail_PreviewKeyDown"
-                              HeadersVisibility="Column"
-                              GridLinesVisibility="Vertical"
-                              AlternatingRowBackground="{StaticResource AltRowBrush}"
-                              RowBackground="White"
-                              BorderThickness="0"
-                              RowHeight="30"
-                              ColumnHeaderHeight="38"
-                              FontSize="12"
-                              Margin="0"
-                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="True"
+                                      IsReadOnly="False"
+                                      ItemsSource="{Binding DetailItems}"
+                                      InitializingNewItem="dgDetail_InitializingNewItem"
+                                      CellEditEnding="dgDetail_CellEditEnding"
+                                      PreviewKeyDown="dgDetail_PreviewKeyDown"
+                                      
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="Vertical"
+                                      AlternatingRowBackground="{StaticResource AltRowBrush}"
+                                      RowBackground="White"
+                                      BorderThickness="0"
+                                      RowHeight="30"
+                                      ColumnHeaderHeight="38"
+                                      FontSize="12"
+                                      Margin="0"
+                                      SelectionUnit="Cell"
+                                      SelectionMode="Single"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                                 <DataGrid.Columns>
-                                   <DataGridTemplateColumn Header="Número de Parte" Width="220">
+                                    <DataGridTemplateColumn Header="Número de Parte" Width="220">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="34"/>
-                                                    </Grid.ColumnDefinitions>
-
+                                                <Border Background="Transparent" Padding="4,0">
                                                     <TextBox Text="{Binding PartNumber}"
-                                                             IsReadOnly="True"
-                                                             BorderThickness="0"
-                                                             Background="Transparent"
-                                                             VerticalContentAlignment="Center"/>
-
-                                                    <Button Grid.Column="1"
-                                                            Width="28"
-                                                            Height="28"
-                                                            Margin="4,0,0,0"
-                                                            Click="BtnBuscarProductoEnFila_Click"
-                                                            Cursor="Hand">
-                                                        <Button.Resources>
-                                                            <Style TargetType="Border">
-                                                                <Setter Property="CornerRadius" Value="6"/>
-                                                            </Style>
-                                                        </Button.Resources>
-
-                                                        <TextBlock FontFamily="Segoe MDL2 Assets"
-                                                                   Text="&#xE721;"
-                                                                   FontSize="13"
-                                                                   HorizontalAlignment="Center"
-                                                                   VerticalAlignment="Center"/>
-                                                    </Button>
-                                                </Grid>
+                                                         IsReadOnly="True"
+                                                         BorderThickness="0"
+                                                         Background="Transparent"
+                                                         VerticalContentAlignment="Center"
+                                                         Cursor="Hand"
+                                                         GotKeyboardFocus="PartNumberTextBox_GotKeyboardFocus"/>
+                                                </Border>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
