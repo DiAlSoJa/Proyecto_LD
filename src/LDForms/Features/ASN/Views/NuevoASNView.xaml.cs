@@ -34,6 +34,8 @@ namespace LD.FormsX.Views.Dialogs
         private readonly WpfGridFilter<AsnDetailDto> _gridFilterDet;
         private bool _isUpdatingProductText;
         private AsnDetailItem? _currentLookupRow;
+        private bool _openingProductLookup;
+        
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
 
         public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService,IServiceProvider serviceProvider)
@@ -404,36 +406,27 @@ namespace LD.FormsX.Views.Dialogs
                 DialogHelper.ShowError(ex.Message);
             }
         }
-        private void BtnBuscarProductoEnFila_Click(object sender, RoutedEventArgs e)
+     
+
+       
+        private void PartNumberTextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             try
             {
+                // evita abrir múltiples veces
+                if (_openingProductLookup || popupProductoLookup.IsOpen)
+                    return;
+
                 if (sender is not FrameworkElement element)
                     return;
 
                 if (element.DataContext is not AsnDetailItem row)
                     return;
 
-                if (_productLookupSource == null || !_productLookupSource.Any())
+                Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    DialogHelper.ShowWarning("No hay productos cargados para el cliente/proyecto seleccionado.");
-                    return;
-                }
-
-                _currentLookupRow = row;
-
-                var control = new LookupPopupControl(
-                    _productLookupSource,
-                    hiddenColumns: new[] { "ItemId" },
-                    searchColumns: new[] { "NumeroParte", "Descripcion" });
-
-                control.SelectionConfirmed += OnLookupSelectionConfirmed;
-                control.Cancelled += OnLookupCancelled;
-
-                lookupPopupHost.Content = control;
-
-                popupProductoLookup.PlacementTarget = element;
-                popupProductoLookup.IsOpen = true;
+                    AbrirLookupProducto(element, row);
+                }), System.Windows.Threading.DispatcherPriority.Input);
             }
             catch (Exception ex)
             {
@@ -441,17 +434,53 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
-        private void OnLookupSelectionConfirmed(LookupItem? selected)
+
+        private void AbrirLookupProducto(FrameworkElement placementTarget, AsnDetailItem row)
         {
-            if (_currentLookupRow == null || selected == null)
+            if (_openingProductLookup || popupProductoLookup.IsOpen)
+                return;
+
+            if (_productLookupSource == null || !_productLookupSource.Any())
             {
-                popupProductoLookup.IsOpen = false;
+                DialogHelper.ShowWarning("No hay productos cargados para el cliente/proyecto seleccionado.");
                 return;
             }
 
-            _currentLookupRow.ProductId = (int)selected.Id;
-            _currentLookupRow.PartNumber = selected.Code;
-            _currentLookupRow.Description = selected.Description;
+            _openingProductLookup = true;
+            _currentLookupRow = row;
+
+            var control = new LookupPopupControl(
+                _productLookupSource,
+                hiddenColumns: new[] { "ItemId" },
+                searchColumns: new[] { "NumeroParte", "Descripcion" });
+
+            control.SelectionConfirmed += OnLookupSelectionConfirmed;
+            control.Cancelled += OnLookupCancelled;
+
+            lookupPopupHost.Content = control;
+            popupProductoLookup.PlacementTarget = placementTarget;
+            popupProductoLookup.IsOpen = true;
+        }
+
+        private void OnLookupSelectionConfirmed(LookupItem? selected)
+        {
+            if (_currentLookupRow != null && selected != null)
+            {
+                _currentLookupRow.ProductId =(int) selected.Id;
+                _currentLookupRow.PartNumber = selected.Code;
+                _currentLookupRow.Description = selected.Description;
+
+                var currentRow = _currentLookupRow;
+
+                popupProductoLookup.IsOpen = false;
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    MoverFocoASiguienteCelda(currentRow);
+                }), System.Windows.Threading.DispatcherPriority.Background);
+
+                return;
+            }
 
             popupProductoLookup.IsOpen = false;
         }
@@ -465,8 +494,49 @@ namespace LD.FormsX.Views.Dialogs
         {
             lookupPopupHost.Content = null;
             _currentLookupRow = null;
+            _openingProductLookup = false;
+        }
+        private void MoverFocoASiguienteCelda(AsnDetailItem row)
+        {
+            try
+            {
+                if (dgDetail.CurrentCell.Column == null)
+                    return;
+
+                int currentIndex = dgDetail.Columns.IndexOf(dgDetail.CurrentCell.Column);
+                if (currentIndex < 0)
+                    return;
+
+                var nextColumn = dgDetail.Columns
+                    .Skip(currentIndex + 1)
+                    .FirstOrDefault(c => !c.IsReadOnly);
+
+                if (nextColumn == null)
+                    return;
+
+                dgDetail.SelectedItem = row;
+                dgDetail.CurrentCell = new DataGridCellInfo(row, nextColumn);
+                dgDetail.ScrollIntoView(row, nextColumn);
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    dgDetail.Focus();
+                    dgDetail.BeginEdit();
+
+                    var cellContent = nextColumn.GetCellContent(row);
+                    if (cellContent?.Parent is DataGridCell cell)
+                    {
+                        cell.Focus();
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
         }
 
+      
 
 
 
