@@ -1,4 +1,9 @@
+using Plugin.Maui.OCR;
+using System.Text.RegularExpressions;
+
 namespace MauiAppLogin;
+
+
 
 public partial class RegisterLicense : ContentPage
 {
@@ -10,14 +15,31 @@ public partial class RegisterLicense : ContentPage
 
 		InitializeComponent();
 	}
+    private async Task<string> ExtractText(Stream imageStream)
+    {
+        using var ms = new MemoryStream();
+        await imageStream.CopyToAsync(ms);
+        var result = await OcrPlugin.Default.RecognizeTextAsync(ms.ToArray());
 
+        return result?.AllText ?? "No se detectó texto";
+    }
+    private void ParseText(string text)
+    {
+        var nombre = Regex.Match(text, @"NOMBRE[:\s]+([A-Z\s]+)");
+        if (nombre.Success)
+            NombreEntry.Text = nombre.Groups[1].Value;
+
+        var licencia = Regex.Match(text, @"\d{6,10}");
+        if (licencia.Success)
+            LicenciaEntry.Text = licencia.Value;
+    }
     private async void OnCapturarClicked(object sender, EventArgs e)
     {
         try
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await DisplayAlert("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
+                await DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
                 return;
             }
 
@@ -29,12 +51,15 @@ public partial class RegisterLicense : ContentPage
             await stream.CopyToAsync(mem);
             mem.Position = 0;
 
-            var img = ImageSource.FromStream(() => new MemoryStream(mem.ToArray()));
 
-            // Preview grande
+            var text = await ExtractText(mem);
+
+            await DisplayAlertAsync("Texto detectado", text, "OK");
+
+  
+            var img = ImageSource.FromStream(() => new MemoryStream(mem.ToArray()));
             PreviewImage.Source = img;
 
-            // Guardar en slots de miniaturas (2 fotos)
             if (_foto1 == null)
             {
                 _foto1 = img;
@@ -48,7 +73,7 @@ public partial class RegisterLicense : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", ex.Message, "OK");
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 

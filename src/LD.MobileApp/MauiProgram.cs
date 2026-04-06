@@ -2,6 +2,7 @@
 using LD.Client;
 using MauiAppLogin.ViewModels;
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.OCR;
 using ZXing.Net.Maui.Controls;
 using static System.Net.WebRequestMethods;
 
@@ -17,6 +18,7 @@ namespace MauiAppLogin
                 .UseMauiApp<App>()                       // una sola vez
                 .UseMauiCommunityToolkit()               // Community Toolkit
                 .UseBarcodeReader()                      // ZXing barcode reader
+                .UseOcr()                                // Plugin.Maui.OCR
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -27,7 +29,7 @@ namespace MauiAppLogin
             builder.Services.AddLDClient(options =>
             {
 
-                options.BaseUrl = "http://192.168.0.101:8050/api";
+                options.BaseUrl = "http://192.168.0.116:8050/api";
 
             });
 
