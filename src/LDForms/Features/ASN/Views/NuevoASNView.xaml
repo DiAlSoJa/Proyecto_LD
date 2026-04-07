@@ -522,7 +522,7 @@
                                         Width="220"
                                         IsReadOnly="True"/>
 
-                                
+
 
                                     <DataGridTextColumn Header="Cantidad"
                                         Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"

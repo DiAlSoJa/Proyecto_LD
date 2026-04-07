@@ -1,0 +1,84 @@
+﻿<Window x:Class="LD.FormsX.Features.Common.LookupSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Seleccionar registro"
+        Width="400"
+        Height="300"
+        MinWidth="620"
+        MinHeight="240"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="Transparent"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Border Background="#F3F3F3"
+            BorderBrush="#5E5E5E"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="42"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+           
+
+            <!-- Buscador -->
+            <Border Grid.Row="1"
+                    Background="#F7F7F7"
+                    BorderBrush="#7A7A7A"
+                    BorderThickness="0,0,0,1"
+                    Padding="8,6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="34"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="txtBuscar"
+                             Height="28"
+                             Padding="8,2"
+                             VerticalContentAlignment="Center"
+                             TextChanged="txtBuscar_TextChanged"
+                             KeyDown="txtBuscar_KeyDown"/>
+
+                    <Button Grid.Column="1"
+                            Margin="6,0,0,0"
+                            Click="BtnBuscar_Click"
+                            Focusable="False">
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                   Text="&#xE721;"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Grid -->
+            <Border Grid.Row="2"
+                    Background="White"
+                    CornerRadius="0,0,8,8">
+                <DataGrid x:Name="dgProductos"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Vertical"
+                          MouseDoubleClick="dgProductos_MouseDoubleClick"
+                          PreviewKeyDown="dgProductos_PreviewKeyDown"
+                          FontSize="12"
+                          RowHeight="28"
+                          ColumnHeaderHeight="30"
+                          Margin="0"/>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

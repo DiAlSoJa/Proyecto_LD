@@ -29,16 +29,16 @@ namespace LD.FormsX.Views.Dialogs
         private readonly ProductService _productService;
         private AsnDto? AsnSelected;
         private bool _cargandoDatos = false;
-        
+
         private List<LookupItem> _productLookupSource = new();
         private readonly WpfGridFilter<AsnDetailDto> _gridFilterDet;
         private bool _isUpdatingProductText;
         private AsnDetailItem? _currentLookupRow;
         private bool _openingProductLookup;
-        
+
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService,IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
@@ -47,7 +47,7 @@ namespace LD.FormsX.Views.Dialogs
             _lookupService = lookupService;
             _productService = productService;
             DataContext = this;
-            
+
             HideScanSection();
         }
 
@@ -56,10 +56,10 @@ namespace LD.FormsX.Views.Dialogs
             AsnSelected = _asnSelected;
 
             // Si es edición y quieres mostrar la sección:
-             if (AsnSelected != null)
-                 ShowScanSection();
+            if (AsnSelected != null)
+                ShowScanSection();
 
-          
+
 
             await CargarDatosAsync();
             await CargarDatosAsyncDet();
@@ -80,7 +80,7 @@ namespace LD.FormsX.Views.Dialogs
                 }
 
                 var item = response.Data;
-                
+
                 cmbCliente.SelectedValue = item.ClientId.ToString();
                 await SetCombosProjects(item.ProjectId.ToString());
                 txtNumeroFactura.Text = item.InvoiceNumber;
@@ -97,7 +97,7 @@ namespace LD.FormsX.Views.Dialogs
 
 
 
-               
+
 
                 await LoadProductsForSelectedClientProjectAsync();
 
@@ -142,7 +142,7 @@ namespace LD.FormsX.Views.Dialogs
                 }
             }
 
-        
+
             if (!DetailItems.Any())
             {
                 DetailItems.Add(new AsnDetailItem());
@@ -229,7 +229,7 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             await SetCombosProjects();
-            
+
         }
         private async void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -288,7 +288,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (result.IsSuccess)
                 {
                     ToastHelper.ShowSuccess("ASN guardado exitosamente.");
-                    ShowScanSection();                   
+                    ShowScanSection();
                 }
                 else
                 {
@@ -303,7 +303,7 @@ namespace LD.FormsX.Views.Dialogs
             {
                 btnGuardar.IsEnabled = true;
             }
-           
+
         }
 
         private void BtnBuscarVehiculo_Click(object sender, RoutedEventArgs e)
@@ -318,7 +318,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             // Guardar ASN
         }
-       
+
         private void HideScanSection()
         {
             btnEscanear.Visibility = Visibility.Collapsed;
@@ -358,7 +358,7 @@ namespace LD.FormsX.Views.Dialogs
                 Eta = dpEta.SelectedDate,
                 PackagesQty = int.TryParse(txtBultos.Text.Trim(), out int packagesQty) ? packagesQty : (int?)null,
                 IsReturn = chkEsDevolucion.IsChecked == true,
-                IsCustomerMovementRequired = chkMovimientoRequeridoCliente.IsChecked == true,    
+                IsCustomerMovementRequired = chkMovimientoRequeridoCliente.IsChecked == true,
                 TransportLine = txtLineaTransporte.Text.Trim(),
                 VehicleType = txtTipoVehiculo.Text.Trim(),
                 DriverName = txtChofer.Text.Trim(),
@@ -368,7 +368,7 @@ namespace LD.FormsX.Views.Dialogs
         }
         private void dgDetail_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
-           
+
         }
 
         private async Task LoadProductsForSelectedClientProjectAsync()
@@ -390,7 +390,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (!response.IsSuccess || response.Data == null)
                     return;
-                _productLookupSource = response.Data                 
+                _productLookupSource = response.Data
                  .Select(x => new LookupItem
                  {
                      Id = x.ItemId,
@@ -406,9 +406,9 @@ namespace LD.FormsX.Views.Dialogs
                 DialogHelper.ShowError(ex.Message);
             }
         }
-     
 
-       
+
+
         private void PartNumberTextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             try
@@ -466,7 +466,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             if (_currentLookupRow != null && selected != null)
             {
-                _currentLookupRow.ProductId =(int) selected.Id;
+                _currentLookupRow.ProductId = (int)selected.Id;
                 _currentLookupRow.PartNumber = selected.Code;
                 _currentLookupRow.Description = selected.Description;
 
@@ -536,7 +536,7 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
-      
+
 
 
 
@@ -545,7 +545,7 @@ namespace LD.FormsX.Views.Dialogs
         private void dgDetail_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             if (DetailItems == null)
-                return;        
+                return;
         }
         private void dgDetail_PreviewKeyDown(object sender, KeyEventArgs e)
         {
