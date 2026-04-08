@@ -11,17 +11,49 @@ namespace LD.Application.Features.Clients.Profiles
         public ProjectProfile()
         {
             CreateMap<Project, ProjectDto>()
-                .ForMember(dest => dest.ProjectId,
-                    opt => opt.MapFrom(src => src.ProjectId))
-                .ForMember(dest => dest.Activo,
-                    opt => opt.MapFrom(src => src.IsActive))
-                .ForMember(dest => dest.Cliente,
-                    opt => opt.MapFrom(src => src.Client.CommercialName))                
-                .ForMember(dest => dest.Proyecto,
-                    opt => opt.MapFrom(src => src.ProjectName))                
-                .ForMember(dest => dest.Almacen,
-                    opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
-                ;
+             .ForMember(dest => dest.ProjectId,
+                 opt => opt.MapFrom(src => src.ProjectId))
+             .ForMember(dest => dest.Activo,
+                 opt => opt.MapFrom(src => src.IsActive))
+             .ForMember(dest => dest.Cliente,
+                 opt => opt.MapFrom(src => src.Client != null ? src.Client.CommercialName : string.Empty))
+             .ForMember(dest => dest.Proyecto,
+                 opt => opt.MapFrom(src => src.ProjectName ?? string.Empty))
+             .ForMember(dest => dest.Almacen,
+                 opt => opt.MapFrom(src => src.Warehouse != null ? src.Warehouse.WarehouseName : string.Empty))
+             // Notificaciones
+             .ForMember(dest => dest.NotificacionInterna,
+                 opt => opt.MapFrom(src => src.InternalNotificationEnabled))
+             .ForMember(dest => dest.NotificacionRecibo,
+                 opt => opt.MapFrom(src => src.ReceiptNotificationEnabled))
+             .ForMember(dest => dest.NotificacionEmbarque,
+                 opt => opt.MapFrom(src => src.ShipmentNotificationEnabled))
+             // Operación
+             .ForMember(dest => dest.Backorder,
+                 opt => opt.MapFrom(src => src.AllowsBackorder))
+             .ForMember(dest => dest.Distribucion,
+                 opt => opt.MapFrom(src => src.IsDistributionArea))
+             .ForMember(dest => dest.Fiscal,
+                 opt => opt.MapFrom(src => src.IsFiscalWarehouse))
+             .ForMember(dest => dest.Etiqueta,
+                 opt => opt.MapFrom(src => src.RequiresLabels))
+             .ForMember(dest => dest.SD,
+                 opt => opt.MapFrom(src => src.AutoPicking)) 
+             .ForMember(dest => dest.AP,
+                 opt => opt.MapFrom(src => src.AsnNumber ?? 0))
+             .ForMember(dest => dest.Valid,
+                 opt => opt.MapFrom(src => src.ReciveRequired))
+             .ForMember(dest => dest.EscaneoDub,
+                 opt => opt.MapFrom(src => false)) // TODO
+             .ForMember(dest => dest.EscaneoNumeroParte,
+                 opt => opt.MapFrom(src => false)) // TODO
+             .ForMember(dest => dest.EscaneoCantidad,
+                 opt => opt.MapFrom(src => false)) // TODO
+             .ForMember(dest => dest.RequiereLote,
+                 opt => opt.MapFrom(src => false)) // TODO
+             .ForMember(dest => dest.RequiereFechaCaducidad,
+                 opt => opt.MapFrom(src => false)); // TODO
+
             CreateMap<Project, ProjectRequest>();
 
             CreateMap<ProjectRequest, Project>()

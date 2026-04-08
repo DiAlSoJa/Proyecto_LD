@@ -75,9 +75,15 @@ namespace LD.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public Task<List<Project>?> GetManyAsync()
+        public async Task<List<Project>?> GetManyAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Projects
+                .AsNoTracking()
+                .Include(p => p.Client)
+                .Include(p => p.Warehouse)
+                .Include(p => p.ScanConfigurations)
+                    .ThenInclude(sc => sc.SystemField)
+                .ToListAsync();
         }
 
         public async Task<List<DropDownDto>> GetProjectByClientAsync(int clientId)

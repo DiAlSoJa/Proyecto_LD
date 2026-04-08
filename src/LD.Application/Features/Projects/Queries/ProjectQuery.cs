@@ -22,9 +22,9 @@ public class ProjectQuery : IRequest<Result<List<ProjectDto?>>>
 public class ProjectQueryHandler : IRequestHandler<ProjectQuery, Result<List<ProjectDto?>>>
 {
 
-    private readonly IRepository<Project> _projectRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
-    public ProjectQueryHandler(IRepository<Project> projectRepository,IMapper mapper)
+    public ProjectQueryHandler(IProjectRepository projectRepository,IMapper mapper)
     {
         _projectRepository = projectRepository;
         _mapper = mapper;
