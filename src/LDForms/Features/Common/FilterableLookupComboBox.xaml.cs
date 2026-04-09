@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Threading;
 
 namespace LD.FormsX.Features.Common
@@ -17,7 +18,6 @@ namespace LD.FormsX.Features.Common
         private TextBox? _editableTextBox;
         private bool _suppressTextChanged;
         private bool _loadedOnce;
-
         public ObservableCollection<object> FilteredItems { get; } = new();
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -84,6 +84,45 @@ namespace LD.FormsX.Features.Common
             set => SetValue(SearchMemberPathsProperty, value);
         }
 
+        public static readonly DependencyProperty SecondaryMemberPathProperty =
+            DependencyProperty.Register(
+                nameof(SecondaryMemberPath),
+                typeof(string),
+                typeof(FilterableLookupComboBox),
+                new PropertyMetadata(string.Empty, OnLookupTemplatePropertyChanged));
+
+        public string SecondaryMemberPath
+        {
+            get => (string)GetValue(SecondaryMemberPathProperty);
+            set => SetValue(SecondaryMemberPathProperty, value);
+        }
+
+        public static readonly DependencyProperty PrimaryColumnWidthProperty =
+            DependencyProperty.Register(
+                nameof(PrimaryColumnWidth),
+                typeof(double),
+                typeof(FilterableLookupComboBox),
+                new PropertyMetadata(140d, OnLookupTemplatePropertyChanged));
+
+        public double PrimaryColumnWidth
+        {
+            get => (double)GetValue(PrimaryColumnWidthProperty);
+            set => SetValue(PrimaryColumnWidthProperty, value);
+        }
+
+        public static readonly DependencyProperty SecondaryColumnWidthProperty =
+            DependencyProperty.Register(
+                nameof(SecondaryColumnWidth),
+                typeof(double),
+                typeof(FilterableLookupComboBox),
+                new PropertyMetadata(220d, OnLookupTemplatePropertyChanged));
+
+        public double SecondaryColumnWidth
+        {
+            get => (double)GetValue(SecondaryColumnWidthProperty);
+            set => SetValue(SecondaryColumnWidthProperty, value);
+        }
+
         public static readonly DependencyProperty MaxResultsProperty =
             DependencyProperty.Register(
                 nameof(MaxResults),
@@ -95,6 +134,19 @@ namespace LD.FormsX.Features.Common
         {
             get => (int)GetValue(MaxResultsProperty);
             set => SetValue(MaxResultsProperty, value);
+        }
+
+        public static readonly DependencyProperty InitialTextProperty =
+            DependencyProperty.Register(
+                nameof(InitialText),
+                typeof(string),
+                typeof(FilterableLookupComboBox),
+                new PropertyMetadata(string.Empty, OnInitialTextChanged));
+
+        public string InitialText
+        {
+            get => (string)GetValue(InitialTextProperty);
+            set => SetValue(InitialTextProperty, value);
         }
 
         public static readonly DependencyProperty OpenDropDownOnLoadProperty =
@@ -129,6 +181,12 @@ namespace LD.FormsX.Features.Common
                 control.ApplyFilter(control._editableTextBox?.Text ?? string.Empty);
         }
 
+        private static void OnLookupTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FilterableLookupComboBox control)
+                control.ApplyItemTemplate();
+        }
+
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not FilterableLookupComboBox control)
@@ -151,6 +209,24 @@ namespace LD.FormsX.Features.Common
             control._suppressTextChanged = false;
         }
 
+        private static void OnInitialTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not FilterableLookupComboBox control)
+                return;
+
+            if (control._editableTextBox == null || control.SelectedItem != null)
+                return;
+
+            control._suppressTextChanged = true;
+            control._editableTextBox.Text = e.NewValue?.ToString() ?? string.Empty;
+
+            if (control.SelectAllTextOnLoad)
+                control._editableTextBox.SelectAll();
+
+            control._suppressTextChanged = false;
+            control.ApplyFilter(control._editableTextBox.Text);
+        }
+
         private void cmbLookup_Loaded(object sender, RoutedEventArgs e)
         {
             Dispatcher.BeginInvoke(new Action(() =>
@@ -162,6 +238,8 @@ namespace LD.FormsX.Features.Common
                 {
                     _editableTextBox.TextChanged -= EditableTextBox_TextChanged;
                     _editableTextBox.TextChanged += EditableTextBox_TextChanged;
+                    _editableTextBox.PreviewKeyDown -= EditableTextBox_PreviewKeyDown;
+                    _editableTextBox.PreviewKeyDown += EditableTextBox_PreviewKeyDown;
 
                     _editableTextBox.Focus();
 
@@ -169,6 +247,7 @@ namespace LD.FormsX.Features.Common
                         _editableTextBox.SelectAll();
                 }
 
+                ApplyItemTemplate();
                 ApplyInitialText();
                 ApplyFilter(_editableTextBox?.Text ?? string.Empty);
 
@@ -188,6 +267,18 @@ namespace LD.FormsX.Features.Common
             {
                 _suppressTextChanged = true;
                 _editableTextBox.Text = GetDisplayValue(SelectedItem);
+
+                if (SelectAllTextOnLoad)
+                    _editableTextBox.SelectAll();
+
+                _suppressTextChanged = false;
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(InitialText))
+            {
+                _suppressTextChanged = true;
+                _editableTextBox.Text = InitialText;
 
                 if (SelectAllTextOnLoad)
                     _editableTextBox.SelectAll();
@@ -228,7 +319,75 @@ namespace LD.FormsX.Features.Common
             foreach (var item in filtered)
                 FilteredItems.Add(item);
 
+            cmbLookup.SelectedItem = FilteredItems.Count > 0 ? FilteredItems[0] : null;
+
             OnPropertyChanged(nameof(FilteredItems));
+        }
+
+        private void EditableTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ConfirmCurrentSelection();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.Down)
+            {
+                if (!cmbLookup.IsDropDownOpen)
+                    cmbLookup.IsDropDownOpen = true;
+
+                if (cmbLookup.SelectedItem == null && FilteredItems.Count > 0)
+                    cmbLookup.SelectedItem = FilteredItems[0];
+
+                e.Handled = true;
+                return;
+            }
+        }
+
+        private void ConfirmCurrentSelection()
+        {
+            if (cmbLookup.SelectedItem == null && FilteredItems.Count > 0)
+                cmbLookup.SelectedItem = FilteredItems[0];
+
+            if (cmbLookup.SelectedItem == null)
+                return;
+
+            SelectionConfirmed?.Invoke(cmbLookup.SelectedItem);
+        }
+
+        private void ApplyItemTemplate()
+        {
+            cmbLookup.DisplayMemberPath = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(DisplayMemberPath))
+            {
+                cmbLookup.ItemTemplate = null;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SecondaryMemberPath))
+            {
+                cmbLookup.ItemTemplate = null;
+                cmbLookup.DisplayMemberPath = DisplayMemberPath;
+                return;
+            }
+
+            var templateXaml =
+                "<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>" +
+                "<Grid Margin='2,0'>" +
+                "<Grid.ColumnDefinitions>" +
+                $"<ColumnDefinition Width='{PrimaryColumnWidth}'/>" +
+                "<ColumnDefinition Width='12'/>" +
+                $"<ColumnDefinition Width='{SecondaryColumnWidth}'/>" +
+                "</Grid.ColumnDefinitions>" +
+                $"<TextBlock Grid.Column='0' Text='{{Binding {DisplayMemberPath}}}' VerticalAlignment='Center' TextTrimming='CharacterEllipsis'/>" +
+                $"<TextBlock Grid.Column='2' Text='{{Binding {SecondaryMemberPath}}}' VerticalAlignment='Center' Foreground='#5B6574' TextTrimming='CharacterEllipsis'/>" +
+                "</Grid>" +
+                "</DataTemplate>";
+
+            cmbLookup.ItemTemplate = (DataTemplate)XamlReader.Parse(templateXaml);
         }
 
         private bool MatchesSearch(object item, string searchText)
@@ -278,21 +437,14 @@ namespace LD.FormsX.Features.Common
         {
             if (!_loadedOnce)
                 return;
-
-            if (cmbLookup.SelectedItem == null)
-                return;
-
-            SelectionConfirmed?.Invoke(cmbLookup.SelectedItem);
         }
 
         private void cmbLookup_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                if (cmbLookup.SelectedItem == null && FilteredItems.Count > 0)
-                    cmbLookup.SelectedItem = FilteredItems[0];
-
-                SelectionConfirmed?.Invoke(cmbLookup.SelectedItem);
+                ConfirmCurrentSelection();
+                e.Handled = true;
                 return;
             }
 
@@ -301,6 +453,10 @@ namespace LD.FormsX.Features.Common
                 if (!cmbLookup.IsDropDownOpen)
                     cmbLookup.IsDropDownOpen = true;
 
+                if (cmbLookup.SelectedItem == null && FilteredItems.Count > 0)
+                    cmbLookup.SelectedItem = FilteredItems[0];
+
+                e.Handled = true;
                 return;
             }
 
@@ -312,11 +468,6 @@ namespace LD.FormsX.Features.Common
 
         private void cmbLookup_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (cmbLookup.SelectedItem == null && FilteredItems.Count == 1)
-            {
-                cmbLookup.SelectedItem = FilteredItems[0];
-                SelectionConfirmed?.Invoke(cmbLookup.SelectedItem);
-            }
         }
 
         protected void OnPropertyChanged(string name)

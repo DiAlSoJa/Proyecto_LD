@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -9,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using LD.Client.Services;
 using LD.Contracts.ASN;
+using LD.Contracts.InventaryStatus;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.FormsX.Features.Common;
@@ -16,7 +19,6 @@ using LD.FormsX.Helpers;
 using LD.FormsX.Model;
 using LD.FormsX.Model.Lookup;
 using LD.FormsX.Views.Articulos;
-using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace LD.FormsX.Views.Dialogs
 {
@@ -27,18 +29,17 @@ namespace LD.FormsX.Views.Dialogs
         private readonly IServiceProvider _serviceProvider;
         private readonly LookupService _lookupService;
         private readonly ProductService _productService;
+        private readonly InventaryStatusService _inventaryStatusService;
         private AsnDto? AsnSelected;
         private bool _cargandoDatos = false;
 
-        private List<LookupItem> _productLookupSource = new();
-        private readonly WpfGridFilter<AsnDetailDto> _gridFilterDet;
-        private bool _isUpdatingProductText;
-        private AsnDetailItem? _currentLookupRow;
-        private bool _openingProductLookup;
+        public ObservableCollection<LookupItem> ProductLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> SdLookupItems { get; } = new();
 
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService, IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService, InventaryStatusService inventaryStatusService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
@@ -46,6 +47,7 @@ namespace LD.FormsX.Views.Dialogs
             _serviceProvider = serviceProvider;
             _lookupService = lookupService;
             _productService = productService;
+            _inventaryStatusService = inventaryStatusService;
             DataContext = this;
 
             HideScanSection();
@@ -166,6 +168,7 @@ namespace LD.FormsX.Views.Dialogs
                 _cargandoDatos = true;
 
                 await SetCombos();
+                await LoadDetailLookupsAsync();
 
                 if (AsnSelected != null)
                     await CargarDatosAsync();
@@ -371,11 +374,75 @@ namespace LD.FormsX.Views.Dialogs
 
         }
 
+        private async Task LoadDetailLookupsAsync()
+        {
+            await LoadStatusLookupAsync();
+            await LoadSdLookupAsync();
+        }
+
+        private async Task LoadStatusLookupAsync()
+        {
+            try
+            {
+                StatusLookupItems.Clear();
+
+                var response = await _inventaryStatusService.GetInventaryStatus();
+                if (!response.IsSuccess || response.Data == null)
+                    return;
+
+                foreach (var item in response.Data
+                    .OrderBy(x => x.StatusId)
+                    .Select(x => new LookupItem
+                    {
+                        Id = x.StatusId ?? string.Empty,
+                        Code = x.StatusId ?? string.Empty,
+                        Description = x.Descripcion ?? string.Empty,
+                        Data = x
+                    }))
+                {
+                    StatusLookupItems.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async Task LoadSdLookupAsync()
+        {
+            try
+            {
+                SdLookupItems.Clear();
+
+                var response = await _lookupService.GetDimensionerLookup();
+                if (!response.IsSuccess || response.Data == null)
+                    return;
+
+                foreach (var item in response.Data
+                    .OrderBy(x => x.Key)
+                    .Select(x => new LookupItem
+                    {
+                        Id = x.Key ?? string.Empty,
+                        Code = x.Key ?? string.Empty,
+                        Description = x.Value ?? string.Empty,
+                        Data = x
+                    }))
+                {
+                    SdLookupItems.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
         private async Task LoadProductsForSelectedClientProjectAsync()
         {
             try
             {
-                _productLookupSource.Clear();
+                ProductLookupItems.Clear();
 
                 if (cmbCliente.SelectedValue == null || cmbProyecto.SelectedValue == null)
                     return;
@@ -390,16 +457,18 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (!response.IsSuccess || response.Data == null)
                     return;
-                _productLookupSource = response.Data
-                 .Select(x => new LookupItem
-                 {
-                     Id = x.ItemId,
-                     Code = x.NumeroParte ?? string.Empty,
-                     Description = x.Descripcion ?? string.Empty,
-                     Data = x
-                 })
-                 .OrderBy(x => x.Code)
-                 .ToList();
+                foreach (var item in response.Data
+                    .Select(x => new LookupItem
+                    {
+                        Id = x.ItemId,
+                        Code = x.NumeroParte ?? string.Empty,
+                        Description = x.Descripcion ?? string.Empty,
+                        Data = x
+                    })
+                    .OrderBy(x => x.Code))
+                {
+                    ProductLookupItems.Add(item);
+                }
             }
             catch (Exception ex)
             {
@@ -407,26 +476,24 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
-
-
-        private void PartNumberTextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void PartNumberLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             try
             {
-                // evita abrir múltiples veces
-                if (_openingProductLookup || popupProductoLookup.IsOpen)
+                if (sender is not InlineLookupEditor editor)
                     return;
 
-                if (sender is not FrameworkElement element)
+                if (editor.SelectedLookupItem is not LookupItem lookupItem)
                     return;
 
-                if (element.DataContext is not AsnDetailItem row)
+                if (editor.DataContext is not AsnDetailItem row)
                     return;
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    AbrirLookupProducto(element, row);
-                }), System.Windows.Threading.DispatcherPriority.Input);
+                    CommitCurrentDetailEdit();
+                    MoverFocoASiguienteCelda(row);
+                }), DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
@@ -434,67 +501,42 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
-
-        private void AbrirLookupProducto(FrameworkElement placementTarget, AsnDetailItem row)
+        private void StatusLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
-            if (_openingProductLookup || popupProductoLookup.IsOpen)
-                return;
-
-            if (_productLookupSource == null || !_productLookupSource.Any())
-            {
-                DialogHelper.ShowWarning("No hay productos cargados para el cliente/proyecto seleccionado.");
-                return;
-            }
-
-            _openingProductLookup = true;
-            _currentLookupRow = row;
-
-            var control = new LookupPopupControl(
-                _productLookupSource,
-                hiddenColumns: new[] { "ItemId" },
-                searchColumns: new[] { "NumeroParte", "Descripcion" });
-
-            control.SelectionConfirmed += OnLookupSelectionConfirmed;
-            control.Cancelled += OnLookupCancelled;
-
-            lookupPopupHost.Content = control;
-            popupProductoLookup.PlacementTarget = placementTarget;
-            popupProductoLookup.IsOpen = true;
+            AdvanceAfterInlineLookupSelection(sender);
         }
 
-        private void OnLookupSelectionConfirmed(LookupItem? selected)
+        private void SdLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
-            if (_currentLookupRow != null && selected != null)
+            AdvanceAfterInlineLookupSelection(sender);
+        }
+
+        private void AdvanceAfterInlineLookupSelection(object sender)
+        {
+            try
             {
-                _currentLookupRow.ProductId = (int)selected.Id;
-                _currentLookupRow.PartNumber = selected.Code;
-                _currentLookupRow.Description = selected.Description;
+                if (sender is not InlineLookupEditor editor)
+                    return;
 
-                var currentRow = _currentLookupRow;
-
-                popupProductoLookup.IsOpen = false;
+                if (editor.DataContext is not AsnDetailItem row)
+                    return;
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    MoverFocoASiguienteCelda(currentRow);
-                }), System.Windows.Threading.DispatcherPriority.Background);
-
-                return;
+                    CommitCurrentDetailEdit();
+                    MoverFocoASiguienteCelda(row);
+                }), DispatcherPriority.Background);
             }
-
-            popupProductoLookup.IsOpen = false;
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
         }
 
-        private void OnLookupCancelled()
+        private void CommitCurrentDetailEdit()
         {
-            popupProductoLookup.IsOpen = false;
-        }
-
-        private void popupProductoLookup_Closed(object sender, EventArgs e)
-        {
-            lookupPopupHost.Content = null;
-            _currentLookupRow = null;
-            _openingProductLookup = false;
+            dgDetail.CommitEdit(DataGridEditingUnit.Cell, true);
+            dgDetail.CommitEdit(DataGridEditingUnit.Row, true);
         }
         private void MoverFocoASiguienteCelda(AsnDetailItem row)
         {
@@ -514,26 +556,95 @@ namespace LD.FormsX.Views.Dialogs
                 if (nextColumn == null)
                     return;
 
-                dgDetail.SelectedItem = row;
                 dgDetail.CurrentCell = new DataGridCellInfo(row, nextColumn);
                 dgDetail.ScrollIntoView(row, nextColumn);
+                dgDetail.UpdateLayout();
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     dgDetail.Focus();
-                    dgDetail.BeginEdit();
-
-                    var cellContent = nextColumn.GetCellContent(row);
-                    if (cellContent?.Parent is DataGridCell cell)
+                    var cell = GetDataGridCell(row, nextColumn);
+                    if (cell != null)
                     {
                         cell.Focus();
                     }
-                }), System.Windows.Threading.DispatcherPriority.Background);
+
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        dgDetail.BeginEdit();
+
+                        Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            var refreshedCell = GetDataGridCell(row, nextColumn);
+                            if (refreshedCell == null)
+                                return;
+
+                            FocusEditableContent(refreshedCell);
+                        }), DispatcherPriority.Input);
+                    }), DispatcherPriority.Input);
+                }), DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
                 DialogHelper.ShowError(ex.Message);
             }
+        }
+
+        private DataGridCell? GetDataGridCell(object item, DataGridColumn column)
+        {
+            var rowContainer = dgDetail.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
+            if (rowContainer == null)
+                return null;
+
+            var presenter = FindVisualChild<DataGridCellsPresenter>(rowContainer);
+            if (presenter == null)
+            {
+                dgDetail.ScrollIntoView(item, column);
+                rowContainer.UpdateLayout();
+                presenter = FindVisualChild<DataGridCellsPresenter>(rowContainer);
+            }
+
+            return presenter?.ItemContainerGenerator.ContainerFromIndex(column.DisplayIndex) as DataGridCell;
+        }
+
+        private void FocusEditableContent(DataGridCell cell)
+        {
+            if (FindVisualChild<InlineLookupEditor>(cell) is InlineLookupEditor inlineLookup)
+            {
+                inlineLookup.Focus();
+                Keyboard.Focus(inlineLookup);
+                return;
+            }
+
+            if (FindVisualChild<TextBox>(cell) is TextBox textBox)
+            {
+                textBox.Focus();
+                textBox.SelectAll();
+                Keyboard.Focus(textBox);
+                return;
+            }
+
+            cell.Focus();
+            Keyboard.Focus(cell);
+        }
+
+        private static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null)
+                return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T correctlyTyped)
+                    return correctlyTyped;
+
+                var descendant = FindVisualChild<T>(child);
+                if (descendant != null)
+                    return descendant;
+            }
+
+            return null;
         }
 
 
@@ -547,12 +658,43 @@ namespace LD.FormsX.Views.Dialogs
             if (DetailItems == null)
                 return;
         }
+
+        private void dgDetail_CurrentCellChanged(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (dgDetail.CurrentCell.Column == null)
+                    return;
+
+                if (dgDetail.CurrentCell.Item is not AsnDetailItem)
+                    return;
+
+                if (dgDetail.CurrentCell.Column.IsReadOnly)
+                    return;
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (!dgDetail.IsKeyboardFocusWithin)
+                        dgDetail.Focus();
+
+                    dgDetail.BeginEdit();
+                }), DispatcherPriority.Background);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
         private void dgDetail_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             try
             {
-                if (popupProductoLookup.IsOpen)
+                if (e.OriginalSource is DependencyObject source &&
+                    FindVisualParent<InlineLookupEditor>(source) != null)
+                {
                     return;
+                }
 
                 if (e.Key != Key.F4 && e.Key != Key.Enter)
                     return;
@@ -564,29 +706,25 @@ namespace LD.FormsX.Views.Dialogs
                 if (currentColumn == null)
                     return;
 
+                if (e.Key == Key.Enter)
+                {
+                    CommitCurrentDetailEdit();
+                    MoverFocoASiguienteCelda(row);
+                    e.Handled = true;
+                    return;
+                }
+
                 var header = currentColumn.Header?.ToString() ?? string.Empty;
                 if (!header.Equals("Número de Parte", StringComparison.OrdinalIgnoreCase))
                     return;
 
-                if (_productLookupSource == null || !_productLookupSource.Any())
+                if (!ProductLookupItems.Any())
                 {
                     DialogHelper.ShowWarning("No hay productos cargados para el cliente/proyecto seleccionado.");
                     return;
                 }
 
-                _currentLookupRow = row;
-
-                var control = new LookupPopupControl(
-                    _productLookupSource,
-                    hiddenColumns: new[] { "ItemId" },
-                    searchColumns: new[] { "NumeroParte", "Descripcion" });
-
-                control.SelectionConfirmed += OnLookupSelectionConfirmed;
-                control.Cancelled += OnLookupCancelled;
-
-                lookupPopupHost.Content = control;
-                popupProductoLookup.PlacementTarget = dgDetail;
-                popupProductoLookup.IsOpen = true;
+                dgDetail.BeginEdit();
 
                 e.Handled = true;
             }
@@ -594,6 +732,19 @@ namespace LD.FormsX.Views.Dialogs
             {
                 DialogHelper.ShowError(ex.Message);
             }
+        }
+
+        private static T? FindVisualParent<T>(DependencyObject? child) where T : DependencyObject
+        {
+            while (child != null)
+            {
+                if (child is T parent)
+                    return parent;
+
+                child = VisualTreeHelper.GetParent(child);
+            }
+
+            return null;
         }
 
 
