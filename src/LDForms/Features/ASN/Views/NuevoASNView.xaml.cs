@@ -5,9 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using LD.Client.Services;
 using LD.Contracts.ASN;
@@ -26,10 +24,10 @@ namespace LD.FormsX.Views.Dialogs
     {
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
-        private readonly IServiceProvider _serviceProvider;
         private readonly LookupService _lookupService;
         private readonly ProductService _productService;
         private readonly InventaryStatusService _inventaryStatusService;
+        private readonly DataGridNavigationManager _detailGridNavigation;
         private AsnDto? AsnSelected;
         private bool _cargandoDatos = false;
 
@@ -44,10 +42,10 @@ namespace LD.FormsX.Views.Dialogs
             InitializeComponent();
             _asnService = asnService;
             _asnDetailService = asnDetailService;
-            _serviceProvider = serviceProvider;
             _lookupService = lookupService;
             _productService = productService;
             _inventaryStatusService = inventaryStatusService;
+            _detailGridNavigation = new DataGridNavigationManager(dgDetail);
             DataContext = this;
 
             HideScanSection();
@@ -476,42 +474,7 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
-        private void PartNumberLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (sender is not InlineLookupEditor editor)
-                    return;
-
-                if (editor.SelectedLookupItem is not LookupItem lookupItem)
-                    return;
-
-                if (editor.DataContext is not AsnDetailItem row)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    CommitCurrentDetailEdit();
-                    MoverFocoASiguienteCelda(row);
-                }), DispatcherPriority.Background);
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-        }
-
-        private void StatusLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
-        {
-            AdvanceAfterInlineLookupSelection(sender);
-        }
-
-        private void SdLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
-        {
-            AdvanceAfterInlineLookupSelection(sender);
-        }
-
-        private void AdvanceAfterInlineLookupSelection(object sender)
+        private void InlineLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -523,8 +486,8 @@ namespace LD.FormsX.Views.Dialogs
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    CommitCurrentDetailEdit();
-                    MoverFocoASiguienteCelda(row);
+                    _detailGridNavigation.CommitCurrentEdit();
+                    _detailGridNavigation.MoveFocusToNextCell(row);
                 }), DispatcherPriority.Background);
             }
             catch (Exception ex)
@@ -532,125 +495,6 @@ namespace LD.FormsX.Views.Dialogs
                 DialogHelper.ShowError(ex.Message);
             }
         }
-
-        private void CommitCurrentDetailEdit()
-        {
-            dgDetail.CommitEdit(DataGridEditingUnit.Cell, true);
-            dgDetail.CommitEdit(DataGridEditingUnit.Row, true);
-        }
-        private void MoverFocoASiguienteCelda(AsnDetailItem row)
-        {
-            try
-            {
-                if (dgDetail.CurrentCell.Column == null)
-                    return;
-
-                int currentIndex = dgDetail.Columns.IndexOf(dgDetail.CurrentCell.Column);
-                if (currentIndex < 0)
-                    return;
-
-                var nextColumn = dgDetail.Columns
-                    .Skip(currentIndex + 1)
-                    .FirstOrDefault(c => !c.IsReadOnly);
-
-                if (nextColumn == null)
-                    return;
-
-                dgDetail.CurrentCell = new DataGridCellInfo(row, nextColumn);
-                dgDetail.ScrollIntoView(row, nextColumn);
-                dgDetail.UpdateLayout();
-
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    dgDetail.Focus();
-                    var cell = GetDataGridCell(row, nextColumn);
-                    if (cell != null)
-                    {
-                        cell.Focus();
-                    }
-
-                    Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        dgDetail.BeginEdit();
-
-                        Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            var refreshedCell = GetDataGridCell(row, nextColumn);
-                            if (refreshedCell == null)
-                                return;
-
-                            FocusEditableContent(refreshedCell);
-                        }), DispatcherPriority.Input);
-                    }), DispatcherPriority.Input);
-                }), DispatcherPriority.Background);
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-        }
-
-        private DataGridCell? GetDataGridCell(object item, DataGridColumn column)
-        {
-            var rowContainer = dgDetail.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
-            if (rowContainer == null)
-                return null;
-
-            var presenter = FindVisualChild<DataGridCellsPresenter>(rowContainer);
-            if (presenter == null)
-            {
-                dgDetail.ScrollIntoView(item, column);
-                rowContainer.UpdateLayout();
-                presenter = FindVisualChild<DataGridCellsPresenter>(rowContainer);
-            }
-
-            return presenter?.ItemContainerGenerator.ContainerFromIndex(column.DisplayIndex) as DataGridCell;
-        }
-
-        private void FocusEditableContent(DataGridCell cell)
-        {
-            if (FindVisualChild<InlineLookupEditor>(cell) is InlineLookupEditor inlineLookup)
-            {
-                inlineLookup.Focus();
-                Keyboard.Focus(inlineLookup);
-                return;
-            }
-
-            if (FindVisualChild<TextBox>(cell) is TextBox textBox)
-            {
-                textBox.Focus();
-                textBox.SelectAll();
-                Keyboard.Focus(textBox);
-                return;
-            }
-
-            cell.Focus();
-            Keyboard.Focus(cell);
-        }
-
-        private static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
-        {
-            if (parent == null)
-                return null;
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T correctlyTyped)
-                    return correctlyTyped;
-
-                var descendant = FindVisualChild<T>(child);
-                if (descendant != null)
-                    return descendant;
-            }
-
-            return null;
-        }
-
-
-
-
-
 
 
         private void dgDetail_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -672,13 +516,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (dgDetail.CurrentCell.Column.IsReadOnly)
                     return;
 
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    if (!dgDetail.IsKeyboardFocusWithin)
-                        dgDetail.Focus();
-
-                    dgDetail.BeginEdit();
-                }), DispatcherPriority.Background);
+                _detailGridNavigation.HandleCurrentCellChanged();
             }
             catch (Exception ex)
             {
@@ -691,7 +529,7 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 if (e.OriginalSource is DependencyObject source &&
-                    FindVisualParent<InlineLookupEditor>(source) != null)
+                    _detailGridNavigation.IsEventInsideControl<InlineLookupEditor>(source))
                 {
                     return;
                 }
@@ -699,7 +537,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (e.Key != Key.F4 && e.Key != Key.Enter)
                     return;
 
-                if (dgDetail.CurrentCell == null || dgDetail.CurrentItem is not AsnDetailItem row)
+                if (dgDetail.CurrentCell == null || dgDetail.CurrentItem is not AsnDetailItem)
                     return;
 
                 var currentColumn = dgDetail.CurrentCell.Column;
@@ -708,9 +546,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (e.Key == Key.Enter)
                 {
-                    CommitCurrentDetailEdit();
-                    MoverFocoASiguienteCelda(row);
-                    e.Handled = true;
+                    e.Handled = _detailGridNavigation.HandleEnterKeyNavigation();
                     return;
                 }
 
@@ -733,22 +569,6 @@ namespace LD.FormsX.Views.Dialogs
                 DialogHelper.ShowError(ex.Message);
             }
         }
-
-        private static T? FindVisualParent<T>(DependencyObject? child) where T : DependencyObject
-        {
-            while (child != null)
-            {
-                if (child is T parent)
-                    return parent;
-
-                child = VisualTreeHelper.GetParent(child);
-            }
-
-            return null;
-        }
-
-
-
 
     }
 }

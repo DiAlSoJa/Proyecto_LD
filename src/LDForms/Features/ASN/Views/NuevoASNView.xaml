@@ -547,7 +547,7 @@
                                                                            MaxResults="12"
                                                                            OpenDropDownOnLoad="True"
                                                                            SelectAllTextOnLoad="True"
-                                                                           SelectionConfirmed="PartNumberLookup_SelectionConfirmed"/>
+                                                                           SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
@@ -582,7 +582,7 @@
                                                                            MaxResults="12"
                                                                            OpenDropDownOnLoad="True"
                                                                            SelectAllTextOnLoad="True"
-                                                                           SelectionConfirmed="StatusLookup_SelectionConfirmed"/>
+                                                                           SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
@@ -606,7 +606,7 @@
                                                                            MaxResults="12"
                                                                            OpenDropDownOnLoad="True"
                                                                            SelectAllTextOnLoad="True"
-                                                                           SelectionConfirmed="SdLookup_SelectionConfirmed"/>
+                                                                           SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>

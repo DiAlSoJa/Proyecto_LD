@@ -14,7 +14,7 @@ using LD.FormsX.Model.Lookup;
 
 namespace LD.FormsX.Features.Common
 {
-    public partial class InlineLookupEditor : UserControl, INotifyPropertyChanged
+    public partial class InlineLookupEditor : UserControl, INotifyPropertyChanged, IDataGridEditingControl
     {
         private bool _isUpdatingText;
         private bool _loadedOnce;
@@ -311,15 +311,21 @@ namespace LD.FormsX.Features.Common
             lstLookup.ScrollIntoView(lstLookup.SelectedItem);
         }
 
-        private void ConfirmCurrentSelection()
+        public bool TryCommitSelection()
+            => ConfirmCurrentSelection(false);
+
+        public bool TryCommitSelectionFromKeyboard()
+            => ConfirmCurrentSelection(false);
+
+        private bool ConfirmCurrentSelection(bool raiseEvent = true)
         {
             if (lstLookup.SelectedItem == null)
             {
                 if (RequireSelectionMatch)
-                    return;
+                    return false;
 
-                CommitFreeTextValue();
-                return;
+                CommitFreeTextValue(raiseEvent);
+                return true;
             }
 
             var selected = lstLookup.SelectedItem;
@@ -334,10 +340,13 @@ namespace LD.FormsX.Features.Common
             }
 
             popupLookup.IsOpen = false;
-            RaiseEvent(new RoutedEventArgs(SelectionConfirmedEvent, this));
+            if (raiseEvent)
+                RaiseEvent(new RoutedEventArgs(SelectionConfirmedEvent, this));
+
+            return true;
         }
 
-        private void CommitFreeTextValue()
+        private void CommitFreeTextValue(bool raiseEvent)
         {
             var freeText = txtLookup.Text?.Trim() ?? string.Empty;
 
@@ -348,7 +357,8 @@ namespace LD.FormsX.Features.Common
 
             SetEditorText(freeText, false);
             popupLookup.IsOpen = false;
-            RaiseEvent(new RoutedEventArgs(SelectionConfirmedEvent, this));
+            if (raiseEvent)
+                RaiseEvent(new RoutedEventArgs(SelectionConfirmedEvent, this));
         }
 
         private void SetEditorText(string text, bool selectAll)
@@ -404,6 +414,13 @@ namespace LD.FormsX.Features.Common
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public void FocusEditor()
+        {
+            txtLookup.Focus();
+            txtLookup.SelectAll();
+            Keyboard.Focus(txtLookup);
         }
     }
 }
