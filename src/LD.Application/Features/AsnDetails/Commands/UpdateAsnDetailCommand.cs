@@ -10,7 +10,6 @@ namespace LD.Application.Features.Asn.Commands;
 
 public class UpdateAsnDetailCommand : AsnDetailRequest, IRequest<Result<string>>
 {
-    public int AsnId { get; set; }
 }
 
 public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailCommand, Result<string>>
@@ -28,17 +27,17 @@ public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailComm
     {
         try
         {
-            var asn = await _asnRepository.GetByIdAsync(request.AsnId);
-            if (asn is null)
+            var asnDetail = await _asnRepository.GetByIdAsync(request.AsnDetailId);
+            if (asnDetail is null)
                 return Result<string>.Failure("No existe el ASN Detail", new System.Collections.Generic.List<string> { "No existe el ASN Detail" }, 404);
 
-            _mapper.Map(request, asn);
+            _mapper.Map(request, asnDetail);
 
-            var updated = await _asnRepository.UpdateAsync(asn);
+            var updated = await _asnRepository.UpdateAsync(asnDetail);
             if (!updated)
                 return Result<string>.Failure("Error al actualizar", new System.Collections.Generic.List<string> { "Hubo un error al actualizar" });
 
-            return Result<string>.Success("ASN Detail actualizado", asn.AsnId.ToString());
+            return Result<string>.Success(asnDetail.AsnDetailId.ToString(), "ASN Detail actualizado");
         }
         catch (Exception ex)
         {

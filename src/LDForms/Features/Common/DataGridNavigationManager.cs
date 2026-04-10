@@ -88,13 +88,38 @@ namespace LD.FormsX.Features.Common
             if (nextColumn == null)
                 return;
 
-            _grid.CurrentCell = new DataGridCellInfo(rowItem, nextColumn);
-            _grid.ScrollIntoView(rowItem, nextColumn);
+            MoveFocusToCell(rowItem, nextColumn);
+        }
+
+        public void MoveFocusToFirstEditableCell(object rowItem)
+        {
+            var firstEditableColumn = _grid.Columns
+                .OrderBy(c => c.DisplayIndex)
+                .FirstOrDefault(c => !c.IsReadOnly);
+
+            if (firstEditableColumn == null)
+                return;
+
+            MoveFocusToCell(rowItem, firstEditableColumn);
+        }
+
+        public DataGridColumn? GetLastEditableColumn()
+        {
+            return _grid.Columns
+                .Where(c => !c.IsReadOnly)
+                .OrderBy(c => c.DisplayIndex)
+                .LastOrDefault();
+        }
+
+        private void MoveFocusToCell(object rowItem, DataGridColumn targetColumn)
+        {
+            _grid.CurrentCell = new DataGridCellInfo(rowItem, targetColumn);
+            _grid.ScrollIntoView(rowItem, targetColumn);
             _grid.UpdateLayout();
 
             _grid.Dispatcher.BeginInvoke(new Action(() =>
             {
-                var cell = GetDataGridCell(rowItem, nextColumn);
+                var cell = GetDataGridCell(rowItem, targetColumn);
                 if (cell != null)
                 {
                     cell.Focus();
@@ -107,7 +132,7 @@ namespace LD.FormsX.Features.Common
 
                     _grid.Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        var refreshedCell = GetDataGridCell(rowItem, nextColumn);
+                        var refreshedCell = GetDataGridCell(rowItem, targetColumn);
                         if (refreshedCell != null)
                             FocusEditableContent(refreshedCell);
                     }), DispatcherPriority.Input);

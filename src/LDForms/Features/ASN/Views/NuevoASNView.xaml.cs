@@ -17,6 +17,7 @@ using LD.FormsX.Helpers;
 using LD.FormsX.Model;
 using LD.FormsX.Model.Lookup;
 using LD.FormsX.Views.Articulos;
+using Serilog;
 
 namespace LD.FormsX.Views.Dialogs
 {
@@ -28,6 +29,7 @@ namespace LD.FormsX.Views.Dialogs
         private readonly ProductService _productService;
         private readonly InventaryStatusService _inventaryStatusService;
         private readonly DataGridNavigationManager _detailGridNavigation;
+        private readonly HashSet<AsnDetailItem> _savingDetailRows = new();
         private AsnDto? AsnSelected;
         private bool _cargandoDatos = false;
 
@@ -51,18 +53,12 @@ namespace LD.FormsX.Views.Dialogs
             HideScanSection();
         }
 
-        public async void SetAsn(AsnDto? _asnSelected)
+        public void SetAsn(AsnDto? _asnSelected)
         {
             AsnSelected = _asnSelected;
 
-            // Si es edición y quieres mostrar la sección:
             if (AsnSelected != null)
                 ShowScanSection();
-
-
-
-            await CargarDatosAsync();
-            await CargarDatosAsyncDet();
         }
 
         private async Task CargarDatosAsync()
@@ -70,6 +66,9 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 _cargandoDatos = true;
+
+                if (cmbCliente.Items.Count == 0)
+                    await SetCombos();
 
                 var response = await _asnService.GetAsnById(AsnSelected?.AsnId ?? 0);
 
@@ -114,6 +113,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task CargarDatosAsyncDet()
         {
+            if (AsnSelected == null || AsnSelected.AsnId <= 0)
+                return;
+
             var result = await _asnDetailService.GetAsnDetailsByAsn(AsnSelected.AsnId);
 
             /*if (!result.IsSuccess || result.Data == null)
@@ -137,7 +139,11 @@ namespace LD.FormsX.Views.Dialogs
                         SD = dto.SD,
                         LotNumber = dto.LotNumber,
                         ExpirationDate = dto.ExpirationDate,
-                        CustomerReference = dto.CustomerReference
+                        CustomerReference = dto.CustomerReference,
+                        ExchangeRate = dto.ExchangeRate,
+                        PurchaseOrder = dto.PurchaseOrder,
+                        CustomsDeclarationNumber = dto.CustomsDeclarationNumber,
+                        Split = dto.Split
                     }));
                 }
             }
@@ -169,7 +175,10 @@ namespace LD.FormsX.Views.Dialogs
                 await LoadDetailLookupsAsync();
 
                 if (AsnSelected != null)
+                {
                     await CargarDatosAsync();
+                    await CargarDatosAsyncDet();
+                }
             }
             finally
             {
@@ -267,10 +276,10 @@ namespace LD.FormsX.Views.Dialogs
 
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            // Aquí va tu lógica de guardado
             try
             {
                 btnGuardar.IsEnabled = false;
+                CommitDetailGridEdits();
 
                 var request = BuildRequest();
                 if (request.ClientId <= 0)
@@ -284,17 +293,26 @@ namespace LD.FormsX.Views.Dialogs
                     DialogHelper.ShowWarning("Proyecto es obligatorio");
                     return;
                 }
-                var result = await SaveAsn(request);
 
-                if (result.IsSuccess)
-                {
-                    ToastHelper.ShowSuccess("ASN guardado exitosamente.");
-                    ShowScanSection();
-                }
-                else
+                var result = await SaveAsn(request);
+                Log.Information("Resultado SaveAsn. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                    result.IsSuccess, result.Code, result.Message, result.Data);
+
+                if (!result.IsSuccess)
                 {
                     DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
+                    return;
                 }
+
+                var asnId = ResolveSavedAsnId(result);
+                Log.Information("ASN resuelto para guardar detalles: {AsnId}", asnId);
+                await SaveDetailsAsync(asnId);
+
+                AsnSelected ??= new AsnDto();
+                AsnSelected.AsnId = asnId;
+
+                ToastHelper.ShowSuccess("ASN guardado exitosamente.");
+                ShowScanSection();
             }
             catch (Exception ex)
             {
@@ -348,6 +366,70 @@ namespace LD.FormsX.Views.Dialogs
                 ? await EditAsn(AsnSelected.AsnId, request)
                 : await CreateASN(request);
         }
+
+        private async Task<bool> EnsureAsnPersistedAsync()
+        {
+            if (AsnSelected?.AsnId > 0)
+                return true;
+
+            var request = BuildRequest();
+            if (request.ClientId <= 0 || request.ProjectId <= 0)
+            {
+                DialogHelper.ShowWarning("Guarda primero el encabezado del ASN con cliente y proyecto.");
+                return false;
+            }
+
+            var saveResult = await SaveAsn(request);
+            Log.Information("Resultado EnsureAsnPersistedAsync. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                saveResult.IsSuccess, saveResult.Code, saveResult.Message, saveResult.Data);
+
+            if (!saveResult.IsSuccess)
+            {
+                DialogHelper.ShowError(saveResult.ErrorMessage ?? saveResult.Message ?? "No se pudo guardar el ASN.");
+                return false;
+            }
+
+            var asnId = ResolveSavedAsnId(saveResult);
+            AsnSelected ??= new AsnDto();
+            AsnSelected.AsnId = asnId;
+            ShowScanSection();
+            return true;
+        }
+
+        private int ResolveSavedAsnId(ApiResponseDto<string> result)
+        {
+            if (AsnSelected != null && AsnSelected.AsnId > 0)
+                return AsnSelected.AsnId;
+
+            if (int.TryParse(result.Data, out var asnId) && asnId > 0)
+                return asnId;
+
+            if (!string.IsNullOrWhiteSpace(result.Data))
+            {
+                var asnByCode = ResolveAsnByCodeAsync(result.Data).GetAwaiter().GetResult();
+                if (asnByCode?.AsnId > 0)
+                {
+                    AsnSelected = asnByCode;
+                    return asnByCode.AsnId;
+                }
+            }
+
+            throw new InvalidOperationException("No se pudo obtener el Id del ASN guardado.");
+        }
+
+        private async Task<AsnDto?> ResolveAsnByCodeAsync(string? asnCode)
+        {
+            if (string.IsNullOrWhiteSpace(asnCode))
+                return null;
+
+            var asnList = await _asnService.GetAsn();
+            if (!asnList.IsSuccess || asnList.Data == null)
+                return null;
+
+            return asnList.Data.FirstOrDefault(x =>
+                string.Equals(x.AsnCode, asnCode, StringComparison.OrdinalIgnoreCase));
+        }
+
         private AsnRequest BuildRequest()
         {
             return new AsnRequest
@@ -367,6 +449,161 @@ namespace LD.FormsX.Views.Dialogs
                 SealNumber = txtSelloTransporte.Text.Trim()
             };
         }
+
+        private void CommitDetailGridEdits()
+        {
+            dgDetail.CommitEdit(DataGridEditingUnit.Cell, true);
+            dgDetail.CommitEdit(DataGridEditingUnit.Row, true);
+            _detailGridNavigation.CommitCurrentEdit();
+        }
+
+        private static bool IsDetailRowCompleted(AsnDetailItem detailRow)
+        {
+            return detailRow.ProductId > 0
+                && !string.IsNullOrWhiteSpace(detailRow.PartNumber)
+                && detailRow.Quantity > 0;
+        }
+
+        private async Task SaveDetailRowAsync(AsnDetailItem detailRow)
+        {
+            if (!IsDetailRowCompleted(detailRow))
+                return;
+
+            if (_savingDetailRows.Contains(detailRow))
+                return;
+
+            if (!await EnsureAsnPersistedAsync())
+                return;
+
+            _savingDetailRows.Add(detailRow);
+
+            try
+            {
+                detailRow.AsnId = AsnSelected!.AsnId;
+
+                var request = detailRow.ToRequest();
+                request.AsnId = AsnSelected.AsnId;
+
+                var response = detailRow.AsnDetailId > 0
+                    ? await _asnDetailService.UpdateAsnDetail(detailRow.AsnDetailId, request)
+                    : await _asnDetailService.CreateAsnDetail(request);
+
+                Log.Information(
+                    "Resultado SaveDetailRowAsync. AsnId: {AsnId}. AsnDetailId: {AsnDetailId}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                    request.AsnId, detailRow.AsnDetailId, response.IsSuccess, response.Code, response.Message, response.Data);
+
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el detalle del ASN.");
+                    return;
+                }
+
+                if (detailRow.AsnDetailId <= 0 && int.TryParse(response.Data, out var asnDetailId) && asnDetailId > 0)
+                    detailRow.AsnDetailId = asnDetailId;
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _savingDetailRows.Remove(detailRow);
+            }
+        }
+
+        private async Task SaveDetailsAsync(int asnId)
+        {
+            var detailRows = DetailItems
+                .Where(item => !IsEmptyDetailRow(item))
+                .ToList();
+
+            for (var index = 0; index < detailRows.Count; index++)
+            {
+                var row = detailRows[index];
+
+                if (string.IsNullOrWhiteSpace(row.PartNumber))
+                    throw new InvalidOperationException($"La partida {index + 1} debe tener número de parte.");
+
+                if (row.Quantity <= 0)
+                    throw new InvalidOperationException($"La partida {index + 1} debe tener cantidad mayor a 0.");
+
+                row.AsnId = asnId;
+
+                var request = row.ToRequest();
+                request.AsnId = asnId;
+
+                var response = row.AsnDetailId > 0
+                    ? await _asnDetailService.UpdateAsnDetail(row.AsnDetailId, request)
+                    : await _asnDetailService.CreateAsnDetail(request);
+
+                Log.Information(
+                    "Resultado SaveAsnDetail. Partida: {Index}. AsnDetailId: {AsnDetailId}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                    index + 1, row.AsnDetailId, response.IsSuccess, response.Code, response.Message, response.Data);
+
+                if (!response.IsSuccess)
+                    throw new InvalidOperationException(response.Message ?? response.ErrorMessage ?? $"No se pudo guardar la partida {index + 1}.");
+
+                if (row.AsnDetailId <= 0 && int.TryParse(response.Data, out var asnDetailId) && asnDetailId > 0)
+                    row.AsnDetailId = asnDetailId;
+            }
+        }
+
+        private static bool IsEmptyDetailRow(AsnDetailItem item)
+        {
+            return item.ProductId <= 0
+                && string.IsNullOrWhiteSpace(item.PartNumber)
+                && string.IsNullOrWhiteSpace(item.Description)
+                && item.Quantity <= 0
+                && string.IsNullOrWhiteSpace(item.Status)
+                && string.IsNullOrWhiteSpace(item.SD)
+                && string.IsNullOrWhiteSpace(item.LotNumber)
+                && item.ExpirationDate == null
+                && string.IsNullOrWhiteSpace(item.CustomerReference)
+                && item.ExchangeRate == null
+                && string.IsNullOrWhiteSpace(item.PurchaseOrder)
+                && string.IsNullOrWhiteSpace(item.CustomsDeclarationNumber)
+                && item.Split <= 0;
+        }
+
+        private bool TryMoveToNextRowOrAppend()
+        {
+            if (dgDetail.CurrentCell.Column == null || dgDetail.CurrentItem is not AsnDetailItem currentRow)
+                return false;
+
+            var lastEditableColumn = _detailGridNavigation.GetLastEditableColumn();
+            if (lastEditableColumn == null || !ReferenceEquals(dgDetail.CurrentCell.Column, lastEditableColumn))
+                return false;
+
+            var currentIndex = DetailItems.IndexOf(currentRow);
+            if (currentIndex < 0)
+                return false;
+
+            if (currentIndex < DetailItems.Count - 1)
+            {
+                var nextRow = DetailItems[currentIndex + 1];
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    _detailGridNavigation.MoveFocusToFirstEditableCell(nextRow);
+                }), DispatcherPriority.Background);
+
+                return true;
+            }
+
+            if (IsEmptyDetailRow(currentRow))
+                return false;
+
+            var newRow = new AsnDetailItem();
+            DetailItems.Add(newRow);
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                dgDetail.ScrollIntoView(newRow);
+                _detailGridNavigation.MoveFocusToFirstEditableCell(newRow);
+            }), DispatcherPriority.Background);
+
+            return true;
+        }
+
         private void dgDetail_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
 
@@ -488,6 +725,7 @@ namespace LD.FormsX.Views.Dialogs
                 {
                     _detailGridNavigation.CommitCurrentEdit();
                     _detailGridNavigation.MoveFocusToNextCell(row);
+                    _ = SaveDetailRowAsync(row);
                 }), DispatcherPriority.Background);
             }
             catch (Exception ex)
@@ -501,6 +739,14 @@ namespace LD.FormsX.Views.Dialogs
         {
             if (DetailItems == null)
                 return;
+
+            if (e.Row.Item is not AsnDetailItem detailRow)
+                return;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                _ = SaveDetailRowAsync(detailRow);
+            }), DispatcherPriority.Background);
         }
 
         private void dgDetail_CurrentCellChanged(object? sender, EventArgs e)
@@ -546,7 +792,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (e.Key == Key.Enter)
                 {
-                    e.Handled = _detailGridNavigation.HandleEnterKeyNavigation();
+                    e.Handled = TryMoveToNextRowOrAppend() || _detailGridNavigation.HandleEnterKeyNavigation();
                     return;
                 }
 

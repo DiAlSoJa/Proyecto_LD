@@ -64,8 +64,13 @@ namespace LD.FormsX
                 HostContainer = Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, config) =>
                     {
-                        var env = Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ?? "Production";
-                        env = "Development";
+                        var env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+                            ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                            ?? Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT")
+                            ?? "Development";
+
+                        Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", env);
+                        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env);
 
                         config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
                         config.AddJsonFile("appsettings.json", optional: false);
@@ -80,6 +85,8 @@ namespace LD.FormsX
                     .Build();
 
                 await HostContainer.StartAsync();
+
+                Log.Information("Api BaseUrl configurada: {BaseUrl}", Configuration?["ApiSettings:BaseUrl"]);
 
                 var login = Services.GetRequiredService<MainWindow>();
                 login.Show();

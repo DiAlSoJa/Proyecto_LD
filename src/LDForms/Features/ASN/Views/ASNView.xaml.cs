@@ -109,7 +109,7 @@ namespace LD.FormsX.Views.ASN
             }            
 
             _gridFilterDet.SetData(result.Data);
-            _selectedX = null;
+          
             txtStatusDetalle.Text = $"Registros: {result.Data?.Count ?? 0}";
 
 
