@@ -10,7 +10,6 @@ namespace LD.Application.Features.AsnDetails.Validators
         {
             RuleFor(x => x.AsnId).GreaterThan(0).WithMessage("AsnId es obligatorio");
             RuleFor(x => x.PartNumber).NotEmpty().WithMessage("PartNumber es obligatorio");
-            RuleFor(x => x.Quantity).GreaterThan(0).WithMessage("Quantity debe ser mayor a 0");
         }
     }
 }

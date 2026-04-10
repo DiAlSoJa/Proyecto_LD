@@ -18,6 +18,8 @@ namespace LD.Application.Features.Vehicle.Profiles
         public VehicleProfile()
         {
             CreateMap<LD.Domain.Entities.Vehicle, VehicleDto>()
+            .ForMember(dest => dest.CreatedAt,
+                    opt => opt.MapFrom(src => src.CreatedAt))
             .ForMember(dest => dest.Placas,
                     opt => opt.MapFrom(src => src.Plates))
                  .ForMember(dest => dest.NumeroVehiculo,

@@ -12,11 +12,13 @@ using LD.Contracts.ASN;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
+using LD.Contracts.Vehicle;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model;
 using LD.FormsX.Model.Lookup;
 using LD.FormsX.Views.Articulos;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace LD.FormsX.Views.Dialogs
@@ -30,6 +32,7 @@ namespace LD.FormsX.Views.Dialogs
         private readonly LocationService _locationService;
         private readonly ProductService _productService;
         private readonly InventaryStatusService _inventaryStatusService;
+        private readonly IServiceProvider _serviceProvider;
         private readonly DataGridNavigationManager _detailGridNavigation;
         private readonly DataGridNavigationManager _receiptGridNavigation;
         private readonly HashSet<AsnDetailItem> _savingDetailRows = new();
@@ -56,6 +59,7 @@ namespace LD.FormsX.Views.Dialogs
             _productService = productService;
             _inventaryStatusService = inventaryStatusService;
             _locationService = locationService;
+            _serviceProvider = serviceProvider;
             _detailGridNavigation = new DataGridNavigationManager(dgDetail);
             _receiptGridNavigation = new DataGridNavigationManager(dgUbicacionesAsignadas);
             DataContext = this;
@@ -349,10 +353,29 @@ namespace LD.FormsX.Views.Dialogs
 
         private void BtnBuscarVehiculo_Click(object sender, RoutedEventArgs e)
         {
-            // Abrir diálogo de vehículos registrados
-            // var view = _serviceProvider.GetRequiredService<VehiculosRegistradosWindow>();
-            // view.Owner = this;
-            // view.ShowDialog();
+            try
+            {
+                var view = _serviceProvider.GetRequiredService<BuscarVehiculoView>();
+                view.Owner = this;
+
+                if (view.ShowDialog() != true || view.SelectedVehicle == null)
+                    return;
+
+                ApplySelectedVehicle(view.SelectedVehicle);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private void ApplySelectedVehicle(VehicleDto vehicle)
+        {
+            txtTipoVehiculo.Text = vehicle.Tipo ?? string.Empty;
+            txtPlacasVehiculo.Text = vehicle.Placas ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(txtLineaTransporte.Text))
+                txtLineaTransporte.Text = vehicle.Nombre ?? string.Empty;
         }
 
         private void BtnCrearAsn_Click(object sender, RoutedEventArgs e)
@@ -550,8 +573,7 @@ namespace LD.FormsX.Views.Dialogs
         private static bool IsDetailRowCompleted(AsnDetailItem detailRow)
         {
             return detailRow.ProductId > 0
-                && !string.IsNullOrWhiteSpace(detailRow.PartNumber)
-                && detailRow.Quantity > 0;
+                && !string.IsNullOrWhiteSpace(detailRow.PartNumber);
         }
 
         private static bool IsEmptyReceiptRow(AsnReceiptItem item)
@@ -754,9 +776,6 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (string.IsNullOrWhiteSpace(row.PartNumber))
                     throw new InvalidOperationException($"La partida {index + 1} debe tener número de parte.");
-
-                if (row.Quantity <= 0)
-                    throw new InvalidOperationException($"La partida {index + 1} debe tener cantidad mayor a 0.");
 
                 row.AsnId = asnId;
 
