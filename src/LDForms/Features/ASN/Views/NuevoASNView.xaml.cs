@@ -25,29 +25,39 @@ namespace LD.FormsX.Views.Dialogs
     {
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
+        private readonly AsnReceiptService _asnReceiptService;
         private readonly LookupService _lookupService;
+        private readonly LocationService _locationService;
         private readonly ProductService _productService;
         private readonly InventaryStatusService _inventaryStatusService;
         private readonly DataGridNavigationManager _detailGridNavigation;
+        private readonly DataGridNavigationManager _receiptGridNavigation;
         private readonly HashSet<AsnDetailItem> _savingDetailRows = new();
+        private readonly HashSet<AsnReceiptItem> _savingReceiptRows = new();
         private AsnDto? AsnSelected;
+        private AsnDetailItem? _selectedDetailItem;
         private bool _cargandoDatos = false;
 
         public ObservableCollection<LookupItem> ProductLookupItems { get; } = new();
         public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
         public ObservableCollection<LookupItem> SdLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> LocationLookupItems { get; } = new();
 
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
+        public ObservableCollection<AsnReceiptItem> ReceiptItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, ProductService productService, LookupService lookupService, InventaryStatusService inventaryStatusService, IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, ProductService productService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
             _asnDetailService = asnDetailService;
+            _asnReceiptService = asnReceiptService;
             _lookupService = lookupService;
             _productService = productService;
             _inventaryStatusService = inventaryStatusService;
+            _locationService = locationService;
             _detailGridNavigation = new DataGridNavigationManager(dgDetail);
+            _receiptGridNavigation = new DataGridNavigationManager(dgUbicacionesAsignadas);
             DataContext = this;
 
             HideScanSection();
@@ -114,7 +124,12 @@ namespace LD.FormsX.Views.Dialogs
         private async Task CargarDatosAsyncDet()
         {
             if (AsnSelected == null || AsnSelected.AsnId <= 0)
+            {
+                DetailItems.Clear();
+                ReceiptItems.Clear();
+                _selectedDetailItem = null;
                 return;
+            }
 
             var result = await _asnDetailService.GetAsnDetailsByAsn(AsnSelected.AsnId);
 
@@ -153,6 +168,11 @@ namespace LD.FormsX.Views.Dialogs
             {
                 DetailItems.Add(new AsnDetailItem());
             }
+
+            EnsureTrailingEmptyDetailRow();
+            _selectedDetailItem = DetailItems.FirstOrDefault(item => !IsEmptyDetailRow(item)) ?? DetailItems.FirstOrDefault();
+            await LoadReceiptItemsForSelectedDetailAsync();
+
         }
 
 
@@ -173,6 +193,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 await SetCombos();
                 await LoadDetailLookupsAsync();
+                await LoadLocationLookupAsync();
 
                 if (AsnSelected != null)
                 {
@@ -280,6 +301,7 @@ namespace LD.FormsX.Views.Dialogs
             {
                 btnGuardar.IsEnabled = false;
                 CommitDetailGridEdits();
+                CommitReceiptGridEdits();
 
                 var request = BuildRequest();
                 if (request.ClientId <= 0)
@@ -455,6 +477,74 @@ namespace LD.FormsX.Views.Dialogs
             dgDetail.CommitEdit(DataGridEditingUnit.Cell, true);
             dgDetail.CommitEdit(DataGridEditingUnit.Row, true);
             _detailGridNavigation.CommitCurrentEdit();
+            EnsureTrailingEmptyDetailRow();
+        }
+
+        private void EnsureTrailingEmptyDetailRow()
+        {
+            if (!DetailItems.Any())
+            {
+                DetailItems.Add(new AsnDetailItem());
+                return;
+            }
+
+            var emptyRows = DetailItems.Where(IsEmptyDetailRow).ToList();
+            if (!emptyRows.Any())
+            {
+                DetailItems.Add(new AsnDetailItem());
+                return;
+            }
+
+            for (var i = 0; i < emptyRows.Count - 1; i++)
+                DetailItems.Remove(emptyRows[i]);
+
+            var trailingEmptyRow = emptyRows.Last();
+            var trailingEmptyIndex = DetailItems.IndexOf(trailingEmptyRow);
+            if (trailingEmptyIndex >= 0 && trailingEmptyIndex != DetailItems.Count - 1)
+            {
+                DetailItems.RemoveAt(trailingEmptyIndex);
+                DetailItems.Add(trailingEmptyRow);
+            }
+        }
+
+        private void CommitReceiptGridEdits()
+        {
+            dgUbicacionesAsignadas.CommitEdit(DataGridEditingUnit.Cell, true);
+            dgUbicacionesAsignadas.CommitEdit(DataGridEditingUnit.Row, true);
+            EnsureTrailingEmptyReceiptRow();
+        }
+
+        private void EnsureTrailingEmptyReceiptRow()
+        {
+            if (!ReceiptItems.Any())
+            {
+                var newRow = new AsnReceiptItem();
+                SeedReceiptRowFromSelectedDetail(newRow);
+                ReceiptItems.Add(newRow);
+                return;
+            }
+
+            var emptyRows = ReceiptItems.Where(IsEmptyReceiptRow).ToList();
+            if (!emptyRows.Any())
+            {
+                var newRow = new AsnReceiptItem();
+                SeedReceiptRowFromSelectedDetail(newRow);
+                ReceiptItems.Add(newRow);
+                return;
+            }
+
+            for (var i = 0; i < emptyRows.Count - 1; i++)
+                ReceiptItems.Remove(emptyRows[i]);
+
+            var trailingEmptyRow = emptyRows.Last();
+            SeedReceiptRowFromSelectedDetail(trailingEmptyRow);
+
+            var trailingEmptyIndex = ReceiptItems.IndexOf(trailingEmptyRow);
+            if (trailingEmptyIndex >= 0 && trailingEmptyIndex != ReceiptItems.Count - 1)
+            {
+                ReceiptItems.RemoveAt(trailingEmptyIndex);
+                ReceiptItems.Add(trailingEmptyRow);
+            }
         }
 
         private static bool IsDetailRowCompleted(AsnDetailItem detailRow)
@@ -462,6 +552,37 @@ namespace LD.FormsX.Views.Dialogs
             return detailRow.ProductId > 0
                 && !string.IsNullOrWhiteSpace(detailRow.PartNumber)
                 && detailRow.Quantity > 0;
+        }
+
+        private static bool IsEmptyReceiptRow(AsnReceiptItem item)
+        {
+            return item.StandardId == null
+                && item.StandardQuantity == null
+                && item.MaximumQuantity == null
+                && item.ReceivedQuantity == null
+                && string.IsNullOrWhiteSpace(item.Status)
+                && item.LocationId == null
+                && string.IsNullOrWhiteSpace(item.LocationCode)
+                && string.IsNullOrWhiteSpace(item.LotNumber)
+                && item.ExpirationDate == null
+                && string.IsNullOrWhiteSpace(item.Reference);
+        }
+
+        private bool IsReceiptRowCompleted(AsnReceiptItem receiptRow)
+        {
+            if (receiptRow.AsnDetailId <= 0)
+                return false;
+
+            return !string.IsNullOrWhiteSpace(receiptRow.LocationCode)
+                || receiptRow.LocationId.HasValue
+                || receiptRow.StandardId.HasValue
+                || receiptRow.StandardQuantity.HasValue
+                || receiptRow.MaximumQuantity.HasValue
+                || receiptRow.ReceivedQuantity.HasValue
+                || !string.IsNullOrWhiteSpace(receiptRow.Status)
+                || !string.IsNullOrWhiteSpace(receiptRow.LotNumber)
+                || receiptRow.ExpirationDate.HasValue
+                || !string.IsNullOrWhiteSpace(receiptRow.Reference);
         }
 
         private async Task SaveDetailRowAsync(AsnDetailItem detailRow)
@@ -500,6 +621,8 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (detailRow.AsnDetailId <= 0 && int.TryParse(response.Data, out var asnDetailId) && asnDetailId > 0)
                     detailRow.AsnDetailId = asnDetailId;
+
+                EnsureTrailingEmptyDetailRow();
             }
             catch (Exception ex)
             {
@@ -508,6 +631,114 @@ namespace LD.FormsX.Views.Dialogs
             finally
             {
                 _savingDetailRows.Remove(detailRow);
+            }
+        }
+
+        private async Task<bool> EnsureDetailPersistedAsync(AsnDetailItem? detailRow)
+        {
+            if (detailRow == null)
+                return false;
+
+            if (!await EnsureAsnPersistedAsync())
+                return false;
+
+            detailRow.AsnId = AsnSelected!.AsnId;
+
+            if (detailRow.AsnDetailId > 0)
+                return true;
+
+            await SaveDetailRowAsync(detailRow);
+            return detailRow.AsnDetailId > 0;
+        }
+
+        private void SeedReceiptRowFromSelectedDetail(AsnReceiptItem receiptRow)
+        {
+            if (_selectedDetailItem == null)
+                return;
+
+            receiptRow.ApplyDefaultsFromDetail(_selectedDetailItem, AsnSelected?.AsnId ?? _selectedDetailItem.AsnId);
+        }
+
+        private async Task LoadReceiptItemsForSelectedDetailAsync()
+        {
+            ReceiptItems.Clear();
+
+            if (_selectedDetailItem == null)
+            {
+                EnsureTrailingEmptyReceiptRow();
+                return;
+            }
+
+            if (AsnSelected?.AsnId <= 0 || _selectedDetailItem.AsnDetailId <= 0)
+            {
+                EnsureTrailingEmptyReceiptRow();
+                return;
+            }
+
+            var result = await _asnReceiptService.GetAsnReceipts();
+            if (result.IsSuccess && result.Data != null)
+            {
+                foreach (var dto in result.Data.Where(x => x.AsnDetailId == _selectedDetailItem.AsnDetailId))
+                {
+                    var item = AsnReceiptItem.FromDto(dto);
+                    item.AsnId = AsnSelected.AsnId;
+                    ReceiptItems.Add(item);
+                }
+            }
+
+            EnsureTrailingEmptyReceiptRow();
+        }
+
+        private async Task SaveReceiptRowAsync(AsnReceiptItem receiptRow)
+        {
+            if (_savingReceiptRows.Contains(receiptRow))
+                return;
+
+            var detailRow = _selectedDetailItem;
+            if (detailRow == null && receiptRow.AsnDetailId > 0)
+                detailRow = DetailItems.FirstOrDefault(x => x.AsnDetailId == receiptRow.AsnDetailId);
+
+            if (!await EnsureDetailPersistedAsync(detailRow))
+                return;
+
+            receiptRow.ApplyDefaultsFromDetail(detailRow!, AsnSelected!.AsnId);
+            if (!IsReceiptRowCompleted(receiptRow))
+            {
+                EnsureTrailingEmptyReceiptRow();
+                return;
+            }
+
+            _savingReceiptRows.Add(receiptRow);
+
+            try
+            {
+                var request = receiptRow.ToRequest();
+                var response = receiptRow.AsnReceiptDetailId > 0
+                    ? await _asnReceiptService.UpdateAsnReceipt(receiptRow.AsnReceiptDetailId, request)
+                    : await _asnReceiptService.CreateAsnReceipt(request);
+
+                Log.Information(
+                    "Resultado SaveReceiptRowAsync. AsnDetailId: {AsnDetailId}. AsnReceiptDetailId: {AsnReceiptDetailId}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                    request.AsnDetailId, receiptRow.AsnReceiptDetailId, response.IsSuccess, response.Code, response.Message, response.Data);
+
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el registro del ASN.");
+                    return;
+                }
+
+                if (receiptRow.AsnReceiptDetailId <= 0 && int.TryParse(response.Data, out var asnReceiptDetailId) && asnReceiptDetailId > 0)
+                    receiptRow.AsnReceiptDetailId = asnReceiptDetailId;
+
+                EnsureTrailingEmptyReceiptRow();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _savingReceiptRows.Remove(receiptRow);
             }
         }
 
@@ -594,11 +825,53 @@ namespace LD.FormsX.Views.Dialogs
 
             var newRow = new AsnDetailItem();
             DetailItems.Add(newRow);
+            EnsureTrailingEmptyDetailRow();
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 dgDetail.ScrollIntoView(newRow);
                 _detailGridNavigation.MoveFocusToFirstEditableCell(newRow);
+            }), DispatcherPriority.Background);
+
+            return true;
+        }
+
+        private bool TryMoveToNextReceiptRowOrAppend()
+        {
+            if (dgUbicacionesAsignadas.CurrentCell.Column == null || dgUbicacionesAsignadas.CurrentItem is not AsnReceiptItem currentRow)
+                return false;
+
+            var lastEditableColumn = _receiptGridNavigation.GetLastEditableColumn();
+            if (lastEditableColumn == null || !ReferenceEquals(dgUbicacionesAsignadas.CurrentCell.Column, lastEditableColumn))
+                return false;
+
+            var currentIndex = ReceiptItems.IndexOf(currentRow);
+            if (currentIndex < 0)
+                return false;
+
+            if (currentIndex < ReceiptItems.Count - 1)
+            {
+                var nextRow = ReceiptItems[currentIndex + 1];
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    _receiptGridNavigation.MoveFocusToFirstEditableCell(nextRow);
+                }), DispatcherPriority.Background);
+
+                return true;
+            }
+
+            if (IsEmptyReceiptRow(currentRow))
+                return false;
+
+            var newRow = new AsnReceiptItem();
+            SeedReceiptRowFromSelectedDetail(newRow);
+            ReceiptItems.Add(newRow);
+            EnsureTrailingEmptyReceiptRow();
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                dgUbicacionesAsignadas.ScrollIntoView(newRow);
+                _receiptGridNavigation.MoveFocusToFirstEditableCell(newRow);
             }), DispatcherPriority.Background);
 
             return true;
@@ -613,6 +886,36 @@ namespace LD.FormsX.Views.Dialogs
         {
             await LoadStatusLookupAsync();
             await LoadSdLookupAsync();
+        }
+
+        private async Task LoadLocationLookupAsync()
+        {
+            try
+            {
+                LocationLookupItems.Clear();
+
+                var response = await _locationService.GetLocations();
+                if (!response.IsSuccess || response.Data == null)
+                    return;
+
+                foreach (var item in response.Data
+                    .Where(x => !string.IsNullOrWhiteSpace(x.Ubicacion))
+                    .OrderBy(x => x.Ubicacion)
+                    .Select(x => new LookupItem
+                    {
+                        Id = x.LocationId,
+                        Code = x.Ubicacion ?? string.Empty,
+                        Description = x.Almacen ?? string.Empty,
+                        Data = x
+                    }))
+                {
+                    LocationLookupItems.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
         }
 
         private async Task LoadStatusLookupAsync()
@@ -718,15 +1021,26 @@ namespace LD.FormsX.Views.Dialogs
                 if (sender is not InlineLookupEditor editor)
                     return;
 
-                if (editor.DataContext is not AsnDetailItem row)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() =>
+                if (editor.DataContext is AsnDetailItem detailRow)
                 {
-                    _detailGridNavigation.CommitCurrentEdit();
-                    _detailGridNavigation.MoveFocusToNextCell(row);
-                    _ = SaveDetailRowAsync(row);
-                }), DispatcherPriority.Background);
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        _detailGridNavigation.CommitCurrentEdit();
+                        _detailGridNavigation.MoveFocusToNextCell(detailRow);
+                        _ = SaveDetailRowAsync(detailRow);
+                    }), DispatcherPriority.Background);
+                    return;
+                }
+
+                if (editor.DataContext is AsnReceiptItem receiptRow)
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        _receiptGridNavigation.CommitCurrentEdit();
+                        _receiptGridNavigation.MoveFocusToNextCell(receiptRow);
+                        _ = SaveReceiptRowAsync(receiptRow);
+                    }), DispatcherPriority.Background);
+                }
             }
             catch (Exception ex)
             {
@@ -749,15 +1063,88 @@ namespace LD.FormsX.Views.Dialogs
             }), DispatcherPriority.Background);
         }
 
-        private void dgDetail_CurrentCellChanged(object? sender, EventArgs e)
+        private void dgUbicacionesAsignadas_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
+        {
+            if (e.NewItem is not AsnReceiptItem receiptRow)
+                return;
+
+            SeedReceiptRowFromSelectedDetail(receiptRow);
+        }
+
+        private void dgUbicacionesAsignadas_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (ReceiptItems == null)
+                return;
+
+            if (e.Row.Item is not AsnReceiptItem receiptRow)
+                return;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                _ = SaveReceiptRowAsync(receiptRow);
+            }), DispatcherPriority.Background);
+        }
+
+        private void dgUbicacionesAsignadas_CurrentCellChanged(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (dgUbicacionesAsignadas.CurrentCell.Column == null)
+                    return;
+
+                if (dgUbicacionesAsignadas.CurrentCell.Item is not AsnReceiptItem)
+                    return;
+
+                if (dgUbicacionesAsignadas.CurrentCell.Column.IsReadOnly)
+                    return;
+
+                _receiptGridNavigation.HandleCurrentCellChanged();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private void dgUbicacionesAsignadas_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.OriginalSource is DependencyObject source &&
+                    _receiptGridNavigation.IsEventInsideControl<InlineLookupEditor>(source))
+                {
+                    return;
+                }
+
+                if (e.Key != Key.Enter)
+                    return;
+
+                if (dgUbicacionesAsignadas.CurrentCell.Column == null || dgUbicacionesAsignadas.CurrentItem is not AsnReceiptItem)
+                    return;
+
+                e.Handled = TryMoveToNextReceiptRowOrAppend() || _receiptGridNavigation.HandleEnterKeyNavigation();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async void dgDetail_CurrentCellChanged(object? sender, EventArgs e)
         {
             try
             {
                 if (dgDetail.CurrentCell.Column == null)
                     return;
 
-                if (dgDetail.CurrentCell.Item is not AsnDetailItem)
+                if (dgDetail.CurrentCell.Item is not AsnDetailItem currentDetailItem)
                     return;
+
+                if (!ReferenceEquals(_selectedDetailItem, currentDetailItem))
+                {
+                    _selectedDetailItem = currentDetailItem;
+                    await LoadReceiptItemsForSelectedDetailAsync();
+                }
 
                 if (dgDetail.CurrentCell.Column.IsReadOnly)
                     return;

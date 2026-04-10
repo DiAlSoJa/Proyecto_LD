@@ -77,13 +77,18 @@ namespace LD.FormsX.Features.Common
             if (_grid.CurrentCell.Column == null)
                 return;
 
-            int currentIndex = _grid.Columns.IndexOf(_grid.CurrentCell.Column);
+            var orderedEditableColumns = _grid.Columns
+                .Where(c => !c.IsReadOnly && c.Visibility == Visibility.Visible)
+                .OrderBy(c => c.DisplayIndex)
+                .ToList();
+
+            int currentIndex = orderedEditableColumns.IndexOf(_grid.CurrentCell.Column);
             if (currentIndex < 0)
                 return;
 
-            var nextColumn = _grid.Columns
+            var nextColumn = orderedEditableColumns
                 .Skip(currentIndex + 1)
-                .FirstOrDefault(c => !c.IsReadOnly);
+                .FirstOrDefault();
 
             if (nextColumn == null)
                 return;
@@ -94,8 +99,9 @@ namespace LD.FormsX.Features.Common
         public void MoveFocusToFirstEditableCell(object rowItem)
         {
             var firstEditableColumn = _grid.Columns
+                .Where(c => !c.IsReadOnly && c.Visibility == Visibility.Visible)
                 .OrderBy(c => c.DisplayIndex)
-                .FirstOrDefault(c => !c.IsReadOnly);
+                .FirstOrDefault();
 
             if (firstEditableColumn == null)
                 return;
@@ -106,7 +112,7 @@ namespace LD.FormsX.Features.Common
         public DataGridColumn? GetLastEditableColumn()
         {
             return _grid.Columns
-                .Where(c => !c.IsReadOnly)
+                .Where(c => !c.IsReadOnly && c.Visibility == Visibility.Visible)
                 .OrderBy(c => c.DisplayIndex)
                 .LastOrDefault();
         }
@@ -157,7 +163,11 @@ namespace LD.FormsX.Features.Common
                 presenter = FindVisualChild<DataGridCellsPresenter>(rowContainer);
             }
 
-            return presenter?.ItemContainerGenerator.ContainerFromIndex(column.DisplayIndex) as DataGridCell;
+            int columnIndex = _grid.Columns.IndexOf(column);
+            if (columnIndex < 0)
+                return null;
+
+            return presenter?.ItemContainerGenerator.ContainerFromIndex(columnIndex) as DataGridCell;
         }
 
         public T? FindVisualChild<T>(DependencyObject parent) where T : class
