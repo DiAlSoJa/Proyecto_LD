@@ -1,7 +1,6 @@
-﻿using LD.Client.Services;
 using LD.Contracts.Category;
 using LD.Contracts.Requests;
-using LD.Contracts.Responses;
+using LD.FormsX.Features.Catalogos.Categorias.ViewModels;
 using LD.FormsX.Helpers;
 using System;
 using System.Threading.Tasks;
@@ -13,32 +12,35 @@ namespace LD.FormsX.Views.Categorias
 {
     public partial class NuevaCategoriaView : Window
     {
-        private readonly CategoryService _categoryService;
-        private readonly LookupService _lookupService;
-
-        private CategoryDto? CategorySelect;
         private bool _cargandoDatos = false;
+        private bool _datosInicialesCargados;
 
-        public bool ResponseForm { get; private set; }
+        private NuevaCategoriaViewModel ViewModel => (NuevaCategoriaViewModel)DataContext;
 
-        public NuevaCategoriaView(CategoryService categoryService, LookupService lookupService)
+        public bool ResponseForm => ViewModel.ResponseForm;
+
+        public NuevaCategoriaView(NuevaCategoriaViewModel viewModel)
         {
             InitializeComponent();
-            _categoryService = categoryService;
-            _lookupService = lookupService;
+            DataContext = viewModel;
+
+            viewModel.RequestClose = () =>
+            {
+                DialogResult = true;
+                Close();
+            };
         }
 
-        public async void SetCategory(CategoryDto category)
+        public void SetCategory(CategoryDto category)
         {
-            CategorySelect = category;
-            await CargarDatosInicialesAsync();
+            ViewModel.SetCategory(category);
         }
 
         protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
 
-            if (cmbCliente.Items.Count == 0)
+            if (!_datosInicialesCargados)
                 await CargarDatosInicialesAsync();
         }
 
@@ -47,29 +49,24 @@ namespace LD.FormsX.Views.Categorias
             try
             {
                 _cargandoDatos = true;
+                _datosInicialesCargados = true;
 
-                await SetCombos();
-
-                if (CategorySelect != null)
-                    await CargarDatosAsync();
+                var clientes = await ViewModel.GetClientsAsync();
+                if (clientes.Count > 0)
+                {
+                    cmbCliente.ItemsSource = clientes;
+                    cmbCliente.DisplayMemberPath = "Value";
+                    cmbCliente.SelectedValuePath = "Key";
+                    cmbCliente.SelectedIndex = -1;
+                }
             }
             finally
             {
                 _cargandoDatos = false;
             }
-        }
 
-        private async Task SetCombos()
-        {
-            var clientes = await _lookupService.GetClientLookup();
-
-            if (clientes.IsSuccess && clientes.Data != null)
-            {
-                cmbCliente.ItemsSource = clientes.Data;
-                cmbCliente.DisplayMemberPath = "Value";
-                cmbCliente.SelectedValuePath = "Key";
-                cmbCliente.SelectedIndex = -1;
-            }
+            if (ViewModel.SelectedCategory != null)
+                await CargarDatosAsync();
         }
 
         private async Task SetCombosProjects(string projectSel = "")
@@ -86,9 +83,9 @@ namespace LD.FormsX.Views.Categorias
                 return;
             }
 
-            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
+            var proyectos = await ViewModel.GetProjectsAsync(clienteId);
 
-            if (!proyectos.IsSuccess || proyectos.Data == null)
+            if (proyectos.Count == 0)
             {
                 cmbProyecto.ItemsSource = null;
                 return;
@@ -96,11 +93,11 @@ namespace LD.FormsX.Views.Categorias
 
             cmbProyecto.DisplayMemberPath = "Value";
             cmbProyecto.SelectedValuePath = "Key";
-            cmbProyecto.ItemsSource = proyectos.Data;
+            cmbProyecto.ItemsSource = proyectos;
 
             if (!string.IsNullOrWhiteSpace(projectSel))
                 cmbProyecto.SelectedValue = projectSel;
-            else if (proyectos.Data.Count > 1)
+            else if (proyectos.Count > 1)
                 cmbProyecto.SelectedIndex = -1;
         }
 
@@ -108,20 +105,14 @@ namespace LD.FormsX.Views.Categorias
         {
             try
             {
-                var response = await _categoryService.GetCategoryById(CategorySelect?.CategoriaId ?? 0);
-
-                if (!response.IsSuccess)
-                {
-                    DialogHelper.ShowError(response.Message ?? "No se pudo cargar la categoría.");
+                var item = await ViewModel.GetCategoryAsync();
+                if (item is null)
                     return;
-                }
-
-                var item = response.Data;
 
                 txtId.Text = item.CategoryName;
                 txtNombre.Text = item.Description;
                 txtFrecuencia.Text = item.Frecuency?.ToString() ?? "";
-                txtId.IsEnabled = CategorySelect == null;
+                txtId.IsEnabled = ViewModel.SelectedCategory == null;
 
                 cmbCliente.SelectedValue = item.ClientId.ToString();
                 await SetCombosProjects(item.ProjectId.ToString());
@@ -136,25 +127,12 @@ namespace LD.FormsX.Views.Categorias
         {
             return new CategoryRequest
             {
-                CategoryName = CategorySelect != null ? CategorySelect.Categoria : txtId.Text.Trim(),
+                CategoryName = ViewModel.SelectedCategory != null ? ViewModel.SelectedCategory.Categoria : txtId.Text.Trim(),
                 Description = txtNombre.Text.Trim(),
                 Frecuency = int.TryParse(txtFrecuencia.Text, out int frec) ? frec : null,
                 ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
                 ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0
             };
-        }
-
-        private Task<ApiResponseDto<string>> CreateCategory(CategoryRequest request) =>
-            _categoryService.CreateCategory(request);
-
-        private Task<ApiResponseDto<string>> EditCategory(int categoryId, CategoryRequest request) =>
-            _categoryService.UpdateCategory(categoryId, request);
-
-        private async Task<ApiResponseDto<string>> SaveCategory(CategoryRequest request)
-        {
-            return CategorySelect != null
-                ? await EditCategory(CategorySelect.CategoriaId, request)
-                : await CreateCategory(request);
         }
 
         private async void btnSave_Click(object sender, RoutedEventArgs e)
@@ -164,19 +142,7 @@ namespace LD.FormsX.Views.Categorias
                 btnSave.IsEnabled = false;
 
                 var request = BuildRequest();
-                var result = await SaveCategory(request);
-
-                if (result.IsSuccess)
-                {
-                    DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
-                    ResponseForm = true;
-                    this.DialogResult = true;
-                    Close();
-                }
-                else
-                {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
-                }
+                await ViewModel.SaveAsync(request);
             }
             catch (Exception ex)
             {

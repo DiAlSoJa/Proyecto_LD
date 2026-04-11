@@ -2,6 +2,11 @@
 using LD.Client.Services;
 using LD.Forms.Configuration;
 using LD.FormsX.Features.Almacen.ViewModels;
+using LD.FormsX.Features.Catalogos.Categorias.ViewModels;
+using LD.FormsX.Features.Catalogos.Dimensionador.ViewModels;
+using LD.FormsX.Features.Catalogos.Familias.ViewModels;
+using LD.FormsX.Features.Catalogos.Monedas.ViewModels;
+using LD.FormsX.Features.Catalogos.Unidades.ViewModels;
 using LD.FormsX.Features.Clientes.ViewModels;
 using LD.FormsX.Features.Proyectos.ViewModels;
 using LD.FormsX.Features.Ubicaciones.ViewModels;
@@ -128,6 +133,16 @@ namespace LD.FormsX
             services.AddTransient<LoginViewModel>();
             services.AddTransient<AlmacenesViewModel>();
             services.AddTransient<NuevoAlmacenViewModel>();
+            services.AddTransient<CatalogoCategoriasViewModel>();
+            services.AddTransient<NuevaCategoriaViewModel>();
+            services.AddTransient<CatalogoDimensionadorViewModel>();
+            services.AddTransient<NuevoDimensionadorViewModel>();
+            services.AddTransient<CatalogoFamiliasViewModel>();
+            services.AddTransient<NuevaFamiliaViewModel>();
+            services.AddTransient<CatalogoMonedasViewModel>();
+            services.AddTransient<NuevaMonedaViewModel>();
+            services.AddTransient<CatalogoUnidadesViewModel>();
+            services.AddTransient<NuevaUnidadViewModel>();
             services.AddTransient<ProyectosViewModel>();
             services.AddTransient<NuevoProyectoViewModel>();
             services.AddTransient<ClientesViewModel>();

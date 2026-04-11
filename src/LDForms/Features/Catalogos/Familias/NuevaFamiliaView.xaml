@@ -1,4 +1,4 @@
-﻿<Window x:Class="LD.FormsX.Views.Familias.NuevaFamiliaView"
+<Window x:Class="LD.FormsX.Views.Familias.NuevaFamiliaView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -129,7 +129,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Familias"
+                        <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
                                    Foreground="White"
                                    FontSize="16"
@@ -145,7 +145,7 @@
                                 FontWeight="Bold"
                                 Cursor="Hand"
                                 Click="BtnCerrar_Click"
-                                Content="×"/>
+                                Content="X"/>
                     </Grid>
                 </Border>
 

@@ -1,7 +1,6 @@
-﻿using LD.Client.Services;
 using LD.Contracts.Currency;
 using LD.Contracts.Requests;
-using LD.Contracts.Responses;
+using LD.FormsX.Features.Catalogos.Monedas.ViewModels;
 using LD.FormsX.Helpers;
 using System;
 using System.Threading.Tasks;
@@ -12,66 +11,52 @@ namespace LD.FormsX.Views.Monedas
 {
     public partial class NuevaMonedaView : Window
     {
-        private readonly CurrencyService _currencyService;
-        private CurrencyDto? CurrencySelect;
+        private NuevaMonedaViewModel ViewModel => (NuevaMonedaViewModel)DataContext;
 
-        public bool ResponseForm { get; private set; }
+        public bool ResponseForm => ViewModel.ResponseForm;
 
-        public NuevaMonedaView(CurrencyService currencyService)
+        public NuevaMonedaView(NuevaMonedaViewModel viewModel)
         {
             InitializeComponent();
-            _currencyService = currencyService;
+            DataContext = viewModel;
+
+            viewModel.RequestClose = () =>
+            {
+                DialogResult = true;
+                Close();
+            };
         }
 
-        public async void SetCurrency(CurrencyDto currency)
+        public void SetCurrency(CurrencyDto currency)
         {
-            CurrencySelect = currency;
-            await CargarDatosAsync();
+            ViewModel.SetCurrency(currency);
+        }
+
+        protected override async void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            if (ViewModel.SelectedCurrency is not null)
+                await CargarDatosAsync();
         }
 
         private async Task CargarDatosAsync()
         {
-            try
-            {
-                var response = await _currencyService.GetCurrencyById(CurrencySelect?.CurrencyIdS ?? "");
+            var currencyI = await ViewModel.GetCurrencyAsync();
+            if (currencyI is null)
+                return;
 
-                if (!response.IsSuccess)
-                {
-                    DialogHelper.ShowError(response.Message ?? "No se pudo cargar la moneda.");
-                    return;
-                }
-
-                var currencyI = response.Data;
-                txtId.Text = currencyI.CurrencyIdS;
-                txtNombre.Text = currencyI.Description;
-                txtId.IsEnabled = CurrencySelect == null;
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
+            txtId.Text = currencyI.CurrencyIdS;
+            txtNombre.Text = currencyI.Description;
+            txtId.IsEnabled = ViewModel.SelectedCurrency == null;
         }
 
         private CurrencyRequest BuildRequest()
         {
             return new CurrencyRequest
             {
-                CurrencyIdS = CurrencySelect != null ? CurrencySelect.CurrencyIdS : txtId.Text.Trim(),
+                CurrencyIdS = ViewModel.SelectedCurrency != null ? ViewModel.SelectedCurrency.CurrencyIdS : txtId.Text.Trim(),
                 Description = txtNombre.Text.Trim()
             };
-        }
-
-        private Task<ApiResponseDto<string>> CreateCurrency(CurrencyRequest request) =>
-            _currencyService.CreateCurrency(request);
-
-        private Task<ApiResponseDto<string>> EditCurrency(string currencyId, CurrencyRequest request) =>
-            _currencyService.UpdateCurrency(currencyId, request);
-
-        private async Task<ApiResponseDto<string>> SaveCurrency(CurrencyRequest request)
-        {
-            return CurrencySelect != null
-                ? await EditCurrency(CurrencySelect.CurrencyIdS ?? txtId.Text, request)
-                : await CreateCurrency(request);
         }
 
         private async void btnSave_Click(object sender, RoutedEventArgs e)
@@ -81,19 +66,7 @@ namespace LD.FormsX.Views.Monedas
                 btnSave.IsEnabled = false;
 
                 var request = BuildRequest();
-                var result = await SaveCurrency(request);
-
-                if (result.IsSuccess)
-                {
-                    DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
-                    ResponseForm = true;
-                    this.DialogResult = true;
-                    Close();
-                }
-                else
-                {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
-                }
+                await ViewModel.SaveAsync(request, ViewModel.SelectedCurrency?.CurrencyIdS ?? txtId.Text);
             }
             catch (Exception ex)
             {
