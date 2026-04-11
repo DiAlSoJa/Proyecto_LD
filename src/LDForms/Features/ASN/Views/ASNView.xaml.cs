@@ -33,8 +33,10 @@ namespace LD.FormsX.Views.ASN
 
         private readonly WpfGridFilter<AsnDto> _gridFilter;
         private readonly WpfGridFilter<AsnDetailDto> _gridFilterDet;
+        private readonly WpfGridFilter<AsnReceiptDetailDto> _gridFilterRec;
 
         private AsnDto? _selectedX;
+        private AsnDetailDto? _selectedDetail;
         private bool _loaded;
 
         public ASNView(
@@ -51,6 +53,7 @@ namespace LD.FormsX.Views.ASN
 
             _gridFilter = new WpfGridFilter<AsnDto>(dgASN);
             _gridFilterDet = new WpfGridFilter<AsnDetailDto>(dgDetalleASN);
+            _gridFilterRec = new WpfGridFilter<AsnReceiptDetailDto>(dgRecepcionASN);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -96,25 +99,67 @@ namespace LD.FormsX.Views.ASN
 
             _gridFilter.SetData(result.Data);
             _selectedX = null;
+            _selectedDetail = null;
+            _gridFilterDet.SetData(null);
+            _gridFilterRec.SetData(null);
+            txtStatusDetalle.Text = "Sin detalle para mostrar";
+            txtStatusRecepcion.Text = "Sin partidas recibidas";
         }
 
 
         private async Task CargarDatosAsyncDet()
         {
+            _selectedDetail = null;
+            _gridFilterRec.SetData(null);
+            txtStatusRecepcion.Text = "Sin partidas recibidas";
+
+            if (_selectedX == null)
+            {
+                _gridFilterDet.SetData(null);
+                txtStatusDetalle.Text = "Sin detalle para mostrar";
+                return;
+            }
+
             var result = await _asnDetailService.GetAsnDetailsByAsn(_selectedX.AsnId);
 
-            if (!result.IsSuccess)
-            {           
+            if (!result.IsSuccess || result.Data == null)
+            {
+                _gridFilterDet.SetData(null);
+                txtStatusDetalle.Text = "Sin detalle para mostrar";
                 return;
-            }            
+            }
 
             _gridFilterDet.SetData(result.Data);
-          
             txtStatusDetalle.Text = $"Registros: {result.Data?.Count ?? 0}";
-
-
-
         }
+
+        private async Task CargarDatosAsyncRecepcion()
+        {
+            if (_selectedDetail == null || _selectedDetail.AsnDetailId <= 0)
+            {
+                _gridFilterRec.SetData(null);
+                txtStatusRecepcion.Text = "Sin partidas recibidas";
+                return;
+            }
+
+            var result = await _asnReceiptService.GetAsnReceipts();
+            if (!result.IsSuccess || result.Data == null)
+            {
+                _gridFilterRec.SetData(null);
+                txtStatusRecepcion.Text = "Sin partidas recibidas";
+                return;
+            }
+
+            var filtered = result.Data
+                .Where(x => x.AsnDetailId == _selectedDetail.AsnDetailId)
+                .ToList();
+
+            _gridFilterRec.SetData(filtered);
+            txtStatusRecepcion.Text = filtered.Count > 0
+                ? $"Registros: {filtered.Count}"
+                : "Sin partidas recibidas";
+        }
+
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
             await CargarDatosConLoaderAsync("Trayendo ASN...");
@@ -159,7 +204,7 @@ namespace LD.FormsX.Views.ASN
             try
             {
                 _selectedX = _gridFilter.SelectedItem;
-                CargarDatosAsyncDet();
+                await CargarDatosAsyncDet();
             }
             catch (Exception ex)
             {
@@ -167,7 +212,18 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
-        private void dgDetalleASN_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+        private async void dgDetalleASN_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                _selectedDetail = _gridFilterDet.SelectedItem;
+                await CargarDatosAsyncRecepcion();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
 
     }
 }

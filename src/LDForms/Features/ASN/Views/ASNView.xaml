@@ -203,6 +203,8 @@
                                   IsReadOnly="True"
                                   HeadersVisibility="Column"
                                   GridLinesVisibility="Vertical"
+                                  AlternatingRowBackground="#F8FAFC"
+                                  AlternationCount="2"
                                   RowHeight="28"
                                   ColumnHeaderHeight="40"
                                   FontSize="12"
@@ -318,6 +320,8 @@
                                   IsReadOnly="True"
                                   HeadersVisibility="Column"
                                   GridLinesVisibility="Vertical"
+                                  AlternatingRowBackground="#F8FAFC"
+                                  AlternationCount="2"
                                   RowHeight="28"
                                   ColumnHeaderHeight="40"
                                   FontSize="12"
@@ -413,6 +417,8 @@
                                   IsReadOnly="True"
                                   HeadersVisibility="Column"
                                   GridLinesVisibility="Vertical"
+                                  AlternatingRowBackground="#F8FAFC"
+                                  AlternationCount="2"
                                   RowHeight="28"
                                   ColumnHeaderHeight="40"
                                   FontSize="12"
@@ -422,19 +428,19 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="EstandarID" Binding="{Binding EstandarID}" Width="110"/>
-                                <DataGridTextColumn Header="Número de Parte" Binding="{Binding NumeroParte}" Width="170"/>
-                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="180"/>
-                                <DataGridTextColumn Header="Estandar" Binding="{Binding Estandar}" Width="110"/>
-                                <DataGridTextColumn Header="Maxima" Binding="{Binding Maxima}" Width="110"/>
-                                <DataGridTextColumn Header="Enviado" Binding="{Binding Enviado}" Width="100"/>
+                                <DataGridTextColumn Header="EstandarID" Binding="{Binding StandardId}" Width="110"/>
+                                <DataGridTextColumn Header="Número de Parte" Binding="{Binding PartNumber}" Width="170"/>
+                                <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="180"/>
+                                <DataGridTextColumn Header="Estandar" Binding="{Binding StandardQuantity}" Width="110"/>
+                                <DataGridTextColumn Header="Máxima" Binding="{Binding MaximumQuantity}" Width="110"/>
+                                <DataGridTextColumn Header="Enviado" Binding="{Binding ReceivedQuantity}" Width="100"/>
                                 <DataGridTextColumn Header="SD" Binding="{Binding SD}" Width="80"/>
-                                <DataGridTextColumn Header="Recibida" Binding="{Binding Recibida}" Width="100"/>
+                                <DataGridTextColumn Header="Recibida" Binding="{Binding ReceivedQuantity}" Width="100"/>
                                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
-                                <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="110"/>
-                                <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="125"/>
-                                <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding FechaCaducidad}" Width="130"/>
-                                <DataGridTextColumn Header="Referencia" Binding="{Binding Referencia}" Width="120"/>
+                                <DataGridTextColumn Header="Ubicación" Binding="{Binding LocationCode}" Width="110"/>
+                                <DataGridTextColumn Header="Número de Lote" Binding="{Binding LotNumber}" Width="125"/>
+                                <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding ExpirationDate, StringFormat=dd/MM/yyyy}" Width="130"/>
+                                <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="120"/>
                             </DataGrid.Columns>
 
                             <DataGrid.Resources>

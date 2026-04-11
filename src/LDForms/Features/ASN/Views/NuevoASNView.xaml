@@ -18,7 +18,7 @@
         <SolidColorBrush x:Key="PrimaryBrush" Color="#111827"/>
         <SolidColorBrush x:Key="BorderBrushSoft" Color="#D1D5DB"/>
         <SolidColorBrush x:Key="HeaderBrush" Color="#F9FAFB"/>
-        <SolidColorBrush x:Key="AltRowBrush" Color="#FDFCD5"/>
+        <SolidColorBrush x:Key="AltRowBrush" Color="#F8FAFC"/>
         <SolidColorBrush x:Key="TextBrush" Color="#111827"/>
 
         <Style TargetType="TextBlock" x:Key="LabelStyle">
@@ -519,6 +519,7 @@
                                       HeadersVisibility="Column"
                                       GridLinesVisibility="Vertical"
                                       AlternatingRowBackground="{StaticResource AltRowBrush}"
+                                      AlternationCount="2"
                                       RowBackground="White"
                                       BorderThickness="0"
                                       RowHeight="26"
@@ -667,6 +668,7 @@
                                   HeadersVisibility="Column"
                                   GridLinesVisibility="Vertical"
                                   AlternatingRowBackground="{StaticResource AltRowBrush}"
+                                  AlternationCount="2"
                                   RowBackground="White"
                                   BorderThickness="0"
                                   RowHeight="26"
