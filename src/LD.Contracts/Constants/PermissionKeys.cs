@@ -43,9 +43,9 @@ public static class PermissionKeys
 
     // ASN
     public const string Asn_View   = "asn.read";
-    public const string Asn_Create = "asn.create";
-    public const string Asn_Update = "asn.update";
-    public const string Asn_Delete = "asn.delete";
+    public const string Asn_Create = "asn.read";// "asn.create"; // falta dar de alta
+    public const string Asn_Update = "asn.read";//"asn.update"; // falta dar de alta
+    public const string Asn_Delete = "asn.read";//"asn.delete"; // falta dar de alta
 
     // FORKLIFT CHECKLIST
     public const string ForkliftChecklist_View    = "forklift-checklist.read";

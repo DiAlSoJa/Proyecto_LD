@@ -30,7 +30,7 @@ public class CreateAsnCommandHandler : IRequestHandler<CreateAsnCommand, Result<
             var result = await _asnRepository.CreateWithSequenceAsync(entity);
 
             return result
-                ? Result<string>.Success("Asn creado con éxito", entity.AsnCode ?? string.Empty)
+                ? Result<string>.Success(entity.AsnId.ToString(), "Asn creado con éxito")
                 : Result<string>.Failure("Hubo un error al crear el ASN", new());
         }
         catch (Exception ex)

@@ -48,12 +48,12 @@ namespace LD.Infrastructure.Repositories
                 entity.AsnCode = $"{project.AsnPrefix}{currentNumber:D5}";
                 entity.PreAsnCode = entity.AsnCode;
 
-                
-                await _context.Asns.AddAsync(entity);
+
+                _context.Set<Asn>().Add(entity);
 
                 project.AsnNumber = (currentNumber + 1);
-                
-                 _context.Projects.Update(project);
+
+                _context.Set<Project>().Update(project);
 
                 var result = await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

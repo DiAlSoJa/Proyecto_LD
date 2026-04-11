@@ -38,7 +38,7 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
             if (!updated)
                 return Result<string>.Failure("Error al actualizar", new System.Collections.Generic.List<string> { "Hubo un error al actualizar" });
 
-            return Result<string>.Success("ASN Detail actualizado", asn.AsnReceiptDetailId.ToString());
+            return Result<string>.Success(asn.AsnReceiptDetailId.ToString(), "ASN Detail actualizado");
         }
         catch (Exception ex)
         {

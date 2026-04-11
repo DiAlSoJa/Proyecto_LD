@@ -13,6 +13,8 @@ namespace LD.FormsX.Features.Common
 {
     public partial class LookupPopupControl : UserControl
     {
+        private const int MaxVisibleItems = 5;
+
         private readonly List<LookupItem> _allItems = new();
         private List<PropertyInfo> _visibleProperties = new();
 
@@ -178,7 +180,9 @@ namespace LD.FormsX.Features.Common
 
         private void LoadGrid(IEnumerable<LookupItem> items)
         {
-            var list = items.ToList();
+            var list = items
+                .Take(MaxVisibleItems)
+                .ToList();
 
             dgProductos.ItemsSource = null;
             dgProductos.ItemsSource = list;
@@ -198,8 +202,7 @@ namespace LD.FormsX.Features.Common
             }
 
             var filtered = _allItems
-                .Where(x => MatchesSearch(x, text))
-                .ToList();
+                .Where(x => MatchesSearch(x, text));
 
             LoadGrid(filtered);
         }

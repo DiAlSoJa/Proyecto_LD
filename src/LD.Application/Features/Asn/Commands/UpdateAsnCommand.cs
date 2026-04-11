@@ -38,7 +38,7 @@ public class UpdateAsnCommandHandler : IRequestHandler<UpdateAsnCommand, Result<
             if (!updated)
                 return Result<string>.Failure("Error al actualizar", new System.Collections.Generic.List<string> { "Hubo un error al actualizar" });
 
-            return Result<string>.Success("ASN actualizado", asn.AsnId.ToString());
+            return Result<string>.Success(asn.AsnId.ToString(), "ASN actualizado");
         }
         catch (Exception ex)
         {
