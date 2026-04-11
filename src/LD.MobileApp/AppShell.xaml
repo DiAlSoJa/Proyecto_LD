@@ -4,18 +4,17 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MauiAppLogin"
-    Title="MauiAppLogin"
+    Title="Warehouse Management"
+    FlyoutBehavior="Disabled"
     NavBarIsVisible="False"
     BackgroundColor="#1F3A5F">
 
-    <ShellContent
-        Title="Login"
-        Route="login"
-        ContentTemplate="{DataTemplate local:LoginPage}" />
+    <TabBar Route="login">
+        <ShellContent ContentTemplate="{DataTemplate local:LoginPage}" />
+    </TabBar>
 
-    <ShellContent
-        Title="Dashboard"
-        Route="dashboard"
-        ContentTemplate="{DataTemplate local:DashboardPage}" />
+    <TabBar Route="dashboard">
+        <ShellContent ContentTemplate="{DataTemplate local:DashboardPage}" />
+    </TabBar>
 
 </Shell>
