@@ -9,6 +9,7 @@ namespace LD.Contracts.Vehicle
 {
     public class VehicleDto
     {
+        public DateTime CreatedAt { get; set; }
         
         public string NumeroVehiculo { get; set; }   // No. Vehículo        
         public string Nombre { get; set; }            // FORD DIESEL 96        
