@@ -44,8 +44,5 @@ namespace LD.Contracts.ASN
 
         [DisplayName("Pedimento")]
         public string CustomsDeclarationNumber { get; set; } = string.Empty;
-
-        [DisplayName("Split")]
-        public decimal Split { get; set; }
     }
 }

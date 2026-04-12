@@ -24,6 +24,11 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteAsync(SystemField modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<SystemField?> GetByIdAsync(int id)
         {
             throw new NotImplementedException();

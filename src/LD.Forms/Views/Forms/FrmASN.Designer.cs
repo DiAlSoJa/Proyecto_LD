@@ -54,7 +54,6 @@ namespace LD.Forms.Views.Forms
             dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn9 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn10 = new DataGridViewTextBoxColumn();
-            Split = new DataGridViewTextBoxColumn();
             panel2 = new Panel();
             button1 = new Button();
             dataGridView3 = new DataGridView();
@@ -234,7 +233,7 @@ namespace LD.Forms.Views.Forms
             dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10, Split });
+            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10 });
             dataGridView2.Dock = DockStyle.Fill;
             dataGridView2.Location = new Point(0, 44);
             dataGridView2.Margin = new Padding(3, 2, 3, 2);
@@ -312,13 +311,6 @@ namespace LD.Forms.Views.Forms
             dataGridViewTextBoxColumn10.MinimumWidth = 6;
             dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             dataGridViewTextBoxColumn10.Width = 125;
-            // 
-            // Split
-            // 
-            Split.HeaderText = "Split";
-            Split.MinimumWidth = 6;
-            Split.Name = "Split";
-            Split.Width = 125;
             // 
             // panel2
             // 
@@ -587,7 +579,6 @@ namespace LD.Forms.Views.Forms
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private DataGridViewTextBoxColumn Split;
         private DataGridViewTextBoxColumn Esta;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;

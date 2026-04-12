@@ -104,5 +104,10 @@ namespace LD.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> DeleteAsync(Asn modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -191,9 +191,6 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal?>("Split")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Status")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");

@@ -27,6 +27,11 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteAsync(Dimensioner modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Dimensioner?> GetByIdAsync(int id)
         {
             throw new NotImplementedException();

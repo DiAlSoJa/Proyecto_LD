@@ -4,6 +4,7 @@ using LD.Api.Controllers.Common;
 using LD.Application.Features.Asn.Commands;
 using LD.Application.Features.Asn.Queries;
 using LD.Application.Features.AsnDetail.Commands;
+using LD.Application.Features.AsnReceiptDetails.Commands;
 using LD.Application.Features.AsnReceiptDetails.Queries;
 using LD.Contracts.Constants;
 using MediatR;
@@ -41,6 +42,14 @@ namespace LD.Api.Controllers
         {
             command.AsnReceiptDetailId = asnReceiptId;
             var result = await Mediator.Send(command);
+            return ResultExtensions.ToActionResult(result);
+        }
+
+        [HttpDelete("{asnReceiptId}")]
+        [Permission(PermissionKeys.Asn_Delete)]
+        public async Task<IActionResult> DeleteAsnReceipt(int asnReceiptId)
+        {
+            var result = await Mediator.Send(new DeleteAsnReceiptDetailCommand { AsnReceiptDetailId = asnReceiptId });
             return ResultExtensions.ToActionResult(result);
         }
     }

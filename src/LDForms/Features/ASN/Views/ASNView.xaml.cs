@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LD.Client.Services;
 using LD.Contracts.ASN;
+using LD.Contracts.DTOs;
 using LD.FormsX.Helpers;
 using LD.FormsX.Views.Dialogs;
 using LD.FormsX.Views.Familias;
@@ -29,6 +31,7 @@ namespace LD.FormsX.Views.ASN
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
         private readonly AsnReceiptService _asnReceiptService;
+        private readonly LookupService _lookupService;
         private readonly IServiceProvider _serviceProvider;
 
         private readonly WpfGridFilter<AsnDto> _gridFilter;
@@ -37,23 +40,31 @@ namespace LD.FormsX.Views.ASN
 
         private AsnDto? _selectedX;
         private AsnDetailDto? _selectedDetail;
+        private List<AsnDto> _allAsns = new();
+        private bool _cargandoCombos;
         private bool _loaded;
 
         public ASNView(
             AsnService asnService,
             AsnDetailService asnDetailService,
             AsnReceiptService asnReceiptService,
+            LookupService lookupService,
             IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
             _asnDetailService = asnDetailService;
             _asnReceiptService = asnReceiptService;
+            _lookupService = lookupService;
             _serviceProvider = serviceProvider;
 
             _gridFilter = new WpfGridFilter<AsnDto>(dgASN);
             _gridFilterDet = new WpfGridFilter<AsnDetailDto>(dgDetalleASN);
             _gridFilterRec = new WpfGridFilter<AsnReceiptDetailDto>(dgRecepcionASN);
+
+            _gridFilter.SetHiddenColumns("AsnId");
+            _gridFilterDet.SetHiddenColumns("AsnDetailId", "AsnId", "ProductId");
+            _gridFilterRec.SetHiddenColumns("AsnReceiptDetailId", "AsnDetailId", "ProductId", "LocationId");
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -61,7 +72,67 @@ namespace LD.FormsX.Views.ASN
             if (_loaded) return;
             _loaded = true;
 
-            await CargarDatosConLoaderAsync("Trayendo ASN...");
+            await CargarCombosAsync();
+            _gridFilter.SetData(null);
+            _gridFilterDet.SetData(null);
+            _gridFilterRec.SetData(null);
+            txtStatusDetalle.Text = "Sin detalle para mostrar";
+            txtStatusRecepcion.Text = "Sin partidas recibidas";
+        }
+
+        private async Task CargarCombosAsync()
+        {
+            try
+            {
+                _cargandoCombos = true;
+
+                var clientes = await _lookupService.GetClientLookup();
+                if (clientes.IsSuccess && clientes.Data != null)
+                {
+                    cmbCliente.ItemsSource = clientes.Data;
+                    cmbCliente.DisplayMemberPath = "Value";
+                    cmbCliente.SelectedValuePath = "Key";
+                    cmbCliente.SelectedIndex = -1;
+                }
+
+                cmbProyecto.ItemsSource = null;
+            }
+            finally
+            {
+                _cargandoCombos = false;
+            }
+        }
+
+        private async Task SetCombosProjectsAsync(string projectSel = "")
+        {
+            if (cmbCliente.SelectedValue == null)
+            {
+                cmbProyecto.ItemsSource = null;
+                return;
+            }
+
+            if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
+            {
+                cmbProyecto.ItemsSource = null;
+                return;
+            }
+
+            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
+
+            if (!proyectos.IsSuccess || proyectos.Data == null)
+            {
+                cmbProyecto.ItemsSource = null;
+                return;
+            }
+
+            cmbProyecto.DisplayMemberPath = "Value";
+            cmbProyecto.SelectedValuePath = "Key";
+            cmbProyecto.ItemsSource = proyectos.Data;
+
+            if (!string.IsNullOrWhiteSpace(projectSel))
+                cmbProyecto.SelectedValue = projectSel;
+            else if (proyectos.Data.Count > 1)
+                cmbProyecto.SelectedIndex = -1;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -97,7 +168,30 @@ namespace LD.FormsX.Views.ASN
                 return;
             }
 
-            _gridFilter.SetData(result.Data);
+            _allAsns = result.Data ?? new List<AsnDto>();
+            AplicarFiltroAsn();
+        }
+
+        private void AplicarFiltroAsn()
+        {
+            var clienteSeleccionado = cmbCliente.SelectedItem as DropDownDto;
+            var proyectoSeleccionado = cmbProyecto.SelectedItem as DropDownDto;
+
+            var filtered = _allAsns.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(clienteSeleccionado?.Value))
+            {
+                filtered = filtered.Where(x =>
+                    string.Equals(x.Client?.Trim(), clienteSeleccionado.Value.Trim(), StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(proyectoSeleccionado?.Value))
+            {
+                filtered = filtered.Where(x =>
+                    string.Equals(x.Project?.Trim(), proyectoSeleccionado.Value.Trim(), StringComparison.OrdinalIgnoreCase));
+            }
+
+            _gridFilter.SetData(filtered.ToList());
             _selectedX = null;
             _selectedDetail = null;
             _gridFilterDet.SetData(null);
@@ -105,7 +199,6 @@ namespace LD.FormsX.Views.ASN
             txtStatusDetalle.Text = "Sin detalle para mostrar";
             txtStatusRecepcion.Text = "Sin partidas recibidas";
         }
-
 
         private async Task CargarDatosAsyncDet()
         {
@@ -165,10 +258,41 @@ namespace LD.FormsX.Views.ASN
             await CargarDatosConLoaderAsync("Trayendo ASN...");
         }
 
+        private async void cmbCliente_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_cargandoCombos)
+                return;
+
+            try
+            {
+                _cargandoCombos = true;
+                await SetCombosProjectsAsync();
+            }
+            finally
+            {
+                _cargandoCombos = false;
+            }
+
+            AplicarFiltroAsn();
+        }
+
+        private void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_cargandoCombos)
+                return;
+
+            AplicarFiltroAsn();
+        }
+
         private void BtnNuevoASN_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
             dialog.Owner = Window.GetWindow(this);
+            dialog.SetClientProjectContext(
+                int.TryParse(cmbCliente.SelectedValue?.ToString(), out var clientId) ? clientId : 0,
+                int.TryParse(cmbProyecto.SelectedValue?.ToString(), out var projectId) ? projectId : 0,
+                (cmbCliente.SelectedItem as DropDownDto)?.Value,
+                (cmbProyecto.SelectedItem as DropDownDto)?.Value);
 
             var result = dialog.ShowDialog();
 
@@ -185,6 +309,7 @@ namespace LD.FormsX.Views.ASN
 
             var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
             dialog.Owner = Window.GetWindow(this);
+            dialog.SetClientProjectContext(0, 0, _selectedX.Client, _selectedX.Project);
             dialog.SetAsn(_selectedX);
 
             var result = dialog.ShowDialog();

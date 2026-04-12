@@ -44,6 +44,12 @@ namespace LD.Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> DeleteAsync(T modelToDelete)
+        {
+            _context.Set<T>().Remove(modelToDelete);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
 
     }
 

@@ -43,5 +43,10 @@ namespace LD.Client.Services
         {
             return await _api.PutAsync<AsnDetailRequest, ApiResponseDto<string>>(_apiEndpoints.AsnDetail_Update.Replace("{asnId}", asnDetailId.ToString()), request);
         }
+
+        public async Task<ApiResponseDto<string>> DeleteAsnDetail(int asnDetailId)
+        {
+            return await _api.DeleteAsync<ApiResponseDto<string>>(_apiEndpoints.AsnDetail_Delete.Replace("{asnId}", asnDetailId.ToString()));
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace LD.Application.Common.Interfaces.Repository
         Task<List<T>?> GetManyAsync();
         Task<bool> CreateAsync(T newModoe);
         Task<bool> UpdateAsync(T modelToUpdate);
+        Task<bool> DeleteAsync(T modelToDelete);
         //Task<bool> Exists(int id);
 
     }

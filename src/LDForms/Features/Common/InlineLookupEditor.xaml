@@ -21,8 +21,8 @@
                AllowsTransparency="True"
                PopupAnimation="Fade"
                Width="560">
-            <Border Background="White"
-                    BorderBrush="#2563EB"
+            <Border Background="#FCFCFD"
+                    BorderBrush="#CBD5E1"
                     BorderThickness="1"
                     MinWidth="560"
                     MaxHeight="320">
@@ -32,7 +32,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="#EFF6FF">
+                    <Grid Grid.Row="0" Background="#E2E8F0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="180"/>
                             <ColumnDefinition Width="16"/>
@@ -41,11 +41,13 @@
                         <TextBlock Grid.Column="0"
                                    Margin="6,0,0,0"
                                    VerticalAlignment="Center"
+                                   Foreground="#334155"
                                    FontWeight="SemiBold"
                                    Text="Numero de parte"/>
                         <TextBlock Grid.Column="2"
                                    Margin="6,0,0,0"
                                    VerticalAlignment="Center"
+                                   Foreground="#334155"
                                    FontWeight="SemiBold"
                                    Text="Descripcion"/>
                     </Grid>
@@ -60,12 +62,15 @@
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="Padding" Value="4,3"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Background" Value="White"/>
-                                <Setter Property="Foreground" Value="#111827"/>
+                                <Setter Property="Background" Value="#FCFCFD"/>
+                                <Setter Property="Foreground" Value="#0F172A"/>
                                 <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F1F5F9"/>
+                                    </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#BFDBFE"/>
-                                        <Setter Property="BorderBrush" Value="#2563EB"/>
+                                        <Setter Property="Background" Value="#DCEAFE"/>
+                                        <Setter Property="BorderBrush" Value="#60A5FA"/>
                                         <Setter Property="BorderThickness" Value="1"/>
                                     </Trigger>
                                 </Style.Triggers>
@@ -86,7 +91,7 @@
                                     <TextBlock Grid.Column="2"
                                                Text="{Binding Description}"
                                                VerticalAlignment="Center"
-                                               Foreground="#5B6574"
+                                               Foreground="#64748B"
                                                TextTrimming="CharacterEllipsis"/>
                                 </Grid>
                             </DataTemplate>

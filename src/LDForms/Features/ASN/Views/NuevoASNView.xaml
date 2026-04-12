@@ -10,8 +10,9 @@
         Width="1180"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
          AllowsTransparency="True"
+        StateChanged="Window_StateChanged"
         Background="Transparent">
 
     <Window.Resources>
@@ -20,6 +21,18 @@
         <SolidColorBrush x:Key="HeaderBrush" Color="#F9FAFB"/>
         <SolidColorBrush x:Key="AltRowBrush" Color="#F8FAFC"/>
         <SolidColorBrush x:Key="TextBrush" Color="#111827"/>
+
+        <ContextMenu x:Key="DetailRowHeaderContextMenu"
+                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Eliminar"
+                      Click="DeleteDetailMenuItem_Click"/>
+        </ContextMenu>
+
+        <ContextMenu x:Key="ReceiptRowHeaderContextMenu"
+                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Eliminar"
+                      Click="DeleteReceiptMenuItem_Click"/>
+        </ContextMenu>
 
         <Style TargetType="TextBlock" x:Key="LabelStyle">
             <Setter Property="FontSize" Value="12"/>
@@ -160,6 +173,8 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="34"/>
+                            <ColumnDefinition Width="34"/>
+                            <ColumnDefinition Width="34"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock x:Name="txtTituloVentana"
@@ -170,8 +185,28 @@
                                VerticalAlignment="Center"
                                Margin="12,0,0,0"/>
 
-                        <Button x:Name="btnCerrarVentana"
+                        <Button x:Name="btnMinimizarVentana"
                             Grid.Column="1"
+                            Content="─"
+                            Click="BtnMinimizarVentana_Click"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="13"
+                            Cursor="Hand"/>
+
+                        <Button x:Name="btnMaximizarVentana"
+                            Grid.Column="2"
+                            Content="□"
+                            Click="BtnMaximizarVentana_Click"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="11"
+                            Cursor="Hand"/>
+
+                        <Button x:Name="btnCerrarVentana"
+                            Grid.Column="3"
                             Content="✕"
                             Click="BtnCerrarVentana_Click"
                             Background="Transparent"
@@ -190,33 +225,7 @@
                     Padding="16,14,16,6">
                     <StackPanel>
                         <Grid Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="430"/>
-                                <ColumnDefinition Width="24"/>
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0"
-                                   Grid.Column="0"
-                                   Text="Cliente:"
-                                   Style="{StaticResource LabelStyle}"
-                                   Margin="0,7,0,0"/>
-
-                            <ComboBox x:Name="cmbCliente"
-                                  Grid.Row="0"
-                                  Grid.Column="1"
-                                  Style="{StaticResource InputComboBoxStyle}"
-                                      SelectionChanged="cmbCliente_SelectionChanged"/>
-
                             <Border x:Name="bdPreAsn"
-                                Grid.Row="0"
-                                Grid.Column="4"
                                 Background="#FDE68A"
                                 BorderBrush="#D4A017"
                                 BorderThickness="1"
@@ -230,20 +239,6 @@
                                        FontWeight="Bold"
                                        Foreground="#111827"/>
                             </Border>
-
-                            <TextBlock Grid.Row="1"
-                                   Grid.Column="0"
-                                   Text="Proyecto:"
-                                   Style="{StaticResource LabelStyle}"
-                                   Margin="0,11,0,0"/>
-
-                            <ComboBox x:Name="cmbProyecto"
-                                  Grid.Row="1"
-                                  Grid.Column="1"
-                                  Margin="0,4,0,0"
-                                  Style="{StaticResource InputComboBoxStyle}"
-                                      SelectionChanged="cmbProyecto_SelectionChanged"
-                                      />
                         </Grid>
 
                         <Grid>
@@ -516,7 +511,8 @@
                                       CurrentCellChanged="dgDetail_CurrentCellChanged"
                                       PreviewKeyDown="dgDetail_PreviewKeyDown"
                                       
-                                      HeadersVisibility="Column"
+                                      HeadersVisibility="All"
+                                      RowHeaderWidth="26"
                                       GridLinesVisibility="Vertical"
                                       AlternatingRowBackground="{StaticResource AltRowBrush}"
                                       AlternationCount="2"
@@ -526,11 +522,17 @@
                                       ColumnHeaderHeight="32"
                                       FontSize="11"
                                       Margin="0"
-                                      SelectionUnit="Cell"
+                                      SelectionUnit="CellOrRowHeader"
                                       SelectionMode="Single"
                                       
                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                       ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <DataGrid.RowHeaderStyle>
+                                    <Style TargetType="DataGridRowHeader">
+                                        <EventSetter Event="PreviewMouseRightButtonDown" Handler="DetailRowHeader_PreviewMouseRightButtonDown"/>
+                                        <Setter Property="ContextMenu" Value="{StaticResource DetailRowHeaderContextMenu}"/>
+                                    </Style>
+                                </DataGrid.RowHeaderStyle>
 
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn Header="Número de Parte" Width="220">
@@ -641,10 +643,6 @@
                                     <DataGridTextColumn Header="Pedimento"
                                         Binding="{Binding CustomsDeclarationNumber, UpdateSourceTrigger=PropertyChanged}"
                                         Width="120"/>
-
-                                    <DataGridTextColumn Header="Split"
-                                    Binding="{Binding Split, UpdateSourceTrigger=PropertyChanged}"
-                                    Width="90"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Border>
@@ -666,7 +664,8 @@
                                   CellEditEnding="dgUbicacionesAsignadas_CellEditEnding"
                                   CurrentCellChanged="dgUbicacionesAsignadas_CurrentCellChanged"
                                   PreviewKeyDown="dgUbicacionesAsignadas_PreviewKeyDown"
-                                  HeadersVisibility="Column"
+                                  HeadersVisibility="All"
+                                  RowHeaderWidth="26"
                                   GridLinesVisibility="Vertical"
                                   AlternatingRowBackground="{StaticResource AltRowBrush}"
                                   AlternationCount="2"
@@ -676,10 +675,16 @@
                                   ColumnHeaderHeight="32"
                                   FontSize="11"
                                   Margin="0"
-                                  SelectionUnit="Cell"
+                                  SelectionUnit="CellOrRowHeader"
                                   SelectionMode="Single"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                   ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <DataGrid.RowHeaderStyle>
+                                    <Style TargetType="DataGridRowHeader">
+                                        <EventSetter Event="PreviewMouseRightButtonDown" Handler="ReceiptRowHeader_PreviewMouseRightButtonDown"/>
+                                        <Setter Property="ContextMenu" Value="{StaticResource ReceiptRowHeaderContextMenu}"/>
+                                    </Style>
+                                </DataGrid.RowHeaderStyle>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="EstandarID" Binding="{Binding StandardId, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                                     <DataGridTextColumn Header="Número de Parte" Binding="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}" Width="180" IsReadOnly="True"/>

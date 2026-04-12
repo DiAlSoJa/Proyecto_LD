@@ -83,5 +83,10 @@ namespace LD.Infrastructure.Repositories
             _context.Locations.Update(modelToUpdate);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public Task<bool> DeleteAsync(Location modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
