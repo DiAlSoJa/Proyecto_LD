@@ -1,3 +1,4 @@
+using MauiAppLogin.Features.Almacenista.Models;
 using System.Collections.ObjectModel;
 
 namespace MauiAppLogin;
@@ -55,15 +56,10 @@ public partial class ReceptionPage : ContentPage
         };
         await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
         // Acción al tocar (aquí puedes navegar o llamar API)
-        //await DisplayAlert("Seleccionado", selected.Titulo, "OK");
+        //await DisplayAlertAsync("Seleccionado", selected.Titulo, "OK");
 
         // Ejemplo si quieres navegar:
         // await Shell.Current.GoToAsync("MovimientosEtiquetaPage");
     }
 }
 
-public class ListItemRecep
-{
-    public string Titulo { get; set; } = "";
-    public string Subtitulo { get; set; } = "";
-}

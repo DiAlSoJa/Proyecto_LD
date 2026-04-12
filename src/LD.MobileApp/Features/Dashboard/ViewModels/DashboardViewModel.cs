@@ -120,7 +120,7 @@ namespace MauiAppLogin.ViewModels
             try
             {
                 IsBusy = true;
-                bool confirmar = await Application.Current!.MainPage!.DisplayAlert(
+                bool confirmar = await Application.Current!.MainPage!.DisplayAlertAsync(
                     "Cerrar sesión",
                     "¿Seguro que quieres cerrar sesión?",
                     "Sí",

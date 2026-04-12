@@ -1,3 +1,4 @@
+using MauiAppLogin.Features.Seguridad.Models;
 using System.Collections.ObjectModel;
 
 namespace MauiAppLogin;
@@ -53,7 +54,7 @@ public partial class TaskList : ContentPage
        
         await Shell.Current.GoToAsync("TaskResolve");
         // Acción al tocar (aquí puedes navegar o llamar API)
-        //await DisplayAlert("Seleccionado", selected.Titulo, "OK");
+        //await DisplayAlertAsync("Seleccionado", selected.Titulo, "OK");
 
         // Ejemplo si quieres navegar:
         // await Shell.Current.GoToAsync("MovimientosEtiquetaPage");
@@ -68,8 +69,3 @@ public partial class TaskList : ContentPage
 
 }
 
-public class ListItemTask
-{
-    public string Titulo { get; set; } = "";
-    public string Subtitulo { get; set; } = "";
-}

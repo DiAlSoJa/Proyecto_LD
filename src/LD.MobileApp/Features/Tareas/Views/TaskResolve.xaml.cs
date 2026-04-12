@@ -34,7 +34,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
 
     private async void OnSiguienteClicked(object sender, EventArgs e)
     {
-        await DisplayAlert("Tarea", "Tarea Terminada.", "OK");
+        await DisplayAlertAsync("Tarea", "Tarea Terminada.", "OK");
         await Navigation.PopAsync();
     }
 
@@ -48,7 +48,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await DisplayAlert("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
+                await DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
                 return;
             }
 
@@ -79,7 +79,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", ex.Message, "OK");
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 

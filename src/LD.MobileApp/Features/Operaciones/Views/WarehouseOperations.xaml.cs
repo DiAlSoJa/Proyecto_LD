@@ -1,5 +1,6 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Views;
+using MauiAppLogin.Features.Operaciones.Models;
+using System.Collections.ObjectModel;
 
 namespace MauiAppLogin;
 
@@ -60,7 +61,7 @@ public partial class WarehouseOperations : ContentPage
         };
         await Shell.Current.GoToAsync("ChangeLocationPage", parameters);*/
         // Acción al tocar (aquí puedes navegar o llamar API)
-        //await DisplayAlert("Seleccionado", selected.Titulo, "OK");
+        //await DisplayAlertAsync("Seleccionado", selected.Titulo, "OK");
 
         // Ejemplo si quieres navegar:
         // await Shell.Current.GoToAsync("MovimientosEtiquetaPage");
@@ -118,7 +119,7 @@ public partial class WarehouseOperations : ContentPage
                 break;
         }
 
-        //await DisplayAlert("Selección", $"{modulo} -> {seleccion}", "OK");
+        //await DisplayAlertAsync("Selección", $"{modulo} -> {seleccion}", "OK");
 
         // Aquí haces navegación real:
         // if (modulo == "Caseta" && seleccion == "Entrada")
@@ -153,7 +154,7 @@ public partial class WarehouseOperations : ContentPage
                 await Shell.Current.GoToAsync("TaskSecurity");
                 break;
             default:
-                await DisplayAlert("Selección", $"{modulo} -> {seleccion}", "OK");
+                await DisplayAlertAsync("Selección", $"{modulo} -> {seleccion}", "OK");
                 break;
 
         }
@@ -172,10 +173,3 @@ public partial class WarehouseOperations : ContentPage
 }
  
 
-
-public class ListItemOperation
-{
-    public string Titulo { get; set; } = "";
-    public string Subtitulo { get; set; } = "";
-    public string Subtitulo2 { get; set; } = "";
-}

@@ -1,3 +1,4 @@
+using MauiAppLogin.Features.Inventario.Models;
 using System.Collections.ObjectModel;
 
 namespace MauiAppLogin;
@@ -183,7 +184,7 @@ public partial class InventoryList : ContentPage
     {
         if (e.Parameter is InventoryDetail detail)
         {
-            await DisplayAlert(
+            await DisplayAlertAsync(
                 "Detalle",
                 $"Pedido: {detail.Pedido}\nFecha: {detail.Fecha:dd-MM-yyyy hh:mm tt}\nUbicación: {detail.Ubicacion}",
                 "OK");
@@ -191,16 +192,4 @@ public partial class InventoryList : ContentPage
     }
 }
 
-public class InventoryGroup
-{
-    public string Cantidad { get; set; }
-    public string Folio { get; set; } = string.Empty;
-    public List<InventoryDetail> Detalles { get; set; } = new();
-}
-public class InventoryDetail
-{
-    public string Pedido { get; set; } = string.Empty;
-    public DateTime Fecha { get; set; }
-    public string Ubicacion { get; set; } = string.Empty;
-    public string Color { get; set; } = string.Empty;
-}
+

@@ -1,3 +1,4 @@
+using MauiAppLogin.Features.Almacenista.Models;
 using System.Collections.ObjectModel;
 
 namespace MauiAppLogin;
@@ -88,23 +89,12 @@ public partial class PickingPage : ContentPage
     {
         if (e.Parameter is PickingDetalle detalle)
         {
-            await DisplayAlert("Seleccionado",
+            await DisplayAlertAsync("Seleccionado",
                 $"Pedido: {detalle.Pedido}\nUbicación: {detalle.Ubicacion}",
                 "OK");
         }
     }
 }
 
-public class PickingGrupo
-{
-    public int Cantidad { get; set; }
-    public string Folio { get; set; } = string.Empty;
-    public List<PickingDetalle> Detalles { get; set; } = new();
-}
 
-public class PickingDetalle
-{
-    public string Pedido { get; set; } = string.Empty;
-    public string Ubicacion { get; set; } = string.Empty;
-    public DateTime Fecha { get; set; }
-}
+

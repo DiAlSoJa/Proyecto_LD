@@ -26,7 +26,7 @@ public partial class SignatureDriver : ContentPage
         // Si quieres exportar imagen:
         // var imageStream = await SignaturePad.GetImageStream(600, 300);
 
-        await DisplayAlert("Listo", "Firma registrada.", "OK");
+        await DisplayAlertAsync("Listo", "Firma registrada.", "OK");
         await Shell.Current.GoToAsync("//dashboard"); // o navegar a donde quieras
     }
 }

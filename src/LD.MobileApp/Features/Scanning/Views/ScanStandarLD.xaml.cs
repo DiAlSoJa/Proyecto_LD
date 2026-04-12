@@ -112,7 +112,7 @@ public partial class ScanStandarLD : ContentPage
     {
         if (string.IsNullOrWhiteSpace(EstandarId) )
         {
-            await DisplayAlert("Faltan datos", "Escanea Estandar ID.", "OK");
+            await DisplayAlertAsync("Faltan datos", "Escanea Estandar ID.", "OK");
             return;
         }
 

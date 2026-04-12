@@ -50,7 +50,7 @@ public partial class TaskSecurity : ContentPage, IQueryAttributable
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await DisplayAlert("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
+                await DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
                 return;
             }
 
@@ -81,7 +81,7 @@ public partial class TaskSecurity : ContentPage, IQueryAttributable
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", ex.Message, "OK");
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 

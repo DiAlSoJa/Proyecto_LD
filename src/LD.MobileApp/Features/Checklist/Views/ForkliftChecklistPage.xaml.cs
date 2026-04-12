@@ -112,7 +112,7 @@ public partial class ForkliftChecklistPage : ContentPage
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await DisplayAlert("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
+                await DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
                 return;
             }
 
@@ -143,7 +143,7 @@ public partial class ForkliftChecklistPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", ex.Message, "OK");
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
     private async void OnCancelarClicked(object sender, EventArgs e)
@@ -166,7 +166,7 @@ public partial class ForkliftChecklistPage : ContentPage
 
         if (pendientes.Any())
         {
-            await DisplayAlert("Faltan datos", "Debes contestar todas las preguntas del checklist.", "OK");
+            await DisplayAlertAsync("Faltan datos", "Debes contestar todas las preguntas del checklist.", "OK");
             return;
         }
 
@@ -174,7 +174,7 @@ public partial class ForkliftChecklistPage : ContentPage
             vm.Sections.SelectMany(s => s.Questions)
                        .Select(q => $"{q.Label}: {q.SelectedOption}"));
 
-        await DisplayAlert(
+        await DisplayAlertAsync(
             "Checklist guardado",
             $"Operador: {OperadorEntry.Text}\n" +
             $"Equipo: {EquipoEntry.Text}\n" +

@@ -135,7 +135,7 @@ public partial class Scan3FieldsPage : ContentPage
             string.IsNullOrWhiteSpace(Rack) ||
             string.IsNullOrWhiteSpace(Posicion))
         {
-            await DisplayAlert("Faltan datos", "Escanea Estandar ID, Rack y Posición.", "OK");
+            await DisplayAlertAsync("Faltan datos", "Escanea Estandar ID, Rack y Posición.", "OK");
             return;
         }
 
