@@ -170,6 +170,12 @@ namespace LD.Forms.Configuration
         public string Role_Delete => $"{_baseApi}/role/{{id}}";
 
         // ======================
+        // SECURITY / SEGURIDAD
+        // ======================
+
+        public string Security_Register => $"{_baseApi}/security";
+
+        // ======================
         // VEHICLE
         // ======================
 

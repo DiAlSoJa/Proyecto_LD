@@ -1,5 +1,6 @@
 ﻿using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Interfaces.Repository;
+using LD.Application.Common.Interfaces.Storage;
 using LD.Application.Common.Models;
 using LD.Domain.Entities;
 using LD.Application.Features.Auth.Commands;
@@ -7,6 +8,7 @@ using LD.Infrastructure.Persistence;
 using LD.Infrastructure.Persistence.Interceptors;
 using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
+using LD.Infrastructure.Services.Storage;
 using LD.Infrastructure.Workers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +51,7 @@ public static class ConfigureServices
         services.AddHttpContextAccessor();
         services.AddTransient<IApplicationUserManager, ApplicationUserManager>();
 
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserContextService, UserContextService>();

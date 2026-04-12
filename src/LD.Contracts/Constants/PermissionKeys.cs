@@ -100,6 +100,7 @@ public static class PermissionKeys
 
     // SECURITY / SEGURIDAD
     public const string Security_View         = "security.read";
+    public const string Security_Create       = "security.create";
     public const string Security_Tasks_View   = "security.tasks.read";
     public const string Security_Tasks_Manage = "security.tasks.manage";
 

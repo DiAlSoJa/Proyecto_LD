@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Services;
 using MauiAppLogin.Models;
 using MvvmHelpers.Commands;
 using System.Windows.Input;
@@ -10,6 +11,7 @@ namespace MauiAppLogin.ViewModels;
 public partial class SignatureDriverViewModel : ObservableObject
 {
     private readonly SecurityRegistrationContext _context;
+    private readonly SecurityService _securityService;
 
     [ObservableProperty]
     private bool isBusy;
@@ -29,9 +31,10 @@ public partial class SignatureDriverViewModel : ObservableObject
     public ICommand FinalizarCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public SignatureDriverViewModel(SecurityRegistrationContext context)
+    public SignatureDriverViewModel(SecurityRegistrationContext context, SecurityService securityService)
     {
         _context = context;
+        _securityService = securityService;
 
         ClearCommand = new Command(ClearSignature);
         FinalizarCommand = new AsyncCommand(FinalizarAsync);
@@ -78,14 +81,34 @@ public partial class SignatureDriverViewModel : ObservableObject
                 return;
             }
 
-            // Build the final request
-            var request = SecurityRegistrationRequest.FromContext(_context);
+            var request = new SecurityRegistrationRequest
+            {
+                Tipo          = _context.Tipo,
+                Nombre        = _context.Nombre,
+                Licencia      = _context.Licencia,
+                Vencimiento   = _context.Vencimiento,
+                Celular       = _context.Celular,
+                LicenciaFoto1 = _context.LicenciaFoto1,
+                LicenciaFoto2 = _context.LicenciaFoto2,
+                TipoVehiculo  = _context.TipoVehiculo,
+                Linea         = _context.Linea,
+                Origen        = _context.Origen,
+                Numero        = _context.Numero,
+                Placa         = _context.Placa,
+                VehiculoFoto1 = _context.VehiculoFoto1,
+                VehiculoFoto2 = _context.VehiculoFoto2,
+                Firma         = _context.Firma
+            };
 
-            // TODO: send request to API via injected service
-            // await _apiService.PostSecurityRegistrationAsync(request);
+            var response = await _securityService.RegisterAsync(request);
+
+            if (!response.IsSuccess)
+            {
+                await Shell.Current.DisplayAlertAsync("Error", response.ErrorMessage, "OK");
+                return;
+            }
 
             await Shell.Current.DisplayAlertAsync("Listo", "Registro completado.", "OK");
-
             _context.Clear();
             await Shell.Current.GoToAsync("//dashboard");
         }

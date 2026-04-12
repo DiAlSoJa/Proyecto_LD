@@ -52,6 +52,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Family> Families{ get; set; }
         public DbSet<Dimensioner> Dimensioner{ get; set; }
 
+        public DbSet<SecurityRegistration> SecurityRegistrations { get; set; }
+
         // ASN related tables
         public DbSet<Asn> Asns { get; set; }
         public DbSet<AsnDetail> AsnDetails { get; set; }
