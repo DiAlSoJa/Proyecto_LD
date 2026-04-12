@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using MauiAppLogin.Models;
 using MvvmHelpers.Commands;
 using Plugin.Maui.OCR;
 using System.Text.RegularExpressions;
@@ -10,6 +11,8 @@ namespace MauiAppLogin.ViewModels;
 [QueryProperty(nameof(Tipo), "tipo")]
 public partial class RegisterLicenseViewModel : ObservableObject
 {
+    private readonly SecurityRegistrationContext _context;
+
     [ObservableProperty]
     private string tipo = "";
 
@@ -20,7 +23,7 @@ public partial class RegisterLicenseViewModel : ObservableObject
     private string licencia = "";
 
     [ObservableProperty]
-    private string vencimiento = "";
+    private DateTime vencimiento = DateTime.Today;
 
     [ObservableProperty]
     private string celular = "";
@@ -37,20 +40,51 @@ public partial class RegisterLicenseViewModel : ObservableObject
     [ObservableProperty]
     private bool isBusy;
 
-    private byte[]? _lastCaptureBytes;
-    private bool _foto1Taken;
+    private byte[]? _foto1Bytes;
+    private byte[]? _foto2Bytes;
 
     public ICommand CapturarCommand { get; }
     public ICommand CancelarCommand { get; }
     public ICommand SiguienteCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public RegisterLicenseViewModel()
+    public RegisterLicenseViewModel(SecurityRegistrationContext context)
     {
+        _context = context;
+
         CapturarCommand = new AsyncCommand(CapturarAsync);
         CancelarCommand = new Command(Cancelar);
         SiguienteCommand = new AsyncCommand(SiguienteAsync);
         AtrasCommand = new AsyncCommand(AtrasAsync);
+
+        LoadFromContext();
+    }
+
+    private void LoadFromContext()
+    {
+        if (!string.IsNullOrEmpty(_context.Nombre)) Nombre = _context.Nombre;
+        if (!string.IsNullOrEmpty(_context.Licencia)) Licencia = _context.Licencia;
+        if (_context.Vencimiento != default) Vencimiento = _context.Vencimiento;
+        if (!string.IsNullOrEmpty(_context.Celular)) Celular = _context.Celular;
+
+        _foto1Bytes = _context.LicenciaFoto1;
+        _foto2Bytes = _context.LicenciaFoto2;
+
+        if (_foto1Bytes is not null)
+            Thumb1 = ImageSource.FromStream(() => new MemoryStream(_foto1Bytes));
+        if (_foto2Bytes is not null)
+            Thumb2 = ImageSource.FromStream(() => new MemoryStream(_foto2Bytes));
+    }
+
+    private void SaveToContext()
+    {
+        _context.Tipo = Tipo;
+        _context.Nombre = Nombre;
+        _context.Licencia = Licencia;
+        _context.Vencimiento = Vencimiento;
+        _context.Celular = Celular;
+        _context.LicenciaFoto1 = _foto1Bytes;
+        _context.LicenciaFoto2 = _foto2Bytes;
     }
 
     private async Task CapturarAsync()
@@ -69,26 +103,27 @@ public partial class RegisterLicenseViewModel : ObservableObject
             await using var stream = await photo.OpenReadAsync();
             var mem = new MemoryStream();
             await stream.CopyToAsync(mem);
-            _lastCaptureBytes = mem.ToArray();
+            var bytes = mem.ToArray();
 
             // OCR
-            var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(_lastCaptureBytes);
+            var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(bytes);
             var text = ocrResult?.AllText ?? "";
 
             if (!string.IsNullOrWhiteSpace(text))
                 ParseText(text);
 
             // Preview
-            var img = ImageSource.FromStream(() => new MemoryStream(_lastCaptureBytes));
+            var img = ImageSource.FromStream(() => new MemoryStream(bytes));
             PreviewImage = img;
 
-            if (!_foto1Taken)
+            if (_foto1Bytes is null)
             {
+                _foto1Bytes = bytes;
                 Thumb1 = img;
-                _foto1Taken = true;
             }
             else
             {
+                _foto2Bytes = bytes;
                 Thumb2 = img;
             }
         }
@@ -116,11 +151,22 @@ public partial class RegisterLicenseViewModel : ObservableObject
 
     private async Task SiguienteAsync()
     {
+        if (string.IsNullOrEmpty(Tipo) ||
+            string.IsNullOrEmpty(Licencia) ||
+            string.IsNullOrEmpty(Nombre) ||
+            string.IsNullOrEmpty(Celular))
+        {
+            await Shell.Current.DisplayAlertAsync("Atención", "Llene todos los campos, por favor.", "OK");
+            return;
+        }
+
+        SaveToContext();
         await Shell.Current.GoToAsync(nameof(RegisterVehicule));
     }
 
     private async Task AtrasAsync()
     {
+        _context.Clear();
         await Shell.Current.GoToAsync("..");
     }
 }

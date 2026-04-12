@@ -2,33 +2,65 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
              x:Class="MauiAppLogin.SignatureDriver"
+             x:DataType="vm:SignatureDriverViewModel"
              Title="Firma"
              BackgroundColor="#0F2E4F">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
 
-        <!-- Card superior -->
-        <Border Grid.Row="0"
+        <!-- ═══ Stepper ═══ -->
+        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="6" Margin="0,10,0,6">
+            <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
+                <Label Text="1 Licencia" TextColor="#94A3B8" FontSize="13"/>
+            </Border>
+            <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
+                <Label Text="2 Vehículo" TextColor="#94A3B8" FontSize="13"/>
+            </Border>
+            <Border BackgroundColor="#244A7C" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
+                <Label Text="3 Firma" TextColor="White" FontAttributes="Bold" FontSize="13"/>
+            </Border>
+        </HorizontalStackLayout>
+
+        <!-- Card superior — resumen + controles firma -->
+        <Border Grid.Row="1"
                 BackgroundColor="#F6F8FC"
                 Stroke="#E2E8F0"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 24"
                 Padding="18"
-                Margin="0,10,0,12">
+                Margin="0,4,0,12">
 
             <VerticalStackLayout Spacing="10">
 
-                <Grid ColumnDefinitions="*,Auto,Auto" VerticalOptions="Center">
+                <!-- Resumen -->
+                <Label Text="Resumen del registro" FontSize="16" FontAttributes="Bold" TextColor="#1E293B"/>
+                <HorizontalStackLayout Spacing="4">
+                    <Label Text="Tipo:" TextColor="#64748B" FontSize="13"/>
+                    <Label Text="{Binding ResumenTipo}" TextColor="#1E293B" FontSize="13" FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="4">
+                    <Label Text="Chofer:" TextColor="#64748B" FontSize="13"/>
+                    <Label Text="{Binding ResumenChofer}" TextColor="#1E293B" FontSize="13" FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="4">
+                    <Label Text="Vehículo:" TextColor="#64748B" FontSize="13"/>
+                    <Label Text="{Binding ResumenVehiculo}" TextColor="#1E293B" FontSize="13" FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+
+                <BoxView HeightRequest="1" Color="#E2E8F0" Margin="0,4"/>
+
+                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
                     <Label Text="Firma del chofer"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="#1E293B"
                            VerticalOptions="Center"/>
 
-                    <Button Grid.Column="2"
+                    <Button Grid.Column="1"
                             Text="Borrar firma"
-                            Clicked="OnClearClicked"
+                            Command="{Binding ClearCommand}"
                             BackgroundColor="#E5E7EB"
                             TextColor="#1E293B"
                             CornerRadius="14"
@@ -46,7 +78,7 @@
         </Border>
 
         <!-- Área de firma -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
                 BackgroundColor="White"
                 Stroke="#CBD5E1"
                 StrokeThickness="2"
@@ -54,35 +86,36 @@
                 Padding="10">
 
             <Grid>
-
-                <!-- DrawingView = pad de firma -->
                 <toolkit:DrawingView x:Name="SignaturePad"
                                      BackgroundColor="White"
                                      LineColor="#0F2E4F"
-                                      IsMultiLineModeEnabled="True"
+                                     IsMultiLineModeEnabled="True"
                                      LineWidth="4"
                                      ShouldClearOnFinish="False" />
 
-                <!-- Marco sutil -->
                 <Border Stroke="#0F2E4F"
                         StrokeThickness="2"
                         StrokeShape="RoundRectangle 22"
                         BackgroundColor="Transparent"
                         Opacity="0.15" />
-
             </Grid>
         </Border>
 
-        <!-- Botón Finalizar -->
-        <Button Grid.Row="2"
-                Text="Finalizar"
-                Clicked="OnFinalizarClicked"
-                HeightRequest="56"
-                Margin="0,14,0,6"
-                CornerRadius="18"
-                BackgroundColor="#244A7C"
-                TextColor="White"
-                FontAttributes="Bold"
-                FontSize="18"/>
+        <!-- Navigation -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,14,0,6">
+            <Button Text="Atrás"
+                    Command="{Binding AtrasCommand}"
+                    HeightRequest="56" CornerRadius="18"
+                    BackgroundColor="#E5E7EB" TextColor="#1E293B"
+                    FontAttributes="Bold" FontSize="18"/>
+
+            <Button Grid.Column="1"
+                    Text="Finalizar"
+                    Command="{Binding FinalizarCommand}"
+                    HeightRequest="56" CornerRadius="18"
+                    BackgroundColor="#244A7C" TextColor="White"
+                    FontAttributes="Bold" FontSize="18"/>
+        </Grid>
+
     </Grid>
 </ContentPage>

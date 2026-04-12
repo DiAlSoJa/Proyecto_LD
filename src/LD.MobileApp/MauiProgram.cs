@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using LD.Client;
+using MauiAppLogin.Models;
 using MauiAppLogin.ViewModels;
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.OCR;
@@ -65,6 +66,11 @@ namespace MauiAppLogin
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<DashboardViewModel>();
             builder.Services.AddTransient<RegisterLicenseViewModel>();
+            builder.Services.AddTransient<RegisterVehiculeViewModel>();
+            builder.Services.AddTransient<SignatureDriverViewModel>();
+
+            // shared state for the 3-step security registration flow
+            builder.Services.AddSingleton<SecurityRegistrationContext>();
 
 
             builder.Services.AddSingleton<AppShell>();
