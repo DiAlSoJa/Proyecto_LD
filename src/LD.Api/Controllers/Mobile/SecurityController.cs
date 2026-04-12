@@ -14,7 +14,7 @@ namespace LD.Api.Controllers.Mobile;
 public class SecurityController : CommonController
 {
     [HttpPost]
-    [Permission(PermissionKeys.Security_Create)]
+    [Permission(PermissionKeys.Vehicle_Create)]
     public async Task<IActionResult> Register([FromBody] CreateSecurityRegistrationCommand command)
     {
         return ResultExtensions.ToActionResult(await Mediator.Send(command));
