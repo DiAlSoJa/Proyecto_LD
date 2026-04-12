@@ -25,6 +25,11 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteAsync(Category modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Category>> GetAllWithRelationsAsync()
         {
             return await _context.Categories

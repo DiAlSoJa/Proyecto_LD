@@ -102,13 +102,6 @@ public class AsnDetailItem : INotifyPropertyChanged
         set { _customsDeclarationNumber = value; OnPropertyChanged(nameof(CustomsDeclarationNumber)); }
     }
 
-    private decimal _split;
-    public decimal Split
-    {
-        get => _split;
-        set { _split = value; OnPropertyChanged(nameof(Split)); }
-    }
-
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void OnPropertyChanged(string name)
@@ -132,8 +125,7 @@ public class AsnDetailItem : INotifyPropertyChanged
             CustomerReference = this.CustomerReference,
             ExchangeRate = this.ExchangeRate,
             PurchaseOrder = this.PurchaseOrder,
-            CustomsDeclarationNumber = this.CustomsDeclarationNumber,
-            Split = this.Split
+            CustomsDeclarationNumber = this.CustomsDeclarationNumber
         };
     }
 
@@ -155,8 +147,7 @@ public class AsnDetailItem : INotifyPropertyChanged
             CustomerReference = dto.CustomerReference,
             ExchangeRate = dto.ExchangeRate,
             PurchaseOrder = dto.PurchaseOrder,
-            CustomsDeclarationNumber = dto.CustomsDeclarationNumber,
-            Split = dto.Split
+            CustomsDeclarationNumber = dto.CustomsDeclarationNumber
         };
     }
 }

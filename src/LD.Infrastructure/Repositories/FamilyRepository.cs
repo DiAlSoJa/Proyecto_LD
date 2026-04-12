@@ -70,5 +70,10 @@ namespace LD.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> DeleteAsync(Family modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -23,7 +23,5 @@ namespace LD.Contracts.Requests
 
         public string? PurchaseOrder { get; set; }
         public string? CustomsDeclarationNumber { get; set; }
-
-        public decimal Split { get; set; }
     }
 }

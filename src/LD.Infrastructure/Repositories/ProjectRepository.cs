@@ -41,6 +41,11 @@ namespace LD.Infrastructure.Repositories
             }
         }
 
+        public Task<bool> DeleteAsync(Project modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Project?> GetByIdAsync(int id)
         {
             return await _context.Projects

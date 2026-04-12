@@ -22,6 +22,11 @@ namespace LD.Infrastructure.Repositories
             _mapper = mapper;
         }
 
+        public Task<bool> DeleteAsync(AsnDetailDto modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         Task<bool> IRepository<AsnDetailDto>.CreateAsync(AsnDetailDto newModoe)
         {
             throw new NotImplementedException();

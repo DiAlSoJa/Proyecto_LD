@@ -1,7 +1,6 @@
-﻿using LD.Client.Services;
 using LD.Contracts.DTOs.Family;
 using LD.Contracts.Requests;
-using LD.Contracts.Responses;
+using LD.FormsX.Features.Catalogos.Familias.ViewModels;
 using LD.FormsX.Helpers;
 using System;
 using System.Threading.Tasks;
@@ -13,32 +12,35 @@ namespace LD.FormsX.Views.Familias
 {
     public partial class NuevaFamiliaView : Window
     {
-        private readonly FamilyService _familyService;
-        private readonly LookupService _lookupService;
-
-        private FamilyDto? FamilySelect;
         private bool _cargandoDatos = false;
+        private bool _datosInicialesCargados;
 
-        public bool ResponseForm { get; private set; }
+        private NuevaFamiliaViewModel ViewModel => (NuevaFamiliaViewModel)DataContext;
 
-        public NuevaFamiliaView(FamilyService familyService, LookupService lookupService)
+        public bool ResponseForm => ViewModel.ResponseForm;
+
+        public NuevaFamiliaView(NuevaFamiliaViewModel viewModel)
         {
             InitializeComponent();
-            _familyService = familyService;
-            _lookupService = lookupService;
+            DataContext = viewModel;
+
+            viewModel.RequestClose = () =>
+            {
+                DialogResult = true;
+                Close();
+            };
         }
 
-        public async void SetFamily(FamilyDto family)
+        public void SetFamily(FamilyDto family)
         {
-            FamilySelect = family;
-            await CargarDatosInicialesAsync();
+            ViewModel.SetFamily(family);
         }
 
         protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
 
-            if (cmbCliente.Items.Count == 0)
+            if (!_datosInicialesCargados)
                 await CargarDatosInicialesAsync();
         }
 
@@ -47,29 +49,24 @@ namespace LD.FormsX.Views.Familias
             try
             {
                 _cargandoDatos = true;
+                _datosInicialesCargados = true;
 
-                await SetCombos();
-
-                if (FamilySelect != null)
-                    await CargarDatosAsync();
+                var clientes = await ViewModel.GetClientsAsync();
+                if (clientes.Count > 0)
+                {
+                    cmbCliente.ItemsSource = clientes;
+                    cmbCliente.DisplayMemberPath = "Value";
+                    cmbCliente.SelectedValuePath = "Key";
+                    cmbCliente.SelectedIndex = -1;
+                }
             }
             finally
             {
                 _cargandoDatos = false;
             }
-        }
 
-        private async Task SetCombos()
-        {
-            var clientes = await _lookupService.GetClientLookup();
-
-            if (clientes.IsSuccess && clientes.Data != null)
-            {
-                cmbCliente.ItemsSource = clientes.Data;
-                cmbCliente.DisplayMemberPath = "Value";
-                cmbCliente.SelectedValuePath = "Key";
-                cmbCliente.SelectedIndex = -1;
-            }
+            if (ViewModel.SelectedFamily != null)
+                await CargarDatosAsync();
         }
 
         private async Task SetCombosProjects(string projectSel = "")
@@ -86,9 +83,9 @@ namespace LD.FormsX.Views.Familias
                 return;
             }
 
-            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
+            var proyectos = await ViewModel.GetProjectsAsync(clienteId);
 
-            if (!proyectos.IsSuccess || proyectos.Data == null)
+            if (proyectos.Count == 0)
             {
                 cmbProyecto.ItemsSource = null;
                 return;
@@ -96,11 +93,11 @@ namespace LD.FormsX.Views.Familias
 
             cmbProyecto.DisplayMemberPath = "Value";
             cmbProyecto.SelectedValuePath = "Key";
-            cmbProyecto.ItemsSource = proyectos.Data;
+            cmbProyecto.ItemsSource = proyectos;
 
             if (!string.IsNullOrWhiteSpace(projectSel))
                 cmbProyecto.SelectedValue = projectSel;
-            else if (proyectos.Data.Count > 1)
+            else if (proyectos.Count > 1)
                 cmbProyecto.SelectedIndex = -1;
         }
 
@@ -110,15 +107,9 @@ namespace LD.FormsX.Views.Familias
             {
                 _cargandoDatos = true;
 
-                var response = await _familyService.GetFamilyById(FamilySelect?.FamiliaId ?? 0);
-
-                if (!response.IsSuccess)
-                {
-                    DialogHelper.ShowError(response.Message ?? "No se pudo cargar la familia.");
+                var item = await ViewModel.GetFamilyAsync();
+                if (item is null)
                     return;
-                }
-
-                var item = response.Data;
 
                 txtNombre.Text = item.FamilyName;
                 cmbCliente.SelectedValue = item.ClientId.ToString();
@@ -145,19 +136,6 @@ namespace LD.FormsX.Views.Familias
             };
         }
 
-        private Task<ApiResponseDto<string>> CreateFamily(FamilyRequest request) =>
-            _familyService.CreateFamily(request);
-
-        private Task<ApiResponseDto<string>> EditFamily(int familyId, FamilyRequest request) =>
-            _familyService.UpdateFamily(familyId, request);
-
-        private async Task<ApiResponseDto<string>> SaveFamily(FamilyRequest request)
-        {
-            return FamilySelect != null
-                ? await EditFamily(FamilySelect.FamiliaId, request)
-                : await CreateFamily(request);
-        }
-
         private async void btnSave_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -165,18 +143,7 @@ namespace LD.FormsX.Views.Familias
                 btnSave.IsEnabled = false;
 
                 var request = BuildRequest();
-                var result = await SaveFamily(request);
-
-                if (result.IsSuccess)
-                {
-                    DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
-                    ResponseForm = true;
-                    Close();
-                }
-                else
-                {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
-                }
+                await ViewModel.SaveAsync(request);
             }
             catch (Exception ex)
             {

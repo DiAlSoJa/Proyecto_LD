@@ -48,8 +48,6 @@ namespace LD.Domain.Entities
         [MaxLength(50)]
         public string? CustomsDeclarationNumber { get; set; }
 
-        public decimal? Split { get; set; }
-
         public Asn? Asn { get; set; }
         public Product? Product { get; set; }
 

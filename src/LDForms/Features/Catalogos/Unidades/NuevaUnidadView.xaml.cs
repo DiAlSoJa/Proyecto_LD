@@ -1,7 +1,6 @@
-﻿using LD.Client.Services;
 using LD.Contracts.Requests;
-using LD.Contracts.Responses;
 using LD.Contracts.Units;
+using LD.FormsX.Features.Catalogos.Unidades.ViewModels;
 using LD.FormsX.Helpers;
 using System;
 using System.Threading.Tasks;
@@ -12,66 +11,52 @@ namespace LD.FormsX.Views.Unidades
 {
     public partial class NuevaUnidadView : Window
     {
-        private readonly UnitService _unitService;
-        private UnitDto? UnitSelected;
+        private NuevaUnidadViewModel ViewModel => (NuevaUnidadViewModel)DataContext;
 
-        public bool ResponseForm { get; private set; }
+        public bool ResponseForm => ViewModel.ResponseForm;
 
-        public NuevaUnidadView(UnitService unitService)
+        public NuevaUnidadView(NuevaUnidadViewModel viewModel)
         {
             InitializeComponent();
-            _unitService = unitService;
+            DataContext = viewModel;
+
+            viewModel.RequestClose = () =>
+            {
+                DialogResult = true;
+                Close();
+            };
         }
 
-        public async void SetUnit(UnitDto unit)
+        public void SetUnit(UnitDto unit)
         {
-            UnitSelected = unit;
-            await CargarDatosAsync();
+            ViewModel.SetUnit(unit);
+        }
+
+        protected override async void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            if (ViewModel.SelectedUnit is not null)
+                await CargarDatosAsync();
         }
 
         private async Task CargarDatosAsync()
         {
-            try
-            {
-                var response = await _unitService.GetUnitById(UnitSelected?.Unidad ?? "");
+            var unitI = await ViewModel.GetUnitAsync();
+            if (unitI is null)
+                return;
 
-                if (!response.IsSuccess)
-                {
-                    DialogHelper.ShowError(response.Message ?? "No se pudo cargar la unidad.");
-                    return;
-                }
-
-                var unitI = response.Data;
-                txtId.Text = unitI.UnitIdS;
-                txtNombre.Text = unitI.Description;
-                txtId.IsEnabled = UnitSelected == null;
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
+            txtId.Text = unitI.UnitIdS;
+            txtNombre.Text = unitI.Description;
+            txtId.IsEnabled = ViewModel.SelectedUnit == null;
         }
 
         private UnitRequest BuildRequest()
         {
             return new UnitRequest
             {
-                UnitIdS = UnitSelected != null ? UnitSelected.Unidad : txtId.Text.Trim(),
+                UnitIdS = ViewModel.SelectedUnit != null ? ViewModel.SelectedUnit.Unidad : txtId.Text.Trim(),
                 Description = txtNombre.Text.Trim()
             };
-        }
-
-        private Task<ApiResponseDto<string>> CreateUnit(UnitRequest request) =>
-            _unitService.CreateUnit(request);
-
-        private Task<ApiResponseDto<string>> EditUnit(string unitId, UnitRequest request) =>
-            _unitService.UpdateUnit(unitId, request);
-
-        private async Task<ApiResponseDto<string>> SaveUnit(UnitRequest request)
-        {
-            return UnitSelected != null
-                ? await EditUnit(UnitSelected.Unidad ?? txtId.Text, request)
-                : await CreateUnit(request);
         }
 
         private async void btnSave_Click(object sender, RoutedEventArgs e)
@@ -81,19 +66,7 @@ namespace LD.FormsX.Views.Unidades
                 btnSave.IsEnabled = false;
 
                 var request = BuildRequest();
-                var result = await SaveUnit(request);
-
-                if (result.IsSuccess)
-                {
-                    DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
-                    ResponseForm = true;
-                    this.DialogResult = true;
-                    Close();
-                }
-                else
-                {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
-                }
+                await ViewModel.SaveAsync(request, ViewModel.SelectedUnit?.Unidad ?? txtId.Text);
             }
             catch (Exception ex)
             {

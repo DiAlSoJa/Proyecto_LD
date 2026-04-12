@@ -1,54 +1,39 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using LD.Client.Configuration;
-using LD.Client.Services;
+using LD.FormsX.Features.Catalogos.Unidades.ViewModels;
 using LD.Contracts.Constants;
-using LD.Contracts.InventaryStatus;
-using LD.Contracts.Location;
 using LD.Contracts.Units;
 using LD.FormsX.Helpers;
-using LD.FormsX.Views.Status;
 using LD.FormsX.Views.Unidades;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
 {
-    /// <summary>
-    /// Lógica de interacción para CatalogoStatusView.xaml
-    /// </summary>
     public partial class CatalogoUnidadesView : UserControl
     {
-        private readonly UnitService _service;
         private readonly IServiceProvider _serviceProvider;
-
         private readonly WpfGridFilter<UnitDto> _gridFilter;
-
-        private UnitDto? _selectedX;
         private bool _loaded;
-        public CatalogoUnidadesView(UnitService serviceX, IServiceProvider serviceProvider)
+
+        private CatalogoUnidadesViewModel ViewModel => (CatalogoUnidadesViewModel)DataContext;
+
+        public CatalogoUnidadesView(CatalogoUnidadesViewModel viewModel, IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _service = serviceX;
+            DataContext = viewModel;
             _serviceProvider = serviceProvider;
             _gridFilter = new WpfGridFilter<UnitDto>(dg, txtBuscar);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
-                
                  { "Unidad", 150 },
                  { "Descripcion", 250 }
-                
             });
 
+            viewModel.OnDataLoaded += data => _gridFilter.SetData(data);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -62,9 +47,9 @@ namespace LD.FormsX.Views
 
         private void AplicarPermisos()
         {
-            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.Unit_Create) ? Visibility.Visible : Visibility.Collapsed;
-            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.Unit_Update) ? Visibility.Visible : Visibility.Collapsed;
-            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Unit_View)   ? Visibility.Visible : Visibility.Collapsed;
+            btnNuevo.Visibility = UserData.HasPermission(PermissionKeys.Unit_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility = UserData.HasPermission(PermissionKeys.Unit_Update) ? Visibility.Visible : Visibility.Collapsed;
+            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Unit_View) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -92,17 +77,8 @@ namespace LD.FormsX.Views
 
         private async Task CargarDatosAsync()
         {
-            var result = await _service.GetUnits();
-
-            if (!result.IsSuccess)
-            {
-                DialogHelper.ShowWarning(result.Message);
-                return;
-            }
-
-            _gridFilter.SetData(result.Data);
-            _selectedX = null;
-            txtStatus.Text = $"Registros: {result.Data.Count}";
+            await ViewModel.CargarDatosAsync();
+            txtStatus.Text = ViewModel.StatusText;
         }
 
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
@@ -119,7 +95,7 @@ namespace LD.FormsX.Views
         {
             try
             {
-                _selectedX = _gridFilter.SelectedItem;
+                ViewModel.SelectedUnit = _gridFilter.SelectedItem;
             }
             catch (Exception ex)
             {
@@ -142,12 +118,12 @@ namespace LD.FormsX.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedX is null)
+            if (ViewModel.SelectedUnit is null)
                 return;
 
             var dialog = _serviceProvider.GetRequiredService<NuevaUnidadView>();
             dialog.Owner = Window.GetWindow(this);
-            dialog.SetUnit(_selectedX);
+            dialog.SetUnit(ViewModel.SelectedUnit);
 
             var result = dialog.ShowDialog();
 
@@ -156,7 +132,5 @@ namespace LD.FormsX.Views
                 await CargarDatosConLoaderAsync("Trayendo unidades...");
             }
         }
-
-        
     }
 }

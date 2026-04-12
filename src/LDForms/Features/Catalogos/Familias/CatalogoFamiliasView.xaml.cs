@@ -1,56 +1,41 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using LD.Client.Configuration;
-using LD.Client.Services;
+using LD.FormsX.Features.Catalogos.Familias.ViewModels;
 using LD.Contracts.Constants;
-using LD.Contracts.Currency;
 using LD.Contracts.DTOs.Family;
-using LD.Contracts.InventaryStatus;
-using LD.Contracts.Location;
-using LD.Contracts.Units;
 using LD.FormsX.Helpers;
 using LD.FormsX.Views.Familias;
-using LD.FormsX.Views.Unidades;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
 {
-    /// <summary>
-    /// Lógica de interacción para CatalogoFamiliasView.xaml
-    /// </summary>
     public partial class CatalogoFamiliasView : UserControl
     {
-        private readonly FamilyService _service;
         private readonly IServiceProvider _serviceProvider;
-
         private readonly WpfGridFilter<FamilyDto> _gridFilter;
-
-        private FamilyDto? _selectedX;
         private bool _loaded;
-        public CatalogoFamiliasView(FamilyService serviceX, IServiceProvider serviceProvider)
+
+        private CatalogoFamiliasViewModel ViewModel => (CatalogoFamiliasViewModel)DataContext;
+
+        public CatalogoFamiliasView(CatalogoFamiliasViewModel viewModel, IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _service = serviceX;
+            DataContext = viewModel;
             _serviceProvider = serviceProvider;
             _gridFilter = new WpfGridFilter<FamilyDto>(dg, txtBuscar);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
-            {                 
+            {
                  { "Id", 80 },
                  { "NombreFamilia", 250 },
                  { "Cliente", 250 },
                  { "Proyecto", 250 }
             });
 
+            viewModel.OnDataLoaded += data => _gridFilter.SetData(data);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -64,9 +49,9 @@ namespace LD.FormsX.Views
 
         private void AplicarPermisos()
         {
-            btnNuevo.Visibility      = UserData.HasPermission(PermissionKeys.Family_Create) ? Visibility.Visible : Visibility.Collapsed;
-            btnEditar.Visibility     = UserData.HasPermission(PermissionKeys.Family_Update) ? Visibility.Visible : Visibility.Collapsed;
-            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Family_View)   ? Visibility.Visible : Visibility.Collapsed;
+            btnNuevo.Visibility = UserData.HasPermission(PermissionKeys.Family_Create) ? Visibility.Visible : Visibility.Collapsed;
+            btnEditar.Visibility = UserData.HasPermission(PermissionKeys.Family_Update) ? Visibility.Visible : Visibility.Collapsed;
+            BtnActualizar.Visibility = UserData.HasPermission(PermissionKeys.Family_View) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -94,17 +79,8 @@ namespace LD.FormsX.Views
 
         private async Task CargarDatosAsync()
         {
-            var result = await _service.GetFamily();
-
-            if (!result.IsSuccess)
-            {
-                DialogHelper.ShowWarning(result.Message);
-                return;
-            }
-
-            _gridFilter.SetData(result.Data);
-            _selectedX = null;
-            txtStatus.Text = $"Registros: {result.Data.Count}";
+            await ViewModel.CargarDatosAsync();
+            txtStatus.Text = ViewModel.StatusText;
         }
 
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
@@ -121,7 +97,7 @@ namespace LD.FormsX.Views
         {
             try
             {
-                _selectedX = _gridFilter.SelectedItem;
+                ViewModel.SelectedFamily = _gridFilter.SelectedItem;
             }
             catch (Exception ex)
             {
@@ -144,12 +120,12 @@ namespace LD.FormsX.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedX is null)
+            if (ViewModel.SelectedFamily is null)
                 return;
 
             var dialog = _serviceProvider.GetRequiredService<NuevaFamiliaView>();
             dialog.Owner = Window.GetWindow(this);
-            dialog.SetFamily(_selectedX);
+            dialog.SetFamily(ViewModel.SelectedFamily);
 
             var result = dialog.ShowDialog();
 

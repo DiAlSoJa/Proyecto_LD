@@ -44,7 +44,6 @@
             dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn9 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn10 = new DataGridViewTextBoxColumn();
-            Spl = new DataGridViewTextBoxColumn();
             panel4 = new Panel();
             button5 = new Button();
             dataGridView3 = new DataGridView();
@@ -155,7 +154,7 @@
             dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView2.BackgroundColor = SystemColors.ButtonHighlight;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, SDd, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10, Spl });
+            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, SDd, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10 });
             dataGridView2.Dock = DockStyle.Fill;
             dataGridView2.Location = new Point(0, 59);
             dataGridView2.Name = "dataGridView2";
@@ -239,13 +238,6 @@
             dataGridViewTextBoxColumn10.MinimumWidth = 6;
             dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             dataGridViewTextBoxColumn10.Width = 125;
-            // 
-            // Spl
-            // 
-            Spl.HeaderText = "Split";
-            Spl.MinimumWidth = 6;
-            Spl.Name = "Spl";
-            Spl.Width = 125;
             // 
             // panel4
             // 
@@ -827,7 +819,6 @@
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private DataGridViewTextBoxColumn Spl;
         private ComboBox comboBox3;
         private CheckBox checkBox1;
         private CheckBox checkBox2;

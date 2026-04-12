@@ -30,6 +30,11 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteAsync(Warehouse modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Warehouse?> GetByIdAsync(int id)
         {
             return await _context.Warehouses

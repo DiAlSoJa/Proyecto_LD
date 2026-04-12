@@ -38,6 +38,11 @@ namespace LD.Infrastructure.Repositories
             }
         }
 
+        public Task<bool> DeleteAsync(Client modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Client?> GetByIdAsync(int id)
         {
             return await _context.Clients.Include(c=>c.ClientFiscalData).FirstOrDefaultAsync(c=>c.ClientId == id);

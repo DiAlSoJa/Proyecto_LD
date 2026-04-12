@@ -31,6 +31,11 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteAsync(Units modelToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Unit?> GetByIdAsync(int id)
         {
             throw new NotImplementedException();

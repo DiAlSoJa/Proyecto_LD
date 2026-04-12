@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LD.Client.Services;
@@ -40,6 +41,10 @@ namespace LD.FormsX.Views.Dialogs
         private AsnDto? AsnSelected;
         private AsnDetailItem? _selectedDetailItem;
         private bool _cargandoDatos = false;
+        private int _clientId;
+        private int _projectId;
+        private string _clientName = string.Empty;
+        private string _projectName = string.Empty;
 
         public ObservableCollection<LookupItem> ProductLookupItems { get; } = new();
         public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
@@ -64,15 +69,57 @@ namespace LD.FormsX.Views.Dialogs
             _receiptGridNavigation = new DataGridNavigationManager(dgUbicacionesAsignadas);
             DataContext = this;
 
+            UpdateWindowTitle();
             HideScanSection();
         }
 
         public void SetAsn(AsnDto? _asnSelected)
         {
             AsnSelected = _asnSelected;
+            _clientName = _asnSelected?.Client?.Trim() ?? string.Empty;
+            _projectName = _asnSelected?.Project?.Trim() ?? string.Empty;
+            UpdateWindowTitle();
 
             if (AsnSelected != null)
                 ShowScanSection();
+        }
+
+        public void SetClientProjectContext(int clientId, int projectId, string? clientName, string? projectName)
+        {
+            _clientId = clientId;
+            _projectId = projectId;
+            _clientName = clientName?.Trim() ?? string.Empty;
+            _projectName = projectName?.Trim() ?? string.Empty;
+            UpdateWindowTitle();
+        }
+
+        private void UpdateWindowTitle()
+        {
+            if (txtTituloVentana == null)
+                return;
+
+            var clientName = string.IsNullOrWhiteSpace(_clientName) ? AsnSelected?.Client?.Trim() : _clientName;
+            var projectName = string.IsNullOrWhiteSpace(_projectName) ? AsnSelected?.Project?.Trim() : _projectName;
+
+            if (string.IsNullOrWhiteSpace(clientName) && string.IsNullOrWhiteSpace(projectName))
+            {
+                txtTituloVentana.Text = "ASN";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(clientName))
+            {
+                txtTituloVentana.Text = $"ASN - {projectName}";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(projectName))
+            {
+                txtTituloVentana.Text = $"ASN - {clientName}";
+                return;
+            }
+
+            txtTituloVentana.Text = $"ASN - {clientName} / {projectName}";
         }
 
         private async Task CargarDatosAsync()
@@ -80,9 +127,6 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 _cargandoDatos = true;
-
-                if (cmbCliente.Items.Count == 0)
-                    await SetCombos();
 
                 var response = await _asnService.GetAsnById(AsnSelected?.AsnId ?? 0);
 
@@ -94,8 +138,8 @@ namespace LD.FormsX.Views.Dialogs
 
                 var item = response.Data;
 
-                cmbCliente.SelectedValue = item.ClientId.ToString();
-                await SetCombosProjects(item.ProjectId.ToString());
+                _clientId = item.ClientId;
+                _projectId = item.ProjectId;
                 txtNumeroFactura.Text = item.InvoiceNumber;
                 txtNumeroGuia.Text = item.GuideNumber;
                 dpEta.SelectedDate = item.Eta;
@@ -161,8 +205,7 @@ namespace LD.FormsX.Views.Dialogs
                         CustomerReference = dto.CustomerReference,
                         ExchangeRate = dto.ExchangeRate,
                         PurchaseOrder = dto.PurchaseOrder,
-                        CustomsDeclarationNumber = dto.CustomsDeclarationNumber,
-                        Split = dto.Split
+                        CustomsDeclarationNumber = dto.CustomsDeclarationNumber
                     }));
                 }
             }
@@ -185,8 +228,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             base.OnContentRendered(e);
 
-            if (cmbCliente.Items.Count == 0)
-                await CargarDatosInicialesAsync();
+            await CargarDatosInicialesAsync();
         }
 
         private async Task CargarDatosInicialesAsync()
@@ -195,7 +237,6 @@ namespace LD.FormsX.Views.Dialogs
             {
                 _cargandoDatos = true;
 
-                await SetCombos();
                 await LoadDetailLookupsAsync();
                 await LoadLocationLookupAsync();
 
@@ -211,79 +252,50 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
-        private async Task SetCombos()
-        {
-            var clientes = await _lookupService.GetClientLookup();
-
-            if (clientes.IsSuccess && clientes.Data != null)
-            {
-                cmbCliente.ItemsSource = clientes.Data;
-                cmbCliente.DisplayMemberPath = "Value";
-                cmbCliente.SelectedValuePath = "Key";
-                cmbCliente.SelectedIndex = -1;
-            }
-        }
-
-        private async Task SetCombosProjects(string projectSel = "")
-        {
-            if (cmbCliente.SelectedValue == null)
-            {
-                cmbProyecto.ItemsSource = null;
-                return;
-            }
-
-            if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
-            {
-                cmbProyecto.ItemsSource = null;
-                return;
-            }
-
-            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
-
-            if (!proyectos.IsSuccess || proyectos.Data == null)
-            {
-                cmbProyecto.ItemsSource = null;
-                return;
-            }
-
-            cmbProyecto.DisplayMemberPath = "Value";
-            cmbProyecto.SelectedValuePath = "Key";
-            cmbProyecto.ItemsSource = proyectos.Data;
-
-            if (!string.IsNullOrWhiteSpace(projectSel))
-                cmbProyecto.SelectedValue = projectSel;
-            else if (proyectos.Data.Count > 1)
-                cmbProyecto.SelectedIndex = -1;
-        }
-
-
-
-        private async void cmbCliente_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_cargandoDatos)
-                return;
-
-            await SetCombosProjects();
-
-        }
-        private async void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_cargandoDatos)
-                return;
-
-            await LoadProductsForSelectedClientProjectAsync();
-        }
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
+            {
+                ToggleWindowState();
                 return;
+            }
 
             DragMove();
+        }
+
+        private void BtnMinimizarVentana_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void BtnMaximizarVentana_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleWindowState();
         }
 
         private void BtnCerrarVentana_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            UpdateWindowButtons();
+        }
+
+        private void ToggleWindowState()
+        {
+            WindowState = WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
+        private void UpdateWindowButtons()
+        {
+            if (btnMaximizarVentana == null)
+                return;
+
+            btnMaximizarVentana.Content = WindowState == WindowState.Maximized ? "❐" : "□";
         }
 
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)
@@ -480,8 +492,8 @@ namespace LD.FormsX.Views.Dialogs
             return new AsnRequest
             {
                 InvoiceNumber = txtNumeroFactura.Text.Trim(),
-                ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
-                ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0,
+                ClientId = _clientId,
+                ProjectId = _projectId,
                 GuideNumber = txtNumeroGuia.Text.Trim(),
                 Eta = dpEta.SelectedDate,
                 PackagesQty = int.TryParse(txtBultos.Text.Trim(), out int packagesQty) ? packagesQty : (int?)null,
@@ -811,8 +823,7 @@ namespace LD.FormsX.Views.Dialogs
                 && string.IsNullOrWhiteSpace(item.CustomerReference)
                 && item.ExchangeRate == null
                 && string.IsNullOrWhiteSpace(item.PurchaseOrder)
-                && string.IsNullOrWhiteSpace(item.CustomsDeclarationNumber)
-                && item.Split <= 0;
+                && string.IsNullOrWhiteSpace(item.CustomsDeclarationNumber);
         }
 
         private bool TryMoveToNextRowOrAppend()
@@ -899,6 +910,81 @@ namespace LD.FormsX.Views.Dialogs
         private void dgDetail_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
 
+        }
+
+        private void DetailRowHeader_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not DataGridRowHeader rowHeader || rowHeader.DataContext is not AsnDetailItem detailRow)
+                return;
+
+            dgDetail.SelectedItem = detailRow;
+            dgDetail.CurrentItem = detailRow;
+            _selectedDetailItem = detailRow;
+            e.Handled = false;
+        }
+
+        private void ReceiptRowHeader_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not DataGridRowHeader rowHeader || rowHeader.DataContext is not AsnReceiptItem receiptRow)
+                return;
+
+            dgUbicacionesAsignadas.SelectedItem = receiptRow;
+            dgUbicacionesAsignadas.CurrentItem = receiptRow;
+            e.Handled = false;
+        }
+
+        private async void DeleteDetailMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem menuItem || menuItem.DataContext is not AsnDetailItem detailRow)
+                return;
+
+            try
+            {
+                if (detailRow.AsnDetailId > 0)
+                {
+                    var response = await _asnDetailService.DeleteAsnDetail(detailRow.AsnDetailId);
+                    if (!response.IsSuccess)
+                    {
+                        DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la partida.");
+                        return;
+                    }
+                }
+
+                DetailItems.Remove(detailRow);
+                EnsureTrailingEmptyDetailRow();
+                _selectedDetailItem = DetailItems.FirstOrDefault(item => !IsEmptyDetailRow(item)) ?? DetailItems.FirstOrDefault();
+                await LoadReceiptItemsForSelectedDetailAsync();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async void DeleteReceiptMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem menuItem || menuItem.DataContext is not AsnReceiptItem receiptRow)
+                return;
+
+            try
+            {
+                if (receiptRow.AsnReceiptDetailId > 0)
+                {
+                    var response = await _asnReceiptService.DeleteAsnReceipt(receiptRow.AsnReceiptDetailId);
+                    if (!response.IsSuccess)
+                    {
+                        DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la recepción.");
+                        return;
+                    }
+                }
+
+                ReceiptItems.Remove(receiptRow);
+                EnsureTrailingEmptyReceiptRow();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
         }
 
         private async Task LoadDetailLookupsAsync()
@@ -1001,16 +1087,10 @@ namespace LD.FormsX.Views.Dialogs
             {
                 ProductLookupItems.Clear();
 
-                if (cmbCliente.SelectedValue == null || cmbProyecto.SelectedValue == null)
+                if (_clientId <= 0 || _projectId <= 0)
                     return;
 
-                if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clientId) || clientId <= 0)
-                    return;
-
-                if (!int.TryParse(cmbProyecto.SelectedValue.ToString(), out int projectId) || projectId <= 0)
-                    return;
-
-                var response = await _productService.GetProductByClientId(clientId, projectId); // ajusta al método real
+                var response = await _productService.GetProductByClientId(_clientId, _projectId); // ajusta al método real
 
                 if (!response.IsSuccess || response.Data == null)
                     return;
