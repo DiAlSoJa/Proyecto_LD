@@ -29,7 +29,7 @@ namespace MauiAppLogin
             builder.Services.AddLDClient(options =>
             {
 
-                options.BaseUrl = "http://192.168.0.101:8050/api";
+                options.BaseUrl = "http://192.168.0.112:8050/api";
 
             });
 
@@ -64,6 +64,7 @@ namespace MauiAppLogin
             //viewmodels
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<DashboardViewModel>();
+            builder.Services.AddTransient<RegisterLicenseViewModel>();
 
 
             builder.Services.AddSingleton<AppShell>();

@@ -178,16 +178,14 @@ namespace MauiAppLogin.ViewModels
         {
             var opciones = new[] { "Carga", "Descarga" };
             var popup = new OptionPopup("Caseta", opciones);
+
             Application.Current!.MainPage!.ShowPopup(popup);
+
             var seleccion = await popup.Result;
+
             if (string.IsNullOrWhiteSpace(seleccion)) return;
-            switch (seleccion)
-            {
-                case "Carga":
-                case "Descarga":
-                    await Shell.Current.GoToAsync("RegisterLicense");
-                    break;
-            }
+
+            await Shell.Current.GoToAsync($"RegisterLicense?tipo={Uri.EscapeDataString(seleccion)}");
         }
 
         private async Task NavigateToMovement()
