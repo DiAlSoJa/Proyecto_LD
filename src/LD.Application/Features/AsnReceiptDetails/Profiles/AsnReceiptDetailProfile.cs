@@ -26,7 +26,9 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
                 .ForMember(dest => dest.LocationId, opt => opt.MapFrom(src => src.LocationId))
                 .ForMember(dest => dest.LotNumber, opt => opt.MapFrom(src => src.LotNumber))
                 .ForMember(dest => dest.ExpirationDate, opt => opt.MapFrom(src => src.ExpirationDate))
-                .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Reference));
+                .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Reference))
+                .ForMember(dest => dest.PurchaseOrder, opt => opt.MapFrom(src => src.PurchaseOrder))
+                .ForMember(dest => dest.CustomsDeclarationNumber, opt => opt.MapFrom(src => src.CustomsDeclarationNumber));
 
             CreateMap<AsnReceiptRequest, AsnReceiptDetail>()
                 .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.Ignore());

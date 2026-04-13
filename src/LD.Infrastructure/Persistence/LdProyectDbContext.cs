@@ -1,13 +1,14 @@
-﻿using LD.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
+using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD.Infrastructure.Persistence
 {
@@ -60,6 +61,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<ScanSaveType> ScanSaveTypes { get; set; }
         public DbSet<ScanType> ScanTypes { get; set; }
         public DbSet<SystemField> SystemFields { get; set; }
+        public DbSet<InventoryMovement> InventoryMovements { get; set; }
 
 
 
@@ -212,6 +214,14 @@ namespace LD.Infrastructure.Persistence
                 .HasOne(r => r.Product)
                 .WithMany()
                 .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+              
+
+            builder.Entity<InventoryMovement>()
+                .HasOne(x => x.Project)
+                .WithMany()
+                .HasForeignKey(x => x.ProjectId)
                 .OnDelete(DeleteBehavior.NoAction);
 
 

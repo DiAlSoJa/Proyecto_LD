@@ -27,5 +27,7 @@ namespace LD.Contracts.Requests
         public string? LotNumber { get; set; }
         public DateTime? ExpirationDate { get; set; }
         public string? Reference { get; set; }
+        public string? PurchaseOrder { get; set; }
+        public string? CustomsDeclarationNumber { get; set; }
     }
 }

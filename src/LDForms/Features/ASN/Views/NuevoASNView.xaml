@@ -535,7 +535,7 @@
                                 </DataGrid.RowHeaderStyle>
 
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="Número de Parte" Width="220">
+                                    <DataGridTemplateColumn Header="Número de Parte" Width="160">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding PartNumber}"
@@ -563,16 +563,16 @@
 
                                     <DataGridTextColumn Header="Descripción"
                                        Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="220"
+                                        Width="180"
                                         IsReadOnly="True"/>
 
 
 
                                     <DataGridTextColumn Header="Cantidad"
                                         Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="90"/>
+                                        Width="60"/>
 
-                                    <DataGridTemplateColumn Header="Status" Width="90">
+                                    <DataGridTemplateColumn Header="Status" Width="45">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Status}"
@@ -596,7 +596,7 @@
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
 
-                                    <DataGridTemplateColumn Header="SD" Width="100">
+                                    <DataGridTemplateColumn Header="SD" Width="40">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding SD}"
@@ -622,23 +622,23 @@
 
                                     <DataGridTextColumn Header="Número de Lote"
                                         Binding="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="140"/>
+                                        Width="100"/>
 
                                     <DataGridTextColumn Header="Fecha de Caducidad"
                                         Binding="{Binding ExpirationDate, UpdateSourceTrigger=PropertyChanged, StringFormat=dd/MM/yyyy}"
-                                        Width="150"/>
+                                        Width="120"/>
 
                                     <DataGridTextColumn Header="Referencia de Cliente"
                                         Binding="{Binding CustomerReference, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="160"/>
-
-                                    <DataGridTextColumn Header="Tipo de Cambio"
-                                        Binding="{Binding ExchangeRate, UpdateSourceTrigger=PropertyChanged}"
                                         Width="120"/>
+
+                                    <DataGridTextColumn Header="T.C."
+                                        Binding="{Binding ExchangeRate, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="40"/>
 
                                     <DataGridTextColumn Header="Orden de Compra"
                                         Binding="{Binding PurchaseOrder, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="140"/>
+                                        Width="120"/>
 
                                     <DataGridTextColumn Header="Pedimento"
                                         Binding="{Binding CustomsDeclarationNumber, UpdateSourceTrigger=PropertyChanged}"
@@ -686,15 +686,32 @@
                                     </Style>
                                 </DataGrid.RowHeaderStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="EstandarID" Binding="{Binding StandardId, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                                    <DataGridTextColumn Header="Número de Parte" Binding="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}" Width="180" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Descripción" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="220" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Estandar" Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                                    <DataGridTextColumn Header="Máxima" Binding="{Binding MaximumQuantity, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                                    <DataGridTextColumn Header="SD" Binding="{Binding SD, UpdateSourceTrigger=PropertyChanged}" Width="90" IsReadOnly="True"/>
+                                    
+                                    <DataGridTextColumn Header="Número de Parte" Binding="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}" Width="160" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Descripción" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="180" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Estandar" Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                                    <DataGridTextColumn Header="Máxima" Binding="{Binding MaximumQuantity, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                                    <DataGridTextColumn Header="SD" Binding="{Binding SD, UpdateSourceTrigger=PropertyChanged}" Width="60" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Recibida" Binding="{Binding ReceivedQuantity, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                                    <DataGridTextColumn Header="Status" Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                                    <DataGridTemplateColumn Header="Ubicación" Width="140">
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged}" Width="45"/>
+                                    <DataGridTemplateColumn Header="Split" Width="SizeToHeader">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="◫"
+                                                        Height="18"
+                                                        Width="18"
+                                                        Margin="1,2"
+                                                        Padding="0"
+                                                        Background="White"
+                                                        Foreground="#9CA3AF"
+                                                        BorderBrush="{StaticResource BorderBrushSoft}"
+                                                        BorderThickness="1"
+                                                        FontSize="9"
+                                                        Cursor="Hand"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Ubicación" Width="80">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding LocationCode}"
@@ -718,9 +735,12 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Número de Lote" Binding="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}" Width="140"/>
-                                    <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding ExpirationDate, UpdateSourceTrigger=PropertyChanged, StringFormat=dd/MM/yyyy}" Width="150"/>
+                                    <DataGridTextColumn Header="Número de Lote" Binding="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                                    <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding ExpirationDate, UpdateSourceTrigger=PropertyChanged, StringFormat=dd/MM/yyyy}" Width="120"/>
                                     <DataGridTextColumn Header="Referencia" Binding="{Binding Reference, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+                                    <DataGridTextColumn Header="Orden de compra" Binding="{Binding PurchaseOrder, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+                                    <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+                                    <DataGridTextColumn Header="EstandarID" Binding="{Binding StandardId, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Border>

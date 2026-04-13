@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using LD.Client.Services;
 using LD.Contracts.ASN;
 using LD.Contracts.InventaryStatus;
+using LD.Contracts.Product;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Contracts.Vehicle;
@@ -198,6 +199,8 @@ namespace LD.FormsX.Views.Dialogs
                         PartNumber = dto.PartNumber,
                         Description = dto.Description,
                         Quantity = dto.Quantity,
+                        StandardQuantity = dto.StandardQuantity,
+                        MaximumQuantity = dto.MaximumQuantity,
                         Status = dto.Status,
                         SD = dto.SD,
                         LotNumber = dto.LotNumber,
@@ -546,40 +549,14 @@ namespace LD.FormsX.Views.Dialogs
         {
             dgUbicacionesAsignadas.CommitEdit(DataGridEditingUnit.Cell, true);
             dgUbicacionesAsignadas.CommitEdit(DataGridEditingUnit.Row, true);
-            EnsureTrailingEmptyReceiptRow();
+            RemoveEmptyReceiptRows();
         }
 
-        private void EnsureTrailingEmptyReceiptRow()
+        private void RemoveEmptyReceiptRows()
         {
-            if (!ReceiptItems.Any())
-            {
-                var newRow = new AsnReceiptItem();
-                SeedReceiptRowFromSelectedDetail(newRow);
-                ReceiptItems.Add(newRow);
-                return;
-            }
-
             var emptyRows = ReceiptItems.Where(IsEmptyReceiptRow).ToList();
-            if (!emptyRows.Any())
-            {
-                var newRow = new AsnReceiptItem();
-                SeedReceiptRowFromSelectedDetail(newRow);
-                ReceiptItems.Add(newRow);
-                return;
-            }
-
-            for (var i = 0; i < emptyRows.Count - 1; i++)
-                ReceiptItems.Remove(emptyRows[i]);
-
-            var trailingEmptyRow = emptyRows.Last();
-            SeedReceiptRowFromSelectedDetail(trailingEmptyRow);
-
-            var trailingEmptyIndex = ReceiptItems.IndexOf(trailingEmptyRow);
-            if (trailingEmptyIndex >= 0 && trailingEmptyIndex != ReceiptItems.Count - 1)
-            {
-                ReceiptItems.RemoveAt(trailingEmptyIndex);
-                ReceiptItems.Add(trailingEmptyRow);
-            }
+            foreach (var emptyRow in emptyRows)
+                ReceiptItems.Remove(emptyRow);
         }
 
         private static bool IsDetailRowCompleted(AsnDetailItem detailRow)
@@ -590,16 +567,24 @@ namespace LD.FormsX.Views.Dialogs
 
         private static bool IsEmptyReceiptRow(AsnReceiptItem item)
         {
-            return item.StandardId == null
+            return item.AsnReceiptDetailId <= 0
+                && item.AsnDetailId <= 0
+                && item.ProductId == null
+                && string.IsNullOrWhiteSpace(item.PartNumber)
+                && string.IsNullOrWhiteSpace(item.Description)
+                && item.StandardId == null
                 && item.StandardQuantity == null
                 && item.MaximumQuantity == null
+                && string.IsNullOrWhiteSpace(item.SD)
                 && item.ReceivedQuantity == null
                 && string.IsNullOrWhiteSpace(item.Status)
                 && item.LocationId == null
                 && string.IsNullOrWhiteSpace(item.LocationCode)
                 && string.IsNullOrWhiteSpace(item.LotNumber)
                 && item.ExpirationDate == null
-                && string.IsNullOrWhiteSpace(item.Reference);
+                && string.IsNullOrWhiteSpace(item.Reference)
+                && string.IsNullOrWhiteSpace(item.PurchaseOrder)
+                && string.IsNullOrWhiteSpace(item.CustomsDeclarationNumber);
         }
 
         private bool IsReceiptRowCompleted(AsnReceiptItem receiptRow)
@@ -616,7 +601,48 @@ namespace LD.FormsX.Views.Dialogs
                 || !string.IsNullOrWhiteSpace(receiptRow.Status)
                 || !string.IsNullOrWhiteSpace(receiptRow.LotNumber)
                 || receiptRow.ExpirationDate.HasValue
-                || !string.IsNullOrWhiteSpace(receiptRow.Reference);
+                || !string.IsNullOrWhiteSpace(receiptRow.Reference)
+                || !string.IsNullOrWhiteSpace(receiptRow.PurchaseOrder)
+                || !string.IsNullOrWhiteSpace(receiptRow.CustomsDeclarationNumber);
+        }
+
+        private static void SyncReceiptRowFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow, int asnId)
+        {
+            receiptRow.AsnId = asnId;
+            receiptRow.AsnDetailId = detailRow.AsnDetailId;
+            receiptRow.ProductId = detailRow.ProductId;
+            receiptRow.PartNumber = detailRow.PartNumber;
+            receiptRow.Description = detailRow.Description;
+            receiptRow.StandardQuantity = detailRow.StandardQuantity;
+            receiptRow.MaximumQuantity = detailRow.MaximumQuantity;
+            receiptRow.ReceivedQuantity = detailRow.Quantity;
+            receiptRow.SD = detailRow.SD;
+            receiptRow.Status = detailRow.Status;
+            receiptRow.LotNumber = detailRow.LotNumber;
+            receiptRow.ExpirationDate = detailRow.ExpirationDate;
+            receiptRow.Reference = detailRow.CustomerReference;
+            receiptRow.PurchaseOrder = detailRow.PurchaseOrder;
+            receiptRow.CustomsDeclarationNumber = detailRow.CustomsDeclarationNumber;
+        }
+
+        private async Task SyncSingleReceiptFromDetailAsync(AsnDetailItem detailRow)
+        {
+            if (AsnSelected?.AsnId <= 0 || detailRow.AsnDetailId <= 0)
+                return;
+
+            if (!ReferenceEquals(_selectedDetailItem, detailRow))
+                return;
+
+            var receiptRows = ReceiptItems
+                .Where(item => !IsEmptyReceiptRow(item))
+                .ToList();
+
+            if (receiptRows.Count != 1)
+                return;
+
+            var receiptRow = receiptRows[0];
+            SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
+            await SaveReceiptRowAsync(receiptRow);
         }
 
         private async Task SaveDetailRowAsync(AsnDetailItem detailRow)
@@ -635,6 +661,7 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 detailRow.AsnId = AsnSelected!.AsnId;
+                var isNewDetail = detailRow.AsnDetailId <= 0;
 
                 var request = detailRow.ToRequest();
                 request.AsnId = AsnSelected.AsnId;
@@ -655,6 +682,11 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (detailRow.AsnDetailId <= 0 && int.TryParse(response.Data, out var asnDetailId) && asnDetailId > 0)
                     detailRow.AsnDetailId = asnDetailId;
+
+                if (isNewDetail && detailRow.AsnDetailId > 0)
+                    await EnsureInitialReceiptCreatedAsync(detailRow);
+
+                await SyncSingleReceiptFromDetailAsync(detailRow);
 
                 EnsureTrailingEmptyDetailRow();
             }
@@ -698,16 +730,10 @@ namespace LD.FormsX.Views.Dialogs
             ReceiptItems.Clear();
 
             if (_selectedDetailItem == null)
-            {
-                EnsureTrailingEmptyReceiptRow();
                 return;
-            }
 
             if (AsnSelected?.AsnId <= 0 || _selectedDetailItem.AsnDetailId <= 0)
-            {
-                EnsureTrailingEmptyReceiptRow();
                 return;
-            }
 
             var result = await _asnReceiptService.GetAsnReceipts();
             if (result.IsSuccess && result.Data != null)
@@ -720,7 +746,50 @@ namespace LD.FormsX.Views.Dialogs
                 }
             }
 
-            EnsureTrailingEmptyReceiptRow();
+            RemoveEmptyReceiptRows();
+        }
+
+        private async Task EnsureInitialReceiptCreatedAsync(AsnDetailItem detailRow)
+        {
+            if (AsnSelected?.AsnId <= 0 || detailRow.AsnDetailId <= 0)
+                return;
+
+            var receiptsResult = await _asnReceiptService.GetAsnReceipts();
+            if (!receiptsResult.IsSuccess)
+                return;
+
+            var existingReceipt = receiptsResult.Data?.Any(x => x.AsnDetailId == detailRow.AsnDetailId) == true;
+            if (existingReceipt)
+                return;
+
+            var receiptItem = new AsnReceiptItem();
+            receiptItem.ApplyDefaultsFromDetail(detailRow, AsnSelected.AsnId);
+            SyncReceiptRowFromDetail(receiptItem, detailRow, AsnSelected.AsnId);
+
+            var createResponse = await _asnReceiptService.CreateAsnReceipt(receiptItem.ToRequest());
+            Log.Information(
+                "Resultado EnsureInitialReceiptCreatedAsync. AsnDetailId: {AsnDetailId}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                detailRow.AsnDetailId, createResponse.IsSuccess, createResponse.Code, createResponse.Message, createResponse.Data);
+
+            if (!createResponse.IsSuccess)
+            {
+                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear la recepción inicial del ASN.");
+                return;
+            }
+
+            if (receiptItem.AsnReceiptDetailId <= 0
+                && int.TryParse(createResponse.Data, out var asnReceiptDetailId)
+                && asnReceiptDetailId > 0)
+            {
+                receiptItem.AsnReceiptDetailId = asnReceiptDetailId;
+            }
+
+            if (ReferenceEquals(_selectedDetailItem, detailRow))
+            {
+                ReceiptItems.Clear();
+                ReceiptItems.Add(receiptItem);
+                RemoveEmptyReceiptRows();
+            }
         }
 
         private async Task SaveReceiptRowAsync(AsnReceiptItem receiptRow)
@@ -738,7 +807,7 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.ApplyDefaultsFromDetail(detailRow!, AsnSelected!.AsnId);
             if (!IsReceiptRowCompleted(receiptRow))
             {
-                EnsureTrailingEmptyReceiptRow();
+                RemoveEmptyReceiptRows();
                 return;
             }
 
@@ -764,7 +833,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (receiptRow.AsnReceiptDetailId <= 0 && int.TryParse(response.Data, out var asnReceiptDetailId) && asnReceiptDetailId > 0)
                     receiptRow.AsnReceiptDetailId = asnReceiptDetailId;
 
-                EnsureTrailingEmptyReceiptRow();
+                RemoveEmptyReceiptRows();
             }
             catch (Exception ex)
             {
@@ -785,6 +854,7 @@ namespace LD.FormsX.Views.Dialogs
             for (var index = 0; index < detailRows.Count; index++)
             {
                 var row = detailRows[index];
+                var isNewDetail = row.AsnDetailId <= 0;
 
                 if (string.IsNullOrWhiteSpace(row.PartNumber))
                     throw new InvalidOperationException($"La partida {index + 1} debe tener número de parte.");
@@ -807,6 +877,9 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (row.AsnDetailId <= 0 && int.TryParse(response.Data, out var asnDetailId) && asnDetailId > 0)
                     row.AsnDetailId = asnDetailId;
+
+                if (isNewDetail && row.AsnDetailId > 0)
+                    await EnsureInitialReceiptCreatedAsync(row);
             }
         }
 
@@ -816,6 +889,8 @@ namespace LD.FormsX.Views.Dialogs
                 && string.IsNullOrWhiteSpace(item.PartNumber)
                 && string.IsNullOrWhiteSpace(item.Description)
                 && item.Quantity <= 0
+                && item.StandardQuantity == null
+                && item.MaximumQuantity == null
                 && string.IsNullOrWhiteSpace(item.Status)
                 && string.IsNullOrWhiteSpace(item.SD)
                 && string.IsNullOrWhiteSpace(item.LotNumber)
@@ -896,7 +971,6 @@ namespace LD.FormsX.Views.Dialogs
             var newRow = new AsnReceiptItem();
             SeedReceiptRowFromSelectedDetail(newRow);
             ReceiptItems.Add(newRow);
-            EnsureTrailingEmptyReceiptRow();
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -979,7 +1053,7 @@ namespace LD.FormsX.Views.Dialogs
                 }
 
                 ReceiptItems.Remove(receiptRow);
-                EnsureTrailingEmptyReceiptRow();
+                RemoveEmptyReceiptRows();
             }
             catch (Exception ex)
             {
@@ -1113,6 +1187,18 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
+        private static void ApplyProductLookupDataToDetailRow(InlineLookupEditor editor, AsnDetailItem detailRow)
+        {
+            if (editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not ProductAutocompleteDto product)
+                return;
+
+            detailRow.StandardQuantity = product.StandardPackageValue;
+            detailRow.MaximumQuantity = product.MaxUnitValue;
+        }
+
         private void InlineLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             try
@@ -1122,6 +1208,8 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (editor.DataContext is AsnDetailItem detailRow)
                 {
+                    ApplyProductLookupDataToDetailRow(editor, detailRow);
+
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         _detailGridNavigation.CommitCurrentEdit();

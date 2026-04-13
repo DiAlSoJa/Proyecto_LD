@@ -46,6 +46,20 @@ public class AsnDetailItem : INotifyPropertyChanged
         set { _quantity = value; OnPropertyChanged(nameof(Quantity)); }
     }
 
+    private decimal? _standardQuantity;
+    public decimal? StandardQuantity
+    {
+        get => _standardQuantity;
+        set { _standardQuantity = value; OnPropertyChanged(nameof(StandardQuantity)); }
+    }
+
+    private decimal? _maximumQuantity;
+    public decimal? MaximumQuantity
+    {
+        get => _maximumQuantity;
+        set { _maximumQuantity = value; OnPropertyChanged(nameof(MaximumQuantity)); }
+    }
+
     private string? _status;
     public string? Status
     {
@@ -118,6 +132,8 @@ public class AsnDetailItem : INotifyPropertyChanged
             PartNumber = this.PartNumber,
             Description = this.Description,
             Quantity = this.Quantity,
+            StandardQuantity = this.StandardQuantity,
+            MaximumQuantity = this.MaximumQuantity,
             Status = this.Status,
             SD = this.SD,
             LotNumber = this.LotNumber,
@@ -140,6 +156,8 @@ public class AsnDetailItem : INotifyPropertyChanged
             PartNumber = dto.PartNumber,
             Description = dto.Description,
             Quantity = dto.Quantity,
+            StandardQuantity = dto.StandardQuantity,
+            MaximumQuantity = dto.MaximumQuantity,
             Status = dto.Status,
             SD = dto.SD,
             LotNumber = dto.LotNumber,

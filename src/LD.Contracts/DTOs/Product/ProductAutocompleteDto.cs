@@ -18,6 +18,12 @@ namespace LD.Contracts.Product
         [DisplayName("Descripción")]
         public string Descripcion { get; set; } = string.Empty;
 
+        [DisplayName("Paquete estándar")]
+        public decimal? StandardPackageValue { get; set; }
+
+        [DisplayName("Unidad máxima")]
+        public decimal? MaxUnitValue { get; set; }
+
     }
 
 
