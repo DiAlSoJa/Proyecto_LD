@@ -625,6 +625,114 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.CustomsDeclarationNumber = detailRow.CustomsDeclarationNumber;
         }
 
+        private static AsnReceiptItem CloneReceiptRow(AsnReceiptItem source)
+        {
+            return new AsnReceiptItem
+            {
+                AsnReceiptDetailId = 0,
+                AsnId = source.AsnId,
+                AsnDetailId = source.AsnDetailId,
+                ProductId = source.ProductId,
+                StandardId = source.StandardId,
+                PartNumber = source.PartNumber,
+                Description = source.Description,
+                StandardQuantity = source.StandardQuantity,
+                MaximumQuantity = source.MaximumQuantity,
+                SD = source.SD,
+                ReceivedQuantity = source.ReceivedQuantity,
+                Status = source.Status,
+                LocationId = source.LocationId,
+                LocationCode = source.LocationCode,
+                LotNumber = source.LotNumber,
+                ExpirationDate = source.ExpirationDate,
+                Reference = source.Reference,
+                PurchaseOrder = source.PurchaseOrder,
+                CustomsDeclarationNumber = source.CustomsDeclarationNumber
+            };
+        }
+
+        private static List<decimal> BuildSplitQuantities(decimal receivedQuantity, decimal maximumQuantity)
+        {
+            var quantities = new List<decimal>();
+            var remaining = receivedQuantity;
+
+            while (remaining > maximumQuantity)
+            {
+                quantities.Add(maximumQuantity);
+                remaining -= maximumQuantity;
+            }
+
+            quantities.Add(remaining);
+            return quantities;
+        }
+
+        private static string BuildSplitConfirmationMessage(List<decimal> splitQuantities, decimal maximumQuantity)
+        {
+            if (splitQuantities.Count == 0)
+                return "No hay registros para generar.";
+
+            var fullChunks = splitQuantities.Count(x => x == maximumQuantity);
+            var remainder = splitQuantities.Last();
+
+            if (splitQuantities.Count == 1)
+                return $"¿Está seguro de generar 1 registro de {splitQuantities[0]:0.##}?";
+
+            if (remainder == maximumQuantity)
+                return $"¿Está seguro de generar {splitQuantities.Count} registros de {maximumQuantity:0.##}?";
+
+            if (fullChunks <= 0)
+                return $"¿Está seguro de generar {splitQuantities.Count} registros?";
+
+            return $"¿Está seguro de generar {splitQuantities.Count} registros: {fullChunks} de {maximumQuantity:0.##} y 1 de {remainder:0.##}?";
+        }
+
+        private async Task SplitReceiptRowAsync(AsnReceiptItem receiptRow)
+        {
+            CommitReceiptGridEdits();
+
+            var receivedQuantity = receiptRow.ReceivedQuantity ?? 0m;
+            var maximumQuantity = receiptRow.MaximumQuantity ?? 0m;
+
+            if (maximumQuantity <= 0)
+            {
+                DialogHelper.ShowError("La cantidad máxima debe ser mayor a cero para dividir el registro.");
+                return;
+            }
+
+            if (receivedQuantity <= maximumQuantity)
+            {
+                DialogHelper.ShowError("La cantidad recibida debe ser mayor a la máxima para poder dividir el registro.");
+                return;
+            }
+
+            var splitQuantities = BuildSplitQuantities(receivedQuantity, maximumQuantity);
+            var confirmationMessage = BuildSplitConfirmationMessage(splitQuantities, maximumQuantity);
+
+            var confirmResult = DialogHelper.ShowConfirm(
+                confirmationMessage,
+                "Confirmar split");
+
+            if (!confirmResult)
+                return;
+
+            var currentIndex = ReceiptItems.IndexOf(receiptRow);
+            if (currentIndex < 0)
+                return;
+
+            receiptRow.ReceivedQuantity = splitQuantities[0];
+            await SaveReceiptRowAsync(receiptRow);
+
+            for (var index = 1; index < splitQuantities.Count; index++)
+            {
+                var newRow = CloneReceiptRow(receiptRow);
+                newRow.ReceivedQuantity = splitQuantities[index];
+                ReceiptItems.Insert(currentIndex + index, newRow);
+                await SaveReceiptRowAsync(newRow);
+            }
+
+            dgUbicacionesAsignadas.Items.Refresh();
+        }
+
         private async Task SyncSingleReceiptFromDetailAsync(AsnDetailItem detailRow)
         {
             if (AsnSelected?.AsnId <= 0 || detailRow.AsnDetailId <= 0)
@@ -1310,6 +1418,24 @@ namespace LD.FormsX.Views.Dialogs
                     return;
 
                 e.Handled = TryMoveToNextReceiptRowOrAppend() || _receiptGridNavigation.HandleEnterKeyNavigation();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async void SplitReceiptButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is not Button button)
+                    return;
+
+                if (button.DataContext is not AsnReceiptItem receiptRow)
+                    return;
+
+                await SplitReceiptRowAsync(receiptRow);
             }
             catch (Exception ex)
             {

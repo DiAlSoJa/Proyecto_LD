@@ -707,6 +707,7 @@
                                                         BorderBrush="{StaticResource BorderBrushSoft}"
                                                         BorderThickness="1"
                                                         FontSize="9"
+                                                        Click="SplitReceiptButton_Click"
                                                         Cursor="Hand"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
