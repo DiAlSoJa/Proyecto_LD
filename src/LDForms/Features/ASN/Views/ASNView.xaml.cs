@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +17,9 @@ using System.Windows.Shapes;
 using LD.Client.Services;
 using LD.Contracts.ASN;
 using LD.Contracts.DTOs;
+using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
+using LD.FormsX.Model.Lookup;
 using LD.FormsX.Views.Dialogs;
 using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Ubicaciones;
@@ -26,7 +30,7 @@ namespace LD.FormsX.Views.ASN
     /// <summary>
     /// Lógica de interacción para ASNView.xaml
     /// </summary>
-    public partial class ASNView : UserControl
+    public partial class ASNView : UserControl, INotifyPropertyChanged
     {
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
@@ -43,6 +47,67 @@ namespace LD.FormsX.Views.ASN
         private List<AsnDto> _allAsns = new();
         private bool _cargandoCombos;
         private bool _loaded;
+        private int _selectedClientId;
+        private int _selectedProjectId;
+        private string _selectedClientText = string.Empty;
+        private string _selectedProjectText = string.Empty;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
+
+        public int SelectedClientId
+        {
+            get => _selectedClientId;
+            set
+            {
+                if (_selectedClientId == value)
+                    return;
+
+                _selectedClientId = value;
+                OnPropertyChanged(nameof(SelectedClientId));
+            }
+        }
+
+        public int SelectedProjectId
+        {
+            get => _selectedProjectId;
+            set
+            {
+                if (_selectedProjectId == value)
+                    return;
+
+                _selectedProjectId = value;
+                OnPropertyChanged(nameof(SelectedProjectId));
+            }
+        }
+
+        public string SelectedClientText
+        {
+            get => _selectedClientText;
+            set
+            {
+                if (_selectedClientText == value)
+                    return;
+
+                _selectedClientText = value;
+                OnPropertyChanged(nameof(SelectedClientText));
+            }
+        }
+
+        public string SelectedProjectText
+        {
+            get => _selectedProjectText;
+            set
+            {
+                if (_selectedProjectText == value)
+                    return;
+
+                _selectedProjectText = value;
+                OnPropertyChanged(nameof(SelectedProjectText));
+            }
+        }
 
         public ASNView(
             AsnService asnService,
@@ -52,6 +117,7 @@ namespace LD.FormsX.Views.ASN
             IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            DataContext = this;
             _asnService = asnService;
             _asnDetailService = asnDetailService;
             _asnReceiptService = asnReceiptService;
@@ -89,13 +155,14 @@ namespace LD.FormsX.Views.ASN
                 var clientes = await _lookupService.GetClientLookup();
                 if (clientes.IsSuccess && clientes.Data != null)
                 {
-                    cmbCliente.ItemsSource = clientes.Data;
-                    cmbCliente.DisplayMemberPath = "Value";
-                    cmbCliente.SelectedValuePath = "Key";
-                    cmbCliente.SelectedIndex = -1;
+                    ClientLookupItems.Clear();
+
+                    foreach (var item in clientes.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        ClientLookupItems.Add(item);
                 }
 
-                cmbProyecto.ItemsSource = null;
+                ClearProjectSelection();
+                ProjectLookupItems.Clear();
             }
             finally
             {
@@ -105,34 +172,30 @@ namespace LD.FormsX.Views.ASN
 
         private async Task SetCombosProjectsAsync(string projectSel = "")
         {
-            if (cmbCliente.SelectedValue == null)
+            if (SelectedClientId <= 0)
             {
-                cmbProyecto.ItemsSource = null;
+                ProjectLookupItems.Clear();
+                ClearProjectSelection();
                 return;
             }
 
-            if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
-            {
-                cmbProyecto.ItemsSource = null;
-                return;
-            }
-
-            var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
+            var proyectos = await _lookupService.GetProjectClientLookup(SelectedClientId);
 
             if (!proyectos.IsSuccess || proyectos.Data == null)
             {
-                cmbProyecto.ItemsSource = null;
+                ProjectLookupItems.Clear();
+                ClearProjectSelection();
                 return;
             }
 
-            cmbProyecto.DisplayMemberPath = "Value";
-            cmbProyecto.SelectedValuePath = "Key";
-            cmbProyecto.ItemsSource = proyectos.Data;
+            ProjectLookupItems.Clear();
+            foreach (var item in proyectos.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                ProjectLookupItems.Add(item);
 
             if (!string.IsNullOrWhiteSpace(projectSel))
-                cmbProyecto.SelectedValue = projectSel;
-            else if (proyectos.Data.Count > 1)
-                cmbProyecto.SelectedIndex = -1;
+                ApplyProjectSelection(projectSel);
+            else
+                ClearProjectSelection();
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -174,21 +237,18 @@ namespace LD.FormsX.Views.ASN
 
         private void AplicarFiltroAsn()
         {
-            var clienteSeleccionado = cmbCliente.SelectedItem as DropDownDto;
-            var proyectoSeleccionado = cmbProyecto.SelectedItem as DropDownDto;
-
             var filtered = _allAsns.AsEnumerable();
 
-            if (!string.IsNullOrWhiteSpace(clienteSeleccionado?.Value))
+            if (!string.IsNullOrWhiteSpace(SelectedClientText))
             {
                 filtered = filtered.Where(x =>
-                    string.Equals(x.Client?.Trim(), clienteSeleccionado.Value.Trim(), StringComparison.OrdinalIgnoreCase));
+                    string.Equals(x.Client?.Trim(), SelectedClientText.Trim(), StringComparison.OrdinalIgnoreCase));
             }
 
-            if (!string.IsNullOrWhiteSpace(proyectoSeleccionado?.Value))
+            if (!string.IsNullOrWhiteSpace(SelectedProjectText))
             {
                 filtered = filtered.Where(x =>
-                    string.Equals(x.Project?.Trim(), proyectoSeleccionado.Value.Trim(), StringComparison.OrdinalIgnoreCase));
+                    string.Equals(x.Project?.Trim(), SelectedProjectText.Trim(), StringComparison.OrdinalIgnoreCase));
             }
 
             _gridFilter.SetData(filtered.ToList());
@@ -255,17 +315,39 @@ namespace LD.FormsX.Views.ASN
 
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedClientId <= 0)
+            {
+                DialogHelper.ShowWarning("Selecciona un cliente.");
+                return;
+            }
+
+            if (SelectedProjectId <= 0)
+            {
+                DialogHelper.ShowWarning("Selecciona un proyecto.");
+                return;
+            }
+
             await CargarDatosConLoaderAsync("Trayendo ASN...");
         }
 
-        private async void cmbCliente_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void LookupCliente_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedClient)
+                return;
+
             if (_cargandoCombos)
                 return;
+
+            SelectedClientId = int.TryParse(selectedClient.Key, out var clientId) ? clientId : 0;
+            SelectedClientText = selectedClient.Value ?? string.Empty;
 
             try
             {
                 _cargandoCombos = true;
+                ClearProjectSelection();
                 await SetCombosProjectsAsync();
             }
             finally
@@ -276,10 +358,19 @@ namespace LD.FormsX.Views.ASN
             AplicarFiltroAsn();
         }
 
-        private void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedProject)
+                return;
+
             if (_cargandoCombos)
                 return;
+
+            SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
+            SelectedProjectText = selectedProject.Value ?? string.Empty;
 
             AplicarFiltroAsn();
         }
@@ -289,10 +380,10 @@ namespace LD.FormsX.Views.ASN
             var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetClientProjectContext(
-                int.TryParse(cmbCliente.SelectedValue?.ToString(), out var clientId) ? clientId : 0,
-                int.TryParse(cmbProyecto.SelectedValue?.ToString(), out var projectId) ? projectId : 0,
-                (cmbCliente.SelectedItem as DropDownDto)?.Value,
-                (cmbProyecto.SelectedItem as DropDownDto)?.Value);
+                SelectedClientId,
+                SelectedProjectId,
+                SelectedClientText,
+                SelectedProjectText);
 
             var result = dialog.ShowDialog();
 
@@ -302,6 +393,7 @@ namespace LD.FormsX.Views.ASN
                 _ = CargarDatosAsync();
             }
         }
+
         private void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedX is null)
@@ -320,13 +412,49 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
-        private void BtnRegistrarArribo_Click(object sender, RoutedEventArgs e) { }
-
         private void BtnConfirmarLlegada_Click(object sender, RoutedEventArgs e) { }
 
         private void BtnCancelar_Click(object sender, RoutedEventArgs e) { }
 
         private void BtnEscanear_Click(object sender, RoutedEventArgs e) { }
+
+        private static LookupItem ToLookupItem(DropDownDto item)
+        {
+            return new LookupItem
+            {
+                Id = int.TryParse(item.Key, out var value) ? value : 0,
+                Code = item.Value ?? string.Empty,
+                Description = item.Key ?? string.Empty,
+                Data = item
+            };
+        }
+
+        private void ApplyProjectSelection(string projectKey)
+        {
+            var projectLookup = ProjectLookupItems.FirstOrDefault(x =>
+                x.Data is DropDownDto dto && string.Equals(dto.Key, projectKey, StringComparison.OrdinalIgnoreCase));
+
+            if (projectLookup?.Data is not DropDownDto selectedProject)
+            {
+                ClearProjectSelection();
+                return;
+            }
+
+            SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
+            SelectedProjectText = selectedProject.Value ?? string.Empty;
+        }
+
+        private void ClearProjectSelection()
+        {
+            SelectedProjectId = 0;
+            SelectedProjectText = string.Empty;
+            lookupProyecto?.ClearSelection();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private async void dgASN_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

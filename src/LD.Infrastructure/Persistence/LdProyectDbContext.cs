@@ -357,6 +357,9 @@ namespace LD.Infrastructure.Persistence
 
                 // ASN (ModuleId = 7)
                 new Permission { PermissionId = 22, PermissionName = "Ver ASN", Key = "asn.read", ModuleId = 7 },
+                new Permission { PermissionId = 82, PermissionName = "Crear ASN", Key = "asn.create", ModuleId = 7 },
+                new Permission { PermissionId = 83, PermissionName = "Editar ASN", Key = "asn.update", ModuleId = 7 },
+                new Permission { PermissionId = 84, PermissionName = "Eliminar ASN", Key = "asn.delete", ModuleId = 7 },
 
                 // FORKLIFT CHECKLIST (ModuleId = 8)
                 new Permission { PermissionId = 23, PermissionName = "Ver checklist de montacargas",      Key = "forklift-checklist.read",    ModuleId = 8 },
@@ -473,7 +476,7 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<RolePermission>().HasData(
-                Enumerable.Range(1, 81)
+                Enumerable.Range(1, 84)
                     .Select(id => new RolePermission
                     {
                         RoleId        = superAdminRoleId,

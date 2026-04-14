@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:common="clr-namespace:LD.FormsX.Features.Common"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded">
 
@@ -60,13 +61,19 @@
                            VerticalAlignment="Center"
                            Margin="0,0,6,0"/>
 
-                <ComboBox x:Name="cmbCliente"
-                          Grid.Column="2"
-                          Height="28"
-                          Padding="4,0"
-                          FontSize="11"
-                          VerticalContentAlignment="Center"
-                          SelectionChanged="cmbCliente_SelectionChanged"/>
+                <common:InlineLookupEditor x:Name="lookupCliente"
+                                           Grid.Column="2"
+                                           Tag="Cliente|Clave"
+                                           ItemsSource="{Binding ClientLookupItems}"
+                                           DisplayMemberPath="Code"
+                                           SearchMemberPaths="Code,Description"
+                                           SelectedCode="{Binding SelectedClientText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           SelectedId="{Binding SelectedClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           RequireSelectionMatch="True"
+                                           MaxResults="12"
+                                           OpenDropDownOnLoad="False"
+                                           SelectAllTextOnLoad="False"
+                                           SelectionConfirmed="LookupCliente_SelectionConfirmed"/>
 
                 <TextBlock Grid.Column="4"
                            Text="Proyecto:"
@@ -75,13 +82,19 @@
                            VerticalAlignment="Center"
                            Margin="0,0,6,0"/>
 
-                <ComboBox x:Name="cmbProyecto"
-                          Grid.Column="5"
-                          Height="28"
-                          Padding="4,0"
-                          FontSize="11"
-                          VerticalContentAlignment="Center"
-                          SelectionChanged="cmbProyecto_SelectionChanged"/>
+                <common:InlineLookupEditor x:Name="lookupProyecto"
+                                           Grid.Column="5"
+                                           Tag="Proyecto|Clave"
+                                           ItemsSource="{Binding ProjectLookupItems}"
+                                           DisplayMemberPath="Code"
+                                           SearchMemberPaths="Code,Description"
+                                           SelectedCode="{Binding SelectedProjectText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           SelectedId="{Binding SelectedProjectId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           RequireSelectionMatch="True"
+                                           MaxResults="12"
+                                           OpenDropDownOnLoad="False"
+                                           SelectAllTextOnLoad="False"
+                                           SelectionConfirmed="LookupProyecto_SelectionConfirmed"/>
 
                <Button x:Name="BtnActualizar"
 		            Grid.Column="6"
@@ -184,41 +197,8 @@
                 </Button>
                 
 
-                <Button x:Name="btnRegistrar"
-	                Grid.Column="10"
-	                Height="28"
-	                MinWidth="102"
-	                Padding="6,0"
-	                Click="BtnRegistrarArribo_Click"
-	                Background="#F3F4F6"
-	                Foreground="#374151"
-	                BorderBrush="#D1D5DB"
-	                BorderThickness="1"
-	                Cursor="Hand">
-
-	                <Button.Resources>
-		                <Style TargetType="Border">
-			                <Setter Property="CornerRadius" Value="6"/>
-		                </Style>
-	                </Button.Resources>
-
-	                <StackPanel Orientation="Horizontal"
-		                VerticalAlignment="Center"
-		                HorizontalAlignment="Center">
-
-		                <TextBlock FontFamily="Segoe MDL2 Asssets"
-		                   Text="&#xE710;"
-		                   Foreground="#10B981"
-		                   Margin="0,0,4,0"
-		                   FontSize="12"/>
-
-		                <TextBlock Text="Registrar Arribo"
-                                   FontSize="11"/>
-	                </StackPanel>
-                </Button>
-
                 <Button x:Name="btnConfirmarLlegada"
-	                Grid.Column="11"
+	                Grid.Column="10"
 	                Height="28"
 	                MinWidth="106"
 	                Padding="6,0"
@@ -245,7 +225,7 @@
 		                   Margin="0,0,4,0"
 		                   FontSize="12"/>
 
-		                <TextBlock Text="Confirmar Llegada"
+		                <TextBlock Text="Confirmar Entrada"
                                    FontSize="11"/>
 	                </StackPanel>
                 </Button>
