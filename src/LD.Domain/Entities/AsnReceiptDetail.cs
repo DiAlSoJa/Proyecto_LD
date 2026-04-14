@@ -51,6 +51,14 @@ namespace LD.Domain.Entities
         [MaxLength(100)]
         public string? Reference { get; set; }
 
+        [MaxLength(50)]
+        public string? PurchaseOrder { get; set; }
+
+        [MaxLength(50)]
+        public string? CustomsDeclarationNumber { get; set; }
+        [MaxLength(30)]
+        public string? StatusLine { get; set; }
+
         public AsnDetail? AsnDetail { get; set; }
         public Product? Product { get; set; }
         public Location? Location { get; set; }

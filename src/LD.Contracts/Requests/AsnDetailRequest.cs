@@ -23,5 +23,7 @@ namespace LD.Contracts.Requests
 
         public string? PurchaseOrder { get; set; }
         public string? CustomsDeclarationNumber { get; set; }
+        public decimal? StandardQuantity { get; set; }
+        public decimal? MaximumQuantity { get; set; }
     }
 }

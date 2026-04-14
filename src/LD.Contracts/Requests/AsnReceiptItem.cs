@@ -124,6 +124,20 @@ public class AsnReceiptItem : INotifyPropertyChanged
         set { _reference = value; OnPropertyChanged(nameof(Reference)); }
     }
 
+    private string? _purchaseOrder;
+    public string? PurchaseOrder
+    {
+        get => _purchaseOrder;
+        set { _purchaseOrder = value; OnPropertyChanged(nameof(PurchaseOrder)); }
+    }
+
+    private string? _customsDeclarationNumber;
+    public string? CustomsDeclarationNumber
+    {
+        get => _customsDeclarationNumber;
+        set { _customsDeclarationNumber = value; OnPropertyChanged(nameof(CustomsDeclarationNumber)); }
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public void ApplyDefaultsFromDetail(AsnDetailItem detailItem, int asnId)
@@ -140,6 +154,15 @@ public class AsnReceiptItem : INotifyPropertyChanged
 
         if (string.IsNullOrWhiteSpace(SD))
             SD = detailItem.SD;
+
+        if (string.IsNullOrWhiteSpace(Reference))
+            Reference = detailItem.CustomerReference;
+
+        if (string.IsNullOrWhiteSpace(PurchaseOrder))
+            PurchaseOrder = detailItem.PurchaseOrder;
+
+        if (string.IsNullOrWhiteSpace(CustomsDeclarationNumber))
+            CustomsDeclarationNumber = detailItem.CustomsDeclarationNumber;
     }
 
     public AsnReceiptRequest ToRequest()
@@ -161,7 +184,9 @@ public class AsnReceiptItem : INotifyPropertyChanged
             LocationCode = LocationCode,
             LotNumber = LotNumber,
             ExpirationDate = ExpirationDate,
-            Reference = Reference
+            Reference = Reference,
+            PurchaseOrder = PurchaseOrder,
+            CustomsDeclarationNumber = CustomsDeclarationNumber
         };
     }
 
@@ -184,7 +209,9 @@ public class AsnReceiptItem : INotifyPropertyChanged
             LocationCode = dto.LocationCode,
             LotNumber = dto.LotNumber,
             ExpirationDate = dto.ExpirationDate,
-            Reference = dto.Reference
+            Reference = dto.Reference,
+            PurchaseOrder = dto.PurchaseOrder,
+            CustomsDeclarationNumber = dto.CustomsDeclarationNumber
         };
     }
 

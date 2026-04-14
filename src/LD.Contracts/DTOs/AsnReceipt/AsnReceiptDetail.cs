@@ -52,5 +52,11 @@ namespace LD.Contracts.ASN
 
         [DisplayName("Referencia")]
         public string Reference { get; set; } = string.Empty;
+
+        [DisplayName("Orden de Compra")]
+        public string PurchaseOrder { get; set; } = string.Empty;
+
+        [DisplayName("Pedimento")]
+        public string CustomsDeclarationNumber { get; set; } = string.Empty;
     }
 }

@@ -40,6 +40,9 @@ public static class PermissionKeys
 
     // MOVEMENTS
     public const string Movement_View = "movements.read";
+    public const string Movement_Create = "movements.create";
+    public const string Movement_Update = "movements.update";
+    public const string Movement_Delete = "movements.delete";
 
     // ASN
     public const string Asn_View   = "asn.read";

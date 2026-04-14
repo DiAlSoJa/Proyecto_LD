@@ -47,7 +47,11 @@ namespace LD.Domain.Entities
 
         [MaxLength(50)]
         public string? CustomsDeclarationNumber { get; set; }
+        public decimal? StandardQuantity { get; set; }
 
+        public decimal? MaximumQuantity { get; set; }
+        [MaxLength(30)]
+        public string? StatusLine { get; set; }
         public Asn? Asn { get; set; }
         public Product? Product { get; set; }
 

@@ -83,7 +83,11 @@ namespace LD.Application.Features.Product.Profiles
              .ForMember(dest => dest.NumeroParte,
                  opt => opt.MapFrom(src => src.PartNumber))
              .ForMember(dest => dest.Descripcion,
-                 opt => opt.MapFrom(src => src.Description));
+                 opt => opt.MapFrom(src => src.Description))
+             .ForMember(dest => dest.StandardPackageValue,
+                 opt => opt.MapFrom(src => src.StandardPackageValue))
+             .ForMember(dest => dest.MaxUnitValue,
+                 opt => opt.MapFrom(src => src.MaxUnitValue));
 
 
         }

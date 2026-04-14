@@ -98,12 +98,28 @@ namespace LD.FormsX.Features.Common
                 nameof(SelectedCode),
                 typeof(string),
                 typeof(InlineLookupEditor),
-                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(
+                    string.Empty,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    OnSelectedCodeChanged));
 
         public string SelectedCode
         {
             get => (string)GetValue(SelectedCodeProperty);
             set => SetValue(SelectedCodeProperty, value);
+        }
+
+        private static void OnSelectedCodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not InlineLookupEditor control || !control._loadedOnce)
+                return;
+
+            var newValue = e.NewValue?.ToString() ?? string.Empty;
+            if (string.Equals(control.txtLookup.Text, newValue, StringComparison.Ordinal))
+                return;
+
+            control.SetEditorText(newValue, false);
+            control.ApplyFilter(newValue);
         }
 
         public static readonly DependencyProperty SelectedDescriptionProperty =
@@ -196,12 +212,12 @@ namespace LD.FormsX.Features.Common
             {
                 var initialValue = !string.IsNullOrWhiteSpace(SelectedCode) ? SelectedCode : InitialText;
                 SetEditorText(initialValue ?? string.Empty, SelectAllTextOnLoad);
+                ApplyHeadersFromTag();
                 ApplyFilter(txtLookup.Text);
 
                 if (OpenDropDownOnLoad)
                     popupLookup.IsOpen = true;
 
-                txtLookup.Focus();
                 _loadedOnce = true;
             }), DispatcherPriority.Background);
         }
@@ -215,6 +231,12 @@ namespace LD.FormsX.Features.Common
 
             if (!popupLookup.IsOpen)
                 popupLookup.IsOpen = true;
+        }
+
+        private void txtLookup_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            ApplyFilter(txtLookup.Text);
+            popupLookup.IsOpen = true;
         }
 
         private void txtLookup_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -275,7 +297,12 @@ namespace LD.FormsX.Features.Common
             base.OnLostKeyboardFocus(e);
 
             if (!IsKeyboardFocusWithin)
+            {
+                if (RequireSelectionMatch)
+                    RestoreValidSelectionText();
+
                 popupLookup.IsOpen = false;
+            }
         }
 
         private void ApplyFilter(string text)
@@ -322,7 +349,10 @@ namespace LD.FormsX.Features.Common
             if (lstLookup.SelectedItem == null)
             {
                 if (RequireSelectionMatch)
+                {
+                    RestoreValidSelectionText();
                     return false;
+                }
 
                 CommitFreeTextValue(raiseEvent);
                 return true;
@@ -359,6 +389,37 @@ namespace LD.FormsX.Features.Common
             popupLookup.IsOpen = false;
             if (raiseEvent)
                 RaiseEvent(new RoutedEventArgs(SelectionConfirmedEvent, this));
+        }
+
+        private void RestoreValidSelectionText()
+        {
+            if (SelectedLookupItem is LookupItem lookupItem)
+            {
+                SelectedId = lookupItem.Id;
+                SelectedCode = lookupItem.Code;
+                SelectedDescription = lookupItem.Description;
+                SetEditorText(lookupItem.Code, false);
+                return;
+            }
+
+            SelectedId = 0;
+            SelectedCode = string.Empty;
+            SelectedDescription = string.Empty;
+            SetEditorText(string.Empty, false);
+        }
+
+        private void ApplyHeadersFromTag()
+        {
+            var tagValue = Tag?.ToString() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(tagValue))
+                return;
+
+            var parts = tagValue.Split('|');
+            if (parts.Length > 0 && !string.IsNullOrWhiteSpace(parts[0]))
+                txtPrimaryHeader.Text = parts[0];
+
+            if (parts.Length > 1 && !string.IsNullOrWhiteSpace(parts[1]))
+                txtSecondaryHeader.Text = parts[1];
         }
 
         private void SetEditorText(string text, bool selectAll)
@@ -421,6 +482,17 @@ namespace LD.FormsX.Features.Common
             txtLookup.Focus();
             txtLookup.SelectAll();
             Keyboard.Focus(txtLookup);
+        }
+
+        public void ClearSelection()
+        {
+            SelectedLookupItem = null;
+            SelectedId = 0;
+            SelectedCode = string.Empty;
+            SelectedDescription = string.Empty;
+            SetEditorText(string.Empty, false);
+            ApplyFilter(string.Empty);
+            popupLookup.IsOpen = false;
         }
     }
 }

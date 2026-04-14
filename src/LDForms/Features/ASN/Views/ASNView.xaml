@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:common="clr-namespace:LD.FormsX.Features.Common"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded">
 
@@ -28,18 +29,19 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="58"/>
-                    <ColumnDefinition Width="135"/>
+                    <ColumnDefinition Width="165"/>
                     <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="65"/>
-                    <ColumnDefinition Width="135"/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="108"/>
+                    <ColumnDefinition Width="165"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="108"/>
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="112"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical"
@@ -59,13 +61,19 @@
                            VerticalAlignment="Center"
                            Margin="0,0,6,0"/>
 
-                <ComboBox x:Name="cmbCliente"
-                          Grid.Column="2"
-                          Height="28"
-                          Padding="4,0"
-                          FontSize="11"
-                          VerticalContentAlignment="Center"
-                          SelectionChanged="cmbCliente_SelectionChanged"/>
+                <common:InlineLookupEditor x:Name="lookupCliente"
+                                           Grid.Column="2"
+                                           Tag="Cliente|Clave"
+                                           ItemsSource="{Binding ClientLookupItems}"
+                                           DisplayMemberPath="Code"
+                                           SearchMemberPaths="Code,Description"
+                                           SelectedCode="{Binding SelectedClientText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           SelectedId="{Binding SelectedClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           RequireSelectionMatch="True"
+                                           MaxResults="12"
+                                           OpenDropDownOnLoad="False"
+                                           SelectAllTextOnLoad="False"
+                                           SelectionConfirmed="LookupCliente_SelectionConfirmed"/>
 
                 <TextBlock Grid.Column="4"
                            Text="Proyecto:"
@@ -74,18 +82,25 @@
                            VerticalAlignment="Center"
                            Margin="0,0,6,0"/>
 
-                <ComboBox x:Name="cmbProyecto"
-                          Grid.Column="5"
-                          Height="28"
-                          Padding="4,0"
-                          FontSize="11"
-                          VerticalContentAlignment="Center"
-                          SelectionChanged="cmbProyecto_SelectionChanged"/>
+                <common:InlineLookupEditor x:Name="lookupProyecto"
+                                           Grid.Column="5"
+                                           Tag="Proyecto|Clave"
+                                           ItemsSource="{Binding ProjectLookupItems}"
+                                           DisplayMemberPath="Code"
+                                           SearchMemberPaths="Code,Description"
+                                           SelectedCode="{Binding SelectedProjectText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           SelectedId="{Binding SelectedProjectId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           RequireSelectionMatch="True"
+                                           MaxResults="12"
+                                           OpenDropDownOnLoad="False"
+                                           SelectAllTextOnLoad="False"
+                                           SelectionConfirmed="LookupProyecto_SelectionConfirmed"/>
 
                <Button x:Name="BtnActualizar"
-		            Grid.Column="7"
-		            Height="32"
-		            Padding="8,0"
+		            Grid.Column="6"
+		            Height="28"
+		            MinWidth="68"
+		            Padding="6,0"
 		            Click="BtnActualizar_Click"
 		            Background="#F3F4F6"
 		            Foreground="#374151"
@@ -106,7 +121,7 @@
 		            <TextBlock FontFamily="Segoe MDL2 Assets"
 		               Text="&#xE895;"
 		               Foreground="#10B981"
-		               Margin="0,0,5,0"
+		               Margin="0,0,4,0"
 		               FontSize="12"/>
 
 		            <TextBlock Text="Actualizar"
@@ -116,9 +131,10 @@
                 
 
                 <Button x:Name="btnNuevo"
-	            Grid.Column="9"
-	            Height="32"
-	            Padding="8,0"
+	            Grid.Column="8"
+	            Height="28"
+	            MinWidth="68"
+	            Padding="6,0"
 	            Click="BtnNuevoASN_Click"
 	            Background="#F3F4F6"
 	            Foreground="#374151"
@@ -139,18 +155,19 @@
 		            <TextBlock FontFamily="Segoe MDL2 Assets"
 		                Text="&#xE710;"
 		                Foreground="#2563EB"
-		                Margin="0,0,5,0"
+		                Margin="0,0,4,0"
 		                FontSize="12"/>
 
-		            <TextBlock Text="Nuevo ASN"
+		            <TextBlock Text="Nuevo"
                                FontSize="11"/>
 	            </StackPanel>
             </Button>
 
                 <Button x:Name="btnEditar"
-                    Grid.Column="11"
-                    Height="32"
-                    Padding="8,0"
+                    Grid.Column="9"
+                    Height="28"
+                    MinWidth="60"
+                    Padding="6,0"
                     Click="BtnEditar_Click"
                     Background="#F3F4F6"
                     Foreground="#374151"
@@ -171,7 +188,7 @@
                         <TextBlock FontFamily="Segoe MDL2 Assets"
             Text="&#xE70F;"
             Foreground="#F59E0B"
-            Margin="0,0,5,0"
+            Margin="0,0,4,0"
             FontSize="12"/>
 
                         <TextBlock Text="Editar"
@@ -180,11 +197,12 @@
                 </Button>
                 
 
-                <Button x:Name="btnRegistrar"
-	                Grid.Column="13"
-	                Height="32"
-	                Padding="8,0"
-	                Click="BtnRegistrarArribo_Click"
+                <Button x:Name="btnConfirmarLlegada"
+	                Grid.Column="10"
+	                Height="28"
+	                MinWidth="106"
+	                Padding="6,0"
+	                Click="BtnConfirmarLlegada_Click"
 	                Background="#F3F4F6"
 	                Foreground="#374151"
 	                BorderBrush="#D1D5DB"
@@ -201,13 +219,46 @@
 		                VerticalAlignment="Center"
 		                HorizontalAlignment="Center">
 
-		                <TextBlock FontFamily="Segoe MDL2 Asssets"
-		                   Text="&#xE710;"
-		                   Foreground="#10B981"
-		                   Margin="0,0,5,0"
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE73E;"
+		                   Foreground="#2563EB"
+		                   Margin="0,0,4,0"
 		                   FontSize="12"/>
 
-		                <TextBlock Text="Registrar Arribo"
+		                <TextBlock Text="Confirmar Entrada"
+                                   FontSize="11"/>
+	                </StackPanel>
+                </Button>
+
+                <Button x:Name="btnCancelar"
+	                Grid.Column="14"
+	                Height="28"
+	                MinWidth="72"
+	                Padding="6,0"
+	                Click="BtnCancelar_Click"
+	                Background="#F3F4F6"
+	                Foreground="#374151"
+	                BorderBrush="#D1D5DB"
+	                BorderThickness="1"
+	                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE711;"
+		                   Foreground="#DC2626"
+		                   Margin="0,0,4,0"
+		                   FontSize="12"/>
+
+		                <TextBlock Text="Cancelar"
                                    FontSize="11"/>
 	                </StackPanel>
                 </Button>
@@ -243,9 +294,9 @@
                                   GridLinesVisibility="Vertical"
                                   AlternatingRowBackground="#F8FAFC"
                                   AlternationCount="2"
-                                  RowHeight="28"
-                                  ColumnHeaderHeight="40"
-                                  FontSize="12"
+                                  RowHeight="26"
+                                  ColumnHeaderHeight="32"
+                                  FontSize="11"
                                   VerticalGridLinesBrush="#D9D9D9"
                                   HorizontalGridLinesBrush="#E4E8EE"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"

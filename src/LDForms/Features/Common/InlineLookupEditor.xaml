@@ -11,6 +11,7 @@
                  Padding="4,2"
                  VerticalContentAlignment="Center"
                  Loaded="txtLookup_Loaded"
+                 GotKeyboardFocus="txtLookup_GotKeyboardFocus"
                  TextChanged="txtLookup_TextChanged"
                  PreviewKeyDown="txtLookup_PreviewKeyDown"/>
 
@@ -38,13 +39,15 @@
                             <ColumnDefinition Width="16"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
+                        <TextBlock x:Name="txtPrimaryHeader"
+                                   Grid.Column="0"
                                    Margin="6,0,0,0"
                                    VerticalAlignment="Center"
                                    Foreground="#334155"
                                    FontWeight="SemiBold"
                                    Text="Numero de parte"/>
-                        <TextBlock Grid.Column="2"
+                        <TextBlock x:Name="txtSecondaryHeader"
+                                   Grid.Column="2"
                                    Margin="6,0,0,0"
                                    VerticalAlignment="Center"
                                    Foreground="#334155"

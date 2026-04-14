@@ -1,13 +1,14 @@
-﻿using LD.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
+using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD.Infrastructure.Persistence
 {
@@ -62,6 +63,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<ScanSaveType> ScanSaveTypes { get; set; }
         public DbSet<ScanType> ScanTypes { get; set; }
         public DbSet<SystemField> SystemFields { get; set; }
+        public DbSet<InventoryMovement> InventoryMovements { get; set; }
 
 
 
@@ -216,6 +218,14 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+              
+
+            builder.Entity<InventoryMovement>()
+                .HasOne(x => x.Project)
+                .WithMany()
+                .HasForeignKey(x => x.ProjectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.Entity<AsnReceiptDetail>()
                 .HasOne(r => r.Location)
@@ -349,6 +359,9 @@ namespace LD.Infrastructure.Persistence
 
                 // ASN (ModuleId = 7)
                 new Permission { PermissionId = 22, PermissionName = "Ver ASN", Key = "asn.read", ModuleId = 7 },
+                new Permission { PermissionId = 82, PermissionName = "Crear ASN", Key = "asn.create", ModuleId = 7 },
+                new Permission { PermissionId = 83, PermissionName = "Editar ASN", Key = "asn.update", ModuleId = 7 },
+                new Permission { PermissionId = 84, PermissionName = "Eliminar ASN", Key = "asn.delete", ModuleId = 7 },
 
                 // FORKLIFT CHECKLIST (ModuleId = 8)
                 new Permission { PermissionId = 23, PermissionName = "Ver checklist de montacargas",      Key = "forklift-checklist.read",    ModuleId = 8 },
@@ -465,7 +478,7 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<RolePermission>().HasData(
-                Enumerable.Range(1, 81)
+                Enumerable.Range(1, 84)
                     .Select(id => new RolePermission
                     {
                         RoleId        = superAdminRoleId,
