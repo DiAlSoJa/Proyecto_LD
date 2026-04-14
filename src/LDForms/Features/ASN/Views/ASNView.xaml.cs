@@ -322,6 +322,10 @@ namespace LD.FormsX.Views.ASN
 
         private void BtnRegistrarArribo_Click(object sender, RoutedEventArgs e) { }
 
+        private void BtnConfirmarLlegada_Click(object sender, RoutedEventArgs e) { }
+
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e) { }
+
         private void BtnEscanear_Click(object sender, RoutedEventArgs e) { }
 
         private async void dgASN_SelectionChanged(object sender, SelectionChangedEventArgs e)

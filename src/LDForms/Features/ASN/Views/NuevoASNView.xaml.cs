@@ -27,6 +27,9 @@ namespace LD.FormsX.Views.Dialogs
 {
     public partial class NuevoASNView : Window
     {
+        private const string DefaultAsnStatus = "Creado";
+        private const string DefaultAsnDetailStatus = "Capturando";
+
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
         private readonly AsnReceiptService _asnReceiptService;
@@ -92,6 +95,14 @@ namespace LD.FormsX.Views.Dialogs
             _clientName = clientName?.Trim() ?? string.Empty;
             _projectName = projectName?.Trim() ?? string.Empty;
             UpdateWindowTitle();
+
+            if (IsLoaded)
+            {
+                _ = Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await LoadProductsForSelectedClientProjectAsync();
+                }), DispatcherPriority.Background);
+            }
         }
 
         private void UpdateWindowTitle()
@@ -242,6 +253,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 await LoadDetailLookupsAsync();
                 await LoadLocationLookupAsync();
+                await LoadProductsForSelectedClientProjectAsync();
 
                 if (AsnSelected != null)
                 {
@@ -422,6 +434,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task<ApiResponseDto<string>> SaveAsn(AsnRequest request)
         {
+            if (AsnSelected == null && string.IsNullOrWhiteSpace(request.Status))
+                request.Status = DefaultAsnStatus;
+
             return AsnSelected != null
                 ? await EditAsn(AsnSelected.AsnId, request)
                 : await CreateASN(request);
@@ -771,6 +786,9 @@ namespace LD.FormsX.Views.Dialogs
                 detailRow.AsnId = AsnSelected!.AsnId;
                 var isNewDetail = detailRow.AsnDetailId <= 0;
 
+                if (isNewDetail && string.IsNullOrWhiteSpace(detailRow.Status))
+                    detailRow.Status = DefaultAsnDetailStatus;
+
                 var request = detailRow.ToRequest();
                 request.AsnId = AsnSelected.AsnId;
 
@@ -969,6 +987,9 @@ namespace LD.FormsX.Views.Dialogs
 
                 row.AsnId = asnId;
 
+                if (isNewDetail && string.IsNullOrWhiteSpace(row.Status))
+                    row.Status = DefaultAsnDetailStatus;
+
                 var request = row.ToRequest();
                 request.AsnId = asnId;
 
@@ -1091,7 +1112,8 @@ namespace LD.FormsX.Views.Dialogs
 
         private void dgDetail_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
-
+            if (e.NewItem is AsnDetailItem detailRow && string.IsNullOrWhiteSpace(detailRow.Status))
+                detailRow.Status = DefaultAsnDetailStatus;
         }
 
         private void DetailRowHeader_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
