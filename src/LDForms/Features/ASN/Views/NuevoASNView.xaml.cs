@@ -28,7 +28,7 @@ namespace LD.FormsX.Views.Dialogs
     public partial class NuevoASNView : Window
     {
         private const string DefaultAsnStatus = "Creado";
-        private const string DefaultAsnDetailStatus = "Capturando";
+        
 
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
@@ -786,8 +786,6 @@ namespace LD.FormsX.Views.Dialogs
                 detailRow.AsnId = AsnSelected!.AsnId;
                 var isNewDetail = detailRow.AsnDetailId <= 0;
 
-                if (isNewDetail && string.IsNullOrWhiteSpace(detailRow.Status))
-                    detailRow.Status = DefaultAsnDetailStatus;
 
                 var request = detailRow.ToRequest();
                 request.AsnId = AsnSelected.AsnId;
@@ -987,8 +985,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 row.AsnId = asnId;
 
-                if (isNewDetail && string.IsNullOrWhiteSpace(row.Status))
-                    row.Status = DefaultAsnDetailStatus;
+     
 
                 var request = row.ToRequest();
                 request.AsnId = asnId;
@@ -1112,8 +1109,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private void dgDetail_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
-            if (e.NewItem is AsnDetailItem detailRow && string.IsNullOrWhiteSpace(detailRow.Status))
-                detailRow.Status = DefaultAsnDetailStatus;
+           
         }
 
         private void DetailRowHeader_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

@@ -216,7 +216,13 @@ namespace LD.FormsX.Features.Common
                 ApplyFilter(txtLookup.Text);
 
                 if (OpenDropDownOnLoad)
+                {
                     popupLookup.IsOpen = true;
+                    txtLookup.Focus();
+
+                    if (SelectAllTextOnLoad)
+                        txtLookup.SelectAll();
+                }
 
                 _loadedOnce = true;
             }), DispatcherPriority.Background);
