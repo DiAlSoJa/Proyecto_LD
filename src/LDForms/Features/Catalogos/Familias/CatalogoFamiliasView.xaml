@@ -7,6 +7,10 @@
              
              Loaded="UserControl_Loaded">
 
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -57,6 +61,7 @@
 	                Height="38"
 	                Padding="12,0"
 	                Click="BtnNuevo_Click"
+                        Visibility="{Binding CanCreate, Converter={StaticResource BoolToVis}}"
 	                Background="#F3F4F6"
 	                Foreground="#374151"
 	                BorderBrush="#D1D5DB"
@@ -88,6 +93,7 @@
 	                Height="38"
 	                Padding="12,0"
 	                Click="BtnEditar_Click"
+                        Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}"
 	                Background="#F3F4F6"
 	                Foreground="#374151"
 	                BorderBrush="#D1D5DB"
@@ -119,6 +125,7 @@
 		                Height="38"
 		                Padding="12,0"
 		                Click="BtnActualizar_Click"
+                        Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
 		                Background="#F3F4F6"
 		                Foreground="#374151"
 		                BorderBrush="#D1D5DB"

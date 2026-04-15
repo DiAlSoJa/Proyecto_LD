@@ -1,10 +1,12 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using LD.Client.Services;
-using LD.Contracts.Units;
-using LD.FormsX.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Configuration;
+using LD.Client.Services;
+using LD.Contracts.Constants;
+using LD.Contracts.Units;
+using LD.FormsX.Helpers;
 
 namespace LD.FormsX.Features.Catalogos.Unidades.ViewModels;
 
@@ -18,11 +20,23 @@ public partial class CatalogoUnidadesViewModel : ObservableObject
     [ObservableProperty]
     private UnitDto? selectedUnit;
 
+    [ObservableProperty]
+    private bool canCreate;
+
+    [ObservableProperty]
+    private bool canEdit;
+
+    [ObservableProperty]
+    private bool canView;
+
     public event Action<List<UnitDto>>? OnDataLoaded;
 
     public CatalogoUnidadesViewModel(UnitService unitService)
     {
         _unitService = unitService;
+        CanCreate = UserData.HasPermission(PermissionKeys.Unit_Create);
+        CanEdit = UserData.HasPermission(PermissionKeys.Unit_Update);
+        CanView = UserData.HasPermission(PermissionKeys.Unit_View);
     }
 
     public async Task CargarDatosAsync()
