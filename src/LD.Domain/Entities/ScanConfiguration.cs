@@ -27,7 +27,7 @@ namespace LD.Domain.Entities
 
         public int SaveTypeId { get; set; }
         public ScanSaveType SaveType { get; set; } = null!;
-        public int? SaveValue { get; set; }
+        public int SaveValue { get; set; }
 
         public int Order { get; set; }
         public Project? Project { get; set; }

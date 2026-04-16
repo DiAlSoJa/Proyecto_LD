@@ -274,24 +274,28 @@
                                                            Text="UNIDADES" Style="{StaticResource GroupLabelStyle}"/>
                                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Entrada:"      Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
                                                 <ComboBox  Grid.Row="1" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
-                                                           IsEditable="True" Text="{Binding Entrada, UpdateSourceTrigger=PropertyChanged}">
-                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
-                                                </ComboBox>
+                                                           ItemsSource="{Binding UnitsSource}"
+                                                           DisplayMemberPath="Value"
+                                                           SelectedValuePath="Key"
+                                                           SelectedValue="{Binding Entrada, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Almacenamiento:" Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
                                                 <ComboBox  Grid.Row="2" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
-                                                           IsEditable="True" Text="{Binding StorageArea, UpdateSourceTrigger=PropertyChanged}">
-                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
-                                                </ComboBox>
+                                                           ItemsSource="{Binding UnitsSource}"
+                                                           DisplayMemberPath="Value"
+                                                           SelectedValuePath="Key"
+                                                           SelectedValue="{Binding StorageArea, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Retrabajo:"    Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
                                                 <ComboBox  Grid.Row="3" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
-                                                           IsEditable="True" Text="{Binding ReworkArea, UpdateSourceTrigger=PropertyChanged}">
-                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
-                                                </ComboBox>
+                                                           ItemsSource="{Binding UnitsSource}"
+                                                           DisplayMemberPath="Value"
+                                                           SelectedValuePath="Key"
+                                                           SelectedValue="{Binding ReworkArea, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Salida:"       Style="{StaticResource LabelStyle}" Margin="0,4,0,4"/>
                                                 <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource ComboStyle}" Margin="0,4,0,4"
-                                                           IsEditable="True" Text="{Binding Salida, UpdateSourceTrigger=PropertyChanged}">
-                                                    <ComboBoxItem Content="PALLET"/><ComboBoxItem Content="PIEZA"/>
-                                                </ComboBox>
+                                                           ItemsSource="{Binding UnitsSource}"
+                                                           DisplayMemberPath="Value"
+                                                           SelectedValuePath="Key"
+                                                           SelectedValue="{Binding Salida, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -438,7 +442,9 @@
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-
+                                                            <DataGridTextColumn Header="Valor de guardado"
+                                                                             Binding="{Binding SaveValue, UpdateSourceTrigger=PropertyChanged}"
+                                                                             Width="130"/>
                                                         </DataGrid.Columns>
 
                                                         <!-- Tus estilos (los dejo intactos 👍) -->

@@ -8,6 +8,8 @@ namespace LD.Contracts.Requests
         public int? ScanTypeId { get; set; }
         public string? ScanValue { get; set; }
         public int? SaveTypeId { get; set; }
+        public int SaveValue { get; set; }
+
         public int Order { get; set; }
     }
 }

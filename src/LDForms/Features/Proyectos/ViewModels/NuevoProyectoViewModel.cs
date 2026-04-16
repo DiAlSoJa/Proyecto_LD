@@ -41,6 +41,12 @@ public partial class NuevoProyectoViewModel : ObservableObject
     private List<DropDownDto> scanTypeSource = [];
     [ObservableProperty]
     private List<DropDownDto> saveScanTypeSource = [];
+    private List<DropDownDto> _unitsSource = [];
+    public List<DropDownDto> UnitsSource
+    {
+        get => _unitsSource;
+        set => SetProperty(ref _unitsSource, value);
+    }
     // ── Datos generales ──
     [ObservableProperty]
     private string? selectedClientId;
@@ -111,16 +117,16 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
     // ── Unidades ──
     [ObservableProperty]
-    private string entrada = "";
+    private string? entrada;
 
     [ObservableProperty]
-    private string storageArea = "";
+    private string? storageArea;
 
     [ObservableProperty]
-    private string reworkArea = "";
+    private string? reworkArea;
 
     [ObservableProperty]
-    private string salida = "";
+    private string? salida;
 
     // ── Notificaciones ──
     [ObservableProperty]
@@ -200,6 +206,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
         var systemFields = await _lookupService.GetSystemFieldLookup();
         var scanSaves = await _lookupService.GetScanSaveTypeLookup();
         var scanTypes = await _lookupService.GetScanTypeLookup();
+        var units = await _lookupService.GetUnitLookup();
 
 
         if (clientes.IsSuccess)
@@ -215,14 +222,17 @@ public partial class NuevoProyectoViewModel : ObservableObject
         }
         if (scanSaves.IsSuccess)
         {
-            ScanTypeSource =scanTypes.Data ?? [];
+            SaveScanTypeSource = scanSaves.Data ?? [];
             PopulateAvailableFields();
         }
         if (scanTypes.IsSuccess)
         {
-            SaveScanTypeSource = scanSaves.Data ?? [];
+            ScanTypeSource = scanTypes.Data ?? [];
             PopulateAvailableFields();
         }
+
+        if (units.IsSuccess)
+            UnitsSource = units.Data ?? [];
     }
 
     private void PopulateAvailableFields()
@@ -242,6 +252,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
         {
             SystemFieldId = int.TryParse(SelectedSystemField.Key, out var id) ? id : 0,
             SystemFieldName = SelectedSystemField.Value ?? "",
+
             Order = ScanConfigurations.Count + 1
         });
 
@@ -299,10 +310,10 @@ public partial class NuevoProyectoViewModel : ObservableObject
             AllowsOversizedItems = p.AllowsOversizedItems;
             RequiresLabels = p.RequiresLabels;
 
-            Entrada = p.Entrada ?? "";
-            StorageArea = p.StorageArea ?? "";
-            ReworkArea = p.ReworkArea ?? "";
-            Salida = p.Salida ?? "";
+            Entrada = p.Entrada;
+            StorageArea = p.StorageArea;
+            ReworkArea = p.ReworkArea;
+            Salida = p.Salida;
 
             ReceiptNotificationEnabled = p.ReceiptNotificationEnabled;
             ReceiptNotificationMethod = p.ReceiptNotificationMethod ?? "";
@@ -349,10 +360,10 @@ public partial class NuevoProyectoViewModel : ObservableObject
         AllowsOversizedItems = AllowsOversizedItems,
         RequiresLabels = RequiresLabels,
 
-        Entrada = Entrada,
-        StorageArea = StorageArea,
-        ReworkArea = ReworkArea,
-        Salida = Salida,
+        Entrada = Entrada ?? string.Empty,
+        StorageArea = StorageArea ?? string.Empty,
+        ReworkArea = ReworkArea ?? string.Empty,
+        Salida = Salida ?? string.Empty,
 
         ReceiptNotificationEnabled = ReceiptNotificationEnabled,
         ReceiptNotificationMethod = ReceiptNotificationMethod,
@@ -396,7 +407,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
             }
             else
             {
-                DialogHelper.ShowError(result.Message);
+                DialogHelper.ShowError(result.ErrorMessage,result.Message);
             }
         }
         catch (Exception ex)
