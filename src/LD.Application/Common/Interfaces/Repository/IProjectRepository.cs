@@ -11,6 +11,7 @@ namespace LD.Application.Common.Interfaces.Repository
     public interface IProjectRepository : IRepository<Project>
     {
         Task<Project?> GetByIdWithConfigsAsync(int id);
+        
         Task<List<DropDownDto>> GetLookup();
         Task<List<DropDownDto>> GetProjectByClientAsync(int clientId);
     }

@@ -33,11 +33,13 @@
                     <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="65"/>
                     <ColumnDefinition Width="165"/>
+                    <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="6"/>
@@ -97,7 +99,7 @@
                                            SelectionConfirmed="LookupProyecto_SelectionConfirmed"/>
 
                <Button x:Name="BtnActualizar"
-		            Grid.Column="6"
+		            Grid.Column="7"
 		            Height="28"
 		            MinWidth="68"
 		            Padding="6,0"
@@ -131,7 +133,7 @@
                 
 
                 <Button x:Name="btnNuevo"
-	            Grid.Column="8"
+	            Grid.Column="9"
 	            Height="28"
 	            MinWidth="68"
 	            Padding="6,0"
@@ -164,7 +166,7 @@
             </Button>
 
                 <Button x:Name="btnEditar"
-                    Grid.Column="9"
+                    Grid.Column="11"
                     Height="28"
                     MinWidth="60"
                     Padding="6,0"
@@ -198,7 +200,7 @@
                 
 
                 <Button x:Name="btnConfirmarLlegada"
-	                Grid.Column="10"
+	                Grid.Column="13"
 	                Height="28"
 	                MinWidth="106"
 	                Padding="6,0"
@@ -231,7 +233,7 @@
                 </Button>
 
                 <Button x:Name="btnCancelar"
-	                Grid.Column="14"
+	                Grid.Column="16"
 	                Height="28"
 	                MinWidth="72"
 	                Padding="6,0"

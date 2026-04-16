@@ -1,10 +1,12 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using LD.Client.Services;
-using LD.Contracts.DTOs.Family;
-using LD.FormsX.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Configuration;
+using LD.Client.Services;
+using LD.Contracts.Constants;
+using LD.Contracts.DTOs.Family;
+using LD.FormsX.Helpers;
 
 namespace LD.FormsX.Features.Catalogos.Familias.ViewModels;
 
@@ -18,11 +20,23 @@ public partial class CatalogoFamiliasViewModel : ObservableObject
     [ObservableProperty]
     private FamilyDto? selectedFamily;
 
+    [ObservableProperty]
+    private bool canCreate;
+
+    [ObservableProperty]
+    private bool canEdit;
+
+    [ObservableProperty]
+    private bool canView;
+
     public event Action<List<FamilyDto>>? OnDataLoaded;
 
     public CatalogoFamiliasViewModel(FamilyService familyService)
     {
         _familyService = familyService;
+        CanCreate = UserData.HasPermission(PermissionKeys.Family_Create);
+        CanEdit = UserData.HasPermission(PermissionKeys.Family_Update);
+        CanView = UserData.HasPermission(PermissionKeys.Family_View);
     }
 
     public async Task CargarDatosAsync()

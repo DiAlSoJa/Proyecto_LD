@@ -28,7 +28,7 @@ namespace LD.FormsX.Views.Dialogs
     public partial class NuevoASNView : Window
     {
         private const string DefaultAsnStatus = "Creado";
-        private const string DefaultAsnDetailStatus = "Capturando";
+        
 
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
@@ -621,23 +621,27 @@ namespace LD.FormsX.Views.Dialogs
                 || !string.IsNullOrWhiteSpace(receiptRow.CustomsDeclarationNumber);
         }
 
-        private static void SyncReceiptRowFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow, int asnId)
+        private static void SyncReceiptRowFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow, int asnId, int rowCount)
         {
+            
             receiptRow.AsnId = asnId;
             receiptRow.AsnDetailId = detailRow.AsnDetailId;
             receiptRow.ProductId = detailRow.ProductId;
             receiptRow.PartNumber = detailRow.PartNumber;
             receiptRow.Description = detailRow.Description;
             receiptRow.StandardQuantity = detailRow.StandardQuantity;
-            receiptRow.MaximumQuantity = detailRow.MaximumQuantity;
-            receiptRow.ReceivedQuantity = detailRow.Quantity;
-            receiptRow.SD = detailRow.SD;
-            receiptRow.Status = detailRow.Status;
-            receiptRow.LotNumber = detailRow.LotNumber;
-            receiptRow.ExpirationDate = detailRow.ExpirationDate;
-            receiptRow.Reference = detailRow.CustomerReference;
-            receiptRow.PurchaseOrder = detailRow.PurchaseOrder;
-            receiptRow.CustomsDeclarationNumber = detailRow.CustomsDeclarationNumber;
+            receiptRow.MaximumQuantity = detailRow.MaximumQuantity;   
+            if(rowCount==1)
+            {
+                receiptRow.ReceivedQuantity = detailRow.Quantity;
+                receiptRow.LotNumber = detailRow.LotNumber;
+                receiptRow.SD = detailRow.SD;
+                receiptRow.Status = detailRow.Status;
+                receiptRow.ExpirationDate = detailRow.ExpirationDate;
+                receiptRow.Reference = detailRow.CustomerReference;
+                receiptRow.PurchaseOrder = detailRow.PurchaseOrder;
+                receiptRow.CustomsDeclarationNumber = detailRow.CustomsDeclarationNumber;
+            }
         }
 
         private static AsnReceiptItem CloneReceiptRow(AsnReceiptItem source)
@@ -760,12 +764,21 @@ namespace LD.FormsX.Views.Dialogs
                 .Where(item => !IsEmptyReceiptRow(item))
                 .ToList();
 
-            if (receiptRows.Count != 1)
-                return;
-
-            var receiptRow = receiptRows[0];
+            /*if (receiptRows.Count != 1)
+                return;*/
+          
+            foreach(var receiptRow in receiptRows)
+            {
+                if (receiptRow.AsnDetailId == detailRow.AsnDetailId)
+                {
+                    SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId, receiptRows.Count);
+                    await SaveReceiptRowAsync(receiptRow);
+                }
+              
+            }
+            /*var receiptRow = receiptRows[0];
             SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
-            await SaveReceiptRowAsync(receiptRow);
+            await SaveReceiptRowAsync(receiptRow);*/
         }
 
         private async Task SaveDetailRowAsync(AsnDetailItem detailRow)
@@ -786,8 +799,6 @@ namespace LD.FormsX.Views.Dialogs
                 detailRow.AsnId = AsnSelected!.AsnId;
                 var isNewDetail = detailRow.AsnDetailId <= 0;
 
-                if (isNewDetail && string.IsNullOrWhiteSpace(detailRow.Status))
-                    detailRow.Status = DefaultAsnDetailStatus;
 
                 var request = detailRow.ToRequest();
                 request.AsnId = AsnSelected.AsnId;
@@ -887,11 +898,16 @@ namespace LD.FormsX.Views.Dialogs
             var existingReceipt = receiptsResult.Data?.Any(x => x.AsnDetailId == detailRow.AsnDetailId) == true;
             if (existingReceipt)
                 return;
+            var receiptRows = ReceiptItems
+              .Where(item => !IsEmptyReceiptRow(item))
+              .ToList();
 
             var receiptItem = new AsnReceiptItem();
             receiptItem.ApplyDefaultsFromDetail(detailRow, AsnSelected.AsnId);
-            SyncReceiptRowFromDetail(receiptItem, detailRow, AsnSelected.AsnId);
+            SyncReceiptRowFromDetail(receiptItem, detailRow, AsnSelected.AsnId, receiptRows.Count);
+           
 
+           
             var createResponse = await _asnReceiptService.CreateAsnReceipt(receiptItem.ToRequest());
             Log.Information(
                 "Resultado EnsureInitialReceiptCreatedAsync. AsnDetailId: {AsnDetailId}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
@@ -987,8 +1003,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 row.AsnId = asnId;
 
-                if (isNewDetail && string.IsNullOrWhiteSpace(row.Status))
-                    row.Status = DefaultAsnDetailStatus;
+     
 
                 var request = row.ToRequest();
                 request.AsnId = asnId;
@@ -1112,8 +1127,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private void dgDetail_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
-            if (e.NewItem is AsnDetailItem detailRow && string.IsNullOrWhiteSpace(detailRow.Status))
-                detailRow.Status = DefaultAsnDetailStatus;
+           
         }
 
         private void DetailRowHeader_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

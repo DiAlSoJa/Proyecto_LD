@@ -16,11 +16,11 @@ namespace LD.Application.Features.Clients.Profiles
              .ForMember(dest => dest.Activo,
                  opt => opt.MapFrom(src => src.IsActive))
              .ForMember(dest => dest.Cliente,
-                 opt => opt.MapFrom(src => src.Client != null ? src.Client.CommercialName : string.Empty))
+                 opt => opt.MapFrom(src =>  src.Client.CommercialName ?? string.Empty))
              .ForMember(dest => dest.Proyecto,
                  opt => opt.MapFrom(src => src.ProjectName ?? string.Empty))
              .ForMember(dest => dest.Almacen,
-                 opt => opt.MapFrom(src => src.Warehouse != null ? src.Warehouse.WarehouseName : string.Empty))
+                 opt => opt.MapFrom(src =>  src.Warehouse.WarehouseName ?? string.Empty))
              // Notificaciones
              .ForMember(dest => dest.NotificacionInterna,
                  opt => opt.MapFrom(src => src.InternalNotificationEnabled))
