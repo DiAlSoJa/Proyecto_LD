@@ -150,6 +150,30 @@ namespace LD.Infrastructure.Persistence
                 .HasIndex(u => u.UnitIdS)
                 .IsUnique();
 
+            builder.Entity<Project>()
+                .HasOne(p => p.EntradaUnit)
+                .WithMany()
+                .HasForeignKey(p => p.Entrada)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Project>()
+                .HasOne(p => p.StorageAreaUnit)
+                .WithMany()
+                .HasForeignKey(p => p.StorageArea)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Project>()
+                .HasOne(p => p.ReworkAreaUnit)
+                .WithMany()
+                .HasForeignKey(p => p.ReworkArea)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Project>()
+                .HasOne(p => p.SalidaUnit)
+                .WithMany()
+                .HasForeignKey(p => p.Salida)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.Entity<Category>()
                     .HasOne(c => c.Client)

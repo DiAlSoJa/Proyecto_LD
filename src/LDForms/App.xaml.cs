@@ -69,10 +69,11 @@ namespace LD.FormsX
                 HostContainer = Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, config) =>
                     {
-                        var env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
-                            ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-                            ?? Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT")
-                            ?? "Development";
+                        var env = 
+                             //   Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ??
+                             //Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ??
+                            Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ??
+                             "Development";
 
                         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", env);
                         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env);

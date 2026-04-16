@@ -360,10 +360,10 @@ public partial class NuevoProyectoViewModel : ObservableObject
         AllowsOversizedItems = AllowsOversizedItems,
         RequiresLabels = RequiresLabels,
 
-        Entrada = Entrada ?? string.Empty,
-        StorageArea = StorageArea ?? string.Empty,
-        ReworkArea = ReworkArea ?? string.Empty,
-        Salida = Salida ?? string.Empty,
+        Entrada = string.IsNullOrEmpty(Entrada) ? null : Entrada,
+        StorageArea = string.IsNullOrEmpty(StorageArea) ? null : StorageArea,
+        ReworkArea = string.IsNullOrEmpty(ReworkArea) ? null : ReworkArea,
+        Salida = string.IsNullOrEmpty(Salida) ? null : Salida,
 
         ReceiptNotificationEnabled = ReceiptNotificationEnabled,
         ReceiptNotificationMethod = ReceiptNotificationMethod,

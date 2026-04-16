@@ -60,6 +60,14 @@ namespace LD.Application.Features.Clients.Profiles
                  .ForMember(dest => dest.ProjectId,
                     opt => opt.Ignore())
                  .ForMember(dest => dest.ScanConfigurations,
+                    opt => opt.Ignore())
+                 .ForMember(dest => dest.EntradaUnit,
+                    opt => opt.Ignore())
+                 .ForMember(dest => dest.StorageAreaUnit,
+                    opt => opt.Ignore())
+                 .ForMember(dest => dest.ReworkAreaUnit,
+                    opt => opt.Ignore())
+                 .ForMember(dest => dest.SalidaUnit,
                     opt => opt.Ignore());
 
             CreateMap<ScanConfigurationRequest, ScanConfiguration>()

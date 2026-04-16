@@ -26,10 +26,10 @@ namespace LD.Contracts.Requests
         public bool AllowsOversizedItems { get; set; }
 
         public bool RequiresLabels { get; set; }
-        public string Entrada { get; set; } = string.Empty;
-        public string StorageArea { get; set; } = string.Empty;
-        public string ReworkArea { get; set; } = string.Empty;
-        public string Salida { get; set; } = string.Empty;
+        public string? Entrada { get; set; }
+        public string? StorageArea { get; set; }
+        public string? ReworkArea { get; set; }
+        public string? Salida { get; set; }
 
         public bool ReceiptNotificationEnabled { get; set; }
         public string? ReceiptNotificationMethod { get; set; }

@@ -19,11 +19,7 @@
 
             <VerticalStackLayout Spacing="12">
 
-                <VerticalStackLayout Spacing="6">                   
-                    <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                        <Label  x:Name="TextInformationLabel" Text="" TextColor="#64748B" FontSize="15"/>
-                    </Border>
-                </VerticalStackLayout>
+
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Standar ID" TextColor="#64748B" FontSize="14"/>
                     <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">

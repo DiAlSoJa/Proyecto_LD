@@ -4,15 +4,27 @@ using LD.Application.Features.Projects.Comands;
 
 namespace LD.Application.Features.Clients.Validators;
 
-public class CreateProjectValidator : AbstractValidator<CreateProjectCommand>
+public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
     private readonly IClientRepository _clientRepository;
+    private readonly IProjectRepository _projectRepository;
 
-    public CreateProjectValidator(IWarehouseRepository warehouseRepository, IClientRepository clientRepository)
+    public UpdateProjectValidator(
+        IWarehouseRepository warehouseRepository,
+        IClientRepository clientRepository,
+        IProjectRepository projectRepository)
     {
         _warehouseRepository = warehouseRepository;
         _clientRepository = clientRepository;
+        _projectRepository = projectRepository;
+
+        // ── Identificador ──────────────────────────────────────────────────
+
+        RuleFor(x => x.ProjectId)
+            .NotNull().WithMessage("El ID del proyecto es obligatorio.")
+            .MustAsync(async (id, ct) => await _projectRepository.GetByIdAsync(id ?? 0) != null)
+            .WithMessage("No se encontró el proyecto.");
 
         // ── Datos generales ────────────────────────────────────────────────
 
@@ -100,12 +112,10 @@ public class CreateProjectValidator : AbstractValidator<CreateProjectCommand>
 
         // ── Configuraciones de escaneo ─────────────────────────────────────
 
-
-
         RuleForEach(x => x.ScanConfigurations)
             .ChildRules(scan =>
             {
-       
+  
                 scan.RuleFor(s => s.SystemFieldName)
                     .NotEmpty().WithMessage("[Configuracion de escaneo] El nombre del campo del sistema es obligatorio.")
                     .MaximumLength(100).WithMessage("[Configuracion de escaneo] El nombre del campo del sistema no puede superar 100 caracteres.");

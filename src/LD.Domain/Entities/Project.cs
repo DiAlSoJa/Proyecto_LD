@@ -36,14 +36,15 @@ namespace LD.Domain.Entities
 
         public bool RequiresLabels { get; set; }
 
-        [MaxLength(50)]
-        public string Entrada { get; set; } = string.Empty;
-        [MaxLength(50)]
-        public string StorageArea { get; set; } = string.Empty;
-        [MaxLength(50)]
-        public string ReworkArea { get; set; } = string.Empty;
-        [MaxLength(50)]
-        public string Salida { get; set; } = string.Empty;
+        // FK → Units.UnitIdS
+        [MaxLength(20)]
+        public string? Entrada { get; set; }
+        [MaxLength(20)]
+        public string? StorageArea { get; set; }
+        [MaxLength(20)]
+        public string? ReworkArea { get; set; }
+        [MaxLength(20)]
+        public string? Salida { get; set; }
 
 
         public bool ReceiptNotificationEnabled { get; set; }
@@ -75,7 +76,12 @@ namespace LD.Domain.Entities
         // Navegación
         public Client? Client { get; set; }
         public Warehouse? Warehouse { get; set; }
-        public StorageType? StorageType{ get; set; }
+        public StorageType? StorageType { get; set; }
+
+        public Units? EntradaUnit { get; set; }
+        public Units? StorageAreaUnit { get; set; }
+        public Units? ReworkAreaUnit { get; set; }
+        public Units? SalidaUnit { get; set; }
 
         public ICollection<ScanConfiguration> ScanConfigurations { get; set; } = new List<ScanConfiguration>();
 

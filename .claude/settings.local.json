@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(grep -v \"^$\")",
-      "Bash(dotnet ef:*)"
+      "Bash(dotnet ef:*)",
+      "Bash(dotnet build *)"
     ]
   }
 }
