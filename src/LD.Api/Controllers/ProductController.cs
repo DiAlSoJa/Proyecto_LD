@@ -22,8 +22,12 @@ namespace LD.Api.Controllers
     {
         [HttpGet]
         [Permission(PermissionKeys.Product_View)]
-        public async Task<IActionResult> GetProducts()
-            => ResultExtensions.ToActionResult(await Mediator.Send(new ProductQuery()));
+        public async Task<IActionResult> GetProducts([FromQuery] int? clientId = null, [FromQuery] int? projectId = null)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new ProductQuery
+            {
+                ClientId = clientId,
+                ProjectId = projectId
+            }));
 
         
         [HttpGet("{productId}")]

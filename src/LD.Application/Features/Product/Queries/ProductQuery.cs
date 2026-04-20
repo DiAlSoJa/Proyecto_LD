@@ -16,7 +16,8 @@ namespace LD.Application.Features.Product.Queries;
 
 public class ProductQuery : IRequest<Result<List<ProductDto>?>>
 {
-
+    public int? ClientId { get; init; }
+    public int? ProjectId { get; init; }
 }
 public class ProductQueryHandler : IRequestHandler<ProductQuery, Result<List<ProductDto>?>>
 {
@@ -30,7 +31,7 @@ public class ProductQueryHandler : IRequestHandler<ProductQuery, Result<List<Pro
 
     public async Task<Result<List<ProductDto>?>> Handle(ProductQuery request, CancellationToken cancellationToken)
     {
-        var category = await _categoryRepository.GetAllWithRelationsAsync();
+        var category = await _categoryRepository.GetAllWithRelationsAsync(request.ClientId, request.ProjectId);
         var categoryDtos = _mapper.Map<List<ProductDto>>(category);
         return Result<List<ProductDto>?>.Success(categoryDtos, "Items obtenidos correctamente");
     }

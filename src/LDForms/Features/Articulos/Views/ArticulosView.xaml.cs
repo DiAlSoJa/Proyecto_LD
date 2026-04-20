@@ -1,65 +1,114 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using LD.Client.Services;
-using LD.Contracts.Location;
+using LD.Contracts.DTOs;
 using LD.Contracts.Product;
+using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
+using LD.FormsX.Model.Lookup;
 using LD.FormsX.Views.Articulos;
-using LD.FormsX.Views.Categorias;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views
 {
-    /// <summary>
-    /// Lógica de interacción para ArticulosView.xaml
-    /// </summary>
-    public partial class ArticulosView : UserControl
+    public partial class ArticulosView : UserControl, INotifyPropertyChanged
     {
         private readonly ProductService _service;
+        private readonly LookupService _lookupService;
         private readonly IServiceProvider _serviceProvider;
-
         private readonly WpfGridFilter<ProductDto> _gridFilter;
 
         private ProductDto? _selectedX;
+        private bool _cargandoFiltros;
         private bool _loaded;
-        public ArticulosView(ProductService serviceX, IServiceProvider serviceProvider)
+        private int _selectedClientId;
+        private int _selectedProjectId;
+        private string _selectedClientText = string.Empty;
+        private string _selectedProjectText = string.Empty;
+
+        public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public int SelectedClientId
+        {
+            get => _selectedClientId;
+            set
+            {
+                if (_selectedClientId == value)
+                    return;
+
+                _selectedClientId = value;
+                OnPropertyChanged(nameof(SelectedClientId));
+            }
+        }
+
+        public int SelectedProjectId
+        {
+            get => _selectedProjectId;
+            set
+            {
+                if (_selectedProjectId == value)
+                    return;
+
+                _selectedProjectId = value;
+                OnPropertyChanged(nameof(SelectedProjectId));
+            }
+        }
+
+        public string SelectedClientText
+        {
+            get => _selectedClientText;
+            set
+            {
+                if (_selectedClientText == value)
+                    return;
+
+                _selectedClientText = value;
+                OnPropertyChanged(nameof(SelectedClientText));
+            }
+        }
+
+        public string SelectedProjectText
+        {
+            get => _selectedProjectText;
+            set
+            {
+                if (_selectedProjectText == value)
+                    return;
+
+                _selectedProjectText = value;
+                OnPropertyChanged(nameof(SelectedProjectText));
+            }
+        }
+
+        public ArticulosView(ProductService serviceX, LookupService lookupService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _service = serviceX;
+            _lookupService = lookupService;
             _serviceProvider = serviceProvider;
-            _gridFilter = new WpfGridFilter<ProductDto>(dg, txtBuscar);
-            _gridFilter.SetColumnWidths(new Dictionary<string, double>
-            {
-                /* { "Activo", 80 },
-                 { "Id", 120 },
-                 { "NombreComercial", 220 },
-                 { "DomicilioComercial", 250 },
-                 { "Telefono", 140 },
-                 { "Ciudad", 140 },
-                 { "CodigoPostal", 120 },
-                 { "RazonSocial", 250 },
-                 { "Rfc", 150 },
-                 { "IsProvider", 120 }*/
-            });
+            DataContext = this;
 
+            _gridFilter = new WpfGridFilter<ProductDto>(dg, txtBuscar);
+            _gridFilter.SetColumnWidths(new Dictionary<string, double>());
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_loaded) return;
-            _loaded = true;
+            if (_loaded)
+                return;
 
-            await CargarDatosConLoaderAsync("Trayendo artículos...");
+            _loaded = true;
+            await CargarClientesAsync();
+            LimpiarGrid("Selecciona un cliente y un proyecto para consultar artículos.");
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)
@@ -87,22 +136,34 @@ namespace LD.FormsX.Views
 
         private async Task CargarDatosAsync()
         {
-            var result = await _service.GetItems();
+            if (!TryGetSelectedIds(out var clienteId, out var proyectoId))
+            {
+                LimpiarGrid("Selecciona un cliente y un proyecto para consultar artículos.");
+                return;
+            }
 
+            var result = await _service.GetItems(clienteId, proyectoId);
             if (!result.IsSuccess)
             {
                 DialogHelper.ShowWarning(result.Message);
                 return;
             }
 
-            _gridFilter.SetData(result.Data);
+            _gridFilter.SetData(result.Data?.OfType<ProductDto>());
             _selectedX = null;
-            txtStatus.Text = $"Registros: {result.Data.Count}";
+            txtBuscar.IsEnabled = true;
+            txtStatus.Text = $"Registros: {result.Data?.Count ?? 0}";
         }
 
         private async void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
-            await CargarDatosConLoaderAsync("Trayendo articulos...");
+            if (!TryGetSelectedIds(out _, out _))
+            {
+                DialogHelper.ShowWarning("Selecciona un cliente y un proyecto.");
+                return;
+            }
+
+            await CargarDatosConLoaderAsync("Trayendo artículos...");
         }
 
         private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
@@ -124,19 +185,28 @@ namespace LD.FormsX.Views
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
+            if (!TryGetSelectedIds(out _, out _))
+            {
+                DialogHelper.ShowWarning("Selecciona un cliente y un proyecto.");
+                return;
+            }
+
             var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
             dialog.Owner = Window.GetWindow(this);
 
             var result = dialog.ShowDialog();
-
             if (result == true)
-            {
                 await CargarDatosAsync();
-            }
         }
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
+            if (!TryGetSelectedIds(out _, out _))
+            {
+                DialogHelper.ShowWarning("Selecciona un cliente y un proyecto.");
+                return;
+            }
+
             if (_selectedX is null)
                 return;
 
@@ -145,11 +215,164 @@ namespace LD.FormsX.Views
             dialog.SetItem(_selectedX);
 
             var result = dialog.ShowDialog();
-
             if (result == true)
-            {
                 await CargarDatosAsync();
+        }
+
+        private async Task CargarClientesAsync()
+        {
+            try
+            {
+                _cargandoFiltros = true;
+
+                var clientes = await _lookupService.GetClientLookup();
+                if (!clientes.IsSuccess || clientes.Data == null)
+                {
+                    DialogHelper.ShowWarning(clientes.Message);
+                    return;
+                }
+
+                ClientLookupItems.Clear();
+                foreach (var item in clientes.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                    ClientLookupItems.Add(item);
+
+                ClearClientSelection();
+                ProjectLookupItems.Clear();
+                ClearProjectSelection();
             }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _cargandoFiltros = false;
+            }
+        }
+
+        private async Task CargarProyectosAsync()
+        {
+            try
+            {
+                _cargandoFiltros = true;
+                ProjectLookupItems.Clear();
+
+                if (SelectedClientId <= 0)
+                {
+                    ClearProjectSelection();
+                    LimpiarGrid("Selecciona un cliente y un proyecto para consultar artículos.");
+                    return;
+                }
+
+                var proyectos = await _lookupService.GetProjectClientLookup(SelectedClientId);
+                if (!proyectos.IsSuccess || proyectos.Data == null)
+                {
+                    DialogHelper.ShowWarning(proyectos.Message);
+                    ClearProjectSelection();
+                    LimpiarGrid("Selecciona un proyecto para consultar artículos.");
+                    return;
+                }
+
+                foreach (var item in proyectos.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                    ProjectLookupItems.Add(item);
+
+                ClearProjectSelection();
+                LimpiarGrid("Selecciona un proyecto para consultar artículos.");
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _cargandoFiltros = false;
+            }
+        }
+
+        private bool TryGetSelectedIds(out int clienteId, out int proyectoId)
+        {
+            clienteId = SelectedClientId;
+            proyectoId = SelectedProjectId;
+            return clienteId > 0 && proyectoId > 0;
+        }
+
+        private void LimpiarGrid(string mensaje)
+        {
+            _selectedX = null;
+            _gridFilter.ClearFilter();
+            _gridFilter.SetData(Array.Empty<ProductDto>());
+            txtBuscar.IsEnabled = false;
+            txtStatus.Text = mensaje;
+        }
+
+        private async void LookupCliente_SelectionConfirmed(object sender, RoutedEventArgs e)
+        {
+            if (_cargandoFiltros || !_loaded)
+                return;
+
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedClient)
+                return;
+
+            SelectedClientId = int.TryParse(selectedClient.Key, out var clientId) ? clientId : 0;
+            SelectedClientText = selectedClient.Value ?? string.Empty;
+
+            await CargarProyectosAsync();
+        }
+
+        private async void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
+        {
+            if (_cargandoFiltros || !_loaded)
+                return;
+
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedProject)
+                return;
+
+            SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
+            SelectedProjectText = selectedProject.Value ?? string.Empty;
+
+            if (!TryGetSelectedIds(out _, out _))
+            {
+                LimpiarGrid("Selecciona un cliente y un proyecto para consultar artículos.");
+                return;
+            }
+
+            await CargarDatosConLoaderAsync("Trayendo artículos...");
+        }
+
+        private static LookupItem ToLookupItem(DropDownDto item)
+        {
+            return new LookupItem
+            {
+                Id = int.TryParse(item.Key, out var value) ? value : 0,
+                Code = item.Value ?? string.Empty,
+                Description = item.Key ?? string.Empty,
+                Data = item
+            };
+        }
+
+        private void ClearClientSelection()
+        {
+            SelectedClientId = 0;
+            SelectedClientText = string.Empty;
+            lookupCliente?.ClearSelection();
+        }
+
+        private void ClearProjectSelection()
+        {
+            SelectedProjectId = 0;
+            SelectedProjectText = string.Empty;
+            lookupProyecto?.ClearSelection();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

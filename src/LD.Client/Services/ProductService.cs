@@ -17,9 +17,16 @@ namespace LD.Client.Services
             _apiEndpoints = apiEndpoints;
         }
 
-        public async Task<ApiResponseDto<List<ProductDto?>>> GetItems()
+        public async Task<ApiResponseDto<List<ProductDto?>>> GetItems(int? clientId = null, int? projectId = null)
         {
-            return await _api.GetAsync<ApiResponseDto<List<ProductDto?>>>(_apiEndpoints.Product_GetAll);
+            var endpoint = _apiEndpoints.Product_GetAll;
+
+            if (clientId.HasValue && projectId.HasValue)
+            {
+                endpoint = $"{endpoint}?clientId={clientId.Value}&projectId={projectId.Value}";
+            }
+
+            return await _api.GetAsync<ApiResponseDto<List<ProductDto?>>>(endpoint);
         }
 
         

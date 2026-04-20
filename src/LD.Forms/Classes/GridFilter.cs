@@ -27,6 +27,7 @@ namespace LD.Forms.Classes
         private ToolStripMenuItem FilterToolStrimMenuItem;
         private ToolStripMenuItem NoFilterToolStrimMenuItem;
         private ToolStripMenuItem CopyToolStrimMenuItem;
+        private ToolStripMenuItem ExportToolStripMenuItem;
 
 
         // private List<T> _originalData;
@@ -61,10 +62,12 @@ namespace LD.Forms.Classes
             this.FilterToolStrimMenuItem = new ToolStripMenuItem();
             this.NoFilterToolStrimMenuItem = new ToolStripMenuItem();
             this.CopyToolStrimMenuItem = new ToolStripMenuItem();
+            this.ExportToolStripMenuItem = new ToolStripMenuItem();
 
 
             this.menuDer.Items.AddRange(new ToolStripItem[] {
             this.CopyToolStrimMenuItem,
+            this.ExportToolStripMenuItem,
             this.SearchToolStripMenuItem,
             this.FilterToolStrimMenuItem,
             this.NoFilterToolStrimMenuItem,
@@ -114,6 +117,14 @@ namespace LD.Forms.Classes
             this.CopyToolStrimMenuItem.Size = new System.Drawing.Size(180, 22);
             this.CopyToolStrimMenuItem.Text = "Copiar";
             this.CopyToolStrimMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
+
+            //
+            // ExportToolStripMenuItem
+            //
+            this.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem";
+            this.ExportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ExportToolStripMenuItem.Text = "Exportar a Excel (Ctrl + T)";
+            this.ExportToolStripMenuItem.Click += new System.EventHandler(this.ExportToolStripMenuItem_Click);
 
         }
 
@@ -299,6 +310,38 @@ namespace LD.Forms.Classes
             {
                 this.valorColFiltro = "";
                 openFormFilter();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Control && e.KeyCode == Keys.T)
+            {
+                ExportGridToExcel();
+                e.Handled = true;
+            }
+        }
+
+        private void ExportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExportGridToExcel();
+        }
+
+        private void ExportGridToExcel()
+        {
+            try
+            {
+                var filePath = _grid.ExportVisibleRowsToCsv();
+                MessageBox.Show($"Archivo exportado correctamente:{Environment.NewLine}{filePath}",
+                    "Exportar a Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                    "Exportar a Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
         }
 

@@ -26,15 +26,22 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<Product>> GetAllWithRelationsAsync()
+        public async Task<List<Product>> GetAllWithRelationsAsync(int? clientId = null, int? projectId = null)
         {
-            return await _context.items
+            var query = _context.items
                 .Include(x => x.Client)
                 .Include(x => x.Project)
                 .Include(x=> x.Category)
                 .Include(x=>x.Family)
                 .Include(x=>x.StorageType)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (clientId.HasValue && projectId.HasValue)
+            {
+                query = query.Where(x => x.ClientId == clientId.Value && x.ProjectId == projectId.Value);
+            }
+
+            return await query.ToListAsync();
         }
         async Task<List<ProductAutocompleteDto>> IProductRepository.GetProductByClientAsync(int clientId, int projectId)
         {
