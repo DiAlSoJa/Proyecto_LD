@@ -19,6 +19,7 @@ namespace LD.FormsX.Movimientos
     {
         private readonly InventoryMovementService _inventoryMovementService;
         private readonly LookupService _lookupService;
+        private readonly DataGridColumnFilterManager _columnFilterManager;
         private bool _loaded;
         private bool _loadingFilters;
         private int _selectedClientId;
@@ -94,6 +95,9 @@ namespace LD.FormsX.Movimientos
 
             MovementsView = CollectionViewSource.GetDefaultView(Movements);
             MovementsView.Filter = FilterMovement;
+            DataGridFilterStyler.Apply(dg);
+            _columnFilterManager = new DataGridColumnFilterManager(dg);
+            _columnFilterManager.ApplyTo(MovementsView);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)

@@ -13,6 +13,7 @@ namespace LD.FormsX.Helpers
     {
         private readonly DataGrid _dataGrid;
         private readonly TextBox? _searchTextBox;
+        private readonly DataGridColumnFilterManager _columnFilterManager;
 
         private List<T> _data = new();
         private ICollectionView? _collectionView;
@@ -27,6 +28,7 @@ namespace LD.FormsX.Helpers
         {
             _dataGrid = dataGrid;
             _searchTextBox = searchTextBox;
+            _columnFilterManager = new DataGridColumnFilterManager(_dataGrid);
 
             ConfigurarGrid();
 
@@ -37,6 +39,7 @@ namespace LD.FormsX.Helpers
         private void ConfigurarGrid()
         {
             _dataGrid.AutoGenerateColumns = true;
+            DataGridFilterStyler.Apply(_dataGrid);
             _dataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
             _dataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
         }
@@ -47,6 +50,7 @@ namespace LD.FormsX.Helpers
 
             _collectionView = CollectionViewSource.GetDefaultView(_data);
             _collectionView.Filter = FilterPredicate;
+            _columnFilterManager.ApplyTo(_collectionView);
 
             _dataGrid.ItemsSource = _collectionView;
             _collectionView.Refresh();
@@ -62,6 +66,7 @@ namespace LD.FormsX.Helpers
             if (_searchTextBox != null)
                 _searchTextBox.Text = string.Empty;
 
+            _columnFilterManager.Clear();
             _collectionView?.Refresh();
         }
 

@@ -19,6 +19,7 @@ namespace LD.FormsX.Views.Inventario
     {
         private readonly AvailableInventoryService _availableInventoryService;
         private readonly LookupService _lookupService;
+        private readonly DataGridColumnFilterManager _columnFilterManager;
         private bool _loaded;
         private bool _loadingFilters;
         private int _selectedClientId;
@@ -94,6 +95,9 @@ namespace LD.FormsX.Views.Inventario
 
             AvailableInventoriesView = CollectionViewSource.GetDefaultView(AvailableInventories);
             AvailableInventoriesView.Filter = FilterInventory;
+            DataGridFilterStyler.Apply(dg);
+            _columnFilterManager = new DataGridColumnFilterManager(dg);
+            _columnFilterManager.ApplyTo(AvailableInventoriesView);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)

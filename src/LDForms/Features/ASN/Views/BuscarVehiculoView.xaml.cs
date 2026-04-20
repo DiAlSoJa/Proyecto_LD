@@ -15,6 +15,7 @@ namespace LD.FormsX.Views.Dialogs
     public partial class BuscarVehiculoView : Window, INotifyPropertyChanged
     {
         private readonly VehicleService _vehicleService;
+        private readonly DataGridColumnFilterManager _columnFilterManager;
         private string _statusMessage = "Cargando vehículos...";
 
         public ObservableCollection<VehicleDto> Vehicles { get; } = new();
@@ -42,6 +43,9 @@ namespace LD.FormsX.Views.Dialogs
 
             VehiclesView = CollectionViewSource.GetDefaultView(Vehicles);
             VehiclesView.Filter = FilterVehicle;
+            DataGridFilterStyler.Apply(dgVehiculos);
+            _columnFilterManager = new DataGridColumnFilterManager(dgVehiculos);
+            _columnFilterManager.ApplyTo(VehiclesView);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
