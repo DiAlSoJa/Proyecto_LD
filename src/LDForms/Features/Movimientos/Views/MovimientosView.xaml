@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-            >
+             Loaded="UserControl_Loaded">
 
     <Grid Background="#F8FAFC" Margin="0">
         <Grid.RowDefinitions>
@@ -68,7 +68,8 @@
                               VerticalContentAlignment="Center"
                               Padding="8,0"
                               Background="White"
-                              BorderBrush="#D1D5DB"/>
+                              BorderBrush="#D1D5DB"
+                              SelectionChanged="cmbCliente_SelectionChanged"/>
 
                     <TextBlock Grid.Column="3"
                                Text="Proyecto:"
@@ -83,7 +84,8 @@
                               VerticalContentAlignment="Center"
                               Padding="8,0"
                               Background="White"
-                              BorderBrush="#D1D5DB"/>
+                              BorderBrush="#D1D5DB"
+                              SelectionChanged="cmbProyecto_SelectionChanged"/>
                 </Grid>
 
                 <!-- Fila 2 -->
@@ -107,7 +109,8 @@
                              VerticalContentAlignment="Center"
                              Padding="10,0"
                              BorderBrush="#D1D5DB"
-                             Background="White"/>
+                             Background="White"
+                             TextChanged="Filtro_Changed"/>
                 </Grid>
 
                 <!-- Fila 3 -->
@@ -136,7 +139,8 @@
                                 SelectedDateFormat="Short"
                                 VerticalContentAlignment="Center"
                                 BorderBrush="#D1D5DB"
-                                Background="White"/>
+                                Background="White"
+                                SelectedDateChanged="FiltroFecha_Changed"/>
 
                     <TextBlock Grid.Column="3"
                                Text="Fecha Fin:"
@@ -151,7 +155,8 @@
                                 SelectedDateFormat="Short"
                                 VerticalContentAlignment="Center"
                                 BorderBrush="#D1D5DB"
-                                Background="White"/>
+                                Background="White"
+                                SelectedDateChanged="FiltroFecha_Changed"/>
 
                    <Button x:Name="btnNuevo"
 	                    Grid.Column="6"
@@ -162,7 +167,8 @@
 	                    Foreground="#374151"
 	                    BorderBrush="#D1D5DB"
 	                    BorderThickness="1"
-	                    Cursor="Hand">
+	                    Cursor="Hand"
+                        Click="BtnBuscar_Click">
 
 	                    <Button.Resources>
 		                    <Style TargetType="Border">
@@ -215,6 +221,7 @@
                         Background="White">
                     <Grid>
                         <DataGrid x:Name="dg"
+                                  ItemsSource="{Binding MovementsView}"
                                   AutoGenerateColumns="False"
                                   SelectionMode="Single"
                                   SelectionUnit="FullRow"
@@ -236,19 +243,22 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="160"/>
                                 <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="160"/>
-                                <DataGridTextColumn Header="No. Parte" Binding="{Binding NoParte}" Width="100"/>
-                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="140"/>
-                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="100"/>
-                                <DataGridTextColumn Header="Hora" Binding="{Binding Hora}" Width="85"/>
-                                <DataGridTextColumn Header="Usuario" Binding="{Binding Usuario}" Width="100"/>
-                                <DataGridTextColumn Header="Documento" Binding="{Binding Documento}" Width="100"/>
-                                <DataGridTextColumn Header="Tipo de documento" Binding="{Binding TipoDocumento}" Width="120"/>
-                                <DataGridTextColumn Header="DUB" Binding="{Binding DUB}" Width="100"/>
-                                <DataGridTextColumn Header="Ubicación origen" Binding="{Binding UbicacionOrigen}" Width="115"/>
-                                <DataGridTextColumn Header="Ubicación final" Binding="{Binding UbicacionFinal}" Width="115"/>
-                                <DataGridTextColumn Header="Status origen" Binding="{Binding StatusOrigen}" Width="100"/>
-                                <DataGridTextColumn Header="Status final" Binding="{Binding StatusFinal}" Width="100"/>
-                                <DataGridTextColumn Header="StantarID" Binding="{Binding StantarID}" Width="100"/>
+                                <DataGridTextColumn Header="No. Parte" Binding="{Binding PartNumber}" Width="120"/>
+                                <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="180"/>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd-MM-yyyy}" Width="110"/>
+                                <DataGridTextColumn Header="Hora" Binding="{Binding Hora}" Width="90"/>
+                                <DataGridTextColumn Header="Usuario" Binding="{Binding UserId}" Width="100"/>
+                                <DataGridTextColumn Header="Documento" Binding="{Binding DocumentId}" Width="100"/>
+                                <DataGridTextColumn Header="Tipo de documento" Binding="{Binding DocumentType}" Width="140"/>
+                                <DataGridTextColumn Header="Tipo de movimiento" Binding="{Binding MovementType}" Width="140"/>
+                                <DataGridTextColumn Header="Lote" Binding="{Binding LotNumber}" Width="110"/>
+                                <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="120"/>
+                                <DataGridTextColumn Header="Orden compra" Binding="{Binding PurchaseOrder}" Width="120"/>
+                                <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber}" Width="120"/>
+                                <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding StatusId}" Width="100"/>
+                                <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>
+                                <DataGridTextColumn Header="StandardId" Binding="{Binding StandardId}" Width="100"/>
                             </DataGrid.Columns>
 
                             <DataGrid.Resources>

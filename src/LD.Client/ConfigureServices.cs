@@ -37,6 +37,7 @@ namespace LD.Client
             services.AddScoped<DimensionerService>();
             services.AddScoped<VehicleService>();
             services.AddScoped<SecurityService>();
+            services.AddScoped<InventoryMovementService>();
 
             services.AddScoped<LookupService>();
             services.AddScoped<AsnService>();

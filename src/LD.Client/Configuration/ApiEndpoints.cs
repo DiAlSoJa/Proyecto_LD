@@ -223,6 +223,15 @@ namespace LD.Forms.Configuration
 
         public string Module_GetAll => $"{_baseApi}/module";
 
+        // ======================
+        // INVENTORY MOVEMENT
+        // ======================
+
+        public string InventoryMovement_GetAll => $"{_baseApi}/InventoryMovement";
+        public string InventoryMovement_GetById => $"{_baseApi}/InventoryMovement/{{movementId}}";
+        public string InventoryMovement_Create => $"{_baseApi}/InventoryMovement";
+        public string InventoryMovement_Update => $"{_baseApi}/InventoryMovement/{{movementId}}";
+
 
 
         // ======================
