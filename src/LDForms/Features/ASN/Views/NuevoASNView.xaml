@@ -625,7 +625,7 @@
                                         Width="100"/>
 
                                     <DataGridTextColumn Header="Fecha de Caducidad"
-                                        Binding="{Binding ExpirationDate, UpdateSourceTrigger=PropertyChanged, StringFormat=dd-MM-yyyy}"
+                                        Binding="{Binding ExpirationDate, UpdateSourceTrigger=LostFocus, ConverterCulture=es-MX, StringFormat=dd-MM-yyyy}"
                                         Width="120"/>
 
                                     <DataGridTextColumn Header="Referencia de Cliente"
@@ -737,7 +737,7 @@
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Número de Lote" Binding="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                                    <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding ExpirationDate, UpdateSourceTrigger=PropertyChanged, StringFormat=dd-MM-yyyy}" Width="120"/>
+                                    <DataGridTextColumn Header="Fecha de Caducidad" Binding="{Binding ExpirationDate, UpdateSourceTrigger=LostFocus, ConverterCulture=es-MX, StringFormat=dd-MM-yyyy}" Width="120"/>
                                     <DataGridTextColumn Header="Referencia" Binding="{Binding Reference, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
                                     <DataGridTextColumn Header="Orden de compra" Binding="{Binding PurchaseOrder, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
                                     <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber, UpdateSourceTrigger=PropertyChanged}" Width="120"/>

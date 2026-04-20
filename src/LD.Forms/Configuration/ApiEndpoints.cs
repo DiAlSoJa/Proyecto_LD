@@ -194,6 +194,16 @@ namespace LD.Forms.Configuration
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
 
+        // ======================
+        // ASN
+        // ======================
+
+        public string Asn_GetAll => $"{_baseApi}/asn";
+        public string Asn_GetById => $"{_baseApi}/asn/{{asnId}}";
+        public string Asn_Create => $"{_baseApi}/asn";
+        public string Asn_Update => $"{_baseApi}/asn/{{asnId}}";
+        public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
+
 
     }
 }

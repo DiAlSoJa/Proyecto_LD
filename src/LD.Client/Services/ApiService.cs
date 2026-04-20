@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
+using LD.Contracts.Responses;
 
 namespace LD.Client.Services
 {
@@ -18,19 +17,15 @@ namespace LD.Client.Services
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
             };
 
-            _http = new HttpClient(handler) 
+            _http = new HttpClient(handler)
             {
                 Timeout = TimeSpan.FromSeconds(20)
             };
-
 
             _http.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        // =========================
-        // TOKEN
-        // =========================
         public void SetBearerToken(string token)
         {
             _http.DefaultRequestHeaders.Authorization =
@@ -45,19 +40,16 @@ namespace LD.Client.Services
         public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _http.GetAsync(endpoint);
-            
             return await HandleResponse<T>(response);
         }
 
-        public async Task<TResponse> PostAsync<TRequest, TResponse>(
-            string endpoint, TRequest body)
+        public async Task<TResponse> PostAsync<TRequest, TResponse>(string endpoint, TRequest body)
         {
             var response = await _http.PostAsJsonAsync(endpoint, body);
             return await HandleResponse<TResponse>(response);
         }
 
-        public async Task<TResponse> PutAsync<TRequest, TResponse>(
-            string endpoint, TRequest body)
+        public async Task<TResponse> PutAsync<TRequest, TResponse>(string endpoint, TRequest body)
         {
             var response = await _http.PutAsJsonAsync(endpoint, body);
             return await HandleResponse<TResponse>(response);
@@ -67,20 +59,46 @@ namespace LD.Client.Services
         {
             var response = await _http.DeleteAsync(endpoint);
             return await HandleResponse<T>(response);
-
         }
 
         private static async Task<T> HandleResponse<T>(HttpResponseMessage response)
         {
             var content = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
 
-             var contentDeserialize = JsonSerializer.Deserialize<T>(
-                content,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive =true
-                })!;
-            return contentDeserialize;
+            try
+            {
+                var contentDeserialize = JsonSerializer.Deserialize<T>(content, options);
+                if (contentDeserialize is not null)
+                    return contentDeserialize;
+            }
+            catch
+            {
+                // Si no se puede deserializar al tipo esperado, intentamos regresar un error legible.
+            }
+
+            if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(ApiResponseDto<>))
+            {
+                var dataType = typeof(T).GetGenericArguments()[0];
+                var fallbackType = typeof(ApiResponseDto<>).MakeGenericType(dataType);
+                var fallback = Activator.CreateInstance(fallbackType);
+
+                fallbackType.GetProperty(nameof(ApiResponseDto<object>.IsSuccess))?.SetValue(fallback, false);
+                fallbackType.GetProperty(nameof(ApiResponseDto<object>.Code))?.SetValue(fallback, (int)response.StatusCode);
+                fallbackType.GetProperty(nameof(ApiResponseDto<object>.Message))?.SetValue(
+                    fallback,
+                    string.IsNullOrWhiteSpace(content) ? response.ReasonPhrase ?? "Error" : content);
+
+                return (T)fallback!;
+            }
+
+            throw new InvalidOperationException(
+                string.IsNullOrWhiteSpace(content)
+                    ? response.ReasonPhrase ?? "No se pudo procesar la respuesta del servidor."
+                    : content);
         }
     }
 }

@@ -33,8 +33,8 @@ public class AsnReceiptItem : INotifyPropertyChanged
         set { _productId = value; OnPropertyChanged(nameof(ProductId)); }
     }
 
-    private int? _standardId;
-    public int? StandardId
+    private string? _standardId;
+    public string? StandardId
     {
         get => _standardId;
         set { _standardId = value; OnPropertyChanged(nameof(StandardId)); }

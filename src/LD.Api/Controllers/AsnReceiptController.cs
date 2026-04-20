@@ -29,6 +29,14 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetAsnReceiptById(int asnReceiptId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new AsnReceiptDetailByIdQuery { AsnReceiptDetailId = asnReceiptId }));
 
+        [HttpGet("asnReceiptId/{asnDetailId}")]
+        [Permission(PermissionKeys.Asn_View)]
+        public async Task<IActionResult> GetAsnReceiptByAsnDetailId(int asnDetailId)
+        {
+            return ResultExtensions.ToActionResult(await Mediator.Send(new AsnReceiptByAsnDetailIdQuery { AsnDetailId = asnDetailId }));
+        }
+
+
         [HttpPost]
         [Permission(PermissionKeys.Asn_Create)]
         public async Task<IActionResult> CreateAsnReceipt([FromBody] CreateAsnReceiptDetailCommand command)

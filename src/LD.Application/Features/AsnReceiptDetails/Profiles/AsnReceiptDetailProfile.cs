@@ -7,14 +7,23 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
 {
     public class AsnReceiptDetailProfile : Profile
     {
+        private static int? ParseNullableStandardId(string? standardId)
+        {
+            if (string.IsNullOrWhiteSpace(standardId))
+                return null;
+
+            return int.TryParse(standardId, out var parsedValue)
+                ? parsedValue
+                : null;
+        }
+
         public AsnReceiptDetailProfile()
         {
             CreateMap<AsnReceiptDetail, AsnReceiptDetailDto>()
                 .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.MapFrom(src => src.AsnReceiptDetailId))
                 .ForMember(dest => dest.AsnDetailId, opt => opt.MapFrom(src => src.AsnDetailId))
-                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
-                .ForMember(dest => dest.DeleteRow, opt => opt.MapFrom(src => src.DeleteRow))
-                .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardId))
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))                
+                .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardLabel!=null? src.StandardLabel.StandarIdStr:string.Empty))
                 .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PartNumber))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.StandardQuantity, opt => opt.MapFrom(src => src.StandardQuantity))
@@ -31,9 +40,12 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
                 .ForMember(dest => dest.CustomsDeclarationNumber, opt => opt.MapFrom(src => src.CustomsDeclarationNumber));
 
             CreateMap<AsnReceiptRequest, AsnReceiptDetail>()
-                .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.Ignore());
+                .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.Ignore())
+                .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => ParseNullableStandardId(src.StandardId)));
 
-            CreateMap<AsnReceiptDetail, AsnReceiptRequest>();
+            CreateMap<AsnReceiptDetail, AsnReceiptRequest>()
+                .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src =>
+                    src.StandardId.HasValue ? src.StandardId.Value.ToString() : null));
         }
     }
 }

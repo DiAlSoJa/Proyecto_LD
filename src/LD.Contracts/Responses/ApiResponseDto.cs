@@ -12,7 +12,10 @@ namespace LD.Contracts.Responses
         public T? Data { get; init; }
         public int Code { get; init; }
         public List<string>? Errors { get; init; }
-        public string ErrorMessage => string.Join(Environment.NewLine, Errors??new());
+        public string? ErrorMessage =>
+            Errors == null || Errors.Count == 0
+                ? null
+                : string.Join(Environment.NewLine, Errors);
         public string Message { get; init; } = string.Empty;
     }
 }

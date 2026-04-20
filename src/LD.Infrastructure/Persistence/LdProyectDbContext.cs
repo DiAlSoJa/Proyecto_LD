@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -64,6 +64,9 @@ namespace LD.Infrastructure.Persistence
         public DbSet<ScanType> ScanTypes { get; set; }
         public DbSet<SystemField> SystemFields { get; set; }
         public DbSet<InventoryMovement> InventoryMovements { get; set; }
+        public DbSet<StandardLabel> StandardLabels { get; set; }
+        public DbSet<StandarIdSequence> StandarIdSequences{ get; set; }
+        public DbSet<AvailableInventory> AvailableInventories { get; set; }
 
 
 
@@ -257,6 +260,12 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(r => r.LocationId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<AsnReceiptDetail>()
+                .HasOne(r => r.StandardLabel)
+                .WithMany()
+                .HasForeignKey(r => r.StandardId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<ScanConfiguration>()
                 .HasOne(sc => sc.ScanType)
                 .WithMany()
@@ -268,6 +277,36 @@ namespace LD.Infrastructure.Persistence
                 .WithMany()
                 .HasForeignKey(sc => sc.SaveTypeId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<StandardLabel>(entity =>
+            {
+                entity.ToTable("StandardLabels");
+                entity.HasKey(e => e.StandarId);
+                entity.Property(e => e.StandarIdStr)
+                .HasMaxLength(30)
+                .IsRequired();
+                entity.HasIndex(e => e.StandarIdStr).IsUnique();
+                entity.HasOne(e => e.Project)
+                .WithMany()
+                .HasForeignKey(e => e.projectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            });
+            builder.Entity<StandarIdSequence>(entity =>
+            {
+                entity.ToTable("StandarIdSequences");
+                entity.HasKey(e => e.StandarIdSequenceId);
+                entity.HasIndex(e=>e.Year).IsUnique();
+                entity.Property(e=>e.Year).IsRequired();
+                entity.Property(e=> e.LastNumber).IsRequired();    
+                
+            });
+
+            builder.Entity<AvailableInventory>()
+               .HasOne(x => x.Project) 
+               .WithMany()
+               .HasForeignKey(x => x.ProjectId)
+               .OnDelete(DeleteBehavior.NoAction);
 
 
             builder.Entity<StorageType>().HasData(
@@ -429,7 +468,7 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 34, PermissionName = "Editar usuarios",   Key = "users.update", ModuleId = 23 },
                 new Permission { PermissionId = 35, PermissionName = "Eliminar usuarios", Key = "users.delete", ModuleId = 23 },
 
-                // WAREHOUSE STAFF / ALMACENISTA (ModuleId = 24)
+                // WAREHOUSE STAFF / ALMACENISTA
                 new Permission { PermissionId = 36, PermissionName = "Ver almacenista",                  Key = "warehouse-staff.read",                    ModuleId = 24 },
                 new Permission { PermissionId = 37, PermissionName = "Ejecutar cambio de ubicación",     Key = "warehouse-staff.location-change.execute", ModuleId = 24 },
                 new Permission { PermissionId = 38, PermissionName = "Ejecutar surtido de mercancía",    Key = "warehouse-staff.supply.execute",          ModuleId = 24 },
@@ -438,7 +477,7 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 41, PermissionName = "Ver task manager de almacenista",  Key = "warehouse-staff.tasks.read",              ModuleId = 24 },
                 new Permission { PermissionId = 42, PermissionName = "Gestionar task manager de almacenista", Key = "warehouse-staff.tasks.manage",       ModuleId = 24 },
 
-                // SECURITY / SEGURIDAD (ModuleId = 25)
+                // SECURITY / SEGURIDAD
                 new Permission { PermissionId = 43, PermissionName = "Ver seguridad",          Key = "security.read",            ModuleId = 25 },
                 new Permission { PermissionId = 44, PermissionName = "Registrar vehículo",     Key = "security.vehicles.create", ModuleId = 25 },
                 new Permission { PermissionId = 45, PermissionName = "Ver vehículos",          Key = "security.vehicles.read",   ModuleId = 25 },
@@ -447,43 +486,43 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 48, PermissionName = "Ver task manager de seguridad",      Key = "security.tasks.read",   ModuleId = 25 },
                 new Permission { PermissionId = 49, PermissionName = "Gestionar task manager de seguridad", Key = "security.tasks.manage", ModuleId = 25 },
 
-                // QUERIES / CONSULTAS (ModuleId = 26)
+                // QUERIES / CONSULTAS
                 new Permission { PermissionId = 50, PermissionName = "Ver consultas", Key = "queries.read", ModuleId = 26 },
 
-                // DAMAGE REPORT / REPORTE DE DAÑOS (ModuleId = 27)
+                // DAMAGE REPORT / REPORTE DE DAÑOS
                 new Permission { PermissionId = 51, PermissionName = "Ver reporte de daños",    Key = "damage-report.read",   ModuleId = 27 },
                 new Permission { PermissionId = 52, PermissionName = "Crear reporte de daños",  Key = "damage-report.create", ModuleId = 27 },
 
-                // OPERATIONS / OPERACIONES (ModuleId = 28)
+                // OPERATIONS / OPERACIONES
                 new Permission { PermissionId = 53, PermissionName = "Ver operaciones",      Key = "operations.read",    ModuleId = 28 },
                 new Permission { PermissionId = 54, PermissionName = "Ejecutar operaciones", Key = "operations.execute", ModuleId = 28 },
 
-                // CATEGORIES / CATEGORÍAS (ModuleId = 11)
+                // CATEGORIES / CATEGORÍAS
                 new Permission { PermissionId = 64, PermissionName = "Ver categorías",    Key = "categories.read",   ModuleId = 11 },
                 new Permission { PermissionId = 65, PermissionName = "Crear categorías",  Key = "categories.create", ModuleId = 11 },
                 new Permission { PermissionId = 66, PermissionName = "Editar categorías", Key = "categories.update", ModuleId = 11 },
 
-                // DIMENSIONER / DIMENSIONADOR (ModuleId = 12)
+                // DIMENSIONER / DIMENSIONADOR
                 new Permission { PermissionId = 67, PermissionName = "Ver dimensionador",    Key = "dimensioner.read",   ModuleId = 12 },
                 new Permission { PermissionId = 68, PermissionName = "Crear dimensionador",  Key = "dimensioner.create", ModuleId = 12 },
                 new Permission { PermissionId = 69, PermissionName = "Editar dimensionador", Key = "dimensioner.update", ModuleId = 12 },
 
-                // FAMILIES / FAMILIAS (ModuleId = 13)
+                // FAMILIES / FAMILIAS
                 new Permission { PermissionId = 70, PermissionName = "Ver familias",    Key = "families.read",   ModuleId = 13 },
                 new Permission { PermissionId = 71, PermissionName = "Crear familias",  Key = "families.create", ModuleId = 13 },
                 new Permission { PermissionId = 72, PermissionName = "Editar familias", Key = "families.update", ModuleId = 13 },
 
-                // CURRENCIES / MONEDAS (ModuleId = 14)
+                // CURRENCIES / MONEDAS
                 new Permission { PermissionId = 73, PermissionName = "Ver monedas",    Key = "currencies.read",   ModuleId = 14 },
                 new Permission { PermissionId = 74, PermissionName = "Crear monedas",  Key = "currencies.create", ModuleId = 14 },
                 new Permission { PermissionId = 75, PermissionName = "Editar monedas", Key = "currencies.update", ModuleId = 14 },
 
-                // STATUS / ESTATUS (ModuleId = 15)
+                // STATUS / ESTATUS
                 new Permission { PermissionId = 76, PermissionName = "Ver estatus",    Key = "status.read",   ModuleId = 15 },
                 new Permission { PermissionId = 77, PermissionName = "Crear estatus",  Key = "status.create", ModuleId = 15 },
                 new Permission { PermissionId = 78, PermissionName = "Editar estatus", Key = "status.update", ModuleId = 15 },
 
-                // UNITS / UNIDADES (ModuleId = 16)
+                // UNITS / UNIDADES
                 new Permission { PermissionId = 79, PermissionName = "Ver unidades",    Key = "units.read",   ModuleId = 16 },
                 new Permission { PermissionId = 80, PermissionName = "Crear unidades",  Key = "units.create", ModuleId = 16 },
                 new Permission { PermissionId = 81, PermissionName = "Editar unidades", Key = "units.update", ModuleId = 16 }

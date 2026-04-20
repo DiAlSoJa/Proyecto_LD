@@ -10,7 +10,7 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
         {
             textInformation = query["TextInformation"] as string;
         }
-        this.TextInformationLabel.Text = textInformation;
+        //this.TextInformationLabel.Text = textInformation;
 
 
     }

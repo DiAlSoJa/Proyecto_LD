@@ -40,5 +40,12 @@ namespace LD.Client.Services
         {
             return await _api.PutAsync<AsnRequest, ApiResponseDto<string>>(_apiEndpoints.Asn_Update.Replace("{asnId}", asnId.ToString()), request);
         }
+
+        public async Task<ApiResponseDto<string>> ConfirmAsn(int asnId)
+        {
+            return await _api.PostAsync<object, ApiResponseDto<string>>(
+                _apiEndpoints.Asn_Confirm.Replace("{asnId}", asnId.ToString()),
+                new { });
+        }
     }
 }

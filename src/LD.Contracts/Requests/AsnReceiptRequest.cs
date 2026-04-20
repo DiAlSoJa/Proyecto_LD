@@ -9,7 +9,7 @@ namespace LD.Contracts.Requests
         public int? ProductId { get; set; }
 
         public bool DeleteRow { get; set; }
-        public int? StandardId { get; set; }
+        public string? StandardId { get; set; }
 
         public string PartNumber { get; set; } = string.Empty;
         public string? Description { get; set; }

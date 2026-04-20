@@ -62,5 +62,6 @@ namespace LD.Domain.Entities
         public AsnDetail? AsnDetail { get; set; }
         public Product? Product { get; set; }
         public Location? Location { get; set; }
+        public StandardLabel? StandardLabel { get; set; }
     }
 }

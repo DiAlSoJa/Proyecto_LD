@@ -55,7 +55,22 @@ namespace LD.Api.Controllers
             return ResultExtensions.ToActionResult(result);
         }
 
-       
+        [HttpPost("{asnId}/confirm")]
+        [Permission(PermissionKeys.Asn_Update)]
+        public async Task<IActionResult> ConfirmAsn(int asnId)
+        {
+            var command = new ConfirmAsnCommand
+            {
+                AsnId = asnId,
+                UserId = CurrentUserId
+            };
+
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
+
+
+
 
 
     }

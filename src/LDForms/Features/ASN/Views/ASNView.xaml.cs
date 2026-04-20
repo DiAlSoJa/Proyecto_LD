@@ -25,6 +25,8 @@ using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Ubicaciones;
 using Microsoft.Extensions.DependencyInjection;
 
+
+
 namespace LD.FormsX.Views.ASN
 {
     /// <summary>
@@ -37,6 +39,7 @@ namespace LD.FormsX.Views.ASN
         private readonly AsnReceiptService _asnReceiptService;
         private readonly LookupService _lookupService;
         private readonly IServiceProvider _serviceProvider;
+     
 
         private readonly WpfGridFilter<AsnDto> _gridFilter;
         private readonly WpfGridFilter<AsnDetailDto> _gridFilterDet;
@@ -295,7 +298,7 @@ namespace LD.FormsX.Views.ASN
                 return;
             }
 
-            var result = await _asnReceiptService.GetAsnReceipts();
+            var result = await _asnReceiptService.GetAsnReceiptsByAsnDetailId(_selectedDetail.AsnDetailId);
             if (!result.IsSuccess || result.Data == null)
             {
                 _gridFilterRec.SetData(null);
@@ -303,13 +306,9 @@ namespace LD.FormsX.Views.ASN
                 return;
             }
 
-            var filtered = result.Data
-                .Where(x => x.AsnDetailId == _selectedDetail.AsnDetailId)
-                .ToList();
-
-            _gridFilterRec.SetData(filtered);
-            txtStatusRecepcion.Text = filtered.Count > 0
-                ? $"Registros: {filtered.Count}"
+            _gridFilterRec.SetData(result.Data);
+            txtStatusRecepcion.Text = result.Data.Count > 0
+                ? $"Registros: {result.Data.Count}"
                 : "Sin partidas recibidas";
         }
 
@@ -375,7 +374,7 @@ namespace LD.FormsX.Views.ASN
             AplicarFiltroAsn();
         }
 
-        private void BtnNuevoASN_Click(object sender, RoutedEventArgs e)
+        private async void BtnNuevoASN_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
             dialog.Owner = Window.GetWindow(this);
@@ -385,16 +384,12 @@ namespace LD.FormsX.Views.ASN
                 SelectedClientText,
                 SelectedProjectText);
 
-            var result = dialog.ShowDialog();
-
-            if (result == true)
-            {
-                // recargar datos
-                _ = CargarDatosAsync();
-            }
+            var result = dialog.ShowDialog();           
+           await CargarDatosConLoaderAsync("Trayendo ASN...");
+           
         }
 
-        private void BtnEditar_Click(object sender, RoutedEventArgs e)
+        private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedX is null)
                 return;
@@ -404,15 +399,62 @@ namespace LD.FormsX.Views.ASN
             dialog.SetClientProjectContext(0, 0, _selectedX.Client, _selectedX.Project);
             dialog.SetAsn(_selectedX);
 
-            var result = dialog.ShowDialog();
-
-            if (result == true)
-            {
-                CargarDatosConLoaderAsync("Trayendo asns...");
-            }
+            var result = dialog.ShowDialog();           
+                await CargarDatosConLoaderAsync("Trayendo ASN...");
+           
         }
 
-        private void BtnConfirmarLlegada_Click(object sender, RoutedEventArgs e) { }
+        private async void BtnConfirmarLlegada_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedX == null || _selectedX.AsnId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un ASN para confirmar.");
+                    return;
+                }
+
+                if (string.Equals(_selectedX.Status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase))
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado ya está confirmado.");
+                    return;
+                }
+
+                var confirmar = DialogHelper.ShowConfirm(
+                    $"¿Deseas confirmar la entrada del ASN {_selectedX.AsnCode ?? _selectedX.AsnId.ToString()}?",
+                    "Confirmar entrada");
+
+                if (!confirmar)
+                    return;
+
+                btnConfirmarLlegada.IsEnabled = false;
+                MostrarLoader(true, "Confirmando ASN...");
+
+                var result = await _asnService.ConfirmAsn(_selectedX.AsnId);
+
+                if (!result.IsSuccess)
+                {
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo confirmar el ASN.");
+                    return;
+                }
+
+                DialogHelper.ShowSuccess(result.Message ?? "ASN confirmado correctamente.");
+                var confirmedAsnId = _selectedX.AsnId;
+                await CargarDatosAsync();
+
+                _selectedX = _allAsns.FirstOrDefault(x => x.AsnId == confirmedAsnId);
+                await CargarDatosAsyncDet();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                MostrarLoader(false);
+                btnConfirmarLlegada.IsEnabled = true;
+            }
+        }
 
         private void BtnCancelar_Click(object sender, RoutedEventArgs e) { }
 

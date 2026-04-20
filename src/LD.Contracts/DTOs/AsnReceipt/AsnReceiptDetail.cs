@@ -12,11 +12,10 @@ namespace LD.Contracts.ASN
 
         public int? ProductId { get; set; }
 
-        [DisplayName("Borrar")]
-        public bool DeleteRow { get; set; }
+       
 
         [DisplayName("EstandarID")]
-        public int? StandardId { get; set; }
+        public string? StandardId { get; set; }
 
         [DisplayName("Número de Parte")]
         public string PartNumber { get; set; } = string.Empty;
@@ -58,5 +57,6 @@ namespace LD.Contracts.ASN
 
         [DisplayName("Pedimento")]
         public string CustomsDeclarationNumber { get; set; } = string.Empty;
+
     }
 }

@@ -85,9 +85,10 @@ namespace LD.Infrastructure.Repositories
         }
 
 
-        Task<Asn?> IRepository<Asn>.GetByIdAsync(int id)
+        async Task<Asn?> IRepository<Asn>.GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Asns
+                .FirstOrDefaultAsync(x => x.AsnId == id);
         }
 
         Task<Asn?> IRepository<Asn>.GetByIdAsync(string id)
@@ -95,19 +96,23 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        Task<List<Asn>?> IRepository<Asn>.GetManyAsync()
+        async Task<List<Asn>?> IRepository<Asn>.GetManyAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Asns
+                .AsNoTracking()
+                .ToListAsync();
         }
 
-        Task<bool> IRepository<Asn>.UpdateAsync(Asn modelToUpdate)
+        async Task<bool> IRepository<Asn>.UpdateAsync(Asn modelToUpdate)
         {
-            throw new NotImplementedException();
+            _context.Asns.Update(modelToUpdate);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<bool> DeleteAsync(Asn modelToDelete)
+        public async Task<bool> DeleteAsync(Asn modelToDelete)
         {
-            throw new NotImplementedException();
+            _context.Asns.Remove(modelToDelete);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 namespace LD.Domain.Enums
 {
     public enum DocumentType_e
-    {
-        Register = 1,
-        Entry = 2,
-        Exit = 3,
-        Transfer = 4,
-        Adjustment = 5,
-        Return = 6
+    {       
+        Entry = 1,
+        Exit = 2,
+        Transfer = 3,
+        Adjustment = 4,
+        Return = 5
     }
 }
 

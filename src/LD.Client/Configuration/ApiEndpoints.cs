@@ -265,6 +265,7 @@ namespace LD.Forms.Configuration
         public string Asn_Create => $"{_baseApi}/asn";
         public string Asn_Update => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Delete => $"{_baseApi}/asn/{{asnId}}";
+        public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
 
         public string AsnDetail_GetAll => $"{_baseApi}/asnDetail";
         public string AsnDetail_GetById => $"{_baseApi}/asnDetail/{{asnId}}";
@@ -275,6 +276,7 @@ namespace LD.Forms.Configuration
 
         public string AsnReceipt_GetAll => $"{_baseApi}/AsnReceipt";
         public string AsnReceipt_GetById => $"{_baseApi}/AsnReceipt/{{asnId}}";
+        public string AsnReceipt_GetByAsnDetailId => $"{_baseApi}/AsnReceipt/asnReceiptId/{{asnDetailId}}";
         public string AsnReceipt_Create => $"{_baseApi}/AsnReceipt";
         public string AsnReceipt_Update => $"{_baseApi}/AsnReceipt/{{asnId}}";
         public string AsnReceipt_Delete => $"{_baseApi}/AsnReceipt/{{asnId}}";
