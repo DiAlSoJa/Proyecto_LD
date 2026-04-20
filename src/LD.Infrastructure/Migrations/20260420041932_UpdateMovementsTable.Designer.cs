@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260420041932_UpdateMovementsTable")]
+    partial class UpdateMovementsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -427,8 +430,6 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("StandardId");
 
                     b.ToTable("AvailableInventories");
                 });
@@ -4465,11 +4466,6 @@ namespace LD.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("LD.Domain.Entities.StandardLabel", "StandardLabel")
-                        .WithMany()
-                        .HasForeignKey("StandardId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("Client");
 
                     b.Navigation("Location");
@@ -4477,8 +4473,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Project");
-
-                    b.Navigation("StandardLabel");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Category", b =>

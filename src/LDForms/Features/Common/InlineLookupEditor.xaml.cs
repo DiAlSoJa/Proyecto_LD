@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LD.Contracts.Requests;
@@ -107,6 +108,110 @@ namespace LD.FormsX.Features.Common
         {
             get => (string)GetValue(SelectedCodeProperty);
             set => SetValue(SelectedCodeProperty, value);
+        }
+
+        public static readonly DependencyProperty EditorCornerRadiusProperty =
+            DependencyProperty.Register(
+                nameof(EditorCornerRadius),
+                typeof(CornerRadius),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(new CornerRadius(6)));
+
+        public CornerRadius EditorCornerRadius
+        {
+            get => (CornerRadius)GetValue(EditorCornerRadiusProperty);
+            set => SetValue(EditorCornerRadiusProperty, value);
+        }
+
+        public static readonly DependencyProperty EditorPaddingProperty =
+            DependencyProperty.Register(
+                nameof(EditorPadding),
+                typeof(Thickness),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(new Thickness(4, 2, 4, 2)));
+
+        public Thickness EditorPadding
+        {
+            get => (Thickness)GetValue(EditorPaddingProperty);
+            set => SetValue(EditorPaddingProperty, value);
+        }
+
+        public static readonly DependencyProperty EditorBackgroundProperty =
+            DependencyProperty.Register(
+                nameof(EditorBackground),
+                typeof(Brush),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(Brushes.White));
+
+        public Brush EditorBackground
+        {
+            get => (Brush)GetValue(EditorBackgroundProperty);
+            set => SetValue(EditorBackgroundProperty, value);
+        }
+
+        public static readonly DependencyProperty EditorBorderBrushProperty =
+            DependencyProperty.Register(
+                nameof(EditorBorderBrush),
+                typeof(Brush),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"))));
+
+        public Brush EditorBorderBrush
+        {
+            get => (Brush)GetValue(EditorBorderBrushProperty);
+            set => SetValue(EditorBorderBrushProperty, value);
+        }
+
+        public static readonly DependencyProperty EditorBorderThicknessProperty =
+            DependencyProperty.Register(
+                nameof(EditorBorderThickness),
+                typeof(Thickness),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(new Thickness(1)));
+
+        public Thickness EditorBorderThickness
+        {
+            get => (Thickness)GetValue(EditorBorderThicknessProperty);
+            set => SetValue(EditorBorderThicknessProperty, value);
+        }
+
+        public static readonly DependencyProperty EditorForegroundProperty =
+            DependencyProperty.Register(
+                nameof(EditorForeground),
+                typeof(Brush),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0F172A"))));
+
+        public Brush EditorForeground
+        {
+            get => (Brush)GetValue(EditorForegroundProperty);
+            set => SetValue(EditorForegroundProperty, value);
+        }
+
+        public static readonly DependencyProperty EditorFontSizeProperty =
+            DependencyProperty.Register(
+                nameof(EditorFontSize),
+                typeof(double),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(12d));
+
+        public double EditorFontSize
+        {
+            get => (double)GetValue(EditorFontSizeProperty);
+            set => SetValue(EditorFontSizeProperty, value);
+        }
+
+        public static readonly DependencyProperty GlyphBrushProperty =
+            DependencyProperty.Register(
+                nameof(GlyphBrush),
+                typeof(Brush),
+                typeof(InlineLookupEditor),
+                new PropertyMetadata(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#94A3B8"))));
+
+        public Brush GlyphBrush
+        {
+            get => (Brush)GetValue(GlyphBrushProperty);
+            set => SetValue(GlyphBrushProperty, value);
         }
 
         private static void OnSelectedCodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -243,6 +348,13 @@ namespace LD.FormsX.Features.Common
         {
             ApplyFilter(txtLookup.Text);
             popupLookup.IsOpen = true;
+        }
+
+        private void DropDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyFilter(txtLookup.Text);
+            popupLookup.IsOpen = !popupLookup.IsOpen;
+            txtLookup.Focus();
         }
 
         private void txtLookup_PreviewKeyDown(object sender, KeyEventArgs e)

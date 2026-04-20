@@ -69,6 +69,9 @@ namespace LD.Contracts.InventoryMovement
         [DisplayName("Estandar Id")]
         public int? StandardId { get; set; }
 
+        [DisplayName("Estandar")]
+        public string StandardIdStr { get; set; } = string.Empty;
+
         public string Cliente { get; set; } = string.Empty;
         public string Proyecto { get; set; } = string.Empty;
         public string Ubicacion { get; set; } = string.Empty;

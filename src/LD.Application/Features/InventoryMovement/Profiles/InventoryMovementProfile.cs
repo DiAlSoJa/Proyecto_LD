@@ -15,7 +15,9 @@ namespace LD.Application.Features.InventoryMovement.Profiles
                 .ForMember(dest => dest.Proyecto,
                     opt => opt.MapFrom(src => src.Project != null ? src.Project.ProjectName : string.Empty))
                 .ForMember(dest => dest.Ubicacion,
-                    opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : string.Empty));
+                    opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : string.Empty))
+                .ForMember(dest => dest.StandardIdStr,
+                    opt => opt.MapFrom(src => src.StandardLabel != null ? src.StandardLabel.StandarIdStr ?? string.Empty : string.Empty));
 
             CreateMap<InventoryMovementRequest, Domain.Entities.InventoryMovement>()
                 .ForMember(dest => dest.ProductId,

@@ -8,7 +8,7 @@ namespace LD.Domain.Enums
 {
     public enum MovementType_e
     {        
-        Purchase = 1,
-        Sale = 2        
+        Compra = 1,
+        Venta = 2        
     }
 }

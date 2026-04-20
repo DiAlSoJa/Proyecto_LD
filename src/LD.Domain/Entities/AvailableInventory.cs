@@ -64,6 +64,7 @@ namespace LD.Domain.Entities
         public Location? Location { get; set; }
         public Client? Client { get; set; }
         public Project? Project { get; set; }
+        public StandardLabel? StandardLabel { get; set; }
     }
 }
 

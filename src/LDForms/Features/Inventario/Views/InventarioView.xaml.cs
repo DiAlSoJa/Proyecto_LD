@@ -1,39 +1,336 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using LD.Client.Services;
+using LD.Contracts.AvailableInventory;
+using LD.Contracts.DTOs;
+using LD.FormsX.Features.Common;
+using LD.FormsX.Helpers;
+using LD.FormsX.Model.Lookup;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LD.Client.Services;
-using LD.Contracts.Location;
-using LD.FormsX.Helpers;
 
 namespace LD.FormsX.Views.Inventario
 {
-    /// <summary>
-    /// Lógica de interacción para InventarioView.xaml
-    /// </summary>
-    public partial class InventarioView : UserControl
+    public partial class InventarioView : UserControl, INotifyPropertyChanged
     {
-        private readonly LocationService _service;
-        private readonly IServiceProvider _serviceProvider;
-        
-          
-        
-        public InventarioView(LocationService serviceX, IServiceProvider serviceProvider)
-        {
-            InitializeComponent();
-            _service = serviceX;
-            _serviceProvider = serviceProvider;
-           
+        private readonly AvailableInventoryService _availableInventoryService;
+        private readonly LookupService _lookupService;
+        private bool _loaded;
+        private bool _loadingFilters;
+        private int _selectedClientId;
+        private int _selectedProjectId;
+        private string _selectedClientText = string.Empty;
+        private string _selectedProjectText = string.Empty;
 
+        public ObservableCollection<AvailableInventoryDto> AvailableInventories { get; } = new();
+        public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
+        public ICollectionView AvailableInventoriesView { get; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public int SelectedClientId
+        {
+            get => _selectedClientId;
+            set
+            {
+                if (_selectedClientId == value)
+                    return;
+
+                _selectedClientId = value;
+                OnPropertyChanged(nameof(SelectedClientId));
+            }
         }
 
+        public int SelectedProjectId
+        {
+            get => _selectedProjectId;
+            set
+            {
+                if (_selectedProjectId == value)
+                    return;
+
+                _selectedProjectId = value;
+                OnPropertyChanged(nameof(SelectedProjectId));
+            }
+        }
+
+        public string SelectedClientText
+        {
+            get => _selectedClientText;
+            set
+            {
+                if (_selectedClientText == value)
+                    return;
+
+                _selectedClientText = value;
+                OnPropertyChanged(nameof(SelectedClientText));
+            }
+        }
+
+        public string SelectedProjectText
+        {
+            get => _selectedProjectText;
+            set
+            {
+                if (_selectedProjectText == value)
+                    return;
+
+                _selectedProjectText = value;
+                OnPropertyChanged(nameof(SelectedProjectText));
+            }
+        }
+
+        public InventarioView(AvailableInventoryService availableInventoryService, LookupService lookupService)
+        {
+            InitializeComponent();
+            _availableInventoryService = availableInventoryService;
+            _lookupService = lookupService;
+            DataContext = this;
+
+            AvailableInventoriesView = CollectionViewSource.GetDefaultView(AvailableInventories);
+            AvailableInventoriesView.Filter = FilterInventory;
+        }
+
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (_loaded)
+                return;
+
+            _loaded = true;
+
+            await LoadClientsAsync();
+            await LoadAvailableInventoriesAsync();
+        }
+
+        private async Task LoadClientsAsync()
+        {
+            try
+            {
+                _loadingFilters = true;
+                var response = await _lookupService.GetClientLookup();
+
+                ClientLookupItems.Clear();
+                if (response.IsSuccess && response.Data != null)
+                {
+                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        ClientLookupItems.Add(item);
+                }
+
+                ClearProjectSelection();
+                ProjectLookupItems.Clear();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _loadingFilters = false;
+            }
+        }
+
+        private async Task LoadProjectsAsync()
+        {
+            if (SelectedClientId <= 0)
+            {
+                ProjectLookupItems.Clear();
+                ClearProjectSelection();
+                return;
+            }
+
+            try
+            {
+                _loadingFilters = true;
+                var response = await _lookupService.GetProjectClientLookup(SelectedClientId);
+
+                ProjectLookupItems.Clear();
+                if (response.IsSuccess && response.Data != null)
+                {
+                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        ProjectLookupItems.Add(item);
+                }
+
+                ClearProjectSelection();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _loadingFilters = false;
+            }
+        }
+
+        private async Task LoadAvailableInventoriesAsync()
+        {
+            try
+            {
+                ShowLoader(true, "Cargando inventario disponible...");
+                txtStatus.Text = "Cargando inventario disponible...";
+
+                var response = await _availableInventoryService.GetAvailableInventories();
+                if (!response.IsSuccess || response.Data == null)
+                {
+                    AvailableInventories.Clear();
+                    txtStatus.Text = response.Message ?? "No se pudo cargar el inventario disponible.";
+                    return;
+                }
+
+                AvailableInventories.Clear();
+                foreach (var inventory in response.Data.OrderByDescending(x => x.Fecha).ThenByDescending(x => x.Hora))
+                    AvailableInventories.Add(inventory);
+
+                RefreshFilters();
+            }
+            catch (Exception ex)
+            {
+                AvailableInventories.Clear();
+                txtStatus.Text = "Ocurrió un error al cargar el inventario disponible.";
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                ShowLoader(false);
+            }
+        }
+
+        private bool FilterInventory(object item)
+        {
+            if (item is not AvailableInventoryDto inventory)
+                return false;
+
+            if (!string.IsNullOrWhiteSpace(SelectedClientText) &&
+                !string.Equals(inventory.Cliente?.Trim(), SelectedClientText.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(SelectedProjectText) &&
+                !string.Equals(inventory.Proyecto?.Trim(), SelectedProjectText.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            var partNumber = txtNumeroParte?.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(partNumber) &&
+                !Contains(inventory.PartNumber, partNumber) &&
+                !Contains(inventory.Description, partNumber))
+            {
+                return false;
+            }
+
+            var standardId = txtStandardId?.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(standardId) &&
+                !Contains(inventory.StandardIdStr, standardId) &&
+                !Contains(inventory.StandardId?.ToString(), standardId))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool Contains(string? source, string searchText)
+        {
+            return !string.IsNullOrWhiteSpace(source)
+                && source.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void RefreshFilters()
+        {
+            AvailableInventoriesView.Refresh();
+            UpdateStatus();
+        }
+
+        private void UpdateStatus()
+        {
+            var count = AvailableInventoriesView.Cast<object>().Count();
+            txtStatus.Text = count > 0
+                ? $"{count} registro(s) encontrados."
+                : "Sin datos para mostrar";
+        }
+
+        private void ShowLoader(bool show, string message = "Cargando...")
+        {
+            TxtLoading.Text = message;
+            LoadingOverlay.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
+        {
+            await LoadAvailableInventoriesAsync();
+        }
+
+        private async void LookupCliente_SelectionConfirmed(object sender, RoutedEventArgs e)
+        {
+            if (!_loaded || _loadingFilters)
+                return;
+
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedClient)
+                return;
+
+            SelectedClientId = int.TryParse(selectedClient.Key, out var clientId) ? clientId : 0;
+            SelectedClientText = selectedClient.Value ?? string.Empty;
+
+            await LoadProjectsAsync();
+            RefreshFilters();
+        }
+
+        private void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
+        {
+            if (!_loaded || _loadingFilters)
+                return;
+
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedProject)
+                return;
+
+            SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
+            SelectedProjectText = selectedProject.Value ?? string.Empty;
+
+            RefreshFilters();
+        }
+
+        private void Filtro_Changed(object sender, TextChangedEventArgs e)
+        {
+            if (!_loaded)
+                return;
+
+            RefreshFilters();
+        }
+
+        private static LookupItem ToLookupItem(DropDownDto item)
+        {
+            return new LookupItem
+            {
+                Id = int.TryParse(item.Key, out var value) ? value : 0,
+                Code = item.Value ?? string.Empty,
+                Description = item.Key ?? string.Empty,
+                Data = item
+            };
+        }
+
+        private void ClearProjectSelection()
+        {
+            SelectedProjectId = 0;
+            SelectedProjectText = string.Empty;
+            lookupProyecto?.ClearSelection();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

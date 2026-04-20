@@ -3,17 +3,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="root"
              mc:Ignorable="d"
              MinHeight="28"
              Focusable="False">
     <Grid>
-        <TextBox x:Name="txtLookup"
-                 Padding="4,2"
-                 VerticalContentAlignment="Center"
-                 Loaded="txtLookup_Loaded"
-                 GotKeyboardFocus="txtLookup_GotKeyboardFocus"
-                 TextChanged="txtLookup_TextChanged"
-                 PreviewKeyDown="txtLookup_PreviewKeyDown"/>
+        <Border Background="{Binding EditorBackground, ElementName=root}"
+                BorderBrush="{Binding EditorBorderBrush, ElementName=root}"
+                BorderThickness="{Binding EditorBorderThickness, ElementName=root}"
+                CornerRadius="{Binding EditorCornerRadius, ElementName=root}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="36"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="txtLookup"
+                         Grid.Column="0"
+                         Padding="{Binding EditorPadding, ElementName=root}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Foreground="{Binding EditorForeground, ElementName=root}"
+                         FontSize="{Binding EditorFontSize, ElementName=root}"
+                         VerticalContentAlignment="Center"
+                         Loaded="txtLookup_Loaded"
+                         GotKeyboardFocus="txtLookup_GotKeyboardFocus"
+                         TextChanged="txtLookup_TextChanged"
+                         PreviewKeyDown="txtLookup_PreviewKeyDown"/>
+
+                <Button Grid.Column="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Focusable="False"
+                        Click="DropDownButton_Click">
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                               Text="&#xE70D;"
+                               FontSize="10"
+                               Foreground="{Binding GlyphBrush, ElementName=root}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Button>
+            </Grid>
+        </Border>
 
         <Popup x:Name="popupLookup"
                Placement="Bottom"

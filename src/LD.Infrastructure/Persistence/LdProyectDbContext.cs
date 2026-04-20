@@ -253,6 +253,12 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(x => x.ProjectId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<InventoryMovement>()
+                .HasOne(x => x.StandardLabel)
+                .WithMany()
+                .HasForeignKey(x => x.StandardId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.Entity<AsnReceiptDetail>()
                 .HasOne(r => r.Location)
@@ -306,6 +312,12 @@ namespace LD.Infrastructure.Persistence
                .HasOne(x => x.Project) 
                .WithMany()
                .HasForeignKey(x => x.ProjectId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AvailableInventory>()
+               .HasOne(x => x.StandardLabel)
+               .WithMany()
+               .HasForeignKey(x => x.StandardId)
                .OnDelete(DeleteBehavior.NoAction);
 
 

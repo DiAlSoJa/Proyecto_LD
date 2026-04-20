@@ -1,11 +1,14 @@
 using LD.Client.Services;
 using LD.Contracts.DTOs;
 using LD.Contracts.InventoryMovement;
+using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
+using LD.FormsX.Model.Lookup;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,11 +21,69 @@ namespace LD.FormsX.Movimientos
         private readonly LookupService _lookupService;
         private bool _loaded;
         private bool _loadingFilters;
+        private int _selectedClientId;
+        private int _selectedProjectId;
+        private string _selectedClientText = string.Empty;
+        private string _selectedProjectText = string.Empty;
 
         public ObservableCollection<InventoryMovementDto> Movements { get; } = new();
+        public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
         public ICollectionView MovementsView { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public int SelectedClientId
+        {
+            get => _selectedClientId;
+            set
+            {
+                if (_selectedClientId == value)
+                    return;
+
+                _selectedClientId = value;
+                OnPropertyChanged(nameof(SelectedClientId));
+            }
+        }
+
+        public int SelectedProjectId
+        {
+            get => _selectedProjectId;
+            set
+            {
+                if (_selectedProjectId == value)
+                    return;
+
+                _selectedProjectId = value;
+                OnPropertyChanged(nameof(SelectedProjectId));
+            }
+        }
+
+        public string SelectedClientText
+        {
+            get => _selectedClientText;
+            set
+            {
+                if (_selectedClientText == value)
+                    return;
+
+                _selectedClientText = value;
+                OnPropertyChanged(nameof(SelectedClientText));
+            }
+        }
+
+        public string SelectedProjectText
+        {
+            get => _selectedProjectText;
+            set
+            {
+                if (_selectedProjectText == value)
+                    return;
+
+                _selectedProjectText = value;
+                OnPropertyChanged(nameof(SelectedProjectText));
+            }
+        }
 
         public MovimientosView(InventoryMovementService inventoryMovementService, LookupService lookupService)
         {
@@ -42,18 +103,8 @@ namespace LD.FormsX.Movimientos
 
             _loaded = true;
 
-            ConfigureCombos();
             await LoadClientsAsync();
             await LoadMovementsAsync();
-        }
-
-        private void ConfigureCombos()
-        {
-            cmbCliente.DisplayMemberPath = nameof(DropDownDto.Value);
-            cmbCliente.SelectedValuePath = nameof(DropDownDto.Key);
-
-            cmbProyecto.DisplayMemberPath = nameof(DropDownDto.Value);
-            cmbProyecto.SelectedValuePath = nameof(DropDownDto.Key);
         }
 
         private async Task LoadClientsAsync()
@@ -63,10 +114,15 @@ namespace LD.FormsX.Movimientos
                 _loadingFilters = true;
                 var response = await _lookupService.GetClientLookup();
 
-                cmbCliente.ItemsSource = response.IsSuccess ? response.Data : null;
-                cmbCliente.SelectedIndex = -1;
-                cmbProyecto.ItemsSource = null;
-                cmbProyecto.SelectedIndex = -1;
+                ClientLookupItems.Clear();
+                if (response.IsSuccess && response.Data != null)
+                {
+                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        ClientLookupItems.Add(item);
+                }
+
+                ClearProjectSelection();
+                ProjectLookupItems.Clear();
             }
             catch (Exception ex)
             {
@@ -80,22 +136,26 @@ namespace LD.FormsX.Movimientos
 
         private async Task LoadProjectsAsync()
         {
-            if (cmbCliente.SelectedItem is not DropDownDto selectedClient ||
-                !int.TryParse(selectedClient.Key, out var clientId) ||
-                clientId <= 0)
+            if (SelectedClientId <= 0)
             {
-                cmbProyecto.ItemsSource = null;
-                cmbProyecto.SelectedIndex = -1;
+                ProjectLookupItems.Clear();
+                ClearProjectSelection();
                 return;
             }
 
             try
             {
                 _loadingFilters = true;
-                var response = await _lookupService.GetProjectClientLookup(clientId);
+                var response = await _lookupService.GetProjectClientLookup(SelectedClientId);
 
-                cmbProyecto.ItemsSource = response.IsSuccess ? response.Data : null;
-                cmbProyecto.SelectedIndex = -1;
+                ProjectLookupItems.Clear();
+                if (response.IsSuccess && response.Data != null)
+                {
+                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        ProjectLookupItems.Add(item);
+                }
+
+                ClearProjectSelection();
             }
             catch (Exception ex)
             {
@@ -145,16 +205,14 @@ namespace LD.FormsX.Movimientos
             if (item is not InventoryMovementDto movement)
                 return false;
 
-            if (cmbCliente.SelectedItem is DropDownDto selectedClient &&
-                !string.IsNullOrWhiteSpace(selectedClient.Value) &&
-                !string.Equals(movement.Cliente?.Trim(), selectedClient.Value.Trim(), StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(SelectedClientText) &&
+                !string.Equals(movement.Cliente?.Trim(), SelectedClientText.Trim(), StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
 
-            if (cmbProyecto.SelectedItem is DropDownDto selectedProject &&
-                !string.IsNullOrWhiteSpace(selectedProject.Value) &&
-                !string.Equals(movement.Proyecto?.Trim(), selectedProject.Value.Trim(), StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(SelectedProjectText) &&
+                !string.Equals(movement.Proyecto?.Trim(), SelectedProjectText.Trim(), StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
@@ -163,6 +221,14 @@ namespace LD.FormsX.Movimientos
             if (!string.IsNullOrWhiteSpace(partNumber) &&
                 !Contains(movement.PartNumber, partNumber) &&
                 !Contains(movement.Description, partNumber))
+            {
+                return false;
+            }
+
+            var standardId = txtStandardId?.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(standardId) &&
+                !Contains(movement.StandardIdStr, standardId) &&
+                !Contains(movement.StandardId?.ToString(), standardId))
             {
                 return false;
             }
@@ -207,19 +273,37 @@ namespace LD.FormsX.Movimientos
             await LoadMovementsAsync();
         }
 
-        private async void cmbCliente_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void LookupCliente_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             if (!_loaded || _loadingFilters)
                 return;
+
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedClient)
+                return;
+
+            SelectedClientId = int.TryParse(selectedClient.Key, out var clientId) ? clientId : 0;
+            SelectedClientText = selectedClient.Value ?? string.Empty;
 
             await LoadProjectsAsync();
             RefreshFilters();
         }
 
-        private void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             if (!_loaded || _loadingFilters)
                 return;
+
+            if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
+                return;
+
+            if (lookupItem.Data is not DropDownDto selectedProject)
+                return;
+
+            SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
+            SelectedProjectText = selectedProject.Value ?? string.Empty;
 
             RefreshFilters();
         }
@@ -238,6 +322,29 @@ namespace LD.FormsX.Movimientos
                 return;
 
             RefreshFilters();
+        }
+
+        private static LookupItem ToLookupItem(DropDownDto item)
+        {
+            return new LookupItem
+            {
+                Id = int.TryParse(item.Key, out var value) ? value : 0,
+                Code = item.Value ?? string.Empty,
+                Description = item.Key ?? string.Empty,
+                Data = item
+            };
+        }
+
+        private void ClearProjectSelection()
+        {
+            SelectedProjectId = 0;
+            SelectedProjectText = string.Empty;
+            lookupProyecto?.ClearSelection();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

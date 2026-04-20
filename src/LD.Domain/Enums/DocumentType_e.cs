@@ -8,11 +8,11 @@ namespace LD.Domain.Enums
 {
     public enum DocumentType_e
     {       
-        Entry = 1,
-        Exit = 2,
-        Transfer = 3,
-        Adjustment = 4,
-        Return = 5
+        Entrada = 1,
+        Salida = 2,
+        Transferencia = 3,
+        Ajuste = 4,
+        Devolucion = 5
     }
 }
 

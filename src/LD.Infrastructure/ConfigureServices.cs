@@ -72,6 +72,7 @@ public static class ConfigureServices
         services.AddScoped<IModuleRepository, ModuleRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IInventoryMovementRepository, InventoryMovementRepository>();
+        services.AddScoped<IAvailableInventoryRepository, AvailableInventoryRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IFamilyRepository, FamilyRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();

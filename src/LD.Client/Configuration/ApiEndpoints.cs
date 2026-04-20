@@ -232,6 +232,12 @@ namespace LD.Forms.Configuration
         public string InventoryMovement_Create => $"{_baseApi}/InventoryMovement";
         public string InventoryMovement_Update => $"{_baseApi}/InventoryMovement/{{movementId}}";
 
+        // ======================
+        // AVAILABLE INVENTORY
+        // ======================
+
+        public string AvailableInventory_GetAll => $"{_baseApi}/AvailableInventory";
+
 
 
         // ======================

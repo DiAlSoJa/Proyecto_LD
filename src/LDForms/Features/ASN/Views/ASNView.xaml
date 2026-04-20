@@ -28,11 +28,11 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90"/>
-                    <ColumnDefinition Width="58"/>
-                    <ColumnDefinition Width="165"/>
+                    <ColumnDefinition Width="52"/>
+                    <ColumnDefinition Width="250"/>
                     <ColumnDefinition Width="12"/>
-                    <ColumnDefinition Width="65"/>
-                    <ColumnDefinition Width="165"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="250"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="8"/>
@@ -65,12 +65,20 @@
 
                 <common:InlineLookupEditor x:Name="lookupCliente"
                                            Grid.Column="2"
+                                           Height="28"
                                            Tag="Cliente|Clave"
                                            ItemsSource="{Binding ClientLookupItems}"
                                            DisplayMemberPath="Code"
                                            SearchMemberPaths="Code,Description"
                                            SelectedCode="{Binding SelectedClientText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                            SelectedId="{Binding SelectedClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           EditorCornerRadius="10"
+                                           EditorPadding="14,6,8,6"
+                                           EditorBorderBrush="#D1D5DB"
+                                           EditorBorderThickness="1.2"
+                                           EditorForeground="#1F2937"
+                                           EditorFontSize="12"
+                                           GlyphBrush="#94A3B8"
                                            RequireSelectionMatch="True"
                                            MaxResults="12"
                                            OpenDropDownOnLoad="False"
@@ -86,12 +94,20 @@
 
                 <common:InlineLookupEditor x:Name="lookupProyecto"
                                            Grid.Column="5"
+                                           Height="28"
                                            Tag="Proyecto|Clave"
                                            ItemsSource="{Binding ProjectLookupItems}"
                                            DisplayMemberPath="Code"
                                            SearchMemberPaths="Code,Description"
                                            SelectedCode="{Binding SelectedProjectText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                            SelectedId="{Binding SelectedProjectId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           EditorCornerRadius="10"
+                                           EditorPadding="14,6,8,6"
+                                           EditorBorderBrush="#D1D5DB"
+                                           EditorBorderThickness="1.2"
+                                           EditorForeground="#1F2937"
+                                           EditorFontSize="12"
+                                           GlyphBrush="#94A3B8"
                                            RequireSelectionMatch="True"
                                            MaxResults="12"
                                            OpenDropDownOnLoad="False"

@@ -2,11 +2,10 @@ namespace LD.Contracts.Enums
 {
     public enum DocumentType_e
     {
-        Register = 1,
-        Entry = 2,
-        Exit = 3,
-        Transfer = 4,
-        Adjustment = 5,
-        Return = 6
+        Entrada = 1,
+        Salida = 2,
+        Transferencia = 3,
+        Ajuste = 4,
+        Devolucion = 5
     }
 }
