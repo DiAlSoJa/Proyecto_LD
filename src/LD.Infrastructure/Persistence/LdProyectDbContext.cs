@@ -68,6 +68,11 @@ namespace LD.Infrastructure.Persistence
         public DbSet<StandarIdSequence> StandarIdSequences{ get; set; }
         public DbSet<AvailableInventory> AvailableInventories { get; set; }
 
+        public DbSet<EquipmentType> EquipmentTypes { get; set; }
+        public DbSet<Equipment> Equipments { get; set; }
+        public DbSet<EquipmentQuestion> EquipmentQuestions { get; set; }
+        public DbSet<EquipmentQuestionDet> EquipmentQuestionDets { get; set; }
+        public DbSet<EquipmentSupplier> EquipmentSuppliers { get; set; }
 
 
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)

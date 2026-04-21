@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using LD.Client.Configuration;
+using LD.Contracts.Constants;
 using LD.Contracts.Enums;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +32,7 @@ namespace LD.FormsX.Views.Catalogos
             RemoveIfNoModule(TabEstatus,       Module_e.Status);
             RemoveIfNoModule(TabCategorias,    Module_e.Categories);
             RemoveIfNoModule(TabUnidades,      Module_e.Units);
+            RemoveIfNoEquipmentPermissions(TabEquipos);
             RemoveIfNoModule(TabMonedas,       Module_e.Currencies);
             RemoveIfNoModule(TabFamilias,      Module_e.Families);
             RemoveIfNoModule(TabDimensionador, Module_e.Dimensioner);
@@ -42,6 +44,16 @@ namespace LD.FormsX.Views.Catalogos
                 MainTabControl.Items.Remove(tab);
         }
 
+        private void RemoveIfNoEquipmentPermissions(TabItem tab)
+        {
+            if (!UserData.HasPermission(PermissionKeys.EquipmentType_View)
+                && !UserData.HasPermission(PermissionKeys.EquipmentType_Create)
+                && !UserData.HasPermission(PermissionKeys.EquipmentType_Update))
+            {
+                MainTabControl.Items.Remove(tab);
+            }
+        }
+
         private void CargarVistas()
         {
             try
@@ -49,6 +61,7 @@ namespace LD.FormsX.Views.Catalogos
                 TabEstatus.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoStatusView>());
                 TabCategorias.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoCategoriasView>());
                 TabUnidades.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoUnidadesView>());
+                TabEquipos.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoEquiposView>());
                 TabMonedas.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoMonedasView>());
                 TabFamilias.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoFamiliasView>());
                 TabDimensionador.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoDimensionadorView>());

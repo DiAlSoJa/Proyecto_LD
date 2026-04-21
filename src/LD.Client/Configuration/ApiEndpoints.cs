@@ -147,6 +147,16 @@ namespace LD.Forms.Configuration
         public string Unit_Create => $"{_baseApi}/unit";
         public string Unit_Update => $"{_baseApi}/unit/{{unitIdS}}";
         public string Unit_Delete => $"{_baseApi}/unit/{{unitIdS}}";
+
+        // ======================
+        // EQUIPMENT TYPE
+        // ======================
+
+        public string EquipmentType_GetAll => $"{_baseApi}/EquipmentType";
+        public string EquipmentType_GetById => $"{_baseApi}/EquipmentType/{{equipmentTypeId}}";
+        public string EquipmentType_Create => $"{_baseApi}/EquipmentType";
+        public string EquipmentType_Update => $"{_baseApi}/EquipmentType/{{equipmentTypeId}}";
+        public string EquipmentType_Delete => $"{_baseApi}/EquipmentType/{{equipmentTypeId}}";
         
 
         // ======================

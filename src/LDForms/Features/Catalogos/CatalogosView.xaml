@@ -131,6 +131,13 @@
                 </TabItem.Header>
             </TabItem>
 
+            <TabItem x:Name="TabEquipos"
+                     Style="{StaticResource ElegantTabItemStyle}">
+                <TabItem.Header>
+                    <TextBlock Text="Equipos"/>
+                </TabItem.Header>
+            </TabItem>
+
             <TabItem x:Name="TabMonedas"
                      Style="{StaticResource ElegantTabItemStyle}">
                 <TabItem.Header>

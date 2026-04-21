@@ -154,6 +154,11 @@ public static class PermissionKeys
     public const string Unit_Create = "units.create";
     public const string Unit_Update = "units.update";
 
+    // EQUIPMENT TYPES / TIPOS DE EQUIPO
+    public const string EquipmentType_View   = "units.read";//"equipment-types.read";
+    public const string EquipmentType_Create = "units.read";//"equipment-types.create";
+    public const string EquipmentType_Update = "units.read";//"equipment-types.update";
+
 
 
 
