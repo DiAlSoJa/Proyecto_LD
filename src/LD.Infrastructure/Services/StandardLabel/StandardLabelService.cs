@@ -24,20 +24,20 @@ namespace LD.Infrastructure.Services.StandardLabel
                 throw new ArgumentException("La cantidad debe ser mayor a cero.");
 
             var now = DateTime.Now;
-            var year = now.Year;
+            var sequenceDate = now.Date;
 
             await using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
 
             try
             {
                 var sequence = await _context.StandarIdSequences
-                    .FirstOrDefaultAsync(x => x.Year == year);
+                    .FirstOrDefaultAsync(x => x.SequenceDate == sequenceDate);
 
                 if (sequence == null)
                 {
                     sequence = new StandarIdSequence
                     {
-                        Year = year,
+                        SequenceDate = sequenceDate,
                         LastNumber = 0,
                         LastUpdatedAt = now
                     };
@@ -59,7 +59,7 @@ namespace LD.Infrastructure.Services.StandardLabel
 
                 for (int i = startNumber; i <= endNumber; i++)
                 {
-                    result.Add($"{now:yyyyMMdd}{i:000000}");
+                    result.Add($"{now:yyyyMMdd}{i:0000}");
                 }
 
                 return result;
@@ -79,7 +79,7 @@ namespace LD.Infrastructure.Services.StandardLabel
                 throw new ArgumentException("No se recibió el usuario para asignar StandarId.");
 
             var now = DateTime.Now;
-            var year = now.Year;
+            var sequenceDate = now.Date;
 
             await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
 
@@ -99,13 +99,13 @@ namespace LD.Infrastructure.Services.StandardLabel
                     throw new Exception("Una o más líneas ya tienen StandarId asignado.");
 
                 var sequence = await _context.StandarIdSequences
-                    .FirstOrDefaultAsync(x => x.Year == year);
+                    .FirstOrDefaultAsync(x => x.SequenceDate == sequenceDate);
 
                 if (sequence == null)
                 {
                     sequence = new StandarIdSequence
                     {
-                        Year = year,
+                        SequenceDate = sequenceDate,
                         LastNumber = 0,
                         LastUpdatedAt = now
                     };
@@ -131,7 +131,7 @@ namespace LD.Infrastructure.Services.StandardLabel
 
                     var standarId = new Domain.Entities.StandardLabel
                     {
-                        StandarIdStr = $"{now:yyyyMMdd}{current:000000}",
+                        StandarIdStr = $"{now:yyyyMMdd}{current:0000}",
                         PartNumber = detail.PartNumber,
                         clientId = detail.AsnDetail.Asn.ClientId,
                         projectId = detail.AsnDetail.Asn.ProjectId,

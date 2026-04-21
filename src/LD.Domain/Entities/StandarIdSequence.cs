@@ -6,7 +6,7 @@ namespace LD.Domain.Entities
     {
         public int StandarIdSequenceId { get; set; }
 
-        public int Year { get; set; }
+        public DateTime SequenceDate { get; set; }
 
         public int LastNumber { get; set; }
 

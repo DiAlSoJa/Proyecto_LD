@@ -456,6 +456,30 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
+        private void BtnImprimirEtiquetas_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var receiptDetails = dgRecepcionASN.Items
+                    .OfType<AsnReceiptDetailDto>()
+                    .Where(x => !string.IsNullOrWhiteSpace(x.StandardId))
+                    .OrderBy(x => x.StandardId)
+                    .ToList();
+
+                if (receiptDetails.Count == 0)
+                {
+                    DialogHelper.ShowWarning("No hay partidas recibidas con StandardId para imprimir.");
+                    return;
+                }
+
+                AsnReceiptLabelPrinter.PrintLabels(receiptDetails, _selectedX, _selectedDetail);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
         private void BtnCancelar_Click(object sender, RoutedEventArgs e) { }
 
         private void BtnEscanear_Click(object sender, RoutedEventArgs e) { }

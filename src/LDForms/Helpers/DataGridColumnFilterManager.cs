@@ -356,7 +356,7 @@ namespace LD.FormsX.Helpers
             try
             {
                 var filePath = _dataGrid.ExportVisibleRowsToCsv(_dataGrid.Name);
-                DialogHelper.ShowInfo($"Archivo exportado correctamente:\n{filePath}", "Exportar a Excel");
+                ToastHelper.ShowInfo($"Archivo exportado correctamente:\n{filePath}", "Exportar a Excel");
             }
             catch (Exception ex)
             {

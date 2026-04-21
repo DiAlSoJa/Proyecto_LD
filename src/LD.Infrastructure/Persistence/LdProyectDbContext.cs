@@ -302,8 +302,10 @@ namespace LD.Infrastructure.Persistence
             {
                 entity.ToTable("StandarIdSequences");
                 entity.HasKey(e => e.StandarIdSequenceId);
-                entity.HasIndex(e=>e.Year).IsUnique();
-                entity.Property(e=>e.Year).IsRequired();
+                entity.HasIndex(e => e.SequenceDate).IsUnique();
+                entity.Property(e => e.SequenceDate)
+                    .HasColumnType("date")
+                    .IsRequired();
                 entity.Property(e=> e.LastNumber).IsRequired();    
                 
             });
