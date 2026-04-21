@@ -157,6 +157,15 @@ namespace LD.Forms.Configuration
         public string EquipmentType_Create => $"{_baseApi}/EquipmentType";
         public string EquipmentType_Update => $"{_baseApi}/EquipmentType/{{equipmentTypeId}}";
         public string EquipmentType_Delete => $"{_baseApi}/EquipmentType/{{equipmentTypeId}}";
+
+        // ======================
+        // EQUIPMENT
+        // ======================
+
+        public string Equipment_GetAll => $"{_baseApi}/Equipment";
+        public string Equipment_GetById => $"{_baseApi}/Equipment/{{equipmentId}}";
+        public string Equipment_Create => $"{_baseApi}/Equipment";
+        public string Equipment_Update => $"{_baseApi}/Equipment/{{equipmentId}}";
         
 
         // ======================
@@ -194,8 +203,16 @@ namespace LD.Forms.Configuration
         public string Vehicle_Create => $"{_baseApi}/vehicle";
         public string Vehicle_Update => $"{_baseApi}/vehicle/{{id}}";
         public string Vehicle_Delete => $"{_baseApi}/vehicle/{{id}}";
-        
 
+        // ======================
+        // EQUIPMENT QUESTION
+        // ======================
+
+        public string EquipmentQuestion_GetByEquipmentType => $"{_baseApi}/equipmentquestion/equipment-type/{{equipmentTypeId}}";
+        public string EquipmentQuestion_Save => $"{_baseApi}/equipmentquestion";
+        public string EquipmentQuestion_Delete => $"{_baseApi}/equipmentquestion/{{equipmentQuestionDetId}}";
+
+        
         // ======================
         // WAREHOUSE
         // ======================

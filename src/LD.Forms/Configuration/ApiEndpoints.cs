@@ -176,8 +176,16 @@ namespace LD.Forms.Configuration
         public string Vehicle_Create => $"{_baseApi}/vehicle";
         public string Vehicle_Update => $"{_baseApi}/vehicle/{{id}}";
         public string Vehicle_Delete => $"{_baseApi}/vehicle/{{id}}";
-        
 
+        // ======================
+        // EQUIPMENT QUESTION
+        // ======================
+
+        public string EquipmentQuestion_GetByEquipmentType => $"{_baseApi}/equipmentquestion/equipment-type/{{equipmentTypeId}}";
+        public string EquipmentQuestion_Save => $"{_baseApi}/equipmentquestion";
+        public string EquipmentQuestion_Delete => $"{_baseApi}/equipmentquestion/{{equipmentQuestionDetId}}";
+
+        
         // ======================
         // WAREHOUSE
         // ======================

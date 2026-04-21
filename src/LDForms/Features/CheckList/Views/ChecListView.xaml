@@ -245,7 +245,7 @@
 	                            Grid.Column="5"
 	                            Height="38"
 	                            Padding="12,0"
-	                            
+	                            Click="BtnNuevoEquipo_Click"
 	                            Background="#F3F4F6"
 	                            Foreground="#374151"
 	                            BorderBrush="#D1D5DB"
@@ -1014,20 +1014,10 @@
                                        Foreground="#374151"/>
 
                             <ComboBox x:Name="cmbTipoPregunta"
-                                      Grid.Column="1"
-                                      Height="38"
-                                      FontSize="13"
-                                      VerticalContentAlignment="Center"
-                                      SelectedIndex="0">
-                                <ComboBoxItem Content="HP"/>
-                                <ComboBoxItem Content="HS"/>
-                                <ComboBoxItem Content="Combustión"/>
-                                <ComboBoxItem Content="Genie"/>
-                                <ComboBoxItem Content="Traspaleta Eléctrica"/>
-                                <ComboBoxItem Content="Litio"/>
-                                <ComboBoxItem Content="Lavadora"/>
-                                <ComboBoxItem Content="Batería"/>
-                            </ComboBox>
+                                       Grid.Column="1"
+                                       Height="38"
+                                       FontSize="13"
+                                       VerticalContentAlignment="Center"/>
                         </Grid>
                     </Border>
 
@@ -1095,16 +1085,18 @@
                                                    FontSize="13"
                                                    Foreground="#374151"/>
 
-                                        <RadioButton x:Name="rbSiNo"
-                                                     Grid.Column="1"
-                                                     Content="Si / No"
-                                                     VerticalAlignment="Center"
-                                                     IsChecked="True"/>
+                                         <RadioButton x:Name="rbSiNo"
+                                                      Grid.Column="1"
+                                                      Content="Si / No"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="True"
+                                                      Checked="TipoRespuesta_Checked"/>
 
-                                        <RadioButton x:Name="rbOpciones"
-                                                     Grid.Column="3"
-                                                     Content="Opciones (una por línea)"
-                                                     VerticalAlignment="Center"/>
+                                         <RadioButton x:Name="rbOpciones"
+                                                      Grid.Column="3"
+                                                      Content="Opciones (una por línea)"
+                                                      VerticalAlignment="Center"
+                                                      Checked="TipoRespuesta_Checked"/>
                                     </Grid>
 
                                     <TextBox x:Name="txtOpciones"
@@ -1117,7 +1109,7 @@
                                              MinHeight="120"
                                              BorderBrush="#D1D5DB"/>
 
-                                    <Button x:Name="btndccNuevo"
+                                     <Button x:Name="btndccNuevo"
 	                                        Grid.Row="6"
 	                                        Height="38"
 	                                        Padding="2,0"
@@ -1126,7 +1118,8 @@
 	                                        Foreground="#374151"
 	                                        BorderBrush="#D1D5DB"
 	                                        BorderThickness="1"
-	                                        Cursor="Hand" Margin="0,0,521,0">
+	                                        Cursor="Hand" Margin="0,0,521,0"
+                                            Click="BtnGuardarPregunta_Click">
 
                                         <Button.Resources>
                                             <Style TargetType="Border">
@@ -1178,8 +1171,8 @@
                                                Margin="4,0,0,8"
                                                VerticalAlignment="Center"/>
 
-                                    <Button x:Name="btnEditarFF"
-                                                Grid.Column="1"
+                                     <Button x:Name="btnEditarFF"
+                                                 Grid.Column="1"
                                                 Height="38"
                                                 Padding="12,0"
                                                
@@ -1187,7 +1180,8 @@
                                                 Foreground="#374151"
                                                 BorderBrush="#D1D5DB"
                                                 BorderThickness="1"
-                                                Cursor="Hand">
+                                                 Cursor="Hand"
+                                                 Click="BtnEditarPregunta_Click">
 
                                         <Button.Resources>
                                             <Style TargetType="Border">
@@ -1208,16 +1202,17 @@
                                             <TextBlock Text="Editar"/>
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="BtnEliminarFF"
-                                            Grid.Column="9"
-                                            Height="38"
+                                     <Button x:Name="BtnEliminarFF"
+                                             Grid.Column="3"
+                                             Height="38"
                                             Padding="12,0"
                                          
                                             Background="#F3F4F6"
                                             Foreground="#374151"
                                             BorderBrush="#D1D5DB"
                                             BorderThickness="1"
-                                            Cursor="Hand">
+                                             Cursor="Hand"
+                                             Click="BtnEliminarPregunta_Click">
 
                                         <Button.Resources>
                                             <Style TargetType="Border">
@@ -1264,8 +1259,8 @@
                                               SelectionChanged="dgPreguntas_SelectionChanged">
 
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Pregunta" Binding="{Binding Pregunta}" Width="420"/>
-                                            <DataGridTextColumn Header="Opciones" Binding="{Binding Opciones}" Width="320"/>
+                                            <DataGridTextColumn Header="Pregunta" Binding="{Binding QuestionText}" Width="420"/>
+                                            <DataGridTextColumn Header="Opciones" Binding="{Binding OptionAnswerText}" Width="320"/>
                                         </DataGrid.Columns>
 
                                         <DataGrid.Resources>

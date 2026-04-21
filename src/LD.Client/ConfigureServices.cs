@@ -31,6 +31,8 @@ namespace LD.Client
             services.AddScoped<RoleService>();
             services.AddScoped<UnitService>();
             services.AddScoped<EquipmentTypeService>();
+            services.AddScoped<EquipmentService>();
+            services.AddScoped<EquipmentQuestionService>();
             services.AddScoped<InventaryStatusService>();
             services.AddScoped<CurrencyService>();
             services.AddScoped<CategoryService>();
