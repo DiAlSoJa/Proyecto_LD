@@ -23,11 +23,11 @@ public class CreateProductCommand : ProductRequest, IRequest<Result<string>>
 
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<string>>
 {
-    private readonly IRepository<LD.Domain.Entities.Product> _categoryRepository;
+    private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
-    public CreateProductCommandHandler(IRepository<LD.Domain.Entities.Product> categoryRepository, IMapper mapper)
+    public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper)
     {
-        _categoryRepository = categoryRepository;
+        _productRepository = productRepository;
         _mapper = mapper;
     }
 
@@ -35,7 +35,19 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     {
         try
         {
-            var result = await _categoryRepository.CreateAsync(_mapper.Map<LD.Domain.Entities.Product>(request));
+            var clientId = request.ClientId ?? 0;
+            var projectId = request.ProjectId ?? 0;
+            var partNumber = request.PartNumber?.Trim();
+
+            if (clientId > 0 && projectId > 0
+                && await _productRepository.ExistsByClientProjectAndPartNumberAsync(clientId, projectId, partNumber))
+            {
+                return Result<string>.Failure("Ya existe un artículo con el mismo cliente, proyecto y número de parte.", new());
+            }
+
+            request.PartNumber = partNumber;
+
+            var result = await _productRepository.CreateAsync(_mapper.Map<LD.Domain.Entities.Product>(request));
             return result ? Result<string>.Success("Item creado con exito", "") : Result<string>.Failure("Hubo un error al crear el item", new());
 
         }

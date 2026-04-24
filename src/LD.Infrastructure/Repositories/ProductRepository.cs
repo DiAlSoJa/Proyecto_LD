@@ -21,9 +21,20 @@ namespace LD.Infrastructure.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public Task<bool> CreateAsync(Product newModoe)
+        public async Task<bool> CreateAsync(Product newModoe)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (newModoe == null)
+                    return false;
+
+                await _context.items.AddAsync(newModoe);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<List<Product>> GetAllWithRelationsAsync(int? clientId = null, int? projectId = null)
@@ -51,29 +62,84 @@ namespace LD.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public Task<Product?> GetByIdAsync(int id)
+        public async Task<bool> ExistsByClientProjectAndPartNumberAsync(int clientId, int projectId, string? partNumber, int? excludeProductId = null)
         {
-            throw new NotImplementedException();
+            var normalizedPartNumber = (partNumber ?? string.Empty).Trim().ToUpper();
+            if (string.IsNullOrWhiteSpace(normalizedPartNumber))
+                return false;
+
+            var query = _context.items.Where(x =>
+                x.ClientId == clientId &&
+                x.ProjectId == projectId &&
+                x.PartNumber != null &&
+                x.PartNumber.Trim().ToUpper() == normalizedPartNumber);
+
+            if (excludeProductId.HasValue)
+                query = query.Where(x => x.ProductId != excludeProductId.Value);
+
+            return await query.AnyAsync();
         }
 
-        public Task<Product?> GetByIdAsync(string id)
+        public async Task<Product?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.items
+                .Include(x => x.Client)
+                .Include(x => x.Project)
+                .Include(x => x.Category)
+                .Include(x => x.Family)
+                .Include(x => x.StorageType)
+                .FirstOrDefaultAsync(x => x.ProductId == id);
         }
 
-        public Task<List<Product>?> GetManyAsync()
+        public async Task<Product?> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            if (!int.TryParse(id, out var productId))
+                return null;
+
+            return await GetByIdAsync(productId);
         }
 
-        public Task<bool> UpdateAsync(Product modelToUpdate)
+        public async Task<List<Product>?> GetManyAsync()
         {
-            throw new NotImplementedException();
+            return await _context.items
+                .Include(x => x.Client)
+                .Include(x => x.Project)
+                .Include(x => x.Category)
+                .Include(x => x.Family)
+                .Include(x => x.StorageType)
+                .ToListAsync();
         }
 
-        public Task<bool> DeleteAsync(Product modelToDelete)
+        public async Task<bool> UpdateAsync(Product modelToUpdate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (modelToUpdate == null)
+                    return false;
+
+                _context.items.Update(modelToUpdate);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteAsync(Product modelToDelete)
+        {
+            try
+            {
+                if (modelToDelete == null)
+                    return false;
+
+                _context.items.Remove(modelToDelete);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

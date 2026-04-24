@@ -13,5 +13,6 @@ namespace LD.Application.Common.Interfaces.Repository
     {
         Task<List<Product>> GetAllWithRelationsAsync(int? clientId = null, int? projectId = null);
         Task<List<ProductAutocompleteDto>> GetProductByClientAsync(int clientId, int projectId);
+        Task<bool> ExistsByClientProjectAndPartNumberAsync(int clientId, int projectId, string? partNumber, int? excludeProductId = null);
     }
 }

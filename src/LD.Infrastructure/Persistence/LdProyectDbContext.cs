@@ -207,6 +207,10 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(c => c.ProjectId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Product>()
+                .HasIndex(p => new { p.ClientId, p.ProjectId, p.PartNumber })
+                .IsUnique();
+
 
             builder.Entity<UserWarehouse>()
                 .HasOne<ApplicationUser>() 
