@@ -181,7 +181,7 @@
                                     <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                                         <StackPanel>
 
-                                            <Grid Margin="0,0,0,2">
+                                            <Grid x:Name="NoParteRow" Margin="0,0,0,2">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="140"/>
                                                     <ColumnDefinition Width="*"/>
@@ -192,7 +192,7 @@
                                                          Style="{StaticResource InputTextBoxStyle}"/>
                                             </Grid>
 
-                                            <Grid Margin="0,0,0,2">
+                                            <Grid x:Name="DescripcionRow" Margin="0,0,0,2">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="140"/>
                                                     <ColumnDefinition Width="*"/>

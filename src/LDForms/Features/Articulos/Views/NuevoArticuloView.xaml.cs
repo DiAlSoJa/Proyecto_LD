@@ -4,6 +4,7 @@ using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.FormsX.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,6 +23,7 @@ namespace LD.FormsX.Views.Articulos
         private bool _cargandoDatos = false;
         private int _selectedClientId;
         private int _selectedProjectId;
+        private List<CargaMasivaArticuloRow> _cargaMasivaItems = new();
 
         public bool ResponseForm { get; private set; }
 
@@ -40,6 +42,22 @@ namespace LD.FormsX.Views.Articulos
         {
             _selectedClientId = clientId;
             _selectedProjectId = projectId;
+        }
+
+        public void SetCargaMasivaItems(IEnumerable<CargaMasivaArticuloRow> items)
+        {
+            _cargaMasivaItems = items?
+                .Where(x => !string.IsNullOrWhiteSpace(x.PartNumber) || !string.IsNullOrWhiteSpace(x.Description))
+                .Select(x => new CargaMasivaArticuloRow
+                {
+                    PartNumber = x.PartNumber,
+                    Description = x.Description
+                })
+                .ToList() ?? new List<CargaMasivaArticuloRow>();
+
+            var isMassiveMode = _cargaMasivaItems.Count > 0;
+            NoParteRow.Visibility = isMassiveMode ? Visibility.Collapsed : Visibility.Visible;
+            DescripcionRow.Visibility = isMassiveMode ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public async void SetItem(ProductDto? item)
@@ -311,7 +329,7 @@ namespace LD.FormsX.Views.Articulos
             }
         }
 
-        private ProductRequest BuildRequest()
+        private ProductRequest BuildRequest(string? partNumberOverride = null, string? descriptionOverride = null)
         {
             int storageType =
                 rdFifo.IsChecked == true ? 1 :
@@ -323,8 +341,8 @@ namespace LD.FormsX.Views.Articulos
             {
                 ClientId = _selectedClientId,
                 ProjectId = _selectedProjectId,
-                PartNumber = txtNoParte.Text.Trim(),
-                Description = txtDescripcion.Text.Trim(),
+                PartNumber = (partNumberOverride ?? txtNoParte.Text).Trim(),
+                Description = (descriptionOverride ?? txtDescripcion.Text).Trim(),
                 CategoryId = int.TryParse(cmbCategoria.SelectedValue?.ToString(), out int categoryId) ? categoryId : 0,
                 FamilyId = int.TryParse(cmbFamilia.SelectedValue?.ToString(), out int familyId) ? familyId : 0,
 
@@ -383,25 +401,84 @@ namespace LD.FormsX.Views.Articulos
                 : await CreateItem(request);
         }
 
+        private async Task<(bool IsSuccess, string Message)> SaveCargaMasivaAsync()
+        {
+            var registros = _cargaMasivaItems
+                .Where(x => !string.IsNullOrWhiteSpace(x.PartNumber) || !string.IsNullOrWhiteSpace(x.Description))
+                .ToList();
+
+            if (registros.Count == 0)
+                return (false, "No hay artículos para guardar.");
+
+            if (ItemSelected != null)
+                return (false, "La carga masiva no está disponible en modo edición.");
+
+            var errores = new List<string>();
+            var guardados = 0;
+
+            foreach (var row in registros)
+            {
+                var request = BuildRequest(row.PartNumber, row.Description);
+                var result = await SaveItem(request);
+
+                if (result.IsSuccess)
+                {
+                    guardados++;
+                    continue;
+                }
+
+                errores.Add($"{row.PartNumber} - {result.ErrorMessage ?? result.Message ?? "Hubo un error al guardar."}");
+            }
+
+            if (errores.Count > 0)
+            {
+                var mensaje = guardados > 0
+                    ? $"Se guardaron {guardados} artículos, pero algunos fallaron:{Environment.NewLine}{string.Join(Environment.NewLine, errores)}"
+                    : $"No se pudo guardar la carga masiva:{Environment.NewLine}{string.Join(Environment.NewLine, errores)}";
+
+                return (false, mensaje);
+            }
+
+            return (true, $"Se guardaron {guardados} artículos correctamente.");
+        }
+
         private async void btnSave_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 btnSave.IsEnabled = false;
 
-                var request = BuildRequest();
-                var result = await SaveItem(request);
-
-                if (result.IsSuccess)
+                if (_cargaMasivaItems.Count > 0)
                 {
-                    DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
-                    ResponseForm = true;
-                    this.DialogResult = true;
-                    Close();
+                    var massiveResult = await SaveCargaMasivaAsync();
+                    if (massiveResult.IsSuccess)
+                    {
+                        DialogHelper.ShowSuccess(massiveResult.Message);
+                        ResponseForm = true;
+                        DialogResult = true;
+                        Close();
+                    }
+                    else
+                    {
+                        DialogHelper.ShowError(massiveResult.Message);
+                    }
                 }
                 else
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
+                    var request = BuildRequest();
+                    var result = await SaveItem(request);
+
+                    if (result.IsSuccess)
+                    {
+                        DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
+                        ResponseForm = true;
+                        DialogResult = true;
+                        Close();
+                    }
+                    else
+                    {
+                        DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
+                    }
                 }
             }
             catch (Exception ex)

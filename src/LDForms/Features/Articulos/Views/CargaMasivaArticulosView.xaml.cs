@@ -4,21 +4,27 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using LD.FormsX.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views.Articulos
 {
     public partial class CargaMasivaArticulosView : Window, INotifyPropertyChanged
     {
+        private readonly IServiceProvider _serviceProvider;
         private string _clientName = string.Empty;
         private string _projectName = string.Empty;
+        private int _clientId;
+        private int _projectId;
 
         public ObservableCollection<CargaMasivaArticuloRow> Items { get; } = new();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public CargaMasivaArticulosView()
+        public CargaMasivaArticulosView(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            _serviceProvider = serviceProvider;
             DataContext = this;
             Items.CollectionChanged += (_, _) => UpdateTotals();
             UpdateContextText();
@@ -27,6 +33,8 @@ namespace LD.FormsX.Views.Articulos
 
         public void SetContext(int clientId, int projectId, string clientName, string projectName)
         {
+            _clientId = clientId;
+            _projectId = projectId;
             _clientName = string.IsNullOrWhiteSpace(clientName) ? clientId.ToString() : clientName;
             _projectName = string.IsNullOrWhiteSpace(projectName) ? projectId.ToString() : projectName;
             UpdateContextText();
@@ -46,8 +54,22 @@ namespace LD.FormsX.Views.Articulos
 
         private void BtnAceptar_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            Close();
+            if (Items.Count == 0)
+            {
+                DialogHelper.ShowWarning("Primero pega al menos un registro.");
+                return;
+            }
+
+            var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
+            dialog.Owner = this;
+            dialog.SetContext(_clientId, _projectId);
+            dialog.SetCargaMasivaItems(Items.ToList());
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                DialogResult = true;
+                Close();
+            }
         }
 
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)

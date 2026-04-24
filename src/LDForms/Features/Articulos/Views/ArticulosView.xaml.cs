@@ -221,7 +221,7 @@ namespace LD.FormsX.Views
                 await CargarDatosAsync();
         }
 
-        private void BtnCargaMasiva_Click(object sender, RoutedEventArgs e)
+        private async void BtnCargaMasiva_Click(object sender, RoutedEventArgs e)
         {
             if (!TryGetSelectedIds(out var clienteId, out var proyectoId))
             {
@@ -232,7 +232,9 @@ namespace LD.FormsX.Views
             var dialog = _serviceProvider.GetRequiredService<CargaMasivaArticulosView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetContext(clienteId, proyectoId, SelectedClientText, SelectedProjectText);
-            dialog.ShowDialog();
+            var result = dialog.ShowDialog();
+            if (result == true)
+                await CargarDatosAsync();
         }
 
         private async Task CargarClientesAsync()
