@@ -185,7 +185,7 @@ namespace LD.FormsX.Views
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            if (!TryGetSelectedIds(out _, out _))
+            if (!TryGetSelectedIds(out var clienteId, out var proyectoId))
             {
                 DialogHelper.ShowWarning("Selecciona un cliente y un proyecto.");
                 return;
@@ -193,6 +193,7 @@ namespace LD.FormsX.Views
 
             var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
             dialog.Owner = Window.GetWindow(this);
+            dialog.SetContext(clienteId, proyectoId);
 
             var result = dialog.ShowDialog();
             if (result == true)
@@ -201,7 +202,7 @@ namespace LD.FormsX.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (!TryGetSelectedIds(out _, out _))
+            if (!TryGetSelectedIds(out var clienteId, out var proyectoId))
             {
                 DialogHelper.ShowWarning("Selecciona un cliente y un proyecto.");
                 return;
@@ -212,11 +213,26 @@ namespace LD.FormsX.Views
 
             var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
             dialog.Owner = Window.GetWindow(this);
+            dialog.SetContext(clienteId, proyectoId);
             dialog.SetItem(_selectedX);
 
             var result = dialog.ShowDialog();
             if (result == true)
                 await CargarDatosAsync();
+        }
+
+        private void BtnCargaMasiva_Click(object sender, RoutedEventArgs e)
+        {
+            if (!TryGetSelectedIds(out var clienteId, out var proyectoId))
+            {
+                DialogHelper.ShowWarning("Selecciona un cliente y un proyecto.");
+                return;
+            }
+
+            var dialog = _serviceProvider.GetRequiredService<CargaMasivaArticulosView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetContext(clienteId, proyectoId, SelectedClientText, SelectedProjectText);
+            dialog.ShowDialog();
         }
 
         private async Task CargarClientesAsync()

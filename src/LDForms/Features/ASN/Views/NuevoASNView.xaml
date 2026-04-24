@@ -178,7 +178,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock x:Name="txtTituloVentana"
-                               Text="ASN"
+                               Text=""
                                Foreground="White"
                                FontWeight="Bold"
                                FontSize="13"
@@ -222,7 +222,7 @@
                     Background="White"
                     BorderBrush="{StaticResource BorderBrushSoft}"
                     BorderThickness="0,0,0,1"
-                    Padding="16,14,16,6">
+                    Padding="16,1,16,6">
                     <StackPanel>
                         <Grid Margin="0,0,0,10">
                             <Border x:Name="bdPreAsn"
@@ -397,15 +397,15 @@
                                          Margin="0,35,0,0"
                                          Style="{StaticResource InputTextBoxStyle}"/>
 
-                                    <TextBlock Grid.Row="5"
-                                       Grid.Column="0"
+                                    <TextBlock Grid.Row="4"
+                                       Grid.Column="2"
                                        Text="Sello:"
                                        Style="{StaticResource LabelStyle}"
                                        Margin="0,13,8,0"
                                        VerticalAlignment="Top"/>
                                     <TextBox x:Name="txtSelloTransporte"
-                                         Grid.Row="4"
-                                         Grid.Column="1"
+                                         Grid.Row="3"
+                                         Grid.Column="4"
                                          Grid.RowSpan="2"
                                          Width="170"
                                          HorizontalAlignment="Left"

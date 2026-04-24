@@ -113,28 +113,32 @@ namespace LD.FormsX.Views.Dialogs
             if (txtTituloVentana == null)
                 return;
 
+            var asnCode = AsnSelected?.AsnCode?.Trim();
             var clientName = string.IsNullOrWhiteSpace(_clientName) ? AsnSelected?.Client?.Trim() : _clientName;
             var projectName = string.IsNullOrWhiteSpace(_projectName) ? AsnSelected?.Project?.Trim() : _projectName;
+            var titlePrefix = string.IsNullOrWhiteSpace(asnCode)
+                ? ""
+                : $" {asnCode}";
 
             if (string.IsNullOrWhiteSpace(clientName) && string.IsNullOrWhiteSpace(projectName))
             {
-                txtTituloVentana.Text = "ASN";
+                txtTituloVentana.Text = titlePrefix;
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(clientName))
             {
-                txtTituloVentana.Text = $"ASN - {projectName}";
+                txtTituloVentana.Text = $"{titlePrefix} - {projectName}";
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(projectName))
             {
-                txtTituloVentana.Text = $"ASN - {clientName}";
+                txtTituloVentana.Text = $"{titlePrefix} - {clientName}";
                 return;
             }
 
-            txtTituloVentana.Text = $"ASN - {clientName} / {projectName}";
+            txtTituloVentana.Text = $"{titlePrefix} - {clientName} / {projectName}";
         }
 
         private static bool IsConfirmedStatus(string? status) =>
@@ -218,6 +222,7 @@ namespace LD.FormsX.Views.Dialogs
                 var item = response.Data;
                 AsnSelected ??= new AsnDto();
                 AsnSelected.AsnId = item.AsnId;
+                AsnSelected.AsnCode = item.AsnCode;
                 AsnSelected.Status = item.Status;
 
                 _clientId = item.ClientId;
@@ -239,6 +244,7 @@ namespace LD.FormsX.Views.Dialogs
 
 
                 await LoadProductsForSelectedClientProjectAsync();
+                UpdateWindowTitle();
                 ApplyConfirmedState();
 
             }
@@ -433,13 +439,19 @@ namespace LD.FormsX.Views.Dialogs
 
                 var asnId = ResolveSavedAsnId(result);
                 Log.Information("ASN resuelto para guardar detalles: {AsnId}", asnId);
+                await RefreshAsnHeaderAsync(asnId);
                 await SaveDetailsAsync(asnId);
 
                 AsnSelected ??= new AsnDto();
                 AsnSelected.AsnId = asnId;
+                if (!string.IsNullOrWhiteSpace(result.Data) && !int.TryParse(result.Data, out _))
+                    AsnSelected.AsnCode = result.Data.Trim();
+
+                UpdateWindowTitle();
 
                 ToastHelper.ShowSuccess("ASN guardado exitosamente.");
                 ShowScanSection();
+
             }
             catch (Exception ex)
             {
@@ -544,8 +556,28 @@ namespace LD.FormsX.Views.Dialogs
             var asnId = ResolveSavedAsnId(saveResult);
             AsnSelected ??= new AsnDto();
             AsnSelected.AsnId = asnId;
+            await RefreshAsnHeaderAsync(asnId);
+            if (!string.IsNullOrWhiteSpace(saveResult.Data) && !int.TryParse(saveResult.Data, out _))
+                AsnSelected.AsnCode = saveResult.Data.Trim();
+
+            UpdateWindowTitle();
             ShowScanSection();
             return true;
+        }
+
+        private async Task RefreshAsnHeaderAsync(int asnId)
+        {
+            if (asnId <= 0)
+                return;
+
+            var response = await _asnService.GetAsnById(asnId);
+            if (!response.IsSuccess || response.Data == null)
+                return;
+
+            AsnSelected ??= new AsnDto();
+            AsnSelected.AsnId = response.Data.AsnId;
+            AsnSelected.AsnCode = response.Data.AsnCode;
+            AsnSelected.Status = response.Data.Status;
         }
 
         private int ResolveSavedAsnId(ApiResponseDto<string> result)

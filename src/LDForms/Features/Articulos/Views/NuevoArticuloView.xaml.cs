@@ -20,6 +20,8 @@ namespace LD.FormsX.Views.Articulos
 
         private ProductDto? ItemSelected;
         private bool _cargandoDatos = false;
+        private int _selectedClientId;
+        private int _selectedProjectId;
 
         public bool ResponseForm { get; private set; }
 
@@ -34,6 +36,12 @@ namespace LD.FormsX.Views.Articulos
             _categoryService = categoryService;
         }
 
+        public void SetContext(int clientId, int projectId)
+        {
+            _selectedClientId = clientId;
+            _selectedProjectId = projectId;
+        }
+
         public async void SetItem(ProductDto? item)
         {
             ItemSelected = item;
@@ -44,7 +52,7 @@ namespace LD.FormsX.Views.Articulos
         {
             base.OnContentRendered(e);
 
-            if (cmbCliente.Items.Count == 0)
+            if (!_cargandoDatos)
                 await CargarDatosInicialesAsync();
         }
 
@@ -61,15 +69,6 @@ namespace LD.FormsX.Views.Articulos
             try
             {
                 _cargandoDatos = true;
-
-                var clientes = await _lookupService.GetClientLookup();
-                if (clientes.IsSuccess && clientes.Data != null)
-                {
-                    cmbCliente.ItemsSource = clientes.Data;
-                    cmbCliente.DisplayMemberPath = "Value";
-                    cmbCliente.SelectedValuePath = "Key";
-                    cmbCliente.SelectedIndex = -1;
-                }
 
                 var dimensioner = await _lookupService.GetDimensionerLookup();
                 if (dimensioner.IsSuccess && dimensioner.Data != null)
@@ -96,9 +95,14 @@ namespace LD.FormsX.Views.Articulos
                     ConfigurarCombo(cmbPaqueteEstandar);
                 }
 
-                cmbProyecto.ItemsSource = null;
                 cmbCategoria.ItemsSource = null;
                 cmbFamilia.ItemsSource = null;
+
+                if (HasValidContext())
+                {
+                    await SetCombosCategories();
+                    await SetCombosFamilias();
+                }
             }
             catch (Exception ex)
             {
@@ -117,69 +121,20 @@ namespace LD.FormsX.Views.Articulos
             combo.SelectedIndex = -1;
         }
 
-        private async Task SetCombosProjects(string projectSel = "")
-        {
-            try
-            {
-                _cargandoDatos = true;
-                cmbProyecto.ItemsSource = null;
-
-                if (cmbCliente.SelectedValue == null)
-                    return;
-
-                if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
-                    return;
-
-                var proyectos = await _lookupService.GetProjectClientLookup(clienteId);
-
-                if (!proyectos.IsSuccess || proyectos.Data == null)
-                    return;
-
-                cmbProyecto.DisplayMemberPath = "Value";
-                cmbProyecto.SelectedValuePath = "Key";
-                cmbProyecto.ItemsSource = proyectos.Data;
-
-                if (!string.IsNullOrWhiteSpace(projectSel))
-                    cmbProyecto.SelectedValue = projectSel;
-                else if (proyectos.Data.Count > 1)
-                    cmbProyecto.SelectedIndex = -1;
-
-                cmbCategoria.ItemsSource = null;
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-            finally
-            {
-                _cargandoDatos = false;
-            }
-        }
-
         private async Task SetCombosCategories(string selectedValue = "")
         {
             try
             {
                 _cargandoDatos = true;
 
-                if (cmbCliente.SelectedValue == null || cmbProyecto.SelectedValue == null)
+                if (!HasValidContext())
                 {
                     cmbCategoria.ItemsSource = null;
                     cmbFamilia.ItemsSource = null;
                     return;
                 }
 
-                if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
-                    return;
-
-                if (!int.TryParse(cmbProyecto.SelectedValue.ToString(), out int proyectoId) || proyectoId <= 0)
-                {
-                    cmbCategoria.ItemsSource = null;
-                    cmbFamilia.ItemsSource = null;
-                    return;
-                }
-
-                var categorias = await _lookupService.GetCategoryClientLookup(clienteId, proyectoId);
+                var categorias = await _lookupService.GetCategoryClientLookup(_selectedClientId, _selectedProjectId);
                 if (categorias.IsSuccess && categorias.Data != null)
                 {
                     cmbCategoria.DisplayMemberPath = "Value";
@@ -212,26 +167,14 @@ namespace LD.FormsX.Views.Articulos
             {
                 _cargandoDatos = true;
 
-                if (cmbCliente.SelectedValue == null || cmbProyecto.SelectedValue == null)
+                if (!HasValidContext())
                 {
                     cmbCategoria.ItemsSource = null;
                     cmbFamilia.ItemsSource = null;
                     return;
                 }
 
-                if (!int.TryParse(cmbCliente.SelectedValue.ToString(), out int clienteId) || clienteId <= 0)
-                    return;
-
-                if (!int.TryParse(cmbProyecto.SelectedValue.ToString(), out int proyectoId) || proyectoId <= 0)
-                {
-                    cmbCategoria.ItemsSource = null;
-                    cmbFamilia.ItemsSource = null;
-                    return;
-                }
-
-              
-
-                var familias = await _lookupService.GetFamilyClientLookup(clienteId, proyectoId);
+                var familias = await _lookupService.GetFamilyClientLookup(_selectedClientId, _selectedProjectId);
                 if (familias.IsSuccess && familias.Data != null)
                 {
                     cmbFamilia.DisplayMemberPath = "Value";
@@ -273,22 +216,27 @@ namespace LD.FormsX.Views.Articulos
                 }
 
                 var item = response.Data;
+                if (item == null)
+                {
+                    DialogHelper.ShowError("No se pudo cargar el artículo.");
+                    return;
+                }
+
+                if (_selectedClientId <= 0)
+                    _selectedClientId = item.ClientId ?? 0;
+
+                if (_selectedProjectId <= 0)
+                    _selectedProjectId = item.ProjectId ?? 0;
+
+                await SetCombosCategories(item.CategoryId?.ToString() ?? string.Empty);
+                await SetCombosFamilias(item.FamilyId?.ToString() ?? string.Empty);
 
                 // Encabezado
-                cmbCliente.SelectedValue = item.ClientId.ToString();
-                await SetCombosProjects(item.ProjectId.ToString());
-                
-
                 // Generales
                 txtNoParte.Text = item.PartNumber ?? string.Empty;
                 txtDescripcion.Text = item.Description ?? string.Empty;
-                
-                cmbCategoria.SelectedValue = item.CategoryId.ToString();
-                cmbFamilia.SelectedValue = item.FamilyId.ToString();
-                await SetCombosFamilias(item.FamilyId.ToString());
-                await SetCombosCategories(item.CategoryId.ToString());
-                
-                
+                cmbCategoria.SelectedValue = item.CategoryId?.ToString();
+                cmbFamilia.SelectedValue = item.FamilyId?.ToString();
 
                 //chkActivo.IsChecked = item.a
                 chkTemperatura.IsChecked = item.IsTemperatureControlled;
@@ -373,8 +321,8 @@ namespace LD.FormsX.Views.Articulos
 
             return new ProductRequest
             {
-                ClientId = int.TryParse(cmbCliente.SelectedValue?.ToString(), out int clienteId) ? clienteId : 0,
-                ProjectId = int.TryParse(cmbProyecto.SelectedValue?.ToString(), out int projectId) ? projectId : 0,
+                ClientId = _selectedClientId,
+                ProjectId = _selectedProjectId,
                 PartNumber = txtNoParte.Text.Trim(),
                 Description = txtDescripcion.Text.Trim(),
                 CategoryId = int.TryParse(cmbCategoria.SelectedValue?.ToString(), out int categoryId) ? categoryId : 0,
@@ -466,18 +414,7 @@ namespace LD.FormsX.Views.Articulos
             }
         }
 
-        private async void cmbCliente_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_cargandoDatos) return;
-            await SetCombosProjects();
-        }
-
-        private async void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_cargandoDatos) return;
-            await SetCombosCategories();
-            await SetCombosFamilias();
-        }
+        private bool HasValidContext() => _selectedClientId > 0 && _selectedProjectId > 0;
 
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)
         {
