@@ -1,14 +1,15 @@
 using LD.Client.Services;
 using LD.Contracts.Equipment;
+using LD.Contracts.EquipmentSupplier;
 using LD.Contracts.EquipmentType;
 using LD.Contracts.Requests;
 using LD.FormsX.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace LD.FormsX.Views.CheckList
@@ -17,13 +18,21 @@ namespace LD.FormsX.Views.CheckList
     {
         private readonly EquipmentService _equipmentService;
         private readonly EquipmentTypeService _equipmentTypeService;
+        private readonly EquipmentSupplierService _equipmentSupplierService;
+        private readonly IServiceProvider _serviceProvider;
         private EquipmentDto? _selectedEquipment;
 
-        public NuevoEquipoCheckListView(EquipmentService equipmentService, EquipmentTypeService equipmentTypeService)
+        public NuevoEquipoCheckListView(
+            EquipmentService equipmentService,
+            EquipmentTypeService equipmentTypeService,
+            EquipmentSupplierService equipmentSupplierService,
+            IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _equipmentService = equipmentService;
             _equipmentTypeService = equipmentTypeService;
+            _equipmentSupplierService = equipmentSupplierService;
+            _serviceProvider = serviceProvider;
 
             Loaded += NuevoEquipoCheckListView_Loaded;
             btnSave.Click += BtnGuardar_Click;
@@ -40,15 +49,20 @@ namespace LD.FormsX.Views.CheckList
         private async void NuevoEquipoCheckListView_Loaded(object sender, RoutedEventArgs e)
         {
             await CargarTiposAsync();
+            await CargarProveedoresAsync();
 
             if (_selectedEquipment is not null)
+            {
                 await CargarEquipoAsync();
+            }
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
+            {
                 DragMove();
+            }
         }
 
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
@@ -120,13 +134,15 @@ namespace LD.FormsX.Views.CheckList
                 Hourmeter = hourmeter,
                 IsOperative = rbSi.IsChecked == true,
                 EquipmentTypeId = equipmentTypeId,
-                EquipmentSupplierId = cmbProveedor.SelectedValue as int? ?? _selectedEquipment?.EquipmentSupplierId ?? 0,
+                EquipmentSupplierId = cmbProveedor.SelectedValue is int supplierId
+                    ? supplierId
+                    : _selectedEquipment?.EquipmentSupplierId ?? 0,
                 WarehouseId = 0,
                 Turn1 = _selectedEquipment?.Turno1 ?? string.Empty,
                 Turn2 = _selectedEquipment?.Turno2 ?? string.Empty,
                 Turn3 = _selectedEquipment?.Turno3 ?? string.Empty,
-                ImagePathLeft = string.Empty,
-                ImagePathRight = string.Empty
+                ImagePathLeft = _selectedEquipment?.ImagePathLeft ?? string.Empty,
+                ImagePathRight = _selectedEquipment?.ImagePathRight ?? string.Empty
             };
         }
 
@@ -135,9 +151,16 @@ namespace LD.FormsX.Views.CheckList
             Close();
         }
 
-        private void BtnNuevoProveedor_Click(object sender, RoutedEventArgs e)
+        private async void BtnNuevoProveedor_Click(object sender, RoutedEventArgs e)
         {
-            DialogHelper.ShowInfo("La alta de proveedor todavía no está habilitada en este diálogo.");
+            var dialog = _serviceProvider.GetRequiredService<NuevoProveedorCheckListView>();
+            dialog.Owner = this;
+
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                await CargarProveedoresAsync(dialog.CreatedSupplierName);
+            }
         }
 
         private async Task CargarTiposAsync()
@@ -154,15 +177,51 @@ namespace LD.FormsX.Views.CheckList
             cmbTipo.SelectedValuePath = nameof(EquipmentTypeDto.EquipmentTypeId);
 
             if (cmbTipo.SelectedIndex < 0 && response.Data.Count > 0)
-                cmbTipo.SelectedIndex = 0;
-
-            cmbProveedor.ItemsSource = new List<ComboBoxItem>
             {
-                new() { Content = "General", Tag = 0 }
-            };
-            cmbProveedor.DisplayMemberPath = nameof(ComboBoxItem.Content);
-            cmbProveedor.SelectedValuePath = nameof(ComboBoxItem.Tag);
-            cmbProveedor.SelectedIndex = 0;
+                cmbTipo.SelectedIndex = 0;
+            }
+        }
+
+        private async Task CargarProveedoresAsync(string? supplierNameToSelect = null)
+        {
+            var response = await _equipmentSupplierService.GetEquipmentSuppliers();
+            if (!response.IsSuccess || response.Data is null)
+            {
+                cmbProveedor.ItemsSource = null;
+                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudieron cargar los proveedores.");
+                return;
+            }
+
+            var suppliers = response.Data
+                .OrderBy(x => x.EquipmentSupplierName)
+                .ToList();
+
+            cmbProveedor.ItemsSource = suppliers;
+            cmbProveedor.DisplayMemberPath = nameof(EquipmentSupplierDto.EquipmentSupplierName);
+            cmbProveedor.SelectedValuePath = nameof(EquipmentSupplierDto.EquipmentSupplierId);
+
+            if (!string.IsNullOrWhiteSpace(supplierNameToSelect))
+            {
+                var createdSupplier = suppliers.LastOrDefault(x =>
+                    string.Equals(x.EquipmentSupplierName, supplierNameToSelect, StringComparison.OrdinalIgnoreCase));
+
+                if (createdSupplier is not null)
+                {
+                    cmbProveedor.SelectedValue = createdSupplier.EquipmentSupplierId;
+                    return;
+                }
+            }
+
+            if (_selectedEquipment?.EquipmentSupplierId > 0)
+            {
+                cmbProveedor.SelectedValue = _selectedEquipment.EquipmentSupplierId;
+                return;
+            }
+
+            if (cmbProveedor.SelectedIndex < 0 && suppliers.Count > 0)
+            {
+                cmbProveedor.SelectedIndex = 0;
+            }
         }
 
         private async Task CargarEquipoAsync()

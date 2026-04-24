@@ -199,6 +199,8 @@ namespace LD.FormsX
             services.AddTransient<NuevoArticuloView>();
             services.AddTransient<NuevaAuditoriaView>();
             services.AddTransient<NuevoEquipoCheckListView>();
+            services.AddTransient<AsignarUsuarioEquipoView>();
+            services.AddTransient<NuevoProveedorCheckListView>();
             services.AddTransient<NuevoASNView>();
             services.AddTransient<BuscarVehiculoView>();
 

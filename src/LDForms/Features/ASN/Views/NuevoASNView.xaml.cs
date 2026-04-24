@@ -85,6 +85,7 @@ namespace LD.FormsX.Views.Dialogs
             _clientName = _asnSelected?.Client?.Trim() ?? string.Empty;
             _projectName = _asnSelected?.Project?.Trim() ?? string.Empty;
             UpdateWindowTitle();
+            ApplyConfirmedState();
 
             if (AsnSelected != null)
                 ShowScanSection();
@@ -136,6 +137,70 @@ namespace LD.FormsX.Views.Dialogs
             txtTituloVentana.Text = $"ASN - {clientName} / {projectName}";
         }
 
+        private static bool IsConfirmedStatus(string? status) =>
+            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
+
+        private bool IsCurrentAsnConfirmed() => IsConfirmedStatus(AsnSelected?.Status);
+
+        private bool EnsureCurrentAsnEditable()
+        {
+            if (!IsCurrentAsnConfirmed())
+                return true;
+
+            DialogHelper.ShowWarning("El ASN esta confirmado y no permite agregar, editar ni eliminar registros.");
+            return false;
+        }
+
+        private void ApplyConfirmedState()
+        {
+            var isEditable = !IsCurrentAsnConfirmed();
+
+            if (btnGuardar != null)
+                btnGuardar.IsEnabled = isEditable;
+
+            if (btnBuscarVehiculo != null)
+                btnBuscarVehiculo.IsEnabled = isEditable;
+
+            if (txtNumeroFactura != null)
+                txtNumeroFactura.IsEnabled = isEditable;
+
+            if (txtNumeroGuia != null)
+                txtNumeroGuia.IsEnabled = isEditable;
+
+            if (dpEta != null)
+                dpEta.IsEnabled = isEditable;
+
+            if (txtBultos != null)
+                txtBultos.IsEnabled = isEditable;
+
+            if (chkEsDevolucion != null)
+                chkEsDevolucion.IsEnabled = isEditable;
+
+            if (chkMovimientoRequeridoCliente != null)
+                chkMovimientoRequeridoCliente.IsEnabled = isEditable;
+
+            if (txtLineaTransporte != null)
+                txtLineaTransporte.IsEnabled = isEditable;
+
+            if (txtTipoVehiculo != null)
+                txtTipoVehiculo.IsEnabled = isEditable;
+
+            if (txtChofer != null)
+                txtChofer.IsEnabled = isEditable;
+
+            if (txtPlacasVehiculo != null)
+                txtPlacasVehiculo.IsEnabled = isEditable;
+
+            if (txtSelloTransporte != null)
+                txtSelloTransporte.IsEnabled = isEditable;
+
+            if (dgDetail != null)
+                dgDetail.IsReadOnly = !isEditable;
+
+            if (dgUbicacionesAsignadas != null)
+                dgUbicacionesAsignadas.IsReadOnly = !isEditable;
+        }
+
         private async Task CargarDatosAsync()
         {
             try
@@ -151,6 +216,9 @@ namespace LD.FormsX.Views.Dialogs
                 }
 
                 var item = response.Data;
+                AsnSelected ??= new AsnDto();
+                AsnSelected.AsnId = item.AsnId;
+                AsnSelected.Status = item.Status;
 
                 _clientId = item.ClientId;
                 _projectId = item.ProjectId;
@@ -171,6 +239,7 @@ namespace LD.FormsX.Views.Dialogs
 
 
                 await LoadProductsForSelectedClientProjectAsync();
+                ApplyConfirmedState();
 
             }
             catch (Exception ex)
@@ -332,6 +401,9 @@ namespace LD.FormsX.Views.Dialogs
         {
             try
             {
+                if (!EnsureCurrentAsnEditable())
+                    return;
+
                 btnGuardar.IsEnabled = false;
                 CommitDetailGridEdits();
                 CommitReceiptGridEdits();
@@ -375,7 +447,7 @@ namespace LD.FormsX.Views.Dialogs
             }
             finally
             {
-                btnGuardar.IsEnabled = true;
+                ApplyConfirmedState();
             }
 
         }
@@ -446,6 +518,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task<bool> EnsureAsnPersistedAsync()
         {
+            if (!EnsureCurrentAsnEditable())
+                return false;
+
             if (AsnSelected?.AsnId > 0)
                 return true;
 
@@ -574,6 +649,23 @@ namespace LD.FormsX.Views.Dialogs
             var emptyRows = ReceiptItems.Where(IsEmptyReceiptRow).ToList();
             foreach (var emptyRow in emptyRows)
                 ReceiptItems.Remove(emptyRow);
+        }
+
+        private bool CanDeleteReceiptRow(AsnReceiptItem receiptRow)
+        {
+            if (receiptRow.AsnDetailId <= 0)
+                return true;
+
+            var linkedReceiptsCount = ReceiptItems.Count(item =>
+                !ReferenceEquals(item, receiptRow)
+                && !IsEmptyReceiptRow(item)
+                && item.AsnDetailId == receiptRow.AsnDetailId);
+
+            if (linkedReceiptsCount > 0)
+                return true;
+
+            DialogHelper.ShowWarning("No se puede eliminar la recepción porque es el unico registro ligado al detail.");
+            return false;
         }
 
         private static bool IsDetailRowCompleted(AsnDetailItem detailRow)
@@ -795,6 +887,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task SaveDetailRowAsync(AsnDetailItem detailRow)
         {
+            if (!EnsureCurrentAsnEditable())
+                return;
+
             if (!IsDetailRowCompleted(detailRow))
                 return;
 
@@ -961,6 +1056,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task SaveReceiptRowAsync(AsnReceiptItem receiptRow)
         {
+            if (!EnsureCurrentAsnEditable())
+                return;
+
             if (_savingReceiptRows.Contains(receiptRow))
             {
                 _pendingReceiptRows.Add(receiptRow);
@@ -1028,6 +1126,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task SaveDetailsAsync(int asnId)
         {
+            if (!EnsureCurrentAsnEditable())
+                return;
+
             var detailRows = DetailItems
                 .Where(item => !IsEmptyDetailRow(item))
                 .ToList();
@@ -1197,6 +1298,9 @@ namespace LD.FormsX.Views.Dialogs
 
             try
             {
+                if (!EnsureCurrentAsnEditable())
+                    return;
+
                 if (detailRow.AsnDetailId > 0)
                 {
                     var response = await _asnDetailService.DeleteAsnDetail(detailRow.AsnDetailId);
@@ -1225,6 +1329,12 @@ namespace LD.FormsX.Views.Dialogs
 
             try
             {
+                if (!EnsureCurrentAsnEditable())
+                    return;
+
+                if (!CanDeleteReceiptRow(receiptRow))
+                    return;
+
                 if (receiptRow.AsnReceiptDetailId > 0)
                 {
                     var response = await _asnReceiptService.DeleteAsnReceipt(receiptRow.AsnReceiptDetailId);

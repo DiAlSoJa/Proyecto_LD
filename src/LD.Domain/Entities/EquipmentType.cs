@@ -18,5 +18,8 @@ namespace LD.Domain.Entities
 
         public bool IsBattery {  get; set; }
 
+        public string ImagePathLeft { get; set; } = string.Empty;
+        public string ImagePathRight { get; set; } = string.Empty;
+
     }
 }

@@ -134,6 +134,66 @@ namespace LD.FormsX.Views.ASN
             _gridFilter.SetHiddenColumns("AsnId");
             _gridFilterDet.SetHiddenColumns("AsnDetailId", "AsnId", "ProductId");
             _gridFilterRec.SetHiddenColumns("AsnReceiptDetailId", "AsnDetailId", "ProductId", "LocationId");
+            UpdateActionButtons();
+        }
+
+        private static bool IsConfirmedStatus(string? status) =>
+            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
+
+        private static SolidColorBrush CreateBrush(string hexColor) =>
+            new((Color)ColorConverter.ConvertFromString(hexColor));
+
+        private void ConfigureActionButton(Button? button, bool canClick, bool showBlockedStyle, string tooltip)
+        {
+            if (button == null)
+                return;
+
+            button.Background = CreateBrush(showBlockedStyle ? "#FEF2F2" : "#F3F4F6");
+            button.BorderBrush = CreateBrush(showBlockedStyle ? "#FCA5A5" : "#D1D5DB");
+            button.Foreground = CreateBrush(showBlockedStyle ? "#991B1B" : "#374151");
+            button.ToolTip = tooltip;
+            button.Opacity = 1;
+
+            if (showBlockedStyle)
+            {
+                button.IsEnabled = true;
+                button.IsHitTestVisible = false;
+                button.Focusable = false;
+                button.Cursor = Cursors.No;
+                return;
+            }
+
+            button.IsEnabled = canClick;
+            button.IsHitTestVisible = canClick;
+            button.Focusable = canClick;
+            button.Cursor = canClick ? Cursors.Hand : Cursors.Arrow;
+        }
+
+        private void UpdateActionButtons()
+        {
+            var hasSelectedAsn = _selectedX != null;
+            var isConfirmed = IsConfirmedStatus(_selectedX?.Status);
+            var canClick = hasSelectedAsn && !isConfirmed;
+
+            ConfigureActionButton(
+                btnEditar,
+                canClick,
+                hasSelectedAsn && isConfirmed,
+                hasSelectedAsn && isConfirmed
+                    ? "Este ASN esta confirmado. Ya no se puede editar."
+                    : hasSelectedAsn
+                        ? "Editar ASN"
+                        : "Selecciona un ASN para editar.");
+
+            ConfigureActionButton(
+                btnConfirmarLlegada,
+                canClick,
+                hasSelectedAsn && isConfirmed,
+                hasSelectedAsn && isConfirmed
+                    ? "Este ASN ya fue confirmado. Ya no se puede volver a confirmar."
+                    : hasSelectedAsn
+                        ? "Confirmar entrada del ASN"
+                        : "Selecciona un ASN para confirmar.");
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -261,6 +321,7 @@ namespace LD.FormsX.Views.ASN
             _gridFilterRec.SetData(null);
             txtStatusDetalle.Text = "Sin detalle para mostrar";
             txtStatusRecepcion.Text = "Sin partidas recibidas";
+            UpdateActionButtons();
         }
 
         private async Task CargarDatosAsyncDet()
@@ -443,6 +504,7 @@ namespace LD.FormsX.Views.ASN
                 await CargarDatosAsync();
 
                 _selectedX = _allAsns.FirstOrDefault(x => x.AsnId == confirmedAsnId);
+                UpdateActionButtons();
                 await CargarDatosAsyncDet();
             }
             catch (Exception ex)
@@ -452,7 +514,7 @@ namespace LD.FormsX.Views.ASN
             finally
             {
                 MostrarLoader(false);
-                btnConfirmarLlegada.IsEnabled = true;
+                UpdateActionButtons();
             }
         }
 
@@ -527,6 +589,7 @@ namespace LD.FormsX.Views.ASN
             try
             {
                 _selectedX = _gridFilter.SelectedItem;
+                UpdateActionButtons();
                 await CargarDatosAsyncDet();
             }
             catch (Exception ex)

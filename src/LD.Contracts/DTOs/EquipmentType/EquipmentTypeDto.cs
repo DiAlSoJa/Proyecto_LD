@@ -18,5 +18,11 @@ namespace LD.Contracts.EquipmentType
 
         [DisplayName("Usa batería")]
         public bool IsBattery { get; set; }
+
+        [DisplayName("Imagen izquierda")]
+        public string ImagePathLeft { get; set; } = string.Empty;
+
+        [DisplayName("Imagen derecha")]
+        public string ImagePathRight { get; set; } = string.Empty;
     }
 }

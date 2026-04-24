@@ -5,9 +5,11 @@ namespace LD.Infrastructure.Services.Storage;
 public class LocalFileStorageService : IFileStorageService
 {
 
-    private static readonly string BaseDir = Path.Combine(
+    private static readonly string BaseDir = @"C:\LD_Security";
+
+/*    private static readonly string BaseDir = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        "LD_Security");
+        "LD_Security");*/
 
     public async Task<string?> SaveAsync(byte[]? data, string subfolder, string prefix)
     {

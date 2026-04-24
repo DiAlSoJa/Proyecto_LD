@@ -21,10 +21,12 @@ public class EquipmentProfile : Profile
             .ForMember(dest => dest.Serie, opt => opt.MapFrom(src => src.SerialNumber))
             .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Brand ?? string.Empty))
             .ForMember(dest => dest.Horometro, opt => opt.MapFrom(src => src.Hourmeter))
-            .ForMember(dest => dest.Operativo, opt => opt.MapFrom(src => src.IsOperative ? "Sí" : "No"))
+            .ForMember(dest => dest.Operativo, opt => opt.MapFrom(src => src.IsOperative ? "Si" : "No"))
             .ForMember(dest => dest.Turno1, opt => opt.MapFrom(src => src.Turn1))
             .ForMember(dest => dest.Turno2, opt => opt.MapFrom(src => src.Turn2))
             .ForMember(dest => dest.Turno3, opt => opt.MapFrom(src => src.Turn3))
+            .ForMember(dest => dest.ImagePathLeft, opt => opt.MapFrom(src => src.ImagePathLeft))
+            .ForMember(dest => dest.ImagePathRight, opt => opt.MapFrom(src => src.ImagePathRight))
             .ForMember(dest => dest.Tipo, opt => opt.Ignore())
             .ForMember(dest => dest.Proveedor, opt => opt.Ignore());
     }

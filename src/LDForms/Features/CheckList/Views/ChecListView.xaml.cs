@@ -5,7 +5,6 @@ using LD.Contracts.EquipmentType;
 using LD.Contracts.Requests;
 using LD.FormsX.Helpers;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
@@ -53,7 +52,22 @@ namespace LD.FormsX.Views.CheckList
         }
 
         private void BtnActualizarEquipo_Click(object sender, RoutedEventArgs e) { }
-        private void BtnAsignarUsuario_Click(object sender, RoutedEventArgs e) { }
+        private async void BtnAsignarUsuario_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedEquipment is null)
+            {
+                DialogHelper.ShowWarning("Selecciona un equipo para asignarle usuarios.");
+                return;
+            }
+
+            var dialog = _serviceProvider.GetRequiredService<AsignarUsuarioEquipoView>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetEquipment(SelectedEquipment);
+
+            var result = dialog.ShowDialog();
+            if (result == true)
+                await CargarEquiposAsync();
+        }
 
         private async void BtnNuevoEquipo_Click(object sender, RoutedEventArgs e)
         {

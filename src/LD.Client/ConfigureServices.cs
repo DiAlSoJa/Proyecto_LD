@@ -32,6 +32,7 @@ namespace LD.Client
             services.AddScoped<UnitService>();
             services.AddScoped<EquipmentTypeService>();
             services.AddScoped<EquipmentService>();
+            services.AddScoped<EquipmentSupplierService>();
             services.AddScoped<EquipmentQuestionService>();
             services.AddScoped<InventaryStatusService>();
             services.AddScoped<CurrencyService>();

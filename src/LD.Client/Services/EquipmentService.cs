@@ -2,6 +2,10 @@ using LD.Contracts.Equipment;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Configuration;
+using System;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace LD.Client.Services;
 
@@ -36,5 +40,39 @@ public class EquipmentService
     {
         return await _api.PutAsync<EquipmentRequest, ApiResponseDto<string>>(
             _apiEndpoints.Equipment_Update.Replace("{equipmentId}", equipmentId.ToString()), request);
+    }
+
+    public async Task<ApiResponseDto<EquipmentImageUploadDto>> UploadImage(string filePath, string side)
+    {
+        using var content = new MultipartFormDataContent();
+        using var fileStream = File.OpenRead(filePath);
+        using var fileContent = new StreamContent(fileStream);
+
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        content.Add(fileContent, "file", Path.GetFileName(filePath));
+        content.Add(new StringContent(side), "side");
+
+        return await _api.PostMultipartAsync<ApiResponseDto<EquipmentImageUploadDto>>(
+            _apiEndpoints.Equipment_UploadImage,
+            content);
+    }
+
+    public string GetImageUrl(string relativePath)
+    {
+        return _apiEndpoints.Equipment_GetImage.Replace("{path}", Uri.EscapeDataString(relativePath));
+    }
+
+    public async Task<byte[]> DownloadImage(string relativePath)
+    {
+        return await _api.GetByteArrayAsync(GetImageUrl(relativePath));
+    }
+
+    public async Task<byte[]> DownloadImage(int equipmentId, string side)
+    {
+        var endpoint = _apiEndpoints.Equipment_GetImageBySide
+            .Replace("{equipmentId}", equipmentId.ToString())
+            .Replace("{side}", side);
+
+        return await _api.GetByteArrayAsync(endpoint);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using LD.Application.Common.Guards;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
 using LD.Contracts.Requests;
@@ -17,11 +18,16 @@ public class CreateAsnDetailCommandHandler : IRequestHandler<CreateAsnDetailComm
 {
 
     private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnRepository;
+    private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
     private readonly IMapper _mapper;
 
-    public CreateAsnDetailCommandHandler(IRepository<LD.Domain.Entities.AsnDetail> asnRepository, AutoMapper.IMapper mapper)
+    public CreateAsnDetailCommandHandler(
+        IRepository<LD.Domain.Entities.AsnDetail> asnRepository,
+        IRepository<LD.Domain.Entities.Asn> asnParentRepository,
+        AutoMapper.IMapper mapper)
     {
         _asnRepository = asnRepository;
+        _asnParentRepository = asnParentRepository;
         _mapper = mapper;
     }
 
@@ -29,6 +35,10 @@ public class CreateAsnDetailCommandHandler : IRequestHandler<CreateAsnDetailComm
     {
         try
         {
+            var validation = await AsnModificationGuard.EnsureAsnIsEditableAsync(request.AsnId, _asnParentRepository);
+            if (validation is not null)
+                return validation;
+
             var entity = _mapper.Map<LD.Domain.Entities.AsnDetail>(request);
             var result = await _asnRepository.CreateAsync(entity);
             return result

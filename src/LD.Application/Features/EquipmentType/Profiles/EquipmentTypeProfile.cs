@@ -22,7 +22,11 @@ namespace LD.Application.Features.EquipmentType.Profiles
                 .ForMember(dest => dest.EquipmentName,
                     opt => opt.MapFrom(src => src.EquipmentName))
                 .ForMember(dest => dest.IsBattery,
-                    opt => opt.MapFrom(src => src.IsBattery));
+                    opt => opt.MapFrom(src => src.IsBattery))
+                .ForMember(dest => dest.ImagePathLeft,
+                    opt => opt.MapFrom(src => src.ImagePathLeft))
+                .ForMember(dest => dest.ImagePathRight,
+                    opt => opt.MapFrom(src => src.ImagePathRight));
 
             CreateMap<LD.Domain.Entities.EquipmentType, EquipmentTypeRequest>();
 

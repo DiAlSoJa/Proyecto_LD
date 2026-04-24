@@ -1,0 +1,6 @@
+E:\Documents\GitHub\Proyecto_LD\.codex-build\ldclient-obj\Debug\net9.0\LD.Contracts.csproj.AssemblyReference.cache
+E:\Documents\GitHub\Proyecto_LD\.codex-build\ldclient-obj\Debug\net9.0\LD.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+E:\Documents\GitHub\Proyecto_LD\.codex-build\ldclient-obj\Debug\net9.0\LD.Contracts.AssemblyInfoInputs.cache
+E:\Documents\GitHub\Proyecto_LD\.codex-build\ldclient-obj\Debug\net9.0\LD.Contracts.AssemblyInfo.cs
+E:\Documents\GitHub\Proyecto_LD\.codex-build\ldclient-obj\Debug\net9.0\LD.Contracts.csproj.CoreCompileInputs.cache
+E:\Documents\GitHub\Proyecto_LD\.codex-build\ldclient-obj\Debug\net9.0\LD.Contracts.sourcelink.json

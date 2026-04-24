@@ -42,4 +42,10 @@ public class EquipmentDto
 
     [DisplayName("Turno 3")]
     public string Turno3 { get; set; } = string.Empty;
+
+    [DisplayName("Imagen izquierda")]
+    public string ImagePathLeft { get; set; } = string.Empty;
+
+    [DisplayName("Imagen derecha")]
+    public string ImagePathRight { get; set; } = string.Empty;
 }

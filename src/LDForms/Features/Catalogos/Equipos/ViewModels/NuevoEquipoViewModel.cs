@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
+using LD.Contracts.Equipment;
 using LD.Contracts.EquipmentType;
 using LD.Contracts.Requests;
+using LD.Contracts.Responses;
 using LD.FormsX.Helpers;
 
 namespace LD.FormsX.Features.Catalogos.Equipos.ViewModels;
@@ -64,5 +66,15 @@ public partial class NuevoEquipoViewModel : ObservableObject
         {
             DialogHelper.ShowError(ex.Message);
         }
+    }
+
+    public Task<ApiResponseDto<EquipmentImageUploadDto>> UploadImageAsync(string filePath, string side)
+    {
+        return _equipmentTypeService.UploadImage(filePath, side);
+    }
+
+    public Task<byte[]> DownloadImageAsync(string relativePath)
+    {
+        return _equipmentTypeService.DownloadImage(relativePath);
     }
 }

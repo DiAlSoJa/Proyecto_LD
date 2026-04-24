@@ -212,6 +212,18 @@ namespace LD.Forms.Configuration
         public string Asn_Update => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
 
+        // ======================
+        // EQUIPMENT
+        // ======================
+
+        public string Equipment_GetAll => $"{_baseApi}/equipment";
+        public string Equipment_GetById => $"{_baseApi}/equipment/{{equipmentId}}";
+        public string Equipment_Create => $"{_baseApi}/equipment";
+        public string Equipment_Update => $"{_baseApi}/equipment/{{equipmentId}}";
+        public string Equipment_UploadImage => $"{_baseApi}/equipment/upload-image";
+        public string Equipment_GetImage => $"{_baseApi}/equipment/image?path={{path}}";
+        public string EquipmentType_UploadImage => $"{_baseApi}/equipment/upload-image";
+        public string EquipmentType_GetImage => $"{_baseApi}/equipment/image?path={{path}}";
 
     }
 }

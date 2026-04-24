@@ -1,4 +1,5 @@
 using LD.Contracts.Requests;
+using LD.Application.Common.Guards;
 using LD.Application.Common.Results;
 using MediatR;
 using System;
@@ -27,6 +28,10 @@ public class UpdateAsnCommandHandler : IRequestHandler<UpdateAsnCommand, Result<
     {
         try
         {
+            var validation = await AsnModificationGuard.EnsureAsnIsEditableAsync(request.AsnId, _asnRepository);
+            if (validation is not null)
+                return validation;
+
             var asn = await _asnRepository.GetByIdAsync(request.AsnId);
             if (asn is null)
                 return Result<string>.Failure("No existe el ASN", new System.Collections.Generic.List<string> { "No existe el ASN" }, 404);

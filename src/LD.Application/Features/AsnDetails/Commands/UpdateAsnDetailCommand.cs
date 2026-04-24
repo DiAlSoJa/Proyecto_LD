@@ -1,4 +1,5 @@
 using LD.Contracts.Requests;
+using LD.Application.Common.Guards;
 using LD.Application.Common.Results;
 using MediatR;
 using System;
@@ -15,11 +16,16 @@ public class UpdateAsnDetailCommand : AsnDetailRequest, IRequest<Result<string>>
 public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailCommand, Result<string>>
 {
     private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnRepository;
+    private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
     private readonly AutoMapper.IMapper _mapper;
 
-    public UpdateAsnDetailCommandHandler(IRepository<LD.Domain.Entities.AsnDetail> asnRepository, AutoMapper.IMapper mapper)
+    public UpdateAsnDetailCommandHandler(
+        IRepository<LD.Domain.Entities.AsnDetail> asnRepository,
+        IRepository<LD.Domain.Entities.Asn> asnParentRepository,
+        AutoMapper.IMapper mapper)
     {
         _asnRepository = asnRepository;
+        _asnParentRepository = asnParentRepository;
         _mapper = mapper;
     }
 
@@ -27,6 +33,13 @@ public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailComm
     {
         try
         {
+            var validation = await AsnModificationGuard.EnsureAsnDetailParentIsEditableAsync(
+                request.AsnDetailId,
+                _asnRepository,
+                _asnParentRepository);
+            if (validation is not null)
+                return validation;
+
             var asnDetail = await _asnRepository.GetByIdAsync(request.AsnDetailId);
             if (asnDetail is null)
                 return Result<string>.Failure("No existe el ASN Detail", new System.Collections.Generic.List<string> { "No existe el ASN Detail" }, 404);

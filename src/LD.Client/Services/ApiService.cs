@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -55,10 +56,23 @@ namespace LD.Client.Services
             return await HandleResponse<TResponse>(response);
         }
 
+        public async Task<TResponse> PostMultipartAsync<TResponse>(string endpoint, MultipartFormDataContent content)
+        {
+            var response = await _http.PostAsync(endpoint, content);
+            return await HandleResponse<TResponse>(response);
+        }
+
         public async Task<T> DeleteAsync<T>(string endpoint)
         {
             var response = await _http.DeleteAsync(endpoint);
             return await HandleResponse<T>(response);
+        }
+
+        public async Task<byte[]> GetByteArrayAsync(string endpoint)
+        {
+            var response = await _http.GetAsync(endpoint);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsByteArrayAsync();
         }
 
         private static async Task<T> HandleResponse<T>(HttpResponseMessage response)

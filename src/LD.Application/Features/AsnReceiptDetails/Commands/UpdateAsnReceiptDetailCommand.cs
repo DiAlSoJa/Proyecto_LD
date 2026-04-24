@@ -1,4 +1,5 @@
 using LD.Contracts.Requests;
+using LD.Application.Common.Guards;
 using LD.Application.Common.Results;
 using MediatR;
 using System;
@@ -16,11 +17,19 @@ public class UpdateAsnReceiptDetailCommand : AsnReceiptRequest, IRequest<Result<
 public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnReceiptDetailCommand, Result<string>>
 {
     private readonly IRepository<LD.Domain.Entities.AsnReceiptDetail> _asnRepository;
+    private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnDetailRepository;
+    private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
     private readonly AutoMapper.IMapper _mapper;
 
-    public UpdateAsnReceiptDetailCommandHandler(IRepository<LD.Domain.Entities.AsnReceiptDetail> asnRepository, AutoMapper.IMapper mapper)
+    public UpdateAsnReceiptDetailCommandHandler(
+        IRepository<LD.Domain.Entities.AsnReceiptDetail> asnRepository,
+        IRepository<LD.Domain.Entities.AsnDetail> asnDetailRepository,
+        IRepository<LD.Domain.Entities.Asn> asnParentRepository,
+        AutoMapper.IMapper mapper)
     {
         _asnRepository = asnRepository;
+        _asnDetailRepository = asnDetailRepository;
+        _asnParentRepository = asnParentRepository;
         _mapper = mapper;
     }
 
@@ -28,6 +37,14 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
     {
         try
         {
+            var validation = await AsnModificationGuard.EnsureAsnReceiptParentIsEditableAsync(
+                request.AsnReceiptDetailId,
+                _asnRepository,
+                _asnDetailRepository,
+                _asnParentRepository);
+            if (validation is not null)
+                return validation;
+
             var asn = await _asnRepository.GetByIdAsync(request.AsnReceiptDetailId);
             if (asn is null)
                 return Result<string>.Failure("No existe el ASN Receipt", new System.Collections.Generic.List<string> { "No existe el ASN Receipt" }, 404);

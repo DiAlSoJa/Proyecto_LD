@@ -166,6 +166,18 @@ namespace LD.Forms.Configuration
         public string Equipment_GetById => $"{_baseApi}/Equipment/{{equipmentId}}";
         public string Equipment_Create => $"{_baseApi}/Equipment";
         public string Equipment_Update => $"{_baseApi}/Equipment/{{equipmentId}}";
+        public string Equipment_UploadImage => $"{_baseApi}/Equipment/upload-image";
+        public string Equipment_GetImage => $"{_baseApi}/Equipment/image?path={{path}}";
+        public string Equipment_GetImageBySide => $"{_baseApi}/Equipment/{{equipmentId}}/image/{{side}}";
+        public string EquipmentType_UploadImage => $"{_baseApi}/Equipment/upload-image";
+        public string EquipmentType_GetImage => $"{_baseApi}/Equipment/image?path={{path}}";
+
+        // ======================
+        // EQUIPMENT SUPPLIER
+        // ======================
+
+        public string EquipmentSupplier_GetAll => $"{_baseApi}/EquipmentSupplier";
+        public string EquipmentSupplier_Create => $"{_baseApi}/EquipmentSupplier";
         
 
         // ======================
