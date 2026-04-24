@@ -159,6 +159,12 @@ namespace LD.Infrastructure.Persistence
                 .IsUnique();
 
             builder.Entity<Project>()
+                .HasOne(p => p.Location)
+                .WithMany()
+                .HasForeignKey(p => p.LocationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Project>()
                 .HasOne(p => p.EntradaUnit)
                 .WithMany()
                 .HasForeignKey(p => p.Entrada)

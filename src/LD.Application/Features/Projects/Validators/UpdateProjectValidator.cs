@@ -9,24 +9,23 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
     private readonly IWarehouseRepository _warehouseRepository;
     private readonly IClientRepository _clientRepository;
     private readonly IProjectRepository _projectRepository;
+    private readonly ILocationRepository _locationRepository;
 
     public UpdateProjectValidator(
         IWarehouseRepository warehouseRepository,
         IClientRepository clientRepository,
-        IProjectRepository projectRepository)
+        IProjectRepository projectRepository,
+        ILocationRepository locationRepository)
     {
         _warehouseRepository = warehouseRepository;
         _clientRepository = clientRepository;
         _projectRepository = projectRepository;
-
-        // ── Identificador ──────────────────────────────────────────────────
+        _locationRepository = locationRepository;
 
         RuleFor(x => x.ProjectId)
             .NotNull().WithMessage("El ID del proyecto es obligatorio.")
             .MustAsync(async (id, ct) => await _projectRepository.GetByIdAsync(id ?? 0) != null)
-            .WithMessage("No se encontró el proyecto.");
-
-        // ── Datos generales ────────────────────────────────────────────────
+            .WithMessage("No se encontro el proyecto.");
 
         RuleFor(x => x.ProjectName)
             .NotEmpty().WithMessage("El nombre del proyecto es obligatorio.")
@@ -35,18 +34,27 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
         RuleFor(x => x.ClientId)
             .NotNull().WithMessage("El cliente es obligatorio.")
             .MustAsync(async (id, ct) => await _clientRepository.GetByIdAsync(id ?? 0) != null)
-            .WithMessage("No se encontró el cliente.");
+            .WithMessage("No se encontro el cliente.");
 
         RuleFor(x => x.WarehouseId)
-            .NotNull().WithMessage("El almacén es obligatorio.")
+            .NotNull().WithMessage("El almacen es obligatorio.")
             .MustAsync(async (id, ct) => await _warehouseRepository.GetByIdAsync(id ?? 0) != null)
-            .WithMessage("No se encontró el almacén.");
+            .WithMessage("No se encontro el almacen.");
+
+        RuleFor(x => x.LocationId)
+            .MustAsync(async (request, locationId, ct) =>
+            {
+                if (!locationId.HasValue)
+                    return true;
+
+                var location = await _locationRepository.GetByIdAsync(locationId.Value);
+                return location != null && location.WarehouseId == request.WarehouseId;
+            })
+            .WithMessage("La ubicacion seleccionada no pertenece al almacen indicado.");
 
         RuleFor(x => x.StorageTypeId)
             .NotNull().WithMessage("El tipo de almacenamiento es obligatorio.")
             .InclusiveBetween(1, 4).WithMessage("El tipo de almacenamiento debe ser FIFO (1), LIFO (2), Lote (3) o Caducidad (4).");
-
-        // ── Unidades (FK a Units.UnitIdS — max 20 chars) ──────────────────
 
         RuleFor(x => x.Entrada)
             .MaximumLength(20).WithMessage("La unidad de entrada no puede superar 20 caracteres.")
@@ -64,17 +72,13 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
             .MaximumLength(20).WithMessage("La unidad de salida no puede superar 20 caracteres.")
             .When(x => !string.IsNullOrEmpty(x.Salida));
 
-        // ── Notificaciones ─────────────────────────────────────────────────
-
         RuleFor(x => x.ReceiptNotificationMethod)
-            .NotEmpty().WithMessage("El método de notificación de recibo es obligatorio cuando está habilitado.")
+            .NotEmpty().WithMessage("El metodo de notificacion de recibo es obligatorio cuando esta habilitado.")
             .When(x => x.ReceiptNotificationEnabled);
 
         RuleFor(x => x.ShipmentNotificationMethod)
-            .NotEmpty().WithMessage("El método de notificación de embarque es obligatorio cuando está habilitado.")
+            .NotEmpty().WithMessage("El metodo de notificacion de embarque es obligatorio cuando esta habilitado.")
             .When(x => x.ShipmentNotificationEnabled);
-
-        // ── Tiempos ────────────────────────────────────────────────────────
 
         RuleFor(x => x.NormalHrs)
             .GreaterThan(0).WithMessage("El tiempo normal debe ser mayor a 0.")
@@ -84,10 +88,8 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
             .GreaterThan(0).WithMessage("El tiempo urgente debe ser mayor a 0.")
             .When(x => x.UrgentHrs.HasValue);
 
-        // ── Prefijos ───────────────────────────────────────────────────────
-
         RuleFor(x => x.AsnNumber)
-            .GreaterThanOrEqualTo(0).WithMessage("El número de ASN no puede ser negativo.")
+            .GreaterThanOrEqualTo(0).WithMessage("El numero de ASN no puede ser negativo.")
             .When(x => x.AsnNumber.HasValue);
 
         RuleFor(x => x.AsnPrefix)
@@ -95,7 +97,7 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
             .When(x => !string.IsNullOrEmpty(x.AsnPrefix));
 
         RuleFor(x => x.KittingNumber)
-            .MaximumLength(50).WithMessage("El número de kitting no puede superar 50 caracteres.")
+            .MaximumLength(50).WithMessage("El numero de kitting no puede superar 50 caracteres.")
             .When(x => !string.IsNullOrEmpty(x.KittingNumber));
 
         RuleFor(x => x.KittingPrefix)
@@ -103,19 +105,16 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
             .When(x => !string.IsNullOrEmpty(x.KittingPrefix));
 
         RuleFor(x => x.DoNumber)
-            .MaximumLength(50).WithMessage("El número de DO no puede superar 50 caracteres.")
+            .MaximumLength(50).WithMessage("El numero de DO no puede superar 50 caracteres.")
             .When(x => !string.IsNullOrEmpty(x.DoNumber));
 
         RuleFor(x => x.DoPrefix)
             .MaximumLength(50).WithMessage("El prefijo de DO no puede superar 50 caracteres.")
             .When(x => !string.IsNullOrEmpty(x.DoPrefix));
 
-        // ── Configuraciones de escaneo ─────────────────────────────────────
-
         RuleForEach(x => x.ScanConfigurations)
             .ChildRules(scan =>
             {
-  
                 scan.RuleFor(s => s.SystemFieldName)
                     .NotEmpty().WithMessage("[Configuracion de escaneo] El nombre del campo del sistema es obligatorio.")
                     .MaximumLength(100).WithMessage("[Configuracion de escaneo] El nombre del campo del sistema no puede superar 100 caracteres.");
@@ -126,7 +125,7 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
 
                 scan.RuleFor(s => s.ScanTypeId)
                     .NotNull().WithMessage("[Configuracion de escaneo] El tipo de escaneo es obligatorio.")
-                    .InclusiveBetween(1, 3).WithMessage("[Configuracion de escaneo] El tipo de escaneo no es válido.");
+                    .InclusiveBetween(1, 3).WithMessage("[Configuracion de escaneo] El tipo de escaneo no es valido.");
 
                 scan.RuleFor(s => s.ScanValue)
                     .NotEmpty().WithMessage("[Configuracion de escaneo] El valor de escaneo es obligatorio cuando se especifica un tipo de escaneo.")
@@ -135,7 +134,7 @@ public class UpdateProjectValidator : AbstractValidator<UpdateProjectCommand>
 
                 scan.RuleFor(s => s.SaveTypeId)
                     .NotNull().WithMessage("[Configuracion de escaneo] El tipo de guardado es obligatorio.")
-                    .InclusiveBetween(1, 2).WithMessage("[Configuracion de escaneo] El tipo de guardado no es válido.");
+                    .InclusiveBetween(1, 2).WithMessage("[Configuracion de escaneo] El tipo de guardado no es valido.");
 
                 scan.RuleFor(s => s.SaveValue)
                     .GreaterThanOrEqualTo(0).WithMessage("[Configuracion de escaneo] El valor de guardado no puede ser negativo.");

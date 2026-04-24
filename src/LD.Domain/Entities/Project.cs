@@ -17,6 +17,7 @@ namespace LD.Domain.Entities
         public int ClientId { get; set; }
         [Required]
         public int WarehouseId { get; set; }
+        public int? LocationId { get; set; }
         [Required]
         public int StorageTypeId { get; set; }
 
@@ -76,6 +77,7 @@ namespace LD.Domain.Entities
         // Navegación
         public Client? Client { get; set; }
         public Warehouse? Warehouse { get; set; }
+        public Location? Location { get; set; }
         public StorageType? StorageType { get; set; }
 
         public Units? EntradaUnit { get; set; }

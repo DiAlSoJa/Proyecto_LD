@@ -13,6 +13,7 @@ namespace LD.Contracts.Requests
 
         public int? ClientId { get; set; }
         public int? WarehouseId { get; set; }
+        public int? LocationId { get; set; }
         public int? StorageTypeId { get; set; }
         public string? ProjectName { get; set; } = string.Empty;
         public bool AutoPicking { get; set; }

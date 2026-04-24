@@ -2,9 +2,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LD.Client.Services;
 using LD.Contracts.DTOs;
+using LD.Contracts.Location;
 using LD.Contracts.Project;
 using LD.Contracts.Requests;
 using LD.FormsX.Helpers;
+using LD.FormsX.Model.Lookup;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,8 +19,10 @@ public partial class NuevoProyectoViewModel : ObservableObject
 {
     private readonly ProjectService _projectService;
     private readonly LookupService _lookupService;
+    private readonly LocationService _locationService;
 
     private int? _editProjectId;
+    private List<LocationDto> _allLocations = [];
 
     public Action? RequestClose { get; set; }
     public bool ResponseForm { get; private set; }
@@ -35,6 +39,12 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
     [ObservableProperty]
     private List<DropDownDto> warehousesSource = [];
+
+    [ObservableProperty]
+    private List<DropDownDto> locationsSource = [];
+
+    public ObservableCollection<LookupItem> LocationLookupItems { get; } = [];
+
     [ObservableProperty]
     private List<DropDownDto> systemFieldsSource = [];
     [ObservableProperty]
@@ -55,6 +65,15 @@ public partial class NuevoProyectoViewModel : ObservableObject
     private string? selectedWarehouseId;
 
     [ObservableProperty]
+    private string? selectedLocationId;
+
+    [ObservableProperty]
+    private object? selectedLocationLookupId;
+
+    [ObservableProperty]
+    private string selectedLocationText = "";
+
+    [ObservableProperty]
     private string projectName = "";
 
     [ObservableProperty]
@@ -62,6 +81,16 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
     [ObservableProperty]
     private bool autoPicking;
+
+    partial void OnSelectedWarehouseIdChanged(string? value)
+    {
+        FilterLocations();
+    }
+
+    partial void OnSelectedLocationLookupIdChanged(object? value)
+    {
+        SelectedLocationId = value?.ToString();
+    }
 
     // ── Tipo de almacenamiento ──
     [ObservableProperty]
@@ -179,10 +208,11 @@ public partial class NuevoProyectoViewModel : ObservableObject
     [ObservableProperty]
     private ScanConfigurationRequest? selectedScanConfig;
 
-    public NuevoProyectoViewModel(ProjectService projectService, LookupService lookupService)
+    public NuevoProyectoViewModel(ProjectService projectService, LookupService lookupService, LocationService locationService)
     {
         _projectService = projectService;
         _lookupService = lookupService;
+        _locationService = locationService;
     }
 
     public void SetProject(ProjectDto project)
@@ -207,6 +237,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
         var scanSaves = await _lookupService.GetScanSaveTypeLookup();
         var scanTypes = await _lookupService.GetScanTypeLookup();
         var units = await _lookupService.GetUnitLookup();
+        var locations = await _locationService.GetLocations();
 
 
         if (clientes.IsSuccess)
@@ -233,6 +264,61 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
         if (units.IsSuccess)
             UnitsSource = units.Data ?? [];
+
+        if (locations.IsSuccess)
+        {
+            _allLocations = locations.Data ?? [];
+            FilterLocations();
+        }
+    }
+
+    private void FilterLocations()
+    {
+        LocationLookupItems.Clear();
+
+        if (!int.TryParse(SelectedWarehouseId, out var warehouseId))
+        {
+            LocationsSource = [];
+            SelectedLocationId = null;
+            SelectedLocationLookupId = null;
+            SelectedLocationText = string.Empty;
+            return;
+        }
+
+        var filteredLocationItems = _allLocations
+            .Where(x => x.WarehouseId == warehouseId)
+            .Select(x => new LookupItem
+            {
+                Id = x.LocationId,
+                Code = x.Ubicacion,
+                Description = x.Almacen,
+                Data = x
+            })
+            .ToList();
+
+        foreach (var item in filteredLocationItems)
+            LocationLookupItems.Add(item);
+
+        LocationsSource = filteredLocationItems
+            .Select(x => new DropDownDto
+            {
+                Key = x.Id?.ToString(),
+                Value = x.Code
+            })
+            .ToList();
+
+        var selectedItem = filteredLocationItems.FirstOrDefault(x => x.Id?.ToString() == SelectedLocationId);
+        if (selectedItem is null)
+        {
+            SelectedLocationId = null;
+            SelectedLocationLookupId = null;
+            SelectedLocationText = string.Empty;
+        }
+        else
+        {
+            SelectedLocationLookupId = selectedItem.Id;
+            SelectedLocationText = selectedItem.Code;
+        }
     }
 
     private void PopulateAvailableFields()
@@ -297,6 +383,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
             SelectedClientId = p.ClientId?.ToString();
             SelectedWarehouseId = p.WarehouseId?.ToString();
+            SelectedLocationId = p.LocationId?.ToString();
             ProjectName = p.ProjectName ?? "";
 
             IsActive = p.IsActive;
@@ -348,6 +435,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
         ProjectId = _editProjectId,
         ClientId = int.TryParse(SelectedClientId, out int cId) ? cId : null,
         WarehouseId = int.TryParse(SelectedWarehouseId, out int wId) ? wId : null,
+        LocationId = int.TryParse(SelectedLocationId, out int lId) ? lId : null,
         ProjectName = ProjectName.Trim(),
         IsActive = IsActive,
         AutoPicking = AutoPicking,

@@ -17,6 +17,8 @@ namespace LD.Application.Features.Clients.Profiles
             CreateMap<Location, LocationDto>()
                 .ForMember(dest => dest.LocationId,
                     opt => opt.MapFrom(src => src.LocationId))
+                .ForMember(dest => dest.WarehouseId,
+                    opt => opt.MapFrom(src => src.WarehouseId))
                 .ForMember(dest => dest.Activo,
                     opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.Almacen,

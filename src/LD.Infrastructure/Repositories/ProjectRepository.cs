@@ -50,6 +50,7 @@ namespace LD.Infrastructure.Repositories
         {
             return await _context.Projects
                 .AsNoTracking()
+                .Include(p => p.Location)
                 .Include(p => p.ScanConfigurations)
                     .ThenInclude(sc => sc.SystemField)
                 .FirstOrDefaultAsync(w => w.ProjectId == id);
@@ -59,6 +60,7 @@ namespace LD.Infrastructure.Repositories
         {
             return await _context.Projects
                  .AsNoTracking()
+                 .Include(p => p.Location)
                  .Include(p => p.ScanConfigurations)
                     .ThenInclude(sc => sc.SystemField)
                  .FirstOrDefaultAsync(w => w.ProjectId.ToString() == id);
@@ -67,6 +69,7 @@ namespace LD.Infrastructure.Repositories
         public async Task<Project?> GetByIdWithConfigsAsync(int id)
         {
             return await _context.Projects
+                .Include(p => p.Location)
                 .Include(p => p.ScanConfigurations)
                     .ThenInclude(sc => sc.SystemField)
                 .FirstOrDefaultAsync(p => p.ProjectId == id);
@@ -86,6 +89,7 @@ namespace LD.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(p => p.Client)
                 .Include(p => p.Warehouse)
+                .Include(p => p.Location)
                 .Include(p => p.ScanConfigurations)
                     .ThenInclude(sc => sc.SystemField)
                 .ToListAsync();

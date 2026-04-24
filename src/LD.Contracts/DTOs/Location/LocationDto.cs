@@ -11,6 +11,7 @@ namespace LD.Contracts.Location
     {
         [DisplayName("Id")]
         public int LocationId { get; set; }
+        public int WarehouseId { get; set; }
         public bool Activo { get; set; }
 
         [DisplayName("Almacén")]

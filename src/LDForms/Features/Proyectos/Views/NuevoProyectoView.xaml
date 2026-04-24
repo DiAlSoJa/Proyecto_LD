@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:common="clr-namespace:LD.FormsX.Features.Common"
         mc:Ignorable="d"
         Title="Nuevo proyecto"
-        Height="740" Width="960"
+        Height="740" Width="1100"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -138,7 +139,7 @@
     </Window.Resources>
 
     <Grid>
-        <Border Width="940"
+        <Border Width="1100"
                 Background="White" CornerRadius="16"
                 BorderBrush="#E5E7EB" BorderThickness="1" SnapsToDevicePixels="True">
             <Border.Effect>
@@ -147,7 +148,7 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="52"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="68"/>
                 </Grid.RowDefinitions>
@@ -177,7 +178,7 @@
                     <!-- ─ Tab 1: Datos Generales ─ -->
                     <TabItem Header="Datos generales">
                         <Border Background="White" BorderBrush="#E5E7EB"
-                                BorderThickness="1" CornerRadius="0,8,8,8" Padding="20,16">
+                                BorderThickness="1" CornerRadius="0,8,8,8" Padding="0,5">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel>
 
@@ -314,7 +315,7 @@
 
                                             <Grid Grid.Row="2">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="220"/>
+                                                    <ColumnDefinition Width="150"/>
                                                     <ColumnDefinition Width="46"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
@@ -396,22 +397,22 @@
                                                             <!-- Orden -->
                                                             <DataGridTextColumn Header="Orden"
                                                                                 Binding="{Binding Order}"
-                                                                                Width="55"
+                                                                                Width="50"
                                                                                 IsReadOnly="True"/>
 
                                                             <!-- Campo sistema -->
                                                             <DataGridTextColumn Header="Campo del sistema"
                                                                                 Binding="{Binding SystemFieldName}"
-                                                                                Width="140"
+                                                                                Width="130"
                                                                                 IsReadOnly="True"/>                                                 
 
                                                             <!-- Campo cliente -->
                                                             <DataGridTextColumn Header="Campo del cliente"
                                                                                 Binding="{Binding ClientField}"
-                                                                                Width="140"/>                                               
+                                                                                Width="130"/>                                               
 
                                                             <!-- Config de escaneo (Combo) -->
-                                                            <DataGridTemplateColumn Header="Config escaneo" Width="150">
+                                                            <DataGridTemplateColumn Header="Config escaneo" Width="130">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <ComboBox
@@ -430,7 +431,7 @@
                                                                                 Width="130"/>
 
                                                             <!-- Config guardado (Combo) -->
-                                                            <DataGridTemplateColumn Header="Config guardado" Width="160">
+                                                            <DataGridTemplateColumn Header="Config guardado" Width="130">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <ComboBox
@@ -478,7 +479,7 @@
                     <!-- ─ Tab 2: Notificaciones ─ -->
                     <TabItem Header="Notificaciones">
                         <Border Background="White" BorderBrush="#E5E7EB"
-                                BorderThickness="1" CornerRadius="0,8,8,8" Padding="20,16">
+                                BorderThickness="1" CornerRadius="0,8,8,8" Padding="0,6">
                             <StackPanel>
 
                                 <!-- Tipos de notificación -->
@@ -553,6 +554,45 @@
                         <Border Background="White" BorderBrush="#E5E7EB"
                                 BorderThickness="1" CornerRadius="0,8,8,8" Padding="20,16">
                             <StackPanel>
+
+                                <Border BorderBrush="#E5E7EB" BorderThickness="1"
+                                        CornerRadius="8" Padding="16" Margin="0,0,0,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="260"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                                                   Text="UBICACION" Style="{StaticResource GroupLabelStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Ubicación:" Style="{StaticResource LabelStyle}"/>
+                                        <common:InlineLookupEditor Grid.Row="2"
+                                                                   Grid.Column="1"
+                                                                   Height="34"
+                                                                   Tag="Ubicación|Almacén"
+                                                                   ItemsSource="{Binding LocationLookupItems}"
+                                                                   DisplayMemberPath="Code"
+                                                                   SearchMemberPaths="Code,Description"
+                                                                   SelectedCode="{Binding SelectedLocationText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                   SelectedId="{Binding SelectedLocationLookupId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                   EditorCornerRadius="0"
+                                                                   EditorPadding="8,4,6,4"
+                                                                   EditorBackground="#F9FAFB"
+                                                                   EditorBorderBrush="#D1D5DB"
+                                                                   EditorBorderThickness="1"
+                                                                   EditorForeground="#111827"
+                                                                   EditorFontSize="13"
+                                                                   GlyphBrush="#6B7280"
+                                                                   RequireSelectionMatch="True"
+                                                                   MaxResults="12"
+                                                                   OpenDropDownOnLoad="False"
+                                                                   SelectAllTextOnLoad="False"/>
+                                    </Grid>
+                                </Border>
 
                                 <!-- ASN -->
                                 <Border BorderBrush="#E5E7EB" BorderThickness="1"
