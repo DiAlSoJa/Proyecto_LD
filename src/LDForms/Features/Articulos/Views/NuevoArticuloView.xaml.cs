@@ -23,6 +23,7 @@ namespace LD.FormsX.Views.Articulos
         private bool _cargandoDatos = false;
         private int _selectedClientId;
         private int _selectedProjectId;
+        private string _initialPartNumber = string.Empty;
         private List<CargaMasivaArticuloRow> _cargaMasivaItems = new();
 
         public bool ResponseForm { get; private set; }
@@ -42,6 +43,14 @@ namespace LD.FormsX.Views.Articulos
         {
             _selectedClientId = clientId;
             _selectedProjectId = projectId;
+        }
+
+        public void SetInitialPartNumber(string? partNumber)
+        {
+            _initialPartNumber = partNumber?.Trim() ?? string.Empty;
+
+            if (txtNoParte != null && ItemSelected == null && _cargaMasivaItems.Count == 0)
+                txtNoParte.Text = _initialPartNumber;
         }
 
         public void SetCargaMasivaItems(IEnumerable<CargaMasivaArticuloRow> items)
@@ -80,6 +89,8 @@ namespace LD.FormsX.Views.Articulos
 
             if (ItemSelected != null)
                 await CargarDatosAsync();
+            else if (_cargaMasivaItems.Count == 0 && !string.IsNullOrWhiteSpace(_initialPartNumber))
+                txtNoParte.Text = _initialPartNumber;
         }
 
         private async Task SetCombos()

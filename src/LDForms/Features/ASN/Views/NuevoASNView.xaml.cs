@@ -1524,7 +1524,55 @@ namespace LD.FormsX.Views.Dialogs
             detailRow.MaximumQuantity = product.MaxUnitValue;
         }
 
-        private void InlineLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
+        private async Task<bool> TryOpenNewArticleDialogAsync(InlineLookupEditor editor, AsnDetailItem detailRow)
+        {
+            var partNumber = (detailRow.PartNumber ?? editor.SelectedCode ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(partNumber) || editor.SelectedLookupItem != null)
+                return false;
+
+            if (_clientId <= 0 || _projectId <= 0)
+            {
+                DialogHelper.ShowWarning("Guarda primero el encabezado del ASN con cliente y proyecto.");
+                return true;
+            }
+
+            var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
+            dialog.Owner = this;
+            dialog.SetContext(_clientId, _projectId);
+            dialog.SetInitialPartNumber(partNumber);
+
+            var dialogResult = dialog.ShowDialog();
+            if (dialogResult != true)
+                return true;
+
+            await LoadProductsForSelectedClientProjectAsync();
+
+            var createdLookupItem = ProductLookupItems
+                .FirstOrDefault(item => string.Equals(item.Code?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase));
+
+            if (createdLookupItem?.Data is not ProductAutocompleteDto createdProduct)
+            {
+                DialogHelper.ShowWarning("El artículo se guardó, pero no se pudo recargar automáticamente en el ASN.");
+                return true;
+            }
+
+            detailRow.ProductId = createdProduct.ItemId;
+            detailRow.PartNumber = createdProduct.NumeroParte?.Trim() ?? partNumber;
+            detailRow.Description = createdProduct.Descripcion ?? string.Empty;
+            detailRow.StandardQuantity = createdProduct.StandardPackageValue;
+            detailRow.MaximumQuantity = createdProduct.MaxUnitValue;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                _detailGridNavigation.CommitCurrentEdit();
+                _detailGridNavigation.MoveFocusToNextCell(detailRow);
+                _ = SaveDetailRowAsync(detailRow);
+            }), DispatcherPriority.Background);
+
+            return true;
+        }
+
+        private async void InlineLookup_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -1533,6 +1581,9 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (editor.DataContext is AsnDetailItem detailRow)
                 {
+                    if (await TryOpenNewArticleDialogAsync(editor, detailRow))
+                        return;
+
                     ApplyProductLookupDataToDetailRow(editor, detailRow);
 
                     Dispatcher.BeginInvoke(new Action(() =>
