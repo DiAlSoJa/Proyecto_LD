@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using MauiAppLogin.Models;
+using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using Plugin.Maui.OCR;
 using System.Text.RegularExpressions;
@@ -12,6 +13,9 @@ namespace MauiAppLogin.ViewModels;
 public partial class RegisterLicenseViewModel : ObservableObject
 {
     private readonly SecurityRegistrationContext _context;
+    private readonly ILoaderService _loaderService;
+
+    public ILoaderService Loader => _loaderService;
 
     [ObservableProperty]
     private string tipo = "";
@@ -48,9 +52,10 @@ public partial class RegisterLicenseViewModel : ObservableObject
     public ICommand SiguienteCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public RegisterLicenseViewModel(SecurityRegistrationContext context)
+    public RegisterLicenseViewModel(SecurityRegistrationContext context, ILoaderService loaderService)
     {
         _context = context;
+        _loaderService = loaderService;
 
         CapturarCommand = new AsyncCommand(CapturarAsync);
         CancelarCommand = new Command(Cancelar);
@@ -100,19 +105,18 @@ public partial class RegisterLicenseViewModel : ObservableObject
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo is null) return;
 
+            _loaderService.Show("Procesando imagen...");
+
             await using var stream = await photo.OpenReadAsync();
             var mem = new MemoryStream();
             await stream.CopyToAsync(mem);
             var bytes = mem.ToArray();
 
-            // OCR
             var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(bytes);
             var text = ocrResult?.AllText ?? "";
-
             if (!string.IsNullOrWhiteSpace(text))
-                ParseText(text);
+                ParseLicense(text);
 
-            // Preview
             var img = ImageSource.FromStream(() => new MemoryStream(bytes));
             PreviewImage = img;
 
@@ -131,17 +135,36 @@ public partial class RegisterLicenseViewModel : ObservableObject
         {
             await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
+        finally
+        {
+            _loaderService.Hide();
+        }
     }
 
-    private void ParseText(string text)
+    private void ParseLicense(string text)
     {
-        var nombreMatch = Regex.Match(text, @"NOMBRE[:\s]+([A-Z\s]+)");
-        if (nombreMatch.Success)
-            Nombre = nombreMatch.Groups[1].Value.Trim();
+        // Nombre: etiqueta explícita primero, luego línea con dos o más palabras en mayúsculas
+        var nombreLabel = Regex.Match(text,
+            @"(?:NOMBRE|NAME)[:\s]+([A-ZÁÉÍÓÚÜÑ][A-ZÁÉÍÓÚÜÑ\s]{3,60})",
+            RegexOptions.IgnoreCase);
 
-        var licenciaMatch = Regex.Match(text, @"\d{6,10}");
-        if (licenciaMatch.Success)
-            Licencia = licenciaMatch.Value;
+        if (nombreLabel.Success)
+        {
+            Nombre = nombreLabel.Groups[1].Value.Trim();
+        }
+        else
+        {
+            var nombreBloque = Regex.Match(text,
+                @"^([A-ZÁÉÍÓÚÜÑ]{2,}\s+[A-ZÁÉÍÓÚÜÑ]{2,}(?:\s+[A-ZÁÉÍÓÚÜÑ]{2,})*)\s*$",
+                RegexOptions.Multiline);
+            if (nombreBloque.Success)
+                Nombre = nombreBloque.Groups[1].Value.Trim();
+        }
+
+        // Licencia: número de 6-12 dígitos (evita años y teléfonos cortos)
+        var licMatch = Regex.Match(text, @"\b(\d{6,12})\b");
+        if (licMatch.Success)
+            Licencia = licMatch.Groups[1].Value;
     }
 
     private void Cancelar()

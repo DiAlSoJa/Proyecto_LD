@@ -1,6 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using MauiAppLogin.Models;
+using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
+using Plugin.Maui.OCR;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Command = MvvmHelpers.Commands.Command;
 
@@ -9,6 +12,9 @@ namespace MauiAppLogin.ViewModels;
 public partial class RegisterVehiculeViewModel : ObservableObject
 {
     private readonly SecurityRegistrationContext _context;
+    private readonly ILoaderService _loaderService;
+
+    public ILoaderService Loader => _loaderService;
 
     [ObservableProperty]
     private string tipoVehiculo = "";
@@ -53,9 +59,10 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     public ICommand SiguienteCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public RegisterVehiculeViewModel(SecurityRegistrationContext context)
+    public RegisterVehiculeViewModel(SecurityRegistrationContext context, ILoaderService loaderService)
     {
         _context = context;
+        _loaderService = loaderService;
 
         SelectCajaCommand = new Command(SelectCaja);
         SelectTractorCommand = new Command(SelectTractor);
@@ -127,10 +134,17 @@ public partial class RegisterVehiculeViewModel : ObservableObject
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo is null) return;
 
+            _loaderService.Show("Procesando imagen...");
+
             await using var stream = await photo.OpenReadAsync();
             var mem = new MemoryStream();
             await stream.CopyToAsync(mem);
             var bytes = mem.ToArray();
+
+            var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(bytes);
+            var text = ocrResult?.AllText ?? "";
+            if (!string.IsNullOrWhiteSpace(text))
+                ParsePlaca(text);
 
             var img = ImageSource.FromStream(() => new MemoryStream(bytes));
             PreviewImage = img;
@@ -150,6 +164,21 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         {
             await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
+        finally
+        {
+            _loaderService.Hide();
+        }
+    }
+
+    private void ParsePlaca(string text)
+    {
+        if (!string.IsNullOrEmpty(Placa)) return;
+
+        // Placas mexicanas: ABC-1234 · ABC1234 · AB-12-C · 123-ABC · transporte federal XXX-XX-XXXX
+        var match = Regex.Match(text,
+            @"\b([A-Z]{2,3}[-\s]?\d{3,4}[-\s]?[A-Z]{0,2}|\d{3}[-\s]?[A-Z]{2,3})\b");
+        if (match.Success)
+            Placa = Regex.Replace(match.Value, @"\s", "").ToUpper();
     }
 
     private void Cancelar()

@@ -12,6 +12,10 @@
             <toolkit:InvertedBoolConverter x:Key="InverseBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+
+    <!-- Grid externo: separa el loader del Frame con elevation de Android -->
+    <Grid>
+
         <Grid RowDefinitions="300,*">
 
             <!-- HEADER ORANGE -->
@@ -19,7 +23,7 @@
                   Padding="30,60,30,40">
 
                     <VerticalStackLayout Spacing="10">
-                
+
                     <Image Source="logo.png"
                        HeightRequest="150"
                        Aspect="AspectFit"
@@ -39,7 +43,7 @@
                     <ScrollView>
                         <VerticalStackLayout Spacing="20">
 
-                   
+
                         <!-- Username -->
                             <VerticalStackLayout Spacing="5">
                                 <Label Text="Username"
@@ -50,7 +54,7 @@
                                    BackgroundColor="#F7F7F7"
                                    HasShadow="False"
                                    Padding="15,10">
-                                    <Entry Placeholder="Enter your username"                               
+                                    <Entry Placeholder="Enter your username"
                                        Text="{Binding Username}"
                                        BackgroundColor="#F9FAFB"
                                        HeightRequest="50"
@@ -112,9 +116,10 @@
 
                 </Frame>
 
-            <!-- LOADER — último hijo para quedar encima de todo -->
-            <controls:LoaderSpinner Grid.RowSpan="2"
-                                    BindingContext="{Binding Loader}" />
-
         </Grid>
+
+        <!-- LOADER — en Grid externo, por encima de la elevation del Frame -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}" />
+
+    </Grid>
     </ContentPage>

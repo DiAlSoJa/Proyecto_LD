@@ -14,6 +14,7 @@ public partial class SignatureDriverViewModel : ObservableObject
     private readonly SecurityRegistrationContext _context;
     private readonly SecurityService _securityService;
     private readonly ILoaderService _loaderService;
+    private readonly IPatioService _patioService;
 
     public ILoaderService Loader => _loaderService;
 
@@ -35,11 +36,16 @@ public partial class SignatureDriverViewModel : ObservableObject
     public ICommand FinalizarCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public SignatureDriverViewModel(SecurityRegistrationContext context, SecurityService securityService, ILoaderService loaderService)
+    public SignatureDriverViewModel(
+        SecurityRegistrationContext context,
+        SecurityService securityService,
+        ILoaderService loaderService,
+        IPatioService patioService)
     {
         _context = context;
         _securityService = securityService;
         _loaderService = loaderService;
+        _patioService = patioService;
 
         ClearCommand = new Command(ClearSignature);
         FinalizarCommand = new AsyncCommand(FinalizarAsync);
@@ -114,9 +120,20 @@ public partial class SignatureDriverViewModel : ObservableObject
                 return;
             }
 
+            // Registrar el vehículo en el patio antes de limpiar el contexto
+            _patioService.RegistrarVehiculo(new VehiculoEnPatio
+            {
+                Placa        = _context.Placa,
+                HoraEntrada  = DateTime.Now,
+                Operador     = _context.Nombre,
+                TipoVehiculo = _context.TipoVehiculo,
+                Linea        = _context.Linea,
+                Status       = "Dentro"
+            });
+
             await Shell.Current.DisplayAlertAsync("Listo", "Registro completado.", "OK");
             _context.Clear();
-            await Shell.Current.GoToAsync("//dashboard");
+            await Shell.Current.GoToAsync(nameof(PatioPendientesPage));
         }
         catch (Exception ex)
         {

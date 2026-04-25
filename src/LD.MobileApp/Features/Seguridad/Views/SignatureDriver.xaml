@@ -9,6 +9,9 @@
              Title="Firma"
              BackgroundColor="#0F2E4F">
 
+    <!-- Grid externo: aísla el loader de la elevation nativa de Android -->
+    <Grid>
+
     <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
 
         <!-- ═══ Stepper ═══ -->
@@ -118,9 +121,10 @@
                     FontAttributes="Bold" FontSize="18"/>
         </Grid>
 
-        <!-- LOADER — último hijo para quedar encima de todo -->
-        <controls:LoaderSpinner Grid.RowSpan="4"
-                                BindingContext="{Binding Loader}" />
+    </Grid>
+
+        <!-- LOADER — en Grid externo, encima de todo en Android -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}" />
 
     </Grid>
 </ContentPage>

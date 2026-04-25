@@ -3,10 +3,14 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
+    xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
     x:Class="MauiAppLogin.RegisterVehicule"
     x:DataType="vm:RegisterVehiculeViewModel"
     Title="Vehículo"
     BackgroundColor="#0F2E4F">
+
+    <!-- Grid externo: aísla el loader de la elevation nativa de Android -->
+    <Grid>
 
     <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
 
@@ -178,6 +182,11 @@
                     BackgroundColor="#244A7C" TextColor="White"
                     FontAttributes="Bold" FontSize="18"/>
         </Grid>
+
+    </Grid>
+
+        <!-- LOADER — en Grid externo, encima de todo en Android -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}" />
 
     </Grid>
 </ContentPage>

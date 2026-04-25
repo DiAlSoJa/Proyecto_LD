@@ -32,7 +32,7 @@ namespace MauiAppLogin
             {
 
                 //options.BaseUrl = "http://11.0.0.174:8050/api";
-                options.BaseUrl = "http://192.168.1.100:8050/api";
+                options.BaseUrl = "http://192.168.0.107:8050/api";
 
             });
 
@@ -76,6 +76,18 @@ namespace MauiAppLogin
 
             builder.Services.AddSingleton<ILoaderService, LoaderService>();
 
+            // Control de Patio
+            builder.Services.AddSingleton<IPatioService, PatioService>();
+            builder.Services.AddSingleton<IPatioNotificacionService, PatioNotificacionService>();
+            builder.Services.AddSingleton<PatioContext>();
+
+            builder.Services.AddTransient<PatioPendientesPage>();
+            builder.Services.AddTransient<PatioDetallePage>();
+            builder.Services.AddTransient<CortinaSeleccionPage>();
+
+            builder.Services.AddTransient<PatioPendientesViewModel>();
+            builder.Services.AddTransient<PatioDetalleViewModel>();
+            builder.Services.AddTransient<CortinaSeleccionViewModel>();
 
             builder.Services.AddSingleton<AppShell>();
 
