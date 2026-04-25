@@ -605,14 +605,16 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<ScanType>().HasData(
-                new ScanType { ScanTypeId = 1, ScanTypeName = "Empieza con", Key = "starts_with" },
-                new ScanType { ScanTypeId = 2, ScanTypeName = "Cantidad de dígitos", Key = "length" },
-                new ScanType { ScanTypeId = 3, ScanTypeName = "Es número menor a", Key = "less_than" }
+                new ScanType { ScanTypeId = 1, ScanTypeName = "Ninguno", Key = "none" },
+                new ScanType { ScanTypeId = 2, ScanTypeName = "Empieza con", Key = "starts_with" },
+                new ScanType { ScanTypeId = 3, ScanTypeName = "Cantidad de dígitos", Key = "length" },
+                new ScanType { ScanTypeId = 4, ScanTypeName = "Es número menor a", Key = "less_than" }
             );
 
             builder.Entity<ScanSaveType>().HasData(
-                new ScanSaveType { ScanSaveTypeId = 1, ScanSaveTypeName = "Quitar primeros dígitos", Key = "remove_first" },
-                new ScanSaveType { ScanSaveTypeId = 2, ScanSaveTypeName = "Quitar últimos dígitos", Key = "remove_last" }
+                new ScanSaveType { ScanSaveTypeId = 1, ScanSaveTypeName = "Ninguno", Key = "none" },
+                new ScanSaveType { ScanSaveTypeId = 2, ScanSaveTypeName = "Quitar primeros dígitos", Key = "remove_first" },
+                new ScanSaveType { ScanSaveTypeId = 3, ScanSaveTypeName = "Quitar últimos dígitos", Key = "remove_last" }
             );
         }
     } 

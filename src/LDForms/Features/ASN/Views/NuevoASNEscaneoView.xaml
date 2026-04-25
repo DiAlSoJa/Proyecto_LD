@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ASN Escaneo"
-        Width="620"
-        Height="500"
+        Width="780"
+        Height="610"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -90,6 +90,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="12"/>
+                        <RowDefinition Height="220"/>
+                        <RowDefinition Height="12"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -104,6 +106,34 @@
                     </StackPanel>
 
                     <GroupBox Grid.Row="2"
+                              Header="Condiciones del proyecto"
+                              BorderBrush="{StaticResource BorderBrushSoft}"
+                              BorderThickness="1"
+                              Padding="8">
+                        <DataGrid x:Name="dgScanRules"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="True"
+                                  ItemsSource="{Binding ScanRules}"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="26"
+                                  ColumnHeaderHeight="30"
+                                  FontSize="11"
+                                  BorderBrush="{StaticResource BorderBrushSoft}"
+                                  BorderThickness="1">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Orden" Binding="{Binding Order}" Width="50"/>
+                                <DataGridTextColumn Header="Campo" Binding="{Binding FieldName}" Width="160"/>
+                                <DataGridTextColumn Header="Condición" Binding="{Binding ConditionSummary}" Width="190"/>
+                                <DataGridTextColumn Header="Guardar como" Binding="{Binding SaveSummary}" Width="160"/>
+                                <DataGridTextColumn Header="Valor" Binding="{Binding CapturedValue}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+
+                    <GroupBox Grid.Row="4"
                               Header="Mensajes"
                               BorderBrush="{StaticResource BorderBrushSoft}"
                               BorderThickness="1"

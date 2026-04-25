@@ -54,6 +54,7 @@ namespace LD.FormsX.Views.Dialogs
         private string _defaultProjectLocationCode = string.Empty;
         private string _clientName = string.Empty;
         private string _projectName = string.Empty;
+        private List<ScanConfigurationRequest> _projectScanConfigurations = [];
 
         public ObservableCollection<LookupItem> ProductLookupItems { get; } = new();
         public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
@@ -109,6 +110,7 @@ namespace LD.FormsX.Views.Dialogs
                 {
                     await LoadProductsForSelectedClientProjectAsync();
                     await LoadProjectDefaultLocationAsync();
+                    await LoadProjectScanConfigurationsAsync();
                 }), DispatcherPriority.Background);
             }
         }
@@ -245,6 +247,7 @@ namespace LD.FormsX.Views.Dialogs
                 txtSelloTransporte.Text = item.SealNumber;
 
                 await LoadProjectDefaultLocationAsync();
+                await LoadProjectScanConfigurationsAsync();
                 await LoadProductsForSelectedClientProjectAsync();
                 UpdateWindowTitle();
                 ApplyConfirmedState();
@@ -333,6 +336,7 @@ namespace LD.FormsX.Views.Dialogs
                 await LoadDetailLookupsAsync();
                 await LoadLocationLookupAsync();
                 await LoadProjectDefaultLocationAsync();
+                await LoadProjectScanConfigurationsAsync();
                 await LoadProductsForSelectedClientProjectAsync();
 
                 if (AsnSelected != null)
@@ -398,11 +402,17 @@ namespace LD.FormsX.Views.Dialogs
             Close();
         }
 
-        private void BtnEscanear_Click(object sender, RoutedEventArgs e)
+        private async void BtnEscanear_Click(object sender, RoutedEventArgs e)
         {
+            if (!_projectScanConfigurations.Any())
+                await LoadProjectScanConfigurationsAsync();
+
             var view = _serviceProvider.GetRequiredService<NuevoASNEscaneoView>();
             view.Owner = this;
+            view.SetScanConfigurations(_projectScanConfigurations);
+            view.ScanCompleted += CreateReceiptFromCompletedScanAsync;
             view.ShowDialog();
+            view.ScanCompleted -= CreateReceiptFromCompletedScanAsync;
         }
 
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
@@ -512,6 +522,145 @@ namespace LD.FormsX.Views.Dialogs
             gridScanSection.Visibility = Visibility.Visible;
 
             Height = 900;
+        }
+
+        private async Task LoadProjectScanConfigurationsAsync()
+        {
+            _projectScanConfigurations = [];
+
+            if (_projectId <= 0)
+                return;
+
+            var response = await _projectService.GetProjectById(_projectId);
+            if (!response.IsSuccess || response.Data == null)
+                return;
+
+            _projectScanConfigurations = response.Data.ScanConfigurations
+                .OrderBy(config => config.Order)
+                .ThenBy(config => config.SystemFieldId)
+                .ToList();
+        }
+
+        private async Task<bool> CreateReceiptFromCompletedScanAsync(IReadOnlyList<ScanRuleResult> scanResults)
+        {
+            if (!EnsureCurrentAsnEditable())
+                return false;
+
+            var detailRow = GetScanTargetDetailRow();
+
+            _selectedDetailItem = detailRow;
+            dgDetail.SelectedItem = detailRow;
+
+            if (!await EnsureDetailPersistedAsync(detailRow))
+                return false;
+
+            var receiptRow = CreateScannedReceiptTemplate(detailRow);
+
+            foreach (var result in scanResults)
+                ApplyScannedValueToReceipt(receiptRow, result.Configuration, result.Value);
+
+            if (!IsReceiptRowCompleted(receiptRow))
+                return false;
+
+            var response = await _asnReceiptService.CreateAsnReceipt(receiptRow.ToRequest());
+            Log.Information(
+                "Resultado CreateReceiptFromCompletedScanAsync. AsnDetailId: {AsnDetailId}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                receiptRow.AsnDetailId, response.IsSuccess, response.Code, response.Message, response.Data);
+
+            if (!response.IsSuccess)
+            {
+                DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo crear la recepción escaneada del ASN.");
+                return false;
+            }
+
+            if (int.TryParse(response.Data, out var asnReceiptDetailId) && asnReceiptDetailId > 0)
+                receiptRow.AsnReceiptDetailId = asnReceiptDetailId;
+
+            ReceiptItems.Add(receiptRow);
+            RemoveEmptyReceiptRows();
+            dgUbicacionesAsignadas.Items.Refresh();
+            return true;
+        }
+
+        private AsnReceiptItem CreateScannedReceiptTemplate(AsnDetailItem detailRow)
+        {
+            AsnReceiptItem receiptRow;
+
+            if (dgUbicacionesAsignadas.CurrentItem is AsnReceiptItem selectedReceipt
+                && !IsEmptyReceiptRow(selectedReceipt))
+            {
+                receiptRow = CloneReceiptRow(selectedReceipt);
+                receiptRow.AsnReceiptDetailId = 0;
+            }
+            else
+            {
+                receiptRow = new AsnReceiptItem();
+            }
+
+            receiptRow.ApplyDefaultsFromDetail(detailRow, AsnSelected!.AsnId);
+            SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
+            ApplyProjectLocationDefaults(receiptRow);
+
+            return receiptRow;
+        }
+
+        private AsnDetailItem GetScanTargetDetailRow()
+        {
+            if (_selectedDetailItem != null)
+                return _selectedDetailItem;
+
+            if (dgDetail.CurrentItem is AsnDetailItem currentDetail)
+                return currentDetail;
+
+            var detailRow = DetailItems.FirstOrDefault(item => !IsEmptyDetailRow(item))
+                ?? DetailItems.FirstOrDefault();
+
+            if (detailRow != null)
+                return detailRow;
+
+            detailRow = new AsnDetailItem();
+            DetailItems.Add(detailRow);
+            return detailRow;
+        }
+
+        private static void ApplyScannedValueToReceipt(AsnReceiptItem receiptRow, ScanConfigurationRequest configuration, string scannedValue)
+        {
+            switch (NormalizeSystemField(configuration))
+            {
+                case "lot_number":
+                    receiptRow.LotNumber = scannedValue;
+                    break;
+                case "customer_reference":
+                    receiptRow.Reference = scannedValue;
+                    break;
+                case "purchase_order":
+                    receiptRow.PurchaseOrder = scannedValue;
+                    break;
+                case "customs_declaration":
+                    receiptRow.CustomsDeclarationNumber = scannedValue;
+                    break;
+                case "qty":
+                    if (decimal.TryParse(scannedValue, out var quantity))
+                        receiptRow.ReceivedQuantity = quantity;
+                    break;
+            }
+        }
+
+        private static string NormalizeSystemField(ScanConfigurationRequest configuration)
+        {
+            var fieldName = configuration.SystemFieldName?.Trim().ToLowerInvariant() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(fieldName))
+                return fieldName;
+
+            return configuration.SystemFieldId switch
+            {
+                1 => "lot_number",
+                2 => "customer_reference",
+                3 => "purchase_order",
+                4 => "customs_declaration",
+                5 => "qty",
+                _ => string.Empty
+            };
         }
 
         private Task<ApiResponseDto<string>> CreateASN(AsnRequest request) =>
