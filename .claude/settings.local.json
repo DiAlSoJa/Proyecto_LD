@@ -5,7 +5,9 @@
       "Bash(dotnet ef:*)",
       "Bash(dotnet build *)",
       "Bash(grep -E \"\\\\.\\(xaml|xaml\\\\.cs|cs\\)$\")",
-      "Bash(dotnet add *)"
+      "Bash(dotnet add *)",
+      "Bash(dotnet restore *)",
+      "Bash(findstr /I \"error Build FAILED succeeded\")"
     ]
   }
 }

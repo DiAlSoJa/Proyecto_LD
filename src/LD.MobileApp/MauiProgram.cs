@@ -28,12 +28,12 @@ namespace MauiAppLogin
                 });
 
 
+            const string defaultApiUrl = "http://192.168.0.103:8050/api";
+            var apiUrl = Preferences.Default.Get("ApiBaseUrl", defaultApiUrl);
+
             builder.Services.AddLDClient(options =>
             {
-
-                //options.BaseUrl = "http://11.0.0.174:8050/api";
-                options.BaseUrl = "http://192.168.0.107:8050/api";
-
+                options.BaseUrl = apiUrl;
             });
 
             #if DEBUG

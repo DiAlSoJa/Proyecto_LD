@@ -27,9 +27,12 @@ namespace MauiAppLogin.ViewModels
         public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordVisible = !IsPasswordVisible);
 
         public ICommand LoginCommand { get; }
+        public ICommand ShowIpConfigCommand { get; }
 
         private readonly AuthService _authService;
         private readonly ILoaderService _loaderService;
+
+        private const string DefaultApiUrl = "http://192.168.0.103:8050/api";
 
         public ILoaderService Loader => _loaderService;
 
@@ -38,8 +41,31 @@ namespace MauiAppLogin.ViewModels
             _authService = authService;
             _loaderService = loaderService;
             LoginCommand = new AsyncCommand(Login);
+            ShowIpConfigCommand = new AsyncCommand(ShowIpConfigAsync);
             Username = "admin";
             Password = "Pa$$w0rd";
+        }
+
+        private async Task ShowIpConfigAsync()
+        {
+            var currentUrl = Preferences.Default.Get("ApiBaseUrl", DefaultApiUrl);
+
+            var newUrl = await Shell.Current.DisplayPromptAsync(
+                "Servidor",
+                "URL actual:",
+                accept: "Guardar",
+                cancel: "Cancelar",
+                initialValue: currentUrl,
+                maxLength: 120,
+                keyboard: Keyboard.Url);
+
+            if (newUrl is null) return;
+
+            newUrl = newUrl.Trim();
+            if (string.IsNullOrWhiteSpace(newUrl) || newUrl == currentUrl) return;
+
+            Preferences.Default.Set("ApiBaseUrl", newUrl);
+            await Shell.Current.DisplayAlertAsync("Guardado", "La nueva URL se aplicará al próximo inicio de la app.", "OK");
         }
 
         private async Task Login()

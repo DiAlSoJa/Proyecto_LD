@@ -27,7 +27,11 @@
                     <Image Source="logo.png"
                        HeightRequest="150"
                        Aspect="AspectFit"
-                       HorizontalOptions="Center"  />
+                       HorizontalOptions="Center">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ShowIpConfigCommand}" NumberOfTapsRequired="1"/>
+                        </Image.GestureRecognizers>
+                    </Image>
 
                     </VerticalStackLayout>
                 </Grid>
