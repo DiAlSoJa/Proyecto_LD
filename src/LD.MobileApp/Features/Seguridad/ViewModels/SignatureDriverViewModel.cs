@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
 using MauiAppLogin.Models;
+using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using System.Windows.Input;
 using Command = MvvmHelpers.Commands.Command;
@@ -12,6 +13,9 @@ public partial class SignatureDriverViewModel : ObservableObject
 {
     private readonly SecurityRegistrationContext _context;
     private readonly SecurityService _securityService;
+    private readonly ILoaderService _loaderService;
+
+    public ILoaderService Loader => _loaderService;
 
     [ObservableProperty]
     private bool isBusy;
@@ -31,10 +35,11 @@ public partial class SignatureDriverViewModel : ObservableObject
     public ICommand FinalizarCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public SignatureDriverViewModel(SecurityRegistrationContext context, SecurityService securityService)
+    public SignatureDriverViewModel(SecurityRegistrationContext context, SecurityService securityService, ILoaderService loaderService)
     {
         _context = context;
         _securityService = securityService;
+        _loaderService = loaderService;
 
         ClearCommand = new Command(ClearSignature);
         FinalizarCommand = new AsyncCommand(FinalizarAsync);
@@ -100,6 +105,7 @@ public partial class SignatureDriverViewModel : ObservableObject
                 Firma         = _context.Firma
             };
 
+            _loaderService.Show("Guardando registro...");
             var response = await _securityService.RegisterAsync(request);
 
             if (!response.IsSuccess)
@@ -118,6 +124,7 @@ public partial class SignatureDriverViewModel : ObservableObject
         }
         finally
         {
+            _loaderService.Hide();
             IsBusy = false;
         }
     }

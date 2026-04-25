@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
+             xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
              x:Class="MauiAppLogin.SignatureDriver"
              x:DataType="vm:SignatureDriverViewModel"
              Title="Firma"
@@ -116,6 +117,10 @@
                     BackgroundColor="#244A7C" TextColor="White"
                     FontAttributes="Bold" FontSize="18"/>
         </Grid>
+
+        <!-- LOADER — último hijo para quedar encima de todo -->
+        <controls:LoaderSpinner Grid.RowSpan="4"
+                                BindingContext="{Binding Loader}" />
 
     </Grid>
 </ContentPage>
