@@ -44,6 +44,8 @@ namespace MauiAppLogin.ViewModels
         [ObservableProperty]
         private bool canRegisterVehicle;
         [ObservableProperty]
+        private bool canViewPatioPendientes;
+        [ObservableProperty]
         private bool canViewSecurityTasks;
 
         [ObservableProperty]
@@ -67,6 +69,7 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToAuditCommand { get; }
         public ICommand NavigateToInventoryListCommand { get; }
         public ICommand NavigateToChecklistCommand { get; }
+        public ICommand NavigateToPatioPendientesCommand { get; }
 
         public DashboardViewModel(ApiService apiService)
         {
@@ -86,6 +89,7 @@ namespace MauiAppLogin.ViewModels
             NavigateToAuditCommand = new AsyncRelayCommand(NavigateToAudit);
             NavigateToInventoryListCommand = new AsyncRelayCommand(NavigateToInventoryList);
             NavigateToChecklistCommand = new AsyncRelayCommand(NavigateToChecklist);
+            NavigateToPatioPendientesCommand = new AsyncRelayCommand(NavigateToPatioPendientes);
 
             LoadPermissions();
         }
@@ -108,6 +112,7 @@ namespace MauiAppLogin.ViewModels
             CanViewWarehouseTasks = UserData.HasPermission(PermissionKeys.WarehouseStaff_Tasks_View);
 
             CanRegisterVehicle = UserData.HasPermission(PermissionKeys.Vehicle_Create);
+            CanViewPatioPendientes = UserData.HasPermission(PermissionKeys.Vehicle_View);
             CanViewSecurityTasks = UserData.HasPermission(PermissionKeys.Security_Tasks_View);
 
             CanAudit = UserData.HasPermission(PermissionKeys.Inventory_Audit_View);
@@ -220,6 +225,11 @@ namespace MauiAppLogin.ViewModels
         private async Task NavigateToChecklist()
         {
             await Shell.Current.GoToAsync("ForkliftChecklistPage");
+        }
+
+        private async Task NavigateToPatioPendientes()
+        {
+            await Shell.Current.GoToAsync(nameof(PatioPendientesPage));
         }
     }
 }

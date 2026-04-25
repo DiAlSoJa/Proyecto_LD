@@ -291,6 +291,23 @@
                                 </Border>
                                 <BoxView HeightRequest="1" BackgroundColor="#EEF2F7" IsVisible="{Binding CanRegisterVehicle}"/>
 
+                                <!-- Fila: Patio Pendientes -->
+                                <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanViewPatioPendientes}">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="20,14">
+                                        <Label Text="🅿️" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="Patio Pendientes"
+                                               Margin="10,0,0,0"
+                                               VerticalOptions="Center"
+                                               TextColor="#1E293B"
+                                               FontSize="15"/>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding NavigateToPatioPendientesCommand}"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <BoxView HeightRequest="1" BackgroundColor="#EEF2F7" IsVisible="{Binding CanViewPatioPendientes}"/>
+
                                 <!-- Task Manager dentro de Seguridad -->
                                 <toolkit:Expander Margin="0,0,0,0" IsVisible="{Binding CanViewSecurityTasks}">
                                     <toolkit:Expander.Header>

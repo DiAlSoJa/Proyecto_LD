@@ -40,7 +40,7 @@ public partial class CortinaSeleccionViewModel : ObservableObject
         _context = context;
 
         CargarCommand   = new AsyncCommand(CargarAsync);
-        SeleccionarCommand = new Command<Cortina>(Seleccionar);
+        SeleccionarCommand = new MvvmHelpers.Commands.Command<Cortina>(Seleccionar);
         ConfirmarCommand = new AsyncCommand(ConfirmarAsync);
         CancelarCommand = new AsyncCommand(CancelarAsync);
     }
