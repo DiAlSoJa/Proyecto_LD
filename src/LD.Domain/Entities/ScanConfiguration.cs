@@ -22,11 +22,11 @@ namespace LD.Domain.Entities
         public string ClientField { get; set; } = null!;
 
         public int ScanTypeId { get; set; }
-        public ScanType ScanType { get; set; } = null!;
+        public ScanType? ScanType { get; set; } = null!;
         public string? ScanValue { get; set; }
 
         public int SaveTypeId { get; set; }
-        public ScanSaveType SaveType { get; set; } = null!;
+        public ScanSaveType? SaveType { get; set; } = null!;
         public int SaveValue { get; set; }
 
         public int Order { get; set; }
