@@ -115,19 +115,14 @@ public class CreateProjectValidator : AbstractValidator<CreateProjectCommand>
                     .NotEmpty().WithMessage("[Configuracion de escaneo] El campo del cliente es obligatorio.")
                     .MaximumLength(100).WithMessage("[Configuracion de escaneo] El campo del cliente no puede superar 100 caracteres.");
 
-                scan.RuleFor(s => s.ScanTypeId)
-                    .NotNull().WithMessage("[Configuracion de escaneo] El tipo de escaneo es obligatorio.")
-                    .InclusiveBetween(1, 3).WithMessage("[Configuracion de escaneo] El tipo de escaneo no es valido.");
+               
 
                 scan.RuleFor(s => s.ScanValue)
                     .NotEmpty().WithMessage("[Configuracion de escaneo] El valor de escaneo es obligatorio cuando se especifica un tipo de escaneo.")
                     .MaximumLength(100).WithMessage("[Configuracion de escaneo] El valor de escaneo no puede superar 100 caracteres.")
                     .When(s => s.ScanTypeId.HasValue);
 
-                scan.RuleFor(s => s.SaveTypeId)
-                    .NotNull().WithMessage("[Configuracion de escaneo] El tipo de guardado es obligatorio.")
-                    .InclusiveBetween(1, 2).WithMessage("[Configuracion de escaneo] El tipo de guardado no es valido.");
-
+                
                 scan.RuleFor(s => s.SaveValue)
                     .GreaterThanOrEqualTo(0).WithMessage("[Configuracion de escaneo] El valor de guardado no puede ser negativo.");
             });

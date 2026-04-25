@@ -400,10 +400,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private void BtnEscanear_Click(object sender, RoutedEventArgs e)
         {
-            // Abrir diálogo de escaneo
-            // var view = _serviceProvider.GetRequiredService<NuevoAsnEscaneoWindow>();
-            // view.Owner = this;
-            // view.ShowDialog();
+            var view = _serviceProvider.GetRequiredService<NuevoASNEscaneoView>();
+            view.Owner = this;
+            view.ShowDialog();
         }
 
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
