@@ -204,7 +204,8 @@ namespace LD.Forms.Configuration
         // SECURITY / SEGURIDAD
         // ======================
 
-        public string Security_Register => $"{_baseApi}/security";
+        public string Security_Register    => $"{_baseApi}/security";
+        public string Security_GetSinSalida => $"{_baseApi}/security/sin-salida";
 
         // ======================
         // VEHICLE

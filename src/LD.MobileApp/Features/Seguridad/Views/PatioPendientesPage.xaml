@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
-             xmlns:models="clr-namespace:MauiAppLogin.Models"
+             xmlns:dto="clr-namespace:LD.Contracts.DTOs.Security;assembly=LD.Contracts"
              xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
              x:Class="MauiAppLogin.PatioPendientesPage"
              x:DataType="vm:PatioPendientesViewModel"
@@ -12,7 +12,7 @@
 
     <Grid>
 
-        <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
 
             <!-- ═══ Encabezado ═══ -->
             <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,16">
@@ -45,8 +45,19 @@
 
             </Grid>
 
+            <!-- ═══ Banner de error ═══ -->
+            <Border Grid.Row="1"
+                    IsVisible="{Binding HasError}"
+                    BackgroundColor="#7F1D1D" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="16,12" Margin="0,0,0,12">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#FCA5A5" FontSize="13"
+                       HorizontalTextAlignment="Center"/>
+            </Border>
+
             <!-- ═══ Lista de vehículos ═══ -->
-            <CollectionView Grid.Row="1"
+            <CollectionView Grid.Row="2"
                             ItemsSource="{Binding Vehiculos}"
                             SelectionMode="None">
 
@@ -63,7 +74,7 @@
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:VehiculoEnPatio">
+                    <DataTemplate x:DataType="dto:SecurityRegistrationDto">
                         <Border BackgroundColor="#F6F8FC"
                                 Stroke="#E2E8F0"
                                 StrokeThickness="1"
@@ -73,7 +84,7 @@
 
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
 
-                                <!-- Ícono estado -->
+                                <!-- Ícono tipo vehículo -->
                                 <Border WidthRequest="46" HeightRequest="46"
                                         BackgroundColor="#DCFCE7" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 14"
@@ -84,17 +95,19 @@
                                            VerticalTextAlignment="Center"/>
                                 </Border>
 
-                                <!-- Datos -->
+                                <!-- Datos del registro -->
                                 <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                     <Label Text="{Binding Placa}"
                                            FontSize="20" FontAttributes="Bold" TextColor="#0F172A"/>
-                                    <Label Text="{Binding Operador}"
+                                    <Label Text="{Binding Nombre}"
                                            FontSize="13" TextColor="#374151"/>
-                                    <Label Text="{Binding HoraEntrada, StringFormat='Entrada: {0:HH:mm}'}"
+                                    <Label Text="{Binding CreatedAt, StringFormat='Entrada: {0:HH:mm}'}"
                                            FontSize="12" TextColor="#94A3B8"/>
+                                    <Label Text="{Binding TipoVehiculo}"
+                                           FontSize="11" TextColor="#64748B"/>
                                 </VerticalStackLayout>
 
-                                <!-- Flecha -->
+                                <!-- Flecha de detalle -->
                                 <Label Grid.Column="2"
                                        Text="›" FontSize="32"
                                        TextColor="#94A3B8"
@@ -115,7 +128,7 @@
             </CollectionView>
 
             <!-- ═══ Botón panel ═══ -->
-            <Button Grid.Row="2"
+            <Button Grid.Row="3"
                     Text="← Ir al Panel"
                     Command="{Binding AtrasCommand}"
                     HeightRequest="52" CornerRadius="18"

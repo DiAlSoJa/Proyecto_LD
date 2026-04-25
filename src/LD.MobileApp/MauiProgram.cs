@@ -70,6 +70,7 @@ namespace MauiAppLogin
             builder.Services.AddTransient<RegisterLicenseViewModel>();
             builder.Services.AddTransient<RegisterVehiculeViewModel>();
             builder.Services.AddTransient<SignatureDriverViewModel>();
+            builder.Services.AddTransient<TaskSecurityViewModel>();
 
             // shared state for the 3-step security registration flow
             builder.Services.AddSingleton<SecurityRegistrationContext>();
@@ -77,7 +78,7 @@ namespace MauiAppLogin
             builder.Services.AddSingleton<ILoaderService, LoaderService>();
 
             // Control de Patio
-            builder.Services.AddSingleton<IPatioService, PatioService>();
+            builder.Services.AddScoped<IPatioService, PatioService>();
             builder.Services.AddSingleton<IPatioNotificacionService, PatioNotificacionService>();
             builder.Services.AddSingleton<PatioContext>();
 

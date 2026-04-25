@@ -1,160 +1,184 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="MauiAppLogin.TaskSecurity"
-    Title="Tarea de Seguridad"
-    BackgroundColor="#0F2E4F">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
+             xmlns:models="clr-namespace:MauiAppLogin.Models"
+             xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
+             x:Class="MauiAppLogin.TaskSecurity"
+             x:DataType="vm:TaskSecurityViewModel"
+             x:Name="Root"
+             Title="Tareas de Seguridad"
+             BackgroundColor="#0F2E4F">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-        <!-- Card superior con datos -->
-        <Border Grid.Row="0"
-                BackgroundColor="#F6F8FC"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 24"
-                Padding="18"
-                Margin="0,10,0,12">
+    <Grid>
 
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
 
+            <!-- ═══ Encabezado ═══ -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,16">
 
-            <VerticalStackLayout Spacing="12">
-
-               
-
-
-
-                
-
-               
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Número: 5525220"
-                               TextColor="#64748B"
-                               FontSize="20"/>        
-                </VerticalStackLayout>
-                <!-- Placa -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Placa: A205-00SA"
-                TextColor="#64748B"
-                FontSize="20"/>
-                </VerticalStackLayout>
-
-
-
-
-                <!-- Miniaturas -->
-                <Border BackgroundColor="#EEF3FB"
-                        Stroke="#E2E8F0"
-                        StrokeShape="RoundRectangle 18"
-                        Padding="10"
-                        Margin="0,6,0,0">
-                    <HorizontalStackLayout Spacing="10">
-                        <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                        <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                    </HorizontalStackLayout>
+                <Border BackgroundColor="#1E3A5F" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 14"
+                        WidthRequest="48" HeightRequest="48"
+                        VerticalOptions="Center">
+                    <Label Text="🏭" FontSize="24"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"/>
                 </Border>
 
-            </VerticalStackLayout>
-        </Border>
+                <VerticalStackLayout Grid.Column="1" Margin="12,0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="Tareas de Seguridad"
+                           FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Cortinas pendientes de atender"
+                           FontSize="12" TextColor="#94A3B8"/>
+                </VerticalStackLayout>
 
-        <!-- Area tipo cámara -->
-        <Border Grid.Row="1"
-                BackgroundColor="#1B2A3A"
-                Stroke="#0B1B2A"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 26"
-                Padding="10">
-
-            <Grid RowDefinitions="*,Auto" RowSpacing="12">
-
-                <!-- Preview -->
-                <Grid>
-                    <Border BackgroundColor="#0F172A"
-                            Stroke="#334155"
-                            StrokeShape="RoundRectangle 22"
-                            Padding="10">
-
-                        <Grid>
-                            <Image x:Name="PreviewImage" Aspect="AspectFit" />
-                            <!-- Retícula / marco -->
-                            <Grid Padding="14">
-                                <Border Stroke="#FFFFFF"
-                                        StrokeThickness="3"
-                                        StrokeShape="RoundRectangle 24"
-                                        BackgroundColor="Transparent"
-                                        Opacity="0.35"/>
-                            </Grid>
-                        </Grid>
-
-                    </Border>
-                </Grid>
-
-                <!-- Controles inferiores (Cancelar / Capturar) -->
-                <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
-                    <Button Grid.Column="0"
-                            Text="Cancelar"
-                            Clicked="OnCancelarClicked"
-                            BackgroundColor="Transparent"
-                            TextColor="White"
-                            FontSize="18"/>
-
-                    <Border Grid.Column="1"
-                            BackgroundColor="#102A43"
-                            Stroke="#FFFFFF"
-                            StrokeThickness="2"
-                            StrokeShape="RoundRectangle 999"
-                            WidthRequest="86"
-                            HeightRequest="86"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center"
-                            Padding="10">
-                        <Button Text=""
-                                Clicked="OnCapturarClicked"
-                                BackgroundColor="White"
-                                CornerRadius="999"
-                                WidthRequest="60"
-                                HeightRequest="60"/>
-                    </Border>
-
-                    <Button Grid.Column="2"
-                            Text="Capturar"
-                            Clicked="OnCapturarClicked"
-                            BackgroundColor="Transparent"
-                            TextColor="White"
-                            FontSize="18"
-                            HorizontalOptions="End"/>
-                </Grid>
+                <Border Grid.Column="2"
+                        BackgroundColor="#244A7C" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="14,8" VerticalOptions="Center">
+                    <Label Text="↺  Actualizar" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CargarCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
 
             </Grid>
-        </Border>
 
+            <!-- ═══ Banner de error ═══ -->
+            <Border Grid.Row="1"
+                    IsVisible="{Binding HasError}"
+                    BackgroundColor="#7F1D1D" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="16,12" Margin="0,0,0,12">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#FCA5A5" FontSize="13"
+                       HorizontalTextAlignment="Center"/>
+            </Border>
 
+            <!-- ═══ Lista de tareas ═══ -->
+            <CollectionView Grid.Row="2"
+                            ItemsSource="{Binding Tareas}"
+                            SelectionMode="None">
 
-        <Grid Grid.Row="2"
-              ColumnDefinitions="*,*"
-              ColumnSpacing="12"
-              Margin="0,14,0,6">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
+                        <Label Text="✅" FontSize="52" HorizontalOptions="Center"/>
+                        <Label Text="Sin tareas pendientes"
+                               TextColor="#94A3B8" FontSize="16"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Las tareas de cortina aparecerán aquí al asignarlas."
+                               TextColor="#64748B" FontSize="13"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
 
-            <Button Text="Atrás"
-                Clicked="OnAtrasClicked"
-                HeightRequest="56"
-                CornerRadius="18"
-                BackgroundColor="#E5E7EB"
-                TextColor="#1E293B"
-                FontAttributes="Bold"
-                FontSize="18"/>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:PatioNotificacion">
 
-            <Button Grid.Column="1"
-                Text="Terminar"
-                Clicked="OnSiguienteClicked"
-                HeightRequest="56"
-                CornerRadius="18"
-                BackgroundColor="#244A7C"
-                TextColor="White"
-                FontAttributes="Bold"
-                FontSize="18"/>
+                        <Border BackgroundColor="#F6F8FC"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 20"
+                                Padding="16"
+                                Margin="0,0,0,10">
+
+                            <VerticalStackLayout Spacing="10">
+
+                                <!-- Fila superior: ícono + título + badge estado -->
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+
+                                    <Border WidthRequest="44" HeightRequest="44"
+                                            BackgroundColor="#DBEAFE" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 14"
+                                            VerticalOptions="Center">
+                                        <Label Text="🏭" FontSize="20"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"/>
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="{Binding Titulo}"
+                                               FontSize="16" FontAttributes="Bold" TextColor="#0F172A"/>
+                                        <Label Text="{Binding Subtitulo}"
+                                               FontSize="12" TextColor="#64748B"/>
+                                    </VerticalStackLayout>
+
+                                    <!-- Badge Pendiente -->
+                                    <Border Grid.Column="2"
+                                            IsVisible="{Binding EsPendiente}"
+                                            BackgroundColor="#FEF3C7" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10"
+                                            Padding="10,5" VerticalOptions="Center">
+                                        <Label Text="Pendiente"
+                                               TextColor="#92400E"
+                                               FontSize="12" FontAttributes="Bold"/>
+                                    </Border>
+
+                                    <!-- Badge Completada -->
+                                    <Border Grid.Column="2"
+                                            IsVisible="{Binding Completada}"
+                                            BackgroundColor="#DCFCE7" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10"
+                                            Padding="10,5" VerticalOptions="Center">
+                                        <Label Text="Completada"
+                                               TextColor="#166534"
+                                               FontSize="12" FontAttributes="Bold"/>
+                                    </Border>
+
+                                </Grid>
+
+                                <!-- Acción requerida -->
+                                <Border BackgroundColor="#EFF6FF" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="12,8">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📋" FontSize="14" VerticalOptions="Center"/>
+                                        <Label Text="{Binding AccionRequerida}"
+                                               FontSize="13" TextColor="#1E40AF"
+                                               VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                </Border>
+
+                                <!-- Botón Completar — solo para tareas pendientes -->
+                                <Button Text="✔  Completar tarea"
+                                        IsVisible="{Binding EsPendiente}"
+                                        Command="{Binding BindingContext.CompletarTareaCommand, Source={x:Reference Root}}"
+                                        CommandParameter="{Binding .}"
+                                        HeightRequest="46" CornerRadius="14"
+                                        BackgroundColor="#16A34A" TextColor="White"
+                                        FontAttributes="Bold" FontSize="14"/>
+
+                            </VerticalStackLayout>
+
+                        </Border>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+            <!-- ═══ Botón atrás ═══ -->
+            <Button Grid.Row="3"
+                    Text="← Regresar"
+                    Command="{Binding AtrasCommand}"
+                    HeightRequest="52" CornerRadius="18"
+                    BackgroundColor="#334155" TextColor="White"
+                    FontAttributes="Bold" Margin="0,12,0,6"/>
+
         </Grid>
 
+        <!-- LOADER -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}"/>
+
     </Grid>
+
 </ContentPage>
