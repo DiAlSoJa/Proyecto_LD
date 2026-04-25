@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
              x:Class="MauiAppLogin.LoginPage"
              NavigationPage.HasNavigationBar="False"
              BackgroundColor="#1F3A5F">
@@ -110,6 +111,10 @@
                 </ScrollView>
 
             </Frame>
+
+        <!-- LOADER — último hijo para quedar encima de todo -->
+        <controls:LoaderSpinner Grid.RowSpan="2"
+                                BindingContext="{Binding Loader}" />
 
         </Grid>
     </ContentPage>

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using LD.Client;
 using MauiAppLogin.Models;
+using MauiAppLogin.Services;
 using MauiAppLogin.ViewModels;
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.OCR;
@@ -72,6 +73,8 @@ namespace MauiAppLogin
 
             // shared state for the 3-step security registration flow
             builder.Services.AddSingleton<SecurityRegistrationContext>();
+
+            builder.Services.AddSingleton<ILoaderService, LoaderService>();
 
 
             builder.Services.AddSingleton<AppShell>();

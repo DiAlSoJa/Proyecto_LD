@@ -3,6 +3,7 @@ using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Enums;
 using LD.Contracts.User;
+using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,14 @@ namespace MauiAppLogin.ViewModels
         public ICommand LoginCommand { get; }
 
         private readonly AuthService _authService;
-        public LoginViewModel(AuthService authService)
+        private readonly ILoaderService _loaderService;
+
+        public ILoaderService Loader => _loaderService;
+
+        public LoginViewModel(AuthService authService, ILoaderService loaderService)
         {
             _authService = authService;
+            _loaderService = loaderService;
             LoginCommand = new AsyncCommand(Login);
             Username = "admin";
             Password = "Pa$$w0rd";
@@ -51,6 +57,7 @@ namespace MauiAppLogin.ViewModels
                     return;
                 }
 
+                _loaderService.Show("Iniciando sesión...");
                 var response = await _authService.LoginAsync(Username, Password);
 
                 if (!response.IsSuccess)
@@ -78,6 +85,7 @@ namespace MauiAppLogin.ViewModels
             }
             finally
             {
+                _loaderService.Hide();
                 IsBusy = false;
             }
         }
