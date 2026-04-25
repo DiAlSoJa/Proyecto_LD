@@ -404,6 +404,14 @@ namespace LD.FormsX.Views.Dialogs
 
         private async void BtnEscanear_Click(object sender, RoutedEventArgs e)
         {
+            if (dgDetail.SelectedItem is not AsnDetailItem selectedDetail || IsEmptyDetailRow(selectedDetail))
+            {
+                DialogHelper.ShowWarning("Selecciona una linea de ASN Details antes de escanear.");
+                return;
+            }
+
+            _selectedDetailItem = selectedDetail;
+
             if (!_projectScanConfigurations.Any())
                 await LoadProjectScanConfigurationsAsync();
 
@@ -546,7 +554,16 @@ namespace LD.FormsX.Views.Dialogs
             if (!EnsureCurrentAsnEditable())
                 return false;
 
-            var detailRow = GetScanTargetDetailRow();
+            AsnDetailItem detailRow;
+            try
+            {
+                detailRow = GetScanTargetDetailRow();
+            }
+            catch (InvalidOperationException ex)
+            {
+                DialogHelper.ShowWarning(ex.Message);
+                return false;
+            }
 
             _selectedDetailItem = detailRow;
             dgDetail.SelectedItem = detailRow;
@@ -606,21 +623,16 @@ namespace LD.FormsX.Views.Dialogs
 
         private AsnDetailItem GetScanTargetDetailRow()
         {
-            if (_selectedDetailItem != null)
+            if (_selectedDetailItem != null && !IsEmptyDetailRow(_selectedDetailItem))
                 return _selectedDetailItem;
 
-            if (dgDetail.CurrentItem is AsnDetailItem currentDetail)
+            if (dgDetail.SelectedItem is AsnDetailItem selectedDetail && !IsEmptyDetailRow(selectedDetail))
+                return selectedDetail;
+
+            if (dgDetail.CurrentItem is AsnDetailItem currentDetail && !IsEmptyDetailRow(currentDetail))
                 return currentDetail;
 
-            var detailRow = DetailItems.FirstOrDefault(item => !IsEmptyDetailRow(item))
-                ?? DetailItems.FirstOrDefault();
-
-            if (detailRow != null)
-                return detailRow;
-
-            detailRow = new AsnDetailItem();
-            DetailItems.Add(detailRow);
-            return detailRow;
+            throw new InvalidOperationException("Selecciona una linea de ASN Details antes de escanear.");
         }
 
         private static void ApplyScannedValueToReceipt(AsnReceiptItem receiptRow, ScanConfigurationRequest configuration, string scannedValue)
