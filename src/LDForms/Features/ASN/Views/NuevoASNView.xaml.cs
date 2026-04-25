@@ -35,6 +35,7 @@ namespace LD.FormsX.Views.Dialogs
         private readonly AsnReceiptService _asnReceiptService;
         private readonly LookupService _lookupService;
         private readonly LocationService _locationService;
+        private readonly ProjectService _projectService;
         private readonly ProductService _productService;
         private readonly InventaryStatusService _inventaryStatusService;
         private readonly IServiceProvider _serviceProvider;
@@ -49,6 +50,8 @@ namespace LD.FormsX.Views.Dialogs
         private bool _cargandoDatos = false;
         private int _clientId;
         private int _projectId;
+        private int? _defaultProjectLocationId;
+        private string _defaultProjectLocationCode = string.Empty;
         private string _clientName = string.Empty;
         private string _projectName = string.Empty;
 
@@ -60,7 +63,7 @@ namespace LD.FormsX.Views.Dialogs
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
         public ObservableCollection<AsnReceiptItem> ReceiptItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, ProductService productService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, ProductService productService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, ProjectService projectService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
@@ -70,6 +73,7 @@ namespace LD.FormsX.Views.Dialogs
             _productService = productService;
             _inventaryStatusService = inventaryStatusService;
             _locationService = locationService;
+            _projectService = projectService;
             _serviceProvider = serviceProvider;
             _detailGridNavigation = new DataGridNavigationManager(dgDetail);
             _receiptGridNavigation = new DataGridNavigationManager(dgUbicacionesAsignadas);
@@ -104,6 +108,7 @@ namespace LD.FormsX.Views.Dialogs
                 _ = Dispatcher.BeginInvoke(new Action(async () =>
                 {
                     await LoadProductsForSelectedClientProjectAsync();
+                    await LoadProjectDefaultLocationAsync();
                 }), DispatcherPriority.Background);
             }
         }
@@ -239,10 +244,7 @@ namespace LD.FormsX.Views.Dialogs
                 txtPlacasVehiculo.Text = item.VehiclePlate;
                 txtSelloTransporte.Text = item.SealNumber;
 
-
-
-
-
+                await LoadProjectDefaultLocationAsync();
                 await LoadProductsForSelectedClientProjectAsync();
                 UpdateWindowTitle();
                 ApplyConfirmedState();
@@ -330,6 +332,7 @@ namespace LD.FormsX.Views.Dialogs
 
                 await LoadDetailLookupsAsync();
                 await LoadLocationLookupAsync();
+                await LoadProjectDefaultLocationAsync();
                 await LoadProductsForSelectedClientProjectAsync();
 
                 if (AsnSelected != null)
@@ -1010,6 +1013,7 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             receiptRow.ApplyDefaultsFromDetail(_selectedDetailItem, AsnSelected?.AsnId ?? _selectedDetailItem.AsnId);
+            ApplyProjectLocationDefaults(receiptRow);
         }
 
         private async Task LoadReceiptItemsForSelectedDetailAsync()
@@ -1055,6 +1059,7 @@ namespace LD.FormsX.Views.Dialogs
             var receiptItem = new AsnReceiptItem();
             receiptItem.ApplyDefaultsFromDetail(detailRow, AsnSelected.AsnId);
             SyncReceiptRowFromDetail(receiptItem, detailRow, AsnSelected.AsnId);
+            ApplyProjectLocationDefaults(receiptItem);
             if (receiptRows.Count <= 1)
                 SeedSingleReceiptValuesFromDetail(receiptItem, detailRow);
            
@@ -1108,6 +1113,7 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             receiptRow.ApplyDefaultsFromDetail(detailRow!, AsnSelected!.AsnId);
+            ApplyProjectLocationDefaults(receiptRow);
             if (!IsReceiptRowCompleted(receiptRow))
             {
                 RemoveEmptyReceiptRows();
@@ -1420,6 +1426,68 @@ namespace LD.FormsX.Views.Dialogs
             {
                 DialogHelper.ShowError(ex.Message);
             }
+        }
+
+        private async Task LoadProjectDefaultLocationAsync()
+        {
+            _defaultProjectLocationId = null;
+            _defaultProjectLocationCode = string.Empty;
+
+            if (_projectId <= 0)
+                return;
+
+            try
+            {
+                var response = await _projectService.GetProjectById(_projectId);
+                if (!response.IsSuccess || response.Data?.LocationId == null)
+                    return;
+
+                _defaultProjectLocationId = response.Data.LocationId;
+                _defaultProjectLocationCode = await FindLocationCodeByIdAsync(response.Data.LocationId);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async Task<string> FindLocationCodeByIdAsync(int? locationId)
+        {
+            if (locationId == null)
+                return string.Empty;
+
+            var targetLocationId = locationId.Value;
+            var lookupItem = LocationLookupItems.FirstOrDefault(x =>
+            {
+                if (x.Id is int intId)
+                    return intId == targetLocationId;
+
+                var idText = x.Id?.ToString();
+                return int.TryParse(idText, out var parsedId) && parsedId == targetLocationId;
+            });
+
+            if (!string.IsNullOrWhiteSpace(lookupItem?.Code))
+                return lookupItem.Code;
+
+            var locationsResponse = await _locationService.GetLocations();
+            if (!locationsResponse.IsSuccess || locationsResponse.Data == null)
+                return string.Empty;
+
+            return locationsResponse.Data
+                .FirstOrDefault(x => x.LocationId == targetLocationId)?
+                .Ubicacion ?? string.Empty;
+        }
+
+        private void ApplyProjectLocationDefaults(AsnReceiptItem receiptRow)
+        {
+            if (receiptRow.LocationId.HasValue || !string.IsNullOrWhiteSpace(receiptRow.LocationCode))
+                return;
+
+            if (_defaultProjectLocationId == null)
+                return;
+
+            receiptRow.LocationId = _defaultProjectLocationId;
+            receiptRow.LocationCode = _defaultProjectLocationCode;
         }
 
         private async Task LoadStatusLookupAsync()
