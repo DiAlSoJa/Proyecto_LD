@@ -91,6 +91,9 @@ public partial class ConfiguracionPreguntasTabViewModel : ObservableObject
             return false;
         }
         DialogHelper.ShowSuccess(response.Message ?? "Pregunta guardada correctamente.");
+        // Recargar el grid y limpiar selección para que la nueva pregunta sea visible de inmediato.
+        SelectedQuestion = null;
+        await CargarPreguntasAsync(equipmentTypeId);
         return true;
     }
 

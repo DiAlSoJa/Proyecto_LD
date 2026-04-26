@@ -76,6 +76,12 @@ namespace LD.Infrastructure.Persistence
         public DbSet<EquipmentQuestionDet> EquipmentQuestionDets { get; set; }
         public DbSet<EquipmentSupplier> EquipmentSuppliers { get; set; }
 
+        // Checklist Feature
+        public DbSet<Checklist> Checklists { get; set; }
+        public DbSet<ChecklistAnswer> ChecklistAnswers { get; set; }
+        public DbSet<ChecklistPhoto> ChecklistPhotos { get; set; }
+        public DbSet<ChecklistDefectMark> ChecklistDefectMarks { get; set; }
+
 
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
         {
@@ -339,6 +345,32 @@ namespace LD.Infrastructure.Persistence
                .HasForeignKey(x => x.StandardId)
                .OnDelete(DeleteBehavior.NoAction);
 
+
+            // ── Checklist Feature ──────────────────────────────────────────────────
+            builder.Entity<Checklist>()
+                .HasOne(c => c.Equipment)
+                .WithMany()
+                .HasForeignKey(c => c.EquipmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ChecklistAnswer>()
+                .HasOne(a => a.Checklist)
+                .WithMany(c => c.Answers)
+                .HasForeignKey(a => a.ChecklistId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ChecklistPhoto>()
+                .HasOne(p => p.Checklist)
+                .WithMany(c => c.Photos)
+                .HasForeignKey(p => p.ChecklistId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ChecklistDefectMark>()
+                .HasOne(m => m.Checklist)
+                .WithMany(c => c.DefectMarks)
+                .HasForeignKey(m => m.ChecklistId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // ───────────────────────────────────────────────────────────────────────
 
             builder.Entity<StorageType>().HasData(
                 new StorageType

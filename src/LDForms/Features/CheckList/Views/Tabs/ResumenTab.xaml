@@ -132,18 +132,17 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   SelectionChanged="dgResumen_SelectionChanged">
                             <DataGrid.Columns>
-                                <DataGridCheckBoxColumn Header="Checklist Tomado" Binding="{Binding ChecklistTomado}" Width="130"/>
-                                <DataGridTextColumn Header="Horometro"    Binding="{Binding Horometro}"   Width="110"/>
-                                <DataGridTextColumn Header="Fecha"        Binding="{Binding Fecha}"       Width="100"/>
-                                <DataGridTextColumn Header="Turno"        Binding="{Binding Turno}"       Width="100"/>
-                                <DataGridTextColumn Header="Usuario"      Binding="{Binding Usuario}"     Width="100"/>
-                                <DataGridTextColumn Header="Nombre"       Binding="{Binding Nombre}"      Width="220"/>
-                                <DataGridTextColumn Header="Tipo"         Binding="{Binding Tipo}"        Width="110"/>
-                                <DataGridTextColumn Header="No. de Equipo" Binding="{Binding NoEquipo}"   Width="130"/>
-                                <DataGridTextColumn Header="Serie"        Binding="{Binding Serie}"       Width="110"/>
-                                <DataGridTextColumn Header="Marca"        Binding="{Binding Marca}"       Width="110"/>
-                                <DataGridTextColumn Header="Operativo"    Binding="{Binding Operativo}"   Width="110"/>
-                                <DataGridTextColumn Header="Proveedor"    Binding="{Binding Proveedor}"   Width="120"/>
+                                <DataGridTextColumn Header="Defectos"     Binding="{Binding TotalDefects}"    Width="90"/>
+                                <DataGridTextColumn Header="Horometro"    Binding="{Binding Hourmeter}"        Width="110"/>
+                                <DataGridTextColumn Header="Fecha"        Binding="{Binding FechaDisplay}"    Width="100"/>
+                                <DataGridTextColumn Header="Turno"        Binding="{Binding Turno}"           Width="100"/>
+                                <DataGridTextColumn Header="Operador"     Binding="{Binding UserName}"        Width="150"/>
+                                <DataGridTextColumn Header="Tipo"         Binding="{Binding EquipmentTypeName}" Width="130"/>
+                                <DataGridTextColumn Header="No. de Equipo" Binding="{Binding EquipmentName}"  Width="130"/>
+                                <DataGridTextColumn Header="Serie"        Binding="{Binding SerialNumber}"    Width="110"/>
+                                <DataGridTextColumn Header="Marca"        Binding="{Binding Brand}"           Width="110"/>
+                                <DataGridTextColumn Header="Operativo"    Binding="{Binding OperativoDisplay}" Width="90"/>
+                                <DataGridTextColumn Header="Proveedor"    Binding="{Binding SupplierName}"    Width="120"/>
                             </DataGrid.Columns>
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
@@ -257,6 +256,10 @@
                                        Width="193"
                                        Height="331"
                                        Stretch="Uniform"/>
+                                <Canvas x:Name="canvasIzq"
+                                        Width="193"
+                                        Height="331"
+                                        IsHitTestVisible="False"/>
                             </Grid>
                         </Border>
 
@@ -267,6 +270,10 @@
                                        Width="193"
                                        Height="331"
                                        Stretch="Uniform"/>
+                                <Canvas x:Name="canvasDer"
+                                        Width="193"
+                                        Height="331"
+                                        IsHitTestVisible="False"/>
                             </Grid>
                         </Border>
                     </Grid>

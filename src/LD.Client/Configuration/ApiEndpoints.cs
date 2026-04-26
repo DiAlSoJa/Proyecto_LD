@@ -341,6 +341,16 @@ namespace LD.Forms.Configuration
         public string AsnReceipt_Update => $"{_baseApi}/AsnReceipt/{{asnId}}";
         public string AsnReceipt_Delete => $"{_baseApi}/AsnReceipt/{{asnId}}";
 
+        // ======================
+        // CHECKLIST
+        // ======================
+
+        public string Checklist_Submit      => $"{_baseApi}/Checklist";
+        public string Checklist_GetAll      => $"{_baseApi}/Checklist";
+        public string Checklist_GetById     => $"{_baseApi}/Checklist/{{checklistId}}";
+        public string Checklist_UploadPhoto => $"{_baseApi}/Checklist/upload-photo";
+        public string Checklist_GetPhoto    => $"{_baseApi}/Checklist/photo?path={{path}}";
+
 
     }
 }

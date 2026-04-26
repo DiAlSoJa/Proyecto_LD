@@ -52,6 +52,11 @@ public static class PermissionKeys
 
     // FORKLIFT CHECKLIST
     public const string ForkliftChecklist_View    = "forklift-checklist.read";
+
+    // Aliases semánticos para el feature de submit/resumen de checklists.
+    // Reutilizan permisos existentes del módulo 8 para no crear registros duplicados en BD.
+    public const string Checklist_Submit      = ForkliftChecklist_Execute; // forklift-checklist.execute
+    public const string Checklist_ViewSummary = ForkliftChecklist_View;   // forklift-checklist.read
     public const string ForkliftChecklist_Create  = "forklift-checklist.create";
     public const string ForkliftChecklist_Update  = "forklift-checklist.update";
     public const string ForkliftChecklist_Delete  = "forklift-checklist.delete";

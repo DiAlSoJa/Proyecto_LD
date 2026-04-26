@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
+using LD.Contracts.Checklist;
 using LD.Contracts.Equipment;
+using LD.Contracts.Responses;
 using MauiAppLogin.Models;
 using System.Collections.ObjectModel;
 
@@ -9,6 +11,7 @@ namespace MauiAppLogin.ViewModels;
 public partial class ForkliftChecklistViewModel : ObservableObject
 {
     private readonly EquipmentQuestionService _equipmentQuestionService;
+    private readonly ChecklistService _checklistService;
 
     [ObservableProperty]
     private ObservableCollection<ChecklistSection> sections = new();
@@ -19,9 +22,12 @@ public partial class ForkliftChecklistViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
-    public ForkliftChecklistViewModel(EquipmentQuestionService equipmentQuestionService)
+    public ForkliftChecklistViewModel(
+        EquipmentQuestionService equipmentQuestionService,
+        ChecklistService checklistService)
     {
         _equipmentQuestionService = equipmentQuestionService;
+        _checklistService         = checklistService;
     }
 
     public async Task InicializarAsync(EquipmentDto equipmentData)
@@ -43,7 +49,7 @@ public partial class ForkliftChecklistViewModel : ObservableObject
             var section = new ChecklistSection { Title = Equipment.Tipo };
             foreach (var q in response.Data)
             {
-                var question = new ChecklistQuestion { Label = q.QuestionText };
+                var question = new ChecklistQuestion { QuestionId = q.EquipmentQuestionDetId, Label = q.QuestionText };
                 if (q.IsYesNo)
                 {
                     question.Options.Add("Sí");
@@ -67,5 +73,22 @@ public partial class ForkliftChecklistViewModel : ObservableObject
         {
             IsLoading = false;
         }
+    }
+
+    // Sube foto desde bytes capturados por la cámara.
+    public async Task<ApiResponseDto<EquipmentImageUploadDto>> UploadPhotoAsync(
+        byte[] bytes, string fileName, string side)
+    {
+        return await _checklistService.UploadPhotoAsync(bytes, fileName, side);
+    }
+
+    // Envía el checklist completo al API.
+    public async Task<(bool ok, string message)> SubmitAsync(SubmitChecklistRequest request)
+    {
+        var result = await _checklistService.SubmitAsync(request);
+        return (result.IsSuccess,
+                result.IsSuccess
+                    ? "Checklist guardado correctamente."
+                    : result.ErrorMessage ?? "Error al guardar el checklist.");
     }
 }

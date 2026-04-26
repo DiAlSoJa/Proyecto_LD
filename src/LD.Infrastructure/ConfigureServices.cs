@@ -87,6 +87,7 @@ public static class ConfigureServices
 
         services.AddScoped<ISecurityRegistrationRepository, SecurityRegistrationRepository>();
         services.AddScoped<ISecurityTaskRepository,         SecurityTaskRepository>();
+        services.AddScoped<IChecklistRepository,            ChecklistRepository>();
 
         return services;
     }

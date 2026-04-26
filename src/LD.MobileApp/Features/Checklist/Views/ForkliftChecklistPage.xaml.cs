@@ -1,5 +1,6 @@
 using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.Checklist;
 using LD.Contracts.Equipment;
 using MauiAppLogin.Models;
 using MauiAppLogin.ViewModels;
@@ -10,11 +11,13 @@ namespace MauiAppLogin;
 [QueryProperty(nameof(Equipment), "Equipment")]
 public partial class ForkliftChecklistPage : ContentPage
 {
-    private readonly List<Label> _leftMarks = new();
+    private readonly List<Label> _leftMarks  = new();
     private readonly List<Label> _rightMarks = new();
     private readonly EquipmentService _equipmentService;
-    private ImageSource? _foto1;
-    private ImageSource? _foto2;
+
+    // Bytes de las fotos capturadas en memoria (para subir sin escribir a disco)
+    private byte[]? _foto1Bytes;
+    private byte[]? _foto2Bytes;
 
     private EquipmentDto? _equipment;
     public EquipmentDto? Equipment
@@ -33,19 +36,15 @@ public partial class ForkliftChecklistPage : ContentPage
     public ForkliftChecklistPage(ForkliftChecklistViewModel viewModel, EquipmentService equipmentService)
     {
         InitializeComponent();
-        BindingContext = viewModel;
+        BindingContext    = viewModel;
         _equipmentService = equipmentService;
-        FechaPicker.Date = DateTime.Today;
+        FechaPicker.Date  = DateTime.Today;
     }
 
     private async Task InicializarConEquipoAsync(EquipmentDto equipment)
     {
         await ViewModel.InicializarAsync(equipment);
-
-        // Cargar imagen base del equipo desde el servidor
         await CargarImagenEquipoAsync(equipment);
-
-        // Precompletar nombre del equipo
         EquipoEntry.Text = equipment.NoEquipo;
     }
 
@@ -110,10 +109,10 @@ public partial class ForkliftChecklistPage : ContentPage
 
         var mark = new Label
         {
-            Text = "X",
-            FontSize = 28,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.Red,
+            Text             = "X",
+            FontSize         = 28,
+            FontAttributes   = FontAttributes.Bold,
+            TextColor        = Colors.Red,
             InputTransparent = true
         };
 
@@ -170,20 +169,20 @@ public partial class ForkliftChecklistPage : ContentPage
             await using var stream = await photo.OpenReadAsync();
             var mem = new MemoryStream();
             await stream.CopyToAsync(mem);
-            mem.Position = 0;
+            var bytes = mem.ToArray();
 
-            var img = ImageSource.FromStream(() => new MemoryStream(mem.ToArray()));
+            var img = ImageSource.FromStream(() => new MemoryStream(bytes));
             PreviewImage.Source = img;
 
-            if (_foto1 == null)
+            if (_foto1Bytes == null)
             {
-                _foto1 = img;
-                Thumb1.Source = _foto1;
+                _foto1Bytes  = bytes;
+                Thumb1.Source = img;
             }
             else
             {
-                _foto2 = img;
-                Thumb2.Source = _foto2;
+                _foto2Bytes  = bytes;
+                Thumb2.Source = img;
             }
         }
         catch (Exception ex)
@@ -199,9 +198,9 @@ public partial class ForkliftChecklistPage : ContentPage
 
     private async void OnGuardarClicked(object sender, EventArgs e)
     {
-        var vm = BindingContext as ForkliftChecklistViewModel;
-        if (vm == null) return;
+        var vm = ViewModel;
 
+        // Validar que todas las preguntas estén contestadas
         var pendientes = vm.Sections
             .SelectMany(s => s.Questions)
             .Where(q => string.IsNullOrWhiteSpace(q.SelectedOption))
@@ -213,19 +212,112 @@ public partial class ForkliftChecklistPage : ContentPage
             return;
         }
 
-        // Pendiente: implementar envío al endpoint de checklists cuando exista.
-        string detalle = string.Join("\n",
-            vm.Sections.SelectMany(s => s.Questions)
-                       .Select(q => $"{q.Label}: {q.SelectedOption}"));
+        if (_equipment is null)
+        {
+            await DisplayAlertAsync("Error", "No se detectó el equipo asignado.", "OK");
+            return;
+        }
 
-        await DisplayAlertAsync(
-            "Checklist guardado (simulado)",
-            $"Operador: {OperadorEntry.Text}\n" +
-            $"Equipo: {EquipoEntry.Text}\n" +
-            $"Turno: {TurnoPicker.SelectedItem}\n" +
-            $"Fecha: {FechaPicker.Date:dd/MM/yyyy}\n" +
-            $"Horómetro: {HorometroEntry.Text}\n\n" +
-            detalle,
-            "OK");
+        try
+        {
+            // Subir fotos antes de enviar el checklist
+            var photos = new List<ChecklistPhotoDto>();
+            if (_foto1Bytes is { Length: > 0 })
+            {
+                var uploadResult = await vm.UploadPhotoAsync(_foto1Bytes, "foto1.jpg", "left");
+                if (uploadResult.IsSuccess && uploadResult.Data is not null)
+                    photos.Add(new ChecklistPhotoDto
+                    {
+                        RelativePath = uploadResult.Data.RelativePath,
+                        Side         = "left",
+                        Order        = 1
+                    });
+            }
+
+            if (_foto2Bytes is { Length: > 0 })
+            {
+                var uploadResult = await vm.UploadPhotoAsync(_foto2Bytes, "foto2.jpg", "right");
+                if (uploadResult.IsSuccess && uploadResult.Data is not null)
+                    photos.Add(new ChecklistPhotoDto
+                    {
+                        RelativePath = uploadResult.Data.RelativePath,
+                        Side         = "right",
+                        Order        = 2
+                    });
+            }
+
+            // Convertir marcas de píxeles a porcentaje (0..1) usando las dimensiones del host
+            var defectMarks = new List<ChecklistDefectMarkDto>();
+            defectMarks.AddRange(ExtractMarks(_leftMarks,  LeftImageHost,  "left"));
+            defectMarks.AddRange(ExtractMarks(_rightMarks, RightImageHost, "right"));
+
+            // Construir respuestas del checklist
+            var answers = vm.Sections
+                .SelectMany(s => s.Questions)
+                .Select(q => new ChecklistAnswerDto
+                {
+                    QuestionId   = q.QuestionId,
+                    QuestionText = q.Label,
+                    AnswerText   = q.SelectedOption ?? string.Empty,
+                    IsOk         = q.SelectedOption switch
+                    {
+                        "Sí" => true,
+                        "No" => false,
+                        _    => (bool?)null
+                    }
+                })
+                .ToList();
+
+            var request = new SubmitChecklistRequest
+            {
+                EquipmentId  = _equipment.EquipmentId,
+                UserName     = OperadorEntry.Text?.Trim() ?? string.Empty,
+                Turno        = TurnoPicker.SelectedItem?.ToString() ?? string.Empty,
+                Observaciones = ObservacionesEditor.Text?.Trim(),
+                Answers      = answers,
+                DefectMarks  = defectMarks,
+                Photos       = photos
+            };
+
+            var (ok, message) = await vm.SubmitAsync(request);
+
+            if (ok)
+            {
+                await DisplayAlertAsync("Listo", message, "OK");
+                await Shell.Current.GoToAsync("//dashboard");
+            }
+            else
+            {
+                await DisplayAlertAsync("Error al guardar", message, "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    // Convierte las posiciones de los Labels de marcas a porcentajes (0..1) respecto al host.
+    private static List<ChecklistDefectMarkDto> ExtractMarks(
+        List<Label> marks, AbsoluteLayout host, string side)
+    {
+        var hostW = host.Width;
+        var hostH = host.Height;
+        if (hostW <= 0 || hostH <= 0)
+            return new List<ChecklistDefectMarkDto>();
+
+        return marks.Select(m =>
+        {
+            var bounds = AbsoluteLayout.GetLayoutBounds(m);
+            // El Label se posiciona con offset -10 / -14; sumamos de vuelta para obtener el punto de toque.
+            var tapX = Math.Clamp((bounds.X + 10) / hostW, 0, 1);
+            var tapY = Math.Clamp((bounds.Y + 14) / hostH, 0, 1);
+            return new ChecklistDefectMarkDto
+            {
+                Side     = side,
+                XPercent = (decimal)tapX,
+                YPercent = (decimal)tapY
+            };
+        }).ToList();
     }
 }

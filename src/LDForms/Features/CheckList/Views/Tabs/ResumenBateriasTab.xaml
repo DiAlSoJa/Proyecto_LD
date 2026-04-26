@@ -131,15 +131,15 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   SelectionChanged="dgBaterias_SelectionChanged">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="No. Batería"          Binding="{Binding NoBateria}"        Width="130"/>
-                                <DataGridTextColumn Header="Serie"                Binding="{Binding Serie}"            Width="120"/>
-                                <DataGridTextColumn Header="Fecha Inicio Carga"   Binding="{Binding FechaInicioCarga}" Width="145"/>
-                                <DataGridTextColumn Header="Hora Inicio de Carga" Binding="{Binding HoraInicioCarga}"  Width="145"/>
-                                <DataGridTextColumn Header="Fecha Fin de Carga"   Binding="{Binding FechaFinCarga}"    Width="135"/>
-                                <DataGridTextColumn Header="Hora Fin de Carga"    Binding="{Binding HoraFinCarga}"     Width="140"/>
-                                <DataGridTextColumn Header="Tiempo de Carga"      Binding="{Binding TiempoCarga}"      Width="130"/>
-                                <DataGridTextColumn Header="Nivel de Agua"        Binding="{Binding NivelAgua}"        Width="120"/>
-                                <DataGridCheckBoxColumn Header="Cargada"          Binding="{Binding Cargada}"          Width="100"/>
+                                <DataGridTextColumn Header="No. Batería"   Binding="{Binding EquipmentName}"    Width="130"/>
+                                <DataGridTextColumn Header="Serie"         Binding="{Binding SerialNumber}"     Width="120"/>
+                                <DataGridTextColumn Header="Marca"         Binding="{Binding Brand}"            Width="110"/>
+                                <DataGridTextColumn Header="Fecha"         Binding="{Binding FechaDisplay}"     Width="110"/>
+                                <DataGridTextColumn Header="Turno"         Binding="{Binding Turno}"            Width="90"/>
+                                <DataGridTextColumn Header="Operador"      Binding="{Binding UserName}"         Width="150"/>
+                                <DataGridTextColumn Header="Defectos"      Binding="{Binding TotalDefects}"     Width="85"/>
+                                <DataGridTextColumn Header="Operativo"     Binding="{Binding OperativoDisplay}" Width="90"/>
+                                <DataGridTextColumn Header="Proveedor"     Binding="{Binding SupplierName}"     Width="120"/>
                             </DataGrid.Columns>
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>

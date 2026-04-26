@@ -12,7 +12,10 @@
       "Bash(Remove-Item \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.MobileApp\\\\Features\\\\Tareas\\\\ViewModels\\\\TaskSecurityViewModel.cs\" -Force)",
       "Bash(Remove-Item \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.MobileApp\\\\Features\\\\Tareas\\\\Views\\\\TaskSecurity.xaml\" -Force)",
       "Bash(Remove-Item \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.MobileApp\\\\Features\\\\Tareas\\\\Views\\\\TaskSecurity.xaml.cs\" -Force)",
-      "Bash(Write-Host \"Archivos eliminados\")"
+      "Bash(Write-Host \"Archivos eliminados\")",
+      "Bash(xargs grep *)",
+      "Bash(taskkill /PID 20900 /F)",
+      "PowerShell(Stop-Process *)"
     ]
   }
 }

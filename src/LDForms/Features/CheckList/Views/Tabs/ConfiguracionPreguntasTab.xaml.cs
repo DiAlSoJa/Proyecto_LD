@@ -101,10 +101,7 @@ namespace LD.FormsX.Views.CheckList.Tabs
 
                 var ok = await ViewModel.GuardarPreguntaAsync(equipmentTypeId, txtPregunta.Text.Trim(), isYesNo, options);
                 if (ok)
-                {
                     LimpiarFormulario();
-                    await ViewModel.CargarPreguntasAsync(equipmentTypeId);
-                }
             }
             catch (Exception ex)
             {

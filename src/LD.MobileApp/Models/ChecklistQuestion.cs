@@ -7,6 +7,7 @@ namespace MauiAppLogin.Models
 {
     public class ChecklistQuestion
     {
+        public int QuestionId { get; set; }
         public string Label { get; set; } = string.Empty;
 
         public ObservableCollection<string> Options { get; set; } = new();
