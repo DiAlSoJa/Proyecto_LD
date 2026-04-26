@@ -54,6 +54,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Dimensioner> Dimensioner{ get; set; }
 
         public DbSet<SecurityRegistration> SecurityRegistrations { get; set; }
+        public DbSet<Cortina> Cortinas { get; set; }
+        public DbSet<SecurityTask> SecurityTasks { get; set; }
 
         // ASN related tables
         public DbSet<Asn> Asns { get; set; }
@@ -554,7 +556,10 @@ namespace LD.Infrastructure.Persistence
                 // UNITS / UNIDADES
                 new Permission { PermissionId = 79, PermissionName = "Ver unidades",    Key = "units.read",   ModuleId = 16 },
                 new Permission { PermissionId = 80, PermissionName = "Crear unidades",  Key = "units.create", ModuleId = 16 },
-                new Permission { PermissionId = 81, PermissionName = "Editar unidades", Key = "units.update", ModuleId = 16 }
+                new Permission { PermissionId = 81, PermissionName = "Editar unidades", Key = "units.update", ModuleId = 16 },
+
+                // CORTINA (CONTROL DE PATIO)
+                new Permission { PermissionId = 85, PermissionName = "Asignar cortina", Key = "security.cortina.assign", ModuleId = 25 }
             );
 
             const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
@@ -570,7 +575,7 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<RolePermission>().HasData(
-                Enumerable.Range(1, 84)
+                Enumerable.Range(1, 85)
                     .Select(id => new RolePermission
                     {
                         RoleId        = superAdminRoleId,
@@ -614,7 +619,57 @@ namespace LD.Infrastructure.Persistence
                 new ScanSaveType { ScanSaveTypeId = 1, ScanSaveTypeName = "Quitar primeros dígitos", Key = "remove_first" },
                 new ScanSaveType { ScanSaveTypeId = 2, ScanSaveTypeName = "Quitar últimos dígitos", Key = "remove_last" }
             );
-        }
-    } 
+            // SecurityRegistration — FK a Cortina nullable
+            builder.Entity<SecurityRegistration>()
+                .HasOne(r => r.Cortina)
+                .WithMany(c => c.SecurityRegistrations)
+                .HasForeignKey(r => r.CortinaId)
+                .OnDelete(DeleteBehavior.SetNull);
 
+            builder.Entity<SecurityRegistration>()
+                .Property(r => r.Estado)
+                .HasConversion<int>();
+
+            // Cortina
+            builder.Entity<Cortina>()
+                .HasOne(c => c.Warehouse)
+                .WithMany()
+                .HasForeignKey(c => c.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // SecurityTask
+            builder.Entity<SecurityTask>()
+                .HasOne(t => t.SecurityRegistration)
+                .WithMany()
+                .HasForeignKey(t => t.SecurityRegistrationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed: warehouse de referencia para cortinas
+            builder.Entity<Warehouse>().HasData(
+                new Warehouse
+                {
+                    WarehouseId   = 1,
+                    WarehouseName = "Almacén Principal",
+                    Address       = "Dirección por configurar",
+                    Neighborhood  = "",
+                    City          = "",
+                    ZipCode       = "",
+                    Capacity      = 0,
+                    IsProduction  = false,
+                    CreatedAt     = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    IsActive      = true
+                }
+            );
+
+            // Seed: 5 cortinas
+            var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            builder.Entity<Cortina>().HasData(
+                new Cortina { CortinaId = 100, Numero = "C-01", Descripcion = "Cortina 1 — Muelle Norte", EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 200, Numero = "C-02", Descripcion = "Cortina 2 — Muelle Norte", EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 300, Numero = "C-03", Descripcion = "Cortina 3 — Muelle Sur",   EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 400, Numero = "C-04", Descripcion = "Cortina 4 — Muelle Sur",   EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 500, Numero = "C-05", Descripcion = "Cortina 5 — Muelle Este",  EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true }
+            );
+        }
+    }
 }

@@ -55,7 +55,6 @@ namespace MauiAppLogin
             builder.Services.AddTransient<DamageReportPrintPage>();
             builder.Services.AddTransient<ReceptionPage>();
             builder.Services.AddTransient<PickingPage>();
-            builder.Services.AddTransient<TaskSecurity>();
             builder.Services.AddTransient<NewTask>();
             builder.Services.AddTransient<TaskResolve>();
             builder.Services.AddTransient<WarehouseOperations>();
@@ -70,7 +69,6 @@ namespace MauiAppLogin
             builder.Services.AddTransient<RegisterLicenseViewModel>();
             builder.Services.AddTransient<RegisterVehiculeViewModel>();
             builder.Services.AddTransient<SignatureDriverViewModel>();
-            builder.Services.AddTransient<TaskSecurityViewModel>();
 
             // shared state for the 3-step security registration flow
             builder.Services.AddSingleton<SecurityRegistrationContext>();
@@ -85,10 +83,12 @@ namespace MauiAppLogin
             builder.Services.AddTransient<PatioPendientesPage>();
             builder.Services.AddTransient<PatioDetallePage>();
             builder.Services.AddTransient<CortinaSeleccionPage>();
+            builder.Services.AddTransient<TaskSecurityPage>();
 
             builder.Services.AddTransient<PatioPendientesViewModel>();
             builder.Services.AddTransient<PatioDetalleViewModel>();
             builder.Services.AddTransient<CortinaSeleccionViewModel>();
+            builder.Services.AddTransient<TaskSecurityViewModel>();
 
             builder.Services.AddSingleton<AppShell>();
 

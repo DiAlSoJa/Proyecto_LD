@@ -16,7 +16,6 @@
             Routing.RegisterRoute(nameof(DamageReportPrintPage), typeof(DamageReportPrintPage));
             Routing.RegisterRoute(nameof(ReceptionPage), typeof(ReceptionPage));
             Routing.RegisterRoute(nameof(PickingPage), typeof(PickingPage));
-            Routing.RegisterRoute(nameof(TaskSecurity), typeof(TaskSecurity));
             Routing.RegisterRoute(nameof(TaskList), typeof(TaskList));
             Routing.RegisterRoute(nameof(NewTask), typeof(NewTask));
             Routing.RegisterRoute(nameof(TaskResolve), typeof(TaskResolve));
@@ -28,6 +27,9 @@
             Routing.RegisterRoute(nameof(PatioPendientesPage), typeof(PatioPendientesPage));
             Routing.RegisterRoute(nameof(PatioDetallePage),    typeof(PatioDetallePage));
             Routing.RegisterRoute(nameof(CortinaSeleccionPage), typeof(CortinaSeleccionPage));
+
+            // Task Manager Seguridad
+            Routing.RegisterRoute(nameof(TaskSecurityPage), typeof(TaskSecurityPage));
         }
     }
 }

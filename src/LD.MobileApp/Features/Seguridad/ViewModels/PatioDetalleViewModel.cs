@@ -9,7 +9,6 @@ namespace MauiAppLogin.ViewModels;
 public partial class PatioDetalleViewModel : ObservableObject
 {
     private readonly IPatioService _patioService;
-    private readonly IPatioNotificacionService _notificacionService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
 
@@ -29,14 +28,12 @@ public partial class PatioDetalleViewModel : ObservableObject
 
     public PatioDetalleViewModel(
         IPatioService patioService,
-        IPatioNotificacionService notificacionService,
         ILoaderService loaderService,
         PatioContext context)
     {
-        _patioService       = patioService;
-        _notificacionService = notificacionService;
-        _loaderService      = loaderService;
-        _context            = context;
+        _patioService  = patioService;
+        _loaderService = loaderService;
+        _context       = context;
 
         AsignarCortinaCommand = new AsyncCommand(AsignarCortinaAsync);
         AtrasCommand          = new AsyncCommand(AtrasAsync);
@@ -48,7 +45,6 @@ public partial class PatioDetalleViewModel : ObservableObject
         RefrescarCortina();
     }
 
-    // Llamado desde OnAppearing al regresar de CortinaSeleccionPage
     public async Task VerificarCortinaSeleccionadaAsync()
     {
         var cortina = _context.CortinaSeleccionada;
@@ -66,14 +62,12 @@ public partial class PatioDetalleViewModel : ObservableObject
                 return;
             }
 
-            await _notificacionService.NotificarAsignacionCortinaAsync(Vehiculo, cortina);
-
             Vehiculo.CortinaAsignada = cortina.Numero;
             RefrescarCortina();
 
             await Shell.Current.DisplayAlertAsync(
-                "Tarea creada",
-                $"Vehículo {Vehiculo.Placa} asignado a Cortina {cortina.Numero}.\nTarea pendiente notificada a Seguridad.",
+                "Cortina asignada",
+                $"Vehículo {Vehiculo.Placa} → Cortina {cortina.Numero}.\nTarea creada en Task Manager de Seguridad.",
                 "OK");
         }
         finally

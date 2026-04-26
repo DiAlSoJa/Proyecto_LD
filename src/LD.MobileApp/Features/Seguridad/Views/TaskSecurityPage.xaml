@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
+             xmlns:dto="clr-namespace:LD.Contracts.DTOs.Security;assembly=LD.Contracts"
+             xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
+             x:Class="MauiAppLogin.TaskSecurityPage"
+             x:DataType="vm:TaskSecurityViewModel"
+             x:Name="Root"
+             Title="Task Manager — Seguridad"
+             BackgroundColor="#0F2E4F">
+
+    <Grid>
+
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+
+            <!-- ═══ Encabezado ═══ -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,16">
+
+                <Border BackgroundColor="#1E3A5F" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 14"
+                        WidthRequest="48" HeightRequest="48"
+                        VerticalOptions="Center">
+                    <Label Text="📋" FontSize="24"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"/>
+                </Border>
+
+                <VerticalStackLayout Grid.Column="1" Margin="12,0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="Task Manager"
+                           FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Tareas de apertura y cierre de cortinas"
+                           FontSize="12" TextColor="#94A3B8"/>
+                </VerticalStackLayout>
+
+                <Border Grid.Column="2"
+                        BackgroundColor="#244A7C" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="14,8" VerticalOptions="Center">
+                    <Label Text="↺  Actualizar" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CargarCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </Grid>
+
+            <!-- ═══ Banner de error ═══ -->
+            <Border Grid.Row="1"
+                    IsVisible="{Binding HasError}"
+                    BackgroundColor="#7F1D1D" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="16,12" Margin="0,0,0,12">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#FCA5A5" FontSize="13"
+                       HorizontalTextAlignment="Center"/>
+            </Border>
+
+            <!-- ═══ Lista de tareas ═══ -->
+            <CollectionView Grid.Row="2"
+                            ItemsSource="{Binding Tareas}"
+                            SelectionMode="None">
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
+                        <Label Text="✅" FontSize="52" HorizontalOptions="Center"/>
+                        <Label Text="Sin tareas pendientes"
+                               TextColor="#94A3B8" FontSize="16"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Todas las cortinas están en orden."
+                               TextColor="#64748B" FontSize="13"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="dto:SecurityTaskDto">
+
+                        <!-- Color de borde según estado -->
+                        <Border Margin="0,0,0,10"
+                                Padding="16"
+                                StrokeShape="RoundRectangle 20"
+                                StrokeThickness="2">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="BackgroundColor" Value="#F6F8FC"/>
+                                    <Setter Property="Stroke" Value="#E2E8F0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Completada}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="#F0FDF4"/>
+                                            <Setter Property="Stroke" Value="#BBF7D0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+
+                                <!-- Fila 1: ícono + placa + estado -->
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+
+                                    <Border BackgroundColor="#DBEAFE" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 12"
+                                            WidthRequest="44" HeightRequest="44"
+                                            VerticalOptions="Center">
+                                        <Label FontSize="22"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center">
+                                            <Label.Style>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="Text" Value="🏭"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding TipoAccion}" Value="CerrarRegistro">
+                                                            <Setter Property="Text" Value="🚪"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                        <Label Text="{Binding Placa}"
+                                               FontSize="20" FontAttributes="Bold" TextColor="#0F172A"/>
+                                        <Label Text="{Binding Nombre}"
+                                               FontSize="13" TextColor="#374151"/>
+                                        <Label Text="{Binding CreatedAt, StringFormat='Creada: {0:dd/MM HH:mm}'}"
+                                               FontSize="11" TextColor="#94A3B8"/>
+                                    </VerticalStackLayout>
+
+                                    <!-- Chip de estado -->
+                                    <Border Grid.Column="2"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10"
+                                            Padding="10,5"
+                                            VerticalOptions="Start">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BackgroundColor" Value="#FEF9C3"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Completada}" Value="True">
+                                                        <Setter Property="BackgroundColor" Value="#DCFCE7"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Label FontSize="11" FontAttributes="Bold">
+                                            <Label.Style>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="Text" Value="Pendiente"/>
+                                                    <Setter Property="TextColor" Value="#854D0E"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Completada}" Value="True">
+                                                            <Setter Property="Text" Value="Completada"/>
+                                                            <Setter Property="TextColor" Value="#166534"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                    </Border>
+
+                                </Grid>
+
+                                <!-- Fila 2: cortina + tipo vehículo -->
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="Cortina" FontSize="11" TextColor="#64748B"/>
+                                        <Label Text="{Binding CortinaNumero}"
+                                               FontSize="15" FontAttributes="Bold" TextColor="#1E293B"/>
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                        <Label Text="Tipo" FontSize="11" TextColor="#64748B"/>
+                                        <Label Text="{Binding TipoVehiculo}"
+                                               FontSize="15" FontAttributes="Bold" TextColor="#1E293B"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- Fila 3: botón de acción (solo si pendiente) -->
+                                <Button Grid.Row="2"
+                                        IsVisible="{Binding Completada, Converter={StaticResource InvertedBool}}"
+                                        HeightRequest="46" CornerRadius="14"
+                                        TextColor="White" FontAttributes="Bold" FontSize="14">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Text" Value="🏭  Abrir Cortina"/>
+                                            <Setter Property="BackgroundColor" Value="#244A7C"/>
+                                            <Setter Property="Command"
+                                                    Value="{Binding BindingContext.AbrirCortinaCommand, Source={x:Reference Root}}"/>
+                                            <Setter Property="CommandParameter" Value="{Binding .}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Button" Binding="{Binding TipoAccion}" Value="CerrarRegistro">
+                                                    <Setter Property="Text" Value="🚪  Vehículo salió — Cerrar"/>
+                                                    <Setter Property="BackgroundColor" Value="#7C2D12"/>
+                                                    <Setter Property="Command"
+                                                            Value="{Binding BindingContext.CerrarRegistroCommand, Source={x:Reference Root}}"/>
+                                                    <Setter Property="CommandParameter" Value="{Binding .}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                            </Grid>
+
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+            <!-- ═══ Botón Atrás ═══ -->
+            <Button Grid.Row="3"
+                    Text="← Regresar"
+                    Command="{Binding AtrasCommand}"
+                    HeightRequest="52" CornerRadius="18"
+                    BackgroundColor="#334155" TextColor="White"
+                    FontAttributes="Bold" Margin="0,12,0,6"/>
+
+        </Grid>
+
+        <!-- LOADER -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}"/>
+
+    </Grid>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+</ContentPage>

@@ -106,6 +106,7 @@ public static class PermissionKeys
     public const string Security_Create       = "security.create";
     public const string Security_Tasks_View   = "security.tasks.read";
     public const string Security_Tasks_Manage = "security.tasks.manage";
+    public const string Cortina_Assign        = "security.cortina.assign";
 
     public const string Vehicle_View   = "security.vehicles.read";
     public const string Vehicle_Create = "security.vehicles.create";

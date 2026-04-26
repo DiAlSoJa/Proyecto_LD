@@ -1,4 +1,5 @@
 using LD.Domain.Common;
+using LD.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace LD.Domain.Entities;
@@ -7,6 +8,11 @@ public class SecurityRegistration : AuditableEntity
 {
     [Key]
     public int SecurityRegistrationId { get; set; }
+
+    public RegistroEstado Estado { get; set; } = RegistroEstado.Registrado;
+
+    public int? CortinaId { get; set; }
+    public virtual Cortina? Cortina { get; set; }
 
     [Required]
     [MaxLength(20)]

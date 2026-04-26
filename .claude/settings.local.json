@@ -7,7 +7,12 @@
       "Bash(grep -E \"\\\\.\\(xaml|xaml\\\\.cs|cs\\)$\")",
       "Bash(dotnet add *)",
       "Bash(dotnet restore *)",
-      "Bash(findstr /I \"error Build FAILED succeeded\")"
+      "Bash(findstr /I \"error Build FAILED succeeded\")",
+      "Bash(grep -v \"//\")",
+      "Bash(Remove-Item \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.MobileApp\\\\Features\\\\Tareas\\\\ViewModels\\\\TaskSecurityViewModel.cs\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.MobileApp\\\\Features\\\\Tareas\\\\Views\\\\TaskSecurity.xaml\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.MobileApp\\\\Features\\\\Tareas\\\\Views\\\\TaskSecurity.xaml.cs\" -Force)",
+      "Bash(Write-Host \"Archivos eliminados\")"
     ]
   }
 }

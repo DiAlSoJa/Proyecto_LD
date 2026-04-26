@@ -85,6 +85,9 @@ public static class ConfigureServices
         services.AddScoped<ILookupRepository<ScanType>, ScanTypeLookupRepository>();
         services.AddScoped<ILookupRepository<ScanSaveType>, ScanSaveTypeLookupRepository>();
 
+        services.AddScoped<ISecurityRegistrationRepository, SecurityRegistrationRepository>();
+        services.AddScoped<ISecurityTaskRepository,         SecurityTaskRepository>();
+
         return services;
     }
 }
