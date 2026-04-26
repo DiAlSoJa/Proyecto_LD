@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LD.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCortinaAndSecurityTask : Migration
+    public partial class cortinasControlPatio : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -94,18 +94,18 @@ namespace LD.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Warehouses",
                 columns: new[] { "WarehouseId", "Address", "Capacity", "City", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "IsActive", "IsProduction", "LastModifiedAt", "LastModifiedByUserId", "Neighborhood", "WarehouseName", "ZipCode" },
-                values: new object[] { 1, "Dirección por configurar", 0m, "", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, false, null, null, "", "Almacén Principal", "" });
+                values: new object[] { 100, "Dirección por configurar", 0m, "", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, false, null, null, "", "Almacén Principal", "" });
 
             migrationBuilder.InsertData(
                 table: "Cortinas",
                 columns: new[] { "CortinaId", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "Descripcion", "EstaDisponible", "IsActive", "LastModifiedAt", "LastModifiedByUserId", "Numero", "WarehouseId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 1 — Muelle Norte", true, true, null, null, "C-01", 1 },
-                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 2 — Muelle Norte", true, true, null, null, "C-02", 1 },
-                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 3 — Muelle Sur", true, true, null, null, "C-03", 1 },
-                    { 4, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 4 — Muelle Sur", true, true, null, null, "C-04", 1 },
-                    { 5, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 5 — Muelle Este", true, true, null, null, "C-05", 1 }
+                    { 100, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 1 — Muelle Norte", true, true, null, null, "C-01", 100 },
+                    { 200, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 2 — Muelle Norte", true, true, null, null, "C-02", 100 },
+                    { 300, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 3 — Muelle Sur", true, true, null, null, "C-03", 100 },
+                    { 400, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 4 — Muelle Sur", true, true, null, null, "C-04", 100 },
+                    { 500, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 5 — Muelle Este", true, true, null, null, "C-05", 100 }
                 });
 
             migrationBuilder.InsertData(
@@ -164,7 +164,7 @@ namespace LD.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "Warehouses",
                 keyColumn: "WarehouseId",
-                keyValue: 1);
+                keyValue: 100);
 
             migrationBuilder.DeleteData(
                 schema: "Auth",

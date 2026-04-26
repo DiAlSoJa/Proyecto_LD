@@ -757,53 +757,53 @@ namespace LD.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            CortinaId = 1,
+                            CortinaId = 100,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Descripcion = "Cortina 1 — Muelle Norte",
                             EstaDisponible = true,
                             IsActive = true,
                             Numero = "C-01",
-                            WarehouseId = 1
+                            WarehouseId = 100
                         },
                         new
                         {
-                            CortinaId = 2,
+                            CortinaId = 200,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Descripcion = "Cortina 2 — Muelle Norte",
                             EstaDisponible = true,
                             IsActive = true,
                             Numero = "C-02",
-                            WarehouseId = 1
+                            WarehouseId = 100
                         },
                         new
                         {
-                            CortinaId = 3,
+                            CortinaId = 300,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Descripcion = "Cortina 3 — Muelle Sur",
                             EstaDisponible = true,
                             IsActive = true,
                             Numero = "C-03",
-                            WarehouseId = 1
+                            WarehouseId = 100
                         },
                         new
                         {
-                            CortinaId = 4,
+                            CortinaId = 400,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Descripcion = "Cortina 4 — Muelle Sur",
                             EstaDisponible = true,
                             IsActive = true,
                             Numero = "C-04",
-                            WarehouseId = 1
+                            WarehouseId = 100
                         },
                         new
                         {
-                            CortinaId = 5,
+                            CortinaId = 500,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Descripcion = "Cortina 5 — Muelle Este",
                             EstaDisponible = true,
                             IsActive = true,
                             Numero = "C-05",
-                            WarehouseId = 1
+                            WarehouseId = 100
                         });
                 });
 
@@ -4584,7 +4584,7 @@ namespace LD.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            WarehouseId = 1,
+                            WarehouseId = 100,
                             Address = "Dirección por configurar",
                             Capacity = 0m,
                             City = "",

@@ -648,7 +648,7 @@ namespace LD.Infrastructure.Persistence
             builder.Entity<Warehouse>().HasData(
                 new Warehouse
                 {
-                    WarehouseId   = 1,
+                    WarehouseId   = 100,
                     WarehouseName = "Almacén Principal",
                     Address       = "Dirección por configurar",
                     Neighborhood  = "",
@@ -664,11 +664,11 @@ namespace LD.Infrastructure.Persistence
             // Seed: 5 cortinas
             var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             builder.Entity<Cortina>().HasData(
-                new Cortina { CortinaId = 100, Numero = "C-01", Descripcion = "Cortina 1 — Muelle Norte", EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
-                new Cortina { CortinaId = 200, Numero = "C-02", Descripcion = "Cortina 2 — Muelle Norte", EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
-                new Cortina { CortinaId = 300, Numero = "C-03", Descripcion = "Cortina 3 — Muelle Sur",   EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
-                new Cortina { CortinaId = 400, Numero = "C-04", Descripcion = "Cortina 4 — Muelle Sur",   EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true },
-                new Cortina { CortinaId = 500, Numero = "C-05", Descripcion = "Cortina 5 — Muelle Este",  EstaDisponible = true, WarehouseId = 1, CreatedAt = seedDate, IsActive = true }
+                new Cortina { CortinaId = 100, Numero = "C-01", Descripcion = "Cortina 1 — Muelle Norte", EstaDisponible = true, WarehouseId = 100, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 200, Numero = "C-02", Descripcion = "Cortina 2 — Muelle Norte", EstaDisponible = true, WarehouseId = 100, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 300, Numero = "C-03", Descripcion = "Cortina 3 — Muelle Sur",   EstaDisponible = true, WarehouseId = 100, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 400, Numero = "C-04", Descripcion = "Cortina 4 — Muelle Sur",   EstaDisponible = true, WarehouseId = 100, CreatedAt = seedDate, IsActive = true },
+                new Cortina { CortinaId = 500, Numero = "C-05", Descripcion = "Cortina 5 — Muelle Este",  EstaDisponible = true, WarehouseId = 100, CreatedAt = seedDate, IsActive = true }
             );
         }
     }
