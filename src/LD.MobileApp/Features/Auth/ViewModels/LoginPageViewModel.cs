@@ -1,8 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Enums;
 using LD.Contracts.User;
+using MauiAppLogin;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using System;
@@ -31,15 +32,17 @@ namespace MauiAppLogin.ViewModels
 
         private readonly AuthService _authService;
         private readonly ILoaderService _loaderService;
+        private readonly EquipmentService _equipmentService;
 
         private const string DefaultApiUrl = "http://192.168.0.103:8050/api";
 
         public ILoaderService Loader => _loaderService;
 
-        public LoginViewModel(AuthService authService, ILoaderService loaderService)
+        public LoginViewModel(AuthService authService, ILoaderService loaderService, EquipmentService equipmentService)
         {
             _authService = authService;
             _loaderService = loaderService;
+            _equipmentService = equipmentService;
             LoginCommand = new AsyncCommand(Login);
             ShowIpConfigCommand = new AsyncCommand(ShowIpConfigAsync);
             Username = "admin";
@@ -103,7 +106,7 @@ namespace MauiAppLogin.ViewModels
 
                 UserData.SetUserData(getMeResponse.Data);
 
-                await Shell.Current.GoToAsync("//dashboard");
+                await NavegaSegunEquipoAsync();
             }
             catch (Exception ex)
             {
@@ -114,6 +117,37 @@ namespace MauiAppLogin.ViewModels
                 _loaderService.Hide();
                 IsBusy = false;
             }
+        }
+
+        // Consulta si el usuario logueado tiene un equipo asignado en algún turno.
+        // Si lo tiene, navega directo al checklist del equipo; si no, va al dashboard.
+        private async Task NavegaSegunEquipoAsync()
+        {
+            try
+            {
+                var equiposResponse = await _equipmentService.GetEquipments();
+                if (equiposResponse.IsSuccess && equiposResponse.Data is not null)
+                {
+                    var userName = UserData.UserName ?? string.Empty;
+                    var equipoAsignado = equiposResponse.Data.FirstOrDefault(e =>
+                        string.Equals(e.Turno1, userName, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(e.Turno2, userName, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(e.Turno3, userName, StringComparison.OrdinalIgnoreCase));
+
+                    if (equipoAsignado is not null)
+                    {
+                        await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
+                            new Dictionary<string, object> { { "Equipment", equipoAsignado } });
+                        return;
+                    }
+                }
+            }
+            catch
+            {
+                // Si falla la consulta de equipo, continúa al dashboard normalmente
+            }
+
+            await Shell.Current.GoToAsync("//dashboard");
         }
     }
 

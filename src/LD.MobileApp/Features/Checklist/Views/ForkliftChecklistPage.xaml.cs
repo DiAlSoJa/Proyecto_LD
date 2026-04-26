@@ -1,19 +1,73 @@
+using LD.Client.Configuration;
+using LD.Client.Services;
+using LD.Contracts.Equipment;
+using MauiAppLogin.Models;
 using MauiAppLogin.ViewModels;
 using Microsoft.Maui.Layouts;
 
 namespace MauiAppLogin;
 
+[QueryProperty(nameof(Equipment), "Equipment")]
 public partial class ForkliftChecklistPage : ContentPage
 {
     private readonly List<Label> _leftMarks = new();
     private readonly List<Label> _rightMarks = new();
+    private readonly EquipmentService _equipmentService;
     private ImageSource? _foto1;
     private ImageSource? _foto2;
 
-    public ForkliftChecklistPage()
+    private EquipmentDto? _equipment;
+    public EquipmentDto? Equipment
+    {
+        get => _equipment;
+        set
+        {
+            _equipment = value;
+            if (value is not null)
+                _ = InicializarConEquipoAsync(value);
+        }
+    }
+
+    private ForkliftChecklistViewModel ViewModel => (ForkliftChecklistViewModel)BindingContext;
+
+    public ForkliftChecklistPage(ForkliftChecklistViewModel viewModel, EquipmentService equipmentService)
     {
         InitializeComponent();
+        BindingContext = viewModel;
+        _equipmentService = equipmentService;
         FechaPicker.Date = DateTime.Today;
+    }
+
+    private async Task InicializarConEquipoAsync(EquipmentDto equipment)
+    {
+        await ViewModel.InicializarAsync(equipment);
+
+        // Cargar imagen base del equipo desde el servidor
+        await CargarImagenEquipoAsync(equipment);
+
+        // Precompletar nombre del equipo
+        EquipoEntry.Text = equipment.NoEquipo;
+    }
+
+    private async Task CargarImagenEquipoAsync(EquipmentDto equipment)
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(equipment.ImagePathLeft))
+            {
+                var bytes = await _equipmentService.DownloadImage(equipment.EquipmentId, "left");
+                if (bytes?.Length > 0)
+                    LeftForkliftImage.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
+            }
+
+            if (!string.IsNullOrWhiteSpace(equipment.ImagePathRight))
+            {
+                var bytes = await _equipmentService.DownloadImage(equipment.EquipmentId, "right");
+                if (bytes?.Length > 0)
+                    RightForkliftImage.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
+            }
+        }
+        catch { /* imagen no disponible, se queda la imagen por defecto */ }
     }
 
     private void OnLeftImageTapped(object sender, TappedEventArgs e)
@@ -74,7 +128,6 @@ public partial class ForkliftChecklistPage : ContentPage
     {
         foreach (var mark in _leftMarks.ToList())
             LeftImageHost.Children.Remove(mark);
-
         _leftMarks.Clear();
     }
 
@@ -82,7 +135,6 @@ public partial class ForkliftChecklistPage : ContentPage
     {
         foreach (var mark in _rightMarks.ToList())
             RightImageHost.Children.Remove(mark);
-
         _rightMarks.Clear();
     }
 
@@ -91,20 +143,16 @@ public partial class ForkliftChecklistPage : ContentPage
         if (sender is Button btn && btn.BindingContext is Models.ChecklistQuestion question)
         {
             question.SelectedOption = btn.Text;
-
-            // cambiar color visual
             var parent = btn.Parent as Grid;
-
+            if (parent is null) return;
             foreach (var child in parent.Children)
             {
                 if (child is Button b)
                     b.BackgroundColor = Colors.LightGray;
             }
-
             btn.BackgroundColor = Colors.LightGreen;
         }
     }
-
 
     private async void OnCapturarClicked(object sender, EventArgs e)
     {
@@ -125,11 +173,8 @@ public partial class ForkliftChecklistPage : ContentPage
             mem.Position = 0;
 
             var img = ImageSource.FromStream(() => new MemoryStream(mem.ToArray()));
-
-            // Preview grande
             PreviewImage.Source = img;
 
-            // Guardar en slots de miniaturas (2 fotos)
             if (_foto1 == null)
             {
                 _foto1 = img;
@@ -146,18 +191,16 @@ public partial class ForkliftChecklistPage : ContentPage
             await DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
+
     private async void OnCancelarClicked(object sender, EventArgs e)
     {
-        // Limpia el preview (o navega atrás, tú decides)
         PreviewImage.Source = null;
-        // Si quieres regresar:
-        // await Navigation.PopAsync();
     }
+
     private async void OnGuardarClicked(object sender, EventArgs e)
     {
         var vm = BindingContext as ForkliftChecklistViewModel;
-        if (vm == null)
-            return;
+        if (vm == null) return;
 
         var pendientes = vm.Sections
             .SelectMany(s => s.Questions)
@@ -170,12 +213,13 @@ public partial class ForkliftChecklistPage : ContentPage
             return;
         }
 
+        // Pendiente: implementar envío al endpoint de checklists cuando exista.
         string detalle = string.Join("\n",
             vm.Sections.SelectMany(s => s.Questions)
                        .Select(q => $"{q.Label}: {q.SelectedOption}"));
 
         await DisplayAlertAsync(
-            "Checklist guardado",
+            "Checklist guardado (simulado)",
             $"Operador: {OperadorEntry.Text}\n" +
             $"Equipo: {EquipoEntry.Text}\n" +
             $"Turno: {TurnoPicker.SelectedItem}\n" +

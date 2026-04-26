@@ -1,82 +1,71 @@
-﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Services;
+using LD.Contracts.Equipment;
 using MauiAppLogin.Models;
+using System.Collections.ObjectModel;
 
 namespace MauiAppLogin.ViewModels;
 
-public class ForkliftChecklistViewModel
+public partial class ForkliftChecklistViewModel : ObservableObject
 {
-    public ObservableCollection<ChecklistSection> Sections { get; set; } = new();
+    private readonly EquipmentQuestionService _equipmentQuestionService;
 
-    public ForkliftChecklistViewModel()
+    [ObservableProperty]
+    private ObservableCollection<ChecklistSection> sections = new();
+
+    [ObservableProperty]
+    private EquipmentDto? equipment;
+
+    [ObservableProperty]
+    private bool isLoading;
+
+    public ForkliftChecklistViewModel(EquipmentQuestionService equipmentQuestionService)
     {
-        Sections = new ObservableCollection<ChecklistSection>
+        _equipmentQuestionService = equipmentQuestionService;
+    }
+
+    public async Task InicializarAsync(EquipmentDto equipmentData)
+    {
+        Equipment = equipmentData;
+        await CargarPreguntasAsync();
+    }
+
+    private async Task CargarPreguntasAsync()
+    {
+        if (Equipment is null) return;
+        try
         {
-            new ChecklistSection
-            {
-                Title = "Fugas de aceite",
-                Questions =
-                {
-                    new ChecklistQuestion
-                    {
-                        Label = "Fugas de aceite",
-                        Options = new ObservableCollection<string> { "Sí", "No" }
-                    }
-                }
-            },
+            IsLoading = true;
+            var response = await _equipmentQuestionService.GetByEquipmentType(Equipment.EquipmentTypeId);
+            if (!response.IsSuccess || response.Data is null) return;
 
-            new ChecklistSection
+            Sections.Clear();
+            var section = new ChecklistSection { Title = Equipment.Tipo };
+            foreach (var q in response.Data)
             {
-                Title = "Frenos",
-                Questions =
+                var question = new ChecklistQuestion { Label = q.QuestionText };
+                if (q.IsYesNo)
                 {
-                    new ChecklistQuestion
+                    question.Options.Add("Sí");
+                    question.Options.Add("No");
+                }
+                else if (!string.IsNullOrWhiteSpace(q.OptionAnswerText))
+                {
+                    foreach (var opt in q.OptionAnswerText
+                        .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Trim())
+                        .Where(x => !string.IsNullOrEmpty(x)))
                     {
-                        Label = "Funcionan",
-                        Options = new ObservableCollection<string> { "Sí", "No" }
+                        question.Options.Add(opt);
                     }
                 }
-            },
-
-            new ChecklistSection
-            {
-                Title = "Equipo de seguridad",
-                Questions =
-                {
-                    new ChecklistQuestion
-                    {
-                        Label = "Extintor",
-                        Options = new ObservableCollection<string> { "Sí", "No" }
-                    },
-                    new ChecklistQuestion
-                    {
-                        Label = "Claxon",
-                        Options = new ObservableCollection<string> { "Sí", "No" }
-                    },
-                    new ChecklistQuestion
-                    {
-                        Label = "Correa antiestática",
-                        Options = new ObservableCollection<string> { "Sí", "No" }
-                    }
-                }
-            },
-
-            new ChecklistSection
-            {
-                Title = "Baterías",
-                Questions =
-                {
-                    new ChecklistQuestion
-                    {
-                        Label = "Conector de batería",
-                        Options = new ObservableCollection<string>
-                        {
-                            "Funcionando",
-                            "Dañado",
-                            "Roto"
-                        }
-                    }
-                }
+                section.Questions.Add(question);
             }
-        };
+            Sections.Add(section);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 }

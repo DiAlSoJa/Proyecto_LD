@@ -20,7 +20,9 @@ using LD.FormsX.Views.ASN;
 using LD.FormsX.Views.Auditar;
 using LD.FormsX.Views.Catalogos;
 using LD.FormsX.Views.Categorias;
+using LD.FormsX.Features.CheckList.ViewModels;
 using LD.FormsX.Views.CheckList;
+using LD.FormsX.Views.CheckList.Tabs;
 using LD.FormsX.Views.Common;
 using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.Dialogs;
@@ -176,7 +178,17 @@ namespace LD.FormsX
             services.AddTransient<ASNView>();
             services.AddTransient<AuditarView>();
             services.AddTransient<InventarioCiclicoView>();
+            services.AddTransient<ChecklistViewModel>();
+            services.AddTransient<EquiposTabViewModel>();
+            services.AddTransient<ResumenTabViewModel>();
+            services.AddTransient<ResumenBateriasTabViewModel>();
+            services.AddTransient<ConfiguracionPreguntasTabViewModel>();
+
             services.AddTransient<CheckListView>();
+            services.AddTransient<EquiposTab>();
+            services.AddTransient<ResumenTab>();
+            services.AddTransient<ResumenBateriasTab>();
+            services.AddTransient<ConfiguracionPreguntasTab>();
             services.AddTransient<ReportesView>();
             services.AddTransient<ControlPatioView>();
             services.AddTransient<UsuariosView>();

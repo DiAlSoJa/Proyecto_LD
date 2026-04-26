@@ -119,7 +119,7 @@ public partial class SignatureDriverViewModel : ObservableObject
 
             await Shell.Current.DisplayAlertAsync("Listo", "Registro completado. Control de Patio asignará una cortina.", "OK");
             _context.Clear();
-            await Shell.Current.GoToAsync(nameof(PatioPendientesPage));
+            await Shell.Current.GoToAsync(nameof(DashboardPage));
         }
         catch (Exception ex)
         {

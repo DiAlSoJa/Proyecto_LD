@@ -64,6 +64,7 @@ namespace MauiAppLogin
             builder.Services.AddTransient<TaskList>();
 
             //viewmodels
+            builder.Services.AddTransient<ForkliftChecklistViewModel>();
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<DashboardViewModel>();
             builder.Services.AddTransient<RegisterLicenseViewModel>();
