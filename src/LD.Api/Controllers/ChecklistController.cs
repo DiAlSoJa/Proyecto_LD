@@ -15,6 +15,51 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class ChecklistController : CommonController
 {
+    private const string UploadsRoot        = @"C:\LD\";
+    private const string ChecklistsSubfolder = @"uploads\checklists";
+    private const long   MaxFotoBytes        = 10 * 1024 * 1024; // 10 MB
+
+    private static readonly HashSet<string> _extensionesPermitidas =
+        new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png", ".webp" };
+
+    private static readonly HashSet<string> _sidesPermitidos =
+        new(StringComparer.Ordinal) { "left", "right", "custom" };
+
+    // Valida que relativePath sea seguro y resuelve la ruta física completa.
+    // Rechaza traversal (..), nulos, rutas absolutas y extensiones no permitidas.
+    // Devuelve false → llamador debe responder 404 (sin revelar el motivo).
+    private static bool EsRutaSegura(string relativePath, out string rutaCompleta)
+    {
+        rutaCompleta = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return false;
+
+        if (relativePath.Contains("..") ||
+            relativePath.Contains('\0') ||
+            Path.IsPathRooted(relativePath))
+            return false;
+
+        var ext = Path.GetExtension(relativePath).ToLowerInvariant();
+        if (!_extensionesPermitidas.Contains(ext))
+            return false;
+
+        // Usar solo el nombre del archivo; descarta cualquier subdirectorio en el input
+        var nombre = Path.GetFileName(relativePath);
+        if (string.IsNullOrWhiteSpace(nombre))
+            return false;
+
+        var baseCanonica = Path.GetFullPath(Path.Combine(UploadsRoot, ChecklistsSubfolder));
+        var candidato    = Path.GetFullPath(Path.Combine(baseCanonica, nombre));
+
+        if (!candidato.StartsWith(baseCanonica + Path.DirectorySeparatorChar,
+                                   StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        rutaCompleta = candidato;
+        return true;
+    }
+
     [HttpPost]
     [Permission(PermissionKeys.Checklist_Submit)]
     public async Task<IActionResult> Submit([FromBody] SubmitChecklistCommand command)
@@ -50,7 +95,6 @@ public class ChecklistController : CommonController
             await Mediator.Send(new GetChecklistByIdQuery(checklistId, photoBaseUrl)));
     }
 
-    // Subida de foto: replica exactamente el patrón de EquipmentController.UploadImage
     [HttpPost("upload-photo")]
     [Permission(PermissionKeys.Checklist_Submit)]
     public async Task<IActionResult> UploadPhoto([FromForm] IFormFile file, [FromForm] string side)
@@ -58,18 +102,21 @@ public class ChecklistController : CommonController
         if (file is null || file.Length == 0)
             return BadRequest("Archivo inválido.");
 
-        var normalizedSide = side?.ToLowerInvariant() switch
-        {
-            "left"  => "left",
-            "right" => "right",
-            _       => "custom"
-        };
+        if (file.Length > MaxFotoBytes)
+            return BadRequest("El archivo excede el límite de 10 MB.");
 
-        var uploadsFolder = @"C:\LD\Uploads\Checklists";
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!_extensionesPermitidas.Contains(ext))
+            return BadRequest("Extensión no permitida. Use jpg, jpeg, png o webp.");
+
+        var normalizedSide = side?.ToLowerInvariant();
+        if (normalizedSide is null || !_sidesPermitidos.Contains(normalizedSide))
+            return BadRequest("Valor de 'side' no válido. Use: left, right, custom.");
+
+        var uploadsFolder = Path.Combine(UploadsRoot, ChecklistsSubfolder);
         Directory.CreateDirectory(uploadsFolder);
 
-        var extension = Path.GetExtension(file.FileName);
-        var fileName = $"checklist_{normalizedSide}_{Guid.NewGuid():N}{extension}";
+        var fileName = $"checklist_{normalizedSide}_{Guid.NewGuid():N}{ext}";
         var fullPath = Path.Combine(uploadsFolder, fileName);
 
         await using (var stream = new FileStream(fullPath, FileMode.Create))
@@ -93,29 +140,24 @@ public class ChecklistController : CommonController
         });
     }
 
-    // Descarga de foto: replica el patrón de EquipmentController.GetImage
-    [AllowAnonymous]
+    // Requiere autenticación — el cliente HTTP adjunta el JWT automáticamente.
     [HttpGet("photo")]
+    [Permission(PermissionKeys.Checklist_ViewSummary)]
     public IActionResult GetPhoto([FromQuery] string path)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        if (!EsRutaSegura(path, out var fullPath))
             return NotFound();
 
-        var fileName = Path.GetFileName(path);
-        if (string.IsNullOrWhiteSpace(fileName))
-            return NotFound();
-
-        var fullPath = Path.Combine(@"C:\LD\", "uploads", "checklists", fileName);
         if (!System.IO.File.Exists(fullPath))
             return NotFound();
 
-        var contentType = fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
-            ? "image/png"
-            : fileName.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
-                ? "image/gif"
-                : fileName.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase)
-                    ? "image/bmp"
-                    : "image/jpeg";
+        var ext = System.IO.Path.GetExtension(fullPath).ToLowerInvariant();
+        var contentType = ext switch
+        {
+            ".png"  => "image/png",
+            ".webp" => "image/webp",
+            _       => "image/jpeg"
+        };
 
         return PhysicalFile(fullPath, contentType);
     }

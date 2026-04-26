@@ -33,6 +33,12 @@ public class EquipmentController : CommonController
     public async Task<IActionResult> GeEquipmentById(int equipmentId)
         => ResultExtensions.ToActionResult(await Mediator.Send(new EquipmentByIdQuery(equipmentId)));
 
+    // Devuelve el equipo asignado al usuario autenticado (200 con Data=null si no tiene).
+    [HttpGet("assigned-to-me")]
+    public async Task<IActionResult> GetAssignedToMe()
+        => ResultExtensions.ToActionResult(
+               await Mediator.Send(new GetAssignedEquipmentQuery(CurrentUserId)));
+
     [HttpPost]
     [Permission(PermissionKeys.ForkliftChecklist_Create)]
     public async Task<IActionResult> CreateEquipment([FromBody] CreateEquipmentCommand command)

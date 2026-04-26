@@ -31,6 +31,11 @@ public class EquipmentService
         return await _api.GetAsync<ApiResponseDto<List<EquipmentDto>>>(_apiEndpoints.Equipment_GetAll);
     }
 
+    public async Task<ApiResponseDto<EquipmentDto?>> GetAssignedToMeAsync()
+    {
+        return await _api.GetAsync<ApiResponseDto<EquipmentDto?>>(_apiEndpoints.Equipment_AssignedToMe);
+    }
+
     public async Task<ApiResponseDto<string>> CreateEquipment(EquipmentRequest request)
     {
         return await _api.PostAsync<EquipmentRequest, ApiResponseDto<string>>(_apiEndpoints.Equipment_Create, request);

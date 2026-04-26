@@ -2,6 +2,7 @@ using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Checklist;
 using LD.Contracts.Equipment;
+using MauiAppLogin.Common.Imaging;
 using MauiAppLogin.Models;
 using MauiAppLogin.ViewModels;
 using Microsoft.Maui.Layouts;
@@ -200,7 +201,6 @@ public partial class ForkliftChecklistPage : ContentPage
     {
         var vm = ViewModel;
 
-        // Validar que todas las preguntas estén contestadas
         var pendientes = vm.Sections
             .SelectMany(s => s.Questions)
             .Where(q => string.IsNullOrWhiteSpace(q.SelectedOption))
@@ -220,29 +220,36 @@ public partial class ForkliftChecklistPage : ContentPage
 
         try
         {
-            // Subir fotos antes de enviar el checklist
-            var photos = new List<ChecklistPhotoDto>();
-            if (_foto1Bytes is { Length: > 0 })
-            {
-                var uploadResult = await vm.UploadPhotoAsync(_foto1Bytes, "foto1.jpg", "left");
-                if (uploadResult.IsSuccess && uploadResult.Data is not null)
-                    photos.Add(new ChecklistPhotoDto
-                    {
-                        RelativePath = uploadResult.Data.RelativePath,
-                        Side         = "left",
-                        Order        = 1
-                    });
-            }
+            vm.IsSaving = true;
 
-            if (_foto2Bytes is { Length: > 0 })
+            // Comprimir y subir fotos en serie mostrando progreso
+            var fotosParaSubir = new List<(byte[] bytes, string nombre, string side, int order)>();
+            if (_foto1Bytes is { Length: > 0 }) fotosParaSubir.Add((_foto1Bytes, "foto1.jpg", "left",  1));
+            if (_foto2Bytes is { Length: > 0 }) fotosParaSubir.Add((_foto2Bytes, "foto2.jpg", "right", 2));
+
+            var photos = new List<ChecklistPhotoDto>();
+            for (int i = 0; i < fotosParaSubir.Count; i++)
             {
-                var uploadResult = await vm.UploadPhotoAsync(_foto2Bytes, "foto2.jpg", "right");
+                var (bytes, nombre, side, order) = fotosParaSubir[i];
+                vm.StatusSubida = $"Subiendo foto {i + 1} de {fotosParaSubir.Count}...";
+
+                byte[] bytesFinales;
+                try
+                {
+                    bytesFinales = await ImageCompressor.ComprimirAsync(bytes);
+                }
+                catch
+                {
+                    bytesFinales = bytes; // fallback: subir original si la compresión falla
+                }
+
+                var uploadResult = await vm.UploadPhotoAsync(bytesFinales, nombre, side);
                 if (uploadResult.IsSuccess && uploadResult.Data is not null)
                     photos.Add(new ChecklistPhotoDto
                     {
                         RelativePath = uploadResult.Data.RelativePath,
-                        Side         = "right",
-                        Order        = 2
+                        Side         = side,
+                        Order        = order
                     });
             }
 
@@ -251,7 +258,6 @@ public partial class ForkliftChecklistPage : ContentPage
             defectMarks.AddRange(ExtractMarks(_leftMarks,  LeftImageHost,  "left"));
             defectMarks.AddRange(ExtractMarks(_rightMarks, RightImageHost, "right"));
 
-            // Construir respuestas del checklist
             var answers = vm.Sections
                 .SelectMany(s => s.Questions)
                 .Select(q => new ChecklistAnswerDto
@@ -270,15 +276,16 @@ public partial class ForkliftChecklistPage : ContentPage
 
             var request = new SubmitChecklistRequest
             {
-                EquipmentId  = _equipment.EquipmentId,
-                UserName     = OperadorEntry.Text?.Trim() ?? string.Empty,
-                Turno        = TurnoPicker.SelectedItem?.ToString() ?? string.Empty,
+                EquipmentId   = _equipment.EquipmentId,
+                UserName      = OperadorEntry.Text?.Trim() ?? string.Empty,
+                Turno         = TurnoPicker.SelectedItem?.ToString() ?? string.Empty,
                 Observaciones = ObservacionesEditor.Text?.Trim(),
-                Answers      = answers,
-                DefectMarks  = defectMarks,
-                Photos       = photos
+                Answers       = answers,
+                DefectMarks   = defectMarks,
+                Photos        = photos
             };
 
+            vm.StatusSubida = "Guardando checklist...";
             var (ok, message) = await vm.SubmitAsync(request);
 
             if (ok)
@@ -294,6 +301,11 @@ public partial class ForkliftChecklistPage : ContentPage
         catch (Exception ex)
         {
             await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+        finally
+        {
+            vm.IsSaving     = false;
+            vm.StatusSubida = string.Empty;
         }
     }
 

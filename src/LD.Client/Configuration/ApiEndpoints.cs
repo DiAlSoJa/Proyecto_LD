@@ -162,8 +162,9 @@ namespace LD.Forms.Configuration
         // EQUIPMENT
         // ======================
 
-        public string Equipment_GetAll => $"{_baseApi}/Equipment";
-        public string Equipment_GetById => $"{_baseApi}/Equipment/{{equipmentId}}";
+        public string Equipment_GetAll      => $"{_baseApi}/Equipment";
+        public string Equipment_AssignedToMe => $"{_baseApi}/Equipment/assigned-to-me";
+        public string Equipment_GetById     => $"{_baseApi}/Equipment/{{equipmentId}}";
         public string Equipment_Create => $"{_baseApi}/Equipment";
         public string Equipment_Update => $"{_baseApi}/Equipment/{{equipmentId}}";
         public string Equipment_UploadImage => $"{_baseApi}/Equipment/upload-image";

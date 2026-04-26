@@ -16,6 +16,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <Grid>
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="16">
 
@@ -324,4 +325,22 @@
 
         </VerticalStackLayout>
     </ScrollView>
+
+    <!-- Overlay de carga durante compresión y subida de fotos -->
+    <Grid IsVisible="{Binding IsSaving}" BackgroundColor="#C8000000" ZIndex="10">
+        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+            <ActivityIndicator IsRunning="{Binding IsSaving}"
+                               Color="White"
+                               WidthRequest="48"
+                               HeightRequest="48"
+                               HorizontalOptions="Center"/>
+            <Label Text="{Binding StatusSubida}"
+                   TextColor="White"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+    </Grid>
+
+    </Grid>
 </ContentPage>

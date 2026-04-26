@@ -52,10 +52,16 @@ public class ChecklistService
             _apiEndpoints.Checklist_UploadPhoto, content);
     }
 
-    // Devuelve la URL pública de una foto dado su relativePath.
+    // Devuelve la URL del endpoint de foto dado su relativePath.
     public string GetPhotoUrl(string relativePath)
     {
         return _apiEndpoints.Checklist_GetPhoto.Replace("{path}", Uri.EscapeDataString(relativePath));
+    }
+
+    // Descarga los bytes de una foto vía el cliente autenticado.
+    public async Task<byte[]> GetPhotoBytesAsync(string relativePath)
+    {
+        return await _api.GetByteArrayAsync(GetPhotoUrl(relativePath));
     }
 
     private static string BuildQueryString(GetChecklistsQueryRequest filters)

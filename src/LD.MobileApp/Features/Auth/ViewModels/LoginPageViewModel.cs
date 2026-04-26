@@ -119,32 +119,24 @@ namespace MauiAppLogin.ViewModels
             }
         }
 
-        // Consulta si el usuario logueado tiene un equipo asignado en algún turno.
-        // Si lo tiene, navega directo al checklist del equipo; si no, va al dashboard.
+        // Consulta el endpoint dedicated para obtener el equipo asignado al usuario actual.
+        // Si lo tiene, navega directo al checklist; si no, va al dashboard.
         private async Task NavegaSegunEquipoAsync()
         {
             try
             {
-                var equiposResponse = await _equipmentService.GetEquipments();
-                if (equiposResponse.IsSuccess && equiposResponse.Data is not null)
+                var response = await _equipmentService.GetAssignedToMeAsync();
+                if (response.IsSuccess && response.Data is not null)
                 {
-                    var userName = UserData.UserName ?? string.Empty;
-                    var equipoAsignado = equiposResponse.Data.FirstOrDefault(e =>
-                        string.Equals(e.Turno1, userName, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(e.Turno2, userName, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(e.Turno3, userName, StringComparison.OrdinalIgnoreCase));
-
-                    if (equipoAsignado is not null)
-                    {
-                        await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
-                            new Dictionary<string, object> { { "Equipment", equipoAsignado } });
-                        return;
-                    }
+                    await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
+                        new Dictionary<string, object> { { "Equipment", response.Data } });
+                    return;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Si falla la consulta de equipo, continúa al dashboard normalmente
+                System.Diagnostics.Debug.WriteLine(
+                    $"[NavegaSegunEquipo] Error al consultar equipo asignado: {ex}");
             }
 
             await Shell.Current.GoToAsync("//dashboard");

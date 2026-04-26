@@ -22,6 +22,12 @@ public partial class ForkliftChecklistViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
+    [ObservableProperty]
+    private bool isSaving;
+
+    [ObservableProperty]
+    private string statusSubida = string.Empty;
+
     public ForkliftChecklistViewModel(
         EquipmentQuestionService equipmentQuestionService,
         ChecklistService checklistService)

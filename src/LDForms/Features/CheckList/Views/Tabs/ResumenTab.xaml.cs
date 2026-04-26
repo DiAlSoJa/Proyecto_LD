@@ -12,6 +12,8 @@ namespace LD.FormsX.Views.CheckList.Tabs
     {
         private ResumenTabViewModel ViewModel => (ResumenTabViewModel)DataContext;
 
+        private List<ChecklistDefectMarkDto>? _ultimasMarcas;
+
         public ResumenTab(ResumenTabViewModel viewModel)
         {
             InitializeComponent();
@@ -26,8 +28,13 @@ namespace LD.FormsX.Views.CheckList.Tabs
             viewModel.OnChecklistDetailLoaded += detail =>
             {
                 MostrarDetalle(detail);
-                RenderizarMarcas(detail?.DefectMarks);
+                _ultimasMarcas = detail?.DefectMarks;
+                RenderizarMarcas(_ultimasMarcas);
             };
+
+            // Redibujar marcas al redimensionar la ventana o el canvas
+            canvasIzq.SizeChanged += (_, _) => RenderizarMarcas(_ultimasMarcas);
+            canvasDer.SizeChanged += (_, _) => RenderizarMarcas(_ultimasMarcas);
         }
 
         private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
@@ -116,8 +123,14 @@ namespace LD.FormsX.Views.CheckList.Tabs
                     ? canvasIzq
                     : canvasDer;
 
-                var x = (double)mark.XPercent * canvas.Width  - 10;
-                var y = (double)mark.YPercent * canvas.Height - 14;
+                var w = canvas.ActualWidth;
+                var h = canvas.ActualHeight;
+
+                // Canvas aún no medido; se redibujará cuando SizeChanged lo notifique
+                if (w <= 0 || h <= 0) continue;
+
+                var x = (double)mark.XPercent * w - 10;
+                var y = (double)mark.YPercent * h - 14;
 
                 var lbl = new TextBlock
                 {
