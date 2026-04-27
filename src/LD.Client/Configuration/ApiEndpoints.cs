@@ -276,6 +276,8 @@ namespace LD.Forms.Configuration
         // ======================
 
         public string AvailableInventory_GetAll => $"{_baseApi}/AvailableInventory";
+        public string AvailableInventory_ChangeLocation => $"{_baseApi}/AvailableInventory/change-location";
+        public string AvailableInventory_ChangeStatus => $"{_baseApi}/AvailableInventory/change-status";
 
 
 

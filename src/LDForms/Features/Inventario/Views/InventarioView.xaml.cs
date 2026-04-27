@@ -1,6 +1,7 @@
 using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
 using LD.Contracts.DTOs;
+using LD.Contracts.InventaryStatus;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model.Lookup;
@@ -19,6 +20,7 @@ namespace LD.FormsX.Views.Inventario
     {
         private readonly AvailableInventoryService _availableInventoryService;
         private readonly LookupService _lookupService;
+        private readonly InventaryStatusService _inventaryStatusService;
         private readonly DataGridColumnFilterManager _columnFilterManager;
         private bool _loaded;
         private bool _loadingFilters;
@@ -30,6 +32,8 @@ namespace LD.FormsX.Views.Inventario
         public ObservableCollection<AvailableInventoryDto> AvailableInventories { get; } = new();
         public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
         public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> LocationLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
         public ICollectionView AvailableInventoriesView { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -86,11 +90,15 @@ namespace LD.FormsX.Views.Inventario
             }
         }
 
-        public InventarioView(AvailableInventoryService availableInventoryService, LookupService lookupService)
+        public InventarioView(
+            AvailableInventoryService availableInventoryService,
+            LookupService lookupService,
+            InventaryStatusService inventaryStatusService)
         {
             InitializeComponent();
             _availableInventoryService = availableInventoryService;
             _lookupService = lookupService;
+            _inventaryStatusService = inventaryStatusService;
             DataContext = this;
 
             AvailableInventoriesView = CollectionViewSource.GetDefaultView(AvailableInventories);
@@ -108,6 +116,8 @@ namespace LD.FormsX.Views.Inventario
             _loaded = true;
 
             await LoadClientsAsync();
+            await LoadLocationsAsync();
+            await LoadStatusesAsync();
             await LoadAvailableInventoriesAsync();
         }
 
@@ -168,6 +178,44 @@ namespace LD.FormsX.Views.Inventario
             finally
             {
                 _loadingFilters = false;
+            }
+        }
+
+        private async Task LoadLocationsAsync()
+        {
+            try
+            {
+                var response = await _lookupService.GetLocationLookup();
+
+                LocationLookupItems.Clear();
+                if (response.IsSuccess && response.Data != null)
+                {
+                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        LocationLookupItems.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async Task LoadStatusesAsync()
+        {
+            try
+            {
+                var response = await _inventaryStatusService.GetInventaryStatus();
+
+                StatusLookupItems.Clear();
+                if (response.IsSuccess && response.Data != null)
+                {
+                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        StatusLookupItems.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
             }
         }
 
@@ -271,6 +319,136 @@ namespace LD.FormsX.Views.Inventario
             await LoadAvailableInventoriesAsync();
         }
 
+        private async void BtnCambiarUbicacion_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedInventories = dg.SelectedItems
+                .OfType<AvailableInventoryDto>()
+                .ToList();
+
+            if (!selectedInventories.Any())
+            {
+                DialogHelper.ShowWarning("Selecciona al menos un registro de inventario.");
+                return;
+            }
+
+            var standardIds = selectedInventories
+                .Select(GetStandardId)
+                .Where(x => x.HasValue && x.Value > 0)
+                .Select(x => x!.Value)
+                .Distinct()
+                .ToList();
+
+            if (standardIds.Count != selectedInventories.Count)
+            {
+                DialogHelper.ShowWarning("Uno o mas registros seleccionados no tienen StandardId.");
+                return;
+            }
+
+            if (!LocationLookupItems.Any())
+                await LoadLocationsAsync();
+
+            var dialog = new CambiarUbicacionInventarioDialog(selectedInventories.First(), LocationLookupItems)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            try
+            {
+                ShowLoader(true, "Cambiando ubicacion...");
+                var response = await _availableInventoryService.ChangeLocation(standardIds, dialog.UbicacionDestino);
+
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.Message ?? "No se pudo cambiar la ubicacion.");
+                    return;
+                }
+
+                DialogHelper.ShowSuccess(response.Message ?? "Ubicacion actualizada correctamente.");
+                await LoadAvailableInventoriesAsync();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                ShowLoader(false);
+            }
+        }
+
+        private static int? GetStandardId(AvailableInventoryDto inventory)
+        {
+            if (inventory.StandardId.HasValue)
+                return inventory.StandardId.Value;
+
+            return int.TryParse(inventory.StandardIdStr, out var parsedStandardId)
+                ? parsedStandardId
+                : null;
+        }
+
+        private async void BtnCambiarStatus_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedInventories = dg.SelectedItems
+                .OfType<AvailableInventoryDto>()
+                .ToList();
+
+            if (!selectedInventories.Any())
+            {
+                DialogHelper.ShowWarning("Selecciona al menos un registro de inventario.");
+                return;
+            }
+
+            var standardIds = selectedInventories
+                .Select(GetStandardId)
+                .Where(x => x.HasValue && x.Value > 0)
+                .Select(x => x!.Value)
+                .Distinct()
+                .ToList();
+
+            if (standardIds.Count != selectedInventories.Count)
+            {
+                DialogHelper.ShowWarning("Uno o mas registros seleccionados no tienen StandardId.");
+                return;
+            }
+
+            if (!StatusLookupItems.Any())
+                await LoadStatusesAsync();
+
+            var dialog = new CambiarStatusInventarioDialog(selectedInventories.First(), StatusLookupItems)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            try
+            {
+                ShowLoader(true, "Cambiando status...");
+                var response = await _availableInventoryService.ChangeStatus(standardIds, dialog.StatusDestino);
+
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.Message ?? "No se pudo cambiar el status.");
+                    return;
+                }
+
+                DialogHelper.ShowSuccess(response.Message ?? "Status actualizado correctamente.");
+                await LoadAvailableInventoriesAsync();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                ShowLoader(false);
+            }
+        }
+
         private async void LookupCliente_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             if (!_loaded || _loadingFilters)
@@ -321,6 +499,17 @@ namespace LD.FormsX.Views.Inventario
                 Id = int.TryParse(item.Key, out var value) ? value : 0,
                 Code = item.Value ?? string.Empty,
                 Description = item.Key ?? string.Empty,
+                Data = item
+            };
+        }
+
+        private static LookupItem ToLookupItem(InventaryStatusDto item)
+        {
+            return new LookupItem
+            {
+                Id = 0,
+                Code = item.StatusId ?? string.Empty,
+                Description = item.Descripcion ?? string.Empty,
                 Data = item
             };
         }

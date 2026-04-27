@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LD.Contracts.DTOs;
 using LD.Contracts.Location;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
@@ -63,6 +64,12 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.Ignore());
 
             CreateMap<Location, LocationRequest>();
+
+            CreateMap<Location, DropDownDto>()
+                .ForMember(dest => dest.Key,
+                    opt => opt.MapFrom(src => src.LocationId))
+                .ForMember(dest => dest.Value,
+                    opt => opt.MapFrom(src => src.LocationName));
 
 
         }
