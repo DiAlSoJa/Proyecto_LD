@@ -187,7 +187,7 @@ namespace LD.FormsX.Movimientos
                 }
 
                 Movements.Clear();
-                foreach (var movement in response.Data.OrderByDescending(x => x.Fecha).ThenByDescending(x => x.Hora))
+                foreach (var movement in response.Data.OrderByDescending(x => x.MovementId))
                     Movements.Add(movement);
 
                 RefreshFilters();

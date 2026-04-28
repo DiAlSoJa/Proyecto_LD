@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260425025348_Cambio_Proyecto_TiposDeGuardado")]
+    partial class Cambio_Proyecto_TiposDeGuardado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -490,225 +493,6 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.Checklist", b =>
-                {
-                    b.Property<int>("ChecklistId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChecklistId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EquipmentTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Observaciones")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Turno")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ChecklistId");
-
-                    b.HasIndex("EquipmentId");
-
-                    b.ToTable("Checklists");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.ChecklistAnswer", b =>
-                {
-                    b.Property<int>("ChecklistAnswerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChecklistAnswerId"));
-
-                    b.Property<string>("AnswerText")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("ChecklistId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsOk")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuestionTextSnapshot")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("ChecklistAnswerId");
-
-                    b.HasIndex("ChecklistId");
-
-                    b.ToTable("ChecklistAnswers");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.ChecklistDefectMark", b =>
-                {
-                    b.Property<int>("ChecklistDefectMarkId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChecklistDefectMarkId"));
-
-                    b.Property<int>("ChecklistId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Side")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<decimal>("XPercent")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("YPercent")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("ChecklistDefectMarkId");
-
-                    b.HasIndex("ChecklistId");
-
-                    b.ToTable("ChecklistDefectMarks");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.ChecklistPhoto", b =>
-                {
-                    b.Property<int>("ChecklistPhotoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChecklistPhotoId"));
-
-                    b.Property<int>("ChecklistId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RelativePath")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Side")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("ChecklistPhotoId");
-
-                    b.HasIndex("ChecklistId");
-
-                    b.ToTable("ChecklistPhotos");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.Client", b =>
                 {
                     b.Property<int>("ClientId")
@@ -920,110 +704,6 @@ namespace LD.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("ClientFiscalData");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.Cortina", b =>
-                {
-                    b.Property<int>("CortinaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CortinaId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<bool>("EstaDisponible")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Numero")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CortinaId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("Cortinas");
-
-                    b.HasData(
-                        new
-                        {
-                            CortinaId = 100,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Descripcion = "Cortina 1 — Muelle Norte",
-                            EstaDisponible = true,
-                            IsActive = true,
-                            Numero = "C-01",
-                            WarehouseId = 100
-                        },
-                        new
-                        {
-                            CortinaId = 200,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Descripcion = "Cortina 2 — Muelle Norte",
-                            EstaDisponible = true,
-                            IsActive = true,
-                            Numero = "C-02",
-                            WarehouseId = 100
-                        },
-                        new
-                        {
-                            CortinaId = 300,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Descripcion = "Cortina 3 — Muelle Sur",
-                            EstaDisponible = true,
-                            IsActive = true,
-                            Numero = "C-03",
-                            WarehouseId = 100
-                        },
-                        new
-                        {
-                            CortinaId = 400,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Descripcion = "Cortina 4 — Muelle Sur",
-                            EstaDisponible = true,
-                            IsActive = true,
-                            Numero = "C-04",
-                            WarehouseId = 100
-                        },
-                        new
-                        {
-                            CortinaId = 500,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Descripcion = "Cortina 5 — Muelle Este",
-                            EstaDisponible = true,
-                            IsActive = true,
-                            Numero = "C-05",
-                            WarehouseId = 100
-                        });
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Currency", b =>
@@ -2859,15 +2539,6 @@ namespace LD.Infrastructure.Migrations
                             Key = "units.update",
                             ModuleId = 16,
                             PermissionName = "Editar unidades"
-                        },
-                        new
-                        {
-                            PermissionId = 85,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsActive = true,
-                            Key = "security.cortina.assign",
-                            ModuleId = 25,
-                            PermissionName = "Asignar cortina"
                         });
                 });
 
@@ -3943,13 +3614,6 @@ namespace LD.Infrastructure.Migrations
                             PermissionId = 84,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true
-                        },
-                        new
-                        {
-                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
-                            PermissionId = 85,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsActive = true
                         });
                 });
 
@@ -4183,9 +3847,6 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("CortinaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -4197,9 +3858,6 @@ namespace LD.Infrastructure.Migrations
 
                     b.Property<string>("DeletedByUserId")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
 
                     b.Property<string>("Firma")
                         .HasMaxLength(500)
@@ -4275,63 +3933,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("SecurityRegistrationId");
 
-                    b.HasIndex("CortinaId");
-
                     b.ToTable("SecurityRegistrations");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.SecurityTask", b =>
-                {
-                    b.Property<int>("SecurityTaskId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SecurityTaskId"));
-
-                    b.Property<bool>("Completada")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("FechaCompletada")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RealizadaPor")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<int>("SecurityRegistrationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TipoAccion")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("SecurityTaskId");
-
-                    b.HasIndex("SecurityRegistrationId");
-
-                    b.ToTable("SecurityTasks");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.StandarIdSequence", b =>
@@ -4815,21 +4417,6 @@ namespace LD.Infrastructure.Migrations
                     b.HasKey("WarehouseId");
 
                     b.ToTable("Warehouses");
-
-                    b.HasData(
-                        new
-                        {
-                            WarehouseId = 100,
-                            Address = "Dirección por configurar",
-                            Capacity = 0m,
-                            City = "",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            IsProduction = false,
-                            Neighborhood = "",
-                            WarehouseName = "Almacén Principal",
-                            ZipCode = ""
-                        });
                 });
 
             modelBuilder.Entity("LD.Infrastructure.ApplicationRole", b =>
@@ -5200,50 +4787,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.Checklist", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Equipment");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.ChecklistAnswer", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.Checklist", "Checklist")
-                        .WithMany("Answers")
-                        .HasForeignKey("ChecklistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Checklist");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.ChecklistDefectMark", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.Checklist", "Checklist")
-                        .WithMany("DefectMarks")
-                        .HasForeignKey("ChecklistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Checklist");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.ChecklistPhoto", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.Checklist", "Checklist")
-                        .WithMany("Photos")
-                        .HasForeignKey("ChecklistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Checklist");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.ClientContact", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Client", "Client")
@@ -5264,17 +4807,6 @@ namespace LD.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.Cortina", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Equipment", b =>
@@ -5593,27 +5125,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("SystemField");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.SecurityRegistration", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.Cortina", "Cortina")
-                        .WithMany("SecurityRegistrations")
-                        .HasForeignKey("CortinaId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Cortina");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.SecurityTask", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.SecurityRegistration", "SecurityRegistration")
-                        .WithMany()
-                        .HasForeignKey("SecurityRegistrationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SecurityRegistration");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.StandardLabel", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Client", "Client")
@@ -5713,23 +5224,9 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("AsnReceiptDetails");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.Checklist", b =>
-                {
-                    b.Navigation("Answers");
-
-                    b.Navigation("DefectMarks");
-
-                    b.Navigation("Photos");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.Client", b =>
                 {
                     b.Navigation("ClientFiscalData");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.Cortina", b =>
-                {
-                    b.Navigation("SecurityRegistrations");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Module", b =>

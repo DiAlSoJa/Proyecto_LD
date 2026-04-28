@@ -24,7 +24,8 @@ public class InventoryMovementQueryHandler : IRequestHandler<InventoryMovementQu
     public async Task<Result<List<InventoryMovementDto>?>> Handle(InventoryMovementQuery request, CancellationToken cancellationToken)
     {
         var inventoryMovements = await _inventoryMovementRepository.GetAllWithRelationsAsync();
-        var inventoryMovementDtos = _mapper.Map<List<InventoryMovementDto>>(inventoryMovements);
+        var inventoryMovementDtos = _mapper.Map<List<InventoryMovementDto>>(
+            inventoryMovements.OrderByDescending(x => x.MovementId));
         return Result<List<InventoryMovementDto>?>.Success(inventoryMovementDtos, "Movimientos obtenidos correctamente");
     }
 }

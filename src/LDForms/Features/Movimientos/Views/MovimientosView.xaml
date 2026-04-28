@@ -285,6 +285,7 @@
                                   Margin="0">
 
                             <DataGrid.Columns>
+                                <DataGridTextColumn Header="Id" Binding="{Binding MovementId}" Width="70"/>
                                 <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="160"/>
                                 <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="160"/>
                                 <DataGridTextColumn Header="No. Parte" Binding="{Binding PartNumber}" Width="120"/>

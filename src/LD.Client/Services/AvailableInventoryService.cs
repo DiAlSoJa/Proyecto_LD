@@ -20,4 +20,46 @@ public class AvailableInventoryService
         return await _api.GetAsync<ApiResponseDto<List<AvailableInventoryDto>>>(
             _apiEndpoints.AvailableInventory_GetAll);
     }
+
+    public async Task<ApiResponseDto<string>> ChangeLocation(int standardId, string ubicacionDestino)
+    {
+        return await ChangeLocation(new[] { standardId }, ubicacionDestino);
+    }
+
+    public async Task<ApiResponseDto<string>> ChangeLocation(IEnumerable<int> standardIds, string ubicacionDestino)
+    {
+        var request = new ChangeInventoryLocationRequest
+        {
+            StandardIds = (standardIds ?? Enumerable.Empty<int>())
+                .Where(x => x > 0)
+                .Distinct()
+                .ToList(),
+            UbicacionDestino = ubicacionDestino
+        };
+
+        return await _api.PostAsync<ChangeInventoryLocationRequest, ApiResponseDto<string>>(
+            _apiEndpoints.AvailableInventory_ChangeLocation,
+            request);
+    }
+
+    public async Task<ApiResponseDto<string>> ChangeStatus(int standardId, string statusDestino)
+    {
+        return await ChangeStatus(new[] { standardId }, statusDestino);
+    }
+
+    public async Task<ApiResponseDto<string>> ChangeStatus(IEnumerable<int> standardIds, string statusDestino)
+    {
+        var request = new ChangeInventoryStatusRequest
+        {
+            StandardIds = (standardIds ?? Enumerable.Empty<int>())
+                .Where(x => x > 0)
+                .Distinct()
+                .ToList(),
+            StatusDestino = statusDestino
+        };
+
+        return await _api.PostAsync<ChangeInventoryStatusRequest, ApiResponseDto<string>>(
+            _apiEndpoints.AvailableInventory_ChangeStatus,
+            request);
+    }
 }
