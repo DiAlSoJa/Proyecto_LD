@@ -319,6 +319,7 @@
                                 <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="120"/>
                                 <DataGridTextColumn Header="Orden compra" Binding="{Binding PurchaseOrder}" Width="120"/>
                                 <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber}" Width="120"/>
+                                <DataGridTextColumn Header="Almacén" Binding="{Binding Almacen}" Width="140"/>
                                 <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
                                 <DataGridTextColumn Header="Status" Binding="{Binding StatusId}" Width="100"/>
                                 <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>
