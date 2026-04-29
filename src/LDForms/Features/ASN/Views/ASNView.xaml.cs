@@ -54,6 +54,7 @@ namespace LD.FormsX.Views.ASN
         private int _selectedProjectId;
         private string _selectedClientText = string.Empty;
         private string _selectedProjectText = string.Empty;
+        private bool _verSinConfirmar = true;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -109,6 +110,19 @@ namespace LD.FormsX.Views.ASN
 
                 _selectedProjectText = value;
                 OnPropertyChanged(nameof(SelectedProjectText));
+            }
+        }
+
+        public bool VerSinConfirmar
+        {
+            get => _verSinConfirmar;
+            set
+            {
+                if (_verSinConfirmar == value)
+                    return;
+
+                _verSinConfirmar = value;
+                OnPropertyChanged(nameof(VerSinConfirmar));
             }
         }
 
@@ -333,6 +347,11 @@ namespace LD.FormsX.Views.ASN
                     string.Equals(x.Project?.Trim(), SelectedProjectText.Trim(), StringComparison.OrdinalIgnoreCase));
             }
 
+            if (VerSinConfirmar)
+            {
+                filtered = filtered.Where(x => !IsConfirmedStatus(x.Status));
+            }
+
             _gridFilter.SetData(filtered.ToList());
             _selectedX = null;
             _selectedDetail = null;
@@ -437,7 +456,7 @@ namespace LD.FormsX.Views.ASN
             AplicarFiltroAsn();
         }
 
-        private void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
+        private async void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             if (sender is not InlineLookupEditor editor || editor.SelectedLookupItem is not LookupItem lookupItem)
                 return;
@@ -450,6 +469,20 @@ namespace LD.FormsX.Views.ASN
 
             SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
             SelectedProjectText = selectedProject.Value ?? string.Empty;
+
+            if (SelectedClientId > 0 && SelectedProjectId > 0)
+                await CargarDatosConLoaderAsync("Trayendo ASN...");
+            else
+                AplicarFiltroAsn();
+        }
+
+        private async void ChkVerSinConfirmar_Changed(object sender, RoutedEventArgs e)
+        {
+            if (SelectedClientId > 0 && SelectedProjectId > 0 && _allAsns.Count == 0)
+            {
+                await CargarDatosConLoaderAsync("Trayendo ASN...");
+                return;
+            }
 
             AplicarFiltroAsn();
         }

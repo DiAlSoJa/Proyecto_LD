@@ -29,20 +29,21 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="52"/>
-                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="12"/>
                     <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
@@ -114,8 +115,21 @@
                                            SelectAllTextOnLoad="False"
                                            SelectionConfirmed="LookupProyecto_SelectionConfirmed"/>
 
+                <CheckBox x:Name="chkVerSinConfirmar"
+                          Grid.Column="7"
+                          Content="Ver sin confirmar"
+                          IsChecked="{Binding VerSinConfirmar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          
+                          Checked="ChkVerSinConfirmar_Changed"
+                          Unchecked="ChkVerSinConfirmar_Changed"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Left"
+                          FontSize="11"
+                          Foreground="#374151"
+                          Cursor="Hand"/>
+
                <Button x:Name="BtnActualizar"
-		            Grid.Column="7"
+		            Grid.Column="9"
 		            Height="28"
 		            MinWidth="68"
 		            Padding="6,0"
@@ -149,7 +163,7 @@
                 
 
                 <Button x:Name="btnNuevo"
-	            Grid.Column="9"
+	            Grid.Column="11"
 	            Height="28"
 	            MinWidth="68"
 	            Padding="6,0"
@@ -182,7 +196,7 @@
             </Button>
 
                 <Button x:Name="btnEditar"
-                    Grid.Column="11"
+                    Grid.Column="13"
                     Height="28"
                     MinWidth="60"
                     Padding="6,0"
@@ -216,7 +230,7 @@
                 
 
                 <Button x:Name="btnConfirmarLlegada"
-	                Grid.Column="13"
+	                Grid.Column="15"
 	                Height="28"
 	                MinWidth="106"
 	                Padding="6,0"
@@ -249,7 +263,7 @@
                 </Button>
 
                 <Button x:Name="btnCancelar"
-	                Grid.Column="16"
+	                Grid.Column="17"
 	                Height="28"
 	                MinWidth="72"
 	                Padding="6,0"
