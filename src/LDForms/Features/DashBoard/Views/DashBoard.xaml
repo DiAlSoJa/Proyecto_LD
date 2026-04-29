@@ -831,6 +831,27 @@
                                             </StackPanel>
                                         </Button>
 
+                                        <!-- Impresion-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ImpresionBtn"
+                                             Tag="Impresion"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="PrinterOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="#14B8A6"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="impresion"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
                                         <!-- Control de Patio-->
                                         <Button Style="{StaticResource DashboardTileStyle}"
                                                 x:Name="PatioBtn"

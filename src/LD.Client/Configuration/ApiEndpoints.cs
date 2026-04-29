@@ -122,6 +122,12 @@ namespace LD.Forms.Configuration
         public string Printer_Create => $"{_baseApi}/printer";
         public string Printer_Update => $"{_baseApi}/printer/{{id}}";
         public string Printer_Delete => $"{_baseApi}/printer/{{id}}";
+
+        // ======================
+        // STANDARD LABEL
+        // ======================
+
+        public string StandardLabel_Generate => $"{_baseApi}/StandardLabel/generate";
         
 
         // ======================

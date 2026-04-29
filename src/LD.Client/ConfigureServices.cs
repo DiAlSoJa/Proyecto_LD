@@ -43,6 +43,7 @@ namespace LD.Client
             services.AddScoped<SecurityService>();
             services.AddScoped<InventoryMovementService>();
             services.AddScoped<AvailableInventoryService>();
+            services.AddScoped<StandardLabelService>();
 
             services.AddScoped<LookupService>();
             services.AddScoped<AsnService>();
