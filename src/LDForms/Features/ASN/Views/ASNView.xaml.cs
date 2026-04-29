@@ -573,6 +573,45 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
+        private async void BtnOrdenAlmacenamiento_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedX == null || _selectedX.AsnId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un ASN para imprimir la orden de almacenamiento.");
+                    return;
+                }
+
+                MostrarLoader(true, "Preparando orden de almacenamiento...");
+
+                var detailsResult = await _asnDetailService.GetAsnDetailsByAsn(_selectedX.AsnId);
+                if (!detailsResult.IsSuccess || detailsResult.Data == null || detailsResult.Data.Count == 0)
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado no tiene partidas para imprimir.");
+                    return;
+                }
+
+                var receiptDetails = new List<AsnReceiptDetailDto>();
+                foreach (var detail in detailsResult.Data)
+                {
+                    var receiptResult = await _asnReceiptService.GetAsnReceiptsByAsnDetailId(detail.AsnDetailId);
+                    if (receiptResult.IsSuccess && receiptResult.Data != null)
+                        receiptDetails.AddRange(receiptResult.Data);
+                }
+
+                AsnStorageOrderPrinter.PrintOrder(_selectedX, detailsResult.Data, receiptDetails);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                MostrarLoader(false);
+            }
+        }
+
         private async void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
             try

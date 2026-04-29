@@ -493,6 +493,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock x:Name="txtStatusRecepcion"
@@ -532,6 +533,39 @@
                                        FontSize="12"/>
 
                             <TextBlock Text="Imprimir etiquetas"
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="btnOrdenAlmacenamiento"
+                            Grid.Column="2"
+                            Height="26"
+                            MinWidth="158"
+                            Padding="8,0"
+                            Margin="8,0,0,0"
+                            Click="BtnOrdenAlmacenamiento_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE8A5;"
+                                       Foreground="#2563EB"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+
+                            <TextBlock Text="Orden de almacenamiento"
                                        FontSize="11"/>
                         </StackPanel>
                     </Button>
