@@ -58,6 +58,7 @@ namespace LD.Contracts.Requests
         public string? DoNumber { get; set; }
         public string? DoPrefix { get; set; }
         public bool ReciveRequired { get; set; }
+        public bool ScanRequired { get; set; }
 
         public bool IsActive { get; set; }
 

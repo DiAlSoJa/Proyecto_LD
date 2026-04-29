@@ -37,6 +37,8 @@ namespace LD.Application.Features.Clients.Profiles
                  opt => opt.MapFrom(src => src.IsFiscalWarehouse))
              .ForMember(dest => dest.Etiqueta,
                  opt => opt.MapFrom(src => src.RequiresLabels))
+             .ForMember(dest => dest.ScanRequired,
+                 opt => opt.MapFrom(src => src.ScanRequired))
              .ForMember(dest => dest.SD,
                  opt => opt.MapFrom(src => src.AutoPicking)) 
              .ForMember(dest => dest.AP,
