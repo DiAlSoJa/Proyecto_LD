@@ -53,6 +53,7 @@ namespace LD.Infrastructure.Repositories
                 .Include(x => x.Client)
                 .Include(x => x.Project)
                 .Include(x => x.Location)
+                    .ThenInclude(x => x!.Warehouse)
                 .Include(x => x.StandardLabel)
                 .ToListAsync();
         }
@@ -65,6 +66,7 @@ namespace LD.Infrastructure.Repositories
                 .Include(x => x.Client)
                 .Include(x => x.Project)
                 .Include(x => x.Location)
+                    .ThenInclude(x => x!.Warehouse)
                 .Include(x => x.StandardLabel)
                 .FirstOrDefaultAsync(x => x.MovementId == id);
         }
@@ -77,6 +79,7 @@ namespace LD.Infrastructure.Repositories
                 .Include(x => x.Client)
                 .Include(x => x.Project)
                 .Include(x => x.Location)
+                    .ThenInclude(x => x!.Warehouse)
                 .Include(x => x.StandardLabel)
                 .FirstOrDefaultAsync(x => x.MovementId.ToString() == id);
         }

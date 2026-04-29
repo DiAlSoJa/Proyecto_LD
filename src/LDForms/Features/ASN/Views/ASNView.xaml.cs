@@ -140,6 +140,12 @@ namespace LD.FormsX.Views.ASN
         private static bool IsConfirmedStatus(string? status) =>
             string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
 
+        private static bool IsCancelledStatus(string? status) =>
+            string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsTerminalStatus(string? status) =>
+            IsConfirmedStatus(status) || IsCancelledStatus(status);
+
         private static SolidColorBrush CreateBrush(string hexColor) =>
             new((Color)ColorConverter.ConvertFromString(hexColor));
 
@@ -173,14 +179,17 @@ namespace LD.FormsX.Views.ASN
         {
             var hasSelectedAsn = _selectedX != null;
             var isConfirmed = IsConfirmedStatus(_selectedX?.Status);
-            var canClick = hasSelectedAsn && !isConfirmed;
+            var isCancelled = IsCancelledStatus(_selectedX?.Status);
+            var isTerminal = isConfirmed || isCancelled;
+            var canClick = hasSelectedAsn && !isTerminal;
+            var terminalStatus = isCancelled ? "cancelado" : "confirmado";
 
             ConfigureActionButton(
                 btnEditar,
                 canClick,
-                hasSelectedAsn && isConfirmed,
-                hasSelectedAsn && isConfirmed
-                    ? "Este ASN esta confirmado. Ya no se puede editar."
+                hasSelectedAsn && isTerminal,
+                hasSelectedAsn && isTerminal
+                    ? $"Este ASN esta {terminalStatus}. Ya no se puede editar."
                     : hasSelectedAsn
                         ? "Editar ASN"
                         : "Selecciona un ASN para editar.");
@@ -188,12 +197,22 @@ namespace LD.FormsX.Views.ASN
             ConfigureActionButton(
                 btnConfirmarLlegada,
                 canClick,
-                hasSelectedAsn && isConfirmed,
-                hasSelectedAsn && isConfirmed
-                    ? "Este ASN ya fue confirmado. Ya no se puede volver a confirmar."
+                hasSelectedAsn && isTerminal,
+                hasSelectedAsn && isTerminal
+                    ? $"Este ASN esta {terminalStatus}. Ya no se puede confirmar."
                     : hasSelectedAsn
                         ? "Confirmar entrada del ASN"
                         : "Selecciona un ASN para confirmar.");
+
+            ConfigureActionButton(
+                btnCancelar,
+                canClick,
+                hasSelectedAsn && isTerminal,
+                hasSelectedAsn && isTerminal
+                    ? $"Este ASN esta {terminalStatus}. Ya no se puede cancelar."
+                    : hasSelectedAsn
+                        ? "Cancelar ASN"
+                        : "Selecciona un ASN para cancelar.");
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -455,6 +474,12 @@ namespace LD.FormsX.Views.ASN
             if (_selectedX is null)
                 return;
 
+            if (IsTerminalStatus(_selectedX.Status))
+            {
+                DialogHelper.ShowWarning("El ASN seleccionado esta confirmado o cancelado. Ya no se puede editar.");
+                return;
+            }
+
             var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetClientProjectContext(0, 0, _selectedX.Client, _selectedX.Project);
@@ -475,9 +500,15 @@ namespace LD.FormsX.Views.ASN
                     return;
                 }
 
-                if (string.Equals(_selectedX.Status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase))
+                if (IsConfirmedStatus(_selectedX.Status))
                 {
-                    DialogHelper.ShowWarning("El ASN seleccionado ya está confirmado.");
+                    DialogHelper.ShowWarning("El ASN seleccionado ya esta confirmado.");
+                    return;
+                }
+
+                if (IsCancelledStatus(_selectedX.Status))
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado esta cancelado y no se puede confirmar.");
                     return;
                 }
 
@@ -542,7 +573,64 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
-        private void BtnCancelar_Click(object sender, RoutedEventArgs e) { }
+        private async void BtnCancelar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedX == null || _selectedX.AsnId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un ASN para cancelar.");
+                    return;
+                }
+
+                if (IsConfirmedStatus(_selectedX.Status))
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado ya esta confirmado y no se puede cancelar.");
+                    return;
+                }
+
+                if (IsCancelledStatus(_selectedX.Status))
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado ya esta cancelado.");
+                    return;
+                }
+
+                var confirmar = DialogHelper.ShowConfirm(
+                    $"Deseas cancelar el ASN {_selectedX.AsnCode ?? _selectedX.AsnId.ToString()}?",
+                    "Cancelar ASN");
+
+                if (!confirmar)
+                    return;
+
+                btnCancelar.IsEnabled = false;
+                MostrarLoader(true, "Cancelando ASN...");
+
+                var result = await _asnService.CancelAsn(_selectedX.AsnId);
+
+                if (!result.IsSuccess)
+                {
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo cancelar el ASN.");
+                    return;
+                }
+
+                DialogHelper.ShowSuccess(result.Message ?? "ASN cancelado correctamente.");
+                var cancelledAsnId = _selectedX.AsnId;
+                await CargarDatosAsync();
+
+                _selectedX = _allAsns.FirstOrDefault(x => x.AsnId == cancelledAsnId);
+                UpdateActionButtons();
+                await CargarDatosAsyncDet();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                MostrarLoader(false);
+                UpdateActionButtons();
+            }
+        }
 
         private void BtnEscanear_Click(object sender, RoutedEventArgs e) { }
 

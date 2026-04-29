@@ -47,5 +47,12 @@ namespace LD.Client.Services
                 _apiEndpoints.Asn_Confirm.Replace("{asnId}", asnId.ToString()),
                 new { });
         }
+
+        public async Task<ApiResponseDto<string>> CancelAsn(int asnId)
+        {
+            return await _api.PostAsync<object, ApiResponseDto<string>>(
+                _apiEndpoints.Asn_Cancel.Replace("{asnId}", asnId.ToString()),
+                new { });
+        }
     }
 }

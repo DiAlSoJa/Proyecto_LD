@@ -62,4 +62,21 @@ public class AvailableInventoryService
             _apiEndpoints.AvailableInventory_ChangeStatus,
             request);
     }
+
+    public async Task<ApiResponseDto<string>> ChangeWarehouse(IEnumerable<int> standardIds, int warehouseId, string ubicacionDestino)
+    {
+        var request = new ChangeInventoryWarehouseRequest
+        {
+            StandardIds = (standardIds ?? Enumerable.Empty<int>())
+                .Where(x => x > 0)
+                .Distinct()
+                .ToList(),
+            WarehouseId = warehouseId,
+            UbicacionDestino = ubicacionDestino
+        };
+
+        return await _api.PostAsync<ChangeInventoryWarehouseRequest, ApiResponseDto<string>>(
+            _apiEndpoints.AvailableInventory_ChangeWarehouse,
+            request);
+    }
 }

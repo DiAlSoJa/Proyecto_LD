@@ -247,6 +247,7 @@ namespace LD.Forms.Configuration
 
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
+        public string Lookup_LocationWarehouse => $"{_baseApi}/Lookup/location";
         public string Lookup_Role => $"{_baseApi}/Lookup/role";
         public string Lookup_Category => $"{_baseApi}/Lookup/category";
         public string Lookup_Family => $"{_baseApi}/Lookup/family";
@@ -278,6 +279,7 @@ namespace LD.Forms.Configuration
         public string AvailableInventory_GetAll => $"{_baseApi}/AvailableInventory";
         public string AvailableInventory_ChangeLocation => $"{_baseApi}/AvailableInventory/change-location";
         public string AvailableInventory_ChangeStatus => $"{_baseApi}/AvailableInventory/change-status";
+        public string AvailableInventory_ChangeWarehouse => $"{_baseApi}/AvailableInventory/change-warehouse";
 
 
 
@@ -322,6 +324,7 @@ namespace LD.Forms.Configuration
         public string Asn_Update => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Delete => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
+        public string Asn_Cancel => $"{_baseApi}/asn/{{asnId}}/cancel";
 
         public string AsnDetail_GetAll => $"{_baseApi}/asnDetail";
         public string AsnDetail_GetById => $"{_baseApi}/asnDetail/{{asnId}}";

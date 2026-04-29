@@ -14,6 +14,10 @@ namespace LD.Application.Features.InventoryMovement.Profiles
                     opt => opt.MapFrom(src => src.Client != null ? src.Client.CommercialName : string.Empty))
                 .ForMember(dest => dest.Proyecto,
                     opt => opt.MapFrom(src => src.Project != null ? src.Project.ProjectName : string.Empty))
+                .ForMember(dest => dest.Almacen,
+                    opt => opt.MapFrom(src => src.Location != null && src.Location.Warehouse != null
+                        ? src.Location.Warehouse.WarehouseName
+                        : string.Empty))
                 .ForMember(dest => dest.Ubicacion,
                     opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : string.Empty))
                 .ForMember(dest => dest.StandardIdStr,

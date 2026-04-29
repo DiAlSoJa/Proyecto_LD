@@ -32,6 +32,7 @@ namespace LD.FormsX.Views.Inventario
         public ObservableCollection<AvailableInventoryDto> AvailableInventories { get; } = new();
         public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
         public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
+        public ObservableCollection<LookupItem> WarehouseLookupItems { get; } = new();
         public ObservableCollection<LookupItem> LocationLookupItems { get; } = new();
         public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
         public ICollectionView AvailableInventoriesView { get; }
@@ -116,6 +117,7 @@ namespace LD.FormsX.Views.Inventario
             _loaded = true;
 
             await LoadClientsAsync();
+            await LoadWarehousesAsync();
             await LoadLocationsAsync();
             await LoadStatusesAsync();
             await LoadAvailableInventoriesAsync();
@@ -192,6 +194,25 @@ namespace LD.FormsX.Views.Inventario
                 {
                     foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
                         LocationLookupItems.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async Task LoadWarehousesAsync()
+        {
+            try
+            {
+                var response = await _lookupService.GetWarehouseLookup();
+
+                WarehouseLookupItems.Clear();
+                if (response.IsSuccess && response.Data != null)
+                {
+                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                        WarehouseLookupItems.Add(item);
                 }
             }
             catch (Exception ex)
@@ -437,6 +458,69 @@ namespace LD.FormsX.Views.Inventario
                 }
 
                 DialogHelper.ShowSuccess(response.Message ?? "Status actualizado correctamente.");
+                await LoadAvailableInventoriesAsync();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                ShowLoader(false);
+            }
+        }
+
+        private async void BtnCambiarAlmacen_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedInventories = dg.SelectedItems
+                .OfType<AvailableInventoryDto>()
+                .ToList();
+
+            if (!selectedInventories.Any())
+            {
+                DialogHelper.ShowWarning("Selecciona al menos un registro de inventario.");
+                return;
+            }
+
+            var standardIds = selectedInventories
+                .Select(GetStandardId)
+                .Where(x => x.HasValue && x.Value > 0)
+                .Select(x => x!.Value)
+                .Distinct()
+                .ToList();
+
+            if (standardIds.Count != selectedInventories.Count)
+            {
+                DialogHelper.ShowWarning("Uno o mas registros seleccionados no tienen StandardId.");
+                return;
+            }
+
+            if (!WarehouseLookupItems.Any())
+                await LoadWarehousesAsync();
+
+            var dialog = new CambiarAlmacenInventarioDialog(selectedInventories.First(), WarehouseLookupItems, _lookupService)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            try
+            {
+                ShowLoader(true, "Cambiando almacen...");
+                var response = await _availableInventoryService.ChangeWarehouse(
+                    standardIds,
+                    dialog.WarehouseId,
+                    dialog.UbicacionDestino);
+
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.Message ?? "No se pudo cambiar el almacen.");
+                    return;
+                }
+
+                DialogHelper.ShowSuccess(response.Message ?? "Almacen actualizado correctamente.");
                 await LoadAvailableInventoriesAsync();
             }
             catch (Exception ex)

@@ -50,4 +50,20 @@ public class AvailableInventoryController : CommonController
 
         return ResultExtensions.ToActionResult(await Mediator.Send(command));
     }
+
+    [HttpPost("change-warehouse")]
+    [Permission(PermissionKeys.Inventory_View)]
+    public async Task<IActionResult> ChangeWarehouse([FromBody] ChangeInventoryWarehouseRequest request)
+    {
+        var command = new ChangeInventoryWarehouseCommand
+        {
+            StandardId = request.StandardId,
+            StandardIds = request.StandardIds,
+            WarehouseId = request.WarehouseId,
+            UbicacionDestino = request.UbicacionDestino,
+            UserId = CurrentUserId
+        };
+
+        return ResultExtensions.ToActionResult(await Mediator.Send(command));
+    }
 }

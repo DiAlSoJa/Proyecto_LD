@@ -3,6 +3,7 @@ using LD.FormsX.Model.Lookup;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace LD.FormsX.Views.Inventario
 {
@@ -39,6 +40,12 @@ namespace LD.FormsX.Views.Inventario
         {
             DialogResult = false;
             Close();
+        }
+
+        private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+                DragMove();
         }
     }
 }
