@@ -655,6 +655,10 @@ namespace LD.FormsX.Views.Dialogs
                     if (decimal.TryParse(scannedValue, out var quantity))
                         receiptRow.ReceivedQuantity = quantity;
                     break;
+                case "standard_id":
+                case "standardid":
+                    receiptRow.StandardId = scannedValue;
+                    break;
             }
         }
 
@@ -671,6 +675,7 @@ namespace LD.FormsX.Views.Dialogs
                 3 => "purchase_order",
                 4 => "customs_declaration",
                 5 => "qty",
+                6 => "standard_id",
                 _ => string.Empty
             };
         }

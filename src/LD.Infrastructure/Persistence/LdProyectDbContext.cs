@@ -601,7 +601,8 @@ namespace LD.Infrastructure.Persistence
                 new SystemField { SystemFieldId = 2, SystemFieldName = "customer_reference", DisplayName = "Referencia del cliente", Order = 2 },
                 new SystemField { SystemFieldId = 3, SystemFieldName = "purchase_order", DisplayName = "Orden de compra", Order = 3 },
                 new SystemField { SystemFieldId = 4, SystemFieldName = "customs_declaration", DisplayName = "Orden de pedimento", Order = 4 },
-                new SystemField { SystemFieldId = 5, SystemFieldName = "qty", DisplayName = "Cantidad", Order = 5 }
+                new SystemField { SystemFieldId = 5, SystemFieldName = "qty", DisplayName = "Cantidad", Order = 5 },
+                new SystemField { SystemFieldId = 6, SystemFieldName = "standard_id", DisplayName = "StandardId", Order = 6 }
             );
 
             builder.Entity<ScanType>().HasData(

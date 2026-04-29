@@ -6,6 +6,7 @@ namespace LD.Contracts.Enums
         CustomerReference = 2,
         PurchaseOrder = 3,
         CustomsDeclaration = 4,
-        Qty = 5
+        Qty = 5,
+        StandardId = 6
     }
 }
