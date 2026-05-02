@@ -14,5 +14,6 @@ namespace LD.Application.Common.Interfaces.Repository
         
         Task<List<DropDownDto>> GetLookup();
         Task<List<DropDownDto>> GetProjectByClientAsync(int clientId);
+        Task<List<UserProjectClientDto>> GetProjectClientsByUserWarehousesAsync(string userId);
     }
 }

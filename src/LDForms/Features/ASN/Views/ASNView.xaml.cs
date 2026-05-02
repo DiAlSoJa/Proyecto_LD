@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.ASN;
 using LD.Contracts.DTOs;
@@ -48,6 +49,7 @@ namespace LD.FormsX.Views.ASN
         private AsnDto? _selectedX;
         private AsnDetailDto? _selectedDetail;
         private List<AsnDto> _allAsns = new();
+        private List<UserProjectClientDto> _userProjectClients = new();
         private bool _cargandoCombos;
         private bool _loaded;
         private int _selectedClientId;
@@ -247,18 +249,40 @@ namespace LD.FormsX.Views.ASN
             try
             {
                 _cargandoCombos = true;
+                ClientLookupItems.Clear();
+                ProjectLookupItems.Clear();
 
-                var clientes = await _lookupService.GetClientLookup();
-                if (clientes.IsSuccess && clientes.Data != null)
+                if (string.IsNullOrWhiteSpace(UserData.Id))
                 {
-                    ClientLookupItems.Clear();
+                    DialogHelper.ShowWarning("No se pudo identificar el usuario actual para cargar clientes y proyectos.");
+                    ClearProjectSelection();
+                    return;
+                }
 
-                    foreach (var item in clientes.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                var response = await _lookupService.GetProjectClientsByUserWarehouses(UserData.Id);
+                if (response.IsSuccess && response.Data != null)
+                {
+                    _userProjectClients = response.Data;
+
+                    var clientes = _userProjectClients
+                        .GroupBy(x => x.ClientId)
+                        .Select(group => new DropDownDto
+                        {
+                            Key = group.Key.ToString(),
+                            Value = group.First().Client
+                        })
+                        .OrderBy(x => x.Value);
+
+                    foreach (var item in clientes.Select(ToLookupItem))
                         ClientLookupItems.Add(item);
+                }
+                else
+                {
+                    _userProjectClients.Clear();
+                    DialogHelper.ShowWarning(response.Message ?? "No se pudieron cargar clientes y proyectos del usuario.");
                 }
 
                 ClearProjectSelection();
-                ProjectLookupItems.Clear();
             }
             finally
             {
@@ -266,32 +290,35 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
-        private async Task SetCombosProjectsAsync(string projectSel = "")
+        private Task SetCombosProjectsAsync(string projectSel = "")
         {
             if (SelectedClientId <= 0)
             {
                 ProjectLookupItems.Clear();
                 ClearProjectSelection();
-                return;
-            }
-
-            var proyectos = await _lookupService.GetProjectClientLookup(SelectedClientId);
-
-            if (!proyectos.IsSuccess || proyectos.Data == null)
-            {
-                ProjectLookupItems.Clear();
-                ClearProjectSelection();
-                return;
+                return Task.CompletedTask;
             }
 
             ProjectLookupItems.Clear();
-            foreach (var item in proyectos.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+            var proyectos = _userProjectClients
+                .Where(x => x.ClientId == SelectedClientId)
+                .GroupBy(x => x.ProjectId)
+                .Select(group => new DropDownDto
+                {
+                    Key = group.Key.ToString(),
+                    Value = group.First().Project
+                })
+                .OrderBy(x => x.Value);
+
+            foreach (var item in proyectos.Select(ToLookupItem))
                 ProjectLookupItems.Add(item);
 
             if (!string.IsNullOrWhiteSpace(projectSel))
                 ApplyProjectSelection(projectSel);
             else
                 ClearProjectSelection();
+
+            return Task.CompletedTask;
         }
 
         private async Task CargarDatosConLoaderAsync(string mensaje)

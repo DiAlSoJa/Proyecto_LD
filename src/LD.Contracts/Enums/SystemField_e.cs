@@ -7,6 +7,7 @@ namespace LD.Contracts.Enums
         PurchaseOrder = 3,
         CustomsDeclaration = 4,
         Qty = 5,
-        StandardId = 6
+        StandardId = 6,
+        PartNumber = 7
     }
 }

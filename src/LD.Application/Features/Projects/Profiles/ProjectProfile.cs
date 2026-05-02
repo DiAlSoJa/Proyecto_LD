@@ -37,24 +37,10 @@ namespace LD.Application.Features.Clients.Profiles
                  opt => opt.MapFrom(src => src.IsFiscalWarehouse))
              .ForMember(dest => dest.Etiqueta,
                  opt => opt.MapFrom(src => src.RequiresLabels))
-             .ForMember(dest => dest.ScanRequired,
-                 opt => opt.MapFrom(src => src.ScanRequired))
-             .ForMember(dest => dest.SD,
-                 opt => opt.MapFrom(src => src.AutoPicking)) 
-             .ForMember(dest => dest.AP,
-                 opt => opt.MapFrom(src => src.AsnNumber ?? 0))
-             .ForMember(dest => dest.Valid,
-                 opt => opt.MapFrom(src => src.ReciveRequired))
-             .ForMember(dest => dest.EscaneoDub,
-                 opt => opt.MapFrom(src => false)) // TODO
-             .ForMember(dest => dest.EscaneoNumeroParte,
-                 opt => opt.MapFrom(src => false)) // TODO
-             .ForMember(dest => dest.EscaneoCantidad,
-                 opt => opt.MapFrom(src => false)) // TODO
-             .ForMember(dest => dest.RequiereLote,
-                 opt => opt.MapFrom(src => false)) // TODO
-             .ForMember(dest => dest.RequiereFechaCaducidad,
-                 opt => opt.MapFrom(src => false)); // TODO
+              .ForMember(dest => dest.ScanRequired,
+                  opt => opt.MapFrom(src => src.ScanRequired))
+              .ForMember(dest => dest.SD,
+                  opt => opt.MapFrom(src => src.AutoPicking));
 
             CreateMap<Project, ProjectRequest>();
 

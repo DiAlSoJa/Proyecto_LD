@@ -1,3 +1,4 @@
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.DTOs;
 using LD.Contracts.InventoryMovement;
@@ -5,6 +6,7 @@ using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model.Lookup;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -20,6 +22,7 @@ namespace LD.FormsX.Movimientos
         private readonly InventoryMovementService _inventoryMovementService;
         private readonly LookupService _lookupService;
         private readonly DataGridColumnFilterManager _columnFilterManager;
+        private List<UserProjectClientDto> _userProjectClients = new();
         private bool _loaded;
         private bool _loadingFilters;
         private int _selectedClientId;
@@ -108,7 +111,6 @@ namespace LD.FormsX.Movimientos
             _loaded = true;
 
             await LoadClientsAsync();
-            await LoadMovementsAsync();
         }
 
         private async Task LoadClientsAsync()
@@ -116,17 +118,38 @@ namespace LD.FormsX.Movimientos
             try
             {
                 _loadingFilters = true;
-                var response = await _lookupService.GetClientLookup();
-
                 ClientLookupItems.Clear();
+                ProjectLookupItems.Clear();
+
+                if (string.IsNullOrWhiteSpace(UserData.Id))
+                {
+                    DialogHelper.ShowWarning("No se pudo identificar el usuario actual para cargar clientes y proyectos.");
+                    return;
+                }
+
+                var response = await _lookupService.GetProjectClientsByUserWarehouses(UserData.Id);
                 if (response.IsSuccess && response.Data != null)
                 {
-                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                    _userProjectClients = response.Data;
+                    var clientes = _userProjectClients
+                        .GroupBy(x => x.ClientId)
+                        .Select(group => new DropDownDto
+                        {
+                            Key = group.Key.ToString(),
+                            Value = group.First().Client
+                        })
+                        .OrderBy(x => x.Value);
+
+                    foreach (var item in clientes.Select(ToLookupItem))
                         ClientLookupItems.Add(item);
+                }
+                else
+                {
+                    _userProjectClients.Clear();
+                    DialogHelper.ShowWarning(response.Message ?? "No se pudieron cargar clientes y proyectos del usuario.");
                 }
 
                 ClearProjectSelection();
-                ProjectLookupItems.Clear();
             }
             catch (Exception ex)
             {
@@ -138,26 +161,31 @@ namespace LD.FormsX.Movimientos
             }
         }
 
-        private async Task LoadProjectsAsync()
+        private Task LoadProjectsAsync()
         {
             if (SelectedClientId <= 0)
             {
                 ProjectLookupItems.Clear();
                 ClearProjectSelection();
-                return;
+                return Task.CompletedTask;
             }
 
             try
             {
                 _loadingFilters = true;
-                var response = await _lookupService.GetProjectClientLookup(SelectedClientId);
-
                 ProjectLookupItems.Clear();
-                if (response.IsSuccess && response.Data != null)
-                {
-                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
-                        ProjectLookupItems.Add(item);
-                }
+                var proyectos = _userProjectClients
+                    .Where(x => x.ClientId == SelectedClientId)
+                    .GroupBy(x => x.ProjectId)
+                    .Select(group => new DropDownDto
+                    {
+                        Key = group.Key.ToString(),
+                        Value = group.First().Project
+                    })
+                    .OrderBy(x => x.Value);
+
+                foreach (var item in proyectos.Select(ToLookupItem))
+                    ProjectLookupItems.Add(item);
 
                 ClearProjectSelection();
             }
@@ -169,6 +197,8 @@ namespace LD.FormsX.Movimientos
             {
                 _loadingFilters = false;
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task LoadMovementsAsync()
@@ -295,7 +325,7 @@ namespace LD.FormsX.Movimientos
             RefreshFilters();
         }
 
-        private void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
+        private async void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             if (!_loaded || _loadingFilters)
                 return;
@@ -309,7 +339,7 @@ namespace LD.FormsX.Movimientos
             SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
             SelectedProjectText = selectedProject.Value ?? string.Empty;
 
-            RefreshFilters();
+            await LoadMovementsAsync();
         }
 
         private void Filtro_Changed(object sender, TextChangedEventArgs e)

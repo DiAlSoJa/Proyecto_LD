@@ -104,6 +104,28 @@ namespace LD.Infrastructure.Repositories
                .ToListAsync();
         }
 
+        public async Task<List<UserProjectClientDto>> GetProjectClientsByUserWarehousesAsync(string userId)
+        {
+            return await _context.Projects
+                .AsNoTracking()
+                .Where(project => _context.UserWarehouses
+                    .Any(userWarehouse =>
+                        userWarehouse.UserId == userId &&
+                        userWarehouse.WarehouseId == project.WarehouseId))
+                .Select(project => new UserProjectClientDto
+                {
+                    ClientId = project.ClientId,
+                    ProjectId = project.ProjectId,
+                    WarehouseId = project.WarehouseId,
+                    Client = project.Client != null ? project.Client.CommercialName ?? string.Empty : string.Empty,
+                    Project = project.ProjectName ?? string.Empty,
+                    Warehouse = project.Warehouse != null ? project.Warehouse.WarehouseName ?? string.Empty : string.Empty
+                })
+                .OrderBy(project => project.Client)
+                .ThenBy(project => project.Project)
+                .ToListAsync();
+        }
+
         public async Task<bool> UpdateAsync(Project modelToUpdate)
         {
             try

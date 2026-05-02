@@ -50,7 +50,8 @@ public class EquipmentController : CommonController
     }
 
     [HttpPost("upload-image")]
-    public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] string side)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadImage(IFormFile file, [FromForm] string side)
     {
         if (file is null || file.Length == 0)
             return BadRequest("Archivo inválido.");

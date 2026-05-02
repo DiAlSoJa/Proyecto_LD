@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.DTOs;
 using LD.Contracts.Product;
@@ -25,6 +26,7 @@ namespace LD.FormsX.Views
         private readonly WpfGridFilter<ProductDto> _gridFilter;
 
         private ProductDto? _selectedX;
+        private List<UserProjectClientDto> _userProjectClients = new();
         private bool _cargandoFiltros;
         private bool _loaded;
         private int _selectedClientId;
@@ -97,7 +99,7 @@ namespace LD.FormsX.Views
             _serviceProvider = serviceProvider;
             DataContext = this;
 
-            _gridFilter = new WpfGridFilter<ProductDto>(dg, txtBuscar);
+            _gridFilter = new WpfGridFilter<ProductDto>(dg);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>());
         }
 
@@ -151,7 +153,6 @@ namespace LD.FormsX.Views
 
             _gridFilter.SetData(result.Data?.OfType<ProductDto>());
             _selectedX = null;
-            txtBuscar.IsEnabled = true;
             txtStatus.Text = $"Registros: {result.Data?.Count ?? 0}";
         }
 
@@ -242,20 +243,36 @@ namespace LD.FormsX.Views
             try
             {
                 _cargandoFiltros = true;
+                ClientLookupItems.Clear();
+                ProjectLookupItems.Clear();
 
-                var clientes = await _lookupService.GetClientLookup();
-                if (!clientes.IsSuccess || clientes.Data == null)
+                if (string.IsNullOrWhiteSpace(UserData.Id))
                 {
-                    DialogHelper.ShowWarning(clientes.Message);
+                    DialogHelper.ShowWarning("No se pudo identificar el usuario actual para cargar clientes y proyectos.");
                     return;
                 }
 
-                ClientLookupItems.Clear();
-                foreach (var item in clientes.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                var response = await _lookupService.GetProjectClientsByUserWarehouses(UserData.Id);
+                if (!response.IsSuccess || response.Data == null)
+                {
+                    DialogHelper.ShowWarning(response.Message);
+                    return;
+                }
+
+                _userProjectClients = response.Data;
+                var clientes = _userProjectClients
+                    .GroupBy(x => x.ClientId)
+                    .Select(group => new DropDownDto
+                    {
+                        Key = group.Key.ToString(),
+                        Value = group.First().Client
+                    })
+                    .OrderBy(x => x.Value);
+
+                foreach (var item in clientes.Select(ToLookupItem))
                     ClientLookupItems.Add(item);
 
                 ClearClientSelection();
-                ProjectLookupItems.Clear();
                 ClearProjectSelection();
             }
             catch (Exception ex)
@@ -266,9 +283,10 @@ namespace LD.FormsX.Views
             {
                 _cargandoFiltros = false;
             }
+
         }
 
-        private async Task CargarProyectosAsync()
+        private Task CargarProyectosAsync()
         {
             try
             {
@@ -279,19 +297,27 @@ namespace LD.FormsX.Views
                 {
                     ClearProjectSelection();
                     LimpiarGrid("Selecciona un cliente y un proyecto para consultar artículos.");
-                    return;
+                    return Task.CompletedTask;
                 }
 
-                var proyectos = await _lookupService.GetProjectClientLookup(SelectedClientId);
-                if (!proyectos.IsSuccess || proyectos.Data == null)
+                var proyectos = _userProjectClients
+                    .Where(x => x.ClientId == SelectedClientId)
+                    .GroupBy(x => x.ProjectId)
+                    .Select(group => new DropDownDto
+                    {
+                        Key = group.Key.ToString(),
+                        Value = group.First().Project
+                    })
+                    .OrderBy(x => x.Value)
+                    .ToList();
+                if (proyectos.Count == 0)
                 {
-                    DialogHelper.ShowWarning(proyectos.Message);
                     ClearProjectSelection();
                     LimpiarGrid("Selecciona un proyecto para consultar artículos.");
-                    return;
+                    return Task.CompletedTask;
                 }
 
-                foreach (var item in proyectos.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                foreach (var item in proyectos.Select(ToLookupItem))
                     ProjectLookupItems.Add(item);
 
                 ClearProjectSelection();
@@ -305,6 +331,8 @@ namespace LD.FormsX.Views
             {
                 _cargandoFiltros = false;
             }
+
+            return Task.CompletedTask;
         }
 
         private bool TryGetSelectedIds(out int clienteId, out int proyectoId)
@@ -319,7 +347,6 @@ namespace LD.FormsX.Views
             _selectedX = null;
             _gridFilter.ClearFilter();
             _gridFilter.SetData(Array.Empty<ProductDto>());
-            txtBuscar.IsEnabled = false;
             txtStatus.Text = mensaje;
         }
 

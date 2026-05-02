@@ -659,6 +659,12 @@ namespace LD.FormsX.Views.Dialogs
                 case "standardid":
                     receiptRow.StandardId = scannedValue;
                     break;
+                case "part_number":
+                case "partnumber":
+                case "número de parte":
+                case "numero de parte":
+                    receiptRow.PartNumber = scannedValue;
+                    break;
             }
         }
 
@@ -676,6 +682,7 @@ namespace LD.FormsX.Views.Dialogs
                 4 => "customs_declaration",
                 5 => "qty",
                 6 => "standard_id",
+                7 => "partnumber",
                 _ => string.Empty
             };
         }

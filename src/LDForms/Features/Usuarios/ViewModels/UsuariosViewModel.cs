@@ -69,8 +69,25 @@ public partial class UsuariosViewModel : ObservableObject
         Warehouses = SelectedUser?.Warehouse ?? [];
     }
 
+    public void SelectUserById(string? userId)
+    {
+        SelectedUser = _allUsers.FirstOrDefault(x => x.User?.Id == userId);
+        Permissions = SelectedUser?.Permissions ?? [];
+        Warehouses = SelectedUser?.Warehouse ?? [];
+    }
+
     [RelayCommand]
     public async Task CargarDatosAsync()
+    {
+        await LoadUsersAsync();
+    }
+
+    public async Task CargarDatosConSeleccionAsync(string? userId)
+    {
+        await LoadUsersAsync(userId);
+    }
+
+    private async Task LoadUsersAsync(string? userIdToSelect = null)
     {
         if (!CanView) return;
 
@@ -94,11 +111,19 @@ public partial class UsuariosViewModel : ObservableObject
                 .Select(x => x.User!)
                 .ToList();
 
-            SelectedUser = null;
-            Permissions = [];
-            Warehouses = [];
             StatusText = $"Registros: {users.Count}";
             OnDataLoaded?.Invoke(users);
+
+            if (!string.IsNullOrWhiteSpace(userIdToSelect))
+            {
+                SelectUserById(userIdToSelect);
+            }
+            else
+            {
+                SelectedUser = null;
+                Permissions = [];
+                Warehouses = [];
+            }
         }
         catch (Exception ex)
         {

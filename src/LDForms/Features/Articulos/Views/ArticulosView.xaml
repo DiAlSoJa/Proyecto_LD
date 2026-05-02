@@ -27,8 +27,6 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="220"/>
-                    <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
@@ -93,17 +91,8 @@
                                            SelectAllTextOnLoad="False"
                                            SelectionConfirmed="LookupProyecto_SelectionConfirmed"/>
 
-                <TextBox x:Name="txtBuscar"
-                         Grid.Column="5"
-                         Height="38"
-                         VerticalContentAlignment="Center"
-                         Padding="10,0"
-                         FontSize="13"
-                         IsEnabled="False"
-                         ToolTip="Buscar artículo..."/>
-
                 <Button x:Name="btnNuevo"
-                        Grid.Column="7"
+                        Grid.Column="5"
                         Height="38"
                         Padding="12,0"
                         Click="BtnNuevo_Click"
@@ -132,7 +121,7 @@
                 </Button>
 
                 <Button x:Name="btnEditar"
-                        Grid.Column="9"
+                        Grid.Column="7"
                         Height="38"
                         Padding="12,0"
                         Click="BtnEditar_Click"
@@ -161,7 +150,7 @@
                 </Button>
 
                 <Button x:Name="BtnActualizar"
-                        Grid.Column="11"
+                        Grid.Column="9"
                         Height="38"
                         Padding="12,0"
                         Click="BtnActualizar_Click"
@@ -190,7 +179,7 @@
                 </Button>
 
                 <Button x:Name="btnCargaMasiva"
-                        Grid.Column="13"
+                        Grid.Column="11"
                         Height="38"
                         Padding="12,0"
                         Click="BtnCargaMasiva_Click"

@@ -54,6 +54,10 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetProjectByClient(int clientId)
           => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjecClienttLookupQuery(clientId)));
 
+        [HttpGet("project-client/user/{userId}")]
+        public async Task<IActionResult> GetProjectClientsByUserWarehouses(string userId)
+          => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjectClientsByUserWarehousesQuery(userId)));
+
         [HttpGet("category/{clientId}/{projectId}")]
         public async Task<IActionResult> GetCategoryByClientLookup(int clientId, int projectId)
          => ResultExtensions.ToActionResult(await Mediator.Send(new GetCategoryLookupQuery(clientId, projectId)));

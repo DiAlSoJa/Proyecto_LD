@@ -46,7 +46,7 @@ public partial class NuevoAlmacenViewModel : ObservableObject
     private bool isProduction;
 
     [ObservableProperty]
-    private bool isActive;
+    private bool isActive = true;
 
     public NuevoAlmacenViewModel(WarehouseService warehouseService)
     {

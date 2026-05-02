@@ -69,8 +69,9 @@ namespace LD.FormsX.Views.Usuarios
             dialog.Owner = Window.GetWindow(this);
             dialog.SetUser(ViewModel.SelectedUser);
 
+            var selectedUserId = ViewModel.SelectedUser.User?.Id;
             if (dialog.ShowDialog() == true)
-                await ViewModel.CargarDatosAsync();
+                await ViewModel.CargarDatosConSeleccionAsync(selectedUserId);
         }
 
         private async void BtnAlmacenes_Click(object sender, RoutedEventArgs e)
