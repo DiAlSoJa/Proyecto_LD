@@ -17,19 +17,14 @@ namespace LD.Domain.Entities
         [MaxLength(50)]
         public string? StandarIdStr { get; set; } = string.Empty;
 
-        [Required]
         [MaxLength(100)]
-        public string? PartNumber { get; set; } = string.Empty;
+        public string? PartNumber { get; set; }
 
-        public int clientId { get; set; }
-        public int projectId { get; set; }
+        public int? clientId { get; set; }
+        public int? projectId { get; set; }
 
         public Project? Project { get; set; }
         public Client? Client { get; set; }
-
-
-
-
 
     }
 }

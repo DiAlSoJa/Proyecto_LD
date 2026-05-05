@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using LD.Contracts.Enums;
 using LD.Contracts.Requests;
 
 namespace LD.FormsX.Views.Dialogs
@@ -16,6 +17,9 @@ namespace LD.FormsX.Views.Dialogs
         public ObservableCollection<ScanRuleDisplay> ScanRules { get; } = new();
 
         public event Func<IReadOnlyList<ScanRuleResult>, Task<bool>>? ScanCompleted;
+        public event Func<string, Task<UnmatchedScanResult?>>? UnmatchedScanReceived;
+
+        private List<ScanConfigurationRequest> _scanConfigurations = [];
 
         public NuevoASNEscaneoView()
         {
@@ -26,9 +30,10 @@ namespace LD.FormsX.Views.Dialogs
         public void SetScanConfigurations(IEnumerable<ScanConfigurationRequest>? configurations)
         {
             ScanRules.Clear();
+            _scanConfigurations = (configurations ?? Enumerable.Empty<ScanConfigurationRequest>()).ToList();
 
-            foreach (var config in (configurations ?? Enumerable.Empty<ScanConfigurationRequest>())
-                .Where(HasAnyScanOrSaveCondition)
+            foreach (var config in _scanConfigurations
+                .Where(config => HasAnyScanOrSaveCondition(config) || IsPartNumberOrStandardIdConfiguration(config))
                 .OrderBy(c => c.Order)
                 .ThenBy(c => c.SystemFieldId))
             {
@@ -82,10 +87,14 @@ namespace LD.FormsX.Views.Dialogs
 
             var match = ScanRules.FirstOrDefault(rule =>
                 string.IsNullOrWhiteSpace(rule.CapturedValue)
+                && HasScanCondition(rule.Configuration)
                 && RuleMatches(rule.Configuration, scanValue));
 
             if (match == null)
             {
+                if (HasPartNumberOrStandardIdConfiguration() && await TryApplyUnmatchedScanAsync(scanValue))
+                    return;
+
                 AddMessage("No coincide con ninguna condición configurada.");
                 return;
             }
@@ -97,6 +106,42 @@ namespace LD.FormsX.Views.Dialogs
 
             if (ScanRules.All(rule => !string.IsNullOrWhiteSpace(rule.CapturedValue)))
                 await CompleteCurrentScanAsync();
+        }
+
+        private async Task<bool> TryApplyUnmatchedScanAsync(string scanValue)
+        {
+            if (UnmatchedScanReceived == null)
+                return false;
+
+            var result = await UnmatchedScanReceived.Invoke(scanValue);
+            if (result == null)
+                return false;
+
+            if (!result.Success)
+            {
+                AddMessage(result.Message);
+                return true;
+            }
+
+            var targetRule = ScanRules.FirstOrDefault(rule =>
+                string.IsNullOrWhiteSpace(rule.CapturedValue)
+                && IsSystemFieldConfiguration(rule.Configuration, result.SystemFieldId));
+
+            if (targetRule == null)
+            {
+                AddMessage(string.IsNullOrWhiteSpace(result.Message)
+                    ? "El valor existe, pero el campo destino no esta en las condiciones configuradas."
+                    : result.Message);
+                return true;
+            }
+
+            targetRule.CapturedValue = result.Value;
+            AddMessage($"{targetRule.FieldName}: {result.Value}");
+
+            if (ScanRules.All(rule => !string.IsNullOrWhiteSpace(rule.CapturedValue)))
+                await CompleteCurrentScanAsync();
+
+            return true;
         }
 
         private async Task CompleteCurrentScanAsync()
@@ -140,13 +185,57 @@ namespace LD.FormsX.Views.Dialogs
 
         private static bool HasAnyScanOrSaveCondition(ScanConfigurationRequest config)
         {
-            var hasScanCondition = config.ScanTypeId.GetValueOrDefault(1) != 1
-                && !string.IsNullOrWhiteSpace(config.ScanValue);
-
             var hasSaveCondition = config.SaveTypeId.GetValueOrDefault(1) != 1
                 && config.SaveValue > 0;
 
-            return hasScanCondition || hasSaveCondition;
+            return HasScanCondition(config) || hasSaveCondition;
+        }
+
+        private static bool HasScanCondition(ScanConfigurationRequest config)
+        {
+            if (IsPartNumberOrStandardIdConfiguration(config))
+                return false;
+
+            return config.ScanTypeId.GetValueOrDefault(1) != 1
+                && !string.IsNullOrWhiteSpace(config.ScanValue);
+        }
+
+        private bool HasPartNumberOrStandardIdConfiguration()
+        {
+            return _scanConfigurations.Any(config =>
+                config.SystemFieldId == (int)SystemField_e.StandardId
+                || config.SystemFieldId == (int)SystemField_e.PartNumber
+                || string.Equals(config.SystemFieldName?.Trim(), "standard_id", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(config.SystemFieldName?.Trim(), "standardid", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(config.SystemFieldName?.Trim(), "part_number", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(config.SystemFieldName?.Trim(), "partnumber", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(config.SystemFieldName?.Trim(), "numero de parte", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(config.SystemFieldName?.Trim(), "número de parte", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsPartNumberOrStandardIdConfiguration(ScanConfigurationRequest config)
+        {
+            return IsSystemFieldConfiguration(config, (int)SystemField_e.PartNumber)
+                || IsSystemFieldConfiguration(config, (int)SystemField_e.StandardId);
+        }
+
+        private static bool IsSystemFieldConfiguration(ScanConfigurationRequest config, int systemFieldId)
+        {
+            if (config.SystemFieldId == systemFieldId)
+                return true;
+
+            var fieldName = config.SystemFieldName?.Trim();
+
+            return systemFieldId switch
+            {
+                (int)SystemField_e.StandardId => string.Equals(fieldName, "standard_id", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "standardid", StringComparison.OrdinalIgnoreCase),
+                (int)SystemField_e.PartNumber => string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "nÃºmero de parte", StringComparison.OrdinalIgnoreCase),
+                _ => false
+            };
         }
 
         private static string ApplySaveConfiguration(ScanConfigurationRequest config, string scanValue)
@@ -188,7 +277,11 @@ namespace LD.FormsX.Views.Dialogs
             ? Configuration.SystemFieldName
             : Configuration.ClientField;
 
-        public string ConditionSummary => Configuration.ScanTypeId.GetValueOrDefault(1) switch
+        public string ConditionSummary => IsStandardIdConfiguration(Configuration)
+            ? "Es etiqueta LD"
+            : IsPartNumberConfiguration(Configuration)
+                ? "Es n\u00FAmero de parte"
+                : Configuration.ScanTypeId.GetValueOrDefault(1) switch
         {
             1 => "Sin condición",
             2 => $"Empieza con '{Configuration.ScanValue}'",
@@ -218,7 +311,29 @@ namespace LD.FormsX.Views.Dialogs
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private static bool IsStandardIdConfiguration(ScanConfigurationRequest config)
+        {
+            var fieldName = config.SystemFieldName?.Trim();
+
+            return config.SystemFieldId == (int)SystemField_e.StandardId
+                || string.Equals(fieldName, "standard_id", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fieldName, "standardid", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsPartNumberConfiguration(ScanConfigurationRequest config)
+        {
+            var fieldName = config.SystemFieldName?.Trim();
+
+            return config.SystemFieldId == (int)SystemField_e.PartNumber
+                || string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fieldName, "n\u00FAmero de parte", StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     public record ScanRuleResult(ScanConfigurationRequest Configuration, string Value);
+
+    public record UnmatchedScanResult(bool Success, int SystemFieldId, string Value, string Message);
 }

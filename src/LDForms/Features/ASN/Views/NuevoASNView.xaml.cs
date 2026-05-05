@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using LD.Client.Services;
 using LD.Contracts.ASN;
+using LD.Contracts.DTOs.StandardLabel;
+using LD.Contracts.Enums;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Product;
 using LD.Contracts.Requests;
@@ -37,6 +39,7 @@ namespace LD.FormsX.Views.Dialogs
         private readonly LocationService _locationService;
         private readonly ProjectService _projectService;
         private readonly ProductService _productService;
+        private readonly StandardLabelService _standardLabelService;
         private readonly InventaryStatusService _inventaryStatusService;
         private readonly IServiceProvider _serviceProvider;
         private readonly DataGridNavigationManager _detailGridNavigation;
@@ -54,6 +57,7 @@ namespace LD.FormsX.Views.Dialogs
         private string _defaultProjectLocationCode = string.Empty;
         private string _clientName = string.Empty;
         private string _projectName = string.Empty;
+        private bool _projectScanRequired;
         private List<ScanConfigurationRequest> _projectScanConfigurations = [];
 
         public ObservableCollection<LookupItem> ProductLookupItems { get; } = new();
@@ -64,7 +68,7 @@ namespace LD.FormsX.Views.Dialogs
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
         public ObservableCollection<AsnReceiptItem> ReceiptItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, ProductService productService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, ProjectService projectService, IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, ProductService productService, StandardLabelService standardLabelService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, ProjectService projectService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
@@ -72,6 +76,7 @@ namespace LD.FormsX.Views.Dialogs
             _asnReceiptService = asnReceiptService;
             _lookupService = lookupService;
             _productService = productService;
+            _standardLabelService = standardLabelService;
             _inventaryStatusService = inventaryStatusService;
             _locationService = locationService;
             _projectService = projectService;
@@ -153,6 +158,8 @@ namespace LD.FormsX.Views.Dialogs
 
         private bool IsCurrentAsnConfirmed() => IsConfirmedStatus(AsnSelected?.Status);
 
+        private bool IsScanRequiredForProject() => _projectScanRequired;
+
         private bool EnsureCurrentAsnEditable()
         {
             if (!IsCurrentAsnConfirmed())
@@ -162,9 +169,28 @@ namespace LD.FormsX.Views.Dialogs
             return false;
         }
 
+        private bool EnsureProjectScanDoesNotLockDetails()
+        {
+            if (!IsScanRequiredForProject())
+                return true;
+
+            DialogHelper.ShowWarning("El proyecto requiere escaneo obligatorio; los ASN Details no se pueden editar ni eliminar manualmente.");
+            return false;
+        }
+
+        private bool EnsureProjectScanAllowsReceiptAction(string action)
+        {
+            if (!IsScanRequiredForProject())
+                return true;
+
+            DialogHelper.ShowWarning($"El proyecto requiere escaneo obligatorio; solo se permite editar estatus y ubicacion en ASN Receipt Details. No se puede {action}.");
+            return false;
+        }
+
         private void ApplyConfirmedState()
         {
             var isEditable = !IsCurrentAsnConfirmed();
+            var scanRequired = IsScanRequiredForProject();
 
             if (btnGuardar != null)
                 btnGuardar.IsEnabled = isEditable;
@@ -205,11 +231,54 @@ namespace LD.FormsX.Views.Dialogs
             if (txtSelloTransporte != null)
                 txtSelloTransporte.IsEnabled = isEditable;
 
-            if (dgDetail != null)
-                dgDetail.IsReadOnly = !isEditable;
+            ApplyDetailGridEditState(isEditable, scanRequired);
+            ApplyReceiptGridEditState(isEditable, scanRequired);
+        }
 
-            if (dgUbicacionesAsignadas != null)
-                dgUbicacionesAsignadas.IsReadOnly = !isEditable;
+        private void ApplyDetailGridEditState(bool isEditable, bool scanRequired)
+        {
+            if (dgDetail == null)
+                return;
+
+            dgDetail.IsReadOnly = !isEditable || scanRequired;
+            dgDetail.CanUserDeleteRows = isEditable && !scanRequired;
+        }
+
+        private void ApplyReceiptGridEditState(bool isEditable, bool scanRequired)
+        {
+            if (dgUbicacionesAsignadas == null)
+                return;
+
+            dgUbicacionesAsignadas.IsReadOnly = !isEditable;
+            dgUbicacionesAsignadas.CanUserDeleteRows = isEditable && !scanRequired;
+
+            foreach (var column in dgUbicacionesAsignadas.Columns)
+                column.IsReadOnly = IsReceiptColumnReadOnly(column, isEditable, scanRequired);
+        }
+
+        private static bool IsReceiptColumnReadOnly(DataGridColumn column, bool isEditable, bool scanRequired)
+        {
+            if (!isEditable)
+                return true;
+
+            var header = column.Header?.ToString()?.Trim() ?? string.Empty;
+
+            if (scanRequired)
+                return !IsScanRequiredReceiptEditableColumn(header);
+
+            return header.Equals("Número de Parte", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Numero de Parte", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Descripción", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Descripcion", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("SD", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsScanRequiredReceiptEditableColumn(string header)
+        {
+            return header.Equals("Status", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Estatus", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Ubicación", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Ubicacion", StringComparison.OrdinalIgnoreCase);
         }
 
         private async Task CargarDatosAsync()
@@ -404,22 +473,26 @@ namespace LD.FormsX.Views.Dialogs
 
         private async void BtnEscanear_Click(object sender, RoutedEventArgs e)
         {
-            if (dgDetail.SelectedItem is not AsnDetailItem selectedDetail || IsEmptyDetailRow(selectedDetail))
+            if (!_projectScanConfigurations.Any())
+                await LoadProjectScanConfigurationsAsync();
+
+            if (!IsScanRequiredForProject()
+                && (dgDetail.SelectedItem is not AsnDetailItem selectedDetail || IsEmptyDetailRow(selectedDetail)))
             {
                 DialogHelper.ShowWarning("Selecciona una linea de ASN Details antes de escanear.");
                 return;
             }
 
-            _selectedDetailItem = selectedDetail;
-
-            if (!_projectScanConfigurations.Any())
-                await LoadProjectScanConfigurationsAsync();
+            if (!IsScanRequiredForProject() && dgDetail.SelectedItem is AsnDetailItem scanTarget)
+                _selectedDetailItem = scanTarget;
 
             var view = _serviceProvider.GetRequiredService<NuevoASNEscaneoView>();
             view.Owner = this;
             view.SetScanConfigurations(_projectScanConfigurations);
             view.ScanCompleted += CreateReceiptFromCompletedScanAsync;
+            view.UnmatchedScanReceived += ResolveUnmatchedScanAsync;
             view.ShowDialog();
+            view.UnmatchedScanReceived -= ResolveUnmatchedScanAsync;
             view.ScanCompleted -= CreateReceiptFromCompletedScanAsync;
         }
 
@@ -535,18 +608,28 @@ namespace LD.FormsX.Views.Dialogs
         private async Task LoadProjectScanConfigurationsAsync()
         {
             _projectScanConfigurations = [];
+            _projectScanRequired = false;
 
             if (_projectId <= 0)
+            {
+                ApplyConfirmedState();
                 return;
+            }
 
             var response = await _projectService.GetProjectById(_projectId);
             if (!response.IsSuccess || response.Data == null)
+            {
+                ApplyConfirmedState();
                 return;
+            }
 
+            _projectScanRequired = response.Data.ScanRequired;
             _projectScanConfigurations = response.Data.ScanConfigurations
                 .OrderBy(config => config.Order)
                 .ThenBy(config => config.SystemFieldId)
                 .ToList();
+
+            ApplyConfirmedState();
         }
 
         private async Task<bool> CreateReceiptFromCompletedScanAsync(IReadOnlyList<ScanRuleResult> scanResults)
@@ -557,7 +640,7 @@ namespace LD.FormsX.Views.Dialogs
             AsnDetailItem detailRow;
             try
             {
-                detailRow = GetScanTargetDetailRow();
+                detailRow = GetScanTargetDetailRow(scanResults);
             }
             catch (InvalidOperationException ex)
             {
@@ -599,6 +682,105 @@ namespace LD.FormsX.Views.Dialogs
             return true;
         }
 
+        private async Task<UnmatchedScanResult?> ResolveUnmatchedScanAsync(string scanValue)
+        {
+            var value = scanValue.Trim();
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            if (ProductLookupItems.Count == 0)
+                await LoadProductsForSelectedClientProjectAsync();
+
+            var product = ProductLookupItems.FirstOrDefault(item =>
+                string.Equals(item.Code?.Trim(), value, StringComparison.OrdinalIgnoreCase));
+
+            if (product != null && HasConfiguredScanField(SystemField_e.PartNumber))
+            {
+                return new UnmatchedScanResult(
+                    true,
+                    (int)SystemField_e.PartNumber,
+                    product.Code?.Trim() ?? value,
+                    string.Empty);
+            }
+
+            if (!HasConfiguredScanField(SystemField_e.StandardId))
+            {
+                return new UnmatchedScanResult(
+                    false,
+                    (int)SystemField_e.PartNumber,
+                    value,
+                    product != null
+                        ? "El numero de parte existe, pero Numero de Parte no esta en la configuracion de escaneo."
+                        : "No existe el numero de parte para este cliente y proyecto.");
+            }
+
+            var labelResponse = await _standardLabelService.GetByCode(value);
+            if (labelResponse.IsSuccess && labelResponse.Data != null)
+            {
+                var label = labelResponse.Data;
+                if (IsStandardLabelAvailableForScan(label))
+                {
+                    return new UnmatchedScanResult(
+                        true,
+                        (int)SystemField_e.StandardId,
+                        label.StandarIdStr,
+                        string.Empty);
+                }
+
+                return new UnmatchedScanResult(
+                    false,
+                    (int)SystemField_e.StandardId,
+                    value,
+                    "La etiqueta LD ya esta asignada a una recepcion, numero de parte, cliente o proyecto.");
+            }
+
+            if (labelResponse.Code != 404)
+            {
+                return new UnmatchedScanResult(
+                    false,
+                    (int)SystemField_e.StandardId,
+                    value,
+                    labelResponse.ErrorMessage ?? labelResponse.Message ?? "No se pudo validar la etiqueta LD.");
+            }
+
+            return new UnmatchedScanResult(
+                false,
+                (int)SystemField_e.PartNumber,
+                value,
+                "No existe la etiqueta LD ni el numero de parte para este cliente y proyecto.");
+        }
+
+        private static bool IsStandardLabelAvailableForScan(StandardLabelDto label)
+        {
+            return !label.IsAssigned
+                && string.IsNullOrWhiteSpace(label.PartNumber)
+                && label.ClientId == null
+                && label.ProjectId == null;
+        }
+
+        private bool HasConfiguredScanField(SystemField_e systemField)
+        {
+            return _projectScanConfigurations.Any(config =>
+                config.SystemFieldId == (int)systemField
+                || IsConfiguredScanFieldName(config.SystemFieldName, systemField));
+        }
+
+        private static bool IsConfiguredScanFieldName(string? systemFieldName, SystemField_e systemField)
+        {
+            var fieldName = systemFieldName?.Trim();
+
+            return systemField switch
+            {
+                SystemField_e.StandardId => string.Equals(fieldName, "standard_id", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "standardid", StringComparison.OrdinalIgnoreCase),
+                SystemField_e.PartNumber => string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fieldName, "número de parte", StringComparison.OrdinalIgnoreCase),
+                _ => false
+            };
+        }
+
         private AsnReceiptItem CreateScannedReceiptTemplate(AsnDetailItem detailRow)
         {
             AsnReceiptItem receiptRow;
@@ -621,8 +803,15 @@ namespace LD.FormsX.Views.Dialogs
             return receiptRow;
         }
 
-        private AsnDetailItem GetScanTargetDetailRow()
+        private AsnDetailItem GetScanTargetDetailRow(IReadOnlyList<ScanRuleResult> scanResults)
         {
+            if (IsScanRequiredForProject())
+            {
+                var scannedPartNumber = GetScannedPartNumber(scanResults);
+                if (!string.IsNullOrWhiteSpace(scannedPartNumber))
+                    return GetOrCreateDetailRowForScannedPartNumber(scannedPartNumber);
+            }
+
             if (_selectedDetailItem != null && !IsEmptyDetailRow(_selectedDetailItem))
                 return _selectedDetailItem;
 
@@ -633,6 +822,44 @@ namespace LD.FormsX.Views.Dialogs
                 return currentDetail;
 
             throw new InvalidOperationException("Selecciona una linea de ASN Details antes de escanear.");
+        }
+
+        private static string GetScannedPartNumber(IReadOnlyList<ScanRuleResult> scanResults)
+        {
+            return scanResults
+                .FirstOrDefault(result =>
+                    string.Equals(NormalizeSystemField(result.Configuration), "partnumber", StringComparison.OrdinalIgnoreCase))?
+                .Value?
+                .Trim() ?? string.Empty;
+        }
+
+        private AsnDetailItem GetOrCreateDetailRowForScannedPartNumber(string partNumber)
+        {
+            var existingDetail = DetailItems.FirstOrDefault(item =>
+                !IsEmptyDetailRow(item)
+                && string.Equals(item.PartNumber?.Trim(), partNumber.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (existingDetail != null)
+                return existingDetail;
+
+            var productLookup = ProductLookupItems.FirstOrDefault(item =>
+                string.Equals(item.Code?.Trim(), partNumber.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (productLookup?.Data is not ProductAutocompleteDto product)
+                throw new InvalidOperationException($"No existe el numero de parte {partNumber} para este cliente y proyecto.");
+
+            var detailRow = DetailItems.FirstOrDefault(IsEmptyDetailRow) ?? new AsnDetailItem();
+            if (!DetailItems.Contains(detailRow))
+                DetailItems.Add(detailRow);
+
+            detailRow.ProductId = product.ItemId;
+            detailRow.PartNumber = product.NumeroParte?.Trim() ?? partNumber.Trim();
+            detailRow.Description = product.Descripcion ?? string.Empty;
+            detailRow.StandardQuantity = product.StandardPackageValue;
+            detailRow.MaximumQuantity = product.MaxUnitValue;
+
+            EnsureTrailingEmptyDetailRow();
+            return detailRow;
         }
 
         private static void ApplyScannedValueToReceipt(AsnReceiptItem receiptRow, ScanConfigurationRequest configuration, string scannedValue)
@@ -918,7 +1145,8 @@ namespace LD.FormsX.Views.Dialogs
                 || receiptRow.ExpirationDate.HasValue
                 || !string.IsNullOrWhiteSpace(receiptRow.Reference)
                 || !string.IsNullOrWhiteSpace(receiptRow.PurchaseOrder)
-                || !string.IsNullOrWhiteSpace(receiptRow.CustomsDeclarationNumber);
+                || !string.IsNullOrWhiteSpace(receiptRow.CustomsDeclarationNumber)
+                || !string.IsNullOrWhiteSpace(receiptRow.StandardId);
         }
 
         private static void SyncReceiptRowFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow, int asnId)
@@ -1511,6 +1739,9 @@ namespace LD.FormsX.Views.Dialogs
                 if (!EnsureCurrentAsnEditable())
                     return;
 
+                if (!EnsureProjectScanDoesNotLockDetails())
+                    return;
+
                 if (detailRow.AsnDetailId > 0)
                 {
                     var response = await _asnDetailService.DeleteAsnDetail(detailRow.AsnDetailId);
@@ -1540,6 +1771,9 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 if (!EnsureCurrentAsnEditable())
+                    return;
+
+                if (!EnsureProjectScanAllowsReceiptAction("eliminar recepciones manualmente"))
                     return;
 
                 if (!CanDeleteReceiptRow(receiptRow))
@@ -1937,6 +2171,9 @@ namespace LD.FormsX.Views.Dialogs
         {
             try
             {
+                if (!EnsureProjectScanAllowsReceiptAction("dividir recepciones manualmente"))
+                    return;
+
                 if (sender is not Button button)
                     return;
 

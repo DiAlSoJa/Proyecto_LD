@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using LD.Application.Common.Guards;
+using LD.Application.Common.Interfaces.StandarLabel;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
 using LD.Contracts.Requests;
@@ -20,17 +21,20 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
     private readonly IRepository<LD.Domain.Entities.AsnReceiptDetail> _asnRepository;
     private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnDetailRepository;
     private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
+    private readonly IStandarIdService _standarIdService;
     private readonly IMapper _mapper;
 
     public CreateAsnReceiptDetailCommandHandler(
         IRepository<LD.Domain.Entities.AsnReceiptDetail> asnRepository,
         IRepository<LD.Domain.Entities.AsnDetail> asnDetailRepository,
         IRepository<LD.Domain.Entities.Asn> asnParentRepository,
+        IStandarIdService standarIdService,
         AutoMapper.IMapper mapper)
     {
         _asnRepository = asnRepository;
         _asnDetailRepository = asnDetailRepository;
         _asnParentRepository = asnParentRepository;
+        _standarIdService = standarIdService;
         _mapper = mapper;
     }
 
@@ -45,6 +49,12 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
             if (validation is not null)
                 return validation;
 
+            var standardIdResult = await ResolveStandardIdAsync(request.StandardId);
+            if (standardIdResult.IsFailure)
+                return Result<string>.Failure(standardIdResult.Message, standardIdResult.Errors, standardIdResult.Code);
+
+            request.StandardId = standardIdResult.Data?.ToString();
+
             var entity = _mapper.Map<LD.Domain.Entities.AsnReceiptDetail>(request);
             var result = await _asnRepository.CreateAsync(entity);
             return result ? Result<string>.Success(entity.AsnReceiptDetailId.ToString(), "ASN Receipt creado con exito") : Result<string>.Failure("Hubo un error al crear el ASN Receipt", new());
@@ -53,5 +63,21 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
         {
             return Result<string>.Failure("Hubo un error al crear el ASN", new System.Collections.Generic.List<string> { ex.Message });
         }
+    }
+
+    private async Task<Result<int?>> ResolveStandardIdAsync(string? standardId)
+    {
+        var value = standardId?.Trim();
+        if (string.IsNullOrWhiteSpace(value))
+            return Result<int?>.Success(null, string.Empty);
+
+        var label = await _standarIdService.GetByStandarIdStrAsync(value);
+        if (label != null)
+            return Result<int?>.Success(label.StandarId, string.Empty);
+
+        if (int.TryParse(value, out var parsedStandardId))
+            return Result<int?>.Success(parsedStandardId, string.Empty);
+
+        return Result<int?>.Failure("No existe la etiqueta LD.", new() { "No existe la etiqueta LD." }, 404);
     }
 }

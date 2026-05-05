@@ -17,6 +17,25 @@ namespace LD.Infrastructure.Services.StandardLabel
         {
             _context = context;
         }
+
+        public async Task<Domain.Entities.StandardLabel?> GetByStandarIdStrAsync(string standarIdStr)
+        {
+            if (string.IsNullOrWhiteSpace(standarIdStr))
+                return null;
+
+            var normalized = standarIdStr.Trim();
+
+            return await _context.StandardLabels
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.StandarIdStr == normalized);
+        }
+
+        public async Task<bool> IsStandarIdAssignedAsync(int standarId)
+        {
+            return await _context.AsnReceiptDetails
+                .AsNoTracking()
+                .AnyAsync(x => x.StandardId == standarId);
+        }
      
         public async Task<List<string>> GenerateStandarIdsAsync(int quantity)
         {
@@ -52,15 +71,25 @@ namespace LD.Infrastructure.Services.StandardLabel
                 sequence.LastNumber = endNumber;
                 sequence.LastUpdatedAt = now;
 
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-
                 var result = new List<string>();
+                var labels = new List<Domain.Entities.StandardLabel>();
 
                 for (int i = startNumber; i <= endNumber; i++)
                 {
-                    result.Add($"{now:yyyyMMdd}{i:0000}");
+                    var standarIdStr = $"{now:yyyyMMdd}{i:0000}";
+                    result.Add(standarIdStr);
+                    labels.Add(new Domain.Entities.StandardLabel
+                    {
+                        StandarIdStr = standarIdStr,
+                        CreatedAt = now,
+                        CreatedByUserId = "system",
+                        IsActive = true
+                    });
                 }
+
+                _context.StandardLabels.AddRange(labels);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
                 return result;
             }

@@ -306,11 +306,19 @@ namespace LD.Infrastructure.Persistence
                 entity.Property(e => e.StandarIdStr)
                 .HasMaxLength(30)
                 .IsRequired();
+                entity.Property(e => e.PartNumber)
+                .HasMaxLength(100);
                 entity.HasIndex(e => e.StandarIdStr).IsUnique();
+                entity.HasOne(e => e.Client)
+                .WithMany()
+                .HasForeignKey(e => e.clientId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
                 entity.HasOne(e => e.Project)
                 .WithMany()
                 .HasForeignKey(e => e.projectId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
 
             });
             builder.Entity<StandarIdSequence>(entity =>

@@ -128,6 +128,7 @@ namespace LD.Forms.Configuration
         // ======================
 
         public string StandardLabel_Generate => $"{_baseApi}/StandardLabel/generate";
+        public string StandardLabel_GetByCode => $"{_baseApi}/StandardLabel/{{code}}";
         
 
         // ======================

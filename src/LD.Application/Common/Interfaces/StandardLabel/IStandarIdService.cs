@@ -11,6 +11,10 @@ namespace LD.Application.Common.Interfaces.StandarLabel
     {
         Task<List<string>> GenerateStandarIdsAsync(int quantity);
 
+        Task<StandardLabel?> GetByStandarIdStrAsync(string standarIdStr);
+
+        Task<bool> IsStandarIdAssignedAsync(int standarId);
+
         Task<List<StandardLabel>> AssignStandarIdsToReceiptDetailsAsync(
             List<int> asnReceiptDetailIds,
             string userId);

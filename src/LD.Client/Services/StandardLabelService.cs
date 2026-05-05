@@ -1,5 +1,6 @@
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
+using LD.Contracts.DTOs.StandardLabel;
 using LD.Forms.Configuration;
 
 namespace LD.Client.Services;
@@ -25,5 +26,11 @@ public class StandardLabelService
         return await _api.PostAsync<GenerateStandardLabelsRequest, ApiResponseDto<List<string>>>(
             _apiEndpoints.StandardLabel_Generate,
             request);
+    }
+
+    public async Task<ApiResponseDto<StandardLabelDto?>> GetByCode(string code)
+    {
+        return await _api.GetAsync<ApiResponseDto<StandardLabelDto?>>(
+            _apiEndpoints.StandardLabel_GetByCode.Replace("{code}", Uri.EscapeDataString(code.Trim())));
     }
 }

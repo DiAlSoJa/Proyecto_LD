@@ -23,7 +23,9 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
                 .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.MapFrom(src => src.AsnReceiptDetailId))
                 .ForMember(dest => dest.AsnDetailId, opt => opt.MapFrom(src => src.AsnDetailId))
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))                
-                .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardLabel!=null? src.StandardLabel.StandarIdStr:string.Empty))
+                .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardLabel != null
+                    ? src.StandardLabel.StandarIdStr
+                    : src.StandardId.HasValue ? src.StandardId.Value.ToString() : string.Empty))
                 .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PartNumber))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.StandardQuantity, opt => opt.MapFrom(src => src.StandardQuantity))
