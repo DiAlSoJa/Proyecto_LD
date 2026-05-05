@@ -40,23 +40,25 @@ namespace LD.Infrastructure.Repositories
        async public Task<List<AsnReceiptDetailDto>> GetAsnReceiptByAsnIdAsync(int detailAsnId)
         {
 
-            return await _context.AsnReceiptDetails
-          .AsNoTracking()
-          .Include(x => x.StandardLabel)
-          .Where(p => p.AsnDetailId == detailAsnId)
-          .ProjectTo<AsnReceiptDetailDto>(_mapper.ConfigurationProvider)          
-          .ToListAsync();
+            var entities = await _context.AsnReceiptDetails
+                .AsNoTracking()
+                .Include(x => x.StandardLabel)
+                .Where(p => p.AsnDetailId == detailAsnId)
+                .ToListAsync();
+
+            return _mapper.Map<List<AsnReceiptDetailDto>>(entities);
 
         }
 
         public async Task<AsnReceiptDetailDto?> GetByIdAsync(int id)
         {
-            return await _context.AsnReceiptDetails
+            var entity = await _context.AsnReceiptDetails
                 .AsNoTracking()
                 .Include(x => x.StandardLabel)
                 .Where(x => x.AsnReceiptDetailId == id)
-                .ProjectTo<AsnReceiptDetailDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
+
+            return entity is null ? null : _mapper.Map<AsnReceiptDetailDto>(entity);
         }
 
         public Task<AsnReceiptDetailDto?> GetByIdAsync(string id)

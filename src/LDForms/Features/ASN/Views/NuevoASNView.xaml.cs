@@ -637,10 +637,18 @@ namespace LD.FormsX.Views.Dialogs
             if (!EnsureCurrentAsnEditable())
                 return false;
 
+            if (!await EnsureAsnPersistedAsync())
+                return false;
+
+            var receiptRow = CreateScannedReceiptTemplate(GetScanTemplateDetailRow(scanResults));
+
+            foreach (var result in scanResults)
+                ApplyScannedValueToReceipt(receiptRow, result.Configuration, result.Value);
+
             AsnDetailItem detailRow;
             try
             {
-                detailRow = GetScanTargetDetailRow(scanResults);
+                detailRow = await ResolveDetailForScannedReceiptAsync(receiptRow);
             }
             catch (InvalidOperationException ex)
             {
@@ -650,14 +658,9 @@ namespace LD.FormsX.Views.Dialogs
 
             _selectedDetailItem = detailRow;
             dgDetail.SelectedItem = detailRow;
-
-            if (!await EnsureDetailPersistedAsync(detailRow))
-                return false;
-
-            var receiptRow = CreateScannedReceiptTemplate(detailRow);
-
-            foreach (var result in scanResults)
-                ApplyScannedValueToReceipt(receiptRow, result.Configuration, result.Value);
+            receiptRow.ApplyDefaultsFromDetail(detailRow, AsnSelected!.AsnId);
+            SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
+            ApplyProjectLocationDefaults(receiptRow);
 
             if (!IsReceiptRowCompleted(receiptRow))
                 return false;
@@ -676,10 +679,73 @@ namespace LD.FormsX.Views.Dialogs
             if (int.TryParse(response.Data, out var asnReceiptDetailId) && asnReceiptDetailId > 0)
                 receiptRow.AsnReceiptDetailId = asnReceiptDetailId;
 
+            await RefreshReceiptRowFromServerAsync(receiptRow);
             ReceiptItems.Add(receiptRow);
             RemoveEmptyReceiptRows();
             dgUbicacionesAsignadas.Items.Refresh();
             return true;
+        }
+
+        private async Task<AsnDetailItem> ResolveDetailForScannedReceiptAsync(AsnReceiptItem receiptRow)
+        {
+            if (AsnSelected?.AsnId <= 0)
+                throw new InvalidOperationException("Guarda primero el encabezado del ASN.");
+
+            if (ProductLookupItems.Count == 0)
+                await LoadProductsForSelectedClientProjectAsync();
+
+            EnsureProductDataForScannedReceipt(receiptRow);
+
+            var quantityToAdd = receiptRow.ReceivedQuantity ?? 0m;
+            if (quantityToAdd <= 0)
+                throw new InvalidOperationException("La línea escaneada no tiene cantidad recibida válida.");
+
+            var detailRow = FindMatchingDetailForReceipt(receiptRow);
+            if (detailRow == null)
+            {
+                detailRow = CreateDetailRowFromScannedReceipt(receiptRow, quantityToAdd);
+                var createResponse = await _asnDetailService.CreateAsnDetail(detailRow.ToRequest());
+                Log.Information(
+                    "Resultado ResolveDetailForScannedReceiptAsync Create. AsnId: {AsnId}. PartNumber: {PartNumber}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                    detailRow.AsnId, detailRow.PartNumber, createResponse.IsSuccess, createResponse.Code, createResponse.Message, createResponse.Data);
+
+                if (!createResponse.IsSuccess)
+                    throw new InvalidOperationException(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el detail para la recepción escaneada.");
+
+                if (int.TryParse(createResponse.Data, out var asnDetailId) && asnDetailId > 0)
+                    detailRow.AsnDetailId = asnDetailId;
+
+                if (detailRow.AsnDetailId <= 0)
+                    throw new InvalidOperationException("No se pudo obtener el Id del detail creado para la recepción escaneada.");
+
+                var emptyDetailRow = DetailItems.FirstOrDefault(IsEmptyDetailRow);
+                if (emptyDetailRow != null)
+                {
+                    var index = DetailItems.IndexOf(emptyDetailRow);
+                    DetailItems[index] = detailRow;
+                }
+                else
+                {
+                    DetailItems.Add(detailRow);
+                }
+
+                EnsureTrailingEmptyDetailRow();
+                return detailRow;
+            }
+
+            detailRow.Quantity += quantityToAdd;
+            var updateResponse = await _asnDetailService.UpdateAsnDetail(detailRow.AsnDetailId, detailRow.ToRequest());
+            Log.Information(
+                "Resultado ResolveDetailForScannedReceiptAsync Update. AsnDetailId: {AsnDetailId}. Quantity: {Quantity}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
+                detailRow.AsnDetailId, detailRow.Quantity, updateResponse.IsSuccess, updateResponse.Code, updateResponse.Message, updateResponse.Data);
+
+            if (!updateResponse.IsSuccess)
+            {
+                detailRow.Quantity -= quantityToAdd;
+                throw new InvalidOperationException(updateResponse.ErrorMessage ?? updateResponse.Message ?? "No se pudo actualizar la cantidad del detail para la recepción escaneada.");
+            }
+
+            return detailRow;
         }
 
         private async Task<UnmatchedScanResult?> ResolveUnmatchedScanAsync(string scanValue)
@@ -803,13 +869,13 @@ namespace LD.FormsX.Views.Dialogs
             return receiptRow;
         }
 
-        private AsnDetailItem GetScanTargetDetailRow(IReadOnlyList<ScanRuleResult> scanResults)
+        private AsnDetailItem GetScanTemplateDetailRow(IReadOnlyList<ScanRuleResult> scanResults)
         {
             if (IsScanRequiredForProject())
             {
                 var scannedPartNumber = GetScannedPartNumber(scanResults);
                 if (!string.IsNullOrWhiteSpace(scannedPartNumber))
-                    return GetOrCreateDetailRowForScannedPartNumber(scannedPartNumber);
+                    return CreateTemplateDetailRowForScannedPartNumber(scannedPartNumber);
             }
 
             if (_selectedDetailItem != null && !IsEmptyDetailRow(_selectedDetailItem))
@@ -833,7 +899,7 @@ namespace LD.FormsX.Views.Dialogs
                 .Trim() ?? string.Empty;
         }
 
-        private AsnDetailItem GetOrCreateDetailRowForScannedPartNumber(string partNumber)
+        private AsnDetailItem CreateTemplateDetailRowForScannedPartNumber(string partNumber)
         {
             var existingDetail = DetailItems.FirstOrDefault(item =>
                 !IsEmptyDetailRow(item)
@@ -848,19 +914,72 @@ namespace LD.FormsX.Views.Dialogs
             if (productLookup?.Data is not ProductAutocompleteDto product)
                 throw new InvalidOperationException($"No existe el numero de parte {partNumber} para este cliente y proyecto.");
 
-            var detailRow = DetailItems.FirstOrDefault(IsEmptyDetailRow) ?? new AsnDetailItem();
-            if (!DetailItems.Contains(detailRow))
-                DetailItems.Add(detailRow);
-
-            detailRow.ProductId = product.ItemId;
-            detailRow.PartNumber = product.NumeroParte?.Trim() ?? partNumber.Trim();
-            detailRow.Description = product.Descripcion ?? string.Empty;
-            detailRow.StandardQuantity = product.StandardPackageValue;
-            detailRow.MaximumQuantity = product.MaxUnitValue;
-
-            EnsureTrailingEmptyDetailRow();
-            return detailRow;
+            return new AsnDetailItem
+            {
+                AsnId = AsnSelected?.AsnId ?? 0,
+                ProductId = product.ItemId,
+                PartNumber = product.NumeroParte?.Trim() ?? partNumber.Trim(),
+                Description = product.Descripcion ?? string.Empty,
+                StandardQuantity = product.StandardPackageValue,
+                MaximumQuantity = product.MaxUnitValue
+            };
         }
+
+        private AsnDetailItem? FindMatchingDetailForReceipt(AsnReceiptItem receiptRow)
+        {
+            return DetailItems.FirstOrDefault(item =>
+                !IsEmptyDetailRow(item)
+                && item.AsnDetailId > 0
+                && string.Equals(NormalizeMatchValue(item.PartNumber), NormalizeMatchValue(receiptRow.PartNumber), StringComparison.OrdinalIgnoreCase)
+                && string.Equals(NormalizeMatchValue(item.LotNumber), NormalizeMatchValue(receiptRow.LotNumber), StringComparison.OrdinalIgnoreCase)
+                && string.Equals(NormalizeMatchValue(item.PurchaseOrder), NormalizeMatchValue(receiptRow.PurchaseOrder), StringComparison.OrdinalIgnoreCase)
+                && string.Equals(NormalizeMatchValue(item.CustomsDeclarationNumber), NormalizeMatchValue(receiptRow.CustomsDeclarationNumber), StringComparison.OrdinalIgnoreCase));
+        }
+
+        private AsnDetailItem CreateDetailRowFromScannedReceipt(AsnReceiptItem receiptRow, decimal quantity)
+        {
+            return new AsnDetailItem
+            {
+                AsnId = AsnSelected!.AsnId,
+                ProductId = receiptRow.ProductId.GetValueOrDefault(),
+                PartNumber = receiptRow.PartNumber,
+                Description = receiptRow.Description,
+                Quantity = quantity,
+                StandardQuantity = receiptRow.StandardQuantity,
+                MaximumQuantity = receiptRow.MaximumQuantity,
+                Status = receiptRow.Status,
+                SD = receiptRow.SD,
+                LotNumber = receiptRow.LotNumber,
+                ExpirationDate = receiptRow.ExpirationDate,
+                CustomerReference = receiptRow.Reference,
+                PurchaseOrder = receiptRow.PurchaseOrder,
+                CustomsDeclarationNumber = receiptRow.CustomsDeclarationNumber
+            };
+        }
+
+        private void EnsureProductDataForScannedReceipt(AsnReceiptItem receiptRow)
+        {
+            var partNumber = receiptRow.PartNumber?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(partNumber))
+                throw new InvalidOperationException("La línea escaneada no tiene número de parte.");
+
+            var productLookup = ProductLookupItems.FirstOrDefault(item =>
+                string.Equals(item.Code?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase));
+
+            if (productLookup?.Data is not ProductAutocompleteDto product)
+                throw new InvalidOperationException($"No existe el numero de parte {partNumber} para este cliente y proyecto.");
+
+            receiptRow.ProductId = product.ItemId;
+            receiptRow.PartNumber = product.NumeroParte?.Trim() ?? partNumber;
+
+            if (string.IsNullOrWhiteSpace(receiptRow.Description))
+                receiptRow.Description = product.Descripcion ?? string.Empty;
+
+            receiptRow.StandardQuantity ??= product.StandardPackageValue;
+            receiptRow.MaximumQuantity ??= product.MaxUnitValue;
+        }
+
+        private static string NormalizeMatchValue(string? value) => value?.Trim() ?? string.Empty;
 
         private static void ApplyScannedValueToReceipt(AsnReceiptItem receiptRow, ScanConfigurationRequest configuration, string scannedValue)
         {
@@ -1483,6 +1602,8 @@ namespace LD.FormsX.Views.Dialogs
                 receiptItem.AsnReceiptDetailId = asnReceiptDetailId;
             }
 
+            await RefreshReceiptRowFromServerAsync(receiptItem);
+
             if (ReferenceEquals(_selectedDetailItem, detailRow))
             {
                 ReceiptItems.Clear();
@@ -1542,6 +1663,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (receiptRow.AsnReceiptDetailId <= 0 && int.TryParse(response.Data, out var asnReceiptDetailId) && asnReceiptDetailId > 0)
                     receiptRow.AsnReceiptDetailId = asnReceiptDetailId;
 
+                await RefreshReceiptRowFromServerAsync(receiptRow);
                 RemoveEmptyReceiptRows();
             }
             catch (Exception ex)
@@ -1560,6 +1682,37 @@ namespace LD.FormsX.Views.Dialogs
                     }), DispatcherPriority.Background);
                 }
             }
+        }
+
+        private async Task RefreshReceiptRowFromServerAsync(AsnReceiptItem receiptRow)
+        {
+            if (receiptRow.AsnReceiptDetailId <= 0)
+                return;
+
+            var response = await _asnReceiptService.GetAsnReceiptById(receiptRow.AsnReceiptDetailId);
+            if (!response.IsSuccess || response.Data == null)
+                return;
+
+            var refreshedRow = AsnReceiptItem.FromDto(response.Data);
+            refreshedRow.AsnId = receiptRow.AsnId;
+
+            receiptRow.AsnDetailId = refreshedRow.AsnDetailId;
+            receiptRow.ProductId = refreshedRow.ProductId;
+            receiptRow.StandardId = refreshedRow.StandardId;
+            receiptRow.PartNumber = refreshedRow.PartNumber;
+            receiptRow.Description = refreshedRow.Description;
+            receiptRow.StandardQuantity = refreshedRow.StandardQuantity;
+            receiptRow.MaximumQuantity = refreshedRow.MaximumQuantity;
+            receiptRow.SD = refreshedRow.SD;
+            receiptRow.ReceivedQuantity = refreshedRow.ReceivedQuantity;
+            receiptRow.Status = refreshedRow.Status;
+            receiptRow.LocationId = refreshedRow.LocationId;
+            receiptRow.LocationCode = refreshedRow.LocationCode;
+            receiptRow.LotNumber = refreshedRow.LotNumber;
+            receiptRow.ExpirationDate = refreshedRow.ExpirationDate;
+            receiptRow.Reference = refreshedRow.Reference;
+            receiptRow.PurchaseOrder = refreshedRow.PurchaseOrder;
+            receiptRow.CustomsDeclarationNumber = refreshedRow.CustomsDeclarationNumber;
         }
 
         private async Task SaveDetailsAsync(int asnId)

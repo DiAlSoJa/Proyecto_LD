@@ -520,10 +520,35 @@ namespace LD.FormsX.Features.Common
                 return;
             }
 
+            var matchedItem = FindExactLookupMatch(txtLookup.Text);
+            if (matchedItem != null)
+            {
+                SelectedLookupItem = matchedItem;
+                SelectedId = matchedItem.Id;
+                SelectedCode = matchedItem.Code;
+                SelectedDescription = matchedItem.Description;
+                SetEditorText(matchedItem.Code, false);
+                return;
+            }
+
             SelectedId = 0;
             SelectedCode = string.Empty;
             SelectedDescription = string.Empty;
             SetEditorText(string.Empty, false);
+        }
+
+        private LookupItem? FindExactLookupMatch(string? text)
+        {
+            var value = text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            return ItemsSource?
+                .Cast<object>()
+                .OfType<LookupItem>()
+                .FirstOrDefault(item =>
+                    string.Equals(item.Code?.Trim(), value, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(GetDisplayValue(item).Trim(), value, StringComparison.OrdinalIgnoreCase));
         }
 
         private void ApplyHeadersFromTag()

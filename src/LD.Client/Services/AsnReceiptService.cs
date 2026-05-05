@@ -20,9 +20,9 @@ namespace LD.Client.Services
             _apiEndpoints = apiEndpoints;
         }
 
-        public async Task<ApiResponseDto<AsnReceiptRequest>> GetAsnReceiptById(int asnReceiptId)
+        public async Task<ApiResponseDto<AsnReceiptDetailDto>> GetAsnReceiptById(int asnReceiptId)
         {
-            return await _api.GetAsync<ApiResponseDto<AsnReceiptRequest>>(_apiEndpoints.AsnReceipt_GetById.Replace("{asnId}", asnReceiptId.ToString()));
+            return await _api.GetAsync<ApiResponseDto<AsnReceiptDetailDto>>(_apiEndpoints.AsnReceipt_GetById.Replace("{asnId}", asnReceiptId.ToString()));
         }
 
         public async Task<ApiResponseDto<List<AsnReceiptDetailDto>>> GetAsnReceipts()
