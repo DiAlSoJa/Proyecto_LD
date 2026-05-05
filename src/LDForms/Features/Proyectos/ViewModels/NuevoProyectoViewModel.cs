@@ -89,7 +89,9 @@ public partial class NuevoProyectoViewModel : ObservableObject
 
     partial void OnSelectedLocationLookupIdChanged(object? value)
     {
-        SelectedLocationId = value?.ToString();
+        SelectedLocationId = TryGetLocationId(value, out var locationId)
+            ? locationId.ToString()
+            : null;
     }
 
     // ── Tipo de almacenamiento ──
@@ -324,6 +326,18 @@ public partial class NuevoProyectoViewModel : ObservableObject
         }
     }
 
+    private static bool TryGetLocationId(object? value, out int locationId)
+    {
+        locationId = 0;
+
+        if (value is int id)
+            locationId = id;
+        else if (value is string text && int.TryParse(text, out id))
+            locationId = id;
+
+        return locationId > 0;
+    }
+
     private void PopulateAvailableFields()
     {
         var usedIds = ScanConfigurations.Select(s => s.SystemFieldId).ToHashSet();
@@ -387,6 +401,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
             SelectedClientId = p.ClientId?.ToString();
             SelectedWarehouseId = p.WarehouseId?.ToString();
             SelectedLocationId = p.LocationId?.ToString();
+            FilterLocations();
             ProjectName = p.ProjectName ?? "";
 
             IsActive = p.IsActive;

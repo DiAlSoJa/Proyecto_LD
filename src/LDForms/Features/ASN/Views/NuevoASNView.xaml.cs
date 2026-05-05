@@ -183,7 +183,7 @@ namespace LD.FormsX.Views.Dialogs
             if (!IsScanRequiredForProject())
                 return true;
 
-            DialogHelper.ShowWarning($"El proyecto requiere escaneo obligatorio; solo se permite editar estatus y ubicacion en ASN Receipt Details. No se puede {action}.");
+            DialogHelper.ShowWarning($"El proyecto requiere escaneo obligatorio; solo se permite editar estatus, SD y ubicacion en ASN Receipt Details. No se puede {action}.");
             return false;
         }
 
@@ -269,14 +269,14 @@ namespace LD.FormsX.Views.Dialogs
             return header.Equals("Número de Parte", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Numero de Parte", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Descripción", StringComparison.OrdinalIgnoreCase)
-                || header.Equals("Descripcion", StringComparison.OrdinalIgnoreCase)
-                || header.Equals("SD", StringComparison.OrdinalIgnoreCase);
+                || header.Equals("Descripcion", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool IsScanRequiredReceiptEditableColumn(string header)
         {
             return header.Equals("Status", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Estatus", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("SD", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Ubicación", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Ubicacion", StringComparison.OrdinalIgnoreCase);
         }

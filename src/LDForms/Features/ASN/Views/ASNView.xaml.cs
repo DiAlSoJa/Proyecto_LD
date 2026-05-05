@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,6 +29,7 @@ using LD.FormsX.Views.Dialogs;
 using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Ubicaciones;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 
 
 
@@ -633,6 +638,64 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
+        private async void BtnExportarExcel_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedX == null || _selectedX.AsnId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un ASN para exportar.");
+                    return;
+                }
+
+                MostrarLoader(true, "Preparando Excel...");
+
+                var detailsResult = await _asnDetailService.GetAsnDetailsByAsn(_selectedX.AsnId);
+                if (!detailsResult.IsSuccess || detailsResult.Data == null || detailsResult.Data.Count == 0)
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado no tiene partidas para exportar.");
+                    return;
+                }
+
+                var receiptDetails = new List<AsnReceiptDetailDto>();
+                foreach (var detail in detailsResult.Data)
+                {
+                    var receiptResult = await _asnReceiptService.GetAsnReceiptsByAsnDetailId(detail.AsnDetailId);
+                    if (receiptResult.IsSuccess && receiptResult.Data != null)
+                        receiptDetails.AddRange(receiptResult.Data);
+                }
+
+                if (receiptDetails.Count == 0)
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado no tiene partidas recibidas para exportar.");
+                    return;
+                }
+
+                var dialog = new SaveFileDialog
+                {
+                    Title = "Exportar ASN a Excel",
+                    Filter = "Archivo de Excel (*.xlsx)|*.xlsx",
+                    FileName = $"{SanitizeFileName(_selectedX.AsnCode)}_{DateTime.Now:yyyyMMdd_HHmm}.xlsx",
+                    AddExtension = true,
+                    DefaultExt = ".xlsx"
+                };
+
+                if (dialog.ShowDialog(Window.GetWindow(this)) != true)
+                    return;
+
+                ExportAsnReceiptsToExcel(dialog.FileName, _selectedX, receiptDetails);
+                DialogHelper.ShowSuccess("Excel exportado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                MostrarLoader(false);
+            }
+        }
+
         private async void BtnOrdenAlmacenamiento_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -670,6 +733,222 @@ namespace LD.FormsX.Views.ASN
             {
                 MostrarLoader(false);
             }
+        }
+
+        private static void ExportAsnReceiptsToExcel(
+            string filePath,
+            AsnDto asn,
+            IEnumerable<AsnReceiptDetailDto> receiptDetails)
+        {
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            using var archive = ZipFile.Open(filePath, ZipArchiveMode.Create);
+
+            AddZipEntry(
+                archive,
+                "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+                  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+                  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+                  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+                  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+                </Types>
+                """);
+
+            AddZipEntry(
+                archive,
+                "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+                  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+                  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+                </Relationships>
+                """);
+
+            AddZipEntry(
+                archive,
+                "xl/_rels/workbook.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+                  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+                </Relationships>
+                """);
+
+            AddZipEntry(
+                archive,
+                "xl/workbook.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <sheets>
+                    <sheet name="ASN" sheetId="1" r:id="rId1"/>
+                  </sheets>
+                </workbook>
+                """);
+
+            AddZipEntry(archive, "xl/styles.xml", BuildExcelStylesXml());
+            AddZipEntry(archive, "xl/worksheets/sheet1.xml", BuildAsnWorksheetXml(asn, receiptDetails));
+
+            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+            AddZipEntry(
+                archive,
+                "docProps/core.xml",
+                $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                  <dc:creator>LD</dc:creator>
+                  <cp:lastModifiedBy>LD</cp:lastModifiedBy>
+                  <dcterms:created xsi:type="dcterms:W3CDTF">{timestamp}</dcterms:created>
+                  <dcterms:modified xsi:type="dcterms:W3CDTF">{timestamp}</dcterms:modified>
+                </cp:coreProperties>
+                """);
+
+            AddZipEntry(
+                archive,
+                "docProps/app.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+                  <Application>LD</Application>
+                </Properties>
+                """);
+        }
+
+        private static string BuildAsnWorksheetXml(AsnDto asn, IEnumerable<AsnReceiptDetailDto> receiptDetails)
+        {
+            var rows = new StringBuilder();
+            var rowIndex = 1;
+
+            for (; rowIndex <= 4; rowIndex++)
+                rows.Append(Row(rowIndex));
+
+            rows.Append(Row(rowIndex++, TextCell("A5", "Tipo:", 1), TextCell("B5", asn.VehicleType), TextCell("D5", FormatDateTime(asn.Eta))));
+            rows.Append(Row(rowIndex++, TextCell("A6", "Factura:", 1), TextCell("B6", asn.InvoiceNumber), TextCell("D6", "Guia:", 1), TextCell("E6", asn.GuideNumber)));
+            rows.Append(Row(rowIndex++, TextCell("A7", "Linea:", 1), TextCell("B7", asn.TransportLine), TextCell("D7", "Transporte:", 1), TextCell("E7", asn.Project)));
+            rows.Append(Row(rowIndex++, TextCell("A8", "Chofer:", 1), TextCell("B8", asn.DriverName)));
+            rows.Append(Row(rowIndex++, TextCell("A9", "Sello:", 1), TextCell("B9", asn.SealNumber), TextCell("D9", "Placas:", 1), TextCell("E9", asn.VehiclePlate)));
+            rows.Append(Row(rowIndex++));
+
+            rows.Append(Row(
+                rowIndex,
+                TextCell($"A{rowIndex}", "FOLIO", 2),
+                TextCell($"B{rowIndex}", "No. de parte", 2),
+                TextCell($"C{rowIndex}", "Cantidad", 2),
+                TextCell($"D{rowIndex}", "Dub", 2),
+                TextCell($"E{rowIndex}", "SKID", 2)));
+
+            rowIndex++;
+
+            foreach (var receipt in receiptDetails.OrderBy(x => x.AsnReceiptDetailId))
+            {
+                var rowStyle = rowIndex % 2 == 0 ? 3 : 0;
+                rows.Append(Row(
+                    rowIndex,
+                    NumberCell($"A{rowIndex}", receipt.AsnReceiptDetailId, rowStyle),
+                    TextCell($"B{rowIndex}", receipt.PartNumber, rowStyle),
+                    NumberCell($"C{rowIndex}", receipt.ReceivedQuantity ?? 0, rowStyle),
+                    TextCell($"D{rowIndex}", receipt.SD, rowStyle),
+                    TextCell($"E{rowIndex}", receipt.StandardId ?? string.Empty, rowStyle)));
+                rowIndex++;
+            }
+
+            return $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <sheetViews>
+                    <sheetView workbookViewId="0"/>
+                  </sheetViews>
+                  <sheetFormatPr defaultRowHeight="18"/>
+                  <cols>
+                    <col min="1" max="1" width="10" customWidth="1"/>
+                    <col min="2" max="2" width="34" customWidth="1"/>
+                    <col min="3" max="3" width="14" customWidth="1"/>
+                    <col min="4" max="4" width="14" customWidth="1"/>
+                    <col min="5" max="5" width="18" customWidth="1"/>
+                    <col min="6" max="6" width="18" customWidth="1"/>
+                  </cols>
+                  <sheetData>
+                {rows}
+                  </sheetData>
+                </worksheet>
+                """;
+        }
+
+        private static string BuildExcelStylesXml() =>
+            """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+              <fonts count="3">
+                <font><sz val="11"/><name val="Calibri"/></font>
+                <font><b/><sz val="11"/><name val="Calibri"/></font>
+                <font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font>
+              </fonts>
+              <fills count="4">
+                <fill><patternFill patternType="none"/></fill>
+                <fill><patternFill patternType="gray125"/></fill>
+                <fill><patternFill patternType="solid"><fgColor rgb="FF4F81BD"/><bgColor indexed="64"/></patternFill></fill>
+                <fill><patternFill patternType="solid"><fgColor rgb="FFD8E4F1"/><bgColor indexed="64"/></patternFill></fill>
+              </fills>
+              <borders count="2">
+                <border><left/><right/><top/><bottom/><diagonal/></border>
+                <border><left style="thin"><color rgb="FFD9D9D9"/></left><right style="thin"><color rgb="FFD9D9D9"/></right><top style="thin"><color rgb="FFD9D9D9"/></top><bottom style="thin"><color rgb="FFD9D9D9"/></bottom><diagonal/></border>
+              </borders>
+              <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+              <cellXfs count="4">
+                <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0"/>
+                <xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1"/>
+                <xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1"/>
+                <xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1"/>
+              </cellXfs>
+              <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+              <dxfs count="0"/>
+              <tableStyles count="0" defaultTableStyle="TableStyleMedium2" defaultPivotStyle="PivotStyleLight16"/>
+            </styleSheet>
+            """;
+
+        private static void AddZipEntry(ZipArchive archive, string entryName, string content)
+        {
+            var entry = archive.CreateEntry(entryName);
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, new UTF8Encoding(false));
+            writer.Write(content);
+        }
+
+        private static string Row(int index, params string[] cells) =>
+            $"    <row r=\"{index}\">{string.Concat(cells)}</row>{Environment.NewLine}";
+
+        private static string TextCell(string reference, string? value, int style = 0)
+        {
+            var escaped = SecurityElement.Escape(value ?? string.Empty) ?? string.Empty;
+            return $"<c r=\"{reference}\" s=\"{style}\" t=\"inlineStr\"><is><t>{escaped}</t></is></c>";
+        }
+
+        private static string NumberCell(string reference, decimal value, int style = 0) =>
+            $"<c r=\"{reference}\" s=\"{style}\"><v>{value.ToString(CultureInfo.InvariantCulture)}</v></c>";
+
+        private static string FormatDateTime(DateTime? dateTime) =>
+            dateTime.HasValue
+                ? dateTime.Value.ToString("M/d/yy H:mm", CultureInfo.InvariantCulture)
+                : DateTime.Now.ToString("M/d/yy H:mm", CultureInfo.InvariantCulture);
+
+        private static string SanitizeFileName(string? fileName)
+        {
+            var invalid = System.IO.Path.GetInvalidFileNameChars();
+            var sanitized = new string((string.IsNullOrWhiteSpace(fileName) ? "ASN" : fileName)
+                .Select(ch => invalid.Contains(ch) ? '_' : ch)
+                .ToArray());
+
+            return string.IsNullOrWhiteSpace(sanitized) ? "ASN" : sanitized;
         }
 
         private async void BtnCancelar_Click(object sender, RoutedEventArgs e)

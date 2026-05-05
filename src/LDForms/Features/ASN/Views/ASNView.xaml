@@ -26,6 +26,11 @@
                 BorderBrush="#E5E7EB"
                 BorderThickness="1">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="52"/>
@@ -115,24 +120,25 @@
                                            SelectAllTextOnLoad="False"
                                            SelectionConfirmed="LookupProyecto_SelectionConfirmed"/>
 
-                <CheckBox x:Name="chkVerSinConfirmar"
-                          Grid.Column="7"
-                          Content="Ver sin confirmar"
-                          IsChecked="{Binding VerSinConfirmar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          
-                          Checked="ChkVerSinConfirmar_Changed"
-                          Unchecked="ChkVerSinConfirmar_Changed"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Left"
-                          FontSize="11"
-                          Foreground="#374151"
-                          Cursor="Hand"/>
+                <StackPanel Grid.Column="7"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left">
+                    <CheckBox x:Name="chkVerSinConfirmar"
+                              Content="Ver sin confirmar"
+                              IsChecked="{Binding VerSinConfirmar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Checked="ChkVerSinConfirmar_Changed"
+                              Unchecked="ChkVerSinConfirmar_Changed"
+                              VerticalAlignment="Center"
+                              FontSize="11"
+                              Foreground="#374151"
+                              Cursor="Hand"/>
 
-               <Button x:Name="BtnActualizar"
-		            Grid.Column="9"
+                    <Button x:Name="BtnActualizar"
 		            Height="28"
 		            MinWidth="68"
 		            Padding="6,0"
+                    Margin="8,0,0,0"
 		            Click="BtnActualizar_Click"
 		            Background="#F3F4F6"
 		            Foreground="#374151"
@@ -160,13 +166,53 @@
                                FontSize="11"/>
 	            </StackPanel>
             </Button>
+                </StackPanel>
+
+                <Button x:Name="btnCancelar"
+	                Grid.Column="9"
+	                Height="28"
+	                MinWidth="72"
+	                Padding="6,0"
+	                Click="BtnCancelar_Click"
+	                Background="#F3F4F6"
+	                Foreground="#374151"
+	                BorderBrush="#D1D5DB"
+	                BorderThickness="1"
+	                Cursor="Hand">
+
+	                <Button.Resources>
+		                <Style TargetType="Border">
+			                <Setter Property="CornerRadius" Value="6"/>
+		                </Style>
+	                </Button.Resources>
+
+	                <StackPanel Orientation="Horizontal"
+		                VerticalAlignment="Center"
+		                HorizontalAlignment="Center">
+
+		                <TextBlock FontFamily="Segoe MDL2 Assets"
+		                   Text="&#xE711;"
+		                   Foreground="#DC2626"
+		                   Margin="0,0,4,0"
+		                   FontSize="12"/>
+
+		                <TextBlock Text="Cancelar"
+                                   FontSize="11"/>
+	                </StackPanel>
+                </Button>
                 
+
+                <WrapPanel Grid.Row="1"
+                           Grid.ColumnSpan="18"
+                           Margin="0,6,0,0"
+                           HorizontalAlignment="Left">
 
                 <Button x:Name="btnNuevo"
 	            Grid.Column="11"
 	            Height="28"
 	            MinWidth="68"
 	            Padding="6,0"
+                Margin="0,0,8,0"
 	            Click="BtnNuevoASN_Click"
 	            Background="#F3F4F6"
 	            Foreground="#374151"
@@ -200,6 +246,7 @@
                     Height="28"
                     MinWidth="60"
                     Padding="6,0"
+                    Margin="0,0,8,0"
                     Click="BtnEditar_Click"
                     Background="#F3F4F6"
                     Foreground="#374151"
@@ -234,6 +281,7 @@
 	                Height="28"
 	                MinWidth="106"
 	                Padding="6,0"
+                    Margin="0,0,8,0"
 	                Click="BtnConfirmarLlegada_Click"
 	                Background="#F3F4F6"
 	                Foreground="#374151"
@@ -262,38 +310,103 @@
 	                </StackPanel>
                 </Button>
 
-                <Button x:Name="btnCancelar"
-	                Grid.Column="17"
-	                Height="28"
-	                MinWidth="72"
-	                Padding="6,0"
-	                Click="BtnCancelar_Click"
-	                Background="#F3F4F6"
-	                Foreground="#374151"
-	                BorderBrush="#D1D5DB"
-	                BorderThickness="1"
-	                Cursor="Hand">
+                    <Button x:Name="btnExportarExcel"
+                            Height="28"
+                            MinWidth="112"
+                            Padding="8,0"
+                            Margin="0,0,8,0"
+                            Click="BtnExportarExcel_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
 
-	                <Button.Resources>
-		                <Style TargetType="Border">
-			                <Setter Property="CornerRadius" Value="6"/>
-		                </Style>
-	                </Button.Resources>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
 
-	                <StackPanel Orientation="Horizontal"
-		                VerticalAlignment="Center"
-		                HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE8A5;"
+                                       Foreground="#16A34A"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
 
-		                <TextBlock FontFamily="Segoe MDL2 Assets"
-		                   Text="&#xE711;"
-		                   Foreground="#DC2626"
-		                   Margin="0,0,4,0"
-		                   FontSize="12"/>
+                            <TextBlock Text="Exportar Excel"
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </Button>
 
-		                <TextBlock Text="Cancelar"
-                                   FontSize="11"/>
-	                </StackPanel>
-                </Button>
+                    <Button x:Name="btnImprimirEtiquetas"
+                            Height="28"
+                            MinWidth="132"
+                            Padding="8,0"
+                            Margin="0,0,8,0"
+                            Click="BtnImprimirEtiquetas_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE749;"
+                                       Foreground="#2563EB"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+
+                            <TextBlock Text="Imprimir etiquetas"
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="btnOrdenAlmacenamiento"
+                            Height="28"
+                            MinWidth="158"
+                            Padding="8,0"
+                            Margin="0,0,8,0"
+                            Click="BtnOrdenAlmacenamiento_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE8A5;"
+                                       Foreground="#2563EB"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+
+                            <TextBlock Text="Orden de almacenamiento"
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </Button>
+
+                </WrapPanel>
                
             </Grid>
         </Border>
@@ -506,8 +619,6 @@
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock x:Name="txtStatusRecepcion"
@@ -517,72 +628,6 @@
                                Foreground="#6B7280"
                                VerticalAlignment="Center"
                                Margin="0,0,0,0"/>
-
-                    <Button x:Name="btnImprimirEtiquetas"
-                            Grid.Column="1"
-                            Height="26"
-                            MinWidth="132"
-                            Padding="8,0"
-                            Margin="8,0,0,0"
-                            Click="BtnImprimirEtiquetas_Click"
-                            Background="#F3F4F6"
-                            Foreground="#374151"
-                            BorderBrush="#D1D5DB"
-                            BorderThickness="1"
-                            Cursor="Hand">
-
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="6"/>
-                            </Style>
-                        </Button.Resources>
-
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center">
-                            <TextBlock FontFamily="Segoe MDL2 Assets"
-                                       Text="&#xE749;"
-                                       Foreground="#2563EB"
-                                       Margin="0,0,4,0"
-                                       FontSize="12"/>
-
-                            <TextBlock Text="Imprimir etiquetas"
-                                       FontSize="11"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button x:Name="btnOrdenAlmacenamiento"
-                            Grid.Column="2"
-                            Height="26"
-                            MinWidth="158"
-                            Padding="8,0"
-                            Margin="8,0,0,0"
-                            Click="BtnOrdenAlmacenamiento_Click"
-                            Background="#F3F4F6"
-                            Foreground="#374151"
-                            BorderBrush="#D1D5DB"
-                            BorderThickness="1"
-                            Cursor="Hand">
-
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="6"/>
-                            </Style>
-                        </Button.Resources>
-
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center">
-                            <TextBlock FontFamily="Segoe MDL2 Assets"
-                                       Text="&#xE8A5;"
-                                       Foreground="#2563EB"
-                                       Margin="0,0,4,0"
-                                       FontSize="12"/>
-
-                            <TextBlock Text="Orden de almacenamiento"
-                                       FontSize="11"/>
-                        </StackPanel>
-                    </Button>
                 </Grid>
 
                 <Border Grid.Row="2"
