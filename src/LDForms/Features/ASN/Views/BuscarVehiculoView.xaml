@@ -137,7 +137,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Vehículos"
+                        <TextBlock Text="Registros de seguridad"
                                    VerticalAlignment="Center"
                                    Foreground="White"
                                    FontSize="16"
@@ -176,17 +176,18 @@
 
                         <TextBlock Grid.Column="0"
                                    Margin="0,0,14,0"
-                                   Text="Filtro de Horas:"
+                                   Text="Fecha de registro:"
                                    Style="{StaticResource LabelStyle}"/>
 
                         <ComboBox x:Name="cmbFiltroHoras"
                                   Grid.Column="1"
                                   Style="{StaticResource InputComboBoxStyle}"
                                   SelectionChanged="cmbFiltroHoras_SelectionChanged">
-                            <ComboBoxItem Content="Todas"/>
-                            <ComboBoxItem Content="Últimas 24 hrs"/>
-                            <ComboBoxItem Content="Últimos 7 días"/>
-                            <ComboBoxItem Content="Últimos 30 días"/>
+                            <ComboBoxItem Content="Ultimas 24 hrs"/>
+                            <ComboBoxItem Content="Ultimos 3 dias"/>
+                            <ComboBoxItem Content="Ultimos 5 dias"/>
+                            <ComboBoxItem Content="Ultimos 7 dias"/>
+                            <ComboBoxItem Content="Ultimos 30 dias"/>
                         </ComboBox>
                     </Grid>
 
@@ -223,14 +224,20 @@
                                                     Binding="{Binding CreatedAt, StringFormat=HH:mm:ss}"
                                                     Width="130"/>
                                 <DataGridTextColumn Header="Placas"
-                                                    Binding="{Binding Placas}"
+                                                    Binding="{Binding Placa}"
                                                     Width="130"/>
+                                <DataGridTextColumn Header="Linea"
+                                                    Binding="{Binding Linea}"
+                                                    Width="170"/>
                                 <DataGridTextColumn Header="Vehículo"
                                                     Binding="{Binding Nombre}"
                                                     Width="220"/>
                                 <DataGridTextColumn Header="Tipo"
-                                                    Binding="{Binding Tipo}"
-                                                    Width="160"/>
+                                                    Binding="{Binding TipoVehiculo}"
+                                                    Width="130"/>
+                                <DataGridTextColumn Header="Numero"
+                                                    Binding="{Binding Numero}"
+                                                    Width="110"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>

@@ -2,6 +2,7 @@ using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Features.Security.Commands;
+using LD.Application.Features.Security.Queries;
 using LD.Contracts.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +14,13 @@ namespace LD.Api.Controllers.Mobile;
 [Route("api/[controller]")]
 public class SecurityController : CommonController
 {
+    [HttpGet]
+    [Permission(PermissionKeys.Security_View)]
+    public async Task<IActionResult> GetByCreatedAt([FromQuery] SecurityRegistrationsByCreatedAtQuery query)
+    {
+        return ResultExtensions.ToActionResult(await Mediator.Send(query));
+    }
+
     [HttpPost]
     [Permission(PermissionKeys.Vehicle_Create)]
     public async Task<IActionResult> Register([FromBody] CreateSecurityRegistrationCommand command)

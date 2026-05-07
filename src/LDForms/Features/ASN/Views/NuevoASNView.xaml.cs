@@ -16,7 +16,7 @@ using LD.Contracts.InventaryStatus;
 using LD.Contracts.Product;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
-using LD.Contracts.Vehicle;
+using LD.Contracts.DTOs.Security;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model;
@@ -575,13 +575,15 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
-        private void ApplySelectedVehicle(VehicleDto vehicle)
+        private void ApplySelectedVehicle(SecurityRegistrationDto vehicle)
         {
-            txtTipoVehiculo.Text = vehicle.Tipo ?? string.Empty;
-            txtPlacasVehiculo.Text = vehicle.Placas ?? string.Empty;
+            txtLineaTransporte.Text = vehicle.Linea ?? string.Empty;
+            txtTipoVehiculo.Text = vehicle.TipoVehiculo ?? string.Empty;
+            txtChofer.Text = vehicle.Nombre ?? string.Empty;
+            txtPlacasVehiculo.Text = vehicle.Placa ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(txtLineaTransporte.Text))
-                txtLineaTransporte.Text = vehicle.Nombre ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(txtSelloTransporte.Text))
+                txtSelloTransporte.Text = vehicle.Numero ?? string.Empty;
         }
 
         private void BtnCrearAsn_Click(object sender, RoutedEventArgs e)
