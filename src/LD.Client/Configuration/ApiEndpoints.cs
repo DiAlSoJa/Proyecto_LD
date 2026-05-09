@@ -290,6 +290,15 @@ namespace LD.Forms.Configuration
         public string AvailableInventory_ChangeStatus => $"{_baseApi}/AvailableInventory/change-status";
         public string AvailableInventory_ChangeWarehouse => $"{_baseApi}/AvailableInventory/change-warehouse";
 
+        // ======================
+        // CYCLIC INVENTORY
+        // ======================
+
+        public string CyclicInventory_GetAll => $"{_baseApi}/CyclicInventory";
+        public string CyclicInventory_GetById => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}";
+        public string CyclicInventory_Create => $"{_baseApi}/CyclicInventory";
+        public string CyclicInventory_Update => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}";
+
 
 
         // ======================

@@ -67,6 +67,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<StandardLabel> StandardLabels { get; set; }
         public DbSet<StandarIdSequence> StandarIdSequences{ get; set; }
         public DbSet<AvailableInventory> AvailableInventories { get; set; }
+        public DbSet<CyclicInventory> CyclicInventories { get; set; }
+        public DbSet<CyclicInventoryDetail> CyclicInventoryDetails { get; set; }
 
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
@@ -344,6 +346,29 @@ namespace LD.Infrastructure.Persistence
                .WithMany()
                .HasForeignKey(x => x.StandardId)
                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CyclicInventory>(entity =>
+            {
+                entity.ToTable("CyclicInventories");
+                entity.HasMany(x => x.Details)
+                    .WithOne(x => x.CyclicInventory)
+                    .HasForeignKey(x => x.CyclicInventoryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.Warehouse)
+                    .WithMany()
+                    .HasForeignKey(x => x.WarehouseId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<CyclicInventoryDetail>(entity =>
+            {
+                entity.ToTable("CyclicInventoryDetails");
+                entity.HasOne(x => x.Location)
+                    .WithMany()
+                    .HasForeignKey(x => x.LocationId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
 
 
             builder.Entity<StorageType>().HasData(

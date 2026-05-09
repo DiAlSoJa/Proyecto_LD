@@ -23,20 +23,20 @@
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Standar ID" TextColor="#64748B" FontSize="14"/>
                     <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                        <Entry x:Name="EstandarIdEntry"  Keyboard="Numeric"  Placeholder="" TextColor="#0F172A"/>
+                        <Entry x:Name="EstandarIdEntry"  Keyboard="Numeric"  Placeholder="" TextColor="#0F172A" Text="{Binding EstandarId}"/>
                     </Border>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Rack:" TextColor="#64748B" FontSize="14"/>
                     <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                        <Entry x:Name="RackEntry"  Placeholder="" TextColor="#0F172A"/>
+                        <Entry x:Name="RackEntry"  Placeholder="" TextColor="#0F172A" Text="{Binding Rack}"/>
                     </Border>
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Posición:" TextColor="#64748B" FontSize="14"/>
                     <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                        <Entry x:Name="PosicionEntry" Keyboard="Numeric" Placeholder="" TextColor="#0F172A"/>
+                        <Entry x:Name="PosicionEntry" Keyboard="Numeric" Placeholder="" TextColor="#0F172A" Text="{Binding Posicion}"/>
                     </Border>
                 </VerticalStackLayout>
             </VerticalStackLayout>

@@ -22,7 +22,7 @@ public class AvailableInventoryController : CommonController
     }
 
     [HttpPost("change-location")]
-    [Permission(PermissionKeys.Inventory_View)]
+    [Permission(PermissionKeys.WarehouseStaff_LocationChange_Execute)]
     public async Task<IActionResult> ChangeLocation([FromBody] ChangeInventoryLocationRequest request)
     {
         var command = new ChangeInventoryLocationCommand

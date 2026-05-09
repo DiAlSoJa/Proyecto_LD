@@ -176,6 +176,7 @@ namespace LD.FormsX
             services.AddTransient<ASNView>();
             services.AddTransient<AuditarView>();
             services.AddTransient<InventarioCiclicoView>();
+            services.AddTransient<NuevoInventarioCiclicoView>();
             services.AddTransient<CheckListView>();
             services.AddTransient<ReportesView>();
             services.AddTransient<ControlPatioView>();

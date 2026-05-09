@@ -82,6 +82,8 @@ public static class PermissionKeys
 
     // CYCLE COUNT
     public const string CycleCount_View = "cycle-count.read";
+    public const string CycleCount_Create = "cycle-count.read";
+    public const string CycleCount_Update = "cycle-count.read";
 
     // REPORTS
     public const string Report_View = "reports.read";

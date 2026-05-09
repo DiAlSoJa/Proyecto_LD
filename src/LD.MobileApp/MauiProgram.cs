@@ -31,7 +31,7 @@ namespace MauiAppLogin
             {
 
                 //options.BaseUrl = "http://11.0.0.174:8050/api";
-                options.BaseUrl = "http://192.168.1.100:8050/api";
+                options.BaseUrl = "http://192.168.100.238:8050/api";
 
             });
 
@@ -69,6 +69,7 @@ namespace MauiAppLogin
             builder.Services.AddTransient<RegisterLicenseViewModel>();
             builder.Services.AddTransient<RegisterVehiculeViewModel>();
             builder.Services.AddTransient<SignatureDriverViewModel>();
+            builder.Services.AddTransient<ChangeLocationViewModel>();
 
             // shared state for the 3-step security registration flow
             builder.Services.AddSingleton<SecurityRegistrationContext>();

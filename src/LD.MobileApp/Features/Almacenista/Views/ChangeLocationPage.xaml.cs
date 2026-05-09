@@ -1,40 +1,34 @@
+using MauiAppLogin.ViewModels;
+
 namespace MauiAppLogin;
 
 public partial class ChangeLocationPage : ContentPage, IQueryAttributable
 {
-    public string textInformation { get; set; }
+    private readonly ChangeLocationViewModel _viewModel;
+
+    public string? TextInformation { get; set; }
+
+    public ChangeLocationPage(ChangeLocationViewModel viewModel)
+    {
+        InitializeComponent();
+        _viewModel = viewModel;
+        BindingContext = _viewModel;
+    }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.ContainsKey("TextInformation"))
-        {
-            textInformation = query["TextInformation"] as string;
-        }
-        //this.TextInformationLabel.Text = textInformation;
-
-
+        if (query.TryGetValue("TextInformation", out var textInformation))
+            TextInformation = textInformation as string;
     }
 
-    public ChangeLocationPage()
-	{
-		InitializeComponent();
-	}
-    private async void OnCancelarClicked(object sender, EventArgs e)
+    private void OnCancelarClicked(object sender, EventArgs e)
     {
-        // Limpia el preview (o navega atrás, tú decides)
         PreviewImage.Source = null;
-        // Si quieres regresar:
-        // await Navigation.PopAsync();
     }
 
     private async void OnSiguienteClicked(object sender, EventArgs e)
     {
-        // Aquí normalmente validarías y regresarías datos al registro de vehículo
-        // Por ahora: solo vuelve atrás
-        //await Navigation.PopAsync(); 
-       // await Shell.Current.GoToAsync("RegisterVehicule");
-
-
+        await _viewModel.OnSiguienteClicked();
     }
 
     private async void OnAtrasClicked(object sender, EventArgs e)
@@ -42,24 +36,18 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
         await Shell.Current.GoToAsync("..");
     }
 
-
     private async void OnCapturarClicked(object sender, EventArgs e)
     {
         var page = new Scan3FieldsPage();
         await Navigation.PushModalAsync(page);
 
-        // Al volver, ya trae los valores
         if (!string.IsNullOrWhiteSpace(page.EstandarId))
-            EstandarIdEntry.Text = page.EstandarId;
+            _viewModel.EstandarId = page.EstandarId;
 
         if (!string.IsNullOrWhiteSpace(page.Rack))
-            RackEntry.Text = page.Rack;
+            _viewModel.Rack = page.Rack;
 
         if (!string.IsNullOrWhiteSpace(page.Posicion))
-            PosicionEntry.Text = page.Posicion;
-
+            _viewModel.Posicion = page.Posicion;
     }
-
-
-
 }
