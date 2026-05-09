@@ -16,13 +16,16 @@ public class AvailableInventoryController : CommonController
 {
     [HttpGet]
     [Permission(PermissionKeys.Inventory_View)]
-    public async Task<IActionResult> GetAvailableInventory()
+    public async Task<IActionResult> GetAvailableInventory([FromQuery] int? standardId = null)
     {
-        return ResultExtensions.ToActionResult(await Mediator.Send(new AvailableInventoryQuery()));
+        return ResultExtensions.ToActionResult(await Mediator.Send(new AvailableInventoryQuery
+        {
+            StandardId = standardId
+        }));
     }
 
     [HttpPost("change-location")]
-    [Permission(PermissionKeys.Inventory_View)]
+    [Permission(PermissionKeys.WarehouseStaff_LocationChange_Execute)]
     public async Task<IActionResult> ChangeLocation([FromBody] ChangeInventoryLocationRequest request)
     {
         var command = new ChangeInventoryLocationCommand
@@ -45,6 +48,22 @@ public class AvailableInventoryController : CommonController
             StandardId = request.StandardId,
             StandardIds = request.StandardIds,
             StatusDestino = request.StatusDestino,
+            UserId = CurrentUserId
+        };
+
+        return ResultExtensions.ToActionResult(await Mediator.Send(command));
+    }
+
+    [HttpPost("change-warehouse")]
+    [Permission(PermissionKeys.Inventory_View)]
+    public async Task<IActionResult> ChangeWarehouse([FromBody] ChangeInventoryWarehouseRequest request)
+    {
+        var command = new ChangeInventoryWarehouseCommand
+        {
+            StandardId = request.StandardId,
+            StandardIds = request.StandardIds,
+            WarehouseId = request.WarehouseId,
+            UbicacionDestino = request.UbicacionDestino,
             UserId = CurrentUserId
         };
 

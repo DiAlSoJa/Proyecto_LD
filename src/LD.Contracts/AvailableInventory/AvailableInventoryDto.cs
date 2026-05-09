@@ -67,5 +67,6 @@ public class AvailableInventoryDto
 
     public string Cliente { get; set; } = string.Empty;
     public string Proyecto { get; set; } = string.Empty;
+    public string Almacen { get; set; } = string.Empty;
     public string Ubicacion { get; set; } = string.Empty;
 }

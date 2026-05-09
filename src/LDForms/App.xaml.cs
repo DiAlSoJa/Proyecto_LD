@@ -183,7 +183,7 @@ namespace LD.FormsX
             services.AddTransient<ResumenTabViewModel>();
             services.AddTransient<ResumenBateriasTabViewModel>();
             services.AddTransient<ConfiguracionPreguntasTabViewModel>();
-
+            services.AddTransient<NuevoInventarioCiclicoView>();
             services.AddTransient<CheckListView>();
             services.AddTransient<EquiposTab>();
             services.AddTransient<ResumenTab>();

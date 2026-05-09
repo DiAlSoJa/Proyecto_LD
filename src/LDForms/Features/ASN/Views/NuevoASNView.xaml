@@ -691,9 +691,53 @@
                                     <DataGridTextColumn Header="Descripción" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="180" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Estandar" Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
                                     <DataGridTextColumn Header="Máxima" Binding="{Binding MaximumQuantity, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
-                                    <DataGridTextColumn Header="SD" Binding="{Binding SD, UpdateSourceTrigger=PropertyChanged}" Width="60" IsReadOnly="True"/>
+                                    <DataGridTemplateColumn Header="SD" Width="60">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding SD}"
+                                                           VerticalAlignment="Center"
+                                                           Margin="2,0,0,0"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                        <DataGridTemplateColumn.CellEditingTemplate>
+                                            <DataTemplate>
+                                                <common:InlineLookupEditor ItemsSource="{Binding DataContext.SdLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                           DisplayMemberPath="Code"
+                                                                           SearchMemberPaths="Code,Description"
+                                                                           InitialText="{Binding SD, UpdateSourceTrigger=PropertyChanged}"
+                                                                           SelectedCode="{Binding SD, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                           RequireSelectionMatch="True"
+                                                                           MaxResults="12"
+                                                                           OpenDropDownOnLoad="True"
+                                                                           SelectAllTextOnLoad="False"
+                                                                           SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellEditingTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Recibida" Binding="{Binding ReceivedQuantity, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                                    <DataGridTextColumn Header="Status" Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged}" Width="45"/>
+                                    <DataGridTemplateColumn Header="Status" Width="75">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Status}"
+                                                           VerticalAlignment="Center"
+                                                           Margin="2,0,0,0"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                        <DataGridTemplateColumn.CellEditingTemplate>
+                                            <DataTemplate>
+                                                <common:InlineLookupEditor ItemsSource="{Binding DataContext.StatusLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                           DisplayMemberPath="Code"
+                                                                           SearchMemberPaths="Code,Description"
+                                                                           InitialText="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+                                                                           SelectedCode="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                           RequireSelectionMatch="True"
+                                                                           MaxResults="12"
+                                                                           OpenDropDownOnLoad="True"
+                                                                           SelectAllTextOnLoad="False"
+                                                                           SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellEditingTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTemplateColumn Header="Split" Width="SizeToHeader">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -731,7 +775,7 @@
                                                                            RequireSelectionMatch="True"
                                                                            MaxResults="12"
                                                                            OpenDropDownOnLoad="True"
-                                                                           SelectAllTextOnLoad="True"
+                                                                           SelectAllTextOnLoad="False"
                                                                            SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellEditingTemplate>

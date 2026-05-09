@@ -57,6 +57,9 @@ public class ConfirmAsnCommandHandler : IRequestHandler<ConfirmAsnCommand, Resul
             if (string.Equals(asn.Status, "Confirmado", StringComparison.OrdinalIgnoreCase))
                 return Result<string>.Failure("El ASN ya esta confirmado.", new());
 
+            if (string.Equals(asn.Status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase))
+                return Result<string>.Failure("El ASN esta cancelado y no se puede confirmar.", new());
+
             var asnDetails = await _asnDetailRepository.GetManyAsync() ?? new List<LD.Domain.Entities.AsnDetail>();
             var asnDetailIds = asnDetails
                 .Where(x => x.AsnId == request.AsnId)

@@ -73,6 +73,7 @@ public static class ConfigureServices
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IInventoryMovementRepository, InventoryMovementRepository>();
         services.AddScoped<IAvailableInventoryRepository, AvailableInventoryRepository>();
+        services.AddScoped<IInventarioCiclicoRepository, InventarioCiclicoRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IFamilyRepository, FamilyRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
@@ -81,6 +82,7 @@ public static class ConfigureServices
         services.AddScoped<IAsnDetailRepository, AsnDetailRepository>();
         services.AddScoped<IAsnReceiptDetailRepository, AsnReceiptRepository>();
         services.AddScoped<IAsnRepository, AsnRepository>();
+        services.AddScoped<ISecurityRegistrationRepository, SecurityRegistrationRepository>();
         services.AddScoped<ISystemFieldRepository, SystemFieldRepository>();
         services.AddScoped<ILookupRepository<ScanType>, ScanTypeLookupRepository>();
         services.AddScoped<ILookupRepository<ScanSaveType>, ScanSaveTypeLookupRepository>();

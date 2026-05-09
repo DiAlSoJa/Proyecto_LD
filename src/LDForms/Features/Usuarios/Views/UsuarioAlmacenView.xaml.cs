@@ -40,7 +40,11 @@ namespace LD.FormsX.Views.Usuarios
             ViewModel.SelectedDisponible = dgDisponibles.SelectedItem as WarehouseDto;
         }
 
-        private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = ViewModel.ResponseForm;
+            Close();
+        }
 
         private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

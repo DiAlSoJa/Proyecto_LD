@@ -74,6 +74,7 @@ namespace LD.Domain.Entities
         public string? DoNumber { get; set; }
         public string? DoPrefix { get; set; }
         public bool ReciveRequired { get; set; }
+        public bool ScanRequired { get; set; }
         // Navegación
         public Client? Client { get; set; }
         public Warehouse? Warehouse { get; set; }

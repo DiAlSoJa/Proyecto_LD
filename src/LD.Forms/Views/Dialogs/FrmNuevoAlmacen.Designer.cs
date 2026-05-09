@@ -77,7 +77,7 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(733, 404);
+            panel1.Size = new Size(733, 474);
             panel1.TabIndex = 0;
             // 
             // txtCapacity
@@ -215,7 +215,7 @@
             flowLayoutPanel1.Controls.Add(btnSave);
             flowLayoutPanel1.Dock = DockStyle.Bottom;
             flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel1.Location = new Point(0, 347);
+            flowLayoutPanel1.Location = new Point(0, 417);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(5);
             flowLayoutPanel1.Size = new Size(731, 55);
@@ -285,7 +285,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(733, 404);
+            ClientSize = new Size(733, 474);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmNuevoAlmacen";

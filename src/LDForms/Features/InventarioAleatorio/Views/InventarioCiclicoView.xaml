@@ -10,10 +10,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
-            <RowDefinition Height="1.4*"/>
-            <RowDefinition Height="12"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="12"/>
             <RowDefinition Height="1.1*"/>
             <RowDefinition Height="12"/>
             <RowDefinition Height="1.25*"/>
@@ -34,8 +30,13 @@
                     <ColumnDefinition Width="55"/>
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="18"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0"
@@ -66,8 +67,19 @@
                             BorderBrush="#D1D5DB"
                             Background="White"/>
 
+                <ComboBox x:Name="cmbEstatus"
+                          Grid.Column="6"
+                          Height="38"
+                          FontSize="13"
+                          SelectedIndex="0"
+                          BorderBrush="#D1D5DB"
+                          Background="White">
+                    <ComboBoxItem Content="Abierto"/>
+                    <ComboBoxItem Content="Terminado"/>
+                </ComboBox>
+
                <Button x:Name="BtnActualizar"
-		                Grid.Column="6"
+		                Grid.Column="8"
 		                Height="38"
 		                Padding="12,0"
 		                Click="BtnActualizar_Click"
@@ -96,126 +108,16 @@
 		                <TextBlock Text="Actualizar"/>
 	                </StackPanel>
                 </Button>
-            </Grid>
-        </Border>
 
-        <!-- Grid superior -->
-        <Border Grid.Row="2"
-                Background="White"
-                CornerRadius="12"
-                BorderBrush="#E5E7EB"
-                BorderThickness="1"
-                Padding="10">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="8"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock x:Name="txtStatusFechas"
-                           Grid.Row="0"
-                           Text="Fechas"
-                           FontSize="12"
-                           Foreground="#6B7280"
-                           Margin="4,0,0,8"/>
-
-                <Border Grid.Row="2"
-                        BorderBrush="#D9DEE7"
-                        BorderThickness="1"
-                        CornerRadius="4"
-                        Background="White">
-                    <Grid>
-                        <DataGrid x:Name="dgFechas"
-                                  AutoGenerateColumns="False"
-                                  SelectionMode="Single"
-                                  SelectionUnit="FullRow"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  IsReadOnly="True"
-                                  HeadersVisibility="Column"
-                                  GridLinesVisibility="Vertical"
-                                  RowHeight="28"
-                                  ColumnHeaderHeight="40"
-                                  FontSize="12"
-                                  VerticalGridLinesBrush="#D9D9D9"
-                                  HorizontalGridLinesBrush="#E4E8EE"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  SelectionChanged="dgFechas_SelectionChanged">
-
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="140"/>
-                                <DataGridTextColumn Header="Almacen" Binding="{Binding Almacen}" Width="140"/>
-                                <DataGridTextColumn Header="Turno" Binding="{Binding Turno}" Width="110"/>
-                            </DataGrid.Columns>
-
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#EEF1F5"/>
-                                    <Setter Property="Foreground" Value="#16263D"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="BorderBrush" Value="#D9DEE7"/>
-                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                    <Setter Property="Padding" Value="8,6"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                    <Setter Property="Padding" Value="8,4"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                    <Setter Property="Background" Value="White"/>
-                                </Style>
-                            </DataGrid.Resources>
-                        </DataGrid>
-
-                        <Border x:Name="LoadingOverlayFechas"
-                                Background="#80FFFFFF"
-                                Visibility="Collapsed">
-                            <StackPanel HorizontalAlignment="Center"
-                                        VerticalAlignment="Center">
-                                <ProgressBar IsIndeterminate="True"
-                                             Width="220"
-                                             Height="18"/>
-                                <TextBlock x:Name="TxtLoadingFechas"
-                                           Text="Cargando fechas..."
-                                           HorizontalAlignment="Center"
-                                           Margin="0,12,0,0"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           Foreground="#24344D"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                </Border>
-            </Grid>
-        </Border>
-
-        <!-- Botones medios -->
-        <Border Grid.Row="4"
-                Background="White"
-                CornerRadius="12"
-                Padding="12"
-                BorderBrush="#E5E7EB"
-                BorderThickness="1">
-            <StackPanel Orientation="Horizontal">
                <Button x:Name="btnNuevo"
-	                
+	                Grid.Column="10"
 	                Height="38"
 	                Padding="12,0"
-	                
 	                Background="#F3F4F6"
 	                Foreground="#374151"
 	                BorderBrush="#D1D5DB"
 	                BorderThickness="1"
+                    Click="BtnNuevoInventario_Click"
 	                Cursor="Hand">
 
 	                <Button.Resources>
@@ -239,7 +141,7 @@
                 </Button>
 
                 <Button x:Name="btnEditar"
-	                
+	                Grid.Column="12"
 	                Height="38"
 	                Padding="12,0"
 	                Click="BtnEditar_Click"
@@ -268,12 +170,11 @@
 		                <TextBlock Text="Editar"/>
 	                </StackPanel>
                 </Button>
-
-            </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Sección media -->
-        <Grid Grid.Row="6">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2.1*"/>
                 <ColumnDefinition Width="12"/>
@@ -326,7 +227,10 @@
                                       SelectionChanged="dgAuditores_SelectionChanged">
 
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="140"/>
+                                    <DataGridTextColumn Header="Almacen" Binding="{Binding Almacen}" Width="140"/>
                                     <DataGridTextColumn Header="Auditor" Binding="{Binding Auditor}" Width="300"/>
+                                    <DataGridTextColumn Header="Estatus" Binding="{Binding Estatus}" Width="130"/>
                                 </DataGrid.Columns>
 
                                 <DataGrid.Resources>
@@ -478,7 +382,7 @@
         </Grid>
 
         <!-- Grid inferior -->
-        <Border Grid.Row="8"
+        <Border Grid.Row="4"
                 Background="White"
                 CornerRadius="12"
                 BorderBrush="#E5E7EB"

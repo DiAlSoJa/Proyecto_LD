@@ -301,9 +301,15 @@
                                         </Border>
                                     </Grid>
 
+                                    <CheckBox Content="Escaneo obligatorio"
+                                              IsChecked="{Binding ScanRequired}"
+                                              Style="{StaticResource CheckStyle}"
+                                              Margin="0,16,0,0"/>
+
                                     <!-- ── Configuraciones de escaneo ── -->
                                     <Border BorderBrush="#E5E7EB" BorderThickness="1"
-                                            CornerRadius="8" Padding="14,10" Margin="0,16,0,0">
+                                            CornerRadius="8" Padding="14,10" Margin="0,8,0,0"
+                                            IsEnabled="{Binding ScanRequired}">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>

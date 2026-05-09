@@ -1063,6 +1063,137 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("Currencies");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventory", b =>
+                {
+                    b.Property<int>("CyclicInventoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CyclicInventoryId"));
+
+                    b.Property<string>("AuditorName")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("AuditorUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CyclicInventoryId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("CyclicInventories", (string)null);
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryDetail", b =>
+                {
+                    b.Property<int>("CyclicInventoryDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CyclicInventoryDetailId"));
+
+                    b.Property<bool>("Counted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CyclicInventoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FinalResult")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FirstCountResult")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PartNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("PhysicalQty")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Scanned")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecondCountResult")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("TheoreticalQty")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("CyclicInventoryDetailId");
+
+                    b.HasIndex("CyclicInventoryId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("CyclicInventoryDetails", (string)null);
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.Dimensioner", b =>
                 {
                     b.Property<string>("DimensionerId")
@@ -3280,6 +3411,9 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<bool>("ScanRequired")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("ShipmentNotificationEnabled")
                         .HasColumnType("bit");
 
@@ -4167,6 +4301,22 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "less_than",
                             ScanTypeName = "Es número menor a"
+                        },
+                        new
+                        {
+                            ScanTypeId = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "is_ld_label",
+                            ScanTypeName = "Es etiqueta LD"
+                        },
+                        new
+                        {
+                            ScanTypeId = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "is_part_number",
+                            ScanTypeName = "Es número de parte"
                         });
                 });
 
@@ -4410,7 +4560,6 @@ namespace LD.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PartNumber")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -4419,10 +4568,10 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("clientId")
+                    b.Property<int?>("clientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("projectId")
+                    b.Property<int?>("projectId")
                         .HasColumnType("int");
 
                     b.HasKey("StandarId");
@@ -4606,6 +4755,24 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Order = 5,
                             SystemFieldName = "qty"
+                        },
+                        new
+                        {
+                            SystemFieldId = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "StandardId",
+                            IsActive = true,
+                            Order = 6,
+                            SystemFieldName = "standard_id"
+                        },
+                        new
+                        {
+                            SystemFieldId = 7,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Número de Parte",
+                            IsActive = true,
+                            Order = 7,
+                            SystemFieldName = "partnumber"
                         });
                 });
 
@@ -5277,6 +5444,35 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventory", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryDetail", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.CyclicInventory", "CyclicInventory")
+                        .WithMany("Details")
+                        .HasForeignKey("CyclicInventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CyclicInventory");
+
+                    b.Navigation("Location");
+                });
             modelBuilder.Entity("LD.Domain.Entities.Equipment", b =>
                 {
                     b.HasOne("LD.Domain.Entities.EquipmentSupplier", "EquipmentSupplier")
@@ -5619,14 +5815,12 @@ namespace LD.Infrastructure.Migrations
                     b.HasOne("LD.Domain.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("clientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("LD.Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("projectId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Client");
 
@@ -5730,6 +5924,11 @@ namespace LD.Infrastructure.Migrations
             modelBuilder.Entity("LD.Domain.Entities.Cortina", b =>
                 {
                     b.Navigation("SecurityRegistrations");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventory", b =>
+                {
+                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Module", b =>

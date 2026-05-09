@@ -34,6 +34,7 @@ namespace LD.Forms.Views.Dialogs
 
             _warehouseService = warehouseService;
             _dialogService = dialogMessageService;
+            isActive.Checked = true;
         }
         public async void SetWarehouse(WarehouseDto? warehouse)
         {

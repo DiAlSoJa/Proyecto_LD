@@ -2,41 +2,43 @@ namespace MauiAppLogin;
 
 public partial class MovementPage : ContentPage
 {
-	public MovementPage()
-	{
-		InitializeComponent();
-	}
-    private async void OnCancelarClicked(object sender, EventArgs e)
+    public MovementPage()
     {
-        // Limpia el preview (o navega atrás, tú decides)
+        InitializeComponent();
+    }
+
+    private void OnCancelarClicked(object sender, EventArgs e)
+    {
         PreviewImage.Source = null;
-        // Si quieres regresar:
-        // await Navigation.PopAsync();
     }
 
     private async void OnSiguienteClicked(object sender, EventArgs e)
     {
-        // Aquí normalmente validarías y regresarías datos al registro de vehículo
-        // Por ahora: solo vuelve atrás
-        //await Navigation.PopAsync(); 
-         await Shell.Current.GoToAsync("MovementDetail");
+        var standardId = EstandarIdEntry.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(standardId))
+        {
+            await DisplayAlert("StandardId requerido", "Ingresa o captura un StandardId para continuar.", "OK");
+            return;
+        }
 
-
+        await Shell.Current.GoToAsync($"{nameof(MovementDetail)}?standardId={Uri.EscapeDataString(standardId)}");
     }
+
     private async void OnAtrasClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");
     }
+
     private async void OnCapturarClicked(object sender, EventArgs e)
     {
-        var page = new ScanStandarLD();
+        var page = new Scan3FieldsPage(requiresThreeFields: false);
         await Navigation.PushModalAsync(page);
 
-        // Al volver, ya trae los valores
+        var accepted = await page.WaitForResultAsync();
+        if (!accepted)
+            return;
+
         if (!string.IsNullOrWhiteSpace(page.EstandarId))
             EstandarIdEntry.Text = page.EstandarId;
-
     }
-
-
 }

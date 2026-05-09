@@ -44,6 +44,8 @@ namespace LD.Client
             services.AddScoped<PatioClientService>();
             services.AddScoped<InventoryMovementService>();
             services.AddScoped<AvailableInventoryService>();
+            services.AddScoped<CyclicInventoryService>();
+            services.AddScoped<StandardLabelService>();
 
             services.AddScoped<LookupService>();
             services.AddScoped<AsnService>();

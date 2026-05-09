@@ -123,6 +123,8 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
@@ -258,6 +260,39 @@
                                        FontSize="11"/>
                         </StackPanel>
                     </Button>
+
+                    <Button x:Name="btnCambiarAlmacen"
+                            Grid.Column="12"
+                            Height="28"
+                            MinWidth="112"
+                            Padding="6,0"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand"
+                            Click="BtnCambiarAlmacen_Click">
+
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE8B7;"
+                                       Foreground="#6366F1"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+
+                            <TextBlock Text="Cambio almacen"
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </Grid>
         </Border>
@@ -319,6 +354,7 @@
                                 <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="120"/>
                                 <DataGridTextColumn Header="Orden compra" Binding="{Binding PurchaseOrder}" Width="120"/>
                                 <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber}" Width="120"/>
+                                <DataGridTextColumn Header="Almacén" Binding="{Binding Almacen}" Width="140"/>
                                 <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
                                 <DataGridTextColumn Header="Status" Binding="{Binding StatusId}" Width="100"/>
                                 <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>

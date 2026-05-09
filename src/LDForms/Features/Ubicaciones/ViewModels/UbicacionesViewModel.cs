@@ -7,6 +7,7 @@ using LD.Contracts.Location;
 using LD.FormsX.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LD.FormsX.Features.Ubicaciones.ViewModels;
@@ -36,6 +37,9 @@ public partial class UbicacionesViewModel : ObservableObject
     [ObservableProperty]
     private bool canView;
 
+    [ObservableProperty]
+    private int selectedWarehouseId;
+
     public event Action<List<LocationDto>>? OnDataLoaded;
 
     public UbicacionesViewModel(LocationService locationService)
@@ -57,6 +61,14 @@ public partial class UbicacionesViewModel : ObservableObject
             IsLoading = true;
             LoadingMessage = "Trayendo ubicaciones...";
 
+            if (SelectedWarehouseId <= 0)
+            {
+                SelectedLocation = null;
+                StatusText = "Selecciona un almacén para consultar.";
+                OnDataLoaded?.Invoke([]);
+                return;
+            }
+
             var result = await _locationService.GetLocations();
 
             if (!result.IsSuccess)
@@ -65,9 +77,11 @@ public partial class UbicacionesViewModel : ObservableObject
                 return;
             }
 
+            var filteredData = result.Data?.Where(x => x.WarehouseId == SelectedWarehouseId).ToList() ?? [];
+
             SelectedLocation = null;
-            StatusText = $"Registros: {result.Data?.Count ?? 0}";
-            OnDataLoaded?.Invoke(result.Data ?? []);
+            StatusText = $"Registros: {filteredData.Count}";
+            OnDataLoaded?.Invoke(filteredData);
         }
         catch (Exception ex)
         {

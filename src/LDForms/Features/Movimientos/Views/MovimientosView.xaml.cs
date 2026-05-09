@@ -1,10 +1,13 @@
+using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.AvailableInventory;
 using LD.Contracts.DTOs;
 using LD.Contracts.InventoryMovement;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model.Lookup;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -18,8 +21,10 @@ namespace LD.FormsX.Movimientos
     public partial class MovimientosView : UserControl, INotifyPropertyChanged
     {
         private readonly InventoryMovementService _inventoryMovementService;
+        private readonly AvailableInventoryService _availableInventoryService;
         private readonly LookupService _lookupService;
         private readonly DataGridColumnFilterManager _columnFilterManager;
+        private List<UserProjectClientDto> _userProjectClients = new();
         private bool _loaded;
         private bool _loadingFilters;
         private int _selectedClientId;
@@ -28,9 +33,11 @@ namespace LD.FormsX.Movimientos
         private string _selectedProjectText = string.Empty;
 
         public ObservableCollection<InventoryMovementDto> Movements { get; } = new();
+        public ObservableCollection<AvailableInventoryDto> Inventory { get; } = new();
         public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
         public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
         public ICollectionView MovementsView { get; }
+        public ICollectionView InventoryView { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -86,16 +93,22 @@ namespace LD.FormsX.Movimientos
             }
         }
 
-        public MovimientosView(InventoryMovementService inventoryMovementService, LookupService lookupService)
+        public MovimientosView(
+            InventoryMovementService inventoryMovementService,
+            AvailableInventoryService availableInventoryService,
+            LookupService lookupService)
         {
             InitializeComponent();
             _inventoryMovementService = inventoryMovementService;
+            _availableInventoryService = availableInventoryService;
             _lookupService = lookupService;
             DataContext = this;
 
             MovementsView = CollectionViewSource.GetDefaultView(Movements);
             MovementsView.Filter = FilterMovement;
+            InventoryView = CollectionViewSource.GetDefaultView(Inventory);
             DataGridFilterStyler.Apply(dg);
+            DataGridFilterStyler.Apply(dgInventory);
             _columnFilterManager = new DataGridColumnFilterManager(dg);
             _columnFilterManager.ApplyTo(MovementsView);
         }
@@ -108,7 +121,6 @@ namespace LD.FormsX.Movimientos
             _loaded = true;
 
             await LoadClientsAsync();
-            await LoadMovementsAsync();
         }
 
         private async Task LoadClientsAsync()
@@ -116,17 +128,38 @@ namespace LD.FormsX.Movimientos
             try
             {
                 _loadingFilters = true;
-                var response = await _lookupService.GetClientLookup();
-
                 ClientLookupItems.Clear();
+                ProjectLookupItems.Clear();
+
+                if (string.IsNullOrWhiteSpace(UserData.Id))
+                {
+                    DialogHelper.ShowWarning("No se pudo identificar el usuario actual para cargar clientes y proyectos.");
+                    return;
+                }
+
+                var response = await _lookupService.GetProjectClientsByUserWarehouses(UserData.Id);
                 if (response.IsSuccess && response.Data != null)
                 {
-                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
+                    _userProjectClients = response.Data;
+                    var clientes = _userProjectClients
+                        .GroupBy(x => x.ClientId)
+                        .Select(group => new DropDownDto
+                        {
+                            Key = group.Key.ToString(),
+                            Value = group.First().Client
+                        })
+                        .OrderBy(x => x.Value);
+
+                    foreach (var item in clientes.Select(ToLookupItem))
                         ClientLookupItems.Add(item);
+                }
+                else
+                {
+                    _userProjectClients.Clear();
+                    DialogHelper.ShowWarning(response.Message ?? "No se pudieron cargar clientes y proyectos del usuario.");
                 }
 
                 ClearProjectSelection();
-                ProjectLookupItems.Clear();
             }
             catch (Exception ex)
             {
@@ -138,26 +171,31 @@ namespace LD.FormsX.Movimientos
             }
         }
 
-        private async Task LoadProjectsAsync()
+        private Task LoadProjectsAsync()
         {
             if (SelectedClientId <= 0)
             {
                 ProjectLookupItems.Clear();
                 ClearProjectSelection();
-                return;
+                return Task.CompletedTask;
             }
 
             try
             {
                 _loadingFilters = true;
-                var response = await _lookupService.GetProjectClientLookup(SelectedClientId);
-
                 ProjectLookupItems.Clear();
-                if (response.IsSuccess && response.Data != null)
-                {
-                    foreach (var item in response.Data.Select(ToLookupItem).OrderBy(x => x.Code))
-                        ProjectLookupItems.Add(item);
-                }
+                var proyectos = _userProjectClients
+                    .Where(x => x.ClientId == SelectedClientId)
+                    .GroupBy(x => x.ProjectId)
+                    .Select(group => new DropDownDto
+                    {
+                        Key = group.Key.ToString(),
+                        Value = group.First().Project
+                    })
+                    .OrderBy(x => x.Value);
+
+                foreach (var item in proyectos.Select(ToLookupItem))
+                    ProjectLookupItems.Add(item);
 
                 ClearProjectSelection();
             }
@@ -169,6 +207,8 @@ namespace LD.FormsX.Movimientos
             {
                 _loadingFilters = false;
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task LoadMovementsAsync()
@@ -178,7 +218,8 @@ namespace LD.FormsX.Movimientos
                 ShowLoader(true, "Cargando movimientos...");
                 txtStatus.Text = "Cargando movimientos...";
 
-                var response = await _inventoryMovementService.GetInventoryMovements();
+                var standardId = GetStandardIdFilter();
+                var response = await _inventoryMovementService.GetInventoryMovements(standardId);
                 if (!response.IsSuccess || response.Data == null)
                 {
                     Movements.Clear();
@@ -202,6 +243,59 @@ namespace LD.FormsX.Movimientos
             {
                 ShowLoader(false);
             }
+        }
+
+        private async Task LoadInventoryAsync()
+        {
+            Inventory.Clear();
+
+            var standardId = GetStandardIdFilter();
+            if (!standardId.HasValue)
+            {
+                txtInventoryStatus.Text = string.IsNullOrWhiteSpace(txtStandardId?.Text)
+                    ? "Ingresa un StandardId y presiona Buscar."
+                    : "El StandardId debe ser numérico.";
+                InventoryView.Refresh();
+                return;
+            }
+
+            try
+            {
+                ShowLoader(true, "Cargando inventario...");
+                txtInventoryStatus.Text = "Cargando inventario...";
+
+                var response = await _availableInventoryService.GetAvailableInventories(standardId);
+                if (!response.IsSuccess || response.Data == null)
+                {
+                    txtInventoryStatus.Text = response.Message ?? "No se pudo cargar el inventario.";
+                    InventoryView.Refresh();
+                    return;
+                }
+
+                foreach (var item in response.Data.OrderBy(x => x.Ubicacion).ThenBy(x => x.PartNumber))
+                    Inventory.Add(item);
+
+                InventoryView.Refresh();
+                txtInventoryStatus.Text = Inventory.Count > 0
+                    ? $"{Inventory.Count} registro(s) de inventario encontrados."
+                    : "No se encontró inventario para ese StandardId.";
+            }
+            catch (Exception ex)
+            {
+                Inventory.Clear();
+                txtInventoryStatus.Text = "Ocurrió un error al cargar el inventario.";
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                ShowLoader(false);
+            }
+        }
+
+        private async Task LoadSearchAsync()
+        {
+            await LoadInventoryAsync();
+            await LoadMovementsAsync();
         }
 
         private bool FilterMovement(object item)
@@ -274,7 +368,7 @@ namespace LD.FormsX.Movimientos
 
         private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
         {
-            await LoadMovementsAsync();
+            await LoadSearchAsync();
         }
 
         private async void LookupCliente_SelectionConfirmed(object sender, RoutedEventArgs e)
@@ -295,7 +389,7 @@ namespace LD.FormsX.Movimientos
             RefreshFilters();
         }
 
-        private void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
+        private async void LookupProyecto_SelectionConfirmed(object sender, RoutedEventArgs e)
         {
             if (!_loaded || _loadingFilters)
                 return;
@@ -309,13 +403,20 @@ namespace LD.FormsX.Movimientos
             SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
             SelectedProjectText = selectedProject.Value ?? string.Empty;
 
-            RefreshFilters();
+            await LoadSearchAsync();
         }
 
         private void Filtro_Changed(object sender, TextChangedEventArgs e)
         {
             if (!_loaded)
                 return;
+
+            if (sender == txtStandardId && string.IsNullOrWhiteSpace(txtStandardId.Text))
+            {
+                Inventory.Clear();
+                InventoryView.Refresh();
+                txtInventoryStatus.Text = "Ingresa un StandardId y presiona Buscar.";
+            }
 
             RefreshFilters();
         }
@@ -344,6 +445,15 @@ namespace LD.FormsX.Movimientos
             SelectedProjectId = 0;
             SelectedProjectText = string.Empty;
             lookupProyecto?.ClearSelection();
+        }
+
+        private int? GetStandardIdFilter()
+        {
+            var standardIdText = txtStandardId?.Text?.Trim();
+            if (int.TryParse(standardIdText, out var standardId) && standardId > 0)
+                return standardId;
+
+            return null;
         }
 
         private void OnPropertyChanged(string propertyName)

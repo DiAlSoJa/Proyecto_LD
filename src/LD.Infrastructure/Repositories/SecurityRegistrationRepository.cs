@@ -19,4 +19,12 @@ public class SecurityRegistrationRepository : Repository<SecurityRegistration>, 
         => await _context.SecurityRegistrations
             .Include(r => r.Cortina)
             .FirstOrDefaultAsync(r => r.SecurityRegistrationId == id);
+    public async Task<List<SecurityRegistration>> GetByCreatedAtRangeAsync(DateTime from, DateTime to)
+    {
+        return await _context.SecurityRegistrations
+            .AsNoTracking()
+            .Where(x => x.IsActive && x.CreatedAt >= from && x.CreatedAt <= to)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
+    }
 }

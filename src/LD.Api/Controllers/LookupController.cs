@@ -30,6 +30,10 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetLocationLookup()
             => ResultExtensions.ToActionResult(await Mediator.Send(new GetLocationLookupQuery()));
 
+        [HttpGet("location/{warehouseId}")]
+        public async Task<IActionResult> GetLocationByWarehouseLookup(int warehouseId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetLocationByWarehouseLookupQuery(warehouseId)));
+
         [HttpGet("client")]
         public async Task<IActionResult> GetClientLookup()
             => ResultExtensions.ToActionResult(await Mediator.Send(new GetClientLookupQuery()));
@@ -49,6 +53,10 @@ namespace LD.Api.Controllers
         [HttpGet("project/{clientId}")]        
         public async Task<IActionResult> GetProjectByClient(int clientId)
           => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjecClienttLookupQuery(clientId)));
+
+        [HttpGet("project-client/user/{userId}")]
+        public async Task<IActionResult> GetProjectClientsByUserWarehouses(string userId)
+          => ResultExtensions.ToActionResult(await Mediator.Send(new GetProjectClientsByUserWarehousesQuery(userId)));
 
         [HttpGet("category/{clientId}/{projectId}")]
         public async Task<IActionResult> GetCategoryByClientLookup(int clientId, int projectId)

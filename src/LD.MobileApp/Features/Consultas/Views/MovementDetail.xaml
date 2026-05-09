@@ -5,9 +5,8 @@
              Title="Movimientos"
              BackgroundColor="#0F2E4F">
 
-    <Grid RowDefinitions="Auto,*" Padding="16">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
 
-        <!-- Card superior: Etiqueta leída -->
         <Border Grid.Row="0"
                 BackgroundColor="#F6F8FC"
                 Stroke="#E2E8F0"
@@ -17,7 +16,7 @@
                 Margin="0,10,0,12">
 
             <VerticalStackLayout Spacing="8">
-                <Label Text="Etiqueta leída"
+                <Label Text="StandardId"
                        FontSize="14"
                        TextColor="#64748B"/>
 
@@ -25,88 +24,169 @@
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 16"
                         Padding="12,10">
-                    <Label x:Name="EtiquetaLabel"
-                           Text="2027020100001"
+                    <Label Text="{Binding StandardIdText}"
                            TextColor="White"
                            FontSize="18"
                            FontAttributes="Bold"
                            LineBreakMode="TailTruncation"/>
                 </Border>
 
-                <Label Text="Historial de movimientos"
-                       FontSize="13"
-                       TextColor="#64748B"/>
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#244A7C"
+                                   HorizontalOptions="Start"/>
             </VerticalStackLayout>
         </Border>
 
-        <!-- Card: Tabla -->
         <Border Grid.Row="1"
                 BackgroundColor="White"
                 Stroke="#E2E8F0"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 24"
-                Padding="0">
+                Padding="10"
+                Margin="0,0,0,8">
 
-            <Grid RowDefinitions="Auto,*">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Inventario por StandardId"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="#1E293B"/>
 
-                <!-- Encabezado tabla -->
-                <Grid Row="0"
-                      ColumnDefinitions="110,80,90,90,*,*"
-                      BackgroundColor="#F8FAFC"
-                      Padding="12,10"
-                      ColumnSpacing="10">
+                <Label Text="{Binding InventoryStatus}"
+                       FontSize="12"
+                       TextColor="#64748B"/>
 
-                    <Label Text="Fecha"   FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
-                    <Label Grid.Column="1" Text="Tipo"    FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
-                    <Label Grid.Column="2" Text="Número"  FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
-                    <Label Grid.Column="3" Text="Usuario" FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
-                    <Label Grid.Column="4" Text="Original" FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
-                    <Label Grid.Column="5" Text="Nuevo"    FontSize="12" FontAttributes="Bold" TextColor="#1E293B"/>
-                </Grid>
-
-               
-
-                <!-- Filas -->
-                <CollectionView Grid.Row="1"
-                                SelectionMode="None">
-
-                    <!-- Hardcode: usa una lista estática con x:Array -->
-                    <CollectionView.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <!-- solo para que compile sin VM; el contenido real lo ponemos en DataTemplate con AlternationIndex -->
-                            <x:String>row1</x:String>
-                            <x:String>row2</x:String>
-                            <x:String>row3</x:String>
-                            <x:String>row4</x:String>
-                        </x:Array>
-                    </CollectionView.ItemsSource>
-
+                <CollectionView ItemsSource="{Binding InventoryItems}"
+                                SelectionMode="None"
+                                HeightRequest="78">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <!-- Cada fila -->
-                            <Grid ColumnDefinitions="110,80,90,90,*,*"
-                                  Padding="12,10"
-                                  ColumnSpacing="10">
-
-                                <!-- NOTA: hardcode por fila (ejemplos). Si lo quieres dinámico, te lo conecto a una lista real. -->
-                                <Label Text="27 feb 09:12" FontSize="12" TextColor="#334155"/>
-                                <Label Grid.Column="1" Text="Alta"       FontSize="12" TextColor="#334155"/>
-                                <Label Grid.Column="2" Text="MOV-1041"   FontSize="12" TextColor="#334155"/>
-                                <Label Grid.Column="3" Text="JMPV"       FontSize="12" TextColor="#334155"/>
-                                <Label Grid.Column="4" Text="—"          FontSize="12" TextColor="#334155" LineBreakMode="TailTruncation"/>
-                                <Label Grid.Column="5" Text="AX025"      FontSize="12" TextColor="#334155" LineBreakMode="TailTruncation"/>
-
-                                <!-- Divider -->
-                                <BoxView Grid.ColumnSpan="6"
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                  ColumnDefinitions="*,*"
+                                  Padding="0,3"
+                                  ColumnSpacing="10"
+                                  RowSpacing="1">
+                                <Label Text="{Binding Ubicacion, StringFormat='Ubicacion: {0}'}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="#0F172A"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding Qty, StringFormat='Cantidad: {0}'}"
+                                       FontSize="13"
+                                       TextColor="#334155"
+                                       HorizontalTextAlignment="End"/>
+                                <Label Grid.Row="1"
+                                       Text="{Binding Cliente, StringFormat='Cliente: {0}'}"
+                                       FontSize="12"
+                                       TextColor="#334155"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding Proyecto, StringFormat='Proyecto: {0}'}"
+                                       FontSize="12"
+                                       TextColor="#334155"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Grid.Row="2"
+                                       Text="{Binding PartNumber, StringFormat='Parte: {0}'}"
+                                       FontSize="12"
+                                       TextColor="#334155"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Grid.Row="2"
+                                       Grid.Column="1"
+                                       Text="{Binding LotNumber, StringFormat='Lote: {0}'}"
+                                       FontSize="12"
+                                       TextColor="#334155"
+                                       LineBreakMode="TailTruncation"/>
+                                <BoxView Grid.Row="2"
+                                         Grid.ColumnSpan="2"
                                          HeightRequest="1"
                                          BackgroundColor="#EEF2F7"
                                          VerticalOptions="End"
-                                         Margin="0,10,0,-10"/>
+                                         Margin="0,8,0,-8"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+            </VerticalStackLayout>
+        </Border>
 
+        <Border Grid.Row="2"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 24"
+                Padding="14">
+
+            <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+                <Label Text="Historial de movimientos"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       TextColor="#1E293B"/>
+
+                <Label Grid.Row="1"
+                       Text="{Binding MovementStatus}"
+                       FontSize="12"
+                       TextColor="#64748B"/>
+
+                <CollectionView Grid.Row="2"
+                                ItemsSource="{Binding Movements}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid RowDefinitions="Auto,Auto"
+                                  ColumnDefinitions="104,*,78"
+                                  Padding="0,8"
+                                  ColumnSpacing="8"
+                                  RowSpacing="2">
+                                <VerticalStackLayout Spacing="1">
+                                    <Label Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy}'}"
+                                           FontSize="11"
+                                           TextColor="#64748B"/>
+                                    <Label Text="{Binding Hora, StringFormat='{0:hh\\:mm}'}"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#334155"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Spacing="1">
+                                    <Label Text="{Binding MovementType}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="#0F172A"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding UserName, StringFormat='Usuario: {0}'}"
+                                           FontSize="11"
+                                           TextColor="#475569"
+                                           LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
+
+                                <Label Grid.Column="2"
+                                       Text="{Binding Qty, StringFormat='Cant: {0}'}"
+                                       FontSize="11"
+                                       TextColor="#334155"
+                                       FontAttributes="Bold"
+                                       HorizontalTextAlignment="End"
+                                       VerticalTextAlignment="Center"/>
+
+                                <Label Grid.Row="1"
+                                       Grid.Column="1"
+                                       Grid.ColumnSpan="2"
+                                       Text="{Binding Ubicacion, StringFormat='Ubicacion: {0}'}"
+                                       FontSize="11"
+                                       TextColor="#64748B"
+                                       LineBreakMode="TailTruncation"/>
+
+                                <BoxView Grid.Row="1"
+                                         Grid.ColumnSpan="3"
+                                         HeightRequest="1"
+                                         BackgroundColor="#EEF2F7"
+                                         VerticalOptions="End"
+                                         Margin="0,8,0,-8"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </Grid>
         </Border>
 

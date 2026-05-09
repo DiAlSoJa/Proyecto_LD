@@ -122,6 +122,13 @@ namespace LD.Forms.Configuration
         public string Printer_Create => $"{_baseApi}/printer";
         public string Printer_Update => $"{_baseApi}/printer/{{id}}";
         public string Printer_Delete => $"{_baseApi}/printer/{{id}}";
+
+        // ======================
+        // STANDARD LABEL
+        // ======================
+
+        public string StandardLabel_Generate => $"{_baseApi}/StandardLabel/generate";
+        public string StandardLabel_GetByCode => $"{_baseApi}/StandardLabel/{{code}}";
         
 
         // ======================
@@ -205,6 +212,7 @@ namespace LD.Forms.Configuration
         // SECURITY / SEGURIDAD
         // ======================
 
+        public string Security_GetRegistrations => $"{_baseApi}/security";
         public string Security_Register        => $"{_baseApi}/security";
         public string Security_GetSinSalida    => $"{_baseApi}/security/sin-salida";
         public string Security_GetCortinas     => $"{_baseApi}/security/cortinas";
@@ -250,10 +258,12 @@ namespace LD.Forms.Configuration
         public string Lookup_Client => $"{_baseApi}/Lookup/client";
         public string Lookup_Project => $"{_baseApi}/Lookup/project";
         public string Lookup_ProjectClient => $"{_baseApi}/Lookup/project";
+        public string Lookup_ProjectClientByUserWarehouses => $"{_baseApi}/Lookup/project-client/user/{{userId}}";
         public string Lookup_SystemField => $"{_baseApi}/Lookup/systemfield";
 
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
+        public string Lookup_LocationWarehouse => $"{_baseApi}/Lookup/location";
         public string Lookup_Role => $"{_baseApi}/Lookup/role";
         public string Lookup_Category => $"{_baseApi}/Lookup/category";
         public string Lookup_Family => $"{_baseApi}/Lookup/family";
@@ -285,6 +295,16 @@ namespace LD.Forms.Configuration
         public string AvailableInventory_GetAll => $"{_baseApi}/AvailableInventory";
         public string AvailableInventory_ChangeLocation => $"{_baseApi}/AvailableInventory/change-location";
         public string AvailableInventory_ChangeStatus => $"{_baseApi}/AvailableInventory/change-status";
+        public string AvailableInventory_ChangeWarehouse => $"{_baseApi}/AvailableInventory/change-warehouse";
+
+        // ======================
+        // CYCLIC INVENTORY
+        // ======================
+
+        public string CyclicInventory_GetAll => $"{_baseApi}/CyclicInventory";
+        public string CyclicInventory_GetById => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}";
+        public string CyclicInventory_Create => $"{_baseApi}/CyclicInventory";
+        public string CyclicInventory_Update => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}";
 
 
 
@@ -329,6 +349,7 @@ namespace LD.Forms.Configuration
         public string Asn_Update => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Delete => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
+        public string Asn_Cancel => $"{_baseApi}/asn/{{asnId}}/cancel";
 
         public string AsnDetail_GetAll => $"{_baseApi}/asnDetail";
         public string AsnDetail_GetById => $"{_baseApi}/asnDetail/{{asnId}}";

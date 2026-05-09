@@ -68,6 +68,19 @@ namespace LD.Api.Controllers
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
 
+        [HttpPost("{asnId}/cancel")]
+        [Permission(PermissionKeys.Asn_Update)]
+        public async Task<IActionResult> CancelAsn(int asnId)
+        {
+            var command = new CancelAsnCommand
+            {
+                AsnId = asnId,
+                UserId = CurrentUserId
+            };
+
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
 
 
 

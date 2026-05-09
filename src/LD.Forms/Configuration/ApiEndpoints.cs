@@ -199,6 +199,7 @@ namespace LD.Forms.Configuration
         public string Lookup_GetAll => $"{_baseApi}/Lookup";
         public string Lookup_Warehouse => $"{_baseApi}/Lookup/warehouse";
         public string Lookup_Client => $"{_baseApi}/Lookup/client";
+        public string Lookup_ProjectClientByUserWarehouses => $"{_baseApi}/Lookup/project-client/user/{{userId}}";
 
         public string Lookup_Location => $"{_baseApi}/Lookup/location";
 
@@ -211,6 +212,7 @@ namespace LD.Forms.Configuration
         public string Asn_Create => $"{_baseApi}/asn";
         public string Asn_Update => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
+        public string Asn_Cancel => $"{_baseApi}/asn/{{asnId}}/cancel";
 
         // ======================
         // EQUIPMENT

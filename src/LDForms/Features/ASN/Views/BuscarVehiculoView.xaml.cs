@@ -1,5 +1,5 @@
 using LD.Client.Services;
-using LD.Contracts.Vehicle;
+using LD.Contracts.DTOs.Security;
 using LD.FormsX.Helpers;
 using System;
 using System.Collections.ObjectModel;
@@ -14,14 +14,14 @@ namespace LD.FormsX.Views.Dialogs
 {
     public partial class BuscarVehiculoView : Window, INotifyPropertyChanged
     {
-        private readonly VehicleService _vehicleService;
+        private readonly SecurityService _securityService;
         private readonly DataGridColumnFilterManager _columnFilterManager;
-        private string _statusMessage = "Cargando vehículos...";
+        private string _statusMessage = "Cargando registros de seguridad...";
 
-        public ObservableCollection<VehicleDto> Vehicles { get; } = new();
+        public ObservableCollection<SecurityRegistrationDto> Vehicles { get; } = new();
         public ICollectionView VehiclesView { get; }
 
-        public VehicleDto? SelectedVehicle => dgVehiculos.SelectedItem as VehicleDto;
+        public SecurityRegistrationDto? SelectedVehicle => dgVehiculos.SelectedItem as SecurityRegistrationDto;
 
         public string StatusMessage
         {
@@ -35,14 +35,16 @@ namespace LD.FormsX.Views.Dialogs
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public BuscarVehiculoView(VehicleService vehicleService)
+        public BuscarVehiculoView(SecurityService securityService)
         {
             InitializeComponent();
-            _vehicleService = vehicleService;
-            DataContext = this;
+            _securityService = securityService;
 
             VehiclesView = CollectionViewSource.GetDefaultView(Vehicles);
             VehiclesView.Filter = FilterVehicle;
+            dgVehiculos.ItemsSource = VehiclesView;
+            DataContext = this;
+
             DataGridFilterStyler.Apply(dgVehiculos);
             _columnFilterManager = new DataGridColumnFilterManager(dgVehiculos);
             _columnFilterManager.ApplyTo(VehiclesView);
@@ -50,7 +52,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            cmbFiltroHoras.SelectedIndex = 1;
+            cmbFiltroHoras.SelectedIndex = 0;
             await LoadVehiclesAsync();
         }
 
@@ -58,11 +60,14 @@ namespace LD.FormsX.Views.Dialogs
         {
             try
             {
-                var response = await _vehicleService.GetVehicles();
+                var (hours, days) = GetSelectedCreatedAtFilter();
+                var response = await _securityService.GetRegistrationsAsync(hours, days);
 
                 if (!response.IsSuccess || response.Data == null)
                 {
-                    StatusMessage = response.Message ?? "No se pudieron cargar los vehículos.";
+                    StatusMessage = response.ErrorMessage
+                        ?? response.Message
+                        ?? $"No se pudieron cargar los registros de seguridad. Codigo: {response.Code}";
                     return;
                 }
 
@@ -72,52 +77,50 @@ namespace LD.FormsX.Views.Dialogs
 
                 VehiclesView.Refresh();
                 StatusMessage = VehiclesView.Cast<object>().Any()
-                    ? $"{VehiclesView.Cast<object>().Count()} vehículo(s) disponibles."
-                    : "No se encontraron vehículos.";
+                    ? $"{VehiclesView.Cast<object>().Count()} registro(s) disponibles."
+                    : "No se encontraron registros de seguridad.";
             }
             catch (Exception ex)
             {
-                StatusMessage = "Ocurrió un error al cargar los vehículos.";
+                StatusMessage = "Ocurrio un error al cargar los registros de seguridad.";
                 DialogHelper.ShowError(ex.Message);
             }
         }
 
         private bool FilterVehicle(object item)
         {
-            if (item is not VehicleDto vehicle)
-                return false;
-
-            if (!MatchesHourFilter(vehicle))
+            if (item is not SecurityRegistrationDto vehicle)
                 return false;
 
             var searchText = txtBuscar?.Text?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(searchText))
                 return true;
 
-            return Contains(vehicle.Placas, searchText)
+            return Contains(vehicle.Placa, searchText)
                 || Contains(vehicle.Nombre, searchText)
-                || Contains(vehicle.Tipo, searchText)
-                || Contains(vehicle.NumeroVehiculo, searchText);
+                || Contains(vehicle.TipoVehiculo, searchText)
+                || Contains(vehicle.Linea, searchText)
+                || Contains(vehicle.Numero, searchText)
+                || Contains(vehicle.Licencia, searchText);
         }
 
-        private bool MatchesHourFilter(VehicleDto vehicle)
+        private (int? Hours, int? Days) GetSelectedCreatedAtFilter()
         {
-            if (cmbFiltroHoras?.SelectedIndex <= 0)
-                return true;
+            var selectedText = (cmbFiltroHoras?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
 
-            if (vehicle.CreatedAt == default)
-                return true;
+            if (selectedText.Contains("30", StringComparison.OrdinalIgnoreCase))
+                return (null, 30);
 
-            DateTime now = DateTime.Now;
-            DateTime limit = cmbFiltroHoras.SelectedIndex switch
-            {
-                1 => now.AddHours(-24),
-                2 => now.AddDays(-7),
-                3 => now.AddDays(-30),
-                _ => DateTime.MinValue
-            };
+            if (selectedText.Contains("5", StringComparison.OrdinalIgnoreCase))
+                return (null, 5);
 
-            return vehicle.CreatedAt >= limit;
+            if (selectedText.Contains("7", StringComparison.OrdinalIgnoreCase))
+                return (null, 7);
+
+            if (selectedText.Contains("3", StringComparison.OrdinalIgnoreCase))
+                return (null, 3);
+
+            return (24, null);
         }
 
         private static bool Contains(string? source, string searchText)
@@ -132,20 +135,19 @@ namespace LD.FormsX.Views.Dialogs
             UpdateStatusMessage();
         }
 
-        private void cmbFiltroHoras_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void cmbFiltroHoras_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded)
                 return;
 
-            VehiclesView.Refresh();
-            UpdateStatusMessage();
+            await LoadVehiclesAsync();
         }
 
         private void UpdateStatusMessage()
         {
             StatusMessage = VehiclesView.Cast<object>().Any()
-                ? $"{VehiclesView.Cast<object>().Count()} vehículo(s) encontrados."
-                : "No se encontraron vehículos con ese filtro.";
+                ? $"{VehiclesView.Cast<object>().Count()} registro(s) encontrados."
+                : "No se encontraron registros con ese filtro.";
         }
 
         private void BtnSeleccionar_Click(object sender, RoutedEventArgs e)
@@ -172,7 +174,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             if (SelectedVehicle == null)
             {
-                DialogHelper.ShowWarning("Selecciona un vehículo.");
+                DialogHelper.ShowWarning("Selecciona un registro de seguridad.");
                 return;
             }
 

@@ -15,6 +15,13 @@ namespace LD.Api.Controllers.Mobile;
 [Route("api/[controller]")]
 public class SecurityController : CommonController
 {
+    [HttpGet]
+    [Permission(PermissionKeys.Security_View)]
+    public async Task<IActionResult> GetByCreatedAt([FromQuery] SecurityRegistrationsByCreatedAtQuery query)
+    {
+        return ResultExtensions.ToActionResult(await Mediator.Send(query));
+    }
+
     [HttpPost]
     [Permission(PermissionKeys.Vehicle_Create)]
     public async Task<IActionResult> Register([FromBody] CreateSecurityRegistrationCommand command)

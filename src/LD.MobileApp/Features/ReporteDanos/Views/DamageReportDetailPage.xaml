@@ -23,47 +23,51 @@
                        StrokeShape="RoundRectangle 16"
                        Padding="12,8">               
                     <Label x:Name="HintLabel"
-                          Text="Estandar ID: 20260201000001"
+                          Text="{Binding StandardIdText}"
                           TextColor="White"
                           FontSize="15"/>
                 </Border>
 
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#244A7C"
+                                   HorizontalOptions="Start"/>
 
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Número de Parte: LX522250 -S2DS22DS2" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding PartNumberText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Ubicación: A00253" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding UbicacionText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Status: A" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding StatusText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Cantidad Recibida: 52" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding CantidadRecibidaText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Almacén: B1" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding AlmacenText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Proyecto: JABIL" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding ProyectoText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Cliente: JABIL" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding ClienteText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Descripción: SP-1-0225-2201" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding DescripcionText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="ASN: ASN5522255" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding AsnText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Fecha de Recepción: 01-01-2026" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding FechaRecepcionText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Disponible: 20" TextColor="#64748B" FontSize="14"/>                    
+                    <Label Text="{Binding DisponibleText}" TextColor="#64748B" FontSize="14"/>                    
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Estado: OK" TextColor="#64748B" FontSize="14"/>
+                    <Label Text="{Binding EstadoText}" TextColor="#64748B" FontSize="14"/>
                 </VerticalStackLayout>
 
                 <Grid ColumnDefinitions="120,*"

@@ -10,7 +10,8 @@ namespace LD.Application.Common.Guards;
 public static class AsnModificationGuard
 {
     private const string ConfirmedStatus = "Confirmado";
-    private const string ConfirmedMessage = "El ASN esta confirmado y no permite agregar, editar ni eliminar registros.";
+    private const string CancelledStatus = "Cancelado";
+    private const string TerminalStatusMessage = "El ASN esta confirmado o cancelado y no permite agregar, editar ni eliminar registros.";
 
     public static async Task<Result<string>?> EnsureAsnIsEditableAsync(
         int asnId,
@@ -20,8 +21,8 @@ public static class AsnModificationGuard
         if (asn is null)
             return Result<string>.Failure("No existe el ASN", new List<string> { "No existe el ASN" }, 404);
 
-        return IsConfirmed(asn.Status)
-            ? Result<string>.Failure(ConfirmedMessage, new List<string> { ConfirmedMessage })
+        return IsTerminalStatus(asn.Status)
+            ? Result<string>.Failure(TerminalStatusMessage, new List<string> { TerminalStatusMessage })
             : null;
     }
 
@@ -71,6 +72,7 @@ public static class AsnModificationGuard
         return null;
     }
 
-    private static bool IsConfirmed(string? status) =>
-        string.Equals(status, ConfirmedStatus, StringComparison.OrdinalIgnoreCase);
+    private static bool IsTerminalStatus(string? status) =>
+        string.Equals(status?.Trim(), ConfirmedStatus, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(status?.Trim(), CancelledStatus, StringComparison.OrdinalIgnoreCase);
 }

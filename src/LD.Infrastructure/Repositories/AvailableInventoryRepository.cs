@@ -46,15 +46,26 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
         }
     }
 
-    public async Task<List<AvailableInventory>> GetAllWithRelationsAsync()
+    public async Task<List<AvailableInventory>> GetAllWithRelationsAsync(int? standardId = null)
     {
-        return await _context.AvailableInventories
+        IQueryable<AvailableInventory> query = _context.AvailableInventories
             .AsNoTracking()
             .Include(x => x.Product)
             .Include(x => x.Client)
             .Include(x => x.Project)
             .Include(x => x.Location)
-            .Include(x => x.StandardLabel)
+                .ThenInclude(x => x!.Warehouse)
+            .Include(x => x.StandardLabel);
+
+        if (standardId.HasValue)
+        {
+            var standardIdText = standardId.Value.ToString();
+            query = query.Where(x =>
+                x.StandardId == standardId.Value ||
+                (x.StandardLabel != null && x.StandardLabel.StandarIdStr == standardIdText));
+        }
+
+        return await query
             .ToListAsync();
     }
 
@@ -66,6 +77,7 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
             .Include(x => x.Client)
             .Include(x => x.Project)
             .Include(x => x.Location)
+                .ThenInclude(x => x!.Warehouse)
             .Include(x => x.StandardLabel)
             .FirstOrDefaultAsync(x => x.AvailableInventoryId == id);
     }
@@ -78,6 +90,7 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
             .Include(x => x.Client)
             .Include(x => x.Project)
             .Include(x => x.Location)
+                .ThenInclude(x => x!.Warehouse)
             .Include(x => x.StandardLabel)
             .FirstOrDefaultAsync(x => x.AvailableInventoryId.ToString() == id);
     }

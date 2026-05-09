@@ -69,6 +69,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<StandardLabel> StandardLabels { get; set; }
         public DbSet<StandarIdSequence> StandarIdSequences{ get; set; }
         public DbSet<AvailableInventory> AvailableInventories { get; set; }
+        public DbSet<CyclicInventory> CyclicInventories { get; set; }
+        public DbSet<CyclicInventoryDetail> CyclicInventoryDetails { get; set; }
 
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
@@ -314,11 +316,19 @@ namespace LD.Infrastructure.Persistence
                 entity.Property(e => e.StandarIdStr)
                 .HasMaxLength(30)
                 .IsRequired();
+                entity.Property(e => e.PartNumber)
+                .HasMaxLength(100);
                 entity.HasIndex(e => e.StandarIdStr).IsUnique();
+                entity.HasOne(e => e.Client)
+                .WithMany()
+                .HasForeignKey(e => e.clientId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
                 entity.HasOne(e => e.Project)
                 .WithMany()
                 .HasForeignKey(e => e.projectId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
 
             });
             builder.Entity<StandarIdSequence>(entity =>
@@ -344,6 +354,29 @@ namespace LD.Infrastructure.Persistence
                .WithMany()
                .HasForeignKey(x => x.StandardId)
                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CyclicInventory>(entity =>
+            {
+                entity.ToTable("CyclicInventories");
+                entity.HasMany(x => x.Details)
+                    .WithOne(x => x.CyclicInventory)
+                    .HasForeignKey(x => x.CyclicInventoryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.Warehouse)
+                    .WithMany()
+                    .HasForeignKey(x => x.WarehouseId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<CyclicInventoryDetail>(entity =>
+            {
+                entity.ToTable("CyclicInventoryDetails");
+                entity.HasOne(x => x.Location)
+                    .WithMany()
+                    .HasForeignKey(x => x.LocationId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
 
 
             // ── Checklist Feature ──────────────────────────────────────────────────
@@ -638,14 +671,18 @@ namespace LD.Infrastructure.Persistence
                 new SystemField { SystemFieldId = 2, SystemFieldName = "customer_reference", DisplayName = "Referencia del cliente", Order = 2 },
                 new SystemField { SystemFieldId = 3, SystemFieldName = "purchase_order", DisplayName = "Orden de compra", Order = 3 },
                 new SystemField { SystemFieldId = 4, SystemFieldName = "customs_declaration", DisplayName = "Orden de pedimento", Order = 4 },
-                new SystemField { SystemFieldId = 5, SystemFieldName = "qty", DisplayName = "Cantidad", Order = 5 }
+                new SystemField { SystemFieldId = 5, SystemFieldName = "qty", DisplayName = "Cantidad", Order = 5 },
+                new SystemField { SystemFieldId = 6, SystemFieldName = "standard_id", DisplayName = "StandardId", Order = 6 },
+                new SystemField { SystemFieldId = 7, SystemFieldName = "partnumber", DisplayName = "Número de Parte", Order = 7 }
             );
 
             builder.Entity<ScanType>().HasData(
                 new ScanType { ScanTypeId = 1, ScanTypeName = "Ninguno", Key = "none" },
                 new ScanType { ScanTypeId = 2, ScanTypeName = "Empieza con", Key = "starts_with" },
                 new ScanType { ScanTypeId = 3, ScanTypeName = "Cantidad de dígitos", Key = "length" },
-                new ScanType { ScanTypeId = 4, ScanTypeName = "Es número menor a", Key = "less_than" }
+                new ScanType { ScanTypeId = 4, ScanTypeName = "Es número menor a", Key = "less_than" },
+                new ScanType { ScanTypeId = 5, ScanTypeName = "Es etiqueta LD", Key = "is_ld_label" },  
+                new ScanType { ScanTypeId = 6, ScanTypeName = "Es número de parte", Key = "is_part_number" }
             );
 
             builder.Entity<ScanSaveType>().HasData(

@@ -353,6 +353,15 @@ namespace LDForms
 
             var menu = new ContextMenu();
 
+            if (key == "Impresion")
+            {
+                var printItem = new MenuItem { Header = StandardLabelPrintOptionsDialog.StandardIdOption };
+                printItem.Click += async (_, __) => await ImprimirEtiquetasStandardIdAsync();
+                menu.Items.Add(printItem);
+                menu.IsOpen = true;
+                return;
+            }
+
             var tabItem = new MenuItem { Header = "Abrir en pestaña" };
             tabItem.Click += (_, __) => AbrirModuloEnTab(key);
 
@@ -365,12 +374,69 @@ namespace LDForms
             menu.IsOpen = true;
         }
 
-        private void DashboardTile_Click(object sender, RoutedEventArgs e)
+        private async void DashboardTile_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not Button btn || btn.Tag is not string key)
                 return;
 
+            if (key == "Impresion")
+            {
+                await ImprimirEtiquetasStandardIdAsync();
+                return;
+            }
+
             AbrirModuloEnTab(key);
+        }
+
+        private async Task ImprimirEtiquetasStandardIdAsync()
+        {
+            var option = ShowPrintOptionDialog();
+            if (option != StandardLabelPrintOptionsDialog.StandardIdOption)
+                return;
+
+            var quantity = ShowQuantityDialog();
+            if (!quantity.HasValue)
+                return;
+
+            try
+            {
+                var service = _serviceProvider.GetRequiredService<StandardLabelService>();
+                var response = await service.GenerateStandardIds(quantity.Value);
+
+                if (response.IsFailure || response.Data == null || response.Data.Count == 0)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudieron generar los StandardId.");
+                    return;
+                }
+
+                StandardIdLabelPrinter.PrintLabels(response.Data);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private string? ShowPrintOptionDialog()
+        {
+            var dialog = new StandardLabelPrintOptionsDialog
+            {
+                Owner = this
+            };
+
+            return dialog.ShowDialog() == true
+                ? dialog.SelectedOption
+                : null;
+        }
+
+        private int? ShowQuantityDialog()
+        {
+            var dialog = new StandardLabelQuantityDialog
+            {
+                Owner = this
+            };
+
+            return dialog.ShowDialog() == true ? dialog.Quantity : null;
         }
 
 

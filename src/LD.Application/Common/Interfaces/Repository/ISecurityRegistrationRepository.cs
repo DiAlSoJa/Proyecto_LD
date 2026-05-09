@@ -4,6 +4,10 @@ namespace LD.Application.Common.Interfaces.Repository;
 
 public interface ISecurityRegistrationRepository : IRepository<SecurityRegistration>
 {
+
     Task<List<SecurityRegistration>> GetManyWithCortinaAsync();
     Task<SecurityRegistration?> GetByIdWithCortinaAsync(int id);
+
+    Task<List<SecurityRegistration>> GetByCreatedAtRangeAsync(DateTime from, DateTime to);
+
 }
