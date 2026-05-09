@@ -39,21 +39,21 @@
                 <!-- Campos -->
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
 
-                    <Border Stroke="#E2E8F0" Grid.Column="0" Grid.ColumnSpan="2" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                    <Border x:Name="EstandarIdBorder" Stroke="#E2E8F0" Grid.Column="0" Grid.ColumnSpan="2" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Estandar ID" TextColor="#64748B" FontSize="12"/>
                             <Label x:Name="EstandarIdLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
                         </VerticalStackLayout>
                     </Border>
 
-                    <Border  Grid.Row="2"  Grid.Column="1" Grid.ColumnSpan="1" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                    <Border x:Name="RackBorder" Grid.Row="1" Grid.Column="0" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Rack" TextColor="#64748B" FontSize="12"/>
                             <Label x:Name="RackLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
                         </VerticalStackLayout>
                     </Border>
 
-                    <Border Grid.Row="2" Grid.ColumnSpan="1"
+                    <Border x:Name="PosicionBorder" Grid.Row="1" Grid.Column="1"
                             Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
                             BackgroundColor="White" Padding="12,8">
                         <VerticalStackLayout Spacing="4">
@@ -89,9 +89,10 @@
         </Grid>
 
         <!-- Botones -->
-        <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="10" Margin="0,12,0,0">
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,12,0,0">
 
             <Button Text="Limpiar"
+                    x:Name="ClearButton"
                     Clicked="OnClearClicked"
                     BackgroundColor="#E5E7EB"
                     TextColor="#1E293B"
@@ -100,15 +101,7 @@
                     FontAttributes="Bold"/>
 
             <Button Grid.Column="1"
-                    Text="Releer"
-                    Clicked="OnRescanClicked"
-                    BackgroundColor="#E5E7EB"
-                    TextColor="#1E293B"
-                    CornerRadius="18"
-                    HeightRequest="54"
-                    FontAttributes="Bold"/>
-
-            <Button Grid.Column="2"
+                    x:Name="AcceptButton"
                     Text="Aceptar"
                     Clicked="OnAcceptClicked"
                     BackgroundColor="#244A7C"
@@ -117,6 +110,28 @@
                     HeightRequest="54"
                     FontAttributes="Bold"/>
         </Grid>
+
+        <Border x:Name="TransferOverlay"
+                Grid.RowSpan="3"
+                BackgroundColor="#AAFFFFFF"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 18"
+                IsVisible="False">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="12">
+                <ActivityIndicator x:Name="TransferActivity"
+                                   IsRunning="False"
+                                   Color="#244A7C"
+                                   WidthRequest="42"
+                                   HeightRequest="42"/>
+                <Label Text="Transfiriendo ubicacion..."
+                       HorizontalOptions="Center"
+                       TextColor="#244A7C"
+                       FontAttributes="Bold"
+                       FontSize="16"/>
+            </VerticalStackLayout>
+        </Border>
 
     </Grid>
 </ContentPage>

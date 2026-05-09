@@ -135,8 +135,36 @@
           BackgroundColor="#244A7C"
           TextColor="White"
           FontAttributes="Bold"
-          FontSize="18"/>
+          FontSize="18">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding IsBusy}"
+                                 Value="True">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
         </Grid>
+
+        <Border Grid.RowSpan="3"
+                BackgroundColor="#AAFFFFFF"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 18"
+                IsVisible="{Binding IsBusy}">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="12">
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   Color="#244A7C"
+                                   WidthRequest="42"
+                                   HeightRequest="42"/>
+                <Label Text="Transfiriendo ubicacion..."
+                       HorizontalOptions="Center"
+                       TextColor="#244A7C"
+                       FontAttributes="Bold"
+                       FontSize="16"/>
+            </VerticalStackLayout>
+        </Border>
 
     </Grid>
 </ContentPage>

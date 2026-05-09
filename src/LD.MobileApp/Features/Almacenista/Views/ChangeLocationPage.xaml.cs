@@ -41,6 +41,10 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
         var page = new Scan3FieldsPage();
         await Navigation.PushModalAsync(page);
 
+        var accepted = await page.WaitForResultAsync();
+        if (!accepted)
+            return;
+
         if (!string.IsNullOrWhiteSpace(page.EstandarId))
             _viewModel.EstandarId = page.EstandarId;
 
