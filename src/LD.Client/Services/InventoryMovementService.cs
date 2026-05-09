@@ -15,9 +15,13 @@ public class InventoryMovementService
         _apiEndpoints = apiEndpoints;
     }
 
-    public async Task<ApiResponseDto<List<InventoryMovementDto>>> GetInventoryMovements()
+    public async Task<ApiResponseDto<List<InventoryMovementDto>>> GetInventoryMovements(int? standardId = null)
     {
+        var endpoint = _apiEndpoints.InventoryMovement_GetAll;
+        if (standardId.HasValue)
+            endpoint += $"?standardId={standardId.Value}";
+
         return await _api.GetAsync<ApiResponseDto<List<InventoryMovementDto>>>(
-            _apiEndpoints.InventoryMovement_GetAll);
+            endpoint);
     }
 }

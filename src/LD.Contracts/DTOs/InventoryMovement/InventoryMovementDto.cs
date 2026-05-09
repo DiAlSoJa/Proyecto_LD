@@ -33,6 +33,9 @@ namespace LD.Contracts.InventoryMovement
         [DisplayName("Usuario")]
         public string UserId { get; set; } = string.Empty;
 
+        [DisplayName("Nombre de Usuario")]
+        public string UserName { get; set; } = string.Empty;
+
         [DisplayName("Lote")]
         public string LotNumber { get; set; } = string.Empty;
 

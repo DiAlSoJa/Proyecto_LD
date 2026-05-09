@@ -21,6 +21,7 @@
             <VerticalStackLayout Spacing="10">
 
                 <Label Text="Escaneo de ubicación"
+                       x:Name="ScreenTitleLabel"
                        FontSize="18"
                        FontAttributes="Bold"
                        TextColor="#1E293B"/>
@@ -126,6 +127,7 @@
                                    WidthRequest="42"
                                    HeightRequest="42"/>
                 <Label Text="Transfiriendo ubicacion..."
+                       x:Name="TransferMessageLabel"
                        HorizontalOptions="Center"
                        TextColor="#244A7C"
                        FontAttributes="Bold"

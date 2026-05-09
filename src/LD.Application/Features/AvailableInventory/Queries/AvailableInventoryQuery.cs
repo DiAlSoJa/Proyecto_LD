@@ -8,6 +8,7 @@ namespace LD.Application.Features.AvailableInventories.Queries;
 
 public class AvailableInventoryQuery : IRequest<Result<List<AvailableInventoryDto>?>>
 {
+    public int? StandardId { get; set; }
 }
 
 public class AvailableInventoryQueryHandler : IRequestHandler<AvailableInventoryQuery, Result<List<AvailableInventoryDto>?>>
@@ -23,7 +24,7 @@ public class AvailableInventoryQueryHandler : IRequestHandler<AvailableInventory
 
     public async Task<Result<List<AvailableInventoryDto>?>> Handle(AvailableInventoryQuery request, CancellationToken cancellationToken)
     {
-        var availableInventories = await _availableInventoryRepository.GetAllWithRelationsAsync();
+        var availableInventories = await _availableInventoryRepository.GetAllWithRelationsAsync(request.StandardId);
         var availableInventoryDtos = _mapper.Map<List<AvailableInventoryDto>>(availableInventories);
         return Result<List<AvailableInventoryDto>?>.Success(availableInventoryDtos, "Inventario disponible obtenido correctamente");
     }

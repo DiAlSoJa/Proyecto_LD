@@ -38,7 +38,7 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
 
     private async void OnCapturarClicked(object sender, EventArgs e)
     {
-        var page = new Scan3FieldsPage();
+        var page = new Scan3FieldsPage(requiresThreeFields: true);
         await Navigation.PushModalAsync(page);
 
         var accepted = await page.WaitForResultAsync();

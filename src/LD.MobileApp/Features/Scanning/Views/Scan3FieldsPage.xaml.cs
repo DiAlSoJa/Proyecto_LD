@@ -13,14 +13,16 @@ public partial class Scan3FieldsPage : ContentPage
 
     // 0 = EstandarId, 1 = Rack, 2 = Posicion
     private int _step = 0;
+    private readonly bool _requiresThreeFields;
 
     private DateTime _lastScanAt = DateTime.MinValue;
     private string _lastValue = "";
     private bool _isBusy;
     private readonly TaskCompletionSource<bool> _completion = new();
 
-    public Scan3FieldsPage()
+    public Scan3FieldsPage(bool requiresThreeFields = true)
     {
+        _requiresThreeFields = requiresThreeFields;
         InitializeComponent();
 
         CameraView.Options = new BarcodeReaderOptions
@@ -37,6 +39,7 @@ public partial class Scan3FieldsPage : ContentPage
             TryHarder = true
         };
 
+        ApplyScanMode();
         UpdateHint();
     }
 
@@ -50,12 +53,23 @@ public partial class Scan3FieldsPage : ContentPage
         var hint = _step switch
         {
             0 => "Escanea: Estandar ID",
-            1 => "Escanea: Rack",
-            2 => "Escanea: Posicion",
+            1 => _requiresThreeFields ? "Escanea: Rack" : "Listo. Presiona Aceptar.",
+            2 => _requiresThreeFields ? "Escanea: Posicion" : "Listo. Presiona Aceptar.",
             _ => "Listo. Presiona Aceptar."
         };
 
         HintLabel.Text = hint;
+    }
+
+    private void ApplyScanMode()
+    {
+        if (_requiresThreeFields)
+            return;
+
+        ScreenTitleLabel.Text = "Escaneo de StandardId";
+        RackBorder.IsVisible = false;
+        PosicionBorder.IsVisible = false;
+        TransferMessageLabel.Text = "Consultando movimientos...";
     }
 
     private void SetValueForStep(string value)
@@ -66,8 +80,16 @@ public partial class Scan3FieldsPage : ContentPage
             EstandarIdLabel.Text = value;
             MarkScanAccepted(EstandarIdBorder);
 
-            if (_step == 0)
+            if (_requiresThreeFields)
+            {
+                if (_step == 0)
+                    _step = 1;
+            }
+            else
+            {
                 _step = 1;
+                CameraView.IsDetecting = false;
+            }
         }
         else if (_step == 0)
         {
@@ -77,10 +99,20 @@ public partial class Scan3FieldsPage : ContentPage
         }
         else if (_step == 1)
         {
+            if (IsPositionCode(value))
+            {
+                SetPosition(value);
+                _step = string.IsNullOrWhiteSpace(Rack) ? 1 : 3;
+                CameraView.IsDetecting = _step < 3;
+                UpdateHint();
+                return;
+            }
+
             Rack = value;
             RackLabel.Text = value;
             MarkScanAccepted(RackBorder);
-            _step = 2;
+            _step = string.IsNullOrWhiteSpace(Posicion) ? 2 : 3;
+            CameraView.IsDetecting = _step < 3;
         }
         else if (_step == 2)
         {
@@ -91,9 +123,7 @@ public partial class Scan3FieldsPage : ContentPage
                 return;
             }
 
-            Posicion = value;
-            PosicionLabel.Text = value;
-            MarkScanAccepted(PosicionBorder);
+            SetPosition(value);
             _step = 3;
             CameraView.IsDetecting = false;
         }
@@ -109,6 +139,13 @@ public partial class Scan3FieldsPage : ContentPage
     private static bool IsPositionCode(string value)
     {
         return value.Length == 1 && char.IsLetter(value[0]);
+    }
+
+    private void SetPosition(string value)
+    {
+        Posicion = value;
+        PosicionLabel.Text = value;
+        MarkScanAccepted(PosicionBorder);
     }
 
     private void MarkScanAccepted(Border border)
@@ -161,7 +198,8 @@ public partial class Scan3FieldsPage : ContentPage
 
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            if (_step >= 3 && !IsStandardLabelCode(value))
+            var completedStep = _requiresThreeFields ? 3 : 1;
+            if (_step >= completedStep && !IsStandardLabelCode(value))
                 return;
 
             SetValueForStep(value);
@@ -200,14 +238,17 @@ public partial class Scan3FieldsPage : ContentPage
             return;
 
         if (string.IsNullOrWhiteSpace(EstandarId) ||
-            string.IsNullOrWhiteSpace(Rack) ||
-            string.IsNullOrWhiteSpace(Posicion))
+            (_requiresThreeFields && (string.IsNullOrWhiteSpace(Rack) || string.IsNullOrWhiteSpace(Posicion))))
         {
-            await DisplayAlertAsync("Faltan datos", "Escanea Estandar ID, Rack y Posicion.", "OK");
+            var message = _requiresThreeFields
+                ? "Escanea Estandar ID, Rack y Posicion."
+                : "Escanea Estandar ID.";
+
+            await DisplayAlertAsync("Faltan datos", message, "OK");
             return;
         }
 
-        if (!IsPositionCode(Posicion))
+        if (_requiresThreeFields && !IsPositionCode(Posicion))
         {
             await DisplayAlertAsync("Posicion invalida", "La posicion debe ser una sola letra.", "OK");
             return;
@@ -232,7 +273,7 @@ public partial class Scan3FieldsPage : ContentPage
         TransferActivity.IsRunning = isBusy;
         ClearButton.IsEnabled = !isBusy;
         AcceptButton.IsEnabled = !isBusy;
-        CameraView.IsDetecting = !isBusy && _step < 3;
+        CameraView.IsDetecting = !isBusy && _step < (_requiresThreeFields ? 3 : 1);
     }
 
     protected override void OnDisappearing()

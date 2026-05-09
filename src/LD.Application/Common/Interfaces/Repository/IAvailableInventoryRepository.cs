@@ -4,5 +4,5 @@ namespace LD.Application.Common.Interfaces.Repository;
 
 public interface IAvailableInventoryRepository : IRepository<AvailableInventory>
 {
-    Task<List<AvailableInventory>> GetAllWithRelationsAsync();
+    Task<List<AvailableInventory>> GetAllWithRelationsAsync(int? standardId = null);
 }

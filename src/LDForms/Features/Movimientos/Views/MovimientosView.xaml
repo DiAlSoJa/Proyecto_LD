@@ -11,6 +11,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -237,8 +239,102 @@
             </Grid>
         </Border>
 
-        <!-- Grid principal -->
+        <!-- Consulta de inventario -->
         <Border Grid.Row="2"
+                Background="White"
+                CornerRadius="12"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Inventario por StandardId"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937"/>
+                    <TextBlock x:Name="txtInventoryStatus"
+                               Text="Ingresa un StandardId y presiona Buscar."
+                               FontSize="12"
+                               Foreground="#6B7280"
+                               Margin="14,2,0,0"/>
+                </StackPanel>
+
+                <Border Grid.Row="2"
+                        BorderBrush="#D9DEE7"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Background="White"
+                        MaxHeight="150">
+                    <DataGrid x:Name="dgInventory"
+                              ItemsSource="{Binding InventoryView}"
+                              AutoGenerateColumns="False"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Vertical"
+                              RowHeight="28"
+                              ColumnHeaderHeight="36"
+                              FontSize="12"
+                              VerticalGridLinesBrush="#D9D9D9"
+                              HorizontalGridLinesBrush="#E4E8EE"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              Margin="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="StandardId" Binding="{Binding StandardIdStr}" Width="120"/>
+                            <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="140"/>
+                            <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="160"/>
+                            <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="160"/>
+                            <DataGridTextColumn Header="No. Parte" Binding="{Binding PartNumber}" Width="140"/>
+                            <DataGridTextColumn Header="Lote" Binding="{Binding LotNumber}" Width="120"/>
+                            <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="140"/>
+                            <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>
+                            <DataGridTextColumn Header="Almacén" Binding="{Binding Almacen}" Width="140"/>
+                        </DataGrid.Columns>
+
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#EEF1F5"/>
+                                <Setter Property="Foreground" Value="#16263D"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                <Setter Property="Padding" Value="8,6"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                <Setter Property="Padding" Value="8,4"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="Background" Value="White"/>
+                            </Style>
+                        </DataGrid.Resources>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Grid principal -->
+        <Border Grid.Row="4"
                 Background="White"
                 CornerRadius="12"
                 BorderBrush="#E5E7EB"

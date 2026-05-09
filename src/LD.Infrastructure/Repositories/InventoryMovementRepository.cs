@@ -46,15 +46,25 @@ namespace LD.Infrastructure.Repositories
             }
         }
 
-        public async Task<List<InventoryMovement>> GetAllWithRelationsAsync()
+        public async Task<List<InventoryMovement>> GetAllWithRelationsAsync(int? standardId = null)
         {
-            return await _context.InventoryMovements
+            IQueryable<InventoryMovement> query = _context.InventoryMovements
                 .Include(x => x.Product)
                 .Include(x => x.Client)
                 .Include(x => x.Project)
                 .Include(x => x.Location)
                     .ThenInclude(x => x!.Warehouse)
-                .Include(x => x.StandardLabel)
+                .Include(x => x.StandardLabel);
+
+            if (standardId.HasValue)
+            {
+                var standardIdText = standardId.Value.ToString();
+                query = query.Where(x =>
+                    x.StandardId == standardId.Value ||
+                    (x.StandardLabel != null && x.StandardLabel.StandarIdStr == standardIdText));
+            }
+
+            return await query
                 .ToListAsync();
         }
 

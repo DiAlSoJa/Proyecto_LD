@@ -15,10 +15,14 @@ public class AvailableInventoryService
         _apiEndpoints = apiEndpoints;
     }
 
-    public async Task<ApiResponseDto<List<AvailableInventoryDto>>> GetAvailableInventories()
+    public async Task<ApiResponseDto<List<AvailableInventoryDto>>> GetAvailableInventories(int? standardId = null)
     {
+        var endpoint = _apiEndpoints.AvailableInventory_GetAll;
+        if (standardId.HasValue)
+            endpoint += $"?standardId={standardId.Value}";
+
         return await _api.GetAsync<ApiResponseDto<List<AvailableInventoryDto>>>(
-            _apiEndpoints.AvailableInventory_GetAll);
+            endpoint);
     }
 
     public async Task<ApiResponseDto<string>> ChangeLocation(int standardId, string ubicacionDestino)
