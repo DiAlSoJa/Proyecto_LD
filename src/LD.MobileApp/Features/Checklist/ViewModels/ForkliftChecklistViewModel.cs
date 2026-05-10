@@ -1,10 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LD.Client.Services;
 using LD.Contracts.Checklist;
 using LD.Contracts.Equipment;
 using LD.Contracts.Responses;
 using MauiAppLogin.Models;
+using Plugin.Maui.OCR;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace MauiAppLogin.ViewModels;
 
@@ -27,6 +30,9 @@ public partial class ForkliftChecklistViewModel : ObservableObject
 
     [ObservableProperty]
     private string statusSubida = string.Empty;
+
+    [ObservableProperty]
+    private string horometro = string.Empty;
 
     public ForkliftChecklistViewModel(
         EquipmentQuestionService equipmentQuestionService,
@@ -78,6 +84,42 @@ public partial class ForkliftChecklistViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task EscanearHorometroAsync()
+    {
+        try
+        {
+            var photo = await MediaPicker.CapturePhotoAsync();
+            if (photo is null) return;
+
+            using var stream = await photo.OpenReadAsync();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var imageBytes = ms.ToArray();
+
+            var result = await OcrPlugin.Default.RecognizeTextAsync(imageBytes);
+            if (!result.Success || string.IsNullOrWhiteSpace(result.AllText))
+            {
+                await Shell.Current.DisplayAlert("OCR", "No se pudo leer texto en la imagen.", "OK");
+                return;
+            }
+
+            var match = Regex.Match(result.AllText, @"\d+[\.,]?\d*");
+            if (match.Success)
+                Horometro = match.Value;
+            else
+                await Shell.Current.DisplayAlert("OCR", "No se encontró un número en la imagen.", "OK");
+        }
+        catch (PermissionException)
+        {
+            await Shell.Current.DisplayAlert("Permiso requerido", "Se necesita acceso a la cámara para leer el horómetro.", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", $"No se pudo procesar la imagen: {ex.Message}", "OK");
         }
     }
 

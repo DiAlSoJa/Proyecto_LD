@@ -78,10 +78,17 @@
                         <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
                             <Label Text="Horómetro" FontAttributes="Bold" TextColor="#486581" />
                             <Entry x:Name="HorometroEntry"
+                                   Text="{Binding Horometro}"
                                    Placeholder="Captura el horómetro"
                                    Keyboard="Numeric"
                                    BackgroundColor="#F8FAFC"
                                    TextColor="#102A43" />
+                            <Button Text="📷 Leer con cámara"
+                                    Command="{Binding EscanearHorometroCommand}"
+                                    BackgroundColor="#1F3A5F"
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    HeightRequest="42" />
                         </VerticalStackLayout>
                     </Grid>
                 </VerticalStackLayout>
