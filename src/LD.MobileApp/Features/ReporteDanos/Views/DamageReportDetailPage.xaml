@@ -5,6 +5,7 @@
     x:Class="MauiAppLogin.DamageReportDetailPage"
     Title="Licencia"
     BackgroundColor="#0F2E4F">
+    <Grid>
     <ScrollView>
     <Grid RowDefinitions="Auto,*,Auto" Padding="16">
 
@@ -27,11 +28,6 @@
                           TextColor="White"
                           FontSize="15"/>
                 </Border>
-
-                <ActivityIndicator IsRunning="{Binding IsLoading}"
-                                   IsVisible="{Binding IsLoading}"
-                                   Color="#244A7C"
-                                   HorizontalOptions="Start"/>
 
                 <VerticalStackLayout Spacing="6">
                     <Label Text="{Binding PartNumberText}" TextColor="#64748B" FontSize="14"/>                    
@@ -222,6 +218,8 @@
                     <HorizontalStackLayout Spacing="10">
                         <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
                         <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                        <Image x:Name="Thumb3" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                        <Image x:Name="Thumb4" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
                     </HorizontalStackLayout>
                 </Border>
 
@@ -319,4 +317,24 @@
 
     </Grid>
     </ScrollView>
+
+        <Border BackgroundColor="#AAFFFFFF"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 18"
+                IsVisible="{Binding IsLoading}">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="12">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   Color="#244A7C"
+                                   WidthRequest="42"
+                                   HeightRequest="42"/>
+                <Label Text="{Binding LoadingMessage}"
+                       HorizontalOptions="Center"
+                       TextColor="#244A7C"
+                       FontAttributes="Bold"
+                       FontSize="16"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
 </ContentPage>

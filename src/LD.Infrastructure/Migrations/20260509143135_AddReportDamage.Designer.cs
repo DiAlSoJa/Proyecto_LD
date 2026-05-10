@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260509143135_AddReportDamage")]
+    partial class AddReportDamage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1010,6 +1013,9 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("StandardLabelStandarId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Warehouse")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
@@ -1029,7 +1035,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("StandardId");
+                    b.HasIndex("StandardLabelStandarId");
 
                     b.HasIndex("WarehouseId");
 
@@ -5192,7 +5198,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasOne("LD.Domain.Entities.StandardLabel", "StandardLabel")
                         .WithMany()
-                        .HasForeignKey("StandardId");
+                        .HasForeignKey("StandardLabelStandarId");
 
                     b.HasOne("LD.Domain.Entities.Warehouse", "InventoryWarehouse")
                         .WithMany()

@@ -74,8 +74,15 @@ public partial class Scan3FieldsPage : ContentPage
 
     private void SetValueForStep(string value)
     {
-        if (IsStandardLabelCode(value))
+        if (_step == 0)
         {
+            if (!IsStandardLabelCode(value))
+            {
+                HintLabel.Text = "Escanea primero una etiqueta LD de 12 digitos.";
+                CameraView.IsDetecting = true;
+                return;
+            }
+
             EstandarId = value;
             EstandarIdLabel.Text = value;
             MarkScanAccepted(EstandarIdBorder);
@@ -90,12 +97,6 @@ public partial class Scan3FieldsPage : ContentPage
                 _step = 1;
                 CameraView.IsDetecting = false;
             }
-        }
-        else if (_step == 0)
-        {
-            HintLabel.Text = "Escanea primero una etiqueta LD de 12 digitos.";
-            CameraView.IsDetecting = true;
-            return;
         }
         else if (_step == 1)
         {

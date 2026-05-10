@@ -215,6 +215,16 @@ namespace LD.Forms.Configuration
         public string Asn_Cancel => $"{_baseApi}/asn/{{asnId}}/cancel";
 
         // ======================
+        // DAMAGE REPORT
+        // ======================
+
+        public string DamageReport_GetAll => $"{_baseApi}/damagereport";
+        public string DamageReport_GetById => $"{_baseApi}/damagereport/{{damageReportId}}";
+        public string DamageReport_Create => $"{_baseApi}/damagereport";
+        public string DamageReport_UploadImage => $"{_baseApi}/damagereport/upload-image";
+        public string DamageReport_GetImage => $"{_baseApi}/damagereport/image?path={{path}}";
+
+        // ======================
         // EQUIPMENT
         // ======================
 

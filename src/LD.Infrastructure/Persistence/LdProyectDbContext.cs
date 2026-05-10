@@ -69,6 +69,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<AvailableInventory> AvailableInventories { get; set; }
         public DbSet<CyclicInventory> CyclicInventories { get; set; }
         public DbSet<CyclicInventoryDetail> CyclicInventoryDetails { get; set; }
+        public DbSet<DamageReport> DamageReports { get; set; }
 
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
         public DbSet<Equipment> Equipments { get; set; }

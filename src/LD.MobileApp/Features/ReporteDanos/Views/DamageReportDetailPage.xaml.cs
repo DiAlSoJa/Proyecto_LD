@@ -1,24 +1,40 @@
 using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
+using LD.Contracts.Requests;
+using Microsoft.Maui.Graphics.Platform;
 
 namespace MauiAppLogin;
 
 [QueryProperty(nameof(StandardId), "standardId")]
 public partial class DamageReportDetailPage : ContentPage
 {
+    private const float DamagePhotoMaxSize = 1920f;
+    private const float DamagePhotoQuality = 0.86f;
+
+    private readonly DamageReportService _damageReportService;
     private readonly AvailableInventoryService _availableInventoryService;
     private readonly StandardLabelService _standardLabelService;
     private ImageSource? _foto1;
     private ImageSource? _foto2;
+    private ImageSource? _foto3;
+    private ImageSource? _foto4;
+    private string? _foto1Path;
+    private string? _foto2Path;
+    private string? _foto3Path;
+    private string? _foto4Path;
+    private AvailableInventoryDto? _selectedInventory;
     private bool _loaded;
     private bool _isLoading;
+    private string _loadingMessage = "Cargando datos...";
     private string _standardId = string.Empty;
 
     public DamageReportDetailPage(
+        DamageReportService damageReportService,
         AvailableInventoryService availableInventoryService,
         StandardLabelService standardLabelService)
     {
         InitializeComponent();
+        _damageReportService = damageReportService;
         _availableInventoryService = availableInventoryService;
         _standardLabelService = standardLabelService;
         BindingContext = this;
@@ -60,6 +76,16 @@ public partial class DamageReportDetailPage : ContentPage
         }
     }
 
+    public string LoadingMessage
+    {
+        get => _loadingMessage;
+        set
+        {
+            _loadingMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
@@ -77,23 +103,28 @@ public partial class DamageReportDetailPage : ContentPage
         if (!resolvedStandardId.HasValue)
         {
             await DisplayAlertAsync("StandardId invalido", "No se encontro la etiqueta StandardId capturada.", "OK");
+            await Shell.Current.GoToAsync("..");
             return;
         }
 
         try
         {
+            LoadingMessage = "Cargando datos...";
             IsLoading = true;
             var response = await _availableInventoryService.GetAvailableInventories(resolvedStandardId.Value);
             if (!response.IsSuccess || response.Data == null || response.Data.Count == 0)
             {
                 await DisplayAlertAsync("Inventario", response.Message ?? "No se encontro inventario para este StandardId.", "OK");
+                await Shell.Current.GoToAsync("..");
                 return;
             }
 
-            ApplyInventory(response.Data
+            _selectedInventory = response.Data
                 .OrderBy(x => x.Ubicacion)
                 .ThenBy(x => x.PartNumber)
-                .First());
+                .First();
+
+            ApplyInventory(_selectedInventory);
         }
         catch (Exception ex)
         {
@@ -185,7 +216,8 @@ public partial class DamageReportDetailPage : ContentPage
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo == null) return;
 
-            await using var stream = await photo.OpenReadAsync();
+            var photoPath = await CompressPhotoAsync(photo);
+            await using var stream = File.OpenRead(photoPath);
             var mem = new MemoryStream();
             await stream.CopyToAsync(mem);
             mem.Position = 0;
@@ -196,17 +228,56 @@ public partial class DamageReportDetailPage : ContentPage
             if (_foto1 == null)
             {
                 _foto1 = img;
+                _foto1Path = photoPath;
                 Thumb1.Source = _foto1;
+            }
+            else if (_foto2 == null)
+            {
+                _foto2 = img;
+                _foto2Path = photoPath;
+                Thumb2.Source = _foto2;
+            }
+            else if (_foto3 == null)
+            {
+                _foto3 = img;
+                _foto3Path = photoPath;
+                Thumb3.Source = _foto3;
             }
             else
             {
-                _foto2 = img;
-                Thumb2.Source = _foto2;
+                _foto4 = img;
+                _foto4Path = photoPath;
+                Thumb4.Source = _foto4;
             }
         }
         catch (Exception ex)
         {
             await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private static async Task<string> CompressPhotoAsync(FileResult photo)
+    {
+        try
+        {
+            await using var input = await photo.OpenReadAsync();
+            using var image = PlatformImage.FromStream(input);
+            if (image is null)
+                return photo.FullPath;
+
+            using var resized = image.Downsize(DamagePhotoMaxSize);
+            var outputPath = Path.Combine(
+                FileSystem.CacheDirectory,
+                $"damage-report-{Guid.NewGuid():N}.jpg");
+
+            await using var output = File.Create(outputPath);
+            resized.Save(output, ImageFormat.Jpeg, DamagePhotoQuality);
+
+            return outputPath;
+        }
+        catch
+        {
+            return photo.FullPath;
         }
     }
 
@@ -217,12 +288,121 @@ public partial class DamageReportDetailPage : ContentPage
 
     private async void OnSiguienteClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("DamageReportPrintPage");
+        if (_selectedInventory is null)
+        {
+            await DisplayAlertAsync("Inventario", "Primero carga un StandardId valido.", "OK");
+            return;
+        }
+
+        if (EstadoPicker.SelectedItem is null)
+        {
+            await DisplayAlertAsync("Tipo de daño", "Selecciona el tipo de daño.", "OK");
+            return;
+        }
+
+        if (EstadoPickewr.SelectedItem is null)
+        {
+            await DisplayAlertAsync("Categoria", "Selecciona la categoria.", "OK");
+            return;
+        }
+
+        if (EstadoPickewsr.SelectedItem is null)
+        {
+            await DisplayAlertAsync("Nuevo estatus", "Selecciona el nuevo estatus.", "OK");
+            return;
+        }
+
+        try
+        {
+            LoadingMessage = "Guardando reporte...";
+            IsLoading = true;
+            var request = BuildDamageReportRequest(_selectedInventory);
+            await UploadPhotosAsync(request);
+
+            var response = await _damageReportService.CreateDamageReport(request);
+            if (!response.IsSuccess)
+            {
+                await DisplayAlertAsync("Reporte de daños", response.Message ?? "No se pudo guardar el reporte.", "OK");
+                return;
+            }
+
+            await Shell.Current.GoToAsync($"../{nameof(DamageReportPrintPage)}", new Dictionary<string, object>
+            {
+                ["report"] = request,
+                ["photo1Path"] = _foto1Path ?? string.Empty,
+                ["photo2Path"] = _foto2Path ?? string.Empty,
+                ["photo3Path"] = _foto3Path ?? string.Empty,
+                ["photo4Path"] = _foto4Path ?? string.Empty
+            });
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     private async void OnAtrasClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");
+    }
+
+    private async Task UploadPhotosAsync(DamageReportRequest request)
+    {
+        request.Photo1Path = await UploadPhotoAsync(_foto1Path, 1);
+        request.Photo2Path = await UploadPhotoAsync(_foto2Path, 2);
+        request.Photo3Path = await UploadPhotoAsync(_foto3Path, 3);
+        request.Photo4Path = await UploadPhotoAsync(_foto4Path, 4);
+    }
+
+    private async Task<string?> UploadPhotoAsync(string? photoPath, int photoNumber)
+    {
+        if (string.IsNullOrWhiteSpace(photoPath) || !File.Exists(photoPath))
+            return null;
+
+        var response = await _damageReportService.UploadImage(photoPath, photoNumber);
+        if (!response.IsSuccess || response.Data is null || string.IsNullOrWhiteSpace(response.Data.RelativePath))
+            throw new InvalidOperationException(response.Message ?? $"No se pudo cargar la foto {photoNumber}.");
+
+        return response.Data.RelativePath;
+    }
+
+    private DamageReportRequest BuildDamageReportRequest(AvailableInventoryDto inventory)
+    {
+        return new DamageReportRequest
+        {
+            AvailableInventoryId = inventory.AvailableInventoryId,
+            StandardId = inventory.StandardId,
+            StandardIdCode = FirstNotEmpty(inventory.StandardIdStr, StandardId),
+            ProductId = inventory.ProductId,
+            ClientId = inventory.ClientId,
+            ProjectId = inventory.ProjectId,
+            LocationId = inventory.LocationId,
+            PartNumber = inventory.PartNumber,
+            Description = inventory.Description,
+            Location = inventory.Ubicacion,
+            CurrentStatus = inventory.StatusId,
+            ReceivedQuantity = inventory.Qty,
+            AvailableQuantity = inventory.Qty,
+            Warehouse = inventory.Almacen,
+            Project = inventory.Proyecto,
+            Client = inventory.Cliente,
+            Asn = FirstNotEmpty(inventory.DocumentId, inventory.Reference),
+            ReceptionDate = inventory.Fecha == default ? null : inventory.Fecha,
+            InventoryState = EstadoText.Replace("Estado:", string.Empty).Trim(),
+            DamageType = EstadoPicker.SelectedItem?.ToString() ?? string.Empty,
+            Category = EstadoPickewr.SelectedItem?.ToString() ?? string.Empty,
+            NewStatus = EstadoPickewsr.SelectedItem?.ToString() ?? string.Empty,
+            Comments = LicenciaEntry.Text,
+            Photo1Path = _foto1Path,
+            Photo2Path = _foto2Path,
+            Photo3Path = _foto3Path,
+            Photo4Path = _foto4Path,
+            ReportDate = DateTime.Now
+        };
     }
 
 }
