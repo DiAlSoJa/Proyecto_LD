@@ -78,7 +78,6 @@ namespace MauiAppLogin
             builder.Services.AddSingleton<ILoaderService, LoaderService>();
 
             // Control de Patio
-            builder.Services.AddScoped<IPatioService, PatioService>();
             builder.Services.AddSingleton<IPatioNotificacionService, PatioNotificacionService>();
             builder.Services.AddSingleton<PatioContext>();
 

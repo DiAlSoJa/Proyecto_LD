@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Services;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
@@ -8,7 +9,7 @@ namespace MauiAppLogin.ViewModels;
 
 public partial class PatioDetalleViewModel : ObservableObject
 {
-    private readonly IPatioService _patioService;
+    private readonly PatioClientService _patioClientService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
 
@@ -27,11 +28,11 @@ public partial class PatioDetalleViewModel : ObservableObject
     public ICommand AtrasCommand { get; }
 
     public PatioDetalleViewModel(
-        IPatioService patioService,
+        PatioClientService patioClientService,
         ILoaderService loaderService,
         PatioContext context)
     {
-        _patioService  = patioService;
+        _patioClientService  = patioClientService;
         _loaderService = loaderService;
         _context       = context;
 
@@ -55,10 +56,11 @@ public partial class PatioDetalleViewModel : ObservableObject
         _loaderService.Show("Asignando cortina...");
         try
         {
-            var ok = await _patioService.AsignarCortinaAsync(Vehiculo.Id, cortina.Id);
+            var response = await _patioClientService.AsignarCortinaAsync(Vehiculo.Id, cortina.Id);
+            var ok = response.IsSuccess;
             if (!ok)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "No se pudo asignar la cortina.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", response.Message ?? "No se pudo asignar la cortina.", "OK");
                 return;
             }
 

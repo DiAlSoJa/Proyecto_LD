@@ -43,6 +43,7 @@ public static class ConfigureServices
              .AddDefaultTokenProviders();
 
         services.AddHttpContextAccessor();
+        services.AddMemoryCache();
         services.AddTransient<IApplicationUserManager, ApplicationUserManager>();
 
         services.AddScoped<IFileStorageService, LocalFileStorageService>();

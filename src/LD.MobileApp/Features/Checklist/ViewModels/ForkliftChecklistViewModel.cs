@@ -15,6 +15,7 @@ public partial class ForkliftChecklistViewModel : ObservableObject
 {
     private readonly EquipmentQuestionService _equipmentQuestionService;
     private readonly ChecklistService _checklistService;
+    public IAsyncRelayCommand EscanearHorometroCommand { get; }
 
     [ObservableProperty]
     private ObservableCollection<ChecklistSection> sections = new();
@@ -40,6 +41,7 @@ public partial class ForkliftChecklistViewModel : ObservableObject
     {
         _equipmentQuestionService = equipmentQuestionService;
         _checklistService         = checklistService;
+        EscanearHorometroCommand  = new AsyncRelayCommand(EscanearHorometroAsync);
     }
 
     public async Task InicializarAsync(EquipmentDto equipmentData)
@@ -87,7 +89,6 @@ public partial class ForkliftChecklistViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
     private async Task EscanearHorometroAsync()
     {
         try
@@ -103,7 +104,7 @@ public partial class ForkliftChecklistViewModel : ObservableObject
             var result = await OcrPlugin.Default.RecognizeTextAsync(imageBytes);
             if (!result.Success || string.IsNullOrWhiteSpace(result.AllText))
             {
-                await Shell.Current.DisplayAlert("OCR", "No se pudo leer texto en la imagen.", "OK");
+                await Shell.Current.DisplayAlertAsync("OCR", "No se pudo leer texto en la imagen.", "OK");
                 return;
             }
 
@@ -111,15 +112,15 @@ public partial class ForkliftChecklistViewModel : ObservableObject
             if (match.Success)
                 Horometro = match.Value;
             else
-                await Shell.Current.DisplayAlert("OCR", "No se encontró un número en la imagen.", "OK");
+                await Shell.Current.DisplayAlertAsync("OCR", "No se encontró un número en la imagen.", "OK");
         }
         catch (PermissionException)
         {
-            await Shell.Current.DisplayAlert("Permiso requerido", "Se necesita acceso a la cámara para leer el horómetro.", "OK");
+            await Shell.Current.DisplayAlertAsync("Permiso requerido", "Se necesita acceso a la cámara para leer el horómetro.", "OK");
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"No se pudo procesar la imagen: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", $"No se pudo procesar la imagen: {ex.Message}", "OK");
         }
     }
 

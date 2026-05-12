@@ -25,7 +25,8 @@
             <!-- ═══ Lista de cortinas ═══ -->
             <CollectionView Grid.Row="1"
                             ItemsSource="{Binding Cortinas}"
-                            SelectionMode="None">
+                            SelectionMode="Single"
+                            SelectedItem="{Binding CortinaSeleccionada, Mode=TwoWay}">
 
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
@@ -37,10 +38,26 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Cortina">
-                        <Border BackgroundColor="#F6F8FC"
-                                Stroke="#E2E8F0" StrokeThickness="1"
+                        <Border Stroke="#E2E8F0" StrokeThickness="1"
                                 StrokeShape="RoundRectangle 20"
                                 Padding="16" Margin="0,0,0,10">
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#F6F8FC"/>
+                                            <Setter Property="Stroke" Value="#E2E8F0"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Secondary}"/>
+                                            <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
 
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
 

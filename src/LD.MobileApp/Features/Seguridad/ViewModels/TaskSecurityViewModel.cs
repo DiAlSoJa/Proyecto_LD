@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Services;
 using LD.Contracts.DTOs.Security;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
@@ -9,7 +10,7 @@ namespace MauiAppLogin.ViewModels;
 
 public partial class TaskSecurityViewModel : ObservableObject
 {
-    private readonly IPatioService _patioService;
+    private readonly PatioClientService _patioClientService;
     private readonly ILoaderService _loaderService;
 
     public ILoaderService Loader => _loaderService;
@@ -28,9 +29,9 @@ public partial class TaskSecurityViewModel : ObservableObject
     public ICommand CerrarRegistroCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public TaskSecurityViewModel(IPatioService patioService, ILoaderService loaderService)
+    public TaskSecurityViewModel(PatioClientService patioClientService, ILoaderService loaderService)
     {
-        _patioService  = patioService;
+        _patioClientService  = patioClientService;
         _loaderService = loaderService;
 
         CargarCommand        = new AsyncCommand(CargarAsync);
@@ -49,7 +50,8 @@ public partial class TaskSecurityViewModel : ObservableObject
 
         try
         {
-            var lista = await _patioService.GetTasksAsync(soloPendientes: false);
+            var response = await _patioClientService.GetTasksAsync(soloPendientes: false);
+            var lista = response.IsSuccess ? (response.Data ?? []) : [];
             Tareas = new ObservableCollection<SecurityTaskDto>(
                 lista.OrderByDescending(t => t.CreatedAt));
         }
@@ -72,11 +74,12 @@ public partial class TaskSecurityViewModel : ObservableObject
         _loaderService.Show("Abriendo cortina...");
         try
         {
-            var ok = await _patioService.AbrirCortinaAsync(tarea.SecurityTaskId);
+            var response = await _patioClientService.AbrirCortinaAsync(tarea.SecurityTaskId);
+            var ok = response.IsSuccess;
             if (ok)
                 await CargarAsync();
             else
-                await Shell.Current.DisplayAlertAsync("Error", "No se pudo completar la acción.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", response.Message ?? "No se pudo completar la acción.", "OK");
         }
         finally { _loaderService.Hide(); }
     }
@@ -95,11 +98,12 @@ public partial class TaskSecurityViewModel : ObservableObject
         _loaderService.Show("Cerrando registro...");
         try
         {
-            var ok = await _patioService.CerrarRegistroAsync(tarea.SecurityTaskId);
+            var response = await _patioClientService.CerrarRegistroAsync(tarea.SecurityTaskId);
+            var ok = response.IsSuccess;
             if (ok)
                 await CargarAsync();
             else
-                await Shell.Current.DisplayAlertAsync("Error", "No se pudo cerrar el registro.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", response.Message ?? "No se pudo cerrar el registro.", "OK");
         }
         finally { _loaderService.Hide(); }
     }

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Services;
 using LD.Contracts.DTOs.Security;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
@@ -10,7 +11,7 @@ namespace MauiAppLogin.ViewModels;
 
 public partial class PatioPendientesViewModel : ObservableObject
 {
-    private readonly IPatioService _patioService;
+    private readonly PatioClientService _patioClientService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
 
@@ -33,11 +34,11 @@ public partial class PatioPendientesViewModel : ObservableObject
     public ICommand AtrasCommand { get; }
 
     public PatioPendientesViewModel(
-        IPatioService patioService,
+        PatioClientService patioClientService,
         ILoaderService loaderService,
         PatioContext context)
     {
-        _patioService = patioService;
+        _patioClientService = patioClientService;
         _loaderService = loaderService;
         _context = context;
 
@@ -56,7 +57,8 @@ public partial class PatioPendientesViewModel : ObservableObject
 
         try
         {
-            var lista = await _patioService.GetVehiculosSinSalidaAsync();
+            var response = await _patioClientService.GetVehiculosSinSalidaAsync();
+            var lista = response.IsSuccess ? (response.Data ?? []) : [];
             Vehiculos = new ObservableCollection<SecurityRegistrationDto>(lista);
             HasItems  = Vehiculos.Count > 0;
         }
@@ -85,6 +87,7 @@ public partial class PatioPendientesViewModel : ObservableObject
             Operador     = registro.Nombre,
             TipoVehiculo = registro.TipoVehiculo,
             Linea        = registro.Linea,
+            CortinaAsignada = registro.CortinaNumero,
             Status       = "Dentro"
         };
 

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Services;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
@@ -10,7 +11,7 @@ namespace MauiAppLogin.ViewModels;
 
 public partial class CortinaSeleccionViewModel : ObservableObject
 {
-    private readonly IPatioService _patioService;
+    private readonly PatioClientService _patioClientService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
 
@@ -31,11 +32,11 @@ public partial class CortinaSeleccionViewModel : ObservableObject
     public ICommand CancelarCommand { get; }
 
     public CortinaSeleccionViewModel(
-        IPatioService patioService,
+        PatioClientService patioClientService,
         ILoaderService loaderService,
         PatioContext context)
     {
-        _patioService = patioService;
+        _patioClientService = patioClientService;
         _loaderService = loaderService;
         _context = context;
 
@@ -57,7 +58,17 @@ public partial class CortinaSeleccionViewModel : ObservableObject
         _loaderService.Show("Cargando cortinas...");
         try
         {
-            var lista = await _patioService.GetCortinasDisponiblesAsync();
+            var response = await _patioClientService.GetCortinasDisponiblesAsync();
+            var lista = response.IsSuccess && response.Data is not null
+                ? response.Data.Select(d => new Cortina
+                {
+                    Id = d.CortinaId,
+                    Numero = d.Numero,
+                    Descripcion = d.Descripcion,
+                    EstaDisponible = d.EstaDisponible
+                }).ToList()
+                : [];
+
             Cortinas = new ObservableCollection<Cortina>(lista);
         }
         finally
