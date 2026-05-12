@@ -50,7 +50,7 @@ public partial class TaskSecurityViewModel : ObservableObject
 
         try
         {
-            var response = await _patioClientService.GetTasksAsync(soloPendientes: false);
+            var response = await _patioClientService.GetTasksAsync(soloPendientes: true);
             var lista = response.IsSuccess ? (response.Data ?? []) : [];
             Tareas = new ObservableCollection<SecurityTaskDto>(
                 lista.OrderByDescending(t => t.CreatedAt));

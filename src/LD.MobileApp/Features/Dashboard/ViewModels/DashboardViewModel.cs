@@ -13,6 +13,7 @@ namespace MauiAppLogin.ViewModels
     public partial class DashboardViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+        private readonly PatioClientService _patioClientService;
 
         [ObservableProperty]
         private string username = string.Empty;
@@ -55,6 +56,12 @@ namespace MauiAppLogin.ViewModels
         [ObservableProperty]
         private bool isBusy;
 
+        [ObservableProperty]
+        private int tareasPendientesCount;
+
+        [ObservableProperty]
+        private bool hasTareasPendientes;
+
         public ICommand LogoutCommand { get; }
         public ICommand NavigateToChangeLocationCommand { get; }
         public ICommand NavigateToPickingCommand { get; }
@@ -71,9 +78,10 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToChecklistCommand { get; }
         public ICommand NavigateToPatioPendientesCommand { get; }
 
-        public DashboardViewModel(ApiService apiService)
+        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService)
         {
             _apiService = apiService;
+            _patioClientService = patioClientService;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
             NavigateToChangeLocationCommand = new AsyncRelayCommand(NavigateToChangeLocation);
@@ -117,6 +125,21 @@ namespace MauiAppLogin.ViewModels
 
             CanAudit = UserData.HasPermission(PermissionKeys.Inventory_Audit_View);
             CanViewInventoryList = UserData.HasPermission(PermissionKeys.Inventory_List_View);
+        }
+
+        public async Task CargarTareasPendientesAsync()
+        {
+            if (!CanViewSecurityTasks) return;
+            try
+            {
+                var response = await _patioClientService.GetTasksAsync(soloPendientes: true);
+                if (response.IsSuccess && response.Data != null)
+                {
+                    TareasPendientesCount = response.Data.Count;
+                    HasTareasPendientes = TareasPendientesCount > 0;
+                }
+            }
+            catch { }
         }
 
         private async Task Logout()

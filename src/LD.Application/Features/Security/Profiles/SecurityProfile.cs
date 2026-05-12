@@ -25,11 +25,14 @@ public class SecurityProfile : Profile
         CreateMap<Cortina, CortinaDto>();
 
         CreateMap<SecurityTask, SecurityTaskDto>()
-            .ForMember(dest => dest.Placa,        opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Placa : ""))
-            .ForMember(dest => dest.Nombre,       opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Nombre : ""))
-            .ForMember(dest => dest.TipoVehiculo, opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.TipoVehiculo : ""))
-            .ForMember(dest => dest.Linea,        opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Linea : ""))
-            .ForMember(dest => dest.CortinaNumero,opt => opt.MapFrom(src => src.SecurityRegistration != null && src.SecurityRegistration.Cortina != null
-                                                                                ? src.SecurityRegistration.Cortina.Numero : null));
+            .ForMember(dest => dest.Placa,            opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Placa : ""))
+            .ForMember(dest => dest.Nombre,           opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Nombre : ""))
+            .ForMember(dest => dest.TipoVehiculo,     opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.TipoVehiculo : ""))
+            .ForMember(dest => dest.Linea,            opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Linea : ""))
+            .ForMember(dest => dest.CortinaNumero,    opt => opt.MapFrom(src => src.SecurityRegistration != null && src.SecurityRegistration.Cortina != null
+                                                                                    ? src.SecurityRegistration.Cortina.Numero : null))
+            .ForMember(dest => dest.RegistrationStatus, opt => opt.MapFrom(src => src.SecurityRegistration != null
+                                                                                    ? (RegistroEstado_e)(int)src.SecurityRegistration.Estado
+                                                                                    : RegistroEstado_e.Registrado));
     }
 }

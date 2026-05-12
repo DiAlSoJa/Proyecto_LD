@@ -1,3 +1,5 @@
+using LD.Contracts.Enums;
+
 namespace LD.Contracts.DTOs.Security;
 
 public class SecurityTaskDto
@@ -14,4 +16,5 @@ public class SecurityTaskDto
     public string? RealizadaPor { get; set; }
     public string? CortinaNumero { get; set; }
     public DateTime CreatedAt { get; set; }
+    public RegistroEstado_e RegistrationStatus { get; set; }
 }
