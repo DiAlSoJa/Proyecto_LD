@@ -2,6 +2,7 @@ using AutoMapper;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
 using LD.Contracts.DTOs.Security;
+using LD.Domain.Enums;
 using MediatR;
 
 namespace LD.Application.Features.Security.Queries;
@@ -31,6 +32,8 @@ public class GetSecurityRegistrationsSinSalidaQueryHandler
         var registros = await _repository.GetManyWithCortinaAsync();
         var enPatio   = registros
             .Where(r => r.IsActive)
+            .Where(r => r.CortinaId == null)
+            .Where(r => r.Estado == RegistroEstado.Registrado)
             .OrderByDescending(r => r.CreatedAt)
             .ToList();
 
