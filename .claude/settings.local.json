@@ -15,7 +15,11 @@
       "Bash(Write-Host \"Archivos eliminados\")",
       "Bash(xargs grep *)",
       "Bash(taskkill /PID 20900 /F)",
-      "PowerShell(Stop-Process *)"
+      "PowerShell(Stop-Process *)",
+      "Bash(dir C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src *)",
+      "Bash(dir C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD *)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.Api\\\\*.cs\")",
+      "Bash(dir /s /b \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.Domain\\\\*.cs\")"
     ]
   }
 }

@@ -26,9 +26,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{5846C2ED-DB50-4483-A744-0A02689056EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{A553EF60-59B5-43FC-AADE-B9BD3DC65D3D}"
-	ProjectSection(SolutionItems) = preProject
-		src\LD.MobileApp\MauiProgram.cs = src\LD.MobileApp\MauiProgram.cs
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
