@@ -126,5 +126,25 @@
           FontSize="18"/>
         </Grid>
 
+        <Border Grid.RowSpan="3"
+                BackgroundColor="#AAFFFFFF"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 18"
+                IsVisible="{Binding IsLoading}">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="12">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   Color="#244A7C"
+                                   WidthRequest="42"
+                                   HeightRequest="42"/>
+                <Label Text="{Binding LoadingMessage}"
+                       HorizontalOptions="Center"
+                       TextColor="#244A7C"
+                       FontAttributes="Bold"
+                       FontSize="16"/>
+            </VerticalStackLayout>
+        </Border>
+
     </Grid>
 </ContentPage>

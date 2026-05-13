@@ -190,11 +190,7 @@ namespace MauiAppLogin.ViewModels
 
         private async Task NavigateToTaskManagerSecurity(string? textInfo)
         {
-            var parameters = new Dictionary<string, object>
-            {
-                { "TextInformation", textInfo ?? "" }
-            };
-            await Shell.Current.GoToAsync("TaskSecurity", parameters);
+            await Shell.Current.GoToAsync(nameof(TaskSecurityPage));
         }
 
         private async Task NavigateToTaskList()

@@ -20,7 +20,9 @@
       "Bash(dir C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD *)",
       "Bash(dir /s /b \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.Api\\\\*.cs\")",
       "Bash(dir /s /b \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.Domain\\\\*.cs\")",
-      "Bash(Select-String -Pattern \"error|Errores|Errors\")"
+      "Bash(Select-String -Pattern \"error|Errores|Errors\")",
+      "Bash(Get-Content \"C:\\\\Users\\\\DIEGOA~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-DIEGO-ALFREDO-source-repos-Proyecto-LD\\\\cb7e3f8c-c77d-4235-bafc-7e5bb63c654a\\\\tasks\\\\bmrnzt0kd.output\" -Wait -Tail 8)",
+      "Bash(Select-Object -First 8)"
     ]
   }
 }

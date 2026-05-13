@@ -306,6 +306,16 @@ namespace LD.Forms.Configuration
         public string CyclicInventory_Create => $"{_baseApi}/CyclicInventory";
         public string CyclicInventory_Update => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}";
 
+        // ======================
+        // DAMAGE REPORT
+        // ======================
+
+        public string DamageReport_GetAll => $"{_baseApi}/DamageReport";
+        public string DamageReport_GetById => $"{_baseApi}/DamageReport/{{damageReportId}}";
+        public string DamageReport_Create => $"{_baseApi}/DamageReport";
+        public string DamageReport_UploadImage => $"{_baseApi}/DamageReport/upload-image";
+        public string DamageReport_GetImage => $"{_baseApi}/DamageReport/image?path={{path}}";
+
 
 
         // ======================

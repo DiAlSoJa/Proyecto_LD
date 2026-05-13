@@ -177,30 +177,41 @@
                                     </VerticalStackLayout>
                                 </Grid>
 
-                                <!-- Fila 3: botón de acción (solo si pendiente) -->
-                                <Button Grid.Row="2"
+                                <!-- Fila 3: acción (solo si pendiente) -->
+                                <Border Grid.Row="2"
                                         IsVisible="{Binding Completada, Converter={StaticResource InvertedBool}}"
-                                        HeightRequest="46" CornerRadius="14"
-                                        TextColor="White" FontAttributes="Bold" FontSize="14">
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Text" Value="🏭  Abrir Cortina"/>
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 14"
+                                        Padding="0,13">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
                                             <Setter Property="BackgroundColor" Value="#244A7C"/>
-                                            <Setter Property="Command"
-                                                    Value="{Binding BindingContext.AbrirCortinaCommand, Source={x:Reference Root}}"/>
-                                            <Setter Property="CommandParameter" Value="{Binding .}"/>
                                             <Style.Triggers>
-                                                <DataTrigger TargetType="Button" Binding="{Binding TipoAccion}" Value="CerrarRegistro">
-                                                    <Setter Property="Text" Value="🚪  Vehículo salió — Cerrar"/>
+                                                <DataTrigger TargetType="Border" Binding="{Binding TipoAccion}" Value="CerrarRegistro">
                                                     <Setter Property="BackgroundColor" Value="#7C2D12"/>
-                                                    <Setter Property="Command"
-                                                            Value="{Binding BindingContext.CerrarRegistroCommand, Source={x:Reference Root}}"/>
-                                                    <Setter Property="CommandParameter" Value="{Binding .}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Button.Style>
-                                </Button>
+                                    </Border.Style>
+                                    <Label HorizontalTextAlignment="Center"
+                                           FontAttributes="Bold" FontSize="14" TextColor="White">
+                                        <Label.Style>
+                                            <Style TargetType="Label">
+                                                <Setter Property="Text" Value="🔓  Abrir cortina pendiente"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding TipoAccion}" Value="CerrarRegistro">
+                                                        <Setter Property="Text" Value="🔒  Cerrar registro pendiente"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.SelectTaskCommand, Source={x:Reference Root}}"
+                                            CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
 
                             </Grid>
 
