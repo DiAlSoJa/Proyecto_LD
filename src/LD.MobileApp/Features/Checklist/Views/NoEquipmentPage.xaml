@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
+    x:Class="MauiAppLogin.NoEquipmentPage"
+    Title=""
+    NavigationPage.HasNavigationBar="False"
+    BackgroundColor="#0F2E4F">
+
+    <VerticalStackLayout
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        Spacing="20"
+        Padding="40">
+
+        <Label
+            Text="&#128683;"
+            FontSize="72"
+            HorizontalOptions="Center" />
+
+        <Label
+            Text="Sin equipo asignado"
+            TextColor="White"
+            FontSize="22"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <Label
+            Text="No tienes un equipo asignado en este turno.&#10;Contacta a tu supervisor."
+            TextColor="#B0C4D8"
+            FontSize="15"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center" />
+
+        <Button
+            Text="Cerrar sesión"
+            Command="{Binding LogoutCommand}"
+            BackgroundColor="#1A4A7A"
+            TextColor="White"
+            CornerRadius="10"
+            HeightRequest="48"
+            Margin="0,24,0,0" />
+
+    </VerticalStackLayout>
+</ContentPage>

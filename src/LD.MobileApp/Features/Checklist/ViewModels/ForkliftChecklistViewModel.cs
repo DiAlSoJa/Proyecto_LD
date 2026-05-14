@@ -57,7 +57,12 @@ public partial class ForkliftChecklistViewModel : ObservableObject
         {
             IsLoading = true;
             var response = await _equipmentQuestionService.GetByEquipmentType(Equipment.EquipmentTypeId);
-            if (!response.IsSuccess || response.Data is null) return;
+            if (!response.IsSuccess || response.Data is null)
+            {
+                await Shell.Current.DisplayAlertAsync("Error",
+                    response.ErrorMessage ?? "No se pudieron cargar las preguntas.", "OK");
+                return;
+            }
 
             Sections.Clear();
             var section = new ChecklistSection { Title = Equipment.Tipo };

@@ -29,7 +29,12 @@
       "Bash(curl *)",
       "Bash(bash test_checklist_flow.sh)",
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d['data']['accesstoken']\\)\")",
-      "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ const j=JSON.parse\\(d\\); console.log\\(j.data.accesstoken\\); }\\)\")"
+      "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ const j=JSON.parse\\(d\\); console.log\\(j.data.accesstoken\\); }\\)\")",
+      "Bash(sqlcmd *)",
+      "Bash(Start-Sleep -Seconds 8)",
+      "Bash(Select-String -Pattern \"error CS|Errores|correcta\")",
+      "Bash(Select-Object -Last 10)",
+      "Bash(git stash *)"
     ]
   }
 }

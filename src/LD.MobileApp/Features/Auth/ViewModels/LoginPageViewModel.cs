@@ -139,7 +139,7 @@ namespace MauiAppLogin.ViewModels
                     $"[NavegaSegunEquipo] Error al consultar equipo asignado: {ex}");
             }
 
-            await Shell.Current.GoToAsync("//dashboard");
+            await Shell.Current.GoToAsync(nameof(NoEquipmentPage));
         }
     }
 

@@ -22,6 +22,7 @@
             Routing.RegisterRoute(nameof(WarehouseOperations), typeof(WarehouseOperations));
             Routing.RegisterRoute(nameof(InventoryList), typeof(InventoryList));
             Routing.RegisterRoute(nameof(ForkliftChecklistPage), typeof(ForkliftChecklistPage));
+            Routing.RegisterRoute(nameof(NoEquipmentPage), typeof(NoEquipmentPage));
 
             // Control de Patio
             Routing.RegisterRoute(nameof(PatioPendientesPage), typeof(PatioPendientesPage));

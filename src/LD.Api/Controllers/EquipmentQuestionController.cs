@@ -24,7 +24,7 @@ public class EquipmentQuestionController : ControllerBase
     }
 
     [HttpGet("equipment-type/{equipmentTypeId}")]
-    [Permission(PermissionKeys.EquipmentType_View)]
+    [Permission(PermissionKeys.ForkliftChecklist_Execute)]
     public async Task<IActionResult> GetByEquipmentType(int equipmentTypeId)
     {
         var questions = await _context.EquipmentQuestionDets
