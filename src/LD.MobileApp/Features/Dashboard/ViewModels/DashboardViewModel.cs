@@ -5,6 +5,7 @@ using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Constants;
 using LD.Contracts.Enums;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Views.Controls;
 using System.Windows.Input;
 
@@ -14,6 +15,8 @@ namespace MauiAppLogin.ViewModels
     {
         private readonly ApiService _apiService;
         private readonly PatioClientService _patioClientService;
+        private readonly ChecklistService _checklistService;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private string username = string.Empty;
@@ -78,10 +81,12 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToChecklistCommand { get; }
         public ICommand NavigateToPatioPendientesCommand { get; }
 
-        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService)
+        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService, ChecklistService checklistService, IDialogService dialogService)
         {
             _apiService = apiService;
             _patioClientService = patioClientService;
+            _checklistService = checklistService;
+            _dialogService = dialogService;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
             NavigateToChangeLocationCommand = new AsyncRelayCommand(NavigateToChangeLocation);
@@ -245,7 +250,63 @@ namespace MauiAppLogin.ViewModels
 
         private async Task NavigateToChecklist()
         {
-            await Shell.Current.GoToAsync("ForkliftChecklistPage");
+            try
+            {
+                var response = await _checklistService.GetDailyStatusAsync();
+
+                if (!response.IsSuccess || response.Data is null)
+                {
+                    await _dialogService.ShowErrorAsync(
+                        "Error",
+                        "No se pudo verificar el estado del checklist. Intenta de nuevo.");
+                    return;
+                }
+
+                var status = response.Data;
+
+                // Sin equipo asignado → aviso y queda en dashboard
+                if (!status.HasAssignedEquipment)
+                {
+                    await _dialogService.ShowInfoAsync(
+                        "Sin equipo asignado",
+                        "No tienes un equipo asignado. Contacta a tu supervisor.");
+                    return;
+                }
+
+                // Ya completó checklist hoy → pregunta si registra otro
+                if (status.HasCompletedToday)
+                {
+                    var hora = status.LastChecklistAt?.ToLocalTime().ToString("HH:mm") ?? "hoy";
+                    var registrarOtro = await _dialogService.ShowWarningAsync(
+                        "Ya registraste un checklist hoy",
+                        $"El último fue registrado a las {hora}. ¿Deseas registrar uno adicional?");
+
+                    if (!registrarOtro) return;
+
+                    await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
+                        new Dictionary<string, object>
+                        {
+                            ["Equipment"]   = status.Equipment!,
+                            ["IsMandatory"] = false
+                        });
+                    return;
+                }
+
+                // No ha hecho checklist hoy → modo obligatorio
+                await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
+                    new Dictionary<string, object>
+                    {
+                        ["Equipment"]   = status.Equipment!,
+                        ["IsMandatory"] = true
+                    });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NavigateToChecklist] Error: {ex}");
+                await _dialogService.ShowErrorAsync(
+                    "Sin conexión",
+                    "No se pudo verificar el estado del checklist. Verifica tu conexión e intenta de nuevo.");
+            }
         }
 
         private async Task NavigateToPatioPendientes()

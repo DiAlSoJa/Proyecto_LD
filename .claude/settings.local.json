@@ -34,7 +34,10 @@
       "Bash(Start-Sleep -Seconds 8)",
       "Bash(Select-String -Pattern \"error CS|Errores|correcta\")",
       "Bash(Select-Object -Last 10)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(Select-String -Pattern \"error|warning|Build succeeded|FAILED\")",
+      "Bash(Select-Object -Last 20)"
     ]
   }
 }

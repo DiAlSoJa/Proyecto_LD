@@ -384,6 +384,7 @@ namespace LD.Forms.Configuration
         public string Checklist_GetById     => $"{_baseApi}/Checklist/{{checklistId}}";
         public string Checklist_UploadPhoto => $"{_baseApi}/Checklist/upload-photo";
         public string Checklist_GetPhoto    => $"{_baseApi}/Checklist/photo?path={{path}}";
+        public string Checklist_DailyStatus => $"{_baseApi}/Checklist/daily-status";
 
 
     }

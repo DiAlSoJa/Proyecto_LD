@@ -19,6 +19,6 @@ public class ChecklistSummaryDto
     public string? Observaciones { get; set; }
 
     // Propiedades de display para los grids WPF
-    public string FechaDisplay => CreatedAt.ToString("dd/MM/yyyy");
+    public string FechaDisplay => CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
     public string OperativoDisplay => IsOperative ? "Sí" : "No";
 }

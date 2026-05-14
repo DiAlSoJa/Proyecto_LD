@@ -8,6 +8,7 @@ using LD.Contracts.Constants;
 using LD.Contracts.Equipment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace LD.Api.Controllers;
 
@@ -59,6 +60,13 @@ public class ChecklistController : CommonController
         rutaCompleta = candidato;
         return true;
     }
+
+    // Verifica si el usuario tiene equipo asignado y si ya completó su checklist en las últimas 24 horas.
+    [HttpGet("daily-status")]
+    [Permission(PermissionKeys.ForkliftChecklist_Execute)]
+    public async Task<IActionResult> GetDailyStatus()
+        => ResultExtensions.ToActionResult(
+            await Mediator.Send(new GetChecklistDailyStatusQuery(CurrentUserId)));
 
     [HttpPost]
     [Permission(PermissionKeys.Checklist_Submit)]

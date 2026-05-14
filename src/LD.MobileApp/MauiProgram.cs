@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using LD.Client;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MauiAppLogin.ViewModels;
@@ -78,6 +79,7 @@ namespace MauiAppLogin
             builder.Services.AddSingleton<SecurityRegistrationContext>();
 
             builder.Services.AddSingleton<ILoaderService, LoaderService>();
+            builder.Services.AddSingleton<IDialogService, DialogService>();
 
             // Control de Patio
             builder.Services.AddSingleton<IPatioNotificacionService, PatioNotificacionService>();

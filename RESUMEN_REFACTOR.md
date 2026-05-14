@@ -214,6 +214,99 @@ El `HorometroEntry` (con soporte OCR) capturaba el valor pero nunca lo incluía 
 
 ---
 
+## Sprint 3 — Lógica 24h y Custom Dialogs (2026-05-14)
+
+### 1. Nuevo endpoint `GET /api/checklist/daily-status`
+
+| Campo | Valor |
+|---|---|
+| Ruta | `GET /api/checklist/daily-status` |
+| Permiso | `PermissionKeys.ForkliftChecklist_Execute` (`forklift-checklist.execute`) |
+| Toma `userId` de | JWT token (`CurrentUserId` en `CommonController`) |
+
+**Respuesta**:
+```json
+{
+  "hasAssignedEquipment": true,
+  "hasCompletedToday": false,
+  "lastChecklistAt": "2026-05-14T08:00:00Z",
+  "equipment": { ... }
+}
+```
+
+**Archivos modificados/creados**:
+- `LD.Contracts/Checklist/ChecklistDailyStatusDto.cs` ← DTO de respuesta (nuevo)
+- `LD.Application/Features/Checklist/Queries/GetChecklistDailyStatusQuery.cs` ← Query handler (nuevo)
+- `LD.Application/Common/Interfaces/Repository/IChecklistRepository.cs` ← + `GetDailyStatusAsync`
+- `LD.Infrastructure/Repositories/ChecklistRepository.cs` ← implementación (busca checklist de las últimas 24h por userId + equipmentId)
+- `LD.Api/Controllers/ChecklistController.cs` ← endpoint `[HttpGet("daily-status")]`
+- `LD.Client/Configuration/ApiEndpoints.cs` ← `Checklist_DailyStatus`
+- `LD.Client/Services/ChecklistService.cs` ← `GetDailyStatusAsync()`
+
+**Nota**: No se requirió migración. `CreatedAt` ya existe en `AuditableEntity` y se llena con UTC por el interceptor.
+
+---
+
+### 2. Componentes nuevos en MAUI
+
+#### `src/LD.MobileApp/Controls/`
+
+| Archivo | Descripción |
+|---|---|
+| `DialogType.cs` | Enum: Info / Warning / Error / Blocking |
+| `CustomDialog.xaml` + `.xaml.cs` | `Popup` de CommunityToolkit.Maui; ícono, título, mensaje y botones configurables según `DialogType` |
+| `DialogService.cs` | `IDialogService` + implementación; registro en DI como Singleton |
+
+**Modos de `DialogType`**:
+- `Info` → ícono ℹ️, botón "Entendido", cierra con `true`
+- `Warning` → ícono ⚠️, botones "Cancelar" (false) / "Registrar otro" (true)
+- `Error` → ícono ❌, botón "Cerrar", cierra con `false`
+- `Blocking` → ícono 🔒, sin botones; solo se cierra programáticamente con `HideBlocking()`
+
+**Registro en `MauiProgram.cs`**: `builder.Services.AddSingleton<IDialogService, DialogService>()`
+
+---
+
+### 3. Cambios en `LoginPageViewModel`
+
+- `_equipmentService` eliminado del constructor; reemplazado por `_checklistService: ChecklistService`.
+- Método `NavegaSegunEquipoAsync()` reescrito con nueva lógica de 3 ramas:
+  1. `HasAssignedEquipment == false` → `GoToAsync(nameof(NoEquipmentPage))`
+  2. `HasAssignedEquipment == true && HasCompletedToday == false` → `GoToAsync(nameof(ForkliftChecklistPage), { Equipment, IsMandatory=true })`
+  3. `HasAssignedEquipment == true && HasCompletedToday == true` → `GoToAsync("//dashboard")` + guarda `ChecklistCompletedAt` en `Preferences`
+
+---
+
+### 4. Cambios en `ForkliftChecklistPage.xaml.cs`
+
+- Nuevo `QueryProperty`: `[QueryProperty(nameof(IsMandatory), "IsMandatory")]`
+- Constructor ampliado: `+ ChecklistService checklistService, IDialogService dialogService`
+- `InicializarConEquipoAsync` → si `!_isMandatory`, llama a `VerificarChecklistDiarioAsync()`
+- `VerificarChecklistDiarioAsync()` → llama a `GetDailyStatusAsync()`; si ya completó hoy muestra `DialogType.Warning` y navega `.." si el usuario cancela
+- `OnBackButtonPressed()` → si `_isMandatory == true` retorna `true` (bloquea back) y muestra `DialogType.Info`
+- Cuando el checklist se guarda exitosamente: `_isMandatory = false` antes de navegar
+
+---
+
+### 5. Estado de requisitos del Sprint 3
+
+| Requisito | Estado |
+|---|---|
+| Endpoint `daily-status` devuelve equipo + flag de 24h | ✅ |
+| `CreatedAt` se guarda en UTC al enviar checklist | ✅ (ya existía vía interceptor) |
+| `CustomDialog.xaml` con 4 modos | ✅ |
+| `IDialogService` registrado en DI | ✅ |
+| Login navega según estado diario | ✅ |
+| Checklist obligatorio bloquea botón Back | ✅ |
+| Acceso manual muestra advertencia si ya completó hoy | ✅ |
+| WPF Resumen: Fecha incluye hora | ✅ (`FechaDisplay` → `ToLocalTime().ToString("dd/MM/yyyy HH:mm")`) |
+| WPF Resumen: Fotos visibles en grid de detalle (path/side) | ✅ |
+| WPF Resumen: Botón "Ver imágenes" descarga y abre fotos | ✅ (usa temp dir + Process.Start) |
+| WPF ResumenBaterias: Fecha incluye hora | ✅ |
+| WPF ResumenBaterias: Filtro IsBattery sigue funcionando | ✅ (sin cambios en la lógica, el `Hourmeter` se muestra por herencia de `ChecklistSummaryDto`) |
+
+---
+
 ## Endpoints API — estado actual
 
 | Endpoint | Método | Permiso | Descripción |
@@ -231,6 +324,7 @@ El `HorometroEntry` (con soporte OCR) capturaba el valor pero nunca lo incluía 
 | `/api/equipmentquestion` | POST | EquipmentType_Create | Crear o actualizar pregunta (DetId=0 → crear) |
 | `/api/equipmentquestion/{id}` | DELETE | EquipmentType_Update | Eliminar pregunta |
 | `/api/checklist` | POST | Checklist_Submit | Enviar checklist completo |
+| `/api/checklist/daily-status` | GET | ForkliftChecklist_Execute | Estado 24h: equipo asignado + último checklist |
 | `/api/checklist` | GET | Checklist_ViewSummary | Listar checklists con filtros |
 | `/api/checklist/{id}` | GET | Checklist_ViewSummary | Detalle de un checklist |
 | `/api/checklist/upload-photo` | POST | Checklist_Submit | Subir foto del checklist |
@@ -246,11 +340,60 @@ La asignación usa los campos `Turn1`/`Turn2`/`Turn3` de la entidad `Equipment` 
 
 ## Deuda técnica conocida (sin urgencia)
 
-| Área | Descripción |
-|------|-------------|
-| `EquipmentQuestionController` | Inyecta `DbContext` directamente y hereda `ControllerBase` en vez de `CommonController`. Viola la arquitectura pero funciona. |
-| `GetAssignedEquipmentQuery` | Carga todos los equipos en memoria para filtrar. Escala mal en catálogos grandes. |
-| `EquipmentType_View` permission | Apunta a `"units.read"` como alias temporal (comentado en `PermissionKeys.cs`). |
+| # | Descripción | Archivo | Impacto | Prioridad |
+|---|-------------|---------|---------|-----------|
+| 1 | `EquipmentQuestionController` inyecta `DbContext` directamente y hereda `ControllerBase` en vez de `CommonController`. Viola la arquitectura pero funciona. | `EquipmentQuestionController.cs` | Bajo | Media |
+| 2 | `GetAssignedEquipmentQuery` carga todos los equipos en memoria para filtrar por Turn1/2/3. | `GetAssignedEquipmentQuery.cs:47` | Bajo ahora, escala mal con >500 equipos | Baja |
+| 3 | `EquipmentType_View` permission apunta a `"units.read"` como alias temporal. | `PermissionKeys.cs` | Bajo | Baja |
+| 4 | `ShowBlocking` en `DialogService` usa `BeginInvokeOnMainThread(async () => await ShowPopupAsync(...))` — fire-and-forget sin captura de excepción. Si `GetCurrentPage()` devuelve null, la excepción se pierde silenciosamente. | `DialogService.cs:46` | Bajo — solo cuando page es null | Media |
+| 5 | `GetChecklistDailyStatusQuery` carga todos los equipos en memoria para encontrar el equipo del usuario. Mismo patrón que `GetAssignedEquipmentQuery`. | `GetChecklistDailyStatusQuery.cs:52` | Bajo ahora, escala mal con >500 equipos | Baja |
+
+---
+
+---
+
+## Sprint 3 — Hotfix flujo login (2026-05-14)
+
+### Descripción
+
+El flujo anterior redirigía a `NoEquipmentPage` (o a `ForkliftChecklistPage` en modo obligatorio) directamente desde el login, mezclando autenticación con lógica de negocio del checklist. El hotfix separa ambas responsabilidades.
+
+### Flujo anterior
+
+```
+POST /api/auth/login
+  → GetMeAsync
+  → GET /api/checklist/daily-status
+      → sin equipo:        NavegaSegunEquipoAsync → NoEquipmentPage
+      → sin checklist hoy: NavegaSegunEquipoAsync → ForkliftChecklistPage (IsMandatory=true)
+      → con checklist hoy: NavegaSegunEquipoAsync → //dashboard
+```
+
+### Flujo nuevo
+
+```
+POST /api/auth/login
+  → GetMeAsync
+  → //dashboard  ← siempre
+
+Botón "Checklist de Montacargas" en el dashboard
+  → GET /api/checklist/daily-status
+      → sin equipo:        ShowInfoAsync + return (sin navegar)
+      → con checklist hoy: ShowWarningAsync → cancela (return) o IsMandatory=false
+      → sin checklist hoy: ForkliftChecklistPage (IsMandatory=true)
+```
+
+### Archivos modificados
+
+| Archivo | Cambio |
+|---|---|
+| `src/LD.MobileApp/Features/Auth/ViewModels/LoginPageViewModel.cs` | `NavegaSegunEquipoAsync()` comentada; login siempre navega a `//dashboard` |
+| `src/LD.MobileApp/Features/Dashboard/ViewModels/DashboardViewModel.cs` | `NavigateToChecklist()` reemplazado con verificación de daily-status + diálogos; inyecta `ChecklistService` e `IDialogService` |
+| `src/LD.MobileApp/Features/Checklist/Views/ForkliftChecklistPage.xaml.cs` | `VerificarChecklistDiarioAsync()` comentada (duplicado eliminado); llamada removida de `InicializarConEquipoAsync` |
+
+### Nota sobre NoEquipmentPage
+
+`NoEquipmentPage` ya no se navega desde el login. La página permanece en el proyecto pero no tiene punto de entrada activo. Candidata a eliminar si en próximos sprints se confirma que tampoco se usará desde otro flujo.
 
 ---
 

@@ -134,7 +134,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Defectos"     Binding="{Binding TotalDefects}"    Width="90"/>
                                 <DataGridTextColumn Header="Horometro"    Binding="{Binding Hourmeter}"        Width="110"/>
-                                <DataGridTextColumn Header="Fecha"        Binding="{Binding FechaDisplay}"    Width="100"/>
+                                <DataGridTextColumn Header="Fecha y Hora" Binding="{Binding FechaDisplay}"    Width="130"/>
                                 <DataGridTextColumn Header="Turno"        Binding="{Binding Turno}"           Width="100"/>
                                 <DataGridTextColumn Header="Operador"     Binding="{Binding UserName}"        Width="150"/>
                                 <DataGridTextColumn Header="Tipo"         Binding="{Binding EquipmentTypeName}" Width="130"/>

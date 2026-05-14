@@ -3,6 +3,7 @@ using LD.Contracts.Equipment;
 using LD.Contracts.Responses;
 using LD.Forms.Configuration;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace LD.Client.Services;
 
@@ -50,6 +51,13 @@ public class ChecklistService
 
         return await _api.PostMultipartAsync<ApiResponseDto<EquipmentImageUploadDto>>(
             _apiEndpoints.Checklist_UploadPhoto, content);
+    }
+
+    // Consulta si el usuario tiene equipo asignado y si completó su checklist en las últimas 24 horas.
+    public async Task<ApiResponseDto<ChecklistDailyStatusDto>> GetDailyStatusAsync()
+    {
+        return await _api.GetAsync<ApiResponseDto<ChecklistDailyStatusDto>>(
+            _apiEndpoints.Checklist_DailyStatus);
     }
 
     // Devuelve la URL del endpoint de foto dado su relativePath.

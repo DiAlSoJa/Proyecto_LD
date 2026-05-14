@@ -69,6 +69,23 @@ public class ChecklistRepository : IChecklistRepository
         }).ToList();
     }
 
+    public async Task<(bool hasCompleted, DateTime? lastChecklistAt)> GetDailyStatusAsync(
+        string userId, int equipmentId, DateTime since)
+    {
+        var ultimo = await _context.Checklists
+            .AsNoTracking()
+            .Where(c => c.UserId == userId
+                     && c.EquipmentId == equipmentId
+                     && c.CreatedAt >= since
+                     && c.IsActive)
+            .OrderByDescending(c => c.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        return ultimo is not null
+            ? (true, (DateTime?)ultimo.CreatedAt)
+            : (false, null);
+    }
+
     public async Task<ChecklistDetailDto?> GetDetailAsync(int checklistId, string photoBaseUrl)
     {
         var c = await _context.Checklists

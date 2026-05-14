@@ -1,6 +1,7 @@
 using LD.Contracts.Checklist;
 using LD.FormsX.Features.CheckList.ViewModels;
 using LD.FormsX.Helpers;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -72,9 +73,37 @@ namespace LD.FormsX.Views.CheckList.Tabs
             }
         }
 
-        private void BtnVerImagenes_Click(object sender, RoutedEventArgs e)
+        // Descarga las fotos del checklist seleccionado y las abre con el visor de imágenes del SO.
+        private async void BtnVerImagenes_Click(object sender, RoutedEventArgs e)
         {
-            // Pendiente: abrir galería de fotos del checklist seleccionado.
+            if (ViewModel.DetalleActual?.Photos is null || ViewModel.DetalleActual.Photos.Count == 0)
+            {
+                DialogHelper.ShowInfo("Este checklist no tiene fotos registradas.");
+                return;
+            }
+
+            try
+            {
+                BtnVerImagenes.IsEnabled = false;
+                var rutas = await ViewModel.DescargarFotosAsync();
+
+                if (rutas.Count == 0)
+                {
+                    DialogHelper.ShowInfo("No se pudieron descargar las fotos.");
+                    return;
+                }
+
+                foreach (var ruta in rutas)
+                    Process.Start(new ProcessStartInfo(ruta) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError($"Error al abrir fotos: {ex.Message}");
+            }
+            finally
+            {
+                BtnVerImagenes.IsEnabled = true;
+            }
         }
 
         // ──────────── Detalle ────────────
@@ -96,8 +125,17 @@ namespace LD.FormsX.Views.CheckList.Tabs
                       :                     a.AnswerText
             }).ToList<object>();
 
-            dgResumenDetalle.ItemsSource = rows;
-            txtObservacionesResumen.Text = detail.Observaciones ?? string.Empty;
+            // Agregar fotos como filas informativas (thumbnail o enlace)
+            foreach (var photo in detail.Photos.OrderBy(p => p.Order))
+                rows.Add(new
+                {
+                    Tipo  = $"📷 Foto {photo.Order} ({photo.Side})",
+                    Valor = photo.RelativePath
+                });
+
+            dgResumenDetalle.ItemsSource      = rows;
+            txtObservacionesResumen.Text      = detail.Observaciones ?? string.Empty;
+            BtnVerImagenes.IsEnabled          = detail.Photos.Count > 0;
         }
 
         private void LimpiarDetalle()
@@ -106,6 +144,7 @@ namespace LD.FormsX.Views.CheckList.Tabs
             txtObservacionesResumen.Text       = string.Empty;
             canvasIzq.Children.Clear();
             canvasDer.Children.Clear();
+            BtnVerImagenes.IsEnabled           = false;
         }
 
         // ──────────── Canvas de marcas X ────────────

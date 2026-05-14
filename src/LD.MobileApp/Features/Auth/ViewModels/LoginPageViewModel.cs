@@ -32,18 +32,18 @@ namespace MauiAppLogin.ViewModels
 
         private readonly AuthService _authService;
         private readonly ILoaderService _loaderService;
-        private readonly EquipmentService _equipmentService;
+        private readonly ChecklistService _checklistService;
 
         private const string DefaultApiUrl = "http://192.168.0.103:8050/api";
 
         public ILoaderService Loader => _loaderService;
 
-        public LoginViewModel(AuthService authService, ILoaderService loaderService, EquipmentService equipmentService)
+        public LoginViewModel(AuthService authService, ILoaderService loaderService, ChecklistService checklistService)
         {
-            _authService = authService;
-            _loaderService = loaderService;
-            _equipmentService = equipmentService;
-            LoginCommand = new AsyncCommand(Login);
+            _authService      = authService;
+            _loaderService    = loaderService;
+            _checklistService = checklistService;
+            LoginCommand      = new AsyncCommand(Login);
             ShowIpConfigCommand = new AsyncCommand(ShowIpConfigAsync);
             Username = "admin";
             Password = "Pa$$w0rd";
@@ -94,7 +94,7 @@ namespace MauiAppLogin.ViewModels
                     await Shell.Current.DisplayAlertAsync("Error", response.Message, "OK");
                     return;
                 }
-                UserSession.AccessToken = response.Data?.Accesstoken;
+                UserSession.AccessToken  = response.Data?.Accesstoken;
                 UserSession.RefreshToken = response.Data?.RefreshToken;
 
                 var getMeResponse = await _authService.GetMeAsync();
@@ -106,7 +106,7 @@ namespace MauiAppLogin.ViewModels
 
                 UserData.SetUserData(getMeResponse.Data);
 
-                await NavegaSegunEquipoAsync();
+                await NavegaAlInicioAsync();
             }
             catch (Exception ex)
             {
@@ -119,29 +119,75 @@ namespace MauiAppLogin.ViewModels
             }
         }
 
-        // Consulta el endpoint dedicated para obtener el equipo asignado al usuario actual.
-        // Si lo tiene, navega directo al checklist; si no, va al dashboard.
-        private async Task NavegaSegunEquipoAsync()
+        // Después del login: si tiene equipo y no hizo checklist hoy → checklist obligatorio.
+        // Cualquier otro caso (sin equipo, ya hizo checklist, error de red) → dashboard.
+        private async Task NavegaAlInicioAsync()
         {
             try
             {
-                var response = await _equipmentService.GetAssignedToMeAsync();
-                if (response.IsSuccess && response.Data is not null)
+                var response = await _checklistService.GetDailyStatusAsync();
+
+                if (response.IsSuccess
+                    && response.Data is { HasAssignedEquipment: true, HasCompletedToday: false })
                 {
                     await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
-                        new Dictionary<string, object> { { "Equipment", response.Data } });
+                        new Dictionary<string, object>
+                        {
+                            ["Equipment"]   = response.Data.Equipment!,
+                            ["IsMandatory"] = true
+                        });
                     return;
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(
-                    $"[NavegaSegunEquipo] Error al consultar equipo asignado: {ex}");
+                System.Diagnostics.Debug.WriteLine($"[NavegaAlInicio] {ex}");
             }
 
-            await Shell.Current.GoToAsync(nameof(NoEquipmentPage));
+            await Shell.Current.GoToAsync("//dashboard");
         }
+
+        /* Referencia del flujo anterior — Sprint 3 Hotfix (2026-05-14)
+         * La verificación de equipo ya no ocurre en el login.
+         * Se mantiene comentado como referencia del flujo anterior.
+         *
+         * private async Task NavegaSegunEquipoAsync()
+         * {
+         *     try
+         *     {
+         *         var response = await _checklistService.GetDailyStatusAsync();
+         *         if (!response.IsSuccess || response.Data is null)
+         *         {
+         *             await Shell.Current.GoToAsync(nameof(NoEquipmentPage));
+         *             return;
+         *         }
+         *         var status = response.Data;
+         *         if (!status.HasAssignedEquipment)
+         *         {
+         *             await Shell.Current.GoToAsync(nameof(NoEquipmentPage));
+         *             return;
+         *         }
+         *         if (!status.HasCompletedToday)
+         *         {
+         *             await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
+         *                 new Dictionary<string, object>
+         *                 {
+         *                     { "Equipment",   status.Equipment! },
+         *                     { "IsMandatory", true }
+         *                 });
+         *             return;
+         *         }
+         *         if (status.LastChecklistAt.HasValue)
+         *             Preferences.Default.Set("ChecklistCompletedAt",
+         *                 status.LastChecklistAt.Value.ToString("o"));
+         *         await Shell.Current.GoToAsync("//dashboard");
+         *     }
+         *     catch (Exception ex)
+         *     {
+         *         System.Diagnostics.Debug.WriteLine($"[NavegaSegunEquipo] {ex}");
+         *         await Shell.Current.GoToAsync(nameof(NoEquipmentPage));
+         *     }
+         * }
+         */
     }
-
-
 }

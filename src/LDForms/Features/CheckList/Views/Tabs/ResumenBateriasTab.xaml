@@ -134,7 +134,7 @@
                                 <DataGridTextColumn Header="No. Batería"   Binding="{Binding EquipmentName}"    Width="130"/>
                                 <DataGridTextColumn Header="Serie"         Binding="{Binding SerialNumber}"     Width="120"/>
                                 <DataGridTextColumn Header="Marca"         Binding="{Binding Brand}"            Width="110"/>
-                                <DataGridTextColumn Header="Fecha"         Binding="{Binding FechaDisplay}"     Width="110"/>
+                                <DataGridTextColumn Header="Fecha y Hora" Binding="{Binding FechaDisplay}"     Width="130"/>
                                 <DataGridTextColumn Header="Turno"         Binding="{Binding Turno}"            Width="90"/>
                                 <DataGridTextColumn Header="Operador"      Binding="{Binding UserName}"         Width="150"/>
                                 <DataGridTextColumn Header="Defectos"      Binding="{Binding TotalDefects}"     Width="85"/>

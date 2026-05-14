@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+           xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+           x:Class="MauiAppLogin.Controls.CustomDialog"
+           CanBeDismissedByTappingOutsideOfPopup="False"
+           Color="Transparent">
+
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 16"
+            StrokeThickness="0"
+            Padding="28,24"
+            Margin="24"
+            MaximumWidthRequest="360">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="0,4" Radius="20" Opacity="0.18"/>
+        </Border.Shadow>
+
+        <VerticalStackLayout Spacing="16">
+
+            <!-- Ícono del tipo de diálogo -->
+            <Label x:Name="IconLabel"
+                   FontSize="48"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+
+            <!-- Título -->
+            <Label x:Name="TitleLabel"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="#1F3A5F"/>
+
+            <!-- Mensaje -->
+            <Label x:Name="MessageLabel"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="#374151"
+                   LineBreakMode="WordWrap"/>
+
+            <!-- Contenedor de botones (se llena en code-behind según DialogType) -->
+            <HorizontalStackLayout x:Name="ButtonsContainer"
+                                   Spacing="12"
+                                   HorizontalOptions="Center"
+                                   Margin="0,8,0,0"/>
+
+        </VerticalStackLayout>
+    </Border>
+</mct:Popup>

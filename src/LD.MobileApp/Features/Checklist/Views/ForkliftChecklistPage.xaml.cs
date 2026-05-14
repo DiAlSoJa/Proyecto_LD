@@ -3,22 +3,29 @@ using LD.Client.Services;
 using LD.Contracts.Checklist;
 using LD.Contracts.Equipment;
 using MauiAppLogin.Common.Imaging;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.ViewModels;
 using Microsoft.Maui.Layouts;
 
 namespace MauiAppLogin;
 
-[QueryProperty(nameof(Equipment), "Equipment")]
+[QueryProperty(nameof(Equipment),   "Equipment")]
+[QueryProperty(nameof(IsMandatory), "IsMandatory")]
 public partial class ForkliftChecklistPage : ContentPage
 {
     private readonly List<Label> _leftMarks  = new();
     private readonly List<Label> _rightMarks = new();
-    private readonly EquipmentService _equipmentService;
+    private readonly EquipmentService  _equipmentService;
+    private readonly ChecklistService  _checklistService;
+    private readonly IDialogService    _dialogService;
 
     // Bytes de las fotos capturadas en memoria (para subir sin escribir a disco)
     private byte[]? _foto1Bytes;
     private byte[]? _foto2Bytes;
+
+    // Cuando es true el usuario DEBE completar el checklist antes de salir
+    private bool _isMandatory;
 
     private EquipmentDto? _equipment;
     public EquipmentDto? Equipment
@@ -32,14 +39,42 @@ public partial class ForkliftChecklistPage : ContentPage
         }
     }
 
+    public bool IsMandatory
+    {
+        get => _isMandatory;
+        set => _isMandatory = value;
+    }
+
     private ForkliftChecklistViewModel ViewModel => (ForkliftChecklistViewModel)BindingContext;
 
-    public ForkliftChecklistPage(ForkliftChecklistViewModel viewModel, EquipmentService equipmentService)
+    public ForkliftChecklistPage(
+        ForkliftChecklistViewModel viewModel,
+        EquipmentService equipmentService,
+        ChecklistService checklistService,
+        IDialogService dialogService)
     {
         InitializeComponent();
         BindingContext    = viewModel;
         _equipmentService = equipmentService;
+        _checklistService = checklistService;
+        _dialogService    = dialogService;
         FechaPicker.Date  = DateTime.Today;
+    }
+
+    // Bloquea el botón Atrás del dispositivo cuando el checklist es obligatorio.
+    protected override bool OnBackButtonPressed()
+    {
+        if (_isMandatory)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await _dialogService.ShowInfoAsync(
+                    "Checklist requerido",
+                    "Debes completar el checklist de tu equipo antes de continuar.");
+            });
+            return true; // consume el evento y bloquea la navegación
+        }
+        return base.OnBackButtonPressed();
     }
 
     private async Task InicializarConEquipoAsync(EquipmentDto equipment)
@@ -47,7 +82,37 @@ public partial class ForkliftChecklistPage : ContentPage
         await ViewModel.InicializarAsync(equipment);
         await CargarImagenEquipoAsync(equipment);
         EquipoEntry.Text = equipment.NoEquipo;
+
+        // La verificación de checklist diario ahora ocurre antes de navegar (DashboardViewModel.NavigateToChecklist)
+        // por lo que no es necesario repetirla aquí.
     }
+
+    /* FUERA DE USO — Sprint 3 Hotfix (2026-05-14)
+     * La verificación se movió a DashboardViewModel.NavigateToChecklist(),
+     * que se ejecuta antes de navegar a esta página.
+     * Se conserva comentado como referencia.
+     *
+     * private async Task VerificarChecklistDiarioAsync()
+     * {
+     *     try
+     *     {
+     *         var response = await _checklistService.GetDailyStatusAsync();
+     *         if (!response.IsSuccess || response.Data is null) return;
+     *         if (!response.Data.HasCompletedToday) return;
+     *         var lastAt = response.Data.LastChecklistAt;
+     *         var hora = lastAt.HasValue ? lastAt.Value.ToLocalTime().ToString("HH:mm") : "hoy";
+     *         var confirmado = await _dialogService.ShowWarningAsync(
+     *             "Ya registraste un checklist hoy",
+     *             $"El último fue registrado a las {hora}. ¿Deseas registrar uno adicional?");
+     *         if (!confirmado)
+     *             await Shell.Current.GoToAsync("..");
+     *     }
+     *     catch (Exception ex)
+     *     {
+     *         System.Diagnostics.Debug.WriteLine($"[VerificarChecklist] Error: {ex}");
+     *     }
+     * }
+     */
 
     private async Task CargarImagenEquipoAsync(EquipmentDto equipment)
     {
@@ -177,12 +242,12 @@ public partial class ForkliftChecklistPage : ContentPage
 
             if (_foto1Bytes == null)
             {
-                _foto1Bytes  = bytes;
+                _foto1Bytes   = bytes;
                 Thumb1.Source = img;
             }
             else
             {
-                _foto2Bytes  = bytes;
+                _foto2Bytes   = bytes;
                 Thumb2.Source = img;
             }
         }
@@ -240,7 +305,7 @@ public partial class ForkliftChecklistPage : ContentPage
                 }
                 catch
                 {
-                    bytesFinales = bytes; // fallback: subir original si la compresión falla
+                    bytesFinales = bytes;
                 }
 
                 var uploadResult = await vm.UploadPhotoAsync(bytesFinales, nombre, side);
@@ -275,7 +340,7 @@ public partial class ForkliftChecklistPage : ContentPage
                 .ToList();
 
             decimal? horometro = null;
-            var horometroText = vm.Horometro?.Trim();
+            var horometroText  = vm.Horometro?.Trim();
             if (!string.IsNullOrWhiteSpace(horometroText) &&
                 decimal.TryParse(horometroText,
                     System.Globalization.NumberStyles.Any,
@@ -300,6 +365,8 @@ public partial class ForkliftChecklistPage : ContentPage
 
             if (ok)
             {
+                // Si era obligatorio, el popup de bloqueo ya no aplica (checklist completado)
+                _isMandatory = false;
                 await DisplayAlertAsync("Listo", message, "OK");
                 await Shell.Current.GoToAsync("//dashboard");
             }
@@ -331,7 +398,6 @@ public partial class ForkliftChecklistPage : ContentPage
         return marks.Select(m =>
         {
             var bounds = AbsoluteLayout.GetLayoutBounds(m);
-            // El Label se posiciona con offset -10 / -14; sumamos de vuelta para obtener el punto de toque.
             var tapX = Math.Clamp((bounds.X + 10) / hostW, 0, 1);
             var tapY = Math.Clamp((bounds.Y + 14) / hostH, 0, 1);
             return new ChecklistDefectMarkDto

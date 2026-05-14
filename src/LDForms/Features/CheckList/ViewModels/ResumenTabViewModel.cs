@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
 using LD.Contracts.Checklist;
+using System.IO;
 
 namespace LD.FormsX.Features.CheckList.ViewModels;
 
@@ -16,6 +17,9 @@ public partial class ResumenTabViewModel : ObservableObject
 
     [ObservableProperty]
     private DateTime? fechaHasta;
+
+    // Detalle cargado más recientemente (usado para la galería de fotos)
+    public ChecklistDetailDto? DetalleActual { get; private set; }
 
     public event Action<List<ChecklistSummaryDto>>? OnChecklistsLoaded;
     public event Action<ChecklistDetailDto?>? OnChecklistDetailLoaded;
@@ -58,11 +62,39 @@ public partial class ResumenTabViewModel : ObservableObject
         try
         {
             var response = await _checklistService.GetByIdAsync(checklistId);
-            OnChecklistDetailLoaded?.Invoke(response.IsSuccess ? response.Data : null);
+            DetalleActual = response.IsSuccess ? response.Data : null;
+            OnChecklistDetailLoaded?.Invoke(DetalleActual);
         }
         catch
         {
+            DetalleActual = null;
             OnChecklistDetailLoaded?.Invoke(null);
         }
+    }
+
+    // Descarga las fotos del detalle actual y las guarda como archivos temporales.
+    // Devuelve las rutas de los archivos descargados para que el caller pueda abrirlos.
+    public async Task<List<string>> DescargarFotosAsync()
+    {
+        var rutas = new List<string>();
+        if (DetalleActual?.Photos is null || DetalleActual.Photos.Count == 0)
+            return rutas;
+
+        var tempDir = Path.GetTempPath();
+        foreach (var photo in DetalleActual.Photos.OrderBy(p => p.Order))
+        {
+            try
+            {
+                var bytes = await _checklistService.GetPhotoBytesAsync(photo.RelativePath);
+                if (bytes.Length == 0) continue;
+
+                var ext  = Path.GetExtension(photo.RelativePath);
+                var file = Path.Combine(tempDir, $"checklist_foto_{photo.Order}{ext}");
+                await File.WriteAllBytesAsync(file, bytes);
+                rutas.Add(file);
+            }
+            catch { /* foto no disponible, se omite */ }
+        }
+        return rutas;
     }
 }
