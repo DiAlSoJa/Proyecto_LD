@@ -39,12 +39,13 @@ public class SubmitChecklistCommandHandler
 
             var checklist = new Domain.Entities.Checklist
             {
-                EquipmentId    = request.EquipmentId,
+                EquipmentId     = request.EquipmentId,
                 EquipmentTypeId = equipment.EquipmentTypeId,
-                UserId         = request.UserId,
-                UserName       = request.UserName,
-                Turno          = request.Turno,
-                Observaciones  = request.Observaciones
+                UserId          = request.UserId,
+                UserName        = request.UserName,
+                Turno           = request.Turno,
+                Horometro       = request.Horometro,
+                Observaciones   = request.Observaciones
             };
 
             foreach (var a in request.Answers)

@@ -16,6 +16,9 @@ public class EquipmentController : CommonController
 {
     private readonly IWebHostEnvironment _environment;
 
+    private static readonly HashSet<string> _extensionesPermitidas =
+        new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png", ".webp" };
+
     public EquipmentController(IWebHostEnvironment environment)
     {
         _environment = environment;
@@ -57,6 +60,7 @@ public class EquipmentController : CommonController
 
     [HttpPost("upload-image")]
     [Consumes("multipart/form-data")]
+    [Permission(PermissionKeys.ForkliftChecklist_Create)]
     public async Task<IActionResult> UploadImage(IFormFile file, [FromForm] string side)
     {
         if (file is null || file.Length == 0)
@@ -95,8 +99,8 @@ public class EquipmentController : CommonController
         });
     }
 
-    [AllowAnonymous]
     [HttpGet("image")]
+    [Permission(PermissionKeys.ForkliftChecklist_View)]
     public IActionResult GetImage([FromQuery] string path)
     {
         if (string.IsNullOrWhiteSpace(path))
@@ -105,23 +109,28 @@ public class EquipmentController : CommonController
         var fileName = Path.GetFileName(path);
         if (string.IsNullOrWhiteSpace(fileName))
             return NotFound();
+
+        var ext = Path.GetExtension(fileName).ToLowerInvariant();
+        if (!_extensionesPermitidas.Contains(ext))
+            return NotFound();
+
         var uploadsFolder = @"C:\LD\";
-        var fullPath = Path.Combine(
-           uploadsFolder,
-            "uploads",
-            "equipos",
-            fileName);
+        var baseCanonica = Path.GetFullPath(Path.Combine(uploadsFolder, "uploads", "equipos"));
+        var fullPath     = Path.GetFullPath(Path.Combine(baseCanonica, fileName));
+
+        if (!fullPath.StartsWith(baseCanonica + Path.DirectorySeparatorChar,
+                                  StringComparison.OrdinalIgnoreCase))
+            return NotFound();
 
         if (!System.IO.File.Exists(fullPath))
             return NotFound();
 
-        var contentType = fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
-            ? "image/png"
-            : fileName.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
-                ? "image/gif"
-                : fileName.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase)
-                    ? "image/bmp"
-                    : "image/jpeg";
+        var contentType = ext switch
+        {
+            ".png"  => "image/png",
+            ".webp" => "image/webp",
+            _       => "image/jpeg"
+        };
 
         return PhysicalFile(fullPath, contentType);
     }

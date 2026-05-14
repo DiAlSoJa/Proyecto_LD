@@ -274,11 +274,21 @@ public partial class ForkliftChecklistPage : ContentPage
                 })
                 .ToList();
 
+            decimal? horometro = null;
+            var horometroText = vm.Horometro?.Trim();
+            if (!string.IsNullOrWhiteSpace(horometroText) &&
+                decimal.TryParse(horometroText,
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var horoParsed))
+                horometro = horoParsed;
+
             var request = new SubmitChecklistRequest
             {
                 EquipmentId   = _equipment.EquipmentId,
                 UserName      = OperadorEntry.Text?.Trim() ?? string.Empty,
                 Turno         = TurnoPicker.SelectedItem?.ToString() ?? string.Empty,
+                Horometro     = horometro,
                 Observaciones = ObservacionesEditor.Text?.Trim(),
                 Answers       = answers,
                 DefectMarks   = defectMarks,

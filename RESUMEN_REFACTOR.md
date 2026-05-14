@@ -183,32 +183,74 @@ Si el servicio lanza excepción, se captura silenciosamente y se navega al dashb
 
 ---
 
-## Bugs conocidos / trabajo pendiente
+## Estado de bugs (sesión 2026-05-13)
 
-| # | Área | Descripción |
-|---|------|-------------|
-| 1 | MAUI checklist | `OnGuardarClicked` solo muestra un `DisplayAlert` simulado — no envía al API porque no existe endpoint |
-| 2 | WPF Resumen | Tabs de Resumen y ResumenBaterias no cargan datos reales (handlers stub) |
-| 3 | WPF Resumen | No existe `ChecklistController` ni `GetChecklistSummary` endpoint en la API |
-| 4 | MAUI foto | Las fotos capturadas con la cámara no se envían al servidor |
-| 5 | WPF preguntas | El grid de preguntas no recarga automáticamente el estado de selección del botón "Editar" tras guardar |
+Todos los bugs de la sesión anterior fueron resueltos. A continuación el estado final:
+
+| # | Área | Descripción | Estado |
+|---|------|-------------|--------|
+| 1 | MAUI checklist | `OnGuardarClicked` no enviaba al API | ✅ Resuelto |
+| 2 | WPF Resumen | Tabs stub sin datos reales | ✅ Resuelto |
+| 3 | WPF Resumen | No existía `ChecklistController` | ✅ Resuelto |
+| 4 | MAUI foto | Fotos no se enviaban al servidor | ✅ Resuelto |
+| 5 | WPF preguntas | Grid no sincronizaba botón Editar tras guardar | ✅ Resuelto |
+| 6 | MAUI checklist | **Horómetro capturado no se guardaba en el checklist** | ✅ Resuelto (sesión actual) |
+
+### Fix #6 — Horómetro (sesión 2026-05-13)
+
+El `HorometroEntry` (con soporte OCR) capturaba el valor pero nunca lo incluía en el `SubmitChecklistRequest`. Archivos modificados:
+
+- `LD.Contracts/Checklist/SubmitChecklistRequest.cs` → `+ public decimal? Horometro { get; set; }`
+- `LD.Domain/Entities/Checklist.cs` → `+ public decimal? Horometro { get; set; }`
+- `LD.Application/Features/Checklist/Commands/SubmitChecklistCommand.cs` → mapeo de `Horometro`
+- `LD.Infrastructure/Repositories/ChecklistRepository.cs` → `Hourmeter = c.Horometro ?? c.Equipment?.Hourmeter` (prioriza la lectura del checklist)
+- `LD.MobileApp/Features/Checklist/Views/ForkliftChecklistPage.xaml.cs` → incluye `Horometro` en el request de envío
+- Migración: `AddHorometroToChecklist` (aplicada)
+
+### Fixes de seguridad (sesión 2026-05-13)
+
+- `EquipmentController.GetImage`: removido `[AllowAnonymous]`, agregado `[Permission(ForkliftChecklist_View)]` + validación de extensiones + verificación de ruta canónica (igual que `ChecklistController.EsRutaSegura`)
+- `EquipmentController.UploadImage`: agregado `[Permission(ForkliftChecklist_Create)]`
 
 ---
 
-## Endpoints API involucrados
+## Endpoints API — estado actual
 
-| Endpoint | Método | Descripción |
-|----------|--------|-------------|
-| `/api/equipment` | GET | Lista todos los equipos (incluye Turno1/Turno2/Turno3) |
-| `/api/equipment/{id}` | GET | Detalle de equipo por ID |
-| `/api/equipment` | POST | Crear equipo |
-| `/api/equipment/{id}` | PUT | Actualizar equipo |
-| `/api/equipment/{id}/image/{side}` | GET | Descarga imagen (side: left\|right) |
-| `/api/equipment/upload-image/{side}` | POST | Sube imagen al servidor |
-| `/api/equipmenttype` | GET | Lista tipos de equipo |
-| `/api/equipmentquestion/by-type/{typeId}` | GET | Preguntas de checklist por tipo de equipo |
+| Endpoint | Método | Permiso | Descripción |
+|----------|--------|---------|-------------|
+| `/api/equipment` | GET | ForkliftChecklist_View | Lista equipos |
+| `/api/equipment/{id}` | GET | ForkliftChecklist_View | Detalle de equipo (devuelve EquipmentRequest) |
+| `/api/equipment` | POST | ForkliftChecklist_Create | Crear equipo |
+| `/api/equipment/{id}` | PUT | ForkliftChecklist_Update | Actualizar equipo (incluye Turn1/Turn2/Turn3 para asignación) |
+| `/api/equipment/upload-image` | POST | ForkliftChecklist_Create | Sube imagen del equipo |
+| `/api/equipment/image` | GET | ForkliftChecklist_View | Obtiene imagen por path relativo |
+| `/api/equipment/{id}/image/{side}` | GET | ForkliftChecklist_View | Descarga imagen (side: left\|right) |
+| `/api/equipment/assigned-to-me` | GET | solo [Authorize] | Equipo asignado al usuario logueado |
+| `/api/equipmenttype` | GET | EquipmentType_View | Lista tipos de equipo |
+| `/api/equipmentquestion/equipment-type/{typeId}` | GET | EquipmentType_View | Preguntas por tipo |
+| `/api/equipmentquestion` | POST | EquipmentType_Create | Crear o actualizar pregunta (DetId=0 → crear) |
+| `/api/equipmentquestion/{id}` | DELETE | EquipmentType_Update | Eliminar pregunta |
+| `/api/checklist` | POST | Checklist_Submit | Enviar checklist completo |
+| `/api/checklist` | GET | Checklist_ViewSummary | Listar checklists con filtros |
+| `/api/checklist/{id}` | GET | Checklist_ViewSummary | Detalle de un checklist |
+| `/api/checklist/upload-photo` | POST | Checklist_Submit | Subir foto del checklist |
+| `/api/checklist/photo` | GET | Checklist_ViewSummary | Obtener foto por path relativo |
 
-**Pendiente crear**: endpoint para guardar y recuperar checklists completados desde la app móvil.
+## Flujo de asignación de equipo a usuario
+
+La asignación usa los campos `Turn1`/`Turn2`/`Turn3` de la entidad `Equipment` (strings con el `UserName`). No hay tabla separada.
+
+- **WPF asigna**: `EquiposTab → AsignarUsuarioEquipoView` → GET equipo actual → actualiza Turn → PUT `/api/equipment/{id}`
+- **MAUI lee**: `GET /api/equipment/assigned-to-me` → `GetAssignedEquipmentQuery` filtra `Turn1/2/3 == username`
+- **TODO en código**: `GetAssignedEquipmentQuery.cs:47` — migrar a campo `AssignedUserId` cuando se refactorice la entidad (carga todos los equipos en memoria actualmente)
+
+## Deuda técnica conocida (sin urgencia)
+
+| Área | Descripción |
+|------|-------------|
+| `EquipmentQuestionController` | Inyecta `DbContext` directamente y hereda `ControllerBase` en vez de `CommonController`. Viola la arquitectura pero funciona. |
+| `GetAssignedEquipmentQuery` | Carga todos los equipos en memoria para filtrar. Escala mal en catálogos grandes. |
+| `EquipmentType_View` permission | Apunta a `"units.read"` como alias temporal (comentado en `PermissionKeys.cs`). |
 
 ---
 

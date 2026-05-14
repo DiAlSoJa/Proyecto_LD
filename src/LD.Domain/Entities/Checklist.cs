@@ -17,6 +17,7 @@ namespace LD.Domain.Entities
         public string UserId { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string Turno { get; set; } = string.Empty;
+        public decimal? Horometro { get; set; }
 
         [MaxLength(2000)]
         public string? Observaciones { get; set; }
