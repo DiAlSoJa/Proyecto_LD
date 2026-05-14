@@ -717,7 +717,7 @@ namespace LD.Infrastructure.Persistence
             var checklistUser = new ApplicationUser {
                 Id = checklistUserId,
                 UserName = "checklist",
-                NormalizedUserName = "CHECKLIST.MOBILE",
+                NormalizedUserName = "CHECKLIST",
                 Email = "checklist.mobile@ld.com",
                 NormalizedEmail = "CHECKLIST.MOBILE@LD.COM",
                 EmailConfirmed = true,
@@ -731,7 +731,7 @@ namespace LD.Infrastructure.Persistence
             var securityUser = new ApplicationUser {
                 Id = securityUserId,
                 UserName = "security",
-                NormalizedUserName = "SECURITY.MOBILE",
+                NormalizedUserName = "SECURITY",
                 Email = "security.mobile@ld.com",
                 NormalizedEmail = "SECURITY.MOBILE@LD.COM",
                 EmailConfirmed = true,
@@ -745,7 +745,7 @@ namespace LD.Infrastructure.Persistence
             var controlPatioUser = new ApplicationUser {
                 Id = controlPatioUserId,
                 UserName = "controlpatio",
-                NormalizedUserName = "CONTROLPATIO.MOBILE",
+                NormalizedUserName = "CONTROLPATIO",
                 Email = "controlpatio.mobile@ld.com",
                 NormalizedEmail = "CONTROLPATIO.MOBILE@LD.COM",
                 EmailConfirmed = true,
