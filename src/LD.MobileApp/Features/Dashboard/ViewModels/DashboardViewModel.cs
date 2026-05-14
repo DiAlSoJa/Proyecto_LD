@@ -110,7 +110,8 @@ namespace MauiAppLogin.ViewModels
             ShowSecurity = UserData.HasModule((int)Module_e.Security);
             ShowConsultas = UserData.HasModule((int)Module_e.Queries);
             ShowDamageReport = UserData.HasModule((int)Module_e.DamageReport);
-            ShowOperations = UserData.HasModule((int)Module_e.Operations);
+            ShowOperations = UserData.HasModule((int)Module_e.Operations)
+                || UserData.HasModule((int)Module_e.YardControl);
             ShowInventory = UserData.HasModule((int)Module_e.Inventory);
             ShowChecklist = UserData.HasModule((int)Module_e.ForkliftChecklist);
 
@@ -120,7 +121,8 @@ namespace MauiAppLogin.ViewModels
             CanViewWarehouseTasks = UserData.HasPermission(PermissionKeys.WarehouseStaff_Tasks_View);
 
             CanRegisterVehicle = UserData.HasPermission(PermissionKeys.Vehicle_Create);
-            CanViewPatioPendientes = UserData.HasPermission(PermissionKeys.Vehicle_View);
+            CanViewPatioPendientes = UserData.HasPermission(PermissionKeys.Vehicle_View)
+                || UserData.HasPermission(PermissionKeys.YardControl_View);
             CanViewSecurityTasks = UserData.HasPermission(PermissionKeys.Security_Tasks_View);
 
             CanAudit = UserData.HasPermission(PermissionKeys.Inventory_Audit_View);
