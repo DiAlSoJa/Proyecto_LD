@@ -629,6 +629,9 @@ namespace LD.Infrastructure.Persistence
             );
 
             const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
+            const string checklistMobileRoleId = "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101";
+            const string securityMobileRoleId = "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102";
+            const string controlPatioMobileRoleId = "f78a2f0d-32f4-4d66-9db8-0f69f5d3f103";
 
             builder.Entity<ApplicationRole>().HasData(
                 new ApplicationRole
@@ -636,6 +639,27 @@ namespace LD.Infrastructure.Persistence
                     Id = superAdminRoleId,
                     Name = "SuperAdmin",
                     NormalizedName = "SUPERADMIN",
+                    ConcurrencyStamp = "1"
+                },
+                new ApplicationRole
+                {
+                    Id = checklistMobileRoleId,
+                    Name = "ChecklistMobile",
+                    NormalizedName = "CHECKLISTMOBILE",
+                    ConcurrencyStamp = "1"
+                },
+                new ApplicationRole
+                {
+                    Id = securityMobileRoleId,
+                    Name = "SecurityMobile",
+                    NormalizedName = "SECURITYMOBILE",
+                    ConcurrencyStamp = "1"
+                },
+                new ApplicationRole
+                {
+                    Id = controlPatioMobileRoleId,
+                    Name = "ControlPatioMobile",
+                    NormalizedName = "CONTROLPATIOMOBILE",
                     ConcurrencyStamp = "1"
                 }
             );
@@ -649,7 +673,33 @@ namespace LD.Infrastructure.Persistence
                     })
                     .ToArray()
             );
+            builder.Entity<RolePermission>().HasData(
+                // Checklist mobile (módulo 8)
+                new RolePermission { RoleId = checklistMobileRoleId, PermissionId = 23 },
+                new RolePermission { RoleId = checklistMobileRoleId, PermissionId = 59 },
+                new RolePermission { RoleId = checklistMobileRoleId, PermissionId = 60 },
+                new RolePermission { RoleId = checklistMobileRoleId, PermissionId = 61 },
+                new RolePermission { RoleId = checklistMobileRoleId, PermissionId = 62 },
+                new RolePermission { RoleId = checklistMobileRoleId, PermissionId = 63 },
+
+                // Security mobile (módulo 25)
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 43 },
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 44 },
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 45 },
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 46 },
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 47 },
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 48 },
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 49 },
+                new RolePermission { RoleId = securityMobileRoleId, PermissionId = 85 },
+
+                // Control de patio mobile (módulo 9)
+                new RolePermission { RoleId = controlPatioMobileRoleId, PermissionId = 24 }
+            );
             const string devUserId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"; 
+            const string checklistUserId = "f78a2f0d-32f4-4d66-9db8-0f69f5d3u101";
+            const string securityUserId = "f78a2f0d-32f4-4d66-9db8-0f69f5d3u102";
+            const string controlPatioUserId = "f78a2f0d-32f4-4d66-9db8-0f69f5d3u103";
+            const string sharedPasswordHash = "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==";
             var devUser = new ApplicationUser { 
                 Id = devUserId, 
                 UserName = "admin", 
@@ -662,10 +712,57 @@ namespace LD.Infrastructure.Persistence
                 SecurityStamp = "STATIC-SECURITY-STAMP-DEV", 
                 ConcurrencyStamp = "00000000-0000-0000-0000-000000000001", 
                 LockoutEnabled = false, 
-                PasswordHash= "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA=="
+                PasswordHash= sharedPasswordHash
             };
-            builder.Entity<ApplicationUser>().HasData(devUser);
-            builder.Entity<ApplicationUserRole>().HasData(new ApplicationUserRole { UserId = devUserId, RoleId = superAdminRoleId });
+            var checklistUser = new ApplicationUser {
+                Id = checklistUserId,
+                UserName = "checklist",
+                NormalizedUserName = "CHECKLIST.MOBILE",
+                Email = "checklist.mobile@ld.com",
+                NormalizedEmail = "CHECKLIST.MOBILE@LD.COM",
+                EmailConfirmed = true,
+                FullName = "Checklist Mobile",
+                IsActive = true,
+                SecurityStamp = "STATIC-SECURITY-STAMP-CHECKLIST",
+                ConcurrencyStamp = "00000000-0000-0000-0000-000000000101",
+                LockoutEnabled = false,
+                PasswordHash = sharedPasswordHash
+            };
+            var securityUser = new ApplicationUser {
+                Id = securityUserId,
+                UserName = "security",
+                NormalizedUserName = "SECURITY.MOBILE",
+                Email = "security.mobile@ld.com",
+                NormalizedEmail = "SECURITY.MOBILE@LD.COM",
+                EmailConfirmed = true,
+                FullName = "Security Mobile",
+                IsActive = true,
+                SecurityStamp = "STATIC-SECURITY-STAMP-SECURITY",
+                ConcurrencyStamp = "00000000-0000-0000-0000-000000000102",
+                LockoutEnabled = false,
+                PasswordHash = sharedPasswordHash
+            };
+            var controlPatioUser = new ApplicationUser {
+                Id = controlPatioUserId,
+                UserName = "controlpatio",
+                NormalizedUserName = "CONTROLPATIO.MOBILE",
+                Email = "controlpatio.mobile@ld.com",
+                NormalizedEmail = "CONTROLPATIO.MOBILE@LD.COM",
+                EmailConfirmed = true,
+                FullName = "Control Patio Mobile",
+                IsActive = true,
+                SecurityStamp = "STATIC-SECURITY-STAMP-CONTROLPATIO",
+                ConcurrencyStamp = "00000000-0000-0000-0000-000000000103",
+                LockoutEnabled = false,
+                PasswordHash = sharedPasswordHash
+            };
+            builder.Entity<ApplicationUser>().HasData(devUser, checklistUser, securityUser, controlPatioUser);
+            builder.Entity<ApplicationUserRole>().HasData(
+                new ApplicationUserRole { UserId = devUserId, RoleId = superAdminRoleId },
+                new ApplicationUserRole { UserId = checklistUserId, RoleId = checklistMobileRoleId },
+                new ApplicationUserRole { UserId = securityUserId, RoleId = securityMobileRoleId },
+                new ApplicationUserRole { UserId = controlPatioUserId, RoleId = controlPatioMobileRoleId }
+            );
              
             builder.Entity<SystemField>().HasData(
                 new SystemField { SystemFieldId = 1, SystemFieldName = "lot_number", DisplayName = "Número de lote", Order = 1 },
