@@ -53,19 +53,21 @@ public class SecurityController : CommonController
 
     [HttpPut("tasks/{taskId}/abrir")]
     [Permission(PermissionKeys.Security_Tasks_Manage)]
-    public async Task<IActionResult> AbrirCortina(int taskId, [FromQuery] string? realizadaPor)
+    public async Task<IActionResult> AbrirCortina(int taskId, [FromBody] SecurityTaskActionRequest request)
         => ResultExtensions.ToActionResult(await Mediator.Send(new AbrirCortinaCommand
         {
             SecurityTaskId = taskId,
-            RealizadaPor   = realizadaPor
+            RealizadaPor   = request.RealizadaPor,
+            FotoBase64     = request.FotoBase64
         }));
 
     [HttpPut("tasks/{taskId}/cerrar")]
     [Permission(PermissionKeys.Security_Tasks_Manage)]
-    public async Task<IActionResult> CerrarRegistro(int taskId, [FromQuery] string? realizadaPor)
+    public async Task<IActionResult> CerrarRegistro(int taskId, [FromBody] SecurityTaskActionRequest request)
         => ResultExtensions.ToActionResult(await Mediator.Send(new CerrarRegistroCommand
         {
             SecurityTaskId = taskId,
-            RealizadaPor   = realizadaPor
+            RealizadaPor   = request.RealizadaPor,
+            FotoBase64     = request.FotoBase64
         }));
 }

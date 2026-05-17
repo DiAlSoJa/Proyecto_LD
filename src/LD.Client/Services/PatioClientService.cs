@@ -41,17 +41,25 @@ public class PatioClientService
         return await _api.GetAsync<ApiResponseDto<List<SecurityTaskDto>>>(url);
     }
 
-    public async Task<ApiResponseDto<string>> AbrirCortinaAsync(int taskId, string? realizadaPor = null)
+    public async Task<ApiResponseDto<string>> AbrirCortinaAsync(int taskId, string fotoBase64, string? realizadaPor = null)
     {
         var url = _apiEndpoints.Security_AbrirCortina.Replace("{taskId}", taskId.ToString());
-        if (!string.IsNullOrEmpty(realizadaPor)) url += $"?realizadaPor={Uri.EscapeDataString(realizadaPor)}";
-        return await _api.PutAsync<object, ApiResponseDto<string>>(url, new { });
+        var request = new SecurityTaskActionRequest
+        {
+            RealizadaPor = realizadaPor,
+            FotoBase64 = fotoBase64
+        };
+        return await _api.PutAsync<SecurityTaskActionRequest, ApiResponseDto<string>>(url, request);
     }
 
-    public async Task<ApiResponseDto<string>> CerrarRegistroAsync(int taskId, string? realizadaPor = null)
+    public async Task<ApiResponseDto<string>> CerrarRegistroAsync(int taskId, string fotoBase64, string? realizadaPor = null)
     {
         var url = _apiEndpoints.Security_CerrarRegistro.Replace("{taskId}", taskId.ToString());
-        if (!string.IsNullOrEmpty(realizadaPor)) url += $"?realizadaPor={Uri.EscapeDataString(realizadaPor)}";
-        return await _api.PutAsync<object, ApiResponseDto<string>>(url, new { });
+        var request = new SecurityTaskActionRequest
+        {
+            RealizadaPor = realizadaPor,
+            FotoBase64 = fotoBase64
+        };
+        return await _api.PutAsync<SecurityTaskActionRequest, ApiResponseDto<string>>(url, request);
     }
 }

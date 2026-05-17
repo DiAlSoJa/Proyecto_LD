@@ -200,7 +200,7 @@
                                                 <Setter Property="Text" Value="🔓  Abrir cortina pendiente"/>
                                                 <Style.Triggers>
                                                     <DataTrigger TargetType="Label" Binding="{Binding TipoAccion}" Value="CerrarRegistro">
-                                                        <Setter Property="Text" Value="🔒  Cerrar registro pendiente"/>
+                                                        <Setter Property="Text" Value="🔒  Cerrar cortina pendiente"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>

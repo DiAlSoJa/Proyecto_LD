@@ -10,6 +10,7 @@ public class CerrarRegistroCommand : IRequest<Result<string>>
 {
     public int SecurityTaskId { get; set; }
     public string? RealizadaPor { get; set; }
+    public string FotoBase64 { get; set; } = string.Empty;
 }
 
 public class CerrarRegistroCommandHandler : IRequestHandler<CerrarRegistroCommand, Result<string>>
@@ -30,6 +31,9 @@ public class CerrarRegistroCommandHandler : IRequestHandler<CerrarRegistroComman
 
     public async Task<Result<string>> Handle(CerrarRegistroCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.FotoBase64))
+            return Result<string>.Failure("La foto es obligatoria para cerrar cortina", []);
+
         var tarea = await _taskRepo.GetByIdAsync(request.SecurityTaskId);
         if (tarea is null || tarea.TipoAccion != "CerrarRegistro")
             return Result<string>.Failure("Tarea de cierre no encontrada", []);

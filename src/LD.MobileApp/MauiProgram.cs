@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui;
 using LD.Client;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
@@ -13,21 +13,19 @@ namespace MauiAppLogin
 {
     public static class MauiProgram
     {
-
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp<App>()                       // una sola vez
-                .UseMauiCommunityToolkit()               // Community Toolkit
-                .UseBarcodeReader()                      // ZXing barcode reader
-                .UseOcr()                                // Plugin.Maui.OCR
+                .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
+                .UseBarcodeReader()
+                .UseOcr()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
 
             const string defaultApiUrl = "http://192.168.0.103:8050/api";
             var apiUrl = Preferences.Default.Get("ApiBaseUrl", defaultApiUrl);
@@ -40,9 +38,6 @@ namespace MauiAppLogin
             #if DEBUG
             builder.Logging.AddDebug();
             #endif
-
-          
-
 
             builder.Services.AddTransient<RegisterVehicule>();
             builder.Services.AddTransient<RegisterLicense>();
@@ -65,7 +60,7 @@ namespace MauiAppLogin
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<TaskList>();
 
-            //viewmodels
+            // ViewModels
             builder.Services.AddTransient<ForkliftChecklistViewModel>();
             builder.Services.AddTransient<NoEquipmentViewModel>();
             builder.Services.AddTransient<LoginViewModel>();
@@ -75,7 +70,7 @@ namespace MauiAppLogin
             builder.Services.AddTransient<SignatureDriverViewModel>();
             builder.Services.AddTransient<ChangeLocationViewModel>();
 
-            // shared state for the 3-step security registration flow
+            // Estado compartido del flujo de 3 pasos de seguridad
             builder.Services.AddSingleton<SecurityRegistrationContext>();
 
             builder.Services.AddSingleton<ILoaderService, LoaderService>();
@@ -95,12 +90,19 @@ namespace MauiAppLogin
             builder.Services.AddTransient<CortinaSeleccionViewModel>();
             builder.Services.AddTransient<TaskSecurityViewModel>();
 
+            // Session service: maneja SecureStorage + refresh automático
+            builder.Services.AddSingleton<MobileSessionService>();
+
             builder.Services.AddSingleton<AppShell>();
 
+            var mauiApp = builder.Build();
 
-            return builder.Build();
+            // Conectar el callback de refresh al ApiService singleton
+            var sessionService = mauiApp.Services.GetRequiredService<MobileSessionService>();
+            var apiService     = mauiApp.Services.GetRequiredService<LD.Client.Services.ApiService>();
+            sessionService.Configure(apiService);
 
-
+            return mauiApp;
         }
     }
 }

@@ -3,6 +3,7 @@ using LD.Client.Services;
 using LD.Contracts.DTOs.Security;
 using LD.Contracts.Enums;
 using MauiAppLogin.Services;
+using Microsoft.Maui.Media;
 using MvvmHelpers.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -72,21 +73,25 @@ public partial class TaskSecurityViewModel : ObservableObject
 
         bool esAbrir = tarea.RegistrationStatus == RegistroEstado_e.CortinaAsignada;
 
-        string title       = esAbrir ? "Abrir Cortina"    : "Cerrar Registro";
-        string confirmText = esAbrir ? "Abrir"            : "Cerrar";
+        string title       = esAbrir ? "Abrir Cortina"    : "Cerrar Cortina";
+        string confirmText = esAbrir ? "Abrir Cortina"    : "Cerrar Cortina";
         string message     = esAbrir
             ? $"¿Confirmas abrir la cortina {tarea.CortinaNumero ?? tarea.SecurityRegistrationId.ToString()}?"
-            : $"¿Confirmas cerrar el registro del vehículo {tarea.Placa}?";
+            : $"¿Confirmas cerrar la cortina del vehículo {tarea.Placa}?";
 
-        var confirm = await Shell.Current.DisplayAlertAsync(title, message, confirmText, "Cancelar");
+        var confirm = await Shell.Current.DisplayAlertAsync(title, message, confirmText, "No");
         if (!confirm) return;
+
+        var fotoBase64 = await CapturarFotoBase64Async();
+        if (string.IsNullOrWhiteSpace(fotoBase64))
+            return;
 
         _loaderService.Show(esAbrir ? "Abriendo cortina..." : "Cerrando registro...");
         try
         {
             var response = esAbrir
-                ? await _patioClientService.AbrirCortinaAsync(tarea.SecurityTaskId)
-                : await _patioClientService.CerrarRegistroAsync(tarea.SecurityTaskId);
+                ? await _patioClientService.AbrirCortinaAsync(tarea.SecurityTaskId, fotoBase64)
+                : await _patioClientService.CerrarRegistroAsync(tarea.SecurityTaskId, fotoBase64);
 
             if (response.IsSuccess)
             {
@@ -106,4 +111,33 @@ public partial class TaskSecurityViewModel : ObservableObject
 
     private async Task AtrasAsync()
         => await Shell.Current.GoToAsync("..");
+
+    private static async Task<string?> CapturarFotoBase64Async()
+    {
+        if (!MediaPicker.Default.IsCaptureSupported)
+        {
+            await Shell.Current.DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de foto.", "OK");
+            return null;
+        }
+
+        try
+        {
+            var foto = await MediaPicker.Default.CapturePhotoAsync();
+            if (foto is null)
+            {
+                await Shell.Current.DisplayAlertAsync("Foto requerida", "Debes tomar una foto para continuar.", "OK");
+                return null;
+            }
+
+            await using var stream = await foto.OpenReadAsync();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            return Convert.ToBase64String(ms.ToArray());
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", $"No se pudo capturar la foto: {ex.Message}", "OK");
+            return null;
+        }
+    }
 }

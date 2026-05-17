@@ -10,6 +10,7 @@ public class AbrirCortinaCommand : IRequest<Result<string>>
 {
     public int SecurityTaskId { get; set; }
     public string? RealizadaPor { get; set; }
+    public string FotoBase64 { get; set; } = string.Empty;
 }
 
 public class AbrirCortinaCommandHandler : IRequestHandler<AbrirCortinaCommand, Result<string>>
@@ -27,6 +28,9 @@ public class AbrirCortinaCommandHandler : IRequestHandler<AbrirCortinaCommand, R
 
     public async Task<Result<string>> Handle(AbrirCortinaCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.FotoBase64))
+            return Result<string>.Failure("La foto es obligatoria para abrir cortina", []);
+
         var tarea = await _taskRepo.GetByIdAsync(request.SecurityTaskId);
         if (tarea is null || tarea.TipoAccion != "AbrirCortina")
             return Result<string>.Failure("Tarea no encontrada", []);

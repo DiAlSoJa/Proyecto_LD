@@ -22,27 +22,32 @@ namespace MauiAppLogin.ViewModels
         private string password;
         [ObservableProperty]
         private bool isPasswordVisible = false;
-
         [ObservableProperty]
         private bool isBusy = false;
-        public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordVisible = !IsPasswordVisible);
 
-        public ICommand LoginCommand { get; }
+        public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordVisible = !IsPasswordVisible);
+        public ICommand LoginCommand      { get; }
         public ICommand ShowIpConfigCommand { get; }
 
-        private readonly AuthService _authService;
-        private readonly ILoaderService _loaderService;
-        private readonly ChecklistService _checklistService;
+        private readonly AuthService         _authService;
+        private readonly ILoaderService      _loaderService;
+        private readonly ChecklistService    _checklistService;
+        private readonly MobileSessionService _sessionService;
 
         private const string DefaultApiUrl = "http://192.168.0.103:8050/api";
 
         public ILoaderService Loader => _loaderService;
 
-        public LoginViewModel(AuthService authService, ILoaderService loaderService, ChecklistService checklistService)
+        public LoginViewModel(
+            AuthService authService,
+            ILoaderService loaderService,
+            ChecklistService checklistService,
+            MobileSessionService sessionService)
         {
             _authService      = authService;
             _loaderService    = loaderService;
             _checklistService = checklistService;
+            _sessionService   = sessionService;
             LoginCommand      = new AsyncCommand(Login);
             ShowIpConfigCommand = new AsyncCommand(ShowIpConfigAsync);
             Username = "admin";
@@ -73,8 +78,7 @@ namespace MauiAppLogin.ViewModels
 
         private async Task Login()
         {
-            if (IsBusy)
-                return;
+            if (IsBusy) return;
 
             try
             {
@@ -94,8 +98,16 @@ namespace MauiAppLogin.ViewModels
                     await Shell.Current.DisplayAlertAsync("Error", response.Message, "OK");
                     return;
                 }
+
                 UserSession.AccessToken  = response.Data?.Accesstoken;
                 UserSession.RefreshToken = response.Data?.RefreshToken;
+
+                // Persistir tokens en SecureStorage para restaurar la sesión al reabrir la app
+                var expiry = DateTime.UtcNow.AddHours(8);
+                await _sessionService.PersistAsync(
+                    response.Data!.Accesstoken!,
+                    response.Data.RefreshToken!,
+                    expiry);
 
                 var getMeResponse = await _authService.GetMeAsync();
                 if (!getMeResponse.IsSuccess || getMeResponse.Data is null)

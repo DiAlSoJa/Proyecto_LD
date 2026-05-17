@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using LD.Application.Common.Models;
 using LD.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -84,6 +85,9 @@ namespace LD.Infrastructure.Persistence
         public DbSet<ChecklistAnswer> ChecklistAnswers { get; set; }
         public DbSet<ChecklistPhoto> ChecklistPhotos { get; set; }
         public DbSet<ChecklistDefectMark> ChecklistDefectMarks { get; set; }
+
+        // Auth
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 
         public LdProyectDbContext(DbContextOptions<LdProyectDbContext> options) : base(options)
@@ -379,6 +383,18 @@ namespace LD.Infrastructure.Persistence
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
+
+            // ── Auth: RefreshTokens ────────────────────────────────────────────────
+            builder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("RefreshTokens", schema);
+                entity.Property(e => e.Token).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.UserId).IsRequired().HasMaxLength(450);
+                entity.Property(e => e.ReplacedByToken).HasMaxLength(500);
+                entity.HasIndex(e => e.Token).IsUnique();
+            });
+            // ───────────────────────────────────────────────────────────────────────
 
             // ── Checklist Feature ──────────────────────────────────────────────────
             builder.Entity<Checklist>()
