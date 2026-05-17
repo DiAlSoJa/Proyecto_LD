@@ -191,6 +191,17 @@ namespace LD.Infrastructure
                         throw new Exception(string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
                 }
 
+                if (!string.IsNullOrWhiteSpace(request.Password))
+                {
+                    var removeResult = await _userManager.RemovePasswordAsync(user);
+                    if (!removeResult.Succeeded)
+                        throw new Exception(string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+
+                    var addPasswordResult = await _userManager.AddPasswordAsync(user, request.Password);
+                    if (!addPasswordResult.Succeeded)
+                        throw new Exception(string.Join(", ", addPasswordResult.Errors.Select(e => e.Description)));
+                }
+
                 await transation.CommitAsync();
                 return true;
             }
