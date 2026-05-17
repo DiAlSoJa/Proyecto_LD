@@ -26,29 +26,5 @@ namespace MauiAppLogin
             });
         }
 
-        protected override async void OnStart()
-        {
-            base.OnStart();
-            await TryRestoreSessionAsync();
-        }
-
-        private async Task TryRestoreSessionAsync()
-        {
-            try
-            {
-                var restored = await _sessionService.TryRestoreFullSessionAsync();
-                if (!restored) return;
-
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    if (Shell.Current is not null)
-                        await Shell.Current.GoToAsync("//dashboard");
-                });
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[TryRestoreSession] {ex}");
-            }
-        }
     }
 }

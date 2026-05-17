@@ -76,6 +76,28 @@ namespace MauiAppLogin.ViewModels
             await Shell.Current.DisplayAlertAsync("Guardado", "La nueva URL se aplicará al próximo inicio de la app.", "OK");
         }
 
+        // Llamado desde LoginPage.OnAppearing para restaurar sesión en cold start.
+        // Si el token es válido (o se renueva silenciosamente), navega directamente al inicio.
+        public async Task TryAutoLoginAsync()
+        {
+            if (IsBusy) return;
+            try
+            {
+                IsBusy = true;
+                var restored = await _sessionService.TryRestoreFullSessionAsync();
+                if (!restored) return;
+                await NavegaAlInicioAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[TryAutoLogin] {ex}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
         private async Task Login()
         {
             if (IsBusy) return;

@@ -100,7 +100,8 @@ namespace MauiAppLogin
             // Conectar el callback de refresh al ApiService singleton
             var sessionService = mauiApp.Services.GetRequiredService<MobileSessionService>();
             var apiService     = mauiApp.Services.GetRequiredService<LD.Client.Services.ApiService>();
-            sessionService.Configure(apiService);
+            var authService    = mauiApp.Services.GetRequiredService<LD.Client.Services.AuthService>();
+            sessionService.Configure(apiService, authService);
 
             return mauiApp;
         }

@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using LD.Client.Configuration;
 using LD.Client.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MauiAppLogin.Services;
 
@@ -13,19 +12,16 @@ public class MobileSessionService
     private const string KeyRefreshToken = "auth_refresh_token";
     private const string KeyTokenExpiry  = "auth_token_expiry";
 
-    private readonly IServiceScopeFactory _scopeFactory;
-    private ApiService? _apiService;
+    // Instancias resueltas desde el root scope en MauiProgram.cs.
+    // Son las MISMAS que usan todos los ViewModels, por lo que
+    // SetBearerToken/ClearToken afecta todas las peticiones de la app.
+    private ApiService?  _apiService;
+    private AuthService? _authService;
 
-    public MobileSessionService(IServiceScopeFactory scopeFactory)
+    public void Configure(ApiService apiService, AuthService authService)
     {
-        _scopeFactory = scopeFactory;
-    }
-
-    // Llamar después de resolver ApiService desde el root del DI.
-    // Registra el callback de refresh para que ApiService lo use en 401.
-    public void Configure(ApiService apiService)
-    {
-        _apiService = apiService;
+        _apiService  = apiService;
+        _authService = authService;
         apiService.OnUnauthorizedAsync = TryRefreshAsync;
     }
 
@@ -36,20 +32,23 @@ public class MobileSessionService
         await SecureStorage.Default.SetAsync(KeyTokenExpiry,  expiry.ToString("O"));
     }
 
-    // Intenta restaurar la sesión completa (token + UserData) desde SecureStorage.
-    // Retorna true si la sesión quedó lista para usar.
+    // Restaura el token en memoria + carga UserData desde el API.
+    // Retorna true si la sesión está lista para navegar al dashboard.
     public async Task<bool> TryRestoreFullSessionAsync()
     {
         var tokenRestored = await TryRestoreTokenAsync();
         if (!tokenRestored) return false;
 
-        using var scope = _scopeFactory.CreateScope();
-        var authService = scope.ServiceProvider.GetRequiredService<AuthService>();
+        // Usa la instancia raíz de AuthService/ApiService (misma que LoginViewModel)
+        // para que el bearer token recién restaurado sea enviado correctamente.
+        var getMeResponse = await _authService!.GetMeAsync();
 
-        var getMeResponse = await authService.GetMeAsync();
         if (!getMeResponse.IsSuccess || getMeResponse.Data is null)
         {
-            await ClearAsync();
+            // Solo borrar SecureStorage si el servidor rechaza el token.
+            // Un error de red no debe desloguear al usuario.
+            if (getMeResponse.Code is 401 or 403)
+                await ClearAsync();
             return false;
         }
 
@@ -68,9 +67,8 @@ public class MobileSessionService
             return false;
         }
 
-        using var scope = _scopeFactory.CreateScope();
-        var authService = scope.ServiceProvider.GetRequiredService<AuthService>();
-        var result = await authService.RefreshTokenAsync(refreshToken);
+        // El endpoint /auth/refresh no requiere Authorization header.
+        var result = await _authService!.RefreshTokenAsync(refreshToken);
 
         if (!result.IsSuccess || result.Data is null)
         {
@@ -109,6 +107,7 @@ public class MobileSessionService
             && DateTime.TryParse(expiryStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out var expiry)
             && DateTime.UtcNow >= expiry)
         {
+            // Token expirado: intentar refresh silencioso antes de descartarlo
             return await TryRefreshAsync();
         }
 
