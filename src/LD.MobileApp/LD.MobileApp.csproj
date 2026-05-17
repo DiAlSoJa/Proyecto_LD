@@ -28,10 +28,10 @@
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
 		<!-- Display name -->
-		<ApplicationTitle>MauiAppLogin</ApplicationTitle>
+		<ApplicationTitle>Warehouse System</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.mauiapplogin</ApplicationId>
+		<ApplicationId>com.ld.warehousesystem</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -58,7 +58,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\Splash\logo.png" Color="#1F3A5F" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\logo.png" Color="#1F3A5F" BaseSize="268,158" />
