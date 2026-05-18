@@ -1,3 +1,5 @@
+using LD.Client.Services;
+using LD.Contracts.DTOs.OperationalTasks;
 using MauiAppLogin.Features.Seguridad.Models;
 using System.Collections.ObjectModel;
 
@@ -5,38 +7,82 @@ namespace MauiAppLogin;
 
 public partial class TaskList : ContentPage
 {
-    private ObservableCollection<ListItemTask> _items;
-    private ObservableCollection<ListItemTask> _filtered;
+    private readonly OperationalTaskService _operationalTaskService;
+    private readonly ObservableCollection<ListItemTask> _items = new();
+    private readonly ObservableCollection<ListItemTask> _filtered = new();
+    private bool _isLoading;
 
-    public TaskList()
+    public TaskList(OperationalTaskService operationalTaskService)
     {
         InitializeComponent();
-
-        // Datos hardcodeados de ejemplo
-        _items = new ObservableCollection<ListItemTask>
-        {
-            new() { Titulo = "[2672] →  R79A", Subtitulo = " 04 Feb 08:40 am  →  5'S  → Baja " },
-            new() { Titulo = "[0673] →  R67B", Subtitulo = " 04 Feb 08:40 am  →  PALLET EN RIESGO  → Baja " },
-            new() { Titulo = "[2674] →  T69B", Subtitulo = " 04 Feb 08:40 am  →  5'S  → Media " }  
-            
-
-        };
-
-        _filtered = new ObservableCollection<ListItemTask>(_items);
+        _operationalTaskService = operationalTaskService;
         ItemsList.ItemsSource = _filtered;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await LoadTasksAsync();
+    }
+
+    private async Task LoadTasksAsync()
+    {
+        if (_isLoading)
+            return;
+
+        try
+        {
+            _isLoading = true;
+            var response = await _operationalTaskService.GetTasks(soloPendientes: true);
+
+            if (!response.IsSuccess)
+            {
+                await DisplayAlertAsync("Tareas", response.Message ?? "No se pudieron cargar las tareas.", "OK");
+                return;
+            }
+
+            _items.Clear();
+            foreach (var task in response.Data ?? new List<OperationalTaskDto>())
+                _items.Add(MapTask(task));
+
+            ApplyFilter(FiltroEntry.Text);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private static ListItemTask MapTask(OperationalTaskDto task)
+    {
+        return new ListItemTask
+        {
+            TaskId = task.OperationalTaskId,
+            Titulo = $"[{task.OperationalTaskId:0000}] -> {task.Name}",
+            Subtitulo = $" {task.CreatedAt:dd MMM hh:mm tt} -> {task.Activity.ToUpperInvariant()} -> {task.Priority}"
+        };
     }
 
     private void OnFiltroChanged(object sender, TextChangedEventArgs e)
     {
-        var text = (e.NewTextValue ?? "").Trim().ToLowerInvariant();
+        ApplyFilter(e.NewTextValue);
+    }
+
+    private void ApplyFilter(string? value)
+    {
+        var text = (value ?? string.Empty).Trim().ToLowerInvariant();
 
         _filtered.Clear();
 
         foreach (var it in _items)
         {
             if (string.IsNullOrEmpty(text) ||
-                (it.Titulo?.ToLowerInvariant().Contains(text) ?? false) ||
-                (it.Subtitulo?.ToLowerInvariant().Contains(text) ?? false))
+                it.Titulo.ToLowerInvariant().Contains(text) ||
+                it.Subtitulo.ToLowerInvariant().Contains(text))
             {
                 _filtered.Add(it);
             }
@@ -46,26 +92,19 @@ public partial class TaskList : ContentPage
     private async void OnItemSelected(object sender, SelectionChangedEventArgs e)
     {
         var selected = e.CurrentSelection?.FirstOrDefault() as ListItemTask;
-        if (selected == null) return;
+        if (selected == null)
+            return;
 
-        // IMPORTANT: limpiar selección para poder volver a seleccionar el mismo elemento
         ItemsList.SelectedItem = null;
 
-       
-        await Shell.Current.GoToAsync("TaskResolve");
-        // Acción al tocar (aquí puedes navegar o llamar API)
-        //await DisplayAlertAsync("Seleccionado", selected.Titulo, "OK");
-
-        // Ejemplo si quieres navegar:
-        // await Shell.Current.GoToAsync("MovimientosEtiquetaPage");
-        
+        await Shell.Current.GoToAsync("TaskResolve", new Dictionary<string, object>
+        {
+            ["TaskId"] = selected.TaskId
+        });
     }
-
 
     private async void OnTaskNewClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("NewTask");
     }
-
 }
-

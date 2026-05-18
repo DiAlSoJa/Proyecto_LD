@@ -35,7 +35,7 @@
 
                     <HorizontalStackLayout Spacing="5">
                         <Label Text="🔔" TextColor="White"/>
-                        <Label Text="Tareas (6)"
+                        <Label Text="{Binding OperationalTasksHeaderText}"
                                TextColor="White"
                                FontAttributes="Bold"/>
                     </HorizontalStackLayout>

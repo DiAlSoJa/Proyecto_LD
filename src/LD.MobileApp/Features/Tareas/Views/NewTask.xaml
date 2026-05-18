@@ -125,8 +125,10 @@
                         Padding="10"
                         Margin="0,6,0,0">
                         <HorizontalStackLayout Spacing="10">
-                            <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                            <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb1" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb2" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb3" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb4" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
                         </HorizontalStackLayout>
                     </Border>
 
@@ -211,7 +213,7 @@
 
 
 
-                <Button Grid.Column="1"
+                <Button Grid.Column="0"
           Text="Guardar"
           Clicked="OnSaveClicked"
           HeightRequest="56"

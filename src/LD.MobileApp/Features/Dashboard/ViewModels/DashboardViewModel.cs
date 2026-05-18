@@ -16,6 +16,7 @@ namespace MauiAppLogin.ViewModels
         private readonly ApiService _apiService;
         private readonly PatioClientService _patioClientService;
         private readonly ChecklistService _checklistService;
+        private readonly OperationalTaskService _operationalTaskService;
         private readonly IDialogService _dialogService;
 
         [ObservableProperty]
@@ -65,6 +66,29 @@ namespace MauiAppLogin.ViewModels
         [ObservableProperty]
         private bool hasTareasPendientes;
 
+        private int operationalTasksPendingCount;
+        public int OperationalTasksPendingCount
+        {
+            get => operationalTasksPendingCount;
+            set
+            {
+                if (SetProperty(ref operationalTasksPendingCount, value))
+                {
+                    HasOperationalTasksPending = value > 0;
+                    OnPropertyChanged(nameof(OperationalTasksHeaderText));
+                }
+            }
+        }
+
+        private bool hasOperationalTasksPending;
+        public bool HasOperationalTasksPending
+        {
+            get => hasOperationalTasksPending;
+            set => SetProperty(ref hasOperationalTasksPending, value);
+        }
+
+        public string OperationalTasksHeaderText => $"Tareas ({OperationalTasksPendingCount})";
+
         public ICommand LogoutCommand { get; }
         public ICommand NavigateToChangeLocationCommand { get; }
         public ICommand NavigateToPickingCommand { get; }
@@ -81,11 +105,12 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToChecklistCommand { get; }
         public ICommand NavigateToPatioPendientesCommand { get; }
 
-        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService, ChecklistService checklistService, IDialogService dialogService)
+        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService, ChecklistService checklistService, OperationalTaskService operationalTaskService, IDialogService dialogService)
         {
             _apiService = apiService;
             _patioClientService = patioClientService;
             _checklistService = checklistService;
+            _operationalTaskService = operationalTaskService;
             _dialogService = dialogService;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
@@ -136,6 +161,16 @@ namespace MauiAppLogin.ViewModels
 
         public async Task CargarTareasPendientesAsync()
         {
+            try
+            {
+                var operationalTasksResponse = await _operationalTaskService.GetTasks(soloPendientes: true);
+                if (operationalTasksResponse.IsSuccess && operationalTasksResponse.Data != null)
+                {
+                    OperationalTasksPendingCount = operationalTasksResponse.Data.Count;
+                }
+            }
+            catch { }
+
             if (!CanViewSecurityTasks) return;
             try
             {
