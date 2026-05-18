@@ -1,0 +1,231 @@
+<UserControl x:Class="LD.FormsX.Views.ReporteDanos.DamageReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Loaded="UserControl_Loaded"
+             Background="#F8FAFC">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="FilterLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="FilterInputStyle" TargetType="Control">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#EEF1F5"/>
+            <Setter Property="Foreground" Value="#16263D"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#D9DEE7"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="GridCellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderBrush" Value="#E4E8EE"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="White"
+                CornerRadius="12"
+                Padding="16"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Reporte de daños"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937"/>
+                    <TextBlock Text="Consulta reportes capturados desde el módulo móvil"
+                               FontSize="13"
+                               Foreground="#6B7280"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <WrapPanel Grid.Row="2">
+                    <StackPanel Width="140" Margin="0,0,10,10">
+                        <TextBlock Text="Desde" Style="{StaticResource FilterLabelStyle}"/>
+                        <DatePicker SelectedDate="{Binding Desde, Mode=TwoWay}" Style="{StaticResource FilterInputStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Width="140" Margin="0,0,10,10">
+                        <TextBlock Text="Hasta" Style="{StaticResource FilterLabelStyle}"/>
+                        <DatePicker SelectedDate="{Binding Hasta, Mode=TwoWay}" Style="{StaticResource FilterInputStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Width="220" Margin="0,0,10,10">
+                        <TextBlock Text="Almacén" Style="{StaticResource FilterLabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Warehouses}"
+                                  SelectedItem="{Binding SelectedWarehouse, Mode=TwoWay}"
+                                  DisplayMemberPath="NombreAlmacen"
+                                  IsTextSearchEnabled="True"
+                                  Style="{StaticResource FilterInputStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Width="170" Margin="0,0,10,10">
+                        <TextBlock Text="Tipo de daño" Style="{StaticResource FilterLabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding DamageTypes}"
+                                  SelectedItem="{Binding SelectedDamageType, Mode=TwoWay}"
+                                  Style="{StaticResource FilterInputStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Width="140" Margin="0,0,10,10">
+                        <TextBlock Text="No. Parte" Style="{StaticResource FilterLabelStyle}"/>
+                        <TextBox Text="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}"
+                                 Padding="8,0"
+                                 Style="{StaticResource FilterInputStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Width="130" Margin="0,0,10,10">
+                        <TextBlock Text="StandardId" Style="{StaticResource FilterLabelStyle}"/>
+                        <TextBox Text="{Binding StandardId, UpdateSourceTrigger=PropertyChanged}"
+                                 Padding="8,0"
+                                 Style="{StaticResource FilterInputStyle}"/>
+                    </StackPanel>
+
+                    <Button Height="34"
+                            MinWidth="110"
+                            Margin="0,18,8,10"
+                            Command="{Binding CargarDatosCommand}"
+                            Background="#2563EB"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                        <TextBlock Text="Buscar"/>
+                    </Button>
+
+                    <Button Height="34"
+                            MinWidth="110"
+                            Margin="0,18,0,10"
+                            Command="{Binding LimpiarFiltrosCommand}"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+                        <TextBlock Text="Limpiar"/>
+                    </Button>
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2"
+                Background="White"
+                CornerRadius="12"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="{Binding StatusText}"
+                           FontSize="12"
+                           Foreground="#6B7280"
+                           Margin="4,0,0,0"/>
+
+                <Border Grid.Row="2"
+                        BorderBrush="#D9DEE7"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Background="White">
+                    <Grid>
+                        <DataGrid ItemsSource="{Binding Reports}"
+                                  AutoGenerateColumns="False"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="28"
+                                  ColumnHeaderHeight="40"
+                                  AlternatingRowBackground="#F8FAFC"
+                                  AlternationCount="2"
+                                  FontSize="12"
+                                  VerticalGridLinesBrush="#D9D9D9"
+                                  HorizontalGridLinesBrush="#E4E8EE"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Folio" Binding="{Binding DamageReportId}" Width="80"/>
+                                <DataGridTextColumn Header="Fecha reporte" Binding="{Binding ReportDate, StringFormat={}{0:dd/MM/yyyy HH:mm}}" Width="140"/>
+                                <DataGridTextColumn Header="Almacén" Binding="{Binding Warehouse}" Width="160"/>
+                                <DataGridTextColumn Header="StandardId" Binding="{Binding StandardIdCode}" Width="120"/>
+                                <DataGridTextColumn Header="No. Parte" Binding="{Binding PartNumber}" Width="130"/>
+                                <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="220"/>
+                                <DataGridTextColumn Header="Tipo de daño" Binding="{Binding DamageType}" Width="150"/>
+                                <DataGridTextColumn Header="Categoría" Binding="{Binding Category}" Width="130"/>
+                                <DataGridTextColumn Header="Nuevo status" Binding="{Binding NewStatus}" Width="130"/>
+                                <DataGridTextColumn Header="Disponible" Binding="{Binding AvailableQuantity}" Width="100"/>
+                                <DataGridTextColumn Header="Ubicación" Binding="{Binding Location}" Width="120"/>
+                                <DataGridTextColumn Header="Cliente" Binding="{Binding Client}" Width="160"/>
+                                <DataGridTextColumn Header="Proyecto" Binding="{Binding Project}" Width="160"/>
+                                <DataGridTextColumn Header="ASN" Binding="{Binding Asn}" Width="120"/>
+                                <DataGridTextColumn Header="Reportó" Binding="{Binding CreatedByUserName}" Width="150"/>
+                                <DataGridTextColumn Header="Comentarios" Binding="{Binding Comments}" Width="260"/>
+                            </DataGrid.Columns>
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                            </DataGrid.Resources>
+                        </DataGrid>
+
+                        <Border Background="#80FFFFFF"
+                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True"
+                                             Width="220"
+                                             Height="18"/>
+                                <TextBlock Text="{Binding LoadingMessage}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,12,0,0"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#24344D"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

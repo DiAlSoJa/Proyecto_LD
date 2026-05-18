@@ -11,5 +11,6 @@ namespace LD.Application.Common.Interfaces.Repository
     public interface IWarehouseRepository : IRepository<Warehouse>
     {
         Task<List<DropDownDto>> GetLookup();    
+        Task<List<DropDownDto>> GetLookupByUserId(string userId);
     }
 }

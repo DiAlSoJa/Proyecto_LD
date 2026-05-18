@@ -13,7 +13,9 @@ using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Proyectos;
+using LD.FormsX.Views.ReporteDanos;
 using LD.FormsX.Views.Reportes;
+using LD.FormsX.Views.Tareas;
 using LD.FormsX.Views.Usuarios;
 using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -184,6 +186,8 @@ namespace LDForms
             RemoveIfNoModule(InventarioBtn,      Module_e.Inventory);
             RemoveIfNoModule(InventarioRandomBtn,Module_e.RandomInventory);
             RemoveIfNoModule(ReportesBtn,        Module_e.Reports);
+            RemoveIfNoModule(ReporteDanosBtn,    Module_e.DamageReport);
+            RemoveIfNoModule(TareasBtn,          Module_e.WarehouseStaff);
             RemoveIfNoModule(UsuariosBtn,        Module_e.Users);
             RemoveIfNoModule(AuditoriaBtn,       Module_e.Auditing);
         }
@@ -274,6 +278,12 @@ namespace LDForms
                 case "Reportes":
                     AbrirTab("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
                     break;
+                case "ReporteDanos":
+                    AbrirTab("Reporte de daños", _serviceProvider.GetRequiredService<DamageReportView>());
+                    break;
+                case "Tareas":
+                    AbrirTab("Tareas", _serviceProvider.GetRequiredService<TasksView>());
+                    break;
                 case "Patio":
                     AbrirTab("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());
                     break;
@@ -332,6 +342,12 @@ namespace LDForms
                     break;
                 case "Reportes":
                     AbrirVentana("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
+                    break;
+                case "ReporteDanos":
+                    AbrirVentana("Reporte de daños", _serviceProvider.GetRequiredService<DamageReportView>());
+                    break;
+                case "Tareas":
+                    AbrirVentana("Tareas", _serviceProvider.GetRequiredService<TasksView>());
                     break;
                 case "Patio":
                     AbrirVentana("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());

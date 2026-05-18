@@ -55,6 +55,17 @@ namespace LD.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<DropDownDto>> GetLookupByUserId(string userId)
+        {
+            return await _context.UserWarehouses
+                .AsNoTracking()
+                .Where(x => x.UserId == userId && x.WarehouseId.HasValue && x.Warehouse != null)
+                .Select(x => x.Warehouse!)
+                .Distinct()
+                .ProjectTo<DropDownDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public Task<List<Warehouse>?> GetManyAsync()
         {
             throw new NotImplementedException();

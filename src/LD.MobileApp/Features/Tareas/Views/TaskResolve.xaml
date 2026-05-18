@@ -19,6 +19,11 @@
                     Margin="0,10,0,0">
 
                     <VerticalStackLayout Spacing="12">
+                        <Label x:Name="WarehouseLabel"
+                               Text="Almacen:"
+                               TextColor="#64748B"
+                               FontSize="18"/>
+
                         <Label x:Name="CategoryLabel"
                                Text="Categoria:"
                                TextColor="#64748B"

@@ -831,6 +831,10 @@ namespace LD.Infrastructure.Persistence
                 entity.Property(x => x.ResolvedPhoto3Path).HasMaxLength(500);
                 entity.Property(x => x.ResolvedPhoto4Path).HasMaxLength(500);
                 entity.Property(x => x.CompletedBy).HasMaxLength(150);
+                entity.HasOne(x => x.Warehouse)
+                    .WithMany(x => x.OperationalTasks)
+                    .HasForeignKey(x => x.WarehouseId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             // Seed: warehouse de referencia para cortinas

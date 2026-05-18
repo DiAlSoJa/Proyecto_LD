@@ -14,10 +14,10 @@ public class OperationalTaskByIdQuery : IRequest<Result<OperationalTaskDto>>
 
 public class OperationalTaskByIdQueryHandler : IRequestHandler<OperationalTaskByIdQuery, Result<OperationalTaskDto>>
 {
-    private readonly IRepository<OperationalTask> _repository;
+    private readonly IOperationalTaskRepository _repository;
     private readonly IMapper _mapper;
 
-    public OperationalTaskByIdQueryHandler(IRepository<OperationalTask> repository, IMapper mapper)
+    public OperationalTaskByIdQueryHandler(IOperationalTaskRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -25,7 +25,7 @@ public class OperationalTaskByIdQueryHandler : IRequestHandler<OperationalTaskBy
 
     public async Task<Result<OperationalTaskDto>> Handle(OperationalTaskByIdQuery request, CancellationToken cancellationToken)
     {
-        var task = await _repository.GetByIdAsync(request.OperationalTaskId);
+        var task = await _repository.GetTaskByIdAsync(request.OperationalTaskId);
         if (task is null)
             return Result<OperationalTaskDto>.Failure("No se encontro la tarea", new());
 

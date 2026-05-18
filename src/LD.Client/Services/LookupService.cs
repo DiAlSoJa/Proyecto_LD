@@ -24,6 +24,9 @@ namespace LD.Client.Services
         }
         public async Task<ApiResponseDto<List<DropDownDto>>> GetWarehouseLookup()
             => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Warehouse);
+        public async Task<ApiResponseDto<List<DropDownDto>>> GetWarehouseLookupByUser(string userId)
+            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(
+                _apiEndpoints.Lookup_WarehouseByUser.Replace("{userId}", userId));
         public async Task<ApiResponseDto<List<DropDownDto>>> GetClientLookup()
            => await _api.GetAsync<ApiResponseDto<List<DropDownDto>>>(_apiEndpoints.Lookup_Client);
         public async Task<ApiResponseDto<List<DropDownDto>>> GetLocationLookup()

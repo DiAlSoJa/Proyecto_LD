@@ -831,6 +831,48 @@
                                             </StackPanel>
                                         </Button>
 
+                                        <!-- Reporte de daños-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ReporteDanosBtn"
+                                             Tag="ReporteDanos"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="AlertCircleOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="#DC2626"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Reporte de daños"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Tareas-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="TareasBtn"
+                                             Tag="Tareas"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ClipboardSearchOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="#16A34A"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Tareas"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
                                         <!-- Impresion-->
                                         <Button Style="{StaticResource DashboardTileStyle}"
                                                 x:Name="ImpresionBtn"

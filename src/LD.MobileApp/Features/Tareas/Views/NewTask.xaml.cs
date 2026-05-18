@@ -1,4 +1,6 @@
+using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.DTOs;
 using LD.Contracts.Requests;
 using Microsoft.Maui.Graphics.Platform;
 
@@ -10,15 +12,24 @@ public partial class NewTask : ContentPage, IQueryAttributable
     private const float TaskPhotoQuality = 0.86f;
 
     private readonly OperationalTaskService _operationalTaskService;
+    private readonly LookupService _lookupService;
     private readonly string?[] _photoPaths = new string?[4];
     private readonly ImageSource?[] _photos = new ImageSource?[4];
+    private bool _warehousesLoaded;
 
     public string? TextInformation { get; set; }
 
-    public NewTask(OperationalTaskService operationalTaskService)
+    public NewTask(OperationalTaskService operationalTaskService, LookupService lookupService)
     {
         InitializeComponent();
         _operationalTaskService = operationalTaskService;
+        _lookupService = lookupService;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await LoadWarehousesAsync();
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -139,6 +150,12 @@ public partial class NewTask : ContentPage, IQueryAttributable
             return;
         }
 
+        if (WarehousePicker.SelectedItem is not DropDownDto warehouse || !int.TryParse(warehouse.Key, out var warehouseId))
+        {
+            await DisplayAlertAsync("Almacen", "Selecciona el almacen.", "OK");
+            return;
+        }
+
         if (EstadoPickewr.SelectedItem is null)
         {
             await DisplayAlertAsync("Tarea", "Selecciona la actividad.", "OK");
@@ -155,6 +172,7 @@ public partial class NewTask : ContentPage, IQueryAttributable
         {
             var request = new OperationalTaskRequest
             {
+                WarehouseId = warehouseId,
                 Priority = EstadoPicker.SelectedItem.ToString() ?? string.Empty,
                 Activity = EstadoPickewr.SelectedItem.ToString() ?? string.Empty,
                 Name = NameEntry.Text.Trim(),
@@ -192,5 +210,34 @@ public partial class NewTask : ContentPage, IQueryAttributable
             throw new InvalidOperationException(response.Message ?? $"No se pudo cargar la foto {photoNumber}.");
 
         return response.Data.RelativePath;
+    }
+
+    private async Task LoadWarehousesAsync()
+    {
+        if (_warehousesLoaded)
+            return;
+
+        try
+        {
+            _warehousesLoaded = true;
+            if (string.IsNullOrWhiteSpace(UserData.Id))
+                return;
+
+            var response = await _lookupService.GetWarehouseLookupByUser(UserData.Id);
+            if (!response.IsSuccess)
+            {
+                await DisplayAlertAsync("Almacenes", response.Message ?? "No se pudieron cargar los almacenes.", "OK");
+                return;
+            }
+
+            var warehouses = response.Data ?? new List<DropDownDto>();
+            WarehousePicker.ItemsSource = warehouses;
+            if (warehouses.Count == 1)
+                WarehousePicker.SelectedIndex = 0;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
     }
 }

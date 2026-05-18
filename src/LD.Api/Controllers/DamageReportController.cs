@@ -86,14 +86,20 @@ public class DamageReportController : CommonController
         [FromQuery] DateTime? desde,
         [FromQuery] DateTime? hasta,
         [FromQuery] int? standardId,
-        [FromQuery] string? partNumber)
+        [FromQuery] int? warehouseId,
+        [FromQuery] string? warehouse,
+        [FromQuery] string? partNumber,
+        [FromQuery] string? damageType)
     {
         return ResultExtensions.ToActionResult(await Mediator.Send(new DamageReportQuery
         {
             Desde = desde,
             Hasta = hasta,
             StandardId = standardId,
-            PartNumber = partNumber
+            WarehouseId = warehouseId,
+            Warehouse = warehouse,
+            PartNumber = partNumber,
+            DamageType = damageType
         }));
     }
 

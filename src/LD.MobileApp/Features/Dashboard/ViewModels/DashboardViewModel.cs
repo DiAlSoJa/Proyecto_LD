@@ -17,6 +17,7 @@ namespace MauiAppLogin.ViewModels
         private readonly PatioClientService _patioClientService;
         private readonly ChecklistService _checklistService;
         private readonly OperationalTaskService _operationalTaskService;
+        private readonly LookupService _lookupService;
         private readonly IDialogService _dialogService;
 
         [ObservableProperty]
@@ -105,12 +106,13 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToChecklistCommand { get; }
         public ICommand NavigateToPatioPendientesCommand { get; }
 
-        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService, ChecklistService checklistService, OperationalTaskService operationalTaskService, IDialogService dialogService)
+        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService, ChecklistService checklistService, OperationalTaskService operationalTaskService, LookupService lookupService, IDialogService dialogService)
         {
             _apiService = apiService;
             _patioClientService = patioClientService;
             _checklistService = checklistService;
             _operationalTaskService = operationalTaskService;
+            _lookupService = lookupService;
             _dialogService = dialogService;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
@@ -163,10 +165,28 @@ namespace MauiAppLogin.ViewModels
         {
             try
             {
-                var operationalTasksResponse = await _operationalTaskService.GetTasks(soloPendientes: true);
+                var warehouseResponse = string.IsNullOrWhiteSpace(UserData.Id)
+                    ? null
+                    : await _lookupService.GetWarehouseLookupByUser(UserData.Id);
+                var warehouseIds = (warehouseResponse?.Data ?? new())
+                    .Select(x => int.TryParse(x.Key, out var warehouseId) ? warehouseId : (int?)null)
+                    .Where(x => x.HasValue)
+                    .Select(x => x!.Value)
+                    .ToHashSet();
+
+                if (warehouseResponse?.IsSuccess == true && warehouseIds.Count == 0)
+                {
+                    OperationalTasksPendingCount = 0;
+                    return;
+                }
+
+                var selectedWarehouseId = warehouseIds.Count == 1 ? warehouseIds.First() : (int?)null;
+                var operationalTasksResponse = await _operationalTaskService.GetTasks(soloPendientes: true, selectedWarehouseId);
                 if (operationalTasksResponse.IsSuccess && operationalTasksResponse.Data != null)
                 {
-                    OperationalTasksPendingCount = operationalTasksResponse.Data.Count;
+                    OperationalTasksPendingCount = selectedWarehouseId.HasValue || warehouseIds.Count == 0
+                        ? operationalTasksResponse.Data.Count
+                        : operationalTasksResponse.Data.Count(x => x.WarehouseId.HasValue && warehouseIds.Contains(x.WarehouseId.Value));
                 }
             }
             catch { }

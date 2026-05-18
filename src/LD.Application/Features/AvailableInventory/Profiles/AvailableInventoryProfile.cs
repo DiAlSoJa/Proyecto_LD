@@ -16,6 +16,10 @@ public class AvailableInventoryProfile : Profile
                 opt => opt.MapFrom(src => src.Location != null && src.Location.Warehouse != null
                     ? src.Location.Warehouse.WarehouseName
                     : string.Empty))
+            .ForMember(dest => dest.WarehouseId,
+                opt => opt.MapFrom(src => src.Location != null
+                    ? src.Location.WarehouseId
+                    : (int?)null))
             .ForMember(dest => dest.Ubicacion,
                 opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : string.Empty))
             .ForMember(dest => dest.StandardIdStr,

@@ -17,8 +17,12 @@ public class OperationalTaskController : CommonController
 {
     [HttpGet]
     [Permission(PermissionKeys.WarehouseStaff_Tasks_View)]
-    public async Task<IActionResult> GetTasks([FromQuery] bool soloPendientes = false)
-        => ResultExtensions.ToActionResult(await Mediator.Send(new OperationalTaskQuery { SoloPendientes = soloPendientes }));
+    public async Task<IActionResult> GetTasks([FromQuery] bool soloPendientes = false, [FromQuery] int? warehouseId = null)
+        => ResultExtensions.ToActionResult(await Mediator.Send(new OperationalTaskQuery
+        {
+            SoloPendientes = soloPendientes,
+            WarehouseId = warehouseId
+        }));
 
     [HttpGet("{taskId}")]
     [Permission(PermissionKeys.WarehouseStaff_Tasks_View)]

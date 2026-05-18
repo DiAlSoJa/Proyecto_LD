@@ -18,7 +18,31 @@
                 Margin="0,10,0,12">
 
                 <VerticalStackLayout Spacing="12">
-                   
+                    <Grid ColumnDefinitions="120,*"
+                          RowSpacing="14"
+                          ColumnSpacing="12">
+
+                        <Label Text="Almacen:"
+                               Grid.Column="0"
+                               VerticalOptions="Center"
+                               TextColor="#64748B"
+                               FontSize="14"/>
+
+                        <Border Grid.Column="1"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="White"
+                                Padding="12,4">
+
+                            <Picker x:Name="WarehousePicker"
+                                    Title="Selecciona el almacen"
+                                    ItemDisplayBinding="{Binding Value}"
+                                    TextColor="#1E293B"/>
+
+                        </Border>
+
+                    </Grid>
 
                     
                     <Grid ColumnDefinitions="120,*"

@@ -7,6 +7,9 @@ public class OperationalTaskRequest
     public int OperationalTaskId { get; set; }
 
     [Required]
+    public int? WarehouseId { get; set; }
+
+    [Required]
     [MaxLength(50)]
     public string Priority { get; set; } = string.Empty;
 

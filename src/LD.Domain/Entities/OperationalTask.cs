@@ -8,6 +8,9 @@ public class OperationalTask : AuditableEntity
     [Key]
     public int OperationalTaskId { get; set; }
 
+    public int? WarehouseId { get; set; }
+    public Warehouse? Warehouse { get; set; }
+
     [Required]
     [MaxLength(50)]
     public string Priority { get; set; } = string.Empty;

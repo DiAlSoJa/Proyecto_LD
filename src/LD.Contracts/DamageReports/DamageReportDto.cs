@@ -32,6 +32,8 @@ public class DamageReportDto
     public string? Photo3Path { get; set; }
     public string? Photo4Path { get; set; }
     public DateTime ReportDate { get; set; }
+    public string? CreatedByUserId { get; set; }
+    public string? CreatedByUserName { get; set; }
     public string? ReportedByUserId { get; set; }
     public string? ReportedByName { get; set; }
 }

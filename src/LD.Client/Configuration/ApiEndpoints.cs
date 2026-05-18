@@ -262,6 +262,7 @@ namespace LD.Forms.Configuration
         // ======================
         public string Lookup_GetAll => $"{_baseApi}/Lookup";
         public string Lookup_Warehouse => $"{_baseApi}/Lookup/warehouse";
+        public string Lookup_WarehouseByUser => $"{_baseApi}/Lookup/warehouse/user/{{userId}}";
         public string Lookup_Client => $"{_baseApi}/Lookup/client";
         public string Lookup_Project => $"{_baseApi}/Lookup/project";
         public string Lookup_ProjectClient => $"{_baseApi}/Lookup/project";

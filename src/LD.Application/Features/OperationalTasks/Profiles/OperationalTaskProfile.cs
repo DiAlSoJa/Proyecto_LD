@@ -12,6 +12,8 @@ public class OperationalTaskProfile : Profile
     {
         CreateMap<OperationalTaskRequest, OperationalTask>();
         CreateMap<CreateOperationalTaskCommand, OperationalTask>();
-        CreateMap<OperationalTask, OperationalTaskDto>();
+        CreateMap<OperationalTask, OperationalTaskDto>()
+            .ForMember(dest => dest.WarehouseName,
+                opt => opt.MapFrom(src => src.Warehouse != null ? src.Warehouse.WarehouseName : null));
     }
 }

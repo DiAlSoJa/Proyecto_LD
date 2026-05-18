@@ -78,6 +78,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
 
     private void ApplyTask(OperationalTaskDto task)
     {
+        WarehouseLabel.Text = $"Almacen: {(string.IsNullOrWhiteSpace(task.WarehouseName) ? "Sin almacen" : task.WarehouseName)}";
         CategoryLabel.Text = $"Categoria: {task.Priority}";
         ActivityLabel.Text = $"Tarea: {task.Activity}";
         NameLabel.Text = $"Nombre: {task.Name}";

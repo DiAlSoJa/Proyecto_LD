@@ -18,10 +18,16 @@ public class OperationalTaskService
         _apiEndpoints = apiEndpoints;
     }
 
-    public async Task<ApiResponseDto<List<OperationalTaskDto>>> GetTasks(bool soloPendientes = false)
+    public async Task<ApiResponseDto<List<OperationalTaskDto>>> GetTasks(bool soloPendientes = false, int? warehouseId = null)
     {
-        var endpoint = soloPendientes
-            ? $"{_apiEndpoints.OperationalTask_GetAll}?soloPendientes=true"
+        var query = new List<string>();
+        if (soloPendientes)
+            query.Add("soloPendientes=true");
+        if (warehouseId.HasValue)
+            query.Add($"warehouseId={warehouseId.Value}");
+
+        var endpoint = query.Count > 0
+            ? $"{_apiEndpoints.OperationalTask_GetAll}?{string.Join("&", query)}"
             : _apiEndpoints.OperationalTask_GetAll;
 
         return await _api.GetAsync<ApiResponseDto<List<OperationalTaskDto>>>(endpoint);

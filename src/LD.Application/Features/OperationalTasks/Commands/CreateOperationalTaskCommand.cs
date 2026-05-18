@@ -33,6 +33,9 @@ public class CreateOperationalTaskCommandHandler : IRequestHandler<CreateOperati
         if (string.IsNullOrWhiteSpace(request.Name))
             return Result<string>.Failure("Captura el nombre de la tarea", new());
 
+        if (!request.WarehouseId.HasValue)
+            return Result<string>.Failure("Selecciona el almacen", new());
+
         var task = _mapper.Map<OperationalTask>(request);
         var created = await _repository.CreateAsync(task);
 
