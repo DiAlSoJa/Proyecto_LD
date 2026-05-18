@@ -164,6 +164,9 @@ namespace LD.FormsX.Views.ASN
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
 
+        private static bool IsLocatingStatus(string? status) =>
+            string.Equals(status?.Trim(), "Ubicando", StringComparison.OrdinalIgnoreCase);
+
         private static bool IsTerminalStatus(string? status) =>
             IsConfirmedStatus(status) || IsCancelledStatus(status);
 
@@ -201,8 +204,10 @@ namespace LD.FormsX.Views.ASN
             var hasSelectedAsn = _selectedX != null;
             var isConfirmed = IsConfirmedStatus(_selectedX?.Status);
             var isCancelled = IsCancelledStatus(_selectedX?.Status);
+            var isLocating = IsLocatingStatus(_selectedX?.Status);
             var isTerminal = isConfirmed || isCancelled;
             var canClick = hasSelectedAsn && !isTerminal;
+            var canLocate = canClick && !isLocating;
             var terminalStatus = isCancelled ? "cancelado" : "confirmado";
 
             ConfigureActionButton(
@@ -224,6 +229,18 @@ namespace LD.FormsX.Views.ASN
                     : hasSelectedAsn
                         ? "Confirmar entrada del ASN"
                         : "Selecciona un ASN para confirmar.");
+
+            ConfigureActionButton(
+                btnUbicarMercancia,
+                canLocate,
+                hasSelectedAsn && isTerminal,
+                hasSelectedAsn && isTerminal
+                    ? $"Este ASN esta {terminalStatus}. Ya no se puede ubicar."
+                    : hasSelectedAsn && isLocating
+                        ? "El ASN ya esta en estatus Ubicando."
+                        : hasSelectedAsn
+                            ? "Ubicar mercancia del ASN"
+                            : "Selecciona un ASN para ubicar.");
 
             ConfigureActionButton(
                 btnCancelar,
@@ -600,6 +617,71 @@ namespace LD.FormsX.Views.ASN
                 await CargarDatosAsync();
 
                 _selectedX = _allAsns.FirstOrDefault(x => x.AsnId == confirmedAsnId);
+                UpdateActionButtons();
+                await CargarDatosAsyncDet();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                MostrarLoader(false);
+                UpdateActionButtons();
+            }
+        }
+
+        private async void BtnUbicarMercancia_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedX == null || _selectedX.AsnId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un ASN para ubicar.");
+                    return;
+                }
+
+                if (IsConfirmedStatus(_selectedX.Status))
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado ya esta confirmado y no se puede ubicar.");
+                    return;
+                }
+
+                if (IsCancelledStatus(_selectedX.Status))
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado esta cancelado y no se puede ubicar.");
+                    return;
+                }
+
+                if (IsLocatingStatus(_selectedX.Status))
+                {
+                    DialogHelper.ShowWarning("El ASN seleccionado ya esta en estatus Ubicando.");
+                    return;
+                }
+
+                var confirmar = DialogHelper.ShowConfirm(
+                    $"Deseas ubicar la mercancia del ASN {_selectedX.AsnCode ?? _selectedX.AsnId.ToString()}?",
+                    "Ubicar mercancia");
+
+                if (!confirmar)
+                    return;
+
+                btnUbicarMercancia.IsEnabled = false;
+                MostrarLoader(true, "Actualizando ASN...");
+
+                var result = await _asnService.LocateAsn(_selectedX.AsnId);
+
+                if (!result.IsSuccess)
+                {
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo marcar el ASN como Ubicando.");
+                    return;
+                }
+
+                DialogHelper.ShowSuccess(result.Message ?? "ASN marcado como Ubicando correctamente.");
+                var locatingAsnId = _selectedX.AsnId;
+                await CargarDatosAsync();
+
+                _selectedX = _allAsns.FirstOrDefault(x => x.AsnId == locatingAsnId);
                 UpdateActionButtons();
                 await CargarDatosAsyncDet();
             }

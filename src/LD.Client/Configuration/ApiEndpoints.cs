@@ -360,6 +360,7 @@ namespace LD.Forms.Configuration
         public string Asn_Delete => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
         public string Asn_Cancel => $"{_baseApi}/asn/{{asnId}}/cancel";
+        public string Asn_Locate => $"{_baseApi}/asn/{{asnId}}/locate";
 
         public string AsnDetail_GetAll => $"{_baseApi}/asnDetail";
         public string AsnDetail_GetById => $"{_baseApi}/asnDetail/{{asnId}}";

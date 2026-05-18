@@ -54,5 +54,12 @@ namespace LD.Client.Services
                 _apiEndpoints.Asn_Cancel.Replace("{asnId}", asnId.ToString()),
                 new { });
         }
+
+        public async Task<ApiResponseDto<string>> LocateAsn(int asnId)
+        {
+            return await _api.PostAsync<object, ApiResponseDto<string>>(
+                _apiEndpoints.Asn_Locate.Replace("{asnId}", asnId.ToString()),
+                new { });
+        }
     }
 }

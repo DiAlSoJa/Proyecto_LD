@@ -81,6 +81,19 @@ namespace LD.Api.Controllers
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
 
+        [HttpPost("{asnId}/locate")]
+        [Permission(PermissionKeys.Asn_Update)]
+        public async Task<IActionResult> LocateAsn(int asnId)
+        {
+            var command = new LocateAsnCommand
+            {
+                AsnId = asnId,
+                UserId = CurrentUserId
+            };
+
+            return ResultExtensions.ToActionResult(await Mediator.Send(command));
+        }
+
 
 
 

@@ -71,7 +71,7 @@ public class ConfirmAsnCommandHandler : IRequestHandler<ConfirmAsnCommand, Resul
                 .ToList();
 
             if (!details.Any())
-                return Result<string>.Failure("El ASN no tiene lineas para confirmar.", new());
+                return Result<string>.Failure("El ASN debe tener al menos un ASN Receipt Detail.", new());
 
             var invalidDetails = details
                 .Where(x =>

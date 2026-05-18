@@ -41,6 +41,9 @@
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
 
                     <Border x:Name="EstandarIdBorder" Stroke="#E2E8F0" Grid.Column="0" Grid.ColumnSpan="2" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEstandarIdTapped"/>
+                        </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Estandar ID" TextColor="#64748B" FontSize="12"/>
                             <Label x:Name="EstandarIdLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
@@ -48,6 +51,9 @@
                     </Border>
 
                     <Border x:Name="RackBorder" Grid.Row="1" Grid.Column="0" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRackTapped"/>
+                        </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Rack" TextColor="#64748B" FontSize="12"/>
                             <Label x:Name="RackLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
@@ -57,6 +63,9 @@
                     <Border x:Name="PosicionBorder" Grid.Row="1" Grid.Column="1"
                             Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
                             BackgroundColor="White" Padding="12,8">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPosicionTapped"/>
+                        </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Posición" TextColor="#64748B" FontSize="12"/>
                             <Label x:Name="PosicionLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>

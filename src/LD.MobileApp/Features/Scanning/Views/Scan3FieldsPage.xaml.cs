@@ -30,6 +30,7 @@ public partial class Scan3FieldsPage : ContentPage
             Formats =
                 BarcodeFormat.Code128 |
                 BarcodeFormat.Code39 |
+                BarcodeFormat.Itf |
                 BarcodeFormat.Ean13 |
                 BarcodeFormat.Ean8 |
                 BarcodeFormat.UpcA |
@@ -231,6 +232,67 @@ public partial class Scan3FieldsPage : ContentPage
         EstandarIdBorder.StrokeThickness = 1;
         RackBorder.StrokeThickness = 1;
         PosicionBorder.StrokeThickness = 1;
+    }
+
+    private void ResetFieldBorder(Border border)
+    {
+        border.Stroke = DefaultBorderBrush;
+        border.StrokeThickness = 1;
+    }
+
+    private void ResetLastScan()
+    {
+        _lastValue = "";
+        _lastScanAt = DateTime.MinValue;
+    }
+
+    private void OnEstandarIdTapped(object sender, TappedEventArgs e)
+    {
+        if (_isBusy)
+            return;
+
+        EstandarId = "";
+        EstandarIdLabel.Text = "-";
+        ResetFieldBorder(EstandarIdBorder);
+        ResetLastScan();
+
+        _step = 0;
+        CameraView.IsDetecting = true;
+        UpdateHint();
+    }
+
+    private void OnRackTapped(object sender, TappedEventArgs e)
+    {
+        if (_isBusy || !_requiresThreeFields)
+            return;
+
+        Rack = "";
+        RackLabel.Text = "-";
+        ResetFieldBorder(RackBorder);
+        ResetLastScan();
+
+        _step = string.IsNullOrWhiteSpace(EstandarId) ? 0 : 1;
+        CameraView.IsDetecting = true;
+        UpdateHint();
+    }
+
+    private void OnPosicionTapped(object sender, TappedEventArgs e)
+    {
+        if (_isBusy || !_requiresThreeFields)
+            return;
+
+        Posicion = "";
+        PosicionLabel.Text = "-";
+        ResetFieldBorder(PosicionBorder);
+        ResetLastScan();
+
+        if (string.IsNullOrWhiteSpace(EstandarId))
+            _step = 0;
+        else
+            _step = string.IsNullOrWhiteSpace(Rack) ? 1 : 2;
+
+        CameraView.IsDetecting = true;
+        UpdateHint();
     }
 
     private async void OnAcceptClicked(object sender, EventArgs e)
