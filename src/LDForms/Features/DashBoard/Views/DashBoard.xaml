@@ -831,6 +831,27 @@
                                             </StackPanel>
                                         </Button>
 
+                                        <!-- Diagrama de base de datos-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="DatabaseDiagramBtn"
+                                             Tag="DatabaseDiagram"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="Database"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="#0F766E"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Diagrama BD"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
                                         <!-- Reporte de daños-->
                                         <Button Style="{StaticResource DashboardTileStyle}"
                                                 x:Name="ReporteDanosBtn"
