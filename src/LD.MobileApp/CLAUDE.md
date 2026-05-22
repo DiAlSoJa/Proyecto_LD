@@ -55,6 +55,7 @@ All ViewModels extend `ObservableObject` (CommunityToolkit.Mvvm):
 ```csharp
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MauiAppLogin.Controls;
 
 public partial class FooViewModel : ObservableObject
 {
@@ -65,10 +66,12 @@ public partial class FooViewModel : ObservableObject
     private bool isLoading;
 
     private readonly FooService _fooService;
+    private readonly IDialogService _dialogService;
 
-    public FooViewModel(FooService fooService)
+    public FooViewModel(FooService fooService, IDialogService dialogService)
     {
         _fooService = fooService;
+        _dialogService = dialogService;
     }
 
     [RelayCommand]
@@ -80,7 +83,7 @@ public partial class FooViewModel : ObservableObject
             var result = await _fooService.GetFooAsync();
             if (!result.IsSuccess)
             {
-                await Shell.Current.DisplayAlertAsync("Error", result.Message, "OK");
+                await _dialogService.ShowErrorAsync("Error", result.Message);
                 return;
             }
             // update properties
@@ -92,6 +95,20 @@ public partial class FooViewModel : ObservableObject
     }
 }
 ```
+
+### Status Dialogs — IDialogService (MANDATORY)
+
+**Never use `DisplayAlertAsync`** for status messages. Always inject and use `IDialogService`:
+
+| Method | When to use |
+|---|---|
+| `ShowErrorAsync(title, msg)` | API errors, validation failures, exceptions |
+| `ShowSuccessAsync(title, msg)` | Successful save, operation completed |
+| `ShowInfoAsync(title, msg)` | Neutral information, instructions |
+| `ShowWarningAsync(title, msg)` → `bool` | Two-option confirmation (returns `true` = Continuar) |
+| `ShowBlocking(title, msg)` / `HideBlocking()` | Mandatory blocking state (e.g. pending checklist) |
+
+`DisplayPromptAsync` remains valid for capturing text input. `LogoutDialog` and `OptionPopup` are specialized UX popups — use them directly as needed.
 
 ### Page Convention
 

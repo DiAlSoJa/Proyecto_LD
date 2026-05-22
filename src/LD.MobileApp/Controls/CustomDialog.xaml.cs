@@ -28,6 +28,15 @@ public partial class CustomDialog : Popup
                 });
                 break;
 
+            case DialogType.Success:
+                IconLabel.Text = "✅";
+                AgregarBoton("Aceptar", "#16A34A", "#FFFFFF", () =>
+                {
+                    onConfirm?.Invoke();
+                    Close(true);
+                });
+                break;
+
             case DialogType.Warning:
                 IconLabel.Text = "⚠️";
                 AgregarBoton("Cancelar", "#F3F4F6", "#374151", () =>
@@ -35,7 +44,7 @@ public partial class CustomDialog : Popup
                     onCancel?.Invoke();
                     Close(false);
                 });
-                AgregarBoton("Registrar otro", "#1F3A5F", "#FFFFFF", () =>
+                AgregarBoton("Continuar", "#1F3A5F", "#FFFFFF", () =>
                 {
                     onConfirm?.Invoke();
                     Close(true);

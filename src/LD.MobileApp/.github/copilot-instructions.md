@@ -17,12 +17,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LD.Client.Services;
+using MauiAppLogin.Controls;
 
 namespace MauiAppLogin.ViewModels;
 
 public partial class FooViewModel : ObservableObject
 {
     private readonly FooService _fooService;
+    private readonly IDialogService _dialogService;
 
     [ObservableProperty]
     private ObservableCollection<FooDto> items = new();
@@ -30,9 +32,10 @@ public partial class FooViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading;
 
-    public FooViewModel(FooService fooService)
+    public FooViewModel(FooService fooService, IDialogService dialogService)
     {
         _fooService = fooService;
+        _dialogService = dialogService;
     }
 
     [RelayCommand]
@@ -44,7 +47,7 @@ public partial class FooViewModel : ObservableObject
             var result = await _fooService.GetFooAsync();
             if (!result.IsSuccess)
             {
-                await Shell.Current.DisplayAlertAsync("Error", result.Message, "OK");
+                await _dialogService.ShowErrorAsync("Error", result.Message);
                 return;
             }
             Items = new ObservableCollection<FooDto>(result.Data ?? []);
@@ -56,6 +59,31 @@ public partial class FooViewModel : ObservableObject
     }
 }
 ```
+
+## Status Dialogs (MANDATORY — never use DisplayAlertAsync)
+
+Always inject `IDialogService` and use it for any status popup:
+
+```csharp
+// Error (API failure, exception, validation)
+await _dialogService.ShowErrorAsync("Error", result.Message);
+
+// Success (save confirmed, operation done)
+await _dialogService.ShowSuccessAsync("Listo", "Guardado correctamente.");
+
+// Info (neutral message)
+await _dialogService.ShowInfoAsync("Información", "No tienes equipo asignado.");
+
+// Warning with two options — returns true when user picks "Continuar"
+bool continuar = await _dialogService.ShowWarningAsync("Advertencia", "¿Deseas continuar?");
+
+// Blocking (no dismiss button — close with HideBlocking)
+_dialogService.ShowBlocking("Pendiente", "Completa el checklist para continuar.");
+_dialogService.HideBlocking();
+```
+
+`DisplayPromptAsync` is still valid for capturing user text input.
+`LogoutDialog` and `OptionPopup` are specialized UX popups — use them directly.
 
 ## Page Template
 
@@ -124,3 +152,4 @@ Features/<Feature>/
 - Never use `Application.Current.Dispatcher` for cross-thread — use `MainThread.BeginInvokeOnMainThread`
 - Never reference `LD.Domain` or `LD.Infrastructure`
 - The namespace `MauiAppLogin` is legacy — do not rename it; new files may use it
+- **Never use `DisplayAlertAsync`** for status messages — use `IDialogService` instead (see Status Dialogs section)

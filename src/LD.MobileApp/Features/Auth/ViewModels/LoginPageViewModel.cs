@@ -4,6 +4,7 @@ using LD.Client.Services;
 using LD.Contracts.Enums;
 using LD.Contracts.User;
 using MauiAppLogin;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using System;
@@ -29,9 +30,10 @@ namespace MauiAppLogin.ViewModels
         public ICommand LoginCommand      { get; }
         public ICommand ShowIpConfigCommand { get; }
 
-        private readonly AuthService         _authService;
-        private readonly ILoaderService      _loaderService;
-        private readonly ChecklistService    _checklistService;
+        private readonly AuthService          _authService;
+        private readonly ILoaderService       _loaderService;
+        private readonly IDialogService       _dialogService;
+        private readonly ChecklistService     _checklistService;
         private readonly MobileSessionService _sessionService;
 
         private const string DefaultApiUrl = "http://192.168.0.103:8050/api";
@@ -41,11 +43,13 @@ namespace MauiAppLogin.ViewModels
         public LoginViewModel(
             AuthService authService,
             ILoaderService loaderService,
+            IDialogService dialogService,
             ChecklistService checklistService,
             MobileSessionService sessionService)
         {
             _authService      = authService;
             _loaderService    = loaderService;
+            _dialogService    = dialogService;
             _checklistService = checklistService;
             _sessionService   = sessionService;
             LoginCommand      = new AsyncCommand(Login);
@@ -73,7 +77,7 @@ namespace MauiAppLogin.ViewModels
             if (string.IsNullOrWhiteSpace(newUrl) || newUrl == currentUrl) return;
 
             Preferences.Default.Set("ApiBaseUrl", newUrl);
-            await Shell.Current.DisplayAlertAsync("Guardado", "La nueva URL se aplicará al próximo inicio de la app.", "OK");
+            await _dialogService.ShowSuccessAsync("Guardado", "La nueva URL se aplicará al próximo inicio de la app.");
         }
 
         // Llamado desde LoginPage.OnAppearing para restaurar sesión en cold start.
@@ -108,7 +112,7 @@ namespace MauiAppLogin.ViewModels
 
                 if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
                 {
-                    await Shell.Current.DisplayAlertAsync("Error", "Captura el usuario y contraseña", "OK");
+                    await _dialogService.ShowErrorAsync("Error", "Captura el usuario y contraseña");
                     return;
                 }
 
@@ -117,7 +121,7 @@ namespace MauiAppLogin.ViewModels
 
                 if (!response.IsSuccess)
                 {
-                    await Shell.Current.DisplayAlertAsync("Error", response.Message, "OK");
+                    await _dialogService.ShowErrorAsync("Error", response.Message);
                     return;
                 }
 
@@ -134,7 +138,7 @@ namespace MauiAppLogin.ViewModels
                 var getMeResponse = await _authService.GetMeAsync();
                 if (!getMeResponse.IsSuccess || getMeResponse.Data is null)
                 {
-                    await Shell.Current.DisplayAlertAsync("Error", getMeResponse.Message, "OK");
+                    await _dialogService.ShowErrorAsync("Error", getMeResponse.Message);
                     return;
                 }
 
@@ -144,7 +148,7 @@ namespace MauiAppLogin.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+                await _dialogService.ShowErrorAsync("Error", ex.Message);
             }
             finally
             {

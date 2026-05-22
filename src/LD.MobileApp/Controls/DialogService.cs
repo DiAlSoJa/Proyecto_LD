@@ -5,6 +5,7 @@ namespace MauiAppLogin.Controls;
 public interface IDialogService
 {
     Task ShowInfoAsync(string title, string message);
+    Task ShowSuccessAsync(string title, string message);
     Task<bool> ShowWarningAsync(string title, string message);
     Task ShowErrorAsync(string title, string message);
     void ShowBlocking(string title, string message);
@@ -22,6 +23,12 @@ public class DialogService : IDialogService
     public async Task ShowInfoAsync(string title, string message)
     {
         var dialog = new CustomDialog(title, message, DialogType.Info);
+        await GetCurrentPage().ShowPopupAsync(dialog);
+    }
+
+    public async Task ShowSuccessAsync(string title, string message)
+    {
+        var dialog = new CustomDialog(title, message, DialogType.Success);
         await GetCurrentPage().ShowPopupAsync(dialog);
     }
 

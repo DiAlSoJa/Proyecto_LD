@@ -161,6 +161,29 @@ Es el HTTP client base. Adjunta el JWT automáticamente. Los services de feature
 
 `ApiSettings:BaseUrl` en el `appsettings.json` de cada cliente. Default red local: `http://192.168.0.112:8050/api`.
 
+### Diálogos de estado en MAUI (`IDialogService`)
+
+**Regla**: en `LD.MobileApp`, **nunca uses `DisplayAlertAsync`** para mostrar errores, advertencias o confirmaciones. Usa siempre `IDialogService` (inyectado por DI, singleton).
+
+```csharp
+// Inyectar en el constructor del ViewModel
+private readonly IDialogService _dialogService;
+
+// Uso según el tipo de mensaje
+await _dialogService.ShowErrorAsync("Error", "Mensaje de error");
+await _dialogService.ShowSuccessAsync("Listo", "Operación exitosa");
+await _dialogService.ShowInfoAsync("Información", "Mensaje informativo");
+bool continuar = await _dialogService.ShowWarningAsync("Advertencia", "¿Deseas continuar?");
+
+// Bloqueo de pantalla (se cierra solo con HideBlocking)
+_dialogService.ShowBlocking("Espera", "Procesando...");
+_dialogService.HideBlocking();
+```
+
+Tipos disponibles en `DialogType`: `Info`, `Success`, `Warning`, `Error`, `Blocking`.
+- `DisplayPromptAsync` sigue siendo válido para capturar input del usuario (no es un diálogo de estado).
+- `LogoutDialog` y `OptionPopup` son popups especiales de UX, no diálogos de estado — se usan directamente.
+
 ## Contracts: Requests, Responses, DTOs
 
 `LD.Contracts` es la única capa compartida entre API y clientes. Aquí no va lógica, solo modelos.
