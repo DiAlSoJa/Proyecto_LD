@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.Views.Controls.SectionHeader"
+             x:Name="root">
+
+    <Grid ColumnDefinitions="Auto,*,Auto"
+          Padding="15"
+          BackgroundColor="#F8FAFC">
+
+        <Label Text="{Binding Icon, Source={x:Reference root}}"
+               FontSize="18"
+               VerticalOptions="Center"/>
+
+        <Label Grid.Column="1"
+               Text="{Binding Title, Source={x:Reference root}}"
+               FontAttributes="Bold"
+               TextColor="#1E293B"
+               VerticalOptions="Center"
+               Margin="10,0,0,0"/>
+
+        <Label x:Name="Chevron"
+               Grid.Column="2"
+               Text="⌄"
+               FontSize="16"
+               TextColor="#64748B"
+               VerticalOptions="Center"/>
+    </Grid>
+</ContentView>

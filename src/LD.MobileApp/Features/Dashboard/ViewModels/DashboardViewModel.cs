@@ -6,6 +6,7 @@ using LD.Client.Services;
 using LD.Contracts.Constants;
 using LD.Contracts.Enums;
 using MauiAppLogin.Controls;
+using MauiAppLogin.Services;
 using MauiAppLogin.Views.Controls;
 using System.Windows.Input;
 
@@ -17,6 +18,7 @@ namespace MauiAppLogin.ViewModels
         private readonly PatioClientService _patioClientService;
         private readonly ChecklistService _checklistService;
         private readonly IDialogService _dialogService;
+        private readonly MobileSessionService _sessionService;
 
         [ObservableProperty]
         private string username = string.Empty;
@@ -81,12 +83,13 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToChecklistCommand { get; }
         public ICommand NavigateToPatioPendientesCommand { get; }
 
-        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService, ChecklistService checklistService, IDialogService dialogService)
+        public DashboardViewModel(ApiService apiService, PatioClientService patioClientService, ChecklistService checklistService, IDialogService dialogService, MobileSessionService sessionService)
         {
             _apiService = apiService;
             _patioClientService = patioClientService;
             _checklistService = checklistService;
             _dialogService = dialogService;
+            _sessionService = sessionService;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
             NavigateToChangeLocationCommand = new AsyncRelayCommand(NavigateToChangeLocation);
@@ -155,13 +158,10 @@ namespace MauiAppLogin.ViewModels
             try
             {
                 IsBusy = true;
-                bool confirmar = await Application.Current!.MainPage!.DisplayAlertAsync(
-                    "Cerrar sesión",
-                    "¿Seguro que quieres cerrar sesión?",
-                    "Sí",
-                    "No");
-                if (!confirmar) return;
-                _apiService.ClearToken();
+                var dialog = new LogoutDialog();
+                var result = await Application.Current!.MainPage!.ShowPopupAsync(dialog);
+                if (result is not true) return;
+                await _sessionService.ClearAsync();
                 await Shell.Current.GoToAsync("//login");
             }
             finally

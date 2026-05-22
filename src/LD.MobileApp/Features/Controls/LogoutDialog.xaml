@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="MauiAppLogin.Views.Controls.LogoutDialog"
+               Color="Transparent"
+               CanBeDismissedByTappingOutsideOfPopup="True">
+
+    <Border BackgroundColor="White"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 20"
+            Padding="28,32"
+            Margin="32,0">
+
+        <VerticalStackLayout Spacing="20">
+
+            <!-- Icono -->
+            <Border BackgroundColor="#EFF6FF"
+                    StrokeThickness="0"
+                    StrokeShape="Ellipse"
+                    WidthRequest="68"
+                    HeightRequest="68"
+                    HorizontalOptions="Center">
+                <Image Source="person.png"
+                       HeightRequest="36"
+                       WidthRequest="36"
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Border>
+
+            <!-- Título -->
+            <Label Text="Cerrar sesión"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#1E293B"
+                   HorizontalOptions="Center"/>
+
+            <!-- Mensaje -->
+            <Label Text="¿Estás seguro de que deseas cerrar sesión?"
+                   FontSize="14"
+                   TextColor="#64748B"
+                   HorizontalTextAlignment="Center"
+                   HorizontalOptions="Center"/>
+
+            <!-- Botones -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,4,0,0">
+
+                <Border Grid.Column="0"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1.5"
+                        StrokeShape="RoundRectangle 10"
+                        BackgroundColor="White"
+                        Padding="0,14">
+                    <Label Text="Cancelar"
+                           TextColor="#64748B"
+                           FontAttributes="Bold"
+                           FontSize="14"
+                           HorizontalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCancelTapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Border Grid.Column="1"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 10"
+                        BackgroundColor="#1F3A5F"
+                        Padding="0,14">
+                    <Label Text="Sí, salir"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           FontSize="14"
+                           HorizontalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnConfirmTapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>

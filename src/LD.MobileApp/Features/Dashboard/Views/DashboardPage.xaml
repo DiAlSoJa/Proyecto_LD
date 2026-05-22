@@ -13,63 +13,19 @@
                              Background="#F4F6F9">
 
             <!-- HEADER -->
-            <Grid ColumnDefinitions="Auto,*,Auto"
-                  BackgroundColor="#1F3A5F"
-                  Padding="15"
-                  Margin="-20,-60,-20,0">
-
-                <Label Grid.Column="1"
-                       Text="{Binding Username}"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
-
-                <Border Grid.Column="2"
-                        BackgroundColor="#2F5DA8"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 15"
-                        Padding="10,5"
-                        VerticalOptions="Center">
-
-                    <HorizontalStackLayout Spacing="5">
-                        <Label Text="🔔" TextColor="White"/>
-                        <Label Text="Tareas (6)"
-                               TextColor="White"
-                               FontAttributes="Bold"/>
-                    </HorizontalStackLayout>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NavigateToTaskListCommand}"/>
-                    </Border.GestureRecognizers>
-                </Border>
-
-            </Grid>
+            <controls:DashboardHeader
+                Username="{Binding Username}"
+                TaskBadgeText="Tareas (6)"
+                ShowTaskBadge="True"
+                NavigateToTasksCommand="{Binding NavigateToTaskListCommand}"
+                Margin="-20,-60,-20,0"/>
 
             <!-- ALMACENISTA -->
             <controls:Card IsVisible="{Binding ShowAlmacenista}">
-                    <toolkit:Expander>
+                    <toolkit:Expander x:Name="ExpanderAlmacenista">
                         <toolkit:Expander.Header>
-                            <Grid ColumnDefinitions="Auto,*,Auto"
-                                  Padding="15"
-                                  BackgroundColor="#F8FAFC">
-
-                                <Label Text="📦"
-                                       FontSize="18"
-                                       VerticalOptions="Center"/>
-
-                                <Label Grid.Column="1"
-                                       Text="Almacenista"
-                                       FontAttributes="Bold"
-                                       TextColor="#1E293B"
-                                       VerticalOptions="Center"
-                                       Padding="10"/>
-
-                                <Label Grid.Column="2"
-                                       Text="⌄"
-                                       TextColor="#64748B"
-                                       VerticalOptions="Center"/>
-                            </Grid>
+                            <controls:SectionHeader Icon="📦" Title="Almacenista"
+                                IsExpanded="{Binding IsExpanded, Source={x:Reference ExpanderAlmacenista}}"/>
                         </toolkit:Expander.Header>
 
                         <toolkit:Expander.Content>
@@ -127,28 +83,12 @@
                                 <BoxView HeightRequest="1" BackgroundColor="#EEF2F7" IsVisible="{Binding CanViewAsn}"/>
 
                                 <!-- Task Manager dentro de Almacenista -->
-                                <toolkit:Expander Margin="0,8,0,0" IsVisible="{Binding CanViewWarehouseTasks}">
+                                <toolkit:Expander x:Name="ExpanderTaskManager"
+                                                  Margin="0,8,0,0"
+                                                  IsVisible="{Binding CanViewWarehouseTasks}">
                                     <toolkit:Expander.Header>
-                                        <Grid ColumnDefinitions="Auto,*,Auto"
-                                              Padding="15"
-                                              BackgroundColor="#F8FAFC">
-
-                                            <Label Text="🕒"
-                                                   FontSize="18"
-                                                   VerticalOptions="Center"/>
-
-                                            <Label Grid.Column="1"
-                                                   Text="Task Manager"
-                                                   FontAttributes="Bold"
-                                                   TextColor="#1E293B"
-                                                   VerticalOptions="Center"
-                                                   Padding="10,0"/>
-
-                                            <Label Grid.Column="2"
-                                                   Text="⌄"
-                                                   TextColor="#64748B"
-                                                   VerticalOptions="Center"/>
-                                        </Grid>
+                                        <controls:SectionHeader Icon="🕒" Title="Task Manager"
+                                            IsExpanded="{Binding IsExpanded, Source={x:Reference ExpanderTaskManager}}"/>
                                     </toolkit:Expander.Header>
 
                                     <toolkit:Expander.Content>
@@ -229,28 +169,10 @@
 
             <!-- SEGURIDAD -->
             <controls:Card IsVisible="{Binding ShowSecurity}">
-                    <toolkit:Expander>
+                    <toolkit:Expander x:Name="ExpanderSeguridad">
                         <toolkit:Expander.Header>
-                            <Grid ColumnDefinitions="Auto,*,Auto"
-                                  Padding="15"
-                                  BackgroundColor="#F8FAFC">
-
-                                <Label Text="👮‍♂️"
-                                       FontSize="18"
-                                       VerticalOptions="Center"/>
-
-                                <Label Grid.Column="1"
-                                       Text="Seguridad"
-                                       FontAttributes="Bold"
-                                       TextColor="#1E293B"
-                                       VerticalOptions="Center"
-                                       Padding="10"/>
-
-                                <Label Grid.Column="2"
-                                       Text="⌄"
-                                       TextColor="#64748B"
-                                       VerticalOptions="Center"/>
-                            </Grid>
+                            <controls:SectionHeader Icon="👮‍♂️" Title="Seguridad"
+                                IsExpanded="{Binding IsExpanded, Source={x:Reference ExpanderSeguridad}}"/>
                         </toolkit:Expander.Header>
 
                         <toolkit:Expander.Content>
@@ -362,20 +284,10 @@
 
             <!-- OPERACIONES -->
             <controls:Card IsVisible="{Binding ShowOperations}">
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="ExpanderOperaciones">
                     <toolkit:Expander.Header>
-                        <Grid ColumnDefinitions="Auto,*,Auto"
-                              Padding="15"
-                              BackgroundColor="#F8FAFC">
-                            <Label Text="🚚" FontSize="18" VerticalOptions="Center"/>
-                            <Label Grid.Column="1"
-                                   Text="Operaciones"
-                                   FontAttributes="Bold"
-                                   TextColor="#1E293B"
-                                   VerticalOptions="Center"
-                                   Padding="10"/>
-                            <Label Grid.Column="2" Text="⌄" TextColor="#64748B" VerticalOptions="Center"/>
-                        </Grid>
+                        <controls:SectionHeader Icon="🚚" Title="Operaciones"
+                            IsExpanded="{Binding IsExpanded, Source={x:Reference ExpanderOperaciones}}"/>
                     </toolkit:Expander.Header>
 
                     <toolkit:Expander.Content>
@@ -406,23 +318,10 @@
 
             <!-- INVENTARIOS -->
             <controls:Card IsVisible="{Binding ShowInventory}">
-                    <toolkit:Expander>
+                    <toolkit:Expander x:Name="ExpanderInventario">
                         <toolkit:Expander.Header>
-                            <Grid ColumnDefinitions="Auto,*,Auto"
-                                 Padding="15"
-                                 BackgroundColor="#F8FAFC">
-
-                                <Label Text="🔀" FontSize="18" VerticalOptions="Center"/>
-
-                                <Label Grid.Column="1"
-                                      Text="Inventario"
-                                      FontAttributes="Bold"
-                                      TextColor="#1E293B"
-                                      VerticalOptions="Center"
-                                      Padding="10"/>
-
-                                <Label Grid.Column="2" Text="⌄" TextColor="#64748B" VerticalOptions="Center"/>
-                            </Grid>
+                            <controls:SectionHeader Icon="🔀" Title="Inventario"
+                                IsExpanded="{Binding IsExpanded, Source={x:Reference ExpanderInventario}}"/>
                         </toolkit:Expander.Header>
 
                         <toolkit:Expander.Content>
@@ -492,7 +391,14 @@
             </controls:Card>
 
             <!-- CERRAR SESIÓN -->
-            <Button Text="Cerrar sesión" Command="{Binding LogoutCommand}"/>
+            <Button Text="Cerrar sesión"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="#1F3A5F"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="8"
+                    HeightRequest="50"
+                    Margin="0,10,0,0"/>
 
         </VerticalStackLayout>
     </ScrollView>
