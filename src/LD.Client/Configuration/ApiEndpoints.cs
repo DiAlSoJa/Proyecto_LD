@@ -221,6 +221,13 @@ namespace LD.Forms.Configuration
         public string Security_AbrirCortina    => $"{_baseApi}/security/tasks/{{taskId}}/abrir";
         public string Security_CerrarRegistro  => $"{_baseApi}/security/tasks/{{taskId}}/cerrar";
 
+        public string OperationalTask_GetAll      => $"{_baseApi}/OperationalTask";
+        public string OperationalTask_GetById     => $"{_baseApi}/OperationalTask/{{taskId}}";
+        public string OperationalTask_Create      => $"{_baseApi}/OperationalTask";
+        public string OperationalTask_Complete    => $"{_baseApi}/OperationalTask/{{taskId}}/complete";
+        public string OperationalTask_UploadImage => $"{_baseApi}/OperationalTask/upload-image";
+        public string OperationalTask_GetImage    => $"{_baseApi}/OperationalTask/image?path={{path}}";
+
         // ======================
         // VEHICLE
         // ======================
@@ -255,6 +262,7 @@ namespace LD.Forms.Configuration
         // ======================
         public string Lookup_GetAll => $"{_baseApi}/Lookup";
         public string Lookup_Warehouse => $"{_baseApi}/Lookup/warehouse";
+        public string Lookup_WarehouseByUser => $"{_baseApi}/Lookup/warehouse/user/{{userId}}";
         public string Lookup_Client => $"{_baseApi}/Lookup/client";
         public string Lookup_Project => $"{_baseApi}/Lookup/project";
         public string Lookup_ProjectClient => $"{_baseApi}/Lookup/project";
@@ -360,6 +368,7 @@ namespace LD.Forms.Configuration
         public string Asn_Delete => $"{_baseApi}/asn/{{asnId}}";
         public string Asn_Confirm => $"{_baseApi}/asn/{{asnId}}/confirm";
         public string Asn_Cancel => $"{_baseApi}/asn/{{asnId}}/cancel";
+        public string Asn_Locate => $"{_baseApi}/asn/{{asnId}}/locate";
 
         public string AsnDetail_GetAll => $"{_baseApi}/asnDetail";
         public string AsnDetail_GetById => $"{_baseApi}/asnDetail/{{asnId}}";

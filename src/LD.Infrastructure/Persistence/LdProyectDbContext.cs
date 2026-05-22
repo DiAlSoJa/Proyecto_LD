@@ -57,6 +57,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<SecurityRegistration> SecurityRegistrations { get; set; }
         public DbSet<Cortina> Cortinas { get; set; }
         public DbSet<SecurityTask> SecurityTasks { get; set; }
+        public DbSet<OperationalTask> OperationalTasks { get; set; }
 
         // ASN related tables
         public DbSet<Asn> Asns { get; set; }
@@ -828,6 +829,29 @@ namespace LD.Infrastructure.Persistence
                 .WithMany()
                 .HasForeignKey(t => t.SecurityRegistrationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<OperationalTask>(entity =>
+            {
+                entity.ToTable("OperationalTasks");
+                entity.Property(x => x.Priority).HasMaxLength(50).IsRequired();
+                entity.Property(x => x.Activity).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.Name).HasMaxLength(150).IsRequired();
+                entity.Property(x => x.Description).HasMaxLength(1000);
+                entity.Property(x => x.Photo1Path).HasMaxLength(500);
+                entity.Property(x => x.Photo2Path).HasMaxLength(500);
+                entity.Property(x => x.Photo3Path).HasMaxLength(500);
+                entity.Property(x => x.Photo4Path).HasMaxLength(500);
+                entity.Property(x => x.ResolutionObservations).HasMaxLength(1000);
+                entity.Property(x => x.ResolvedPhoto1Path).HasMaxLength(500);
+                entity.Property(x => x.ResolvedPhoto2Path).HasMaxLength(500);
+                entity.Property(x => x.ResolvedPhoto3Path).HasMaxLength(500);
+                entity.Property(x => x.ResolvedPhoto4Path).HasMaxLength(500);
+                entity.Property(x => x.CompletedBy).HasMaxLength(150);
+                entity.HasOne(x => x.Warehouse)
+                    .WithMany(x => x.OperationalTasks)
+                    .HasForeignKey(x => x.WarehouseId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
 
             // Seed: warehouse de referencia para cortinas
             builder.Entity<Warehouse>().HasData(

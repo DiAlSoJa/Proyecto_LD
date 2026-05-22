@@ -380,6 +380,7 @@ public partial class DamageReportDetailPage : ContentPage
             ProductId = inventory.ProductId,
             ClientId = inventory.ClientId,
             ProjectId = inventory.ProjectId,
+            WarehouseId = inventory.WarehouseId,
             LocationId = inventory.LocationId,
             PartNumber = inventory.PartNumber,
             Description = inventory.Description,

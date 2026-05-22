@@ -25,6 +25,7 @@ public partial class ScanStandarLD : ContentPage
             Formats =
                 BarcodeFormat.Code128 |
                 BarcodeFormat.Code39 |
+                BarcodeFormat.Itf |
                 BarcodeFormat.Ean13 |
                 BarcodeFormat.Ean8 |
                 BarcodeFormat.UpcA |

@@ -276,6 +276,39 @@
                 </Button>
                 
 
+                <Button x:Name="btnUbicarMercancia"
+                    Height="28"
+                    MinWidth="112"
+                    Padding="6,0"
+                    Margin="0,0,8,0"
+                    Click="BtnUbicarMercancia_Click"
+                    Background="#F3F4F6"
+                    Foreground="#374151"
+                    BorderBrush="#D1D5DB"
+                    BorderThickness="1"
+                    Cursor="Hand">
+
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+
+                    <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE707;"
+                            Foreground="#0D9488"
+                            Margin="0,0,4,0"
+                            FontSize="12"/>
+
+                        <TextBlock Text="Ubicar Mercancia"
+                            FontSize="11"/>
+                    </StackPanel>
+                </Button>
+
                 <Button x:Name="btnConfirmarLlegada"
 	                Grid.Column="15"
 	                Height="28"

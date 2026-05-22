@@ -33,5 +33,6 @@ namespace LD.Domain.Entities
         public bool IsProduction { get; set; } = false;
 
         public ICollection<UserWarehouse> UserWarehouses { get; set; } = new List<UserWarehouse>();
+        public ICollection<OperationalTask> OperationalTasks { get; set; } = new List<OperationalTask>();
     }
 }

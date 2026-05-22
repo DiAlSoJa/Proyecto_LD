@@ -18,7 +18,31 @@
                 Margin="0,10,0,12">
 
                 <VerticalStackLayout Spacing="12">
-                   
+                    <Grid ColumnDefinitions="120,*"
+                          RowSpacing="14"
+                          ColumnSpacing="12">
+
+                        <Label Text="Almacen:"
+                               Grid.Column="0"
+                               VerticalOptions="Center"
+                               TextColor="#64748B"
+                               FontSize="14"/>
+
+                        <Border Grid.Column="1"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="White"
+                                Padding="12,4">
+
+                            <Picker x:Name="WarehousePicker"
+                                    Title="Selecciona el almacen"
+                                    ItemDisplayBinding="{Binding Value}"
+                                    TextColor="#1E293B"/>
+
+                        </Border>
+
+                    </Grid>
 
                     
                     <Grid ColumnDefinitions="120,*"
@@ -125,8 +149,10 @@
                         Padding="10"
                         Margin="0,6,0,0">
                         <HorizontalStackLayout Spacing="10">
-                            <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                            <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb1" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb2" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb3" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            <Image x:Name="Thumb4" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
                         </HorizontalStackLayout>
                     </Border>
 
@@ -211,7 +237,7 @@
 
 
 
-                <Button Grid.Column="1"
+                <Button Grid.Column="0"
           Text="Guardar"
           Clicked="OnSaveClicked"
           HeightRequest="56"

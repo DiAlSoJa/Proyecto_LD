@@ -2393,6 +2393,110 @@ namespace LD.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.OperationalTask", b =>
+                {
+                    b.Property<int>("OperationalTaskId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OperationalTaskId"));
+
+                    b.Property<string>("Activity")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CompletedBy")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Photo1Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Photo2Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Photo3Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Photo4Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ResolutionObservations")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ResolvedPhoto1Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ResolvedPhoto2Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ResolvedPhoto3Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ResolvedPhoto4Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OperationalTaskId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("OperationalTasks", (string)null);
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.Permission", b =>
                 {
                     b.Property<int>("PermissionId")
@@ -6050,6 +6154,16 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("ParentModule");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.OperationalTask", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
+                        .WithMany("OperationalTasks")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.Permission", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Module", "Module")
@@ -6393,6 +6507,8 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("LD.Domain.Entities.Warehouse", b =>
                 {
+                    b.Navigation("OperationalTasks");
+
                     b.Navigation("UserWarehouses");
                 });
 

@@ -21,7 +21,10 @@ public class DamageReportService
         DateTime? desde = null,
         DateTime? hasta = null,
         int? standardId = null,
-        string? partNumber = null)
+        int? warehouseId = null,
+        string? warehouse = null,
+        string? partNumber = null,
+        string? damageType = null)
     {
         var query = new List<string>();
 
@@ -34,8 +37,17 @@ public class DamageReportService
         if (standardId.HasValue)
             query.Add($"standardId={standardId.Value}");
 
+        if (warehouseId.HasValue)
+            query.Add($"warehouseId={warehouseId.Value}");
+
+        if (!string.IsNullOrWhiteSpace(warehouse))
+            query.Add($"warehouse={Uri.EscapeDataString(warehouse.Trim())}");
+
         if (!string.IsNullOrWhiteSpace(partNumber))
             query.Add($"partNumber={Uri.EscapeDataString(partNumber.Trim())}");
+
+        if (!string.IsNullOrWhiteSpace(damageType))
+            query.Add($"damageType={Uri.EscapeDataString(damageType.Trim())}");
 
         var endpoint = query.Count == 0
             ? _apiEndpoints.DamageReport_GetAll

@@ -15,7 +15,7 @@
             <!-- HEADER -->
             <controls:DashboardHeader
                 Username="{Binding Username}"
-                TaskBadgeText="Tareas (6)"
+                TaskBadgeText="{Binding OperationalTasksHeaderText}"
                 ShowTaskBadge="True"
                 NavigateToTasksCommand="{Binding NavigateToTaskListCommand}"
                 Margin="-20,-60,-20,0"/>

@@ -1,6 +1,5 @@
-using LD.Client.Configuration;
+﻿using LD.Client.Configuration;
 using LD.Client.Services;
-using LD.Contracts.AvailableInventory;
 using LD.Contracts.DTOs;
 using LD.Contracts.InventoryMovement;
 using LD.FormsX.Features.Common;
@@ -21,7 +20,6 @@ namespace LD.FormsX.Movimientos
     public partial class MovimientosView : UserControl, INotifyPropertyChanged
     {
         private readonly InventoryMovementService _inventoryMovementService;
-        private readonly AvailableInventoryService _availableInventoryService;
         private readonly LookupService _lookupService;
         private readonly DataGridColumnFilterManager _columnFilterManager;
         private List<UserProjectClientDto> _userProjectClients = new();
@@ -33,11 +31,9 @@ namespace LD.FormsX.Movimientos
         private string _selectedProjectText = string.Empty;
 
         public ObservableCollection<InventoryMovementDto> Movements { get; } = new();
-        public ObservableCollection<AvailableInventoryDto> Inventory { get; } = new();
         public ObservableCollection<LookupItem> ClientLookupItems { get; } = new();
         public ObservableCollection<LookupItem> ProjectLookupItems { get; } = new();
         public ICollectionView MovementsView { get; }
-        public ICollectionView InventoryView { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -95,20 +91,16 @@ namespace LD.FormsX.Movimientos
 
         public MovimientosView(
             InventoryMovementService inventoryMovementService,
-            AvailableInventoryService availableInventoryService,
             LookupService lookupService)
         {
             InitializeComponent();
             _inventoryMovementService = inventoryMovementService;
-            _availableInventoryService = availableInventoryService;
             _lookupService = lookupService;
             DataContext = this;
 
             MovementsView = CollectionViewSource.GetDefaultView(Movements);
             MovementsView.Filter = FilterMovement;
-            InventoryView = CollectionViewSource.GetDefaultView(Inventory);
             DataGridFilterStyler.Apply(dg);
-            DataGridFilterStyler.Apply(dgInventory);
             _columnFilterManager = new DataGridColumnFilterManager(dg);
             _columnFilterManager.ApplyTo(MovementsView);
         }
@@ -245,59 +237,6 @@ namespace LD.FormsX.Movimientos
             }
         }
 
-        private async Task LoadInventoryAsync()
-        {
-            Inventory.Clear();
-
-            var standardId = GetStandardIdFilter();
-            if (!standardId.HasValue)
-            {
-                txtInventoryStatus.Text = string.IsNullOrWhiteSpace(txtStandardId?.Text)
-                    ? "Ingresa un StandardId y presiona Buscar."
-                    : "El StandardId debe ser numérico.";
-                InventoryView.Refresh();
-                return;
-            }
-
-            try
-            {
-                ShowLoader(true, "Cargando inventario...");
-                txtInventoryStatus.Text = "Cargando inventario...";
-
-                var response = await _availableInventoryService.GetAvailableInventories(standardId);
-                if (!response.IsSuccess || response.Data == null)
-                {
-                    txtInventoryStatus.Text = response.Message ?? "No se pudo cargar el inventario.";
-                    InventoryView.Refresh();
-                    return;
-                }
-
-                foreach (var item in response.Data.OrderBy(x => x.Ubicacion).ThenBy(x => x.PartNumber))
-                    Inventory.Add(item);
-
-                InventoryView.Refresh();
-                txtInventoryStatus.Text = Inventory.Count > 0
-                    ? $"{Inventory.Count} registro(s) de inventario encontrados."
-                    : "No se encontró inventario para ese StandardId.";
-            }
-            catch (Exception ex)
-            {
-                Inventory.Clear();
-                txtInventoryStatus.Text = "Ocurrió un error al cargar el inventario.";
-                DialogHelper.ShowError(ex.Message);
-            }
-            finally
-            {
-                ShowLoader(false);
-            }
-        }
-
-        private async Task LoadSearchAsync()
-        {
-            await LoadInventoryAsync();
-            await LoadMovementsAsync();
-        }
-
         private bool FilterMovement(object item)
         {
             if (item is not InventoryMovementDto movement)
@@ -368,7 +307,7 @@ namespace LD.FormsX.Movimientos
 
         private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
         {
-            await LoadSearchAsync();
+            await LoadMovementsAsync();
         }
 
         private async void LookupCliente_SelectionConfirmed(object sender, RoutedEventArgs e)
@@ -403,20 +342,13 @@ namespace LD.FormsX.Movimientos
             SelectedProjectId = int.TryParse(selectedProject.Key, out var projectId) ? projectId : 0;
             SelectedProjectText = selectedProject.Value ?? string.Empty;
 
-            await LoadSearchAsync();
+            await LoadMovementsAsync();
         }
 
         private void Filtro_Changed(object sender, TextChangedEventArgs e)
         {
             if (!_loaded)
                 return;
-
-            if (sender == txtStandardId && string.IsNullOrWhiteSpace(txtStandardId.Text))
-            {
-                Inventory.Clear();
-                InventoryView.Refresh();
-                txtInventoryStatus.Text = "Ingresa un StandardId y presiona Buscar.";
-            }
 
             RefreshFilters();
         }

@@ -3,169 +3,197 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="MauiAppLogin.TaskResolve"
-    Title="Resolución de Tareas"
+    Title="Resolucion de Tareas"
     BackgroundColor="#0F2E4F">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
-
-        <!-- Card superior con datos -->
-        <Border Grid.Row="0"
-                BackgroundColor="#F6F8FC"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 24"
-                Padding="18"
-                Margin="0,10,0,12">
-
-
-
+    <Grid RowDefinitions="*,Auto" Padding="16">
+        <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="12">
 
+                <Border
+                    BackgroundColor="#F6F8FC"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="18"
+                    Margin="0,10,0,0">
 
-
-
-
-
-
-
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Categoría: Baja"
+                    <VerticalStackLayout Spacing="12">
+                        <Label x:Name="WarehouseLabel"
+                               Text="Almacen:"
                                TextColor="#64748B"
+                               FontSize="18"/>
+
+                        <Label x:Name="CategoryLabel"
+                               Text="Categoria:"
+                               TextColor="#64748B"
+                               FontSize="18"/>
+
+                        <Label x:Name="ActivityLabel"
+                               Text="Tarea:"
+                               TextColor="#64748B"
+                               FontSize="18"/>
+
+                        <Label x:Name="NameLabel"
+                               Text="Nombre:"
+                               TextColor="#1E293B"
+                               FontAttributes="Bold"
                                FontSize="20"/>
-                </VerticalStackLayout>
-                
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Tarea: Pallet en Riesgo"
-                TextColor="#64748B"
-                FontSize="20"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Nombre: Pallet dañado"
-                        TextColor="#64748B"
-                        FontSize="20"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Descripción: Revisar pallet dañado en la ubicación A02223"
-                    TextColor="#64748B"
-                    FontSize="20"/>
-                </VerticalStackLayout>
 
+                        <Label x:Name="DescriptionLabel"
+                               Text="Descripcion:"
+                               TextColor="#64748B"
+                               FontSize="16"
+                               LineBreakMode="WordWrap"/>
 
+                        <Label Text="Fotos de la tarea"
+                               TextColor="#1E293B"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               Margin="0,6,0,0"/>
 
-
-
-                <!-- Miniaturas -->
-                <Border BackgroundColor="#EEF3FB"
-                        Stroke="#E2E8F0"
-                        StrokeShape="RoundRectangle 18"
-                        Padding="10"
-                        Margin="0,6,0,0">
-                    <HorizontalStackLayout Spacing="10">
-                        <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                        <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                    </HorizontalStackLayout>
+                        <Border BackgroundColor="#EEF3FB"
+                                Stroke="#E2E8F0"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="10">
+                            <Grid ColumnDefinitions="*,*"
+                                  RowDefinitions="90,90"
+                                  ColumnSpacing="10"
+                                  RowSpacing="10">
+                                <Image x:Name="OriginalThumb1" Aspect="AspectFill" BackgroundColor="White"/>
+                                <Image x:Name="OriginalThumb2" Grid.Column="1" Aspect="AspectFill" BackgroundColor="White"/>
+                                <Image x:Name="OriginalThumb3" Grid.Row="1" Aspect="AspectFill" BackgroundColor="White"/>
+                                <Image x:Name="OriginalThumb4" Grid.Row="1" Grid.Column="1" Aspect="AspectFill" BackgroundColor="White"/>
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
                 </Border>
 
-            </VerticalStackLayout>
-        </Border>
+                <Border
+                    BackgroundColor="#1B2A3A"
+                    Stroke="#0B1B2A"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 26"
+                    Padding="10">
 
-        <!-- Area tipo cámara -->
-        <Border Grid.Row="1"
-                BackgroundColor="#1B2A3A"
-                Stroke="#0B1B2A"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 26"
-                Padding="10">
-
-            <Grid RowDefinitions="*,Auto" RowSpacing="12">
-
-                <!-- Preview -->
-                <Grid>
-                    <Border BackgroundColor="#0F172A"
-                            Stroke="#334155"
-                            StrokeShape="RoundRectangle 22"
-                            Padding="10">
-
-                        <Grid>
-                            <Image x:Name="PreviewImage" Aspect="AspectFit" />
-                            <!-- Retícula / marco -->
-                            <Grid Padding="14">
-                                <Border Stroke="#FFFFFF"
-                                        StrokeThickness="3"
-                                        StrokeShape="RoundRectangle 24"
-                                        BackgroundColor="Transparent"
-                                        Opacity="0.35"/>
+                    <Grid RowDefinitions="260,Auto,Auto" RowSpacing="12">
+                        <Border BackgroundColor="#0F172A"
+                                Stroke="#334155"
+                                StrokeShape="RoundRectangle 22"
+                                Padding="10">
+                            <Grid>
+                                <Image x:Name="PreviewImage" Aspect="AspectFit" />
+                                <Grid Padding="14">
+                                    <Border Stroke="#FFFFFF"
+                                            StrokeThickness="3"
+                                            StrokeShape="RoundRectangle 24"
+                                            BackgroundColor="Transparent"
+                                            Opacity="0.35"/>
+                                </Grid>
                             </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1"
+                                BackgroundColor="#EEF3FB"
+                                Stroke="#E2E8F0"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="10">
+                            <HorizontalStackLayout Spacing="10">
+                                <Image x:Name="ResolutionThumb1" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                                <Image x:Name="ResolutionThumb2" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                                <Image x:Name="ResolutionThumb3" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                                <Image x:Name="ResolutionThumb4" WidthRequest="72" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto,*" Padding="6,0">
+                            <Button Grid.Column="0"
+                                    Text="Cancelar"
+                                    Clicked="OnCancelarClicked"
+                                    BackgroundColor="Transparent"
+                                    TextColor="White"
+                                    FontSize="18"/>
+
+                            <Border Grid.Column="1"
+                                    BackgroundColor="#102A43"
+                                    Stroke="#FFFFFF"
+                                    StrokeThickness="2"
+                                    StrokeShape="RoundRectangle 999"
+                                    WidthRequest="86"
+                                    HeightRequest="86"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    Padding="10">
+                                <Button Text=""
+                                        Clicked="OnCapturarClicked"
+                                        BackgroundColor="White"
+                                        CornerRadius="999"
+                                        WidthRequest="60"
+                                        HeightRequest="60"/>
+                            </Border>
+
+                            <Button Grid.Column="2"
+                                    Text="Capturar"
+                                    Clicked="OnCapturarClicked"
+                                    BackgroundColor="Transparent"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    HorizontalOptions="End"/>
                         </Grid>
+                    </Grid>
+                </Border>
 
-                    </Border>
-                </Grid>
+                <Border
+                    BackgroundColor="#F6F8FC"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="18">
 
-                <!-- Controles inferiores (Cancelar / Capturar) -->
-                <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
-                    <Button Grid.Column="0"
-                            Text="Cancelar"
-                            Clicked="OnCancelarClicked"
-                            BackgroundColor="Transparent"
-                            TextColor="White"
-                            FontSize="18"/>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Observaciones de resuelto"
+                               TextColor="#1E293B"
+                               FontAttributes="Bold"
+                               FontSize="16"/>
 
-                    <Border Grid.Column="1"
-                            BackgroundColor="#102A43"
-                            Stroke="#FFFFFF"
-                            StrokeThickness="2"
-                            StrokeShape="RoundRectangle 999"
-                            WidthRequest="86"
-                            HeightRequest="86"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center"
-                            Padding="10">
-                        <Button Text=""
-                                Clicked="OnCapturarClicked"
-                                BackgroundColor="White"
-                                CornerRadius="999"
-                                WidthRequest="60"
-                                HeightRequest="60"/>
-                    </Border>
+                        <Border BackgroundColor="White"
+                                Stroke="#E2E8F0"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <Editor x:Name="ResolutionObservationsEditor"
+                                    HeightRequest="110"
+                                    TextColor="#0F172A"
+                                    Placeholder="Describe como se resolvio la tarea"
+                                    PlaceholderColor="#94A3B8"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
 
-                    <Button Grid.Column="2"
-                            Text="Capturar"
-                            Clicked="OnCapturarClicked"
-                            BackgroundColor="Transparent"
-                            TextColor="White"
-                            FontSize="18"
-                            HorizontalOptions="End"/>
-                </Grid>
-
-            </Grid>
-        </Border>
-
-
-
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="1"
               ColumnDefinitions="*,*"
               ColumnSpacing="12"
               Margin="0,14,0,6">
 
-            <Button Text="Atrás"
-                Clicked="OnAtrasClicked"
-                HeightRequest="56"
-                CornerRadius="18"
-                BackgroundColor="#E5E7EB"
-                TextColor="#1E293B"
-                FontAttributes="Bold"
-                FontSize="18"/>
+            <Button Text="Atras"
+                    Clicked="OnAtrasClicked"
+                    HeightRequest="56"
+                    CornerRadius="18"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#1E293B"
+                    FontAttributes="Bold"
+                    FontSize="18"/>
 
             <Button Grid.Column="1"
-                Text="Terminar"
-                Clicked="OnSiguienteClicked"
-                HeightRequest="56"
-                CornerRadius="18"
-                BackgroundColor="#244A7C"
-                TextColor="White"
-                FontAttributes="Bold"
-                FontSize="18"/>
+                    Text="Terminar"
+                    Clicked="OnSiguienteClicked"
+                    HeightRequest="56"
+                    CornerRadius="18"
+                    BackgroundColor="#244A7C"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="18"/>
         </Grid>
-
     </Grid>
 </ContentPage>
