@@ -37,7 +37,9 @@
       "Bash(git stash *)",
       "PowerShell(Get-NetTCPConnection *)",
       "Bash(Select-String -Pattern \"error|warning|Build succeeded|FAILED\")",
-      "Bash(Select-Object -Last 20)"
+      "Bash(Select-Object -Last 20)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.MobileApp\\\\Features\\\\Controls\" -Recurse -File)",
+      "Bash(Select-Object FullName)"
     ]
   }
 }
