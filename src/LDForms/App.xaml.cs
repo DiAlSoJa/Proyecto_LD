@@ -27,6 +27,7 @@ using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.CheckList.Tabs;
 using LD.FormsX.Views.Common;
 using LD.FormsX.Views.ControlPatio;
+using LD.FormsX.Views.DatabaseDiagram;
 using LD.FormsX.Views.Dialogs;
 using LD.FormsX.Views.Dimensionador;
 using LD.FormsX.Views.Equipos;
@@ -196,6 +197,7 @@ namespace LD.FormsX
             services.AddTransient<ResumenBateriasTab>();
             services.AddTransient<ConfiguracionPreguntasTab>();
             services.AddTransient<ReportesView>();
+            services.AddTransient<DatabaseDiagramView>();
             services.AddTransient<DamageReportView>();
             services.AddTransient<TasksView>();
             services.AddTransient<ControlPatioView>();

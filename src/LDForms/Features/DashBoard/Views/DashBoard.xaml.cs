@@ -10,6 +10,7 @@ using LD.FormsX.Views.Auditar;
 using LD.FormsX.Views.Catalogos;
 using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.ControlPatio;
+using LD.FormsX.Views.DatabaseDiagram;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Proyectos;
@@ -186,6 +187,7 @@ namespace LDForms
             RemoveIfNoModule(InventarioBtn,      Module_e.Inventory);
             RemoveIfNoModule(InventarioRandomBtn,Module_e.RandomInventory);
             RemoveIfNoModule(ReportesBtn,        Module_e.Reports);
+            RemoveIfNoModule(DatabaseDiagramBtn, Module_e.Reports);
             RemoveIfNoModule(ReporteDanosBtn,    Module_e.DamageReport);
             RemoveIfNoModule(TareasBtn,          Module_e.WarehouseStaff);
             RemoveIfNoModule(UsuariosBtn,        Module_e.Users);
@@ -278,6 +280,9 @@ namespace LDForms
                 case "Reportes":
                     AbrirTab("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
                     break;
+                case "DatabaseDiagram":
+                    AbrirTab("Diagrama BD", _serviceProvider.GetRequiredService<DatabaseDiagramView>());
+                    break;
                 case "ReporteDanos":
                     AbrirTab("Reporte de daños", _serviceProvider.GetRequiredService<DamageReportView>());
                     break;
@@ -342,6 +347,9 @@ namespace LDForms
                     break;
                 case "Reportes":
                     AbrirVentana("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
+                    break;
+                case "DatabaseDiagram":
+                    AbrirVentana("Diagrama BD", _serviceProvider.GetRequiredService<DatabaseDiagramView>());
                     break;
                 case "ReporteDanos":
                     AbrirVentana("Reporte de daños", _serviceProvider.GetRequiredService<DamageReportView>());
