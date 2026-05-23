@@ -50,6 +50,15 @@ public partial class UsuariosViewModel : ObservableObject
     [ObservableProperty]
     private bool canManageWarehouses;
 
+    public bool CanExecuteEdit => CanEdit && SelectedUser is not null;
+    public bool CanExecuteManageWarehouses => CanManageWarehouses && SelectedUser is not null;
+
+    partial void OnSelectedUserChanged(GetUserDto? value)
+    {
+        OnPropertyChanged(nameof(CanExecuteEdit));
+        OnPropertyChanged(nameof(CanExecuteManageWarehouses));
+    }
+
     public event Action<List<UserDto>>? OnDataLoaded;
 
     public UsuariosViewModel(UserService userService)

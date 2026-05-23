@@ -14,76 +14,36 @@
         Loaded="Window_Loaded">
 
     <Window.Resources>
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#233167"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="18,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/DialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#374151"/>
-            <Setter Property="Background" Value="#F3F4F6"/>
-            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="18,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="34"/>
-            <Setter Property="Width" Value="34"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style x:Key="ActionButtonStyle" TargetType="Button">
+                <Setter Property="Height" Value="34"/>
+                <Setter Property="Width" Value="34"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
         <Border Width="800"
-                Background="White"
+                Background="{StaticResource SurfaceCard}"
                 CornerRadius="16"
-                BorderBrush="#E5E7EB"
+                BorderBrush="{StaticResource BorderSoft}"
                 BorderThickness="1"
                 SnapsToDevicePixels="True">
             <Border.Effect>
@@ -99,7 +59,7 @@
 
                 <!-- Header -->
                 <Border Grid.Row="0"
-                        Background="#233167"
+                        Background="{StaticResource AppPrimary}"
                         CornerRadius="16,16,0,0"
                         MouseLeftButtonDown="Header_MouseLeftButtonDown">
                     <Grid Margin="16,0,10,0">
@@ -109,12 +69,13 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
-                                   Foreground="White"
+                                   Foreground="{StaticResource TextOnPrimary}"
                                    FontSize="16" FontWeight="SemiBold"/>
                         <Button Grid.Column="1"
                                 Width="30" Height="30"
                                 Background="Transparent" BorderThickness="0"
-                                Foreground="White" FontSize="18" FontWeight="Bold"
+                                Foreground="{StaticResource TextOnPrimary}"
+                                FontSize="18" FontWeight="Bold"
                                 Cursor="Hand" Click="BtnClose_Click" Content="×"/>
                     </Grid>
                 </Border>
@@ -136,13 +97,14 @@
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8B7;"
-                                       FontSize="13" Foreground="#6B7280"
+                                       FontSize="13" Foreground="{StaticResource TextSecondary}"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <TextBlock Text="Disponibles"
-                                       FontSize="13" FontWeight="SemiBold" Foreground="#374151"/>
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSubtle}"/>
                         </StackPanel>
                         <Border Grid.Row="2"
-                                BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="6">
+                                BorderBrush="{StaticResource BorderMuted}" BorderThickness="1" CornerRadius="6">
                             <DataGrid x:Name="dgDisponibles"
                                       AutoGenerateColumns="True"
                                       ItemsSource="{Binding Disponibles}"
@@ -152,18 +114,19 @@
                                       GridLinesVisibility="Vertical"
                                       SelectionChanged="DgDisponibles_SelectionChanged"
                                       RowHeight="28" ColumnHeaderHeight="36"
-                                      FontSize="12" VerticalGridLinesBrush="#D9D9D9">
+                                      FontSize="12"
+                                      VerticalGridLinesBrush="{StaticResource BorderGrid}">
                                 <DataGrid.Resources>
                                     <Style TargetType="DataGridColumnHeader">
-                                        <Setter Property="Background" Value="#EEF1F5"/>
-                                        <Setter Property="Foreground" Value="#16263D"/>
+                                        <Setter Property="Background" Value="{StaticResource DataGridHeaderBg}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource DataGridHeaderFg}"/>
                                         <Setter Property="FontWeight" Value="SemiBold"/>
-                                        <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
                                         <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                         <Setter Property="Padding" Value="9,6"/>
                                     </Style>
                                     <Style TargetType="DataGridRow">
-                                        <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
                                         <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                     </Style>
                                 </DataGrid.Resources>
@@ -177,13 +140,15 @@
                                 HorizontalAlignment="Center">
                         <Button Content="›"
                                 Style="{StaticResource ActionButtonStyle}"
-                                Background="#2563EB" Foreground="White"
+                                Background="{StaticResource AccentAction}"
+                                Foreground="{StaticResource TextOnPrimary}"
                                 Margin="0,0,0,10"
                                 ToolTip="Asignar almacén"
                                 Command="{Binding AgregarCommand}"/>
                         <Button Content="‹"
                                 Style="{StaticResource ActionButtonStyle}"
-                                Background="#EF4444" Foreground="White"
+                                Background="{StaticResource AccentError}"
+                                Foreground="{StaticResource TextOnPrimary}"
                                 ToolTip="Quitar almacén"
                                 Command="{Binding QuitarCommand}"/>
                     </StackPanel>
@@ -197,13 +162,14 @@
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE73E;"
-                                       FontSize="13" Foreground="#16A34A"
+                                       FontSize="13" Foreground="{StaticResource IconTareas}"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <TextBlock Text="Asignados"
-                                       FontSize="13" FontWeight="SemiBold" Foreground="#374151"/>
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSubtle}"/>
                         </StackPanel>
                         <Border Grid.Row="2"
-                                BorderBrush="#D9DEE7" BorderThickness="1" CornerRadius="6">
+                                BorderBrush="{StaticResource BorderMuted}" BorderThickness="1" CornerRadius="6">
                             <DataGrid x:Name="dgAsignados"
                                       AutoGenerateColumns="True"
                                       ItemsSource="{Binding Asignados}"
@@ -213,18 +179,19 @@
                                       GridLinesVisibility="Vertical"
                                       SelectionChanged="DgAsignados_SelectionChanged"
                                       RowHeight="28" ColumnHeaderHeight="36"
-                                      FontSize="12" VerticalGridLinesBrush="#D9D9D9">
+                                      FontSize="12"
+                                      VerticalGridLinesBrush="{StaticResource BorderGrid}">
                                 <DataGrid.Resources>
                                     <Style TargetType="DataGridColumnHeader">
-                                        <Setter Property="Background" Value="#EEF1F5"/>
-                                        <Setter Property="Foreground" Value="#16263D"/>
+                                        <Setter Property="Background" Value="{StaticResource DataGridHeaderBg}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource DataGridHeaderFg}"/>
                                         <Setter Property="FontWeight" Value="SemiBold"/>
-                                        <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
                                         <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                         <Setter Property="Padding" Value="9,6"/>
                                     </Style>
                                     <Style TargetType="DataGridRow">
-                                        <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
                                         <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                     </Style>
                                 </DataGrid.Resources>
@@ -235,8 +202,8 @@
 
                 <!-- Footer -->
                 <Border Grid.Row="2"
-                        Background="#F9FAFB"
-                        BorderBrush="#E5E7EB"
+                        Background="{StaticResource SurfaceInput}"
+                        BorderBrush="{StaticResource BorderSoft}"
                         BorderThickness="0,1,0,0"
                         CornerRadius="0,0,16,16">
                     <StackPanel Orientation="Horizontal"

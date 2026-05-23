@@ -24,6 +24,8 @@
     <SolidColorBrush x:Key="AccentError"        Color="#EF4444"/>  <!-- Rojo -->
     <SolidColorBrush x:Key="AccentErrorBg"      Color="#FEF2F2"/>  <!-- Fondo error -->
     <SolidColorBrush x:Key="AccentInfo"         Color="#3B82F6"/>  <!-- Azul medio -->
+    <SolidColorBrush x:Key="AccentViolet"       Color="#7C3AED"/>  <!-- Violeta (icono Almacenes en Usuarios) -->
+    <SolidColorBrush x:Key="AccentCyan"         Color="#0891B2"/>  <!-- Cian (icono Roles en Usuarios) -->
 
     <!-- ═══════════════════════════════════════════════════════════
          TEXTO

@@ -28,7 +28,7 @@ namespace LD.FormsX.Views.Usuarios
             InitializeComponent();
             _roleService = roleService;
             _serviceProvider = serviceProvider;
-            _gridFilter = new WpfGridFilter<RoleDto>(dgRoles, txtBuscar);
+            _gridFilter = new WpfGridFilter<RoleDto>(dgRoles, ldBuscar.TextBoxElement);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
                 { "RoleId",   160 },
@@ -86,6 +86,7 @@ namespace LD.FormsX.Views.Usuarios
         private void DgRoles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _selectedRole = _gridFilter.SelectedItem;
+            btnEditar.IsEnabled = _selectedRole is not null;
 
             if (_selectedRole is null)
             {
@@ -110,12 +111,6 @@ namespace LD.FormsX.Views.Usuarios
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedRole is null)
-            {
-                DialogHelper.ShowWarning("Selecciona un rol para editar.");
-                return;
-            }
-
             var dialog = _serviceProvider.GetRequiredService<NuevoRolView>();
             dialog.SetRole(_selectedRole);
             if (dialog.ShowDialog() == true)

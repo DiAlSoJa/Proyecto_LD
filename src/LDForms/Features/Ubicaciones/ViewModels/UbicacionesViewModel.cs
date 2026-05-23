@@ -40,6 +40,11 @@ public partial class UbicacionesViewModel : ObservableObject
     [ObservableProperty]
     private int selectedWarehouseId;
 
+    public bool CanExecuteEdit => CanEdit && SelectedLocation is not null;
+
+    partial void OnSelectedLocationChanged(LocationDto? value) =>
+        OnPropertyChanged(nameof(CanExecuteEdit));
+
     public event Action<List<LocationDto>>? OnDataLoaded;
 
     public UbicacionesViewModel(LocationService locationService)

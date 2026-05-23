@@ -23,7 +23,7 @@ namespace LD.FormsX.Views
             DataContext = viewModel;
             _serviceProvider = serviceProvider;
 
-            _gridFilter = new WpfGridFilter<ClientDto>(dgClientes, txtBuscar);
+            _gridFilter = new WpfGridFilter<ClientDto>(dgClientes, ldBuscar.TextBoxElement);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
                 { "Activo", 80 },
@@ -78,9 +78,6 @@ namespace LD.FormsX.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.SelectedClient is null)
-                return;
-
             var dialog = _serviceProvider.GetRequiredService<NuevoClienteView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetClient(ViewModel.SelectedClient);

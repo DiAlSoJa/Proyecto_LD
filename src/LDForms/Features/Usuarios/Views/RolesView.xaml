@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:LD.FormsX.Controls"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1200"
              Loaded="UserControl_Loaded">
@@ -14,12 +15,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ── Encabezado ── -->
+        <!-- Encabezado -->
         <Border Grid.Row="0"
-                Background="White"
+                Background="{StaticResource SurfaceCard}"
                 CornerRadius="12"
                 Padding="16"
-                BorderBrush="#E5E7EB"
+                BorderBrush="{StaticResource BorderSoft}"
                 BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -35,29 +36,31 @@
 
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="Roles"
-                               FontSize="24" FontWeight="SemiBold" Foreground="#1F2937"/>
+                               FontSize="24" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}"/>
                     <TextBlock Text="Consulta, crea y administra roles del sistema"
-                               FontSize="13" Foreground="#6B7280" Margin="0,4,0,0"/>
+                               FontSize="13" Foreground="{StaticResource TextSecondary}" Margin="0,4,0,0"/>
                 </StackPanel>
 
-                <TextBox x:Name="txtBuscar"
-                         Grid.Column="1"
-                         Height="38" VerticalContentAlignment="Center"
-                         Padding="10,0" FontSize="13"
-                         ToolTip="Buscar rol..."/>
+                <controls:LDInput x:Name="ldBuscar"
+                                  Grid.Column="1"
+                                  Placeholder="Buscar rol..."
+                                  VerticalAlignment="Center"/>
 
                 <!-- Nuevo -->
                 <Button x:Name="btnNuevo" Grid.Column="3"
                         Height="38" Padding="12,0"
                         Click="BtnNuevo_Click"
-                        Background="#F3F4F6" Foreground="#374151"
-                        BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
+                        Background="{StaticResource SurfaceSubtle}"
+                        Foreground="{StaticResource TextSubtle}"
+                        BorderBrush="{StaticResource BorderInput}" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
                     </Button.Resources>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE710;"
-                                   Foreground="#2563EB" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                   Foreground="{StaticResource AccentAction}"
+                                   FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <TextBlock Text="Nuevo" FontSize="13" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
@@ -66,14 +69,16 @@
                 <Button x:Name="btnEditar" Grid.Column="5"
                         Height="38" Padding="12,0"
                         Click="BtnEditar_Click"
-                        Background="#F3F4F6" Foreground="#374151"
-                        BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
+                        Background="{StaticResource SurfaceSubtle}"
+                        Foreground="{StaticResource TextSubtle}"
+                        BorderBrush="{StaticResource BorderInput}" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
                     </Button.Resources>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;"
-                                   Foreground="#D97706" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                   Foreground="{StaticResource AccentWarning}"
+                                   FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <TextBlock Text="Editar" FontSize="13" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
@@ -82,21 +87,23 @@
                 <Button x:Name="btnActualizar" Grid.Column="7"
                         Height="38" Padding="12,0"
                         Click="BtnActualizar_Click"
-                        Background="#F3F4F6" Foreground="#374151"
-                        BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
+                        Background="{StaticResource SurfaceSubtle}"
+                        Foreground="{StaticResource TextSubtle}"
+                        BorderBrush="{StaticResource BorderInput}" BorderThickness="1" Cursor="Hand">
                     <Button.Resources>
                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
                     </Button.Resources>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE72C;"
-                                   Foreground="#16A34A" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                   Foreground="{StaticResource IconTareas}"
+                                   FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <TextBlock Text="Actualizar" FontSize="13" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </Grid>
         </Border>
 
-        <!-- ── Contenido principal ── -->
+        <!-- Contenido principal -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
@@ -106,8 +113,8 @@
 
             <!-- Grid de roles (izquierda) -->
             <Border Grid.Column="0"
-                    Background="White" CornerRadius="12"
-                    BorderBrush="#E5E7EB" BorderThickness="1" Padding="10">
+                    Background="{StaticResource SurfaceCard}" CornerRadius="12"
+                    BorderBrush="{StaticResource BorderSoft}" BorderThickness="1" Padding="10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -116,20 +123,20 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="Lista de Roles"
                                FontSize="14" FontWeight="SemiBold"
-                               Foreground="#1F2937" Margin="4,0,0,0"/>
+                               Foreground="{StaticResource TextPrimary}" Margin="4,0,0,0"/>
                     <DataGrid x:Name="dgRoles" Grid.Row="2"
                               IsReadOnly="True"
                               SelectionMode="Single" SelectionUnit="FullRow"
                               GridLinesVisibility="Horizontal"
-                              HorizontalGridLinesBrush="#F3F4F6"
+                              HorizontalGridLinesBrush="{StaticResource SurfaceSubtle}"
                               SelectionChanged="DgRoles_SelectionChanged"/>
                 </Grid>
             </Border>
 
             <!-- Panel de permisos (derecha) -->
             <Border Grid.Column="2"
-                    Background="White" CornerRadius="12"
-                    BorderBrush="#E5E7EB" BorderThickness="1" Padding="10">
+                    Background="{StaticResource SurfaceCard}" CornerRadius="12"
+                    BorderBrush="{StaticResource BorderSoft}" BorderThickness="1" Padding="10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -139,13 +146,13 @@
                     <TextBlock x:Name="txtPermisosHeader"
                                Text="Permisos del Rol"
                                FontSize="14" FontWeight="SemiBold"
-                               Foreground="#1F2937" Margin="4,0,0,0"/>
+                               Foreground="{StaticResource TextPrimary}" Margin="4,0,0,0"/>
                     <DataGrid x:Name="dgPermisos" Grid.Row="2"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
                               SelectionMode="Single" SelectionUnit="FullRow"
                               GridLinesVisibility="Horizontal"
-                              HorizontalGridLinesBrush="#F3F4F6"
+                              HorizontalGridLinesBrush="{StaticResource SurfaceSubtle}"
                               HeadersVisibility="Column">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Permiso"
@@ -157,15 +164,16 @@
             </Border>
         </Grid>
 
-        <!-- ── Loading overlay ── -->
+        <!-- Loading overlay -->
         <Grid x:Name="LoadingOverlay" Grid.RowSpan="3"
-              Background="#80FFFFFF" Visibility="Collapsed">
+              Background="{StaticResource LoadingOverlayBg}" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <ProgressBar IsIndeterminate="True" Width="200" Height="6"
-                             Foreground="#233167" Background="#E5E7EB"/>
+                             Foreground="{StaticResource AppPrimary}"
+                             Background="{StaticResource BorderSoft}"/>
                 <TextBlock x:Name="txtLoadingMsg" Text="Cargando..."
                            HorizontalAlignment="Center" Margin="0,10,0,0"
-                           FontSize="13" Foreground="#6B7280"/>
+                           FontSize="13" Foreground="{StaticResource TextSecondary}"/>
             </StackPanel>
         </Grid>
     </Grid>

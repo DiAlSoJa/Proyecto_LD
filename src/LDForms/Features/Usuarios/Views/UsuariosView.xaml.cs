@@ -22,7 +22,7 @@ namespace LD.FormsX.Views.Usuarios
             DataContext = viewModel;
             _serviceProvider = serviceProvider;
 
-            _gridFilter = new WpfGridFilter<UserDto>(dgUsuarios, txtBuscar);
+            _gridFilter = new WpfGridFilter<UserDto>(dgUsuarios, ldBuscar.TextBoxElement);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
                 { "Activo", 70 },
@@ -59,12 +59,6 @@ namespace LD.FormsX.Views.Usuarios
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.SelectedUser is null)
-            {
-                DialogHelper.ShowWarning("Selecciona un usuario para editar.");
-                return;
-            }
-
             var dialog = _serviceProvider.GetRequiredService<NuevoUsuarioView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetUser(ViewModel.SelectedUser);
@@ -76,12 +70,6 @@ namespace LD.FormsX.Views.Usuarios
 
         private async void BtnAlmacenes_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.SelectedUser is null)
-            {
-                DialogHelper.ShowWarning("Selecciona un usuario para gestionar sus almacenes.");
-                return;
-            }
-
             var dialog = _serviceProvider.GetRequiredService<UsuarioAlmacenView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetUser(ViewModel.SelectedUser);

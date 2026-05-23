@@ -1,8 +1,9 @@
-﻿<Window x:Class="LD.FormsX.Views.Dialogs.NuevoClienteView"
+<Window x:Class="LD.FormsX.Views.Dialogs.NuevoClienteView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:LD.FormsX.Controls"
         mc:Ignorable="d"
         Title="Nuevo cliente"
         Width="900"
@@ -15,140 +16,63 @@
         Loaded="Window_Loaded">
 
     <Window.Resources>
-        <Style x:Key="LabelStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="#111827"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,16,0"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/DialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
+            <Style TargetType="TabControl">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="0"/>
+            </Style>
 
-
-        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="Background" Value="#F9FAFB"/>
-            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style x:Key="ReadOnlyInputTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputTextBoxStyle}">
-            <Setter Property="Background" Value="#F3F4F6"/>
-            <Setter Property="Foreground" Value="#6B7280"/>
-            <Setter Property="IsReadOnly" Value="True"/>
-        </Style>
-
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#233167"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="18,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#374151"/>
-            <Setter Property="Background" Value="#F3F4F6"/>
-            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="18,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CheckStyle" TargetType="CheckBox">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="#111827"/>
-            <Setter Property="Margin" Value="0,4,0,0"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-
-        <Style TargetType="TabControl">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="0"/>
-        </Style>
-
-        <Style TargetType="TabItem">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#374151"/>
-            <Setter Property="Background" Value="#F3F4F6"/>
-            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="18,10"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10,10,0,0"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              ContentSource="Header"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="White"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="#D1D5DB"/>
-                                <Setter Property="Foreground" Value="#111827"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style TargetType="TabItem">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="{StaticResource TextSubtle}"/>
+                <Setter Property="Background" Value="{StaticResource SurfaceSubtle}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource BorderSoft}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="18,10"/>
+                <Setter Property="Margin" Value="0,0,8,0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="10,10,0,0"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  ContentSource="Header"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource SurfaceCard}"/>
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderInput}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextBody}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
         <Border Width="870"
                 MinHeight="580"
-                Background="White"
+                Background="{StaticResource SurfaceCard}"
                 CornerRadius="16"
-                BorderBrush="#E5E7EB"
+                BorderBrush="{StaticResource BorderSoft}"
                 BorderThickness="1"
                 SnapsToDevicePixels="True">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="22"
-                                  ShadowDepth="0"
-                                  Opacity="0.18"/>
+                <DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.18"/>
             </Border.Effect>
 
             <Grid>
@@ -160,7 +84,7 @@
 
                 <!-- Header -->
                 <Border Grid.Row="0"
-                        Background="#233167"
+                        Background="{StaticResource AppPrimary}"
                         CornerRadius="16,16,0,0"
                         MouseLeftButtonDown="Header_MouseLeftButtonDown">
                     <Grid Margin="16,0,10,0">
@@ -168,24 +92,17 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-
                         <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
-                                   Foreground="White"
+                                   Foreground="{StaticResource TextOnPrimary}"
                                    FontSize="16"
                                    FontWeight="SemiBold"/>
-
                         <Button Grid.Column="1"
-                                Width="30"
-                                Height="30"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Foreground="White"
-                                FontSize="18"
-                                FontWeight="Bold"
-                                Cursor="Hand"
-                                Click="BtnClose_Click"
-                                Content="×"/>
+                                Width="30" Height="30"
+                                Background="Transparent" BorderThickness="0"
+                                Foreground="{StaticResource TextOnPrimary}"
+                                FontSize="18" FontWeight="Bold"
+                                Cursor="Hand" Click="BtnClose_Click" Content="×"/>
                     </Grid>
                 </Border>
 
@@ -194,172 +111,96 @@
                     <TabControl x:Name="tabControl1">
 
                         <TabItem Header="Información Comercial" Margin="0,0,-4,0">
-                            <Border Background="White"
-                                    BorderBrush="#E5E7EB"
+                            <Border Background="{StaticResource SurfaceCard}"
+                                    BorderBrush="{StaticResource BorderSoft}"
                                     BorderThickness="1"
                                     CornerRadius="10,12,12,12"
                                     Padding="22">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" Height="383">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <controls:LDInput Label="Id"
+                                                          Text="{Binding ClientIdText}"
+                                                          IsReadOnly="True"
+                                                          Margin="0,0,0,10"/>
 
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
+                                        <controls:LDInput Label="Nombre comercial"
+                                                          Text="{Binding CommercialName, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Id:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="0" Grid.Column="1"
-                                                 Width="120"
-                                                 HorizontalAlignment="Left"
-                                                 Text="{Binding ClientIdText}"
-                                                 Style="{StaticResource ReadOnlyInputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Domicilio comercial"
+                                                          Text="{Binding CommercialAddress, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Nombre comercial:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="2" Grid.Column="1"
-                                                 Text="{Binding CommercialName, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Colonia"
+                                                          Text="{Binding CommercialNeighborhood, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Domicilio comercial:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="4" Grid.Column="1"
-                                                 Text="{Binding CommercialAddress, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Ciudad"
+                                                          Text="{Binding CommercialCity, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="6" Grid.Column="1"
-                                                 Text="{Binding CommercialNeighborhood, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Código postal"
+                                                          Text="{Binding CommercialZipCode, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="8" Grid.Column="1"
-                                                 Text="{Binding CommercialCity, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Teléfono"
+                                                          Text="{Binding CommercialPhone, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,16"/>
 
-                                        <TextBlock Grid.Row="10" Grid.Column="0" Text="CP:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="10" Grid.Column="1"
-                                                 Width="140"
-                                                 HorizontalAlignment="Left"
-                                                 Text="{Binding CommercialZipCode, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
-
-                                        <TextBlock Grid.Row="12" Grid.Column="0" Text="Teléfono:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="12" Grid.Column="1"
-                                                 Width="220"
-                                                 HorizontalAlignment="Left"
-                                                 Text="{Binding CommercialPhone, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
-
-                                        <CheckBox Grid.Row="14" Grid.Column="1"
-                                                  Content="Activo"
+                                        <CheckBox Content="Activo"
+                                                  FontSize="14"
+                                                  Foreground="{StaticResource TextBody}"
                                                   IsChecked="{Binding IsActive}"
-                                                  Style="{StaticResource CheckStyle}"/>
+                                                  Margin="0,0,0,8"/>
 
-                                        <CheckBox Grid.Row="16" Grid.Column="1"
-                                                  Content="Proveedor VMI"
-                                                  IsChecked="{Binding IsProvider}"
-                                                  Style="{StaticResource CheckStyle}"/>
-                                    </Grid>
+                                        <CheckBox Content="Proveedor VMI"
+                                                  FontSize="14"
+                                                  Foreground="{StaticResource TextBody}"
+                                                  IsChecked="{Binding IsProvider}"/>
+                                    </StackPanel>
                                 </ScrollViewer>
                             </Border>
                         </TabItem>
 
                         <TabItem Header="Información Fiscal" Margin="0,0,-10,0">
-                            <Border Background="White"
-                                    BorderBrush="#E5E7EB"
+                            <Border Background="{StaticResource SurfaceCard}"
+                                    BorderBrush="{StaticResource BorderSoft}"
                                     BorderThickness="1"
                                     CornerRadius="0,12,12,12"
                                     Padding="22">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <controls:LDInput Label="Razón social"
+                                                          Text="{Binding BusinessName, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="5"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
+                                        <controls:LDInput Label="RFC"
+                                                          Text="{Binding Rfc, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Razón social:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="0" Grid.Column="1"
-                                                 Text="{Binding BusinessName, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Domicilio fiscal"
+                                                          Text="{Binding FiscalAddress, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="RFC:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="2" Grid.Column="1"
-                                                 Width="260"
-                                                 HorizontalAlignment="Left"
-                                                 Text="{Binding Rfc, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Colonia"
+                                                          Text="{Binding FiscalNeighborhood, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Domicilio fiscal:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="4" Grid.Column="1"
-                                                 Text="{Binding FiscalAddress, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Ciudad"
+                                                          Text="{Binding FiscalCity, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="6" Grid.Column="1"
-                                                 Text="{Binding FiscalNeighborhood, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Código postal"
+                                                          Text="{Binding FiscalZipCode, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="8" Grid.Column="1"
-                                                 Text="{Binding FiscalCity, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
+                                        <controls:LDInput Label="Email"
+                                                          Text="{Binding FiscalEmail, UpdateSourceTrigger=PropertyChanged}"
+                                                          Margin="0,0,0,10"/>
 
-                                        <TextBlock Grid.Row="10" Grid.Column="0" Text="CP:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="10" Grid.Column="1"
-                                                 Width="140"
-                                                 HorizontalAlignment="Left"
-                                                 Text="{Binding FiscalZipCode, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
-
-                                        <TextBlock Grid.Row="12" Grid.Column="0" Text="Email:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="12" Grid.Column="1"
-                                                 Width="420"
-                                                 HorizontalAlignment="Left"
-                                                 Text="{Binding FiscalEmail, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
-
-                                        <TextBlock Grid.Row="14" Grid.Column="0" Text="Teléfono:" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Grid.Row="14" Grid.Column="1"
-                                                 Width="220"
-                                                 HorizontalAlignment="Left"
-                                                 Text="{Binding FiscalPhone, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
-                                    </Grid>
+                                        <controls:LDInput Label="Teléfono"
+                                                          Text="{Binding FiscalPhone, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
                                 </ScrollViewer>
                             </Border>
                         </TabItem>
@@ -368,8 +209,8 @@
 
                 <!-- Footer -->
                 <Border Grid.Row="2"
-                        Background="#F9FAFB"
-                        BorderBrush="#E5E7EB"
+                        Background="{StaticResource SurfaceInput}"
+                        BorderBrush="{StaticResource BorderSoft}"
                         BorderThickness="0,1,0,0"
                         CornerRadius="0,0,16,16">
                     <StackPanel Orientation="Horizontal"
@@ -380,9 +221,7 @@
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="0,0,10,0"
                                 Command="{Binding SaveCommand}"/>
-
-                        <Button x:Name="button2"
-                                Content="Cerrar"
+                        <Button Content="Cerrar"
                                 Style="{StaticResource SecondaryButtonStyle}"
                                 Click="BtnClose_Click"/>
                     </StackPanel>

@@ -39,6 +39,8 @@ namespace LD.FormsX.Views
             {
             });
 
+            cmbAlmacen.ComboBoxElement.SelectionChanged += CmbAlmacen_SelectionChanged;
+
             viewModel.OnDataLoaded += data =>
             {
                 var filteredData = (data ?? [])
@@ -71,7 +73,7 @@ namespace LD.FormsX.Views
                 ViewModel.SelectedWarehouseId = 0;
                 cmbAlmacen.ItemsSource = null;
                 cmbAlmacen.SelectedItem = null;
-                cmbAlmacen.SelectedIndex = -1;
+                cmbAlmacen.ComboBoxElement.SelectedIndex = -1;
 
                 if (string.IsNullOrWhiteSpace(UserData.Id))
                 {
@@ -99,7 +101,7 @@ namespace LD.FormsX.Views
 
                     if (warehouses.Count == 1)
                     {
-                        cmbAlmacen.SelectedIndex = 0;
+                        cmbAlmacen.ComboBoxElement.SelectedIndex = 0;
                         if (int.TryParse(warehouses[0].Key, out var selectedWarehouseId))
                         {
                             _selectedWarehouseId = selectedWarehouseId;
@@ -169,9 +171,6 @@ namespace LD.FormsX.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.SelectedLocation is null)
-                return;
-
             var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetLocation(ViewModel.SelectedLocation);

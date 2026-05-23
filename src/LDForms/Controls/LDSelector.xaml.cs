@@ -115,6 +115,8 @@ public partial class LDSelector : UserControl
         set => SetValue(ErrorTextProperty, value);
     }
 
+    public ComboBox ComboBoxElement => PART_ComboBox;
+
     // ── Constructor ─────────────────────────────────────────────────────────
 
     public LDSelector()

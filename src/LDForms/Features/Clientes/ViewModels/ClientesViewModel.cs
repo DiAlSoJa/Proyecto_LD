@@ -36,6 +36,11 @@ public partial class ClientesViewModel : ObservableObject
     [ObservableProperty]
     private bool canView;
 
+    public bool CanExecuteEdit => CanEdit && SelectedClient is not null;
+
+    partial void OnSelectedClientChanged(ClientDto? value) =>
+        OnPropertyChanged(nameof(CanExecuteEdit));
+
     public event Action<List<ClientDto>>? OnDataLoaded;
 
     public ClientesViewModel(ClientService clientService)
