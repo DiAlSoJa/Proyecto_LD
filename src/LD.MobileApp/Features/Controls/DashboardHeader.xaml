@@ -16,7 +16,7 @@
                 WidthRequest="44"
                 HeightRequest="44"
                 VerticalOptions="Center">
-            <Image Source="person.png"
+            <Image Source="user_circle.png"
                    HeightRequest="44"
                    WidthRequest="44"
                    Aspect="AspectFit"
