@@ -2,7 +2,10 @@ using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.DTOs;
 using LD.Contracts.DTOs.OperationalTasks;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Features.Seguridad.Models;
+using MauiAppLogin.Services;
+using MauiAppLogin.Views.Controls;
 using System.Collections.ObjectModel;
 
 namespace MauiAppLogin;
@@ -11,6 +14,8 @@ public partial class TaskList : ContentPage
 {
     private readonly OperationalTaskService _operationalTaskService;
     private readonly LookupService _lookupService;
+    private readonly IDialogService _dialogService;
+    private readonly ILoaderService _loaderService;
     private readonly ObservableCollection<ListItemTask> _items = new();
     private readonly ObservableCollection<ListItemTask> _filtered = new();
     private readonly List<DropDownDto> _warehouseFilterOptions = new();
@@ -18,12 +23,25 @@ public partial class TaskList : ContentPage
     private bool _isLoading;
     private bool _warehousesLoaded;
 
-    public TaskList(OperationalTaskService operationalTaskService, LookupService lookupService)
+    public TaskList(
+        OperationalTaskService operationalTaskService,
+        LookupService lookupService,
+        IDialogService dialogService,
+        ILoaderService loaderService)
     {
         InitializeComponent();
         _operationalTaskService = operationalTaskService;
         _lookupService = lookupService;
+        _dialogService = dialogService;
+        _loaderService = loaderService;
+        Loader.BindingContext = _loaderService;
         ItemsList.ItemsSource = _filtered;
+
+        BuscadorEntry.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(LabeledEntry.Text))
+                ApplyFilter(BuscadorEntry.Text);
+        };
     }
 
     protected override async void OnAppearing()
@@ -41,12 +59,13 @@ public partial class TaskList : ContentPage
         try
         {
             _isLoading = true;
+            _loaderService.Show("Cargando tareas...");
             var warehouseId = GetSelectedWarehouseId();
             var response = await _operationalTaskService.GetTasks(soloPendientes: true, warehouseId);
 
             if (!response.IsSuccess)
             {
-                await DisplayAlertAsync("Tareas", response.Message ?? "No se pudieron cargar las tareas.", "OK");
+                await _dialogService.ShowErrorAsync("Tareas", response.Message ?? "No se pudieron cargar las tareas.");
                 return;
             }
 
@@ -58,35 +77,31 @@ public partial class TaskList : ContentPage
             foreach (var task in tasks)
                 _items.Add(MapTask(task));
 
-            ApplyFilter(FiltroEntry.Text);
+            ApplyFilter(BuscadorEntry.Text);
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("Error", ex.Message);
         }
         finally
         {
             _isLoading = false;
+            _loaderService.Hide();
         }
     }
 
     private static ListItemTask MapTask(OperationalTaskDto task)
     {
         var warehouse = string.IsNullOrWhiteSpace(task.WarehouseName)
-            ? "Sin almacen"
+            ? "Sin almacén"
             : task.WarehouseName;
 
         return new ListItemTask
         {
             TaskId = task.OperationalTaskId,
-            Titulo = $"[{task.OperationalTaskId:0000}] -> {task.Name}",
-            Subtitulo = $" {task.CreatedAt:dd MMM hh:mm tt} -> {warehouse} -> {task.Activity.ToUpperInvariant()} -> {task.Priority}"
+            Titulo = $"[{task.OperationalTaskId:0000}] → {task.Name}",
+            Subtitulo = $"{task.CreatedAt:dd MMM HH:mm} · {warehouse} · {task.Activity.ToUpperInvariant()} · {task.Priority}"
         };
-    }
-
-    private void OnFiltroChanged(object sender, TextChangedEventArgs e)
-    {
-        ApplyFilter(e.NewTextValue);
     }
 
     private void ApplyFilter(string? value)
@@ -125,6 +140,18 @@ public partial class TaskList : ContentPage
         await Shell.Current.GoToAsync("NewTask");
     }
 
+    private async void OnRefreshTapped(object sender, TappedEventArgs e)
+    {
+        _warehousesLoaded = false;
+        await LoadWarehousesAsync();
+        await LoadTasksAsync();
+    }
+
+    private async void OnAtrasClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//dashboard");
+    }
+
     private async void OnWarehouseFilterChanged(object sender, EventArgs e)
     {
         if (!_warehousesLoaded)
@@ -158,7 +185,7 @@ public partial class TaskList : ContentPage
             var response = await _lookupService.GetWarehouseLookupByUser(UserData.Id);
             if (!response.IsSuccess)
             {
-                await DisplayAlertAsync("Almacenes", response.Message ?? "No se pudieron cargar los almacenes.", "OK");
+                await _dialogService.ShowErrorAsync("Almacenes", response.Message ?? "No se pudieron cargar los almacenes.");
                 return;
             }
 
@@ -193,7 +220,7 @@ public partial class TaskList : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("Error", ex.Message);
         }
     }
 }

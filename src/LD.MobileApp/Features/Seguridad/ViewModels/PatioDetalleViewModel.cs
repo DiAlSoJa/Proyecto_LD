@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
@@ -10,6 +11,7 @@ namespace MauiAppLogin.ViewModels;
 public partial class PatioDetalleViewModel : ObservableObject
 {
     private readonly PatioClientService _patioClientService;
+    private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
 
@@ -29,12 +31,14 @@ public partial class PatioDetalleViewModel : ObservableObject
 
     public PatioDetalleViewModel(
         PatioClientService patioClientService,
+        IDialogService dialogService,
         ILoaderService loaderService,
         PatioContext context)
     {
-        _patioClientService  = patioClientService;
-        _loaderService = loaderService;
-        _context       = context;
+        _patioClientService = patioClientService;
+        _dialogService      = dialogService;
+        _loaderService      = loaderService;
+        _context            = context;
 
         AsignarCortinaCommand = new AsyncCommand(AsignarCortinaAsync);
         AtrasCommand          = new AsyncCommand(AtrasAsync);
@@ -57,20 +61,18 @@ public partial class PatioDetalleViewModel : ObservableObject
         try
         {
             var response = await _patioClientService.AsignarCortinaAsync(Vehiculo.Id, cortina.Id);
-            var ok = response.IsSuccess;
-            if (!ok)
+            if (!response.IsSuccess)
             {
-                await Shell.Current.DisplayAlertAsync("Error", response.Message ?? "No se pudo asignar la cortina.", "OK");
+                await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudo asignar la cortina.");
                 return;
             }
 
             Vehiculo.CortinaAsignada = cortina.Numero;
             RefrescarCortina();
 
-            await Shell.Current.DisplayAlertAsync(
+            await _dialogService.ShowSuccessAsync(
                 "Cortina asignada",
-                $"Vehículo {Vehiculo.Placa} → Cortina {cortina.Numero}.\nTarea creada en Task Manager de Seguridad.",
-                "OK");
+                $"Vehículo {Vehiculo.Placa} → Cortina {cortina.Numero}.\nTarea creada en Task Manager de Seguridad.");
         }
         finally
         {

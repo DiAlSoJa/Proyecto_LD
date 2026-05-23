@@ -117,8 +117,8 @@
 
         </Grid>
 
-        <!-- LOADER -->
-        <controls:LoaderSpinner BindingContext="{Binding Loader}"/>
+        <!-- Loader con spinner GIF sobre todo el contenido -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}" />
 
     </Grid>
 </ContentPage>

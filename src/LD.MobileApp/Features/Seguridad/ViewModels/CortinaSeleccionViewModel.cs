@@ -1,17 +1,18 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Command = MvvmHelpers.Commands.Command;
 
 namespace MauiAppLogin.ViewModels;
 
 public partial class CortinaSeleccionViewModel : ObservableObject
 {
     private readonly PatioClientService _patioClientService;
+    private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
 
@@ -33,17 +34,19 @@ public partial class CortinaSeleccionViewModel : ObservableObject
 
     public CortinaSeleccionViewModel(
         PatioClientService patioClientService,
+        IDialogService dialogService,
         ILoaderService loaderService,
         PatioContext context)
     {
         _patioClientService = patioClientService;
-        _loaderService = loaderService;
-        _context = context;
+        _dialogService      = dialogService;
+        _loaderService      = loaderService;
+        _context            = context;
 
-        CargarCommand   = new AsyncCommand(CargarAsync);
+        CargarCommand      = new AsyncCommand(CargarAsync);
         SeleccionarCommand = new MvvmHelpers.Commands.Command<Cortina>(Seleccionar);
-        ConfirmarCommand = new AsyncCommand(ConfirmarAsync);
-        CancelarCommand = new AsyncCommand(CancelarAsync);
+        ConfirmarCommand   = new AsyncCommand(ConfirmarAsync);
+        CancelarCommand    = new AsyncCommand(CancelarAsync);
     }
 
     public async Task InicializarAsync()
@@ -55,21 +58,23 @@ public partial class CortinaSeleccionViewModel : ObservableObject
 
     private async Task CargarAsync()
     {
-        _loaderService.Show("Cargando cortinas...");
         try
         {
+            _loaderService.Show("Obteniendo cortinas disponibles...");
             var response = await _patioClientService.GetCortinasDisponiblesAsync();
             var lista = response.IsSuccess && response.Data is not null
                 ? response.Data.Select(d => new Cortina
                 {
-                    Id = d.CortinaId,
-                    Numero = d.Numero,
-                    Descripcion = d.Descripcion,
+                    Id             = d.CortinaId,
+                    Numero         = d.Numero,
+                    Descripcion    = d.Descripcion,
                     EstaDisponible = d.EstaDisponible
                 }).ToList()
                 : [];
 
             Cortinas = new ObservableCollection<Cortina>(lista);
+            if (!response.IsSuccess)
+                await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudieron cargar las cortinas.");
         }
         finally
         {

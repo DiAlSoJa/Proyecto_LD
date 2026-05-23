@@ -7,6 +7,8 @@
              Title="DashboardPage"
              BackgroundColor="#1F3A5F">
 
+    <Grid>
+
     <ScrollView>
         <VerticalStackLayout Padding="20,60,20,30"
                              Spacing="5"
@@ -18,6 +20,7 @@
                 TaskBadgeText="{Binding OperationalTasksHeaderText}"
                 ShowTaskBadge="True"
                 NavigateToTasksCommand="{Binding NavigateToTaskListCommand}"
+                OpenUserMenuCommand="{Binding OpenUserMenuCommand}"
                 Margin="-20,-60,-20,0"/>
 
             <!-- ALMACENISTA -->
@@ -402,5 +405,72 @@
 
         </VerticalStackLayout>
     </ScrollView>
+
+    <!-- ═══ User menu dropdown (mismo estilo que WPF) ═══ -->
+    <Grid IsVisible="{Binding IsUserMenuVisible}">
+
+        <!-- Capa transparente — cierra el menú al tocar fuera -->
+        <BoxView BackgroundColor="#01000000">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseUserMenuCommand}"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- Tarjeta del menú anclada debajo del icono de usuario -->
+        <Border BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 10"
+                Padding="0,8"
+                WidthRequest="210"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                Margin="14,74,0,0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,4" Radius="16" Opacity="0.15"/>
+            </Border.Shadow>
+
+            <VerticalStackLayout Spacing="0">
+
+                <!-- Info del usuario -->
+                <VerticalStackLayout Padding="16,4,16,10" Spacing="2">
+                    <Label Text="{Binding Username}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#1F2937"
+                           LineBreakMode="TailTruncation"
+                           MaxLines="1"/>
+                    <Label Text="Usuario activo"
+                           FontSize="11"
+                           TextColor="#6B7280"/>
+                </VerticalStackLayout>
+
+                <!-- Separador -->
+                <BoxView HeightRequest="1" Color="#F1F5F9" Margin="0,0,0,4"/>
+
+                <!-- Cerrar sesión -->
+                <Border x:Name="LogoutRow"
+                        BackgroundColor="White"
+                        StrokeThickness="0"
+                        Padding="16,8">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="🚪" FontSize="16" VerticalOptions="Center"/>
+                        <Label Text="Cerrar sesión"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="#EF4444"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding LogoutCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
+
+    </Grid>
 
 </ContentPage>

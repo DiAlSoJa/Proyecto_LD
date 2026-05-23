@@ -64,6 +64,9 @@ namespace MauiAppLogin.ViewModels
         private bool isBusy;
 
         [ObservableProperty]
+        private bool isUserMenuVisible;
+
+        [ObservableProperty]
         private int tareasPendientesCount;
 
         [ObservableProperty]
@@ -93,6 +96,8 @@ namespace MauiAppLogin.ViewModels
         public string OperationalTasksHeaderText => $"Tareas ({OperationalTasksPendingCount})";
 
         public ICommand LogoutCommand { get; }
+        public ICommand OpenUserMenuCommand { get; }
+        public ICommand CloseUserMenuCommand { get; }
         public ICommand NavigateToChangeLocationCommand { get; }
         public ICommand NavigateToPickingCommand { get; }
         public ICommand NavigateToReceptionCommand { get; }
@@ -126,6 +131,8 @@ namespace MauiAppLogin.ViewModels
             _sessionService = sessionService;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
+            OpenUserMenuCommand  = new RelayCommand(() => IsUserMenuVisible = true);
+            CloseUserMenuCommand = new RelayCommand(() => IsUserMenuVisible = false);
             NavigateToChangeLocationCommand = new AsyncRelayCommand(NavigateToChangeLocation);
             NavigateToPickingCommand = new AsyncRelayCommand(NavigateToPicking);
             NavigateToReceptionCommand = new AsyncRelayCommand(NavigateToReception);
@@ -217,6 +224,7 @@ namespace MauiAppLogin.ViewModels
         private async Task Logout()
         {
             if (IsBusy) return;
+            IsUserMenuVisible = false;
             try
             {
                 IsBusy = true;

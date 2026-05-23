@@ -1,151 +1,174 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:MauiAppLogin.Features.Seguridad.Models"
+             xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
              x:Class="MauiAppLogin.TaskList"
-             Title="Listado de Tareas"
+             x:Name="Root"
+             Title="Tareas Operativas"
              BackgroundColor="#0F2E4F">
-    
 
-    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
+    <Grid>
 
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
 
+            <!-- ═══ Encabezado ═══ -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,16">
 
+                <Border BackgroundColor="#1E3A5F" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 14"
+                        WidthRequest="48" HeightRequest="48"
+                        VerticalOptions="Center">
+                    <Label Text="📋" FontSize="24"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"/>
+                </Border>
 
+                <VerticalStackLayout Grid.Column="1" Margin="12,0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="Tareas Operativas"
+                           FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Tareas pendientes asignadas"
+                           FontSize="12" TextColor="#94A3B8"/>
+                </VerticalStackLayout>
 
-        <Grid  Grid.Row="0" ColumnDefinitions="Auto,*,Auto"
-              BackgroundColor="#0F2E4F"
-              Padding="15"
-              Margin="0,0,0,0">
+                <Border Grid.Column="2"
+                        BackgroundColor="#244A7C" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="14,8" VerticalOptions="Center">
+                    <Label Text="↺  Actualizar" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRefreshTapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
 
-          
-            <Border Grid.Column="2"
-            BackgroundColor="#2F5DA8"
-            StrokeThickness="0"
-            StrokeShape="RoundRectangle 15"
-            Padding="10,5"
-            VerticalOptions="Center">
+            </Grid>
 
-                <HorizontalStackLayout Spacing="5">
-                    <Label Text="🔔" TextColor="White"/>
-                    <Label Text="Nueva Tarea"
-                   TextColor="White"
-                   FontAttributes="Bold"/>
-                </HorizontalStackLayout>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnTaskNewClicked"/>
-                </Border.GestureRecognizers>
+            <!-- ═══ Barra de búsqueda y filtros ═══ -->
+            <Border Grid.Row="1"
+                    BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="18,14"
+                    Margin="0,0,0,12">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="10">
+
+                    <controls:LabeledEntry
+                        x:Name="BuscadorEntry"
+                        LabelText="Buscar"
+                        Placeholder="Filtrar tareas..."
+                        IconSource="search.svg"/>
+
+                    <Label x:Name="WarehouseFilterLabel"
+                           Text="Almacén"
+                           TextColor="#64748B"
+                           FontSize="14"
+                           IsVisible="False"/>
+
+                    <Picker x:Name="WarehouseFilterPicker"
+                            Title="Todos los almacenes"
+                            ItemDisplayBinding="{Binding Value}"
+                            SelectedIndexChanged="OnWarehouseFilterChanged"
+                            TextColor="#1E293B"
+                            BackgroundColor="White"
+                            IsVisible="False"/>
+
+                </VerticalStackLayout>
             </Border>
 
-
-        </Grid>
-        
-        
-        
-
-        <!-- Barra superior: filtro -->
-        <Border Grid.Row="1"
-                BackgroundColor="#F6F8FC"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 24"
-                Padding="14"
-                Margin="0,10,0,12">
-
-            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*" RowSpacing="10" ColumnSpacing="10">
-                <Label Text="🔎"
-                       FontSize="18"
-                       VerticalOptions="Center"/>
-
-                <Entry x:Name="FiltroEntry"
-                       Grid.Column="1"
-                       Placeholder="Filtrar..."
-                       TextChanged="OnFiltroChanged"
-                       BackgroundColor="White"
-                       TextColor="#1E293B"
-                       PlaceholderColor="#94A3B8"
-                       ClearButtonVisibility="WhileEditing"/>
-
-                <Label x:Name="WarehouseFilterLabel"
-                       Grid.Row="1"
-                       Text="Almacen"
-                       TextColor="#64748B"
-                       FontSize="14"
-                       VerticalOptions="Center"
-                       IsVisible="False"/>
-
-                <Picker x:Name="WarehouseFilterPicker"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Title="Todos los almacenes"
-                        ItemDisplayBinding="{Binding Value}"
-                        SelectedIndexChanged="OnWarehouseFilterChanged"
-                        TextColor="#1E293B"
-                        BackgroundColor="White"
-                        IsVisible="False"/>
-            </Grid>
-        </Border>
-
-        <!-- Lista -->
-        <Border Grid.Row="2"
-                BackgroundColor="White"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 24"
-                Padding="0">
-
+            <!-- ═══ Lista de tareas ═══ -->
             <CollectionView x:Name="ItemsList"
+                            Grid.Row="2"
                             SelectionMode="Single"
                             SelectionChanged="OnItemSelected">
 
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
+                        <Label Text="✅" FontSize="52" HorizontalOptions="Center"/>
+                        <Label Text="Sin tareas pendientes"
+                               TextColor="#94A3B8" FontSize="16"
+                               HorizontalOptions="Center"/>
+                        <Label Text="No hay tareas asignadas por el momento."
+                               TextColor="#64748B" FontSize="13"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="14,12"
-                              ColumnDefinitions="Auto,*"
-                              RowDefinitions="Auto,Auto">
+                    <DataTemplate x:DataType="models:ListItemTask">
+                        <Border BackgroundColor="#F6F8FC"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 20"
+                                Padding="16"
+                                Margin="0,0,0,10">
 
-                            <!-- Icono -->
-                            <Border WidthRequest="34"
-                                    HeightRequest="34"
-                                    BackgroundColor="#EEF2FF"
-                                    StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 12"
-                                    VerticalOptions="Center">
-                                <Label Text="📦"
-                                       HorizontalTextAlignment="Center"
-                                       VerticalTextAlignment="Center"/>
-                            </Border>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
 
-                            <!-- Título -->
-                            <Label Grid.Column="1"
-                                   Text="{Binding Titulo}"
-                                   FontAttributes="Bold"
-                                   FontSize="18"
-                                   TextColor="#1E293B"
-                                   Margin="10,0,0,0"
-                                   LineBreakMode="TailTruncation"/>
+                                <Border WidthRequest="46" HeightRequest="46"
+                                        BackgroundColor="#EFF6FF" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 14"
+                                        VerticalOptions="Center">
+                                    <Label Text="📦"
+                                           FontSize="22"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"/>
+                                </Border>
 
-                            <!-- Subtítulo -->
-                            <Label Grid.Row="1"
-                                   Grid.Column="1"
-                                   Text="{Binding Subtitulo}"
-                                   FontSize="15"
-                                   TextColor="#64748B"
-                                   Margin="10,2,0,0"
-                                   LineBreakMode="TailTruncation"/>
+                                <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                    <Label Text="{Binding Titulo}"
+                                           FontSize="15" FontAttributes="Bold" TextColor="#0F172A"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Subtitulo}"
+                                           FontSize="12" TextColor="#64748B"
+                                           LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
 
-                            <!-- Línea -->
-                            <BoxView Grid.Row="2"
-                                     Grid.ColumnSpan="2"
-                                     HeightRequest="1"
-                                     BackgroundColor="#EEF2F7"
-                                     VerticalOptions="End"
-                                     Margin="0,12,0,-12"/>
-                        </Grid>
+                                <Label Grid.Column="2"
+                                       Text="›" FontSize="32"
+                                       TextColor="#94A3B8"
+                                       VerticalOptions="Center"/>
+
+                            </Grid>
+
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
 
             </CollectionView>
-        </Border>
+
+            <!-- ═══ Botones inferiores ═══ -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,6">
+
+                <Button Text="← Atrás"
+                        Clicked="OnAtrasClicked"
+                        HeightRequest="52" CornerRadius="18"
+                        BackgroundColor="#334155" TextColor="White"
+                        FontAttributes="Bold"/>
+
+                <Border Grid.Column="1"
+                        BackgroundColor="#244A7C" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 18"
+                        HeightRequest="52">
+                    <Label Text="＋  Nueva Tarea" TextColor="White"
+                           FontAttributes="Bold" FontSize="15"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTaskNewClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </Grid>
+
+        </Grid>
+
+        <!-- Loader con spinner GIF -->
+        <controls:LoaderSpinner x:Name="Loader" />
 
     </Grid>
+
 </ContentPage>

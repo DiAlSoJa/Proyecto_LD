@@ -22,6 +22,9 @@
                    Aspect="AspectFit"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"/>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnUserTapped"/>
+            </Border.GestureRecognizers>
         </Border>
 
         <!-- Username -->
@@ -31,7 +34,11 @@
                FontAttributes="Bold"
                TextColor="White"
                VerticalOptions="Center"
-               Margin="12,0,0,0"/>
+               Margin="12,0,0,0">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnUserTapped"/>
+            </Label.GestureRecognizers>
+        </Label>
 
         <!-- Badge de tareas -->
         <Border Grid.Column="2"

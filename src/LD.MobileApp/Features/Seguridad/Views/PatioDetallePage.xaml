@@ -18,6 +18,7 @@
     <Grid>
 
         <ScrollView>
+
             <VerticalStackLayout Padding="16" Spacing="14">
 
                 <!-- ═══ Tarjeta del vehículo ═══ -->
@@ -130,8 +131,8 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- LOADER -->
-        <controls:LoaderSpinner BindingContext="{Binding Loader}"/>
+        <!-- Loader con spinner GIF sobre todo el contenido -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}" />
 
     </Grid>
 </ContentPage>

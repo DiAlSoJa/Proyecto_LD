@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
 using LD.Contracts.DTOs.Security;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
@@ -12,6 +13,7 @@ namespace MauiAppLogin.ViewModels;
 public partial class PatioPendientesViewModel : ObservableObject
 {
     private readonly PatioClientService _patioClientService;
+    private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
 
@@ -20,54 +22,43 @@ public partial class PatioPendientesViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<SecurityRegistrationDto> vehiculos = new();
 
-    [ObservableProperty]
-    private string errorMessage = "";
-
-    [ObservableProperty]
-    private bool hasError;
-
-    [ObservableProperty]
-    private bool hasItems;
-
     public ICommand CargarCommand { get; }
     public ICommand SeleccionarCommand { get; }
     public ICommand AtrasCommand { get; }
 
     public PatioPendientesViewModel(
         PatioClientService patioClientService,
+        IDialogService dialogService,
         ILoaderService loaderService,
         PatioContext context)
     {
         _patioClientService = patioClientService;
-        _loaderService = loaderService;
-        _context = context;
+        _dialogService      = dialogService;
+        _loaderService      = loaderService;
+        _context            = context;
 
-        CargarCommand    = new AsyncCommand(CargarAsync);
+        CargarCommand      = new AsyncCommand(CargarAsync);
         SeleccionarCommand = new AsyncCommand<SecurityRegistrationDto>(SeleccionarAsync);
-        AtrasCommand     = new AsyncCommand(AtrasAsync);
+        AtrasCommand       = new AsyncCommand(AtrasAsync);
     }
 
     public async Task InicializarAsync() => await CargarAsync();
 
     private async Task CargarAsync()
     {
-        _loaderService.Show("Cargando vehículos...");
-        ErrorMessage = "";
-        HasError     = false;
-
         try
         {
+            _loaderService.Show("Obteniendo vehículos...");
             var response = await _patioClientService.GetVehiculosSinSalidaAsync();
             var lista = response.IsSuccess ? (response.Data ?? []) : [];
             Vehiculos = new ObservableCollection<SecurityRegistrationDto>(lista);
-            HasItems  = Vehiculos.Count > 0;
+            if (!response.IsSuccess)
+                await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudieron cargar los vehículos.");
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Error al cargar vehículos: {ex.Message}";
-            HasError     = true;
-            Vehiculos    = new ObservableCollection<SecurityRegistrationDto>();
-            HasItems     = false;
+            Vehiculos = new ObservableCollection<SecurityRegistrationDto>();
+            await _dialogService.ShowErrorAsync("Error", $"Error al cargar vehículos: {ex.Message}");
         }
         finally
         {

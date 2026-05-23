@@ -79,11 +79,9 @@ namespace LD.FormsX
                 HostContainer = Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, config) =>
                     {
-                        var env = 
-                             //   Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ??
-                             //Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ??
+                        var env =
                             Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ??
-                             "Development";
+                            "Development";
 
                         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", env);
                         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env);
@@ -109,6 +107,11 @@ namespace LD.FormsX
                 var login = Services.GetRequiredService<MainWindow>();
                 login.Show();
             }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Error fatal al iniciar");
+            }
+        }
 
         private static void ConfigureAuthRefresh()
         {
@@ -139,12 +142,6 @@ namespace LD.FormsX
                 return true;
             };
         }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Error fatal al iniciar");
-            }
-        }
-
         protected override async void OnExit(ExitEventArgs e)
         {
             if (HostContainer is not null)

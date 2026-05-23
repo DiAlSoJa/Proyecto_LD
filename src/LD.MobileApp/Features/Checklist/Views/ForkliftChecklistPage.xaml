@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:MauiAppLogin.ViewModels"
-    
+    xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
     x:Class="MauiAppLogin.ForkliftChecklistPage"
     xmlns:conv="clr-namespace:MauiAppLogin.Converters"
     Title="Checklist Montacargas"
@@ -38,21 +38,15 @@
                           ColumnSpacing="12"
                           RowSpacing="12">
 
-                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
-                            <Label Text="Operador" FontAttributes="Bold" TextColor="#486581" />
-                            <Entry x:Name="OperadorEntry"
-                                   Placeholder="Nombre del operador"
-                                   BackgroundColor="#F8FAFC"
-                                   TextColor="#102A43" />
-                        </VerticalStackLayout>
+                        <controls:LabeledEntry Grid.Row="0" Grid.Column="0"
+                            LabelText="Operador"
+                            Text="{Binding Operador}"
+                            Placeholder="Nombre del operador"/>
 
-                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
-                            <Label Text="Equipo" FontAttributes="Bold" TextColor="#486581" />
-                            <Entry x:Name="EquipoEntry"
-                                   Placeholder="No. de equipo"
-                                   BackgroundColor="#F8FAFC"
-                                   TextColor="#102A43" />
-                        </VerticalStackLayout>
+                        <controls:LabeledEntry Grid.Row="0" Grid.Column="1"
+                            LabelText="Equipo"
+                            Text="{Binding Equipo}"
+                            Placeholder="No. de equipo"/>
 
                         <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
                             <Label Text="Turno" FontAttributes="Bold" TextColor="#486581" />
@@ -76,13 +70,10 @@
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
-                            <Label Text="Horómetro" FontAttributes="Bold" TextColor="#486581" />
-                            <Entry x:Name="HorometroEntry"
-                                   Text="{Binding Horometro}"
-                                   Placeholder="Captura el horómetro"
-                                   Keyboard="Numeric"
-                                   BackgroundColor="#F8FAFC"
-                                   TextColor="#102A43" />
+                            <controls:LabeledEntry
+                                LabelText="Horómetro"
+                                Text="{Binding Horometro}"
+                                Placeholder="Captura el horómetro"/>
                             <Button Text="📷 Leer con cámara"
                                     Command="{Binding EscanearHorometroCommand}"
                                     BackgroundColor="#1F3A5F"
@@ -239,17 +230,13 @@
 
 
 
-            <!-- Miniaturas -->
-            <Border BackgroundColor="#EEF3FB"
-                     Stroke="#E2E8F0"
-                     StrokeShape="RoundRectangle 18"
-                     Padding="10"
-                     Margin="0,6,0,0">
-                <HorizontalStackLayout Spacing="10">
-                    <Image x:Name="Thumb1" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                    <Image x:Name="Thumb2" WidthRequest="90" HeightRequest="56" Aspect="AspectFill" BackgroundColor="White"/>
-                </HorizontalStackLayout>
-            </Border>
+            <!-- Galería de fotos capturadas -->
+            <controls:PhotoGallery
+                ItemsSource="{Binding Photos}"
+                DeleteCommand="{Binding RemovePhotoCommand}"
+                ViewCommand="{Binding ViewPhotoCommand}"
+                Margin="0,6,0,0"
+                MinimumHeightRequest="90"/>
 
             <!-- Area tipo cámara -->
             <Border Grid.Row="1"

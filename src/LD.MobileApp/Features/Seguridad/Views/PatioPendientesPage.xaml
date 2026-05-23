@@ -12,7 +12,8 @@
 
     <Grid>
 
-        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+        <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+
 
             <!-- ═══ Encabezado ═══ -->
             <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,16">
@@ -45,19 +46,8 @@
 
             </Grid>
 
-            <!-- ═══ Banner de error ═══ -->
-            <Border Grid.Row="1"
-                    IsVisible="{Binding HasError}"
-                    BackgroundColor="#7F1D1D" StrokeThickness="0"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="16,12" Margin="0,0,0,12">
-                <Label Text="{Binding ErrorMessage}"
-                       TextColor="#FCA5A5" FontSize="13"
-                       HorizontalTextAlignment="Center"/>
-            </Border>
-
             <!-- ═══ Lista de vehículos ═══ -->
-            <CollectionView Grid.Row="2"
+            <CollectionView Grid.Row="1"
                             ItemsSource="{Binding Vehiculos}"
                             SelectionMode="None">
 
@@ -128,7 +118,7 @@
             </CollectionView>
 
             <!-- ═══ Botón panel ═══ -->
-            <Button Grid.Row="3"
+            <Button Grid.Row="2"
                     Text="← Ir al Panel"
                     Command="{Binding AtrasCommand}"
                     HeightRequest="52" CornerRadius="18"
@@ -137,8 +127,8 @@
 
         </Grid>
 
-        <!-- LOADER -->
-        <controls:LoaderSpinner BindingContext="{Binding Loader}"/>
+        <!-- Loader con spinner GIF sobre todo el contenido -->
+        <controls:LoaderSpinner BindingContext="{Binding Loader}" />
 
     </Grid>
 </ContentPage>
