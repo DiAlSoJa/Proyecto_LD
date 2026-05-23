@@ -1,5 +1,13 @@
+using LD.Contracts.Enums;
+
 namespace MauiAppLogin.Models;
 
+public class SecurityPhotoEntry
+{
+    public PhotoCategoria_e Categoria { get; set; }
+    public int Orden { get; set; }
+    public byte[] Bytes { get; set; } = Array.Empty<byte>();
+}
 
 public class SecurityRegistrationContext
 {
@@ -11,8 +19,7 @@ public class SecurityRegistrationContext
     public string Licencia { get; set; } = "";
     public DateTime Vencimiento { get; set; } = DateTime.Today;
     public string Celular { get; set; } = "";
-    public byte[]? LicenciaFoto1 { get; set; }
-    public byte[]? LicenciaFoto2 { get; set; }
+    public List<SecurityPhotoEntry> LicenciaFotos { get; set; } = new();
 
     // Step 2 — Vehicle
     public string TipoVehiculo { get; set; } = "";   // Caja / Tractor
@@ -20,8 +27,7 @@ public class SecurityRegistrationContext
     public string Origen { get; set; } = "";
     public string Numero { get; set; } = "";
     public string Placa { get; set; } = "";
-    public byte[]? VehiculoFoto1 { get; set; }
-    public byte[]? VehiculoFoto2 { get; set; }
+    public List<SecurityPhotoEntry> VehiculoFotos { get; set; } = new();
 
     // Step 3 — Signature
     public byte[]? Firma { get; set; }
@@ -33,16 +39,14 @@ public class SecurityRegistrationContext
         Licencia = "";
         Vencimiento = DateTime.Today;
         Celular = "";
-        LicenciaFoto1 = null;
-        LicenciaFoto2 = null;
+        LicenciaFotos.Clear();
 
         TipoVehiculo = "";
         Linea = "";
         Origen = "";
         Numero = "";
         Placa = "";
-        VehiculoFoto1 = null;
-        VehiculoFoto2 = null;
+        VehiculoFotos.Clear();
 
         Firma = null;
     }

@@ -110,6 +110,70 @@ public partial class FooViewModel : ObservableObject
 
 `DisplayPromptAsync` remains valid for capturing text input. `LogoutDialog` and `OptionPopup` are specialized UX popups — use them directly as needed.
 
+### Form Entry Fields — LabeledEntry / PasswordEntry (MANDATORY)
+
+**Never use `<Entry>` inside a manual `<Border>`** in forms. Always use the custom controls in `Features/Controls/`:
+
+- **`<controls:LabeledEntry>`** — for plain text fields. Namespace: `xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"`.
+- **`<controls:PasswordEntry>`** — for password fields (uses `Password` property instead of `Text`).
+
+```xaml
+<!-- Correct -->
+<controls:LabeledEntry
+    LabelText="Nombre:"
+    Text="{Binding Nombre}"
+    Placeholder="Ej. Carlos Ramírez"/>
+
+<!-- Wrong — standard Entry inside manual Border -->
+<VerticalStackLayout>
+    <Label Text="Nombre:"/>
+    <Border><Entry Text="{Binding Nombre}"/></Border>
+</VerticalStackLayout>
+```
+
+**`LabeledEntry` BindableProperties**: `LabelText` (string), `Text` (string, TwoWay), `Placeholder` (string), `IconSource` (ImageSource?).
+
+### Photo Controls — PhotoGallery / PhotoThumb / ImagePreviewPopup (MANDATORY)
+
+**Never use `CollectionView HorizontalList` or manual thumbnail grids** for captured photos. Use the controls in `Features/Controls/`:
+
+| Situation | Control |
+|---|---|
+| One or more photos (scrollable gallery) | `<controls:PhotoGallery>` |
+| Single photo item with delete icon | `<controls:PhotoThumb>` directly |
+| Full-screen image preview on tap | `ImagePreviewPopup` from ViewModel |
+
+```xaml
+<controls:PhotoGallery
+    ItemsSource="{Binding Photos}"
+    DeleteCommand="{Binding RemovePhotoCommand}"
+    ViewCommand="{Binding ViewPhotoCommand}"
+    MinimumHeightRequest="90"/>
+```
+
+```csharp
+// ViewPhotoCommand pattern in ViewModel (synchronous Command<T>)
+ViewPhotoCommand = new MvvmHelpers.Commands.Command<TPhotoItem>(item =>
+{
+    if (item?.Source is null) return;
+    (Shell.Current.CurrentPage ?? Application.Current?.MainPage)
+        ?.ShowPopup(new ImagePreviewPopup(item.Source));
+});
+```
+
+**`PhotoGallery` BindableProperties**: `ItemsSource` (IEnumerable), `DeleteCommand` (ICommand), `ViewCommand` (ICommand).  
+**`PhotoThumb` BindableProperties**: `PhotoSource` (ImageSource), `DeleteCommand`, `DeleteCommandParameter`, `ViewCommand`, `ViewCommandParameter`.  
+Delete icon is a **trash can** (🗑) — never ✕ on photo thumbnails.
+
+### Mandatory Review Rule
+
+When reading or editing **any** Page or ViewModel in this project, if you find:
+- `<Entry>` inside a manual `<Border>` → migrate to `<controls:LabeledEntry>` in the same edit.
+- `DisplayAlert` / `DisplayAlertAsync` / `DisplayActionSheet` → migrate to `IDialogService` in the same edit.
+- `CollectionView HorizontalList` or manual photo thumbnails → migrate to `<controls:PhotoGallery>` in the same edit.
+
+Do not leave Pages with these patterns unmigrated when you touch them. There is a backlog of ~60 `DisplayAlertAsync` instances project-wide; migrate them incrementally as each file is edited.
+
 ### Page Convention
 
 Pages receive their ViewModel via constructor injection and set `BindingContext`:
@@ -137,6 +201,39 @@ Uses MAUI Shell:
 ### Login Flow
 
 `LoginViewModel` calls `AuthService.LoginAsync()`, stores tokens in `UserSession`, calls `GetMeAsync()` to populate `UserData`, then checks if the user has an assigned equipment. If yes, navigates to `ForkliftChecklistPage`. If no, navigates to `//dashboard`.
+
+### Authentication and Session Flow (Current)
+
+- API auth uses JWT Bearer (`Issuer: LdProyectAPI`, `Audience: LdProyectClient`).
+- `ApiService` is the single HTTP client instance registered by `AddLDClient`.
+- After successful login (`AuthService.LoginAsync`), the app:
+  1. Calls `ApiService.SetBearerToken(accessToken)`.
+  2. Stores tokens in `UserSession`.
+  3. Persists access/refresh/expiry in `SecureStorage` via `MobileSessionService.PersistAsync`.
+  4. Calls `GetMe` and populates `UserData`.
+
+`MobileSessionService` is configured at startup in `MauiProgram.cs` with the root `ApiService` + `AuthService` and wires:
+
+- `apiService.OnUnauthorizedAsync = TryRefreshAsync`
+
+This enables automatic refresh on 401 for normal JSON calls:
+
+1. Any `GetAsync/PostAsync/PutAsync/DeleteAsync` gets 401.
+2. `ApiService` runs `TryRefreshTokenAsync()`.
+3. `MobileSessionService.TryRefreshAsync()` sends `POST /api/auth/refresh` with the current refresh token.
+4. If refresh succeeds, new tokens are persisted, `UserSession` is updated, and `SetBearerToken(newAccessToken)` is applied.
+5. Original request is retried once.
+
+Concurrency behavior:
+
+- `ApiService` serializes refresh using `SemaphoreSlim` and shares one refresh task across concurrent 401s.
+- Parallel requests wait for the same in-flight refresh result instead of launching multiple refresh calls.
+- A recursion guard prevents infinite loops if `/auth/refresh` itself returns 401.
+
+Failure behavior:
+
+- If refresh token is missing/invalid/expired, session is cleared (`SecureStorage` + `UserSession`) and `SessionExpiredMessage` is published.
+- Multipart requests are not auto-retried after 401 because content streams may already be consumed.
 
 ### Forklift Checklist
 

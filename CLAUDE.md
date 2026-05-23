@@ -127,7 +127,7 @@ public async Task<IActionResult> getCategory()
 - **Atributo custom**: `[Permission(...)]` (no uses `[Authorize(Policy = ...)]` directo).
 - **Lista canónica de permisos**: `LD.Contracts/Constants/PermissionKeys.cs`. **Si necesitas un permiso nuevo, agrégalo ahí primero** y luego siémbralo en BD — no inventes strings sueltos.
 - Roles y asignación de permisos se administran vía `RoleController`.
-- Por ahora **no hay refresh token**. Si el JWT expira, el cliente debe volver a loguearse. No implementes refresh sin pedirlo.
+- El refresh token está en proceso de implementación/diagnóstico (ver sección "Estado del refresh token" más abajo). **No implementes refresh adicional sin pedirlo.**
 
 ## Clientes (MAUI y WPF)
 
@@ -161,6 +161,31 @@ Es el HTTP client base. Adjunta el JWT automáticamente. Los services de feature
 
 `ApiSettings:BaseUrl` en el `appsettings.json` de cada cliente. Default red local: `http://192.168.0.112:8050/api`.
 
+### Loading modal en peticiones HTTP (MAUI)
+
+**Regla obligatoria**: en `LD.MobileApp`, **toda petición HTTP que se ejecute desde un ViewModel debe envolver la llamada con `ShowBlocking` / `HideBlocking`**, sin excepción. El `HideBlocking` siempre va en el bloque `finally`.
+
+```csharp
+try
+{
+    _dialogService.ShowBlocking("Cargando", "Obteniendo datos...");
+    var result = await _someService.GetSomethingAsync();
+    // procesar result
+}
+catch (Exception ex)
+{
+    await _dialogService.ShowErrorAsync("Error", ex.Message);
+}
+finally
+{
+    _dialogService.HideBlocking();
+}
+```
+
+Aplica a: `[RelayCommand]` methods, `OnAppearing`/`OnNavigatedTo`, y cualquier método que dispare un `await _xxxService.XxxAsync(...)`. No aplica a peticiones de login (que tienen su propio manejo de estado visual).
+
+Al revisar o editar cualquier ViewModel MAUI, si detectas una llamada HTTP sin `ShowBlocking`/`HideBlocking` → agrégala en esa misma edición.
+
 ### Diálogos de estado en MAUI (`IDialogService`)
 
 **Regla**: en `LD.MobileApp`, **nunca uses `DisplayAlertAsync`** para mostrar errores, advertencias o confirmaciones. Usa siempre `IDialogService` (inyectado por DI, singleton).
@@ -183,6 +208,72 @@ _dialogService.HideBlocking();
 Tipos disponibles en `DialogType`: `Info`, `Success`, `Warning`, `Error`, `Blocking`.
 - `DisplayPromptAsync` sigue siendo válido para capturar input del usuario (no es un diálogo de estado).
 - `LogoutDialog` y `OptionPopup` son popups especiales de UX, no diálogos de estado — se usan directamente.
+
+### Entry en formularios MAUI (`LabeledEntry` / `PasswordEntry`)
+
+**Regla**: en `LD.MobileApp`, **nunca uses `<Entry>` estándar dentro de un `<Border>` manual** en formularios. Usa siempre los controles custom de `Features/Controls/`:
+
+- `<controls:LabeledEntry>` — texto normal. Namespace: `xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"`.
+- `<controls:PasswordEntry>` — contraseña (propiedad `Password`, no `Text`).
+
+```xaml
+<!-- Correcto -->
+<controls:LabeledEntry
+    LabelText="Nombre:"
+    Text="{Binding Nombre}"
+    Placeholder="Ej. Carlos Ramírez"/>
+
+<!-- Incorrecto — Entry estándar dentro de Border manual -->
+<VerticalStackLayout>
+    <Label Text="Nombre:"/>
+    <Border><Entry Text="{Binding Nombre}"/></Border>
+</VerticalStackLayout>
+```
+
+**BindableProperties de `LabeledEntry`**: `LabelText` (string), `Text` (string, TwoWay), `Placeholder` (string), `IconSource` (ImageSource?).
+
+### Controles de fotos en MAUI (`PhotoGallery` / `PhotoThumb` / `ImagePreviewPopup`)
+
+**Regla**: siempre que se muestren fotos capturadas en un formulario MAUI, usa los controles de `Features/Controls/`:
+
+| Situación | Control a usar |
+|---|---|
+| Una o más imágenes (galería scrollable) | `<controls:PhotoGallery>` |
+| Imagen individual con botón eliminar | `<controls:PhotoThumb>` directamente |
+| Ver imagen en pantalla completa (tap) | `ImagePreviewPopup` desde el ViewModel |
+
+```xaml
+<!-- Galería (múltiples imágenes, scroll horizontal) -->
+<controls:PhotoGallery
+    ItemsSource="{Binding Photos}"
+    DeleteCommand="{Binding RemovePhotoCommand}"
+    ViewCommand="{Binding ViewPhotoCommand}"
+    MinimumHeightRequest="90"/>
+```
+
+```csharp
+// ViewPhotoCommand en el ViewModel
+ViewPhotoCommand = new MvvmHelpers.Commands.Command<TFotoItem>(item =>
+{
+    if (item?.Source is null) return;
+    (Shell.Current.CurrentPage ?? Application.Current?.MainPage)
+        ?.ShowPopup(new ImagePreviewPopup(item.Source));
+});
+```
+
+- `PhotoGallery` expone: `ItemsSource` (IEnumerable), `DeleteCommand` (ICommand), `ViewCommand` (ICommand).
+- `PhotoThumb` expone: `PhotoSource` (ImageSource), `DeleteCommand`, `DeleteCommandParameter`, `ViewCommand`, `ViewCommandParameter`.
+- Nunca uses `CollectionView ItemsLayout="HorizontalList"` ni thumbnails manuales — usa estos controles.
+- El ícono de eliminar es un **bote de basura** (🗑) — no usar ✕ en miniaturas de fotos.
+
+### Regla de revisión obligatoria (MAUI)
+
+Al leer o editar **cualquier** Page o ViewModel del proyecto MAUI, si detectas:
+- Un `<Entry>` estándar dentro de un `<Border>` manual → migrarlo a `<controls:LabeledEntry>` en esa misma edición.
+- Un `DisplayAlert` / `DisplayAlertAsync` / `DisplayActionSheet` → migrarlo a `IDialogService` en esa misma edición.
+- Un `CollectionView` o galería de fotos manual → migrarlo a `<controls:PhotoGallery>` en esa misma edición.
+
+No dejes Pages con estos patrones sin migrar al pasar por ellas. Hay un inventario pendiente de ~60 instancias de `DisplayAlertAsync` en el proyecto; migralas conforme se edite cada archivo, no todas de golpe.
 
 ## Contracts: Requests, Responses, DTOs
 
@@ -244,6 +335,17 @@ Las migraciones se aplican automáticamente al arrancar la API (`app.MigrateData
 - **Scanning configurable**: `ScanConfiguration`, `ScanType`, `ScanSaveType`, `SystemField` permiten configurar flujos de escaneo por tipo de operación. Configurable desde WPF, consumido desde MAUI.
 - **UserWarehouse**: many-to-many que limita a qué almacenes puede operar cada usuario.
 - **Auditoría automática**: cualquier entidad que herede del base auditable obtiene `CreatedAt`/`UpdatedAt` vía interceptor — no llenes esos campos manualmente.
+
+## Estado del refresh token (bug activo — 2026-05-22)
+
+**Síntoma**: La app MAUI recibe 401 en múltiples endpoints (`/api/Lookup/warehouse/user/{id}`, `/api/OperationalTask`, `/api/security/tasks`) y los 401 se acumulan sin que ocurra ningún intento de renovación automática. El log del API muestra `DenyAnonymousAuthorizationRequirement: Requires an authenticated user` + `AuthenticationScheme: Bearer was challenged`.
+
+**Estado del diagnóstico**: pendiente. No se sabe aún si:
+- El 401 es por token expirado o token nunca válido.
+- El cliente dispara (o no) el refresh.
+- El backend tiene o no endpoint de refresh.
+
+**Regla mientras no se resuelva**: no implementes ni modifiques ningún flujo de auth/refresh sin que el usuario lo pida explícitamente y haya dado su OK al diagnóstico previo.
 
 ## Checklist mental antes de entregar un cambio
 

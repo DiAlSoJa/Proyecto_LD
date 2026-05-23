@@ -1,6 +1,10 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Contracts.DTOs.Security;
+using LD.Contracts.Enums;
+using LD.Contracts.Requests;
 using LD.Client.Services;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
@@ -14,6 +18,7 @@ public partial class SignatureDriverViewModel : ObservableObject
     private readonly SecurityRegistrationContext _context;
     private readonly SecurityService _securityService;
     private readonly ILoaderService _loaderService;
+    private readonly IDialogService _dialogService;
 
     public ILoaderService Loader => _loaderService;
 
@@ -38,11 +43,13 @@ public partial class SignatureDriverViewModel : ObservableObject
     public SignatureDriverViewModel(
         SecurityRegistrationContext context,
         SecurityService securityService,
-        ILoaderService loaderService)
+        ILoaderService loaderService,
+        IDialogService dialogService)
     {
         _context         = context;
         _securityService = securityService;
         _loaderService   = loaderService;
+        _dialogService   = dialogService;
 
         ClearCommand     = new Command(ClearSignature);
         FinalizarCommand = new AsyncCommand(FinalizarAsync);
@@ -53,8 +60,8 @@ public partial class SignatureDriverViewModel : ObservableObject
 
     private void LoadResumen()
     {
-        ResumenTipo = _context.Tipo;
-        ResumenChofer = _context.Nombre;
+        ResumenTipo     = _context.Tipo;
+        ResumenChofer   = _context.Nombre;
         ResumenVehiculo = $"{_context.TipoVehiculo} — {_context.Placa}";
     }
 
@@ -71,7 +78,6 @@ public partial class SignatureDriverViewModel : ObservableObject
         {
             IsBusy = true;
 
-            // Export signature
             if (SignaturePad is not null && SignaturePad.Lines.Count > 0)
             {
                 var imgStream = await SignaturePad.GetImageStream(600, 300);
@@ -85,49 +91,55 @@ public partial class SignatureDriverViewModel : ObservableObject
 
             if (_context.Firma is null || _context.Firma.Length == 0)
             {
-                await Shell.Current.DisplayAlertAsync("Atención", "Firme antes de finalizar.", "OK");
+                await _dialogService.ShowInfoAsync("Atención", "Firme antes de finalizar.");
                 return;
             }
 
+            var fotos = new List<SecurityPhotoDto>();
+
+            foreach (var entry in _context.LicenciaFotos)
+                fotos.Add(new SecurityPhotoDto { Categoria = PhotoCategoria_e.Licencia, Orden = entry.Orden, Contenido = entry.Bytes });
+
+            foreach (var entry in _context.VehiculoFotos)
+                fotos.Add(new SecurityPhotoDto { Categoria = PhotoCategoria_e.Vehiculo, Orden = entry.Orden, Contenido = entry.Bytes });
+
+            fotos.Add(new SecurityPhotoDto { Categoria = PhotoCategoria_e.Firma, Orden = 0, Contenido = _context.Firma });
+
             var request = new SecurityRegistrationRequest
             {
-                Tipo          = _context.Tipo,
-                Nombre        = _context.Nombre,
-                Licencia      = _context.Licencia,
-                Vencimiento   = _context.Vencimiento,
-                Celular       = _context.Celular,
-                LicenciaFoto1 = _context.LicenciaFoto1,
-                LicenciaFoto2 = _context.LicenciaFoto2,
-                TipoVehiculo  = _context.TipoVehiculo,
-                Linea         = _context.Linea,
-                Origen        = _context.Origen,
-                Numero        = _context.Numero,
-                Placa         = _context.Placa,
-                VehiculoFoto1 = _context.VehiculoFoto1,
-                VehiculoFoto2 = _context.VehiculoFoto2,
-                Firma         = _context.Firma
+                Tipo        = _context.Tipo,
+                Nombre      = _context.Nombre,
+                Licencia    = _context.Licencia,
+                Vencimiento = _context.Vencimiento,
+                Celular     = _context.Celular,
+                TipoVehiculo = _context.TipoVehiculo,
+                Linea       = _context.Linea,
+                Origen      = _context.Origen,
+                Numero      = _context.Numero,
+                Placa       = _context.Placa,
+                Fotos       = fotos,
             };
 
-            _loaderService.Show("Guardando registro...");
+            _dialogService.ShowBlocking("Guardando", "Enviando registro...");
             var response = await _securityService.RegisterAsync(request);
 
             if (!response.IsSuccess)
             {
-                await Shell.Current.DisplayAlertAsync("Error", response.ErrorMessage, "OK");
+                await _dialogService.ShowErrorAsync("Error", response.ErrorMessage ?? "Error desconocido");
                 return;
             }
 
-            await Shell.Current.DisplayAlertAsync("Listo", "Registro completado. Control de Patio asignará una cortina.", "OK");
+            await _dialogService.ShowSuccessAsync("Registro completado", "Control de Patio asignará una cortina.");
             _context.Clear();
-            await Shell.Current.GoToAsync(nameof(DashboardPage));
+            await Shell.Current.GoToAsync("//dashboard");
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("Error", ex.Message);
         }
         finally
         {
-            _loaderService.Hide();
+            _dialogService.HideBlocking();
             IsBusy = false;
         }
     }

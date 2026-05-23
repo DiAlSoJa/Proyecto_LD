@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.Views.Controls.PhotoThumb"
+             x:Name="root"
+             WidthRequest="96">
+
+    <Grid HeightRequest="82">
+
+        <!-- Imagen (tappable → ViewCommand) -->
+        <Border StrokeThickness="1"
+                Stroke="#CBD5E1"
+                StrokeShape="RoundRectangle 10"
+                BackgroundColor="White">
+            <Image Source="{Binding PhotoSource, Source={x:Reference root}}"
+                   Aspect="AspectFill"
+                   HeightRequest="82"/>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer
+                    Command="{Binding ViewCommand, Source={x:Reference root}}"
+                    CommandParameter="{Binding ViewCommandParameter, Source={x:Reference root}}"/>
+            </Border.GestureRecognizers>
+        </Border>
+
+        <!-- Botón bote de basura -->
+        <Border BackgroundColor="#CC3333"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 14"
+                WidthRequest="26" HeightRequest="26"
+                HorizontalOptions="End" VerticalOptions="Start"
+                Margin="0,4,4,0">
+            <Label Text="🗑"
+                   FontSize="11"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   TextColor="White"/>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer
+                    Command="{Binding DeleteCommand, Source={x:Reference root}}"
+                    CommandParameter="{Binding DeleteCommandParameter, Source={x:Reference root}}"/>
+            </Border.GestureRecognizers>
+        </Border>
+
+    </Grid>
+</ContentView>

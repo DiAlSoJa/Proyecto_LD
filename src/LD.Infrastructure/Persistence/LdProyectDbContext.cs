@@ -55,6 +55,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Dimensioner> Dimensioner{ get; set; }
 
         public DbSet<SecurityRegistration> SecurityRegistrations { get; set; }
+        public DbSet<SecurityRegistrationPhoto> SecurityRegistrationPhotos { get; set; }
         public DbSet<Cortina> Cortinas { get; set; }
         public DbSet<SecurityTask> SecurityTasks { get; set; }
         public DbSet<OperationalTask> OperationalTasks { get; set; }
@@ -815,6 +816,18 @@ namespace LD.Infrastructure.Persistence
             builder.Entity<SecurityRegistration>()
                 .Property(r => r.Estado)
                 .HasConversion<int>();
+
+            // SecurityRegistrationPhoto — 1-to-many, sin cascade
+            builder.Entity<SecurityRegistrationPhoto>()
+                .HasOne(p => p.SecurityRegistration)
+                .WithMany(r => r.Photos)
+                .HasForeignKey(p => p.SecurityRegistrationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SecurityRegistrationPhoto>()
+                .Property(p => p.Categoria)
+                .HasConversion<string>()
+                .HasMaxLength(30);
 
             // Cortina
             builder.Entity<Cortina>()

@@ -12,7 +12,8 @@
     <!-- Grid externo: aísla el loader de la elevation nativa de Android -->
     <Grid>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+    <ScrollView>
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" Padding="16">
 
         <!-- ═══ Stepper ═══ -->
         <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="6" Margin="0,10,0,6">
@@ -66,56 +67,33 @@
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
 
-                <!-- Linea -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Línea:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Linea}" Placeholder="Seleccione la línea"
-                               Keyboard="Text" TextColor="#1E293B"/>
-                    </Border>
-                </VerticalStackLayout>
+                <controls:LabeledEntry
+                    LabelText="Línea:"
+                    Text="{Binding Linea}"
+                    Placeholder="Seleccione la línea"/>
 
-                <!-- Origen -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Origen:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Origen}" Placeholder="Ej. GDL"
-                               Keyboard="Text" TextColor="#1E293B"/>
-                    </Border>
-                </VerticalStackLayout>
+                <controls:LabeledEntry
+                    LabelText="Origen:"
+                    Text="{Binding Origen}"
+                    Placeholder="Ej. GDL"/>
 
-                <!-- Número -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Número:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Numero}" Placeholder="Ej. XS225"
-                               Keyboard="Text" TextColor="#1E293B"/>
-                    </Border>
-                </VerticalStackLayout>
+                <controls:LabeledEntry
+                    LabelText="Número:"
+                    Text="{Binding Numero}"
+                    Placeholder="Ej. XS225"/>
 
-                <!-- Placa -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Placa:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Placa}" Placeholder="Ej. 123-ABC"
-                               Keyboard="Text" TextColor="#1E293B"/>
-                    </Border>
-                </VerticalStackLayout>
+                <controls:LabeledEntry
+                    LabelText="Placa:"
+                    Text="{Binding Placa}"
+                    Placeholder="Ej. 123-ABC"/>
 
-                <!-- Miniaturas -->
-                <Border BackgroundColor="#EEF3FB" Stroke="#E2E8F0"
-                        StrokeShape="RoundRectangle 18" Padding="10" Margin="0,6,0,0">
-                    <HorizontalStackLayout Spacing="10">
-                        <Image Source="{Binding Thumb1}" WidthRequest="90" HeightRequest="56"
-                               Aspect="AspectFill" BackgroundColor="White"/>
-                        <Image Source="{Binding Thumb2}" WidthRequest="90" HeightRequest="56"
-                               Aspect="AspectFill" BackgroundColor="White"/>
-                    </HorizontalStackLayout>
-                </Border>
+                <!-- Galería de fotos -->
+                <controls:PhotoGallery
+                    ItemsSource="{Binding Photos}"
+                    DeleteCommand="{Binding RemovePhotoCommand}"
+                    ViewCommand="{Binding ViewPhotoCommand}"
+                    Margin="0,6,0,0"
+                    MinimumHeightRequest="90"/>
 
             </VerticalStackLayout>
         </Border>
@@ -126,7 +104,9 @@
                 Stroke="#0B1B2A"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 26"
-                Padding="10">
+                Padding="10"
+                HeightRequest="280"
+                Margin="0,0,0,12">
 
             <Grid RowDefinitions="*,Auto" RowSpacing="12">
 
@@ -169,7 +149,7 @@
         </Border>
 
         <!-- Navigation -->
-        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,14,0,6">
+        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,0,0,16">
             <Button Text="Atrás"
                     Command="{Binding AtrasCommand}"
                     HeightRequest="56" CornerRadius="18"
@@ -184,6 +164,7 @@
         </Grid>
 
     </Grid>
+    </ScrollView>
 
         <!-- LOADER — en Grid externo, encima de todo en Android -->
         <controls:LoaderSpinner BindingContext="{Binding Loader}" />

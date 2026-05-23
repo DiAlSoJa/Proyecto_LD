@@ -31,12 +31,6 @@ public class SecurityRegistration : AuditableEntity
     [MaxLength(20)]
     public string Celular { get; set; } = "";
 
-    [MaxLength(500)]
-    public string? LicenciaFoto1 { get; set; }      // ruta en disco
-
-    [MaxLength(500)]
-    public string? LicenciaFoto2 { get; set; }
-
     // Vehicle
     [MaxLength(30)]
     public string TipoVehiculo { get; set; } = "";
@@ -53,12 +47,5 @@ public class SecurityRegistration : AuditableEntity
     [MaxLength(20)]
     public string Placa { get; set; } = "";
 
-    [MaxLength(500)]
-    public string? VehiculoFoto1 { get; set; }      // ruta en disco
-
-    [MaxLength(500)]
-    public string? VehiculoFoto2 { get; set; }
-
-    [MaxLength(500)]
-    public string? Firma { get; set; }              // ruta en disco
+    public ICollection<SecurityRegistrationPhoto> Photos { get; set; } = new List<SecurityRegistrationPhoto>();
 }

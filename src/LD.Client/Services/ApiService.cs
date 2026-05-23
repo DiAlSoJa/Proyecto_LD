@@ -22,6 +22,8 @@ namespace LD.Client.Services
 
         private readonly SemaphoreSlim _refreshLock = new(1, 1);
         private bool _isRefreshing;
+        private Task<bool>? _refreshTask;
+        private static readonly AsyncLocal<int> RefreshDepth = new();
 
         public ApiService()
         {
@@ -109,20 +111,62 @@ namespace LD.Client.Services
         // o si estamos ya en medio de un refresh (evita recursión).
         private async Task<bool> TryRefreshTokenAsync()
         {
-            if (OnUnauthorizedAsync is null || _isRefreshing)
+            if (OnUnauthorizedAsync is null)
                 return false;
+
+            // Evita recursión si el propio flujo de refresh devuelve 401.
+            if (RefreshDepth.Value > 0)
+                return false;
+
+            Task<bool> currentRefreshTask;
 
             await _refreshLock.WaitAsync();
             try
             {
-                if (_isRefreshing) return false;
-                _isRefreshing = true;
-                return await OnUnauthorizedAsync();
+                if (_isRefreshing && _refreshTask is not null)
+                {
+                    currentRefreshTask = _refreshTask;
+                }
+                else
+                {
+                    _isRefreshing = true;
+                    _refreshTask = ExecuteRefreshAsync();
+                    currentRefreshTask = _refreshTask;
+                }
             }
             finally
             {
-                _isRefreshing = false;
                 _refreshLock.Release();
+            }
+
+            return await currentRefreshTask;
+        }
+
+        private async Task<bool> ExecuteRefreshAsync()
+        {
+            try
+            {
+                RefreshDepth.Value++;
+                return await OnUnauthorizedAsync!();
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                RefreshDepth.Value = Math.Max(0, RefreshDepth.Value - 1);
+
+                await _refreshLock.WaitAsync();
+                try
+                {
+                    _isRefreshing = false;
+                    _refreshTask = null;
+                }
+                finally
+                {
+                    _refreshLock.Release();
+                }
             }
         }
 

@@ -86,8 +86,18 @@ dotnet ef migrations add <FeatureName> --project src/LD.Infrastructure --startup
 ```
 Migrations apply automatically on API startup.
 
-### 7. No Refresh Token
-JWT tokens are short-lived. No refresh token flow is implemented. Do not implement it unless explicitly requested.
+### 7. Refresh Token / Authentication Flow (current)
+- Changes to auth/refresh require explicit user approval before implementation.
+- `LD.Client/Services/ApiService` is the shared HTTP base for MAUI + Forms and handles 401 retry flow.
+- `ApiService` uses `OnUnauthorizedAsync` callback for refresh logic:
+  - MAUI wires this callback from `MobileSessionService` in `MauiProgram.cs`.
+  - Forms may leave it null (no auto-refresh) unless explicitly wired.
+- On 401 from GET/POST/PUT/DELETE:
+  1. client runs refresh callback,
+  2. if refresh succeeds, applies new bearer token,
+  3. retries original request once.
+- Concurrent 401s are synchronized with a shared refresh task (single refresh in flight).
+- Multipart requests are not retried automatically.
 
 ### 8. CORS
 The API uses `AllowAll` CORS policy (any origin/method/header). This is intentional for the local network WMS deployment.
@@ -111,6 +121,10 @@ Follow this order strictly:
 - JWT Bearer tokens, issuer: `LdProyectAPI`, audience: `LdProyectClient`
 - After login: clients call `GetMe` to populate `UserData` (permissions, modules)
 - `UserData.HasPermission(key)` and `UserData.HasModule(moduleId)` control UI visibility
+- Access token lifetime: 8h (issued in `JwtTokenService`)
+- Refresh token lifetime: 7 days, persisted and rotated in DB (`RefreshTokens`)
+- MAUI persists access/refresh/expiry in `SecureStorage` via `MobileSessionService`
+- `ApiService` must remain a single shared instance per app container to keep bearer and refresh callback state consistent
 
 ### Logging
 - Server: Serilog → `logs/log-*.json` rolling daily + console
@@ -125,6 +139,8 @@ Follow this order strictly:
 - `UserSession` (static): `AccessToken`, `RefreshToken`
 - `UserData` (static): user identity + authorization tree (modules + permissions)
 - `ApiService.SetBearerToken()` must be called after each successful login
+- MAUI registers `MobileSessionService` and configures `apiService.OnUnauthorizedAsync = TryRefreshAsync` during startup
+- On refresh failure in MAUI, session is cleared and `SessionExpiredMessage` is published
 
 ## Sensitive Files — Ask Before Changing
 
@@ -134,3 +150,107 @@ Follow this order strictly:
 - `src/LD.Infrastructure/Services/Auth/JwtTokenService.cs`
 - `src/LD.Api/Authorization/PermissionHandler.cs` / `PermissionService.cs`
 - Any `appsettings.json` file containing JWT keys or connection strings
+
+---
+
+## MAUI — Mandatory UI Conventions
+
+### Loading Modal — ALWAYS wrap HTTP calls with ShowBlocking/HideBlocking
+
+**Rule**: In `LD.MobileApp`, every HTTP call made from a ViewModel **must** be wrapped with `_dialogService.ShowBlocking(...)` before and `_dialogService.HideBlocking()` in the `finally` block:
+
+```csharp
+try
+{
+    _dialogService.ShowBlocking("Loading", "Fetching data...");
+    var result = await _someService.GetSomethingAsync();
+}
+catch (Exception ex)
+{
+    await _dialogService.ShowErrorAsync("Error", ex.Message);
+}
+finally
+{
+    _dialogService.HideBlocking();
+}
+```
+
+Applies to: `[RelayCommand]` methods, `OnAppearing`/`OnNavigatedTo`, any method that calls `await _xxxService.XxxAsync(...)`. Does not apply to the login flow. When editing any ViewModel, add `ShowBlocking`/`HideBlocking` to any HTTP call that is missing it.
+
+### IDialogService — NEVER use DisplayAlertAsync
+
+`IDialogService` is registered as a Singleton in `MauiProgram.cs`. Inject it by constructor and use the correct method for every message type:
+
+```csharp
+private readonly IDialogService _dialogService;
+
+await _dialogService.ShowErrorAsync("Error", ex.Message);
+await _dialogService.ShowSuccessAsync("Guardado", "El registro fue guardado.");
+await _dialogService.ShowInfoAsync("Atención", "Llene todos los campos.");
+bool continuar = await _dialogService.ShowWarningAsync("¿Continuar?", "Se descartarán los cambios.");
+_dialogService.ShowBlocking("Guardando", "Enviando registro...");   // before async POST
+_dialogService.HideBlocking();                                       // always in finally
+```
+
+`DisplayPromptAsync` remains valid for text input capture only.
+
+### PhotoGallery / PhotoThumb / ImagePreviewPopup — NEVER use CollectionView HorizontalList for photos
+
+Custom controls live in `src/LD.MobileApp/Features/Controls/`.
+Namespace: `xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"`
+
+```xaml
+<!-- Multiple photos (scrollable horizontal gallery) -->
+<controls:PhotoGallery
+    ItemsSource="{Binding Photos}"
+    DeleteCommand="{Binding RemovePhotoCommand}"
+    ViewCommand="{Binding ViewPhotoCommand}"
+    MinimumHeightRequest="90"/>
+```
+
+```csharp
+// ViewPhotoCommand in ViewModel
+ViewPhotoCommand = new MvvmHelpers.Commands.Command<TPhotoItem>(item =>
+{
+    if (item?.Source is null) return;
+    (Shell.Current.CurrentPage ?? Application.Current?.MainPage)
+        ?.ShowPopup(new ImagePreviewPopup(item.Source));
+});
+```
+
+- `PhotoGallery` bindable: `ItemsSource`, `DeleteCommand`, `ViewCommand`
+- `PhotoThumb` bindable: `PhotoSource`, `DeleteCommand`, `DeleteCommandParameter`, `ViewCommand`, `ViewCommandParameter`
+- Delete icon = trash can 🗑, never ✕ on photo thumbnails
+- Tapping a photo always opens `ImagePreviewPopup`
+
+### LabeledEntry / PasswordEntry — NEVER use raw Entry inside Border
+
+Custom controls live in `src/LD.MobileApp/Features/Controls/`.
+Namespace: `xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"`
+
+```xaml
+<!-- Correct — plain text -->
+<controls:LabeledEntry
+    LabelText="Nombre:"
+    Text="{Binding Nombre}"
+    Placeholder="Ej. Carlos Ramírez"/>
+
+<!-- Correct — password -->
+<controls:PasswordEntry
+    LabelText="Contraseña:"
+    Password="{Binding Password}"/>
+
+<!-- Wrong -->
+<Border><Entry Text="{Binding Nombre}"/></Border>
+```
+
+`LabeledEntry` bindable properties: `LabelText`, `Text` (TwoWay), `Placeholder`, `IconSource`.
+
+### Mandatory Review Rule
+
+When you read or edit **any** MAUI Page or ViewModel:
+1. Replace every `<Entry>` inside a `<Border>` with `<controls:LabeledEntry>`.
+2. Replace every `DisplayAlert` / `DisplayAlertAsync` / `DisplayActionSheet` with the appropriate `IDialogService` method.
+3. Replace every `CollectionView HorizontalList` or manual photo thumbnail grid with `<controls:PhotoGallery>`.
+
+There is a backlog of ~60 `DisplayAlertAsync` instances across `TaskSecurityViewModel`, `ChangeLocationViewModel`, `DamageReportDetailPage`, `ForkliftChecklistViewModel`, `PatioDetalleViewModel`, and others. Migrate them incrementally as each file is edited — not all at once.

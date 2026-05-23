@@ -4,6 +4,7 @@ using LD.Application.Common.Interfaces.Storage;
 using LD.Application.Common.Results;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
+using LD.Domain.Enums;
 using MediatR;
 
 namespace LD.Application.Features.Security.Commands;
@@ -32,19 +33,25 @@ public class CreateSecurityRegistrationCommandHandler : IRequestHandler<CreateSe
     {
         try
         {
-            // Guardar fotos en disco — las rutas van al entity
-            var licFoto1 = await _fileStorage.SaveAsync(request.LicenciaFoto1, "licencias", "lic1");
-            var licFoto2 = await _fileStorage.SaveAsync(request.LicenciaFoto2, "licencias", "lic2");
-            var vehFoto1 = await _fileStorage.SaveAsync(request.VehiculoFoto1, "vehiculos", "veh1");
-            var vehFoto2 = await _fileStorage.SaveAsync(request.VehiculoFoto2, "vehiculos", "veh2");
-            var firma    = await _fileStorage.SaveAsync(request.Firma,          "firmas",    "firma");
-
             var entity = _mapper.Map<SecurityRegistration>(request);
-            entity.LicenciaFoto1 = licFoto1;
-            entity.LicenciaFoto2 = licFoto2;
-            entity.VehiculoFoto1 = vehFoto1;
-            entity.VehiculoFoto2 = vehFoto2;
-            entity.Firma         = firma;
+
+            foreach (var foto in request.Fotos)
+            {
+                if (foto.Contenido is null || foto.Contenido.Length == 0) continue;
+
+                var subfolder = foto.Categoria.ToString().ToLower();
+                var prefix    = subfolder;
+                var path      = await _fileStorage.SaveAsync(foto.Contenido, subfolder, prefix);
+
+                if (path is null) continue;
+
+                entity.Photos.Add(new SecurityRegistrationPhoto
+                {
+                    Categoria = (PhotoCategoria)(int)foto.Categoria,
+                    Orden     = foto.Orden,
+                    FilePath  = path,
+                });
+            }
 
             var result = await _repository.CreateAsync(entity);
             return result

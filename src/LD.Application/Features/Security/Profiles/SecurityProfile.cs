@@ -4,6 +4,7 @@ using LD.Contracts.DTOs.Security;
 using LD.Contracts.Enums;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
+using LD.Domain.Enums;
 
 namespace LD.Application.Features.Security.Profiles;
 
@@ -12,15 +13,17 @@ public class SecurityProfile : Profile
     public SecurityProfile()
     {
         CreateMap<CreateSecurityRegistrationCommand, SecurityRegistration>()
-            .ForMember(dest => dest.LicenciaFoto1, opt => opt.Ignore())
-            .ForMember(dest => dest.LicenciaFoto2, opt => opt.Ignore())
-            .ForMember(dest => dest.VehiculoFoto1, opt => opt.Ignore())
-            .ForMember(dest => dest.VehiculoFoto2, opt => opt.Ignore())
-            .ForMember(dest => dest.Firma,         opt => opt.Ignore());
+            .ForMember(dest => dest.Photos, opt => opt.Ignore());
+
+        CreateMap<SecurityRegistrationPhoto, SecurityPhotoDto>()
+            .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (PhotoCategoria_e)(int)src.Categoria))
+            .ForMember(dest => dest.Contenido, opt => opt.Ignore());
 
         CreateMap<SecurityRegistration, SecurityRegistrationDto>()
             .ForMember(dest => dest.Estado,        opt => opt.MapFrom(src => (RegistroEstado_e)(int)src.Estado))
-            .ForMember(dest => dest.CortinaNumero, opt => opt.MapFrom(src => src.Cortina != null ? src.Cortina.Numero : null));
+            .ForMember(dest => dest.CortinaNumero, opt => opt.MapFrom(src => src.Cortina != null ? src.Cortina.Numero : null))
+            .ForMember(dest => dest.Firma,         opt => opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.Categoria == PhotoCategoria.Firma)))
+            .ForMember(dest => dest.Fotos,         opt => opt.MapFrom(src => src.Photos.Where(p => p.Categoria != PhotoCategoria.Firma).ToList()));
 
         CreateMap<Cortina, CortinaDto>();
 

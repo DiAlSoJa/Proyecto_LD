@@ -48,6 +48,30 @@ On error, `HandleResponse<T>` attempts deserialization; if it fails and `T` is `
 
 **Never create a second `HttpClient` or HTTP service.** All services must use the existing `ApiService`.
 
+### 401 Refresh Flow (Shared by MAUI and Forms)
+
+`ApiService` includes optional automatic refresh support through:
+
+- `public Func<Task<bool>>? OnUnauthorizedAsync`
+
+Behavior:
+
+1. `GetAsync/PostAsync/PutAsync/DeleteAsync` sends request.
+2. If response is `401 Unauthorized`, `TryRefreshTokenAsync()` runs.
+3. If refresh callback returns `true`, original request is retried once.
+4. If callback is `null` or refresh fails, original 401 is returned as failure envelope.
+
+Concurrency and safety:
+
+- Refresh calls are serialized with `SemaphoreSlim`.
+- Concurrent 401 requests share one in-flight refresh task (single refresh for many requests).
+- A recursion guard prevents refresh loops if `/auth/refresh` also returns 401.
+
+Notes:
+
+- `PostMultipartAsync` does not auto-retry after 401 because multipart content may be already consumed.
+- MAUI sets `OnUnauthorizedAsync` from `MobileSessionService`; Forms can keep it null (no auto-refresh) or wire its own callback.
+
 ## Feature Services Pattern
 
 Each feature service receives `ApiService` and `ApiEndpoints` via constructor injection:
@@ -107,7 +131,9 @@ services.AddLDClient(options =>
 });
 ```
 
-This registers `ApiEndpoints` (singleton), `ApiService` (scoped and singleton — note: both exist, prefer scoped), and every feature service as scoped.
+This registers `ApiEndpoints` (singleton), `ApiService` (singleton), and feature services as scoped.
+
+Rationale: one `ApiService` instance per app container guarantees consistent bearer token and refresh callback state across all services.
 
 **If you add a new feature service**, add it to `ConfigureServices.cs` inside `AddLDClient`.
 

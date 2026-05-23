@@ -1,4 +1,5 @@
 ﻿using LD.Client;
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Forms.Configuration;
 using LD.FormsX.Features.Almacen.ViewModels;
@@ -101,11 +102,43 @@ namespace LD.FormsX
 
                 await HostContainer.StartAsync();
 
+                ConfigureAuthRefresh();
+
                 Log.Information("Api BaseUrl configurada: {BaseUrl}", Configuration?["ApiSettings:BaseUrl"]);
 
                 var login = Services.GetRequiredService<MainWindow>();
                 login.Show();
             }
+
+        private static void ConfigureAuthRefresh()
+        {
+            var apiService = Services.GetRequiredService<ApiService>();
+            var authService = Services.GetRequiredService<AuthService>();
+
+            apiService.OnUnauthorizedAsync = async () =>
+            {
+                var refreshToken = UserSession.RefreshToken;
+                if (string.IsNullOrWhiteSpace(refreshToken))
+                {
+                    UserSession.LogOut();
+                    apiService.ClearToken();
+                    return false;
+                }
+
+                var refreshResponse = await authService.RefreshTokenAsync(refreshToken);
+                if (!refreshResponse.IsSuccess || refreshResponse.Data is null)
+                {
+                    UserSession.LogOut();
+                    apiService.ClearToken();
+                    return false;
+                }
+
+                UserSession.AccessToken = refreshResponse.Data.Accesstoken;
+                UserSession.RefreshToken = refreshResponse.Data.RefreshToken;
+                apiService.SetBearerToken(refreshResponse.Data.Accesstoken!);
+                return true;
+            };
+        }
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Error fatal al iniciar");

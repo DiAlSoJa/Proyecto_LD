@@ -1,8 +1,13 @@
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Contracts.Enums;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
+using MauiAppLogin.Views.Controls;
 using MvvmHelpers.Commands;
 using Plugin.Maui.OCR;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Command = MvvmHelpers.Commands.Command;
@@ -13,6 +18,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
 {
     private readonly SecurityRegistrationContext _context;
     private readonly ILoaderService _loaderService;
+    private readonly IDialogService _dialogService;
 
     public ILoaderService Loader => _loaderService;
 
@@ -41,16 +47,9 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     private ImageSource? previewImage;
 
     [ObservableProperty]
-    private ImageSource? thumb1;
-
-    [ObservableProperty]
-    private ImageSource? thumb2;
-
-    [ObservableProperty]
     private bool isBusy;
 
-    private byte[]? _foto1Bytes;
-    private byte[]? _foto2Bytes;
+    public ObservableCollection<VehiclePhotoItem> Photos { get; } = new();
 
     public ICommand SelectCajaCommand { get; }
     public ICommand SelectTractorCommand { get; }
@@ -58,18 +57,26 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     public ICommand CancelarCommand { get; }
     public ICommand SiguienteCommand { get; }
     public ICommand AtrasCommand { get; }
+    public ICommand RemovePhotoCommand { get; }
+    public ICommand ViewPhotoCommand { get; }
 
-    public RegisterVehiculeViewModel(SecurityRegistrationContext context, ILoaderService loaderService)
+    public RegisterVehiculeViewModel(
+        SecurityRegistrationContext context,
+        ILoaderService loaderService,
+        IDialogService dialogService)
     {
-        _context = context;
+        _context       = context;
         _loaderService = loaderService;
+        _dialogService = dialogService;
 
-        SelectCajaCommand = new Command(SelectCaja);
+        SelectCajaCommand    = new Command(SelectCaja);
         SelectTractorCommand = new Command(SelectTractor);
-        CapturarCommand = new AsyncCommand(CapturarAsync);
-        CancelarCommand = new Command(Cancelar);
-        SiguienteCommand = new AsyncCommand(SiguienteAsync);
-        AtrasCommand = new AsyncCommand(AtrasAsync);
+        CapturarCommand      = new AsyncCommand(CapturarAsync);
+        CancelarCommand      = new Command(Cancelar);
+        SiguienteCommand     = new AsyncCommand(SiguienteAsync);
+        AtrasCommand         = new AsyncCommand(AtrasAsync);
+        RemovePhotoCommand   = new MvvmHelpers.Commands.Command<VehiclePhotoItem>(RemovePhoto);
+        ViewPhotoCommand     = new MvvmHelpers.Commands.Command<VehiclePhotoItem>(ViewPhoto);
 
         LoadFromContext();
     }
@@ -78,46 +85,54 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     {
         if (!string.IsNullOrEmpty(_context.TipoVehiculo))
         {
-            TipoVehiculo = _context.TipoVehiculo;
-            IsCajaSelected = TipoVehiculo == "Caja";
+            TipoVehiculo      = _context.TipoVehiculo;
+            IsCajaSelected    = TipoVehiculo == "Caja";
             IsTractorSelected = TipoVehiculo == "Tractor";
         }
-        if (!string.IsNullOrEmpty(_context.Linea)) Linea = _context.Linea;
+        if (!string.IsNullOrEmpty(_context.Linea))  Linea  = _context.Linea;
         if (!string.IsNullOrEmpty(_context.Origen)) Origen = _context.Origen;
         if (!string.IsNullOrEmpty(_context.Numero)) Numero = _context.Numero;
-        if (!string.IsNullOrEmpty(_context.Placa)) Placa = _context.Placa;
+        if (!string.IsNullOrEmpty(_context.Placa))  Placa  = _context.Placa;
 
-        _foto1Bytes = _context.VehiculoFoto1;
-        _foto2Bytes = _context.VehiculoFoto2;
-
-        if (_foto1Bytes is not null)
-            Thumb1 = ImageSource.FromStream(() => new MemoryStream(_foto1Bytes));
-        if (_foto2Bytes is not null)
-            Thumb2 = ImageSource.FromStream(() => new MemoryStream(_foto2Bytes));
+        Photos.Clear();
+        foreach (var entry in _context.VehiculoFotos)
+        {
+            Photos.Add(new VehiclePhotoItem
+            {
+                Bytes  = entry.Bytes,
+                Orden  = entry.Orden,
+                Source = ImageSource.FromStream(() => new MemoryStream(entry.Bytes)),
+            });
+        }
     }
 
     private void SaveToContext()
     {
         _context.TipoVehiculo = TipoVehiculo;
-        _context.Linea = Linea;
+        _context.Linea  = Linea;
         _context.Origen = Origen;
         _context.Numero = Numero;
-        _context.Placa = Placa;
-        _context.VehiculoFoto1 = _foto1Bytes;
-        _context.VehiculoFoto2 = _foto2Bytes;
+        _context.Placa  = Placa;
+
+        _context.VehiculoFotos = Photos.Select(p => new SecurityPhotoEntry
+        {
+            Categoria = PhotoCategoria_e.Vehiculo,
+            Orden     = p.Orden,
+            Bytes     = p.Bytes,
+        }).ToList();
     }
 
     private void SelectCaja()
     {
-        TipoVehiculo = "Caja";
-        IsCajaSelected = true;
+        TipoVehiculo      = "Caja";
+        IsCajaSelected    = true;
         IsTractorSelected = false;
     }
 
     private void SelectTractor()
     {
-        TipoVehiculo = "Tractor";
-        IsCajaSelected = false;
+        TipoVehiculo      = "Tractor";
+        IsCajaSelected    = false;
         IsTractorSelected = true;
     }
 
@@ -127,7 +142,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await Shell.Current.DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
+                await _dialogService.ShowInfoAsync("Cámara", "Este dispositivo no soporta captura de fotos.");
                 return;
             }
 
@@ -149,20 +164,16 @@ public partial class RegisterVehiculeViewModel : ObservableObject
             var img = ImageSource.FromStream(() => new MemoryStream(bytes));
             PreviewImage = img;
 
-            if (_foto1Bytes is null)
+            Photos.Add(new VehiclePhotoItem
             {
-                _foto1Bytes = bytes;
-                Thumb1 = img;
-            }
-            else
-            {
-                _foto2Bytes = bytes;
-                Thumb2 = img;
-            }
+                Bytes  = bytes,
+                Orden  = Photos.Count,
+                Source = img,
+            });
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("Error", ex.Message);
         }
         finally
         {
@@ -181,6 +192,21 @@ public partial class RegisterVehiculeViewModel : ObservableObject
             Placa = Regex.Replace(match.Value, @"\s", "").ToUpper();
     }
 
+    private void RemovePhoto(VehiclePhotoItem? item)
+    {
+        if (item is null) return;
+        Photos.Remove(item);
+        for (int i = 0; i < Photos.Count; i++)
+            Photos[i].Orden = i;
+    }
+
+    private void ViewPhoto(VehiclePhotoItem? item)
+    {
+        if (item?.Source is null) return;
+        (Shell.Current.CurrentPage ?? Application.Current?.MainPage)
+            ?.ShowPopup(new ImagePreviewPopup(item.Source));
+    }
+
     private void Cancelar()
     {
         PreviewImage = null;
@@ -189,10 +215,16 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     private async Task SiguienteAsync()
     {
         if (string.IsNullOrEmpty(TipoVehiculo) ||
-            string.IsNullOrEmpty(Linea) ||
+            string.IsNullOrEmpty(Linea)        ||
             string.IsNullOrEmpty(Placa))
         {
-            await Shell.Current.DisplayAlertAsync("Atención", "Seleccione tipo y llene al menos línea y placa.", "OK");
+            await _dialogService.ShowInfoAsync("Atención", "Seleccione tipo y llene al menos línea y placa.");
+            return;
+        }
+
+        if (Photos.Count < 2)
+        {
+            await _dialogService.ShowInfoAsync("Atención", "Agregue al menos 2 fotos del vehículo.");
             return;
         }
 
@@ -205,4 +237,11 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         SaveToContext();
         await Shell.Current.GoToAsync("..");
     }
+}
+
+public class VehiclePhotoItem
+{
+    public byte[] Bytes { get; set; } = Array.Empty<byte>();
+    public int Orden { get; set; }
+    public ImageSource? Source { get; set; }
 }

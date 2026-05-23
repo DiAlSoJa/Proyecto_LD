@@ -36,6 +36,7 @@
                 Padding="18"
                 Margin="0,4,0,12">
 
+            <ScrollView>
             <VerticalStackLayout Spacing="10">
 
                 <!-- Resumen -->
@@ -79,6 +80,7 @@
                        TextColor="#64748B"/>
 
             </VerticalStackLayout>
+            </ScrollView>
         </Border>
 
         <!-- Área de firma -->

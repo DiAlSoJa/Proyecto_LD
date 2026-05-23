@@ -1,5 +1,5 @@
-
 using LD.Contracts.Enums;
+
 namespace LD.Contracts.DTOs.Security;
 
 public class SecurityRegistrationDto
@@ -11,18 +11,15 @@ public class SecurityRegistrationDto
     public string Licencia { get; set; } = "";
     public DateTime Vencimiento { get; set; }
     public string Celular { get; set; } = "";
-    public string? LicenciaFoto1 { get; set; }
-    public string? LicenciaFoto2 { get; set; }
     public string TipoVehiculo { get; set; } = "";
     public string Linea { get; set; } = "";
     public string Origen { get; set; } = "";
     public string Numero { get; set; } = "";
     public string Placa { get; set; } = "";
-    public string? VehiculoFoto1 { get; set; }
-    public string? VehiculoFoto2 { get; set; }
-    public string? Firma { get; set; }
     public bool IsActive { get; set; }
     public RegistroEstado_e Estado { get; set; }
     public int? CortinaId { get; set; }
     public string? CortinaNumero { get; set; }
+    public List<SecurityPhotoDto> Fotos { get; set; } = new();   // Licencia + Vehiculo
+    public SecurityPhotoDto? Firma { get; set; }                  // exactamente una
 }
