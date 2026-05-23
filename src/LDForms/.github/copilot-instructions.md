@@ -133,6 +133,25 @@ Features/<Feature>/
 - Data loading method: `CargarDatosAsync()` (convention observed throughout)
 - Permission properties: `CanCreate`, `CanEdit`, `CanView`
 
+## Mandatory UI Quality Rules (apply when reading/editing any view)
+
+### Rule 1 — Code-behind → ViewModel
+Logic (null guards, service calls, state refreshes) must live in the ViewModel.  
+Permitted in code-behind only: `InitializeComponent()`, `DragMove()`, `PasswordChanged` bridge, `Loaded → vm.Method()`, dialog opening needing `Window.GetWindow(this)`.  
+Null guards → `CanExecute` on the command or computed bool property bound to `IsEnabled`.
+
+### Rule 2 — Standardized input controls
+Use `<controls:LDInput>` (not `TextBox`) and `<controls:LDSelector>` (not `ComboBox`) in all forms.  
+Add `xmlns:controls="clr-namespace:LD.FormsX.Controls"` to the root element.  
+`LDInput.TextBoxElement` gives access to the inner `TextBox` for helpers like `WpfGridFilter`.
+
+### Rule 3 — No hex colors inline
+Every color must be a named token in `Resources/Styles/AppTheme.xaml` referenced as `{StaticResource TokenName}`.  
+Never write `#RRGGBB` directly on any XAML property. Dashboard tile icons use semantic tokens: `IconClientes`, `IconAlmacen`, etc.
+
+### Rule 4 — Scan rule
+Each time a view is read or edited, apply Rules 1–3 in that same edit.
+
 ## What to Avoid
 
 - Never add API/HTTP code to ViewModels — use `LD.Client` services

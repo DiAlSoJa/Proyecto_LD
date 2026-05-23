@@ -23,7 +23,7 @@ namespace LDForms.Views
             DataContext = viewModel;
             _serviceProvider = serviceProvider;
 
-            _gridFilter = new WpfGridFilter<WarehouseDto>(dgAlmacenes, txtBuscar);
+            _gridFilter = new WpfGridFilter<WarehouseDto>(dgAlmacenes, ldBuscar.TextBoxElement);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
                 { "Activo", 80 },
@@ -65,9 +65,6 @@ namespace LDForms.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.SelectedWarehouse is null)
-                return;
-
             var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetWarehouse(ViewModel.SelectedWarehouse);

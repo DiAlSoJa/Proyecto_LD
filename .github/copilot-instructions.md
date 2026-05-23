@@ -153,6 +153,41 @@ Follow this order strictly:
 
 ---
 
+## WPF (LD.FormsX) — Mandatory UI Conventions
+
+Apply these rules to **every** WPF view you read or touch. Apply in the same edit, no deferring.
+
+### Rule 1 — Code-behind → ViewModel
+Logic (guards, service calls, state updates) must live in the ViewModel using `[RelayCommand]` / `[ObservableProperty]`.  
+Permitted in code-behind: `InitializeComponent()`, `DragMove()`, `PasswordChanged` bridge, `Loaded → vm.Method()`, dialog opening that needs `Window.GetWindow(this)`.  
+Null guards (`if (x is null) return`) → always `CanExecute` on the command or computed property bound to `IsEnabled`.
+
+### Rule 2 — Standardized input controls
+- `<controls:LDInput>` instead of `TextBox` (including search fields).
+- `<controls:LDSelector>` instead of `ComboBox`.
+- Namespace: `xmlns:controls="clr-namespace:LD.FormsX.Controls"`.
+- `LDInput.TextBoxElement` exposes the inner `TextBox` for `WpfGridFilter` compatibility.
+
+### Rule 3 — No hex colors inline
+All colors live in `src/LDForms/Resources/Styles/AppTheme.xaml` as named tokens.  
+Never put `#RRGGBB` directly on a XAML property. Replace with `{StaticResource TokenName}`.  
+Dashboard tile icon colors are semantic tokens (`IconClientes`, `IconAlmacen`, etc.) — not one generic accent.
+
+### Rule 4 — Mandatory scan
+Every time a WPF view is read or edited, apply Rules 1–3 in that same edit.
+
+### Dashboard Refactor — Phase 1 (WPF)
+- Use MVVM with CommunityToolkit.Mvvm for the dashboard refactor (Phase 1 only).
+- Preserve the existing visible behavior and user interactions.
+- Keep window chrome, resize, and titlebar logic in code-behind (allowed under Rule 1).
+- Use a single metadata dictionary for modules (module id → metadata) and read tiles from it.
+- Render dashboard tiles with ItemsControl + WrapPanel (avoid complex custom panels).
+- Implement reactive search using a bound SearchText property and ICollectionView filtering.
+- Do not implement any Phase 2 elements or advanced redesigns in this refactor.
+- Apply these dashboard rules in the same edit that touches the dashboard view or viewmodel.
+
+---
+
 ## MAUI — Mandatory UI Conventions
 
 ### Loading Modal — ALWAYS wrap HTTP calls with ShowBlocking/HideBlocking

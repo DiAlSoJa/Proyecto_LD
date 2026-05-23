@@ -90,7 +90,6 @@
     <Folder Include="Features\Auditar\ViewModels\" />
     <Folder Include="Features\CheckList\ViewModels\" />
     <Folder Include="Features\ControlPatio\ViewModels\" />
-    <Folder Include="Features\DashBoard\ViewModels\" />
     <Folder Include="Features\InventarioAleatorio\ViewModels\" />
     <Folder Include="Features\Inventario\ViewModels\" />
     <Folder Include="Features\Movimientos\ViewModels\" />

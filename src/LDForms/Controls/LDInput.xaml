@@ -1,0 +1,60 @@
+<UserControl x:Class="LD.FormsX.Controls.LDInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="uc">
+    <StackPanel>
+
+        <!-- Label fija arriba -->
+        <TextBlock x:Name="PART_Label"
+                   Text="{Binding Label, ElementName=uc}"
+                   FontSize="12"
+                   FontWeight="SemiBold"
+                   Foreground="{StaticResource TextSubtle}"
+                   Margin="0,0,0,5"/>
+
+        <!-- Input border + TextBox + placeholder -->
+        <Border x:Name="PART_Border"
+                BorderBrush="{StaticResource BorderInput}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Background="{StaticResource SurfaceCard}">
+            <Grid>
+                <TextBlock x:Name="PART_Placeholder"
+                           Text="{Binding Placeholder, ElementName=uc}"
+                           Foreground="{StaticResource TextPlaceholder}"
+                           Margin="11,0,11,0"
+                           FontSize="13"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"
+                           Visibility="Collapsed"/>
+                <TextBox x:Name="PART_TextBox"
+                         Height="36"
+                         Padding="10,0"
+                         FontSize="13"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         VerticalContentAlignment="Center"
+                         GotFocus="PART_TextBox_GotFocus"
+                         LostFocus="PART_TextBox_LostFocus"
+                         TextChanged="PART_TextBox_TextChanged"/>
+            </Grid>
+        </Border>
+
+        <!-- Texto de ayuda -->
+        <TextBlock x:Name="PART_Help"
+                   Text="{Binding HelpText, ElementName=uc}"
+                   FontSize="11"
+                   Foreground="{StaticResource TextSecondary}"
+                   Margin="2,4,0,0"
+                   Visibility="Collapsed"/>
+
+        <!-- Texto de error -->
+        <TextBlock x:Name="PART_Error"
+                   Text="{Binding ErrorText, ElementName=uc}"
+                   FontSize="11"
+                   Foreground="{StaticResource AccentError}"
+                   Margin="2,4,0,0"
+                   Visibility="Collapsed"/>
+
+    </StackPanel>
+</UserControl>

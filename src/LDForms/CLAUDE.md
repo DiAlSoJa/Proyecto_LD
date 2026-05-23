@@ -188,6 +188,28 @@ Set `DOTNET_LD_ENVIRONMENT=Development` to use `appsettings.Development.json`.
 3. **Display a toast/warning**: Use `DialogHelper.ShowWarning(msg)` or `ToastHelper`.
 4. **Add a new API call**: Use the injected feature service from `LD.Client`; never add HTTP code here.
 
+## Reglas de calidad obligatorias (aplican al leer/editar cualquier vista)
+
+### Regla 1 — Code-behind → ViewModel
+Todo manejo de eventos con lógica (guards, refreshes, llamadas de estado) debe vivir en el ViewModel.  
+**Permitido en code-behind**: `InitializeComponent()`, drag (`DragMove()`), puente `PasswordChanged`, llamada `Loaded → vm.CargarDatosAsync()`, y apertura de diálogos cuando se necesite `Window.GetWindow(this)`.  
+**Condiciones habilitadoras** (`if x is null return`) → siempre en CanExecute del comando o como propiedad computed bindeada a `IsEnabled`.
+
+### Regla 2 — Controles de input estandarizados
+- `<controls:LDInput>` en lugar de `TextBox` (incluso en búsquedas).  
+- `<controls:LDSelector>` en lugar de `ComboBox`.  
+Namespace: `xmlns:controls="clr-namespace:LD.FormsX.Controls"`.  
+`LDInput.TextBoxElement` expone la `TextBox` interna para `WpfGridFilter`.  
+Al pasar por una vista, migrar los controles raw que se encuentren.
+
+### Regla 3 — Sin colores hex inline
+Todos los colores en `src/LDForms/Resources/Styles/AppTheme.xaml`. Nunca hex directo en XAML.  
+Los accent colors de tiles del Dashboard son tokens semánticos (`IconClientes`, `IconAlmacen`, etc.).  
+Reemplazar hex con `{StaticResource NombreToken}`.
+
+### Regla 4 — Escaneo
+Al leer o editar una vista, aplicar las 3 reglas anteriores en esa misma edición.
+
 ## Things Claude Must NOT Do
 
 - Do not add HTTP calls directly — use `LD.Client` services

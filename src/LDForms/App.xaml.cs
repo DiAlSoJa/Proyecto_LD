@@ -45,6 +45,7 @@ using LD.FormsX.Views.Tareas;
 using LD.FormsX.Views.Ubicaciones;
 using LD.FormsX.Views.Unidades;
 using LD.FormsX.Views.Usuarios;
+using LDForms.Features.DashBoard.ViewModels;
 using LDForms;
 using LDForms.Views;
 using Microsoft.Extensions.Configuration;
@@ -196,6 +197,7 @@ namespace LD.FormsX
             services.AddTransient<UsuarioAlmacenViewModel>();
             services.AddTransient<DamageReportViewModel>();
             services.AddTransient<TasksViewModel>();
+            services.AddTransient<DashBoardViewModel>();
             services.AddTransient<MainWindow>();
             services.AddTransient<DashBoard>();
             services.AddTransient<CatalogosClientesView>();

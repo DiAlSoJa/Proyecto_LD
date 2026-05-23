@@ -36,6 +36,12 @@ public partial class AlmacenesViewModel : ObservableObject
     [ObservableProperty]
     private bool canView;
 
+    // True cuando hay permiso de edición Y hay un almacén seleccionado.
+    public bool CanExecuteEdit => CanEdit && SelectedWarehouse is not null;
+
+    partial void OnSelectedWarehouseChanged(WarehouseDto? value) =>
+        OnPropertyChanged(nameof(CanExecuteEdit));
+
     public event Action<List<WarehouseDto>>? OnDataLoaded;
 
     public AlmacenesViewModel(WarehouseService warehouseService)

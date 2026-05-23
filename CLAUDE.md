@@ -347,6 +347,44 @@ Las migraciones se aplican automáticamente al arrancar la API (`app.MigrateData
 
 **Regla mientras no se resuelva**: no implementes ni modifiques ningún flujo de auth/refresh sin que el usuario lo pida explícitamente y haya dado su OK al diagnóstico previo.
 
+## WPF (LD.FormsX): Reglas de calidad de código
+
+Estas reglas aplican a **cualquier** vista o ViewModel de `LD.FormsX` que se lea o modifique. Se aplican en la misma edición; no se posponen.
+
+### Regla 1 — Code-behind → ViewModel
+
+Todo manejo de eventos que contenga lógica (llamadas a servicios, guards de nulidad, actualización de estado, navegación post-acción) debe vivir en el ViewModel usando `[RelayCommand]` y `[ObservableProperty]` de CommunityToolkit.Mvvm.
+
+**Permitido en code-behind**: `InitializeComponent()`, drag con `DragMove()`, el puente de `PasswordChanged` (limitación de WPF), `Loaded`/`Window_Loaded` que solo llaman un método de VM, y apertura de diálogos cuando se necesite `Window.GetWindow(this)` para establecer `Owner`.
+
+**Prohibido en code-behind**: guards de nulidad (`if (ViewModel.X is null) return;`), refreshes condicionales, llamadas a servicios, manipulación de estado visible.
+
+Las condiciones habilitadoras deben expresarse como `CanExecute` en el comando (o como propiedad computed en el VM) y bindearse en XAML: `IsEnabled="{Binding CanExecuteEdit}"`.
+
+### Regla 2 — Controles de input estandarizados
+
+En formularios WPF nunca usar `TextBox` o `ComboBox` en bruto. Usar los controles custom:
+- `<controls:LDInput>` en lugar de `TextBox` (incluyendo campos de búsqueda).
+- `<controls:LDSelector>` en lugar de `ComboBox`.
+
+Namespace: `xmlns:controls="clr-namespace:LD.FormsX.Controls"`.
+
+`LDInput` expone `TextBoxElement` (la `TextBox` interna) para los casos que requieren la referencia directa (ej. `WpfGridFilter`).
+
+Al leer o editar una vista existente, migrar los controles raw que se encuentren.
+
+### Regla 3 — Sin colores hex inline
+
+Ningún color puede ser un literal hex (`#233167`, `#E5E7EB`, etc.) directamente en una propiedad XAML. Todo color debe estar definido como recurso en `src/LDForms/Resources/Styles/AppTheme.xaml` y referenciado con `{StaticResource NombreToken}`.
+
+Al encontrar un hex inline, moverlo al diccionario primero, luego referenciar el token.
+
+Los accent colors de los tiles del Dashboard son tokens semánticos (`IconClientes`, `IconAlmacen`, etc.) — **no** un único color genérico.
+
+### Regla 4 — Escaneo obligatorio
+
+Cada vez que se lee o edita una vista, aplicar las Reglas 1, 2 y 3 en esa misma edición.
+
 ## Checklist mental antes de entregar un cambio
 
 - [ ] ¿La lógica de negocio quedó en un Command/Query handler?
