@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using MauiAppLogin.Common.Imaging;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
@@ -55,6 +56,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     public ICommand SelectCajaCommand { get; }
     public ICommand SelectTractorCommand { get; }
     public ICommand CapturarCommand { get; }
+    public ICommand GaleriaCommand { get; }
     public ICommand CancelarCommand { get; }
     public ICommand SiguienteCommand { get; }
     public ICommand AtrasCommand { get; }
@@ -67,6 +69,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         SelectCajaCommand = new Command(SelectCaja);
         SelectTractorCommand = new Command(SelectTractor);
         CapturarCommand = new AsyncCommand(CapturarAsync);
+        GaleriaCommand = new AsyncCommand(SeleccionarGaleriaAsync);
         CancelarCommand = new Command(Cancelar);
         SiguienteCommand = new AsyncCommand(SiguienteAsync);
         AtrasCommand = new AsyncCommand(AtrasAsync);
@@ -134,6 +137,38 @@ public partial class RegisterVehiculeViewModel : ObservableObject
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo is null) return;
 
+            await ProcesarFotoAsync(photo);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task SeleccionarGaleriaAsync()
+    {
+        try
+        {
+            var photos = await MediaPicker.Default.PickPhotosAsync(new MediaPickerOptions
+            {
+                Title = "Selecciona una imagen del vehículo"
+            });
+            var photo = photos?.FirstOrDefault();
+
+            if (photo is null) return;
+
+            await ProcesarFotoAsync(photo);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task ProcesarFotoAsync(FileResult photo)
+    {
+        try
+        {
             _loaderService.Show("Procesando imagen...");
 
             await using var stream = await photo.OpenReadAsync();
@@ -146,17 +181,17 @@ public partial class RegisterVehiculeViewModel : ObservableObject
             if (!string.IsNullOrWhiteSpace(text))
                 ParsePlaca(text);
 
-            var img = ImageSource.FromStream(() => new MemoryStream(bytes));
-            PreviewImage = img;
+            var bytesFinales = await ComprimirImagenAsync(bytes);
+            var img = ImageSource.FromStream(() => new MemoryStream(bytesFinales));
 
             if (_foto1Bytes is null)
             {
-                _foto1Bytes = bytes;
+                _foto1Bytes = bytesFinales;
                 Thumb1 = img;
             }
             else
             {
-                _foto2Bytes = bytes;
+                _foto2Bytes = bytesFinales;
                 Thumb2 = img;
             }
         }
@@ -167,6 +202,18 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         finally
         {
             _loaderService.Hide();
+        }
+    }
+
+    private static async Task<byte[]> ComprimirImagenAsync(byte[] bytes)
+    {
+        try
+        {
+            return await ImageCompressor.ComprimirAsync(bytes);
+        }
+        catch
+        {
+            return bytes;
         }
     }
 

@@ -12,180 +12,206 @@
     <!-- Grid externo: aísla el loader de la elevation nativa de Android -->
     <Grid>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+        <Grid RowDefinitions="*,Auto" Padding="16">
 
-        <!-- ═══ Stepper ═══ -->
-        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="6" Margin="0,10,0,6">
-            <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
-                <Label Text="1 Licencia" TextColor="#94A3B8" FontSize="13"/>
-            </Border>
-            <Border BackgroundColor="#244A7C" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
-                <Label Text="2 Vehículo" TextColor="White" FontAttributes="Bold" FontSize="13"/>
-            </Border>
-            <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
-                <Label Text="3 Firma" TextColor="#94A3B8" FontSize="13"/>
-            </Border>
-        </HorizontalStackLayout>
+            <ScrollView Grid.Row="0">
+                <VerticalStackLayout Spacing="0">
 
-        <!-- Card superior con datos -->
-        <Border Grid.Row="1"
-                BackgroundColor="#F6F8FC"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 24"
-                Padding="18"
-                Margin="0,4,0,12">
-
-            <VerticalStackLayout Spacing="12">
-
-                <!-- Tipo selector -->
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="Tipo:" TextColor="#64748B" FontSize="14"/>
-                    <HorizontalStackLayout Spacing="10">
-                        <Border StrokeThickness="0"
-                                BackgroundColor="{Binding IsCajaSelected, Converter={StaticResource BoolToColorConverter}}"
-                                StrokeShape="RoundRectangle 25"
-                                Padding="18,10">
-                            <Label Text="Caja" TextColor="#1E293B" FontAttributes="Bold"
-                                   HorizontalOptions="Center" VerticalOptions="Center"/>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding SelectCajaCommand}"/>
-                            </Border.GestureRecognizers>
+                    <!-- Stepper -->
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" Margin="0,10,0,6">
+                        <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
+                            <Label Text="1 Licencia" TextColor="#94A3B8" FontSize="13"/>
                         </Border>
-
-                        <Border StrokeThickness="0"
-                                BackgroundColor="{Binding IsTractorSelected, Converter={StaticResource BoolToColorConverter}}"
-                                StrokeShape="RoundRectangle 25"
-                                Padding="18,10">
-                            <Label Text="Tractor" TextColor="#1E293B" FontAttributes="Bold"
-                                   HorizontalOptions="Center" VerticalOptions="Center"/>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding SelectTractorCommand}"/>
-                            </Border.GestureRecognizers>
+                        <Border BackgroundColor="#244A7C" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
+                            <Label Text="2 Vehículo" TextColor="White" FontAttributes="Bold" FontSize="13"/>
+                        </Border>
+                        <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
+                            <Label Text="3 Firma" TextColor="#94A3B8" FontSize="13"/>
                         </Border>
                     </HorizontalStackLayout>
-                </VerticalStackLayout>
 
-                <!-- Linea -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Línea:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Linea}" Placeholder="Seleccione la línea"
-                               Keyboard="Text" TextColor="#1E293B"/>
+                    <!-- Card superior con datos -->
+                    <Border BackgroundColor="#F6F8FC"
+                            Stroke="#E2E8F0"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 24"
+                            Padding="18"
+                            Margin="0,4,0,12">
+
+                        <VerticalStackLayout Spacing="12">
+
+                            <!-- Tipo selector -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Tipo:" TextColor="#64748B" FontSize="14"/>
+                                <HorizontalStackLayout Spacing="10">
+                                    <Border StrokeThickness="0"
+                                            BackgroundColor="{Binding IsCajaSelected, Converter={StaticResource BoolToColorConverter}}"
+                                            StrokeShape="RoundRectangle 25"
+                                            Padding="18,10">
+                                        <Label Text="Caja" TextColor="#1E293B" FontAttributes="Bold"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding SelectCajaCommand}"/>
+                                        </Border.GestureRecognizers>
+                                    </Border>
+
+                                    <Border StrokeThickness="0"
+                                            BackgroundColor="{Binding IsTractorSelected, Converter={StaticResource BoolToColorConverter}}"
+                                            StrokeShape="RoundRectangle 25"
+                                            Padding="18,10">
+                                        <Label Text="Tractor" TextColor="#1E293B" FontAttributes="Bold"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding SelectTractorCommand}"/>
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+
+                            <!-- Linea -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Línea:" TextColor="#64748B" FontSize="14"/>
+                                <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="White" Padding="12,8">
+                                    <Entry Text="{Binding Linea}" Placeholder="Seleccione la línea"
+                                           Keyboard="Text" TextColor="#1E293B"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Origen -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Origen:" TextColor="#64748B" FontSize="14"/>
+                                <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="White" Padding="12,8">
+                                    <Entry Text="{Binding Origen}" Placeholder="Ej. GDL"
+                                           Keyboard="Text" TextColor="#1E293B"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Número -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Número:" TextColor="#64748B" FontSize="14"/>
+                                <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="White" Padding="12,8">
+                                    <Entry Text="{Binding Numero}" Placeholder="Ej. XS225"
+                                           Keyboard="Text" TextColor="#1E293B"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Placa -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Placa:" TextColor="#64748B" FontSize="14"/>
+                                <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="White" Padding="12,8">
+                                    <Entry Text="{Binding Placa}" Placeholder="Ej. 123-ABC"
+                                           Keyboard="Text" TextColor="#1E293B"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Miniaturas -->
+                            <Border BackgroundColor="#EEF3FB" Stroke="#E2E8F0"
+                                    StrokeShape="RoundRectangle 18" Padding="10" Margin="0,6,0,0">
+                                <HorizontalStackLayout Spacing="10">
+                                    <Image Source="{Binding Thumb1}" WidthRequest="90" HeightRequest="56"
+                                           Aspect="AspectFill" BackgroundColor="White"/>
+                                    <Image Source="{Binding Thumb2}" WidthRequest="90" HeightRequest="56"
+                                           Aspect="AspectFill" BackgroundColor="White"/>
+                                </HorizontalStackLayout>
+                            </Border>
+
+                        </VerticalStackLayout>
                     </Border>
-                </VerticalStackLayout>
 
-                <!-- Origen -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Origen:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Origen}" Placeholder="Ej. GDL"
-                               Keyboard="Text" TextColor="#1E293B"/>
-                    </Border>
-                </VerticalStackLayout>
+                    <!-- Area tipo cámara -->
+                    <Border BackgroundColor="#1B2A3A"
+                            Stroke="#0B1B2A"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 26"
+                            Padding="10">
 
-                <!-- Número -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Número:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Numero}" Placeholder="Ej. XS225"
-                               Keyboard="Text" TextColor="#1E293B"/>
-                    </Border>
-                </VerticalStackLayout>
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
 
-                <!-- Placa -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Placa:" TextColor="#64748B" FontSize="14"/>
-                    <Border Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
-                        <Entry Text="{Binding Placa}" Placeholder="Ej. 123-ABC"
-                               Keyboard="Text" TextColor="#1E293B"/>
-                    </Border>
-                </VerticalStackLayout>
-
-                <!-- Miniaturas -->
-                <Border BackgroundColor="#EEF3FB" Stroke="#E2E8F0"
-                        StrokeShape="RoundRectangle 18" Padding="10" Margin="0,6,0,0">
-                    <HorizontalStackLayout Spacing="10">
-                        <Image Source="{Binding Thumb1}" WidthRequest="90" HeightRequest="56"
-                               Aspect="AspectFill" BackgroundColor="White"/>
-                        <Image Source="{Binding Thumb2}" WidthRequest="90" HeightRequest="56"
-                               Aspect="AspectFill" BackgroundColor="White"/>
-                    </HorizontalStackLayout>
-                </Border>
-
-            </VerticalStackLayout>
-        </Border>
-
-        <!-- Area tipo cámara -->
-        <Border Grid.Row="2"
-                BackgroundColor="#1B2A3A"
-                Stroke="#0B1B2A"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 26"
-                Padding="10">
-
-            <Grid RowDefinitions="*,Auto" RowSpacing="12">
-
-                <Grid>
-                    <Border BackgroundColor="#0F172A" Stroke="#334155"
-                            StrokeShape="RoundRectangle 22" Padding="10">
-                        <Grid>
-                            <Image Source="{Binding PreviewImage}" Aspect="AspectFit"/>
-                            <Grid Padding="14">
-                                <Border Stroke="#FFFFFF" StrokeThickness="3"
-                                        StrokeShape="RoundRectangle 24"
-                                        BackgroundColor="Transparent" Opacity="0.35"/>
+                            <Grid HeightRequest="78">
+                                <Border BackgroundColor="#0F172A" Stroke="#334155"
+                                        StrokeShape="RoundRectangle 22" Padding="10">
+                                    <Grid>
+                                        <Grid Padding="16,10">
+                                            <Border Stroke="#FFFFFF" StrokeThickness="3"
+                                                    StrokeShape="RoundRectangle 22"
+                                                    BackgroundColor="Transparent" Opacity="0.35"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
                             </Grid>
+
+                            <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
+                                <Border Grid.Column="1" BackgroundColor="#102A43"
+                                        Stroke="#FFFFFF" StrokeThickness="2"
+                                        StrokeShape="RoundRectangle 999"
+                                        WidthRequest="86" HeightRequest="86"
+                                        VerticalOptions="Center" HorizontalOptions="Center" Padding="10">
+                                    <Button Text="" Command="{Binding CapturarCommand}"
+                                            BackgroundColor="White" CornerRadius="999"
+                                            WidthRequest="60" HeightRequest="60"/>
+                                </Border>
+
+                                <Border Grid.Column="2"
+                                        BackgroundColor="#102A43"
+                                        Stroke="#1E3A5F"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="8,7"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GaleriaCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                        <Border BackgroundColor="#1B2A3A"
+                                                Stroke="#DDE8F4"
+                                                StrokeThickness="1.5"
+                                                StrokeShape="RoundRectangle 6"
+                                                WidthRequest="28"
+                                                HeightRequest="28"
+                                                Padding="0">
+                                            <Label Text="🖼"
+                                                   TextColor="White"
+                                                   FontSize="15"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+                                        <Label Text="Galería"
+                                               TextColor="White"
+                                               FontSize="13"
+                                               VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </Grid>
+
                         </Grid>
                     </Border>
-                </Grid>
 
-                <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
-                    <Button Grid.Column="0" Text="Cancelar"
-                            Command="{Binding CancelarCommand}"
-                            BackgroundColor="Transparent" TextColor="White" FontSize="18"/>
+                </VerticalStackLayout>
+            </ScrollView>
 
-                    <Border Grid.Column="1" BackgroundColor="#102A43"
-                            Stroke="#FFFFFF" StrokeThickness="2"
-                            StrokeShape="RoundRectangle 999"
-                            WidthRequest="86" HeightRequest="86"
-                            VerticalOptions="Center" HorizontalOptions="Center" Padding="10">
-                        <Button Text="" Command="{Binding CapturarCommand}"
-                                BackgroundColor="White" CornerRadius="999"
-                                WidthRequest="60" HeightRequest="60"/>
-                    </Border>
+            <!-- Navigation -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,14,0,6">
+                <Button Text="Atrás"
+                        Command="{Binding AtrasCommand}"
+                        HeightRequest="56" CornerRadius="18"
+                        BackgroundColor="#E5E7EB" TextColor="#1E293B"
+                        FontAttributes="Bold" FontSize="18"/>
 
-                    <Button Grid.Column="2" Text="Capturar"
-                            Command="{Binding CapturarCommand}"
-                            BackgroundColor="Transparent" TextColor="White"
-                            FontSize="18" HorizontalOptions="End"/>
-                </Grid>
-
+                <Button Grid.Column="1" Text="Siguiente"
+                        Command="{Binding SiguienteCommand}"
+                        HeightRequest="56" CornerRadius="18"
+                        BackgroundColor="#244A7C" TextColor="White"
+                        FontAttributes="Bold" FontSize="18"/>
             </Grid>
-        </Border>
 
-        <!-- Navigation -->
-        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,14,0,6">
-            <Button Text="Atrás"
-                    Command="{Binding AtrasCommand}"
-                    HeightRequest="56" CornerRadius="18"
-                    BackgroundColor="#E5E7EB" TextColor="#1E293B"
-                    FontAttributes="Bold" FontSize="18"/>
-
-            <Button Grid.Column="1" Text="Siguiente"
-                    Command="{Binding SiguienteCommand}"
-                    HeightRequest="56" CornerRadius="18"
-                    BackgroundColor="#244A7C" TextColor="White"
-                    FontAttributes="Bold" FontSize="18"/>
         </Grid>
 
-    </Grid>
-
-        <!-- LOADER — en Grid externo, encima de todo en Android -->
+        <!-- LOADER: en Grid externo, encima de todo en Android -->
         <controls:LoaderSpinner BindingContext="{Binding Loader}" />
 
     </Grid>
