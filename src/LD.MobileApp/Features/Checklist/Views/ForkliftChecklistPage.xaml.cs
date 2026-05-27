@@ -207,7 +207,7 @@ public partial class ForkliftChecklistPage : ContentPage
     {
         if (sender is Button btn && btn.BindingContext is Models.ChecklistQuestion question)
         {
-            question.SelectedOption = btn.Text;
+            question.SelectSingleOption(btn.Text);
             var parent = btn.Parent as Grid;
             if (parent is null) return;
             foreach (var child in parent.Children)
@@ -217,6 +217,12 @@ public partial class ForkliftChecklistPage : ContentPage
             }
             btn.BackgroundColor = Colors.LightGreen;
         }
+    }
+
+    private void OnMultiOptionTapped(object sender, TappedEventArgs e)
+    {
+        if (sender is Border { BindingContext: ChecklistOption option })
+            option.Question.ToggleMultiOption(option);
     }
 
     private async void OnCapturarClicked(object sender, EventArgs e)
@@ -232,24 +238,7 @@ public partial class ForkliftChecklistPage : ContentPage
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo == null) return;
 
-            await using var stream = await photo.OpenReadAsync();
-            var mem = new MemoryStream();
-            await stream.CopyToAsync(mem);
-            var bytes = mem.ToArray();
-
-            var img = ImageSource.FromStream(() => new MemoryStream(bytes));
-            PreviewImage.Source = img;
-
-            if (_foto1Bytes == null)
-            {
-                _foto1Bytes   = bytes;
-                Thumb1.Source = img;
-            }
-            else
-            {
-                _foto2Bytes   = bytes;
-                Thumb2.Source = img;
-            }
+            await ProcesarFotoAsync(photo);
         }
         catch (Exception ex)
         {
@@ -257,9 +246,54 @@ public partial class ForkliftChecklistPage : ContentPage
         }
     }
 
-    private async void OnCancelarClicked(object sender, EventArgs e)
+    private async void OnGaleriaClicked(object sender, TappedEventArgs e)
     {
-        PreviewImage.Source = null;
+        try
+        {
+            var photos = await MediaPicker.Default.PickPhotosAsync(new MediaPickerOptions
+            {
+                Title = "Selecciona una imagen"
+            });
+
+            var photo = photos?.FirstOrDefault();
+            if (photo is null) return;
+
+            await ProcesarFotoAsync(photo);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task ProcesarFotoAsync(FileResult photo)
+    {
+        await using var stream = await photo.OpenReadAsync();
+        using var mem = new MemoryStream();
+        await stream.CopyToAsync(mem);
+
+        var bytes = mem.ToArray();
+        try
+        {
+            bytes = await ImageCompressor.ComprimirAsync(bytes);
+        }
+        catch
+        {
+            // Si la compresion falla, se conserva la imagen original para no bloquear el checklist.
+        }
+
+        var img = ImageSource.FromStream(() => new MemoryStream(bytes));
+
+        if (_foto1Bytes == null)
+        {
+            _foto1Bytes   = bytes;
+            Thumb1.Source = img;
+        }
+        else
+        {
+            _foto2Bytes   = bytes;
+            Thumb2.Source = img;
+        }
     }
 
     private async void OnGuardarClicked(object sender, EventArgs e)

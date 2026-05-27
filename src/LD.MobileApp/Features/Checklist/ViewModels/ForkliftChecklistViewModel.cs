@@ -71,8 +71,8 @@ public partial class ForkliftChecklistViewModel : ObservableObject
                 var question = new ChecklistQuestion { QuestionId = q.EquipmentQuestionDetId, Label = q.QuestionText };
                 if (q.IsYesNo)
                 {
-                    question.Options.Add("Sí");
-                    question.Options.Add("No");
+                    question.AddOption("Sí");
+                    question.AddOption("No");
                 }
                 else if (!string.IsNullOrWhiteSpace(q.OptionAnswerText))
                 {
@@ -81,7 +81,7 @@ public partial class ForkliftChecklistViewModel : ObservableObject
                         .Select(x => x.Trim())
                         .Where(x => !string.IsNullOrEmpty(x)))
                     {
-                        question.Options.Add(opt);
+                        question.AddOption(opt);
                     }
                 }
                 section.Questions.Add(question);
