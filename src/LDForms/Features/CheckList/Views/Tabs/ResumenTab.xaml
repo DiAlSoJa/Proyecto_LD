@@ -155,7 +155,10 @@
             </Border>
 
             <!-- Panel de detalle -->
-            <Grid Grid.Column="2">
+            <ScrollViewer Grid.Column="2"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="12"/>
@@ -279,6 +282,7 @@
                     </Grid>
                 </Border>
             </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

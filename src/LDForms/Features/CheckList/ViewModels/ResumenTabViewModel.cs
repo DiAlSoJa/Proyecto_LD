@@ -8,6 +8,7 @@ namespace LD.FormsX.Features.CheckList.ViewModels;
 public partial class ResumenTabViewModel : ObservableObject
 {
     private readonly ChecklistService _checklistService;
+    private readonly EquipmentService _equipmentService;
 
     [ObservableProperty]
     private string statusText = "Sin registros para mostrar";
@@ -24,9 +25,10 @@ public partial class ResumenTabViewModel : ObservableObject
     public event Action<List<ChecklistSummaryDto>>? OnChecklistsLoaded;
     public event Action<ChecklistDetailDto?>? OnChecklistDetailLoaded;
 
-    public ResumenTabViewModel(ChecklistService checklistService)
+    public ResumenTabViewModel(ChecklistService checklistService, EquipmentService equipmentService)
     {
         _checklistService = checklistService;
+        _equipmentService = equipmentService;
     }
 
     public async Task BuscarAsync(DateTime? from, DateTime? to)
@@ -69,6 +71,22 @@ public partial class ResumenTabViewModel : ObservableObject
         {
             DetalleActual = null;
             OnChecklistDetailLoaded?.Invoke(null);
+        }
+    }
+
+    public async Task<byte[]?> DescargarImagenEquipoAsync(int equipmentId, string side)
+    {
+        if (equipmentId <= 0 || string.IsNullOrWhiteSpace(side))
+            return null;
+
+        try
+        {
+            var bytes = await _equipmentService.DownloadImage(equipmentId, side);
+            return bytes.Length == 0 ? null : bytes;
+        }
+        catch
+        {
+            return null;
         }
     }
 

@@ -2,9 +2,11 @@ using LD.Contracts.Checklist;
 using LD.FormsX.Features.CheckList.ViewModels;
 using LD.FormsX.Helpers;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace LD.FormsX.Views.CheckList.Tabs
@@ -14,11 +16,16 @@ namespace LD.FormsX.Views.CheckList.Tabs
         private ResumenTabViewModel ViewModel => (ResumenTabViewModel)DataContext;
 
         private List<ChecklistDefectMarkDto>? _ultimasMarcas;
+        private readonly ImageSource? _imagenIzquierdaDefault;
+        private readonly ImageSource? _imagenDerechaDefault;
+        private int _versionCargaImagenes;
 
         public ResumenTab(ResumenTabViewModel viewModel)
         {
             InitializeComponent();
             DataContext = viewModel;
+            _imagenIzquierdaDefault = imgMontacargasIzq.Source;
+            _imagenDerechaDefault = imgMontacargasDer.Source;
 
             viewModel.OnChecklistsLoaded += checklists =>
             {
@@ -59,13 +66,17 @@ namespace LD.FormsX.Views.CheckList.Tabs
         {
             if (dgResumen.SelectedItem is not ChecklistSummaryDto selected)
             {
+                _versionCargaImagenes++;
                 LimpiarDetalle();
                 return;
             }
 
             try
             {
-                await ViewModel.CargarDetalleAsync(selected.ChecklistId);
+                var version = ++_versionCargaImagenes;
+                await Task.WhenAll(
+                    ViewModel.CargarDetalleAsync(selected.ChecklistId),
+                    CargarImagenesEquipoAsync(selected.EquipmentId, version));
             }
             catch (Exception ex)
             {
@@ -144,10 +155,44 @@ namespace LD.FormsX.Views.CheckList.Tabs
             txtObservacionesResumen.Text       = string.Empty;
             canvasIzq.Children.Clear();
             canvasDer.Children.Clear();
+            imgMontacargasIzq.Source           = _imagenIzquierdaDefault;
+            imgMontacargasDer.Source           = _imagenDerechaDefault;
             BtnVerImagenes.IsEnabled           = false;
         }
 
         // ──────────── Canvas de marcas X ────────────
+
+        private async Task CargarImagenesEquipoAsync(int equipmentId, int version)
+        {
+            imgMontacargasIzq.Source = _imagenIzquierdaDefault;
+            imgMontacargasDer.Source = _imagenDerechaDefault;
+
+            var izquierdaTask = ViewModel.DescargarImagenEquipoAsync(equipmentId, "left");
+            var derechaTask = ViewModel.DescargarImagenEquipoAsync(equipmentId, "right");
+
+            await Task.WhenAll(izquierdaTask, derechaTask);
+
+            if (version != _versionCargaImagenes)
+                return;
+
+            imgMontacargasIzq.Source = CrearBitmapDesdeBytes(izquierdaTask.Result) ?? _imagenIzquierdaDefault;
+            imgMontacargasDer.Source = CrearBitmapDesdeBytes(derechaTask.Result) ?? _imagenDerechaDefault;
+        }
+
+        private static BitmapImage? CrearBitmapDesdeBytes(byte[]? bytes)
+        {
+            if (bytes is null || bytes.Length == 0)
+                return null;
+
+            using var stream = new MemoryStream(bytes);
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.CacheOption = BitmapCacheOption.OnLoad;
+            image.StreamSource = stream;
+            image.EndInit();
+            image.Freeze();
+            return image;
+        }
 
         private void RenderizarMarcas(List<ChecklistDefectMarkDto>? marks)
         {
