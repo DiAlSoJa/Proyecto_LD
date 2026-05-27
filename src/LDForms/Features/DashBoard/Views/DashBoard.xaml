@@ -19,9 +19,9 @@
         <SolidColorBrush x:Key="MainBg" Color="#F7F9FC"/>
         <SolidColorBrush x:Key="CardBg" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="BorderSoft" Color="#E1E7EF"/>
-        <SolidColorBrush x:Key="TextPrimary" Color="#1F2937"/>
-        <SolidColorBrush x:Key="TextSecondary" Color="#6B7280"/>
-        <SolidColorBrush x:Key="AccentBlue" Color="#1D4B9F"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#233167"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#233167"/>
+        <SolidColorBrush x:Key="AccentBlue" Color="#233167"/>
 
         <DropShadowEffect x:Key="CardShadow"
                           BlurRadius="12"
@@ -34,7 +34,7 @@
             <Setter Property="Height" Value="32"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -193,7 +193,7 @@
         </Style>
 
         <Style x:Key="ElegantTabItemStyle" TargetType="TabItem">
-            <Setter Property="Foreground" Value="{StaticResource TabTextInactive}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,0,0,0"/>
@@ -220,7 +220,7 @@
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
                                 <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource TabActiveBorder}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TabTextActive}"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
                             </Trigger>
 
                             <Trigger Property="IsMouseOver" Value="True">
@@ -247,7 +247,7 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -263,7 +263,7 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="#E2E8F0"/>
-                                <Setter Property="Foreground" Value="#0F172A"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="#CBD5E1"/>
@@ -337,7 +337,7 @@
 
                             <TextBlock Text="⌕"
                                        VerticalAlignment="Center"
-                                       Foreground="#6B7280"
+                                       Foreground="{StaticResource TextPrimary}"
                                        FontSize="14"/>
 
                             <TextBox x:Name="txtBuscarGlobal"
@@ -346,7 +346,7 @@
                                      Background="Transparent"
                                      FontSize="13"
                                      VerticalContentAlignment="Center"
-                                     Foreground="#6B7280"
+                                     Foreground="{StaticResource TextPrimary}"
                                      TextChanged="TxtBuscarGlobal_TextChanged"
                                      GotFocus="TxtBuscarGlobal_GotFocus"
                                      LostFocus="TxtBuscarGlobal_LostFocus"
@@ -363,7 +363,7 @@
                             <materialDesign:PackIcon Kind="BellOutline"
                                                      Width="20"
                                                      Height="20"
-                                                     Foreground="#4B5563"/>
+                                                     Foreground="{StaticResource TextPrimary}"/>
                         </Button>
 
                         <Grid Margin="6,0,0,0">
@@ -373,7 +373,7 @@
                                 <materialDesign:PackIcon Kind="AccountCircleOutline"
                                                          Width="22"
                                                          Height="22"
-                                                         Foreground="#4B5563"/>
+                                                         Foreground="{StaticResource TextPrimary}"/>
                             </Button>
 
                             <Ellipse Width="8"
@@ -406,9 +406,9 @@
                                         <StackPanel Margin="16,4,16,10">
                                             <TextBlock x:Name="txtPopupUserName"
                                                        FontSize="14" FontWeight="SemiBold"
-                                                       Foreground="#1F2937"/>
+                                                       Foreground="{StaticResource TextPrimary}"/>
                                             <TextBlock Text="Usuario activo"
-                                                       FontSize="11" Foreground="#6B7280"
+                                                       FontSize="11" Foreground="{StaticResource TextPrimary}"
                                                        Margin="0,2,0,0"/>
                                         </StackPanel>
 
@@ -454,7 +454,7 @@
                             <materialDesign:PackIcon Kind="DotsVertical"
                                                      Width="18"
                                                      Height="18"
-                                                     Foreground="#4B5563"/>
+                                                     Foreground="{StaticResource TextPrimary}"/>
                         </Button>
                     </StackPanel>
 
@@ -507,7 +507,7 @@
                                                 <materialDesign:PackIcon Kind="AccountGroupOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#3B82F6"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Clientes"
                                                Margin="0,14,0,0"
@@ -528,7 +528,7 @@
                                                 <materialDesign:PackIcon Kind="ClipboardListOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#6366F1"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Proyectos"
                                                    Margin="0,14,0,0"
@@ -548,7 +548,7 @@
                                                 <materialDesign:PackIcon Kind="Warehouse"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#10B981"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Almacén"
                                                    Margin="0,14,0,0"
@@ -568,7 +568,7 @@
                                                 <materialDesign:PackIcon Kind="MapMarkerOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#F59E0B"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Ubicaciones"
                                                    Margin="0,14,0,0"
@@ -590,7 +590,7 @@
                                                 <materialDesign:PackIcon Kind="CubeOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#0EA5E9"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Artículos"
                                                    Margin="0,14,0,0"
@@ -610,7 +610,7 @@
                                                 <materialDesign:PackIcon Kind="ClipboardCheckOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#22C55E"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Inventario"
                                                    Margin="0,14,0,0"
@@ -631,7 +631,7 @@
                                                 <materialDesign:PackIcon Kind="SwapHorizontal"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#8B5CF6"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Movimientos"
                                                    Margin="0,14,0,0"
@@ -652,7 +652,7 @@
                                                 <materialDesign:PackIcon Kind="PackageVariantClosed"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#3B82F6"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="ASN"
                                                    Margin="0,14,0,0"
@@ -673,7 +673,7 @@
                                                 <materialDesign:PackIcon Kind="ClipboardSearchOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#EF4444"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Auditar"
                                                    Margin="0,14,0,0"
@@ -694,7 +694,7 @@
                                                 <materialDesign:PackIcon Kind="ShuffleVariant"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#EC4899"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Inventario aleatorio"
                                                    Margin="0,14,0,0"
@@ -715,7 +715,7 @@
                                                 <materialDesign:PackIcon Kind="AccountMultipleOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#6366F1"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Usuarios"
                                                    Margin="0,14,0,0"
@@ -736,7 +736,7 @@
                                                 <materialDesign:PackIcon Kind="Forklift"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#F59E0B"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Checklist montacargas"
                                                    Margin="0,14,0,0"
@@ -757,7 +757,7 @@
                                                 <materialDesign:PackIcon Kind="ViewGridOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#3B82F6"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Catálogos"
                                                    Margin="0,14,0,0"
@@ -778,7 +778,7 @@
                                                 <materialDesign:PackIcon Kind="ClipboardArrowDownOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#10B981"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Surtido"
                                                    Margin="0,14,0,0"
@@ -799,7 +799,7 @@
                                                 <materialDesign:PackIcon Kind="TruckDeliveryOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#F97316"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Embarques"
                                                    Margin="0,14,0,0"
@@ -820,7 +820,7 @@
                                                 <materialDesign:PackIcon Kind="ChartBar"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#0EA5E9"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Reportes"
                                                    Margin="0,14,0,0"
@@ -841,7 +841,7 @@
                                                 <materialDesign:PackIcon Kind="Database"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#0F766E"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Diagrama BD"
                                                    Margin="0,14,0,0"
@@ -862,7 +862,7 @@
                                                 <materialDesign:PackIcon Kind="AlertCircleOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#DC2626"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Reporte de daños"
                                                    Margin="0,14,0,0"
@@ -883,7 +883,7 @@
                                                 <materialDesign:PackIcon Kind="ClipboardSearchOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#16A34A"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Tareas"
                                                    Margin="0,14,0,0"
@@ -904,7 +904,7 @@
                                                 <materialDesign:PackIcon Kind="PrinterOutline"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#14B8A6"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="impresion"
                                                    Margin="0,14,0,0"
@@ -925,7 +925,7 @@
                                                 <materialDesign:PackIcon Kind="Parking"
                                                      Width="44"
                                                      Height="44"
-                                                     Foreground="#64748B"
+                                                     Foreground="{StaticResource TextPrimary}"
                                                      HorizontalAlignment="Center"/>
                                                 <TextBlock Text="Control de patio"
                                                    Margin="0,14,0,0"

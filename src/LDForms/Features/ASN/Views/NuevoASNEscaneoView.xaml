@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ASN Escaneo"
         Width="780"
-        Height="610"
+        Height="600"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -90,7 +90,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="12"/>
-                        <RowDefinition Height="220"/>
+                        <RowDefinition Height="190"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="12"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
@@ -123,6 +125,16 @@
                                   FontSize="11"
                                   BorderBrush="{StaticResource BorderBrushSoft}"
                                   BorderThickness="1">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsCaptured}" Value="True">
+                                            <Setter Property="Background" Value="#DCFCE7"/>
+                                            <Setter Property="Foreground" Value="#14532D"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Orden" Binding="{Binding Order}" Width="50"/>
                                 <DataGridTextColumn Header="Campo" Binding="{Binding FieldName}" Width="160"/>
@@ -133,13 +145,27 @@
                         </DataGrid>
                     </GroupBox>
 
-                    <GroupBox Grid.Row="4"
+                    <TextBox x:Name="txtUltimoMensaje"
+                             Grid.Row="4"
+                             Height="38"
+                             Padding="10,4"
+                             FontSize="13"
+                             FontWeight="SemiBold"
+                             TextWrapping="NoWrap"
+                             VerticalContentAlignment="Center"
+                             IsReadOnly="True"
+                             Background="#F0FDF4"
+                             Foreground="#166534"
+                             BorderBrush="#22C55E"
+                             BorderThickness="1"/>
+
+                    <GroupBox Grid.Row="6"
                               Header="Mensajes"
                               BorderBrush="{StaticResource BorderBrushSoft}"
                               BorderThickness="1"
                               Padding="8">
                         <TextBox x:Name="txtMensajes"
-                                 MinHeight="260"
+                                 MinHeight="10"
                                  Padding="8"
                                  FontFamily="Consolas"
                                  FontSize="12"

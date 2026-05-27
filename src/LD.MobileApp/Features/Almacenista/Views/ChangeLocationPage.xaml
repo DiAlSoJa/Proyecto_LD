@@ -6,16 +6,31 @@
     Title="Cambio de Ubicación"
     BackgroundColor="#0F2E4F">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+
+        <Border Grid.Row="0"
+                BackgroundColor="#E0F2FE"
+                Stroke="#7DD3FC"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 18"
+                Padding="14,12"
+                Margin="0,10,0,12"
+                IsVisible="{Binding HasInstructionText}">
+            <Label Text="{Binding InstructionText}"
+                   TextColor="#0F172A"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   LineBreakMode="WordWrap"/>
+        </Border>
 
         <!-- Card superior con datos -->
-        <Border Grid.Row="0"
+        <Border Grid.Row="1"
                 BackgroundColor="#F6F8FC"
                 Stroke="#E2E8F0"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 24"
                 Padding="18"
-                Margin="0,10,0,12">
+                Margin="0,0,0,12">
 
 
             <VerticalStackLayout Spacing="12">
@@ -44,7 +59,7 @@
         </Border>
 
         <!-- Area tipo cámara -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
                 BackgroundColor="#1B2A3A"
                 Stroke="#0B1B2A"
                 StrokeThickness="1"
@@ -114,7 +129,7 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="3"
         ColumnDefinitions="*,*"
         ColumnSpacing="12"
         Margin="0,14,0,6">
@@ -147,7 +162,7 @@
             </Button>
         </Grid>
 
-        <Border Grid.RowSpan="3"
+        <Border Grid.RowSpan="4"
                 BackgroundColor="#AAFFFFFF"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 18"
