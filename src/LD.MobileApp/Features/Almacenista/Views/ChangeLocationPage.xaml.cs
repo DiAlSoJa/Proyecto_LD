@@ -30,11 +30,6 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
         }
     }
 
-    private void OnCancelarClicked(object sender, EventArgs e)
-    {
-        PreviewImage.Source = null;
-    }
-
     private async void OnSiguienteClicked(object sender, EventArgs e)
     {
         await _viewModel.OnSiguienteClicked();

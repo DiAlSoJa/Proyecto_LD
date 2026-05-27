@@ -24,4 +24,14 @@ public class InventoryMovementService
         return await _api.GetAsync<ApiResponseDto<List<InventoryMovementDto>>>(
             endpoint);
     }
+
+    public async Task<ApiResponseDto<List<InventoryMovementDto>>> GetInventoryMovementsByStandardIdCode(string standardIdCode)
+    {
+        var endpoint = _apiEndpoints.InventoryMovement_GetAll;
+        if (!string.IsNullOrWhiteSpace(standardIdCode))
+            endpoint += $"?standardIdCode={Uri.EscapeDataString(standardIdCode.Trim())}";
+
+        return await _api.GetAsync<ApiResponseDto<List<InventoryMovementDto>>>(
+            endpoint);
+    }
 }
