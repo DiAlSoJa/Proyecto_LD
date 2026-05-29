@@ -1,5 +1,6 @@
 ﻿using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.Enums;
 using LD.FormsX;
 using LD.FormsX.Helpers;
@@ -192,11 +193,18 @@ namespace LDForms
             RemoveIfNoModule(TareasBtn,          Module_e.WarehouseStaff);
             RemoveIfNoModule(UsuariosBtn,        Module_e.Users);
             RemoveIfNoModule(AuditoriaBtn,       Module_e.Auditing);
+            RemoveIfNoPermission(ImpresionBtn,    PermissionKeys.StandardLabel_Print);
         }
 
         private void RemoveIfNoModule(Button btn, Module_e module)
         {
             if (!UserData.HasModule((int)module))
+                DashboardPanel.Children.Remove(btn);
+        }
+
+        private void RemoveIfNoPermission(Button btn, string permission)
+        {
+            if (!UserData.HasPermission(permission))
                 DashboardPanel.Children.Remove(btn);
         }
 
@@ -379,6 +387,9 @@ namespace LDForms
 
             if (key == "Impresion")
             {
+                if (!UserData.HasPermission(PermissionKeys.StandardLabel_Print))
+                    return;
+
                 var printItem = new MenuItem { Header = StandardLabelPrintOptionsDialog.StandardIdOption };
                 printItem.Click += async (_, __) => await ImprimirEtiquetasStandardIdAsync();
                 menu.Items.Add(printItem);
@@ -405,6 +416,9 @@ namespace LDForms
 
             if (key == "Impresion")
             {
+                if (!UserData.HasPermission(PermissionKeys.StandardLabel_Print))
+                    return;
+
                 await ImprimirEtiquetasStandardIdAsync();
                 return;
             }
@@ -414,6 +428,12 @@ namespace LDForms
 
         private async Task ImprimirEtiquetasStandardIdAsync()
         {
+            if (!UserData.HasPermission(PermissionKeys.StandardLabel_Print))
+            {
+                DialogHelper.ShowWarning("No tienes permiso para imprimir etiquetas.", "Permiso requerido");
+                return;
+            }
+
             var option = ShowPrintOptionDialog();
             if (option != StandardLabelPrintOptionsDialog.StandardIdOption)
                 return;

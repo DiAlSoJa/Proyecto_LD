@@ -14,8 +14,8 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
             .NotEmpty().WithMessage("El nombre completo es requerido");
 
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("El correo es requerido")
-            .EmailAddress().WithMessage("El correo no tiene un formato válido");
+            .EmailAddress().WithMessage("El correo no tiene un formato válido")
+            .When(x => !string.IsNullOrWhiteSpace(x.Email));
 
         // La contraseña es opcional al editar.
         // Si viene algo, debe cumplir los requisitos de Identity y coincidir con la confirmación.

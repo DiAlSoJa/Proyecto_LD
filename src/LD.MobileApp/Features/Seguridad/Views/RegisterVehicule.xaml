@@ -135,7 +135,7 @@
                                 <Border BackgroundColor="#0F172A" Stroke="#334155"
                                         StrokeShape="RoundRectangle 22" Padding="10">
                                     <Grid>
-                                        <Grid Padding="16,10">
+                                        <Grid    Padding="16,10">
                                             <Border Stroke="#FFFFFF" StrokeThickness="3"
                                                     StrokeShape="RoundRectangle 22"
                                                     BackgroundColor="Transparent" Opacity="0.35"/>

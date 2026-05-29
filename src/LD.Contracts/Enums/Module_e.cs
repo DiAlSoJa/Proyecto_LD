@@ -36,6 +36,7 @@ namespace LD.Contracts.Enums
         Security = 25,
         Queries = 26,
         DamageReport = 27,
-        Operations = 28
+        Operations = 28,
+        StandardLabels = 29
     }
 }

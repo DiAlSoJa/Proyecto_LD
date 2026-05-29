@@ -53,7 +53,8 @@ public partial class TasksView : UserControl
 
         var window = new TaskImagesWindow(task, images)
         {
-            Owner = Window.GetWindow(this)
+            Owner = Window.GetWindow(this),
+            DownloadImageAsync = image => ViewModel.DownloadImageAsync(image.RelativePath)
         };
         window.ShowDialog();
     }
@@ -80,6 +81,10 @@ public partial class TasksView : UserControl
     {
         return string.IsNullOrWhiteSpace(relativePath)
             ? null
-            : new TaskImageItem(title, ViewModel.GetImageUrl(relativePath), title.StartsWith("Foto inicial") ? "Inicial" : "Final");
+            : new TaskImageItem(
+                title,
+                ViewModel.GetImageUrl(relativePath),
+                relativePath,
+                title.StartsWith("Foto inicial") ? "Inicial" : "Final");
     }
 }

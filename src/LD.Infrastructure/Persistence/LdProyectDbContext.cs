@@ -496,7 +496,8 @@ namespace LD.Infrastructure.Persistence
                 new Module { ModuleId = 25, ModuleName = "Seguridad" },
                 new Module { ModuleId = 26, ModuleName = "Consultas" },
                 new Module { ModuleId = 27, ModuleName = "Reporte de Daños" },
-                new Module { ModuleId = 28, ModuleName = "Operaciones" }
+                new Module { ModuleId = 28, ModuleName = "Operaciones" },
+                new Module { ModuleId = 29, ModuleName = "Impresion" }
             );
 
             builder.Entity<Permission>().HasData(
@@ -642,7 +643,10 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 81, PermissionName = "Editar unidades", Key = "units.update", ModuleId = 16 },
 
                 // CORTINA (CONTROL DE PATIO)
-                new Permission { PermissionId = 85, PermissionName = "Asignar cortina", Key = "security.cortina.assign", ModuleId = 25 }
+                new Permission { PermissionId = 85, PermissionName = "Asignar cortina", Key = "security.cortina.assign", ModuleId = 25 },
+
+                // STANDARD LABELS / IMPRESION
+                new Permission { PermissionId = 86, PermissionName = "Imprimir etiquetas StandardId", Key = "standard-label.print", ModuleId = 29 }
             );
 
             const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
@@ -682,7 +686,7 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<RolePermission>().HasData(
-                Enumerable.Range(1, 85)
+                Enumerable.Range(1, 86)
                     .Select(id => new RolePermission
                     {
                         RoleId        = superAdminRoleId,

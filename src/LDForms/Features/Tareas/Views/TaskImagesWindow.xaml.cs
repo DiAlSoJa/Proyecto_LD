@@ -3,7 +3,9 @@ using LD.FormsX.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -11,6 +13,8 @@ namespace LD.FormsX.Views.Tareas;
 
 public partial class TaskImagesWindow : Window
 {
+    public Func<TaskImageItem, Task<byte[]>>? DownloadImageAsync { get; set; }
+
     public TaskImagesWindow(OperationalTaskDto task, IReadOnlyList<TaskImageItem> images)
     {
         InitializeComponent();
@@ -48,7 +52,7 @@ public partial class TaskImagesWindow : Window
             DragMove();
     }
 
-    private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private async void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount != 2)
             return;
@@ -56,9 +60,15 @@ public partial class TaskImagesWindow : Window
         if (sender is not FrameworkElement { DataContext: TaskImageItem image })
             return;
 
+        if (DownloadImageAsync is null)
+            return;
+
         try
         {
-            Process.Start(new ProcessStartInfo(image.ImageUrl)
+            var bytes = await DownloadImageAsync(image);
+            var filePath = await SaveTempImageAsync(image, bytes);
+
+            Process.Start(new ProcessStartInfo(filePath)
             {
                 UseShellExecute = true
             });
@@ -68,6 +78,23 @@ public partial class TaskImagesWindow : Window
             DialogHelper.ShowError($"No se pudo abrir la imagen. {ex.Message}");
         }
     }
+
+    private static async Task<string> SaveTempImageAsync(TaskImageItem image, byte[] bytes)
+    {
+        var folder = Path.Combine(Path.GetTempPath(), "LD", "Tareas");
+        Directory.CreateDirectory(folder);
+
+        var extension = Path.GetExtension(image.RelativePath);
+        if (string.IsNullOrWhiteSpace(extension))
+            extension = ".jpg";
+
+        var safeTitle = string.Concat(image.Title.Select(c => Path.GetInvalidFileNameChars().Contains(c) ? '_' : c));
+        var fileName = $"{safeTitle}_{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{extension}";
+        var filePath = Path.Combine(folder, fileName);
+
+        await File.WriteAllBytesAsync(filePath, bytes);
+        return filePath;
+    }
 }
 
-public sealed record TaskImageItem(string Title, string ImageUrl, string Group);
+public sealed record TaskImageItem(string Title, string ImageUrl, string RelativePath, string Group);

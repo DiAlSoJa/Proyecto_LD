@@ -114,6 +114,8 @@ public partial class TasksViewModel : ObservableObject
 
     public string GetImageUrl(string relativePath) => _operationalTaskService.GetImageUrl(relativePath);
 
+    public Task<byte[]> DownloadImageAsync(string relativePath) => _operationalTaskService.DownloadImage(relativePath);
+
     private async Task LoadWarehousesAsync()
     {
         try
