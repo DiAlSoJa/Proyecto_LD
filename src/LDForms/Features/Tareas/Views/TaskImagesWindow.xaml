@@ -1,313 +1,80 @@
 <Window x:Class="LD.FormsX.Views.Tareas.TaskImagesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Detalle de tarea"
-        Width="1040"
-        Height="760"
+        Title="Imagenes de tarea"
+        Width="980"
+        Height="700"
         WindowStartupLocation="CenterOwner"
-        WindowStyle="None"
-        ResizeMode="NoResize"
-        AllowsTransparency="True"
-        Background="Transparent">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Controls/DialogStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
+        Background="#F8FAFC">
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <Style x:Key="CaptionStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="11"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="Foreground" Value="#6B7280"/>
-            </Style>
-
-            <Style x:Key="ValueStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="13"/>
-                <Setter Property="Foreground" Value="#111827"/>
-                <Setter Property="TextWrapping" Value="Wrap"/>
-                <Setter Property="Margin" Value="0,3,0,0"/>
-            </Style>
-        </ResourceDictionary>
-    </Window.Resources>
-
-    <Grid>
-        <Border Width="1010"
-                Height="730"
-                Background="White"
-                CornerRadius="16"
+        <Border Background="White"
+                CornerRadius="10"
+                Padding="14"
                 BorderBrush="#E5E7EB"
-                BorderThickness="1"
-                SnapsToDevicePixels="True">
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="22"
-                                  ShadowDepth="0"
-                                  Opacity="0.18"/>
-            </Border.Effect>
+                BorderThickness="1">
+            <StackPanel>
+                <TextBlock x:Name="TitleText"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           Foreground="#1F2937"/>
+                <TextBlock x:Name="SubtitleText"
+                           FontSize="13"
+                           Foreground="#6B7280"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="42"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="68"/>
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="0"
-                        Background="#233167"
-                        CornerRadius="16,16,0,0"
-                        MouseLeftButtonDown="Header_MouseLeftButtonDown">
-                    <Grid Margin="16,0,10,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="Detalle de tarea"
-                                   VerticalAlignment="Center"
-                                   Foreground="White"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"/>
-
-                        <Button Grid.Column="1"
-                                Width="30"
-                                Height="30"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Foreground="White"
-                                FontSize="18"
-                                FontWeight="Bold"
-                                Cursor="Hand"
-                                Click="BtnCerrar_Click"
-                                Content="X"/>
-                    </Grid>
-                </Border>
-
-                <Grid Grid.Row="1" Margin="22,18,22,18">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="14"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Border Background="#F9FAFB"
-                            BorderBrush="#E5E7EB"
-                            BorderThickness="1"
-                            CornerRadius="10"
-                            Padding="18">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="12"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <StackPanel>
-                                <TextBlock x:Name="TitleText"
-                                           FontSize="22"
-                                           FontWeight="SemiBold"
-                                           Foreground="#1F2937"
-                                           TextWrapping="Wrap"/>
-                                <TextBlock x:Name="SubtitleText"
-                                           FontSize="13"
-                                           Foreground="#6B7280"
-                                           Margin="0,4,0,0"/>
-                            </StackPanel>
-
-                            <UniformGrid Grid.Row="2" Columns="4">
-                                <StackPanel Margin="0,0,14,0">
-                                    <TextBlock Text="Prioridad" Style="{StaticResource CaptionStyle}"/>
-                                    <TextBlock x:Name="PriorityText" Style="{StaticResource ValueStyle}"/>
-                                </StackPanel>
-                                <StackPanel Margin="0,0,14,0">
-                                    <TextBlock Text="Creada" Style="{StaticResource CaptionStyle}"/>
-                                    <TextBlock x:Name="CreatedText" Style="{StaticResource ValueStyle}"/>
-                                </StackPanel>
-                                <StackPanel Margin="0,0,14,0">
-                                    <TextBlock Text="Estatus" Style="{StaticResource CaptionStyle}"/>
-                                    <TextBlock x:Name="StatusText" Style="{StaticResource ValueStyle}"/>
-                                </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Text="Finalizo" Style="{StaticResource CaptionStyle}"/>
-                                    <TextBlock x:Name="CompletedByText" Style="{StaticResource ValueStyle}"/>
-                                </StackPanel>
-                            </UniformGrid>
-                        </Grid>
-                    </Border>
-
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="340"/>
-                            <ColumnDefinition Width="16"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Background="White"
-                                BorderBrush="#E5E7EB"
-                                BorderThickness="1"
-                                CornerRadius="10"
-                                Padding="16">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <TextBlock Text="Descripcion" Style="{StaticResource CaptionStyle}"/>
-                                    <TextBlock x:Name="DescriptionText" Style="{StaticResource ValueStyle}" Margin="0,4,0,16"/>
-
-                                    <TextBlock Text="Observaciones" Style="{StaticResource CaptionStyle}"/>
-                                    <TextBlock x:Name="ObservationsText" Style="{StaticResource ValueStyle}" Margin="0,4,0,16"/>
-
-                                    <TextBlock Text="Finalizado" Style="{StaticResource CaptionStyle}"/>
-                                    <TextBlock x:Name="CompletedAtText" Style="{StaticResource ValueStyle}"/>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Border>
-
-                        <Border Grid.Column="2"
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl x:Name="ImagesList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="290"
+                                Height="230"
+                                Margin="0,0,12,12"
                                 Background="White"
                                 BorderBrush="#E5E7EB"
                                 BorderThickness="1"
-                                CornerRadius="10"
-                                Padding="12">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                          HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel>
-                                    <TextBlock Text="Foto inicial"
-                                               FontSize="14"
-                                               FontWeight="SemiBold"
-                                               Foreground="#374151"
-                                               Margin="0,0,0,10"/>
+                                CornerRadius="8"
+                                Padding="8">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
 
-                                    <TextBlock x:Name="NoInitialImagesText"
-                                               Text="Sin fotos iniciales."
-                                               FontSize="13"
-                                               Foreground="#6B7280"
-                                               Margin="0,0,0,12"
-                                               Visibility="Collapsed"/>
+                                <TextBlock Text="{Binding Title}"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Foreground="#374151"/>
 
-                                    <ItemsControl x:Name="InitialImagesList">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Width="286"
-                                                        Height="216"
-                                                        Margin="0,0,10,10"
-                                                        Background="#F9FAFB"
-                                                        BorderBrush="#E5E7EB"
-                                                        BorderThickness="1"
-                                                        CornerRadius="8"
-                                                        Padding="8">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="8"/>
-                                                            <RowDefinition Height="*"/>
-                                                        </Grid.RowDefinitions>
-
-                                                        <TextBlock Text="{Binding Title}"
-                                                                   FontSize="13"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="#374151"/>
-
-                                                        <Border Grid.Row="2"
-                                                                Background="#F3F4F6"
-                                                                BorderBrush="#E5E7EB"
-                                                                BorderThickness="1"
-                                                                CornerRadius="6"
-                                                                ClipToBounds="True"
-                                                                Cursor="Hand"
-                                                                MouseLeftButtonDown="Image_MouseLeftButtonDown">
-                                                            <Image Source="{Binding ImageUrl}"
-                                                                   Stretch="Uniform"/>
-                                                        </Border>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-
-                                    <Border Height="1"
-                                            Background="#E5E7EB"
-                                            Margin="0,4,10,14"/>
-
-                                    <TextBlock Text="Foto final"
-                                               FontSize="14"
-                                               FontWeight="SemiBold"
-                                               Foreground="#374151"
-                                               Margin="0,0,0,10"/>
-
-                                    <TextBlock x:Name="NoFinalImagesText"
-                                               Text="Sin fotos finales."
-                                               FontSize="13"
-                                               Foreground="#6B7280"
-                                               Margin="0,0,0,12"
-                                               Visibility="Collapsed"/>
-
-                                    <ItemsControl x:Name="FinalImagesList">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Width="286"
-                                                        Height="216"
-                                                        Margin="0,0,10,10"
-                                                        Background="#F9FAFB"
-                                                        BorderBrush="#E5E7EB"
-                                                        BorderThickness="1"
-                                                        CornerRadius="8"
-                                                        Padding="8">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="8"/>
-                                                            <RowDefinition Height="*"/>
-                                                        </Grid.RowDefinitions>
-
-                                                        <TextBlock Text="{Binding Title}"
-                                                                   FontSize="13"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="#374151"/>
-
-                                                        <Border Grid.Row="2"
-                                                                Background="#F3F4F6"
-                                                                BorderBrush="#E5E7EB"
-                                                                BorderThickness="1"
-                                                                CornerRadius="6"
-                                                                ClipToBounds="True"
-                                                                Cursor="Hand"
-                                                                MouseLeftButtonDown="Image_MouseLeftButtonDown">
-                                                            <Image Source="{Binding ImageUrl}"
-                                                                   Stretch="Uniform"/>
-                                                        </Border>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </ScrollViewer>
+                                <Border Grid.Row="2"
+                                        Background="#F3F4F6"
+                                        BorderBrush="#E5E7EB"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        ClipToBounds="True">
+                                    <Image Source="{Binding ImageUrl}"
+                                           Stretch="Uniform"/>
+                                </Border>
+                            </Grid>
                         </Border>
-                    </Grid>
-                </Grid>
-
-                <Border Grid.Row="2"
-                        Background="#F9FAFB"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="0,1,0,0"
-                        CornerRadius="0,0,16,16">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Margin="0,0,22,0">
-                        <Button Content="Cerrar"
-                                Style="{StaticResource SecondaryButtonStyle}"
-                                Click="BtnCerrar_Click"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Window>

@@ -491,9 +491,7 @@ namespace LD.FormsX.Views.Dialogs
             view.SetScanConfigurations(_projectScanConfigurations);
             view.ScanCompleted += CreateReceiptFromCompletedScanAsync;
             view.UnmatchedScanReceived += ResolveUnmatchedScanAsync;
-            view.MissingPartNumberRequested += TryOpenNewArticleDialogFromScanAsync;
             view.ShowDialog();
-            view.MissingPartNumberRequested -= TryOpenNewArticleDialogFromScanAsync;
             view.UnmatchedScanReceived -= ResolveUnmatchedScanAsync;
             view.ScanCompleted -= CreateReceiptFromCompletedScanAsync;
         }
@@ -2201,33 +2199,6 @@ namespace LD.FormsX.Views.Dialogs
             }), DispatcherPriority.Background);
 
             return true;
-        }
-
-        private async Task<bool> TryOpenNewArticleDialogFromScanAsync(Window owner, string scannedPartNumber)
-        {
-            var partNumber = scannedPartNumber.Trim();
-            if (string.IsNullOrWhiteSpace(partNumber))
-                return false;
-
-            if (_clientId <= 0 || _projectId <= 0)
-            {
-                DialogHelper.ShowWarning("Guarda primero el encabezado del ASN con cliente y proyecto.");
-                return false;
-            }
-
-            var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
-            dialog.Owner = owner;
-            dialog.SetContext(_clientId, _projectId);
-            dialog.SetInitialPartNumber(partNumber);
-
-            var dialogResult = dialog.ShowDialog();
-            if (dialogResult != true)
-                return false;
-
-            await LoadProductsForSelectedClientProjectAsync();
-
-            return ProductLookupItems.Any(item =>
-                string.Equals(item.Code?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase));
         }
 
         private async void InlineLookup_SelectionConfirmed(object sender, RoutedEventArgs e)

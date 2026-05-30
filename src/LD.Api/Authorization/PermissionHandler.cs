@@ -36,34 +36,4 @@ namespace LD.Infrastructure.Authorization
                 context.Succeed(requirement);
         }
     }
-
-    public class AnyPermissionHandler
-        : AuthorizationHandler<AnyPermissionRequirement>
-    {
-        private readonly IPermissionService _permissionService;
-
-        public AnyPermissionHandler(IPermissionService permissionService)
-        {
-            _permissionService = permissionService;
-        }
-
-        protected override async Task HandleRequirementAsync(
-            AuthorizationHandlerContext context,
-            AnyPermissionRequirement requirement)
-        {
-            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
-                return;
-
-            foreach (var permission in requirement.Permissions)
-            {
-                if (await _permissionService.HasPermissionAsync(userId, permission))
-                {
-                    context.Succeed(requirement);
-                    return;
-                }
-            }
-        }
-    }
 }

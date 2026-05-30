@@ -18,19 +18,19 @@ namespace LD.Api.Controllers
     public class AsnReceiptController : CommonController
     {
         [HttpGet]
-        [AnyPermission(PermissionKeys.Asn_View, PermissionKeys.WarehouseStaff_Asn_View)]
+        [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnReceipt()
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(new AsnReceiptDetailQuery()));
         }
 
         [HttpGet("{asnReceiptId}")]
-        [AnyPermission(PermissionKeys.Asn_View, PermissionKeys.WarehouseStaff_Asn_View)]
+        [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnReceiptById(int asnReceiptId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new AsnReceiptDetailByIdQuery { AsnReceiptDetailId = asnReceiptId }));
 
         [HttpGet("asnReceiptId/{asnDetailId}")]
-        [AnyPermission(PermissionKeys.Asn_View, PermissionKeys.WarehouseStaff_Asn_View)]
+        [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnReceiptByAsnDetailId(int asnDetailId)
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(new AsnReceiptByAsnDetailIdQuery { AsnDetailId = asnDetailId }));

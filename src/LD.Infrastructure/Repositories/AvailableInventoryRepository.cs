@@ -46,7 +46,7 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
         }
     }
 
-    public async Task<List<AvailableInventory>> GetAllWithRelationsAsync(int? standardId = null, string? standardIdCode = null)
+    public async Task<List<AvailableInventory>> GetAllWithRelationsAsync(int? standardId = null)
     {
         IQueryable<AvailableInventory> query = _context.AvailableInventories
             .AsNoTracking()
@@ -57,20 +57,12 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
                 .ThenInclude(x => x!.Warehouse)
             .Include(x => x.StandardLabel);
 
-        var standardIdCodeText = standardIdCode?.Trim();
-        var hasStandardIdCodeText = !string.IsNullOrWhiteSpace(standardIdCodeText);
-
-        if (hasStandardIdCodeText)
+        if (standardId.HasValue)
         {
+            var standardIdText = standardId.Value.ToString();
             query = query.Where(x =>
-                x.StandardId.HasValue &&
-                _context.StandardLabels.Any(label =>
-                    label.StandarId == x.StandardId.Value &&
-                    label.StandarIdStr == standardIdCodeText));
-        }
-        else if (standardId.HasValue)
-        {
-            query = query.Where(x => x.StandardId == standardId.Value);
+                x.StandardId == standardId.Value ||
+                (x.StandardLabel != null && x.StandardLabel.StandarIdStr == standardIdText));
         }
 
         return await query

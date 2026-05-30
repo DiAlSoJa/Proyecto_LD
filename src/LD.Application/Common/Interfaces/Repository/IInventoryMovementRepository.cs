@@ -4,6 +4,6 @@ namespace LD.Application.Common.Interfaces.Repository
 {
     public interface IInventoryMovementRepository : IRepository<InventoryMovement>
     {
-        Task<List<InventoryMovement>> GetAllWithRelationsAsync(int? standardId = null, string? standardIdCode = null);
+        Task<List<InventoryMovement>> GetAllWithRelationsAsync(int? standardId = null);
     }
 }

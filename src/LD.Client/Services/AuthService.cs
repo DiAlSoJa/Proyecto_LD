@@ -32,7 +32,7 @@ namespace LD.Client.Services
         }
 
         public async Task<ApiResponseDto<LoginResponse>> RefreshTokenAsync(string refreshToken)
-            => await _api.PostWithoutAuthorizationAsync<RefreshTokenRequest, ApiResponseDto<LoginResponse>>(
+            => await _api.PostAsync<RefreshTokenRequest, ApiResponseDto<LoginResponse>>(
                 _endpoints.RefreshToken,
                 new RefreshTokenRequest { RefreshToken = refreshToken });
     }

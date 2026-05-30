@@ -5,7 +5,6 @@ using LD.Application.Features.Asn.Commands;
 using LD.Application.Features.Asn.Queries;
 using LD.Application.Features.Family.Queries;
 using LD.Contracts.Constants;
-using LD.Contracts.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,22 +16,15 @@ namespace LD.Api.Controllers
     public class AsnController : CommonController
     {
         [HttpGet]
-        [AnyPermission(PermissionKeys.Asn_View, PermissionKeys.WarehouseStaff_Asn_View)]
+        [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsn()
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(new AsnQuery()));
         }
 
-        [HttpGet("locating-pallets")]
-        [Permission(PermissionKeys.WarehouseStaff_Asn_View)]
-        public async Task<IActionResult> GetLocatingAsnPallets()
-        {
-            return ResultExtensions.ToActionResult(await Mediator.Send(new LocatingAsnPalletsQuery()));
-        }
-
     
         [HttpGet("{asnId}")]
-        [AnyPermission(PermissionKeys.Asn_View, PermissionKeys.WarehouseStaff_Asn_View)]
+        [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnById(int asnId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new AsnByIdQuery(asnId)));
 
@@ -40,7 +32,7 @@ namespace LD.Api.Controllers
 
 
         [HttpGet("{clientId}/{projectId}")]
-        [AnyPermission(PermissionKeys.Asn_View, PermissionKeys.WarehouseStaff_Asn_View)]
+        [Permission(PermissionKeys.Asn_View)]
         public async Task<IActionResult> GetAsnByClient(int clientId, int projectId)
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(new AsnByClientIdQuery { ClientId = clientId, ProjectId=projectId }));
@@ -96,21 +88,6 @@ namespace LD.Api.Controllers
             var command = new LocateAsnCommand
             {
                 AsnId = asnId,
-                UserId = CurrentUserId
-            };
-
-            return ResultExtensions.ToActionResult(await Mediator.Send(command));
-        }
-
-        [HttpPost("{asnId}/locate-pallet")]
-        [Permission(PermissionKeys.WarehouseStaff_Asn_Execute)]
-        public async Task<IActionResult> LocateAsnPallet(int asnId, [FromBody] LocateAsnPalletRequest request)
-        {
-            var command = new LocateAsnPalletCommand
-            {
-                AsnId = asnId,
-                StandardId = request.StandardId,
-                UbicacionDestino = request.UbicacionDestino,
                 UserId = CurrentUserId
             };
 

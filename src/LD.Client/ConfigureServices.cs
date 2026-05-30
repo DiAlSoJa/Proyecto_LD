@@ -18,7 +18,6 @@ namespace LD.Client
             services.AddSingleton<ApiEndpoints>();
 
             services.AddSingleton<ApiService>();
-
             services.AddScoped<AuthService>();
             services.AddScoped<ClientService>();
             services.AddScoped<ModuleService>();

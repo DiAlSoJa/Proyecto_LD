@@ -160,8 +160,7 @@ namespace LD.Infrastructure
 
                 // 🔹 Actualizar propiedades
                 user.UserName = request.Username;
-                if (request.Email is not null)
-                    user.Email = request.Email;
+                user.Email = request.Email;
                 user.IsActive = request.IsActive;
                 user.FullName = request.Name;
 

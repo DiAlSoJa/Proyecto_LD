@@ -30,11 +30,6 @@ namespace LD.Client.Services
             return await _api.GetAsync<ApiResponseDto<List<AsnDto>>>(_apiEndpoints.Asn_GetAll);
         }
 
-        public async Task<ApiResponseDto<List<LocatingAsnPalletDto>>> GetLocatingAsnPallets()
-        {
-            return await _api.GetAsync<ApiResponseDto<List<LocatingAsnPalletDto>>>(_apiEndpoints.Asn_GetLocatingPallets);
-        }
-
 
         public async Task<ApiResponseDto<string>> CreateAsn(AsnRequest request)
         {
@@ -65,19 +60,6 @@ namespace LD.Client.Services
             return await _api.PostAsync<object, ApiResponseDto<string>>(
                 _apiEndpoints.Asn_Locate.Replace("{asnId}", asnId.ToString()),
                 new { });
-        }
-
-        public async Task<ApiResponseDto<string>> LocateAsnPallet(int asnId, int standardId, string ubicacionDestino)
-        {
-            var request = new LocateAsnPalletRequest
-            {
-                StandardId = standardId,
-                UbicacionDestino = ubicacionDestino
-            };
-
-            return await _api.PostAsync<LocateAsnPalletRequest, ApiResponseDto<string>>(
-                _apiEndpoints.Asn_LocatePallet.Replace("{asnId}", asnId.ToString()),
-                request);
         }
     }
 }

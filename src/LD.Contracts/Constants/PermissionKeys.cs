@@ -93,9 +93,6 @@ public static class PermissionKeys
     // REPORTS
     public const string Report_View = "reports.read";
 
-    // STANDARD LABELS / IMPRESION
-    public const string StandardLabel_Print = "standard-label.print";
-
     // USERS
     public const string User_View = "users.read";
     public const string User_Create = "users.create";

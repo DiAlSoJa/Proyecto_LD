@@ -71,9 +71,4 @@ public class OperationalTaskService
     {
         return _apiEndpoints.OperationalTask_GetImage.Replace("{path}", Uri.EscapeDataString(relativePath));
     }
-
-    public async Task<byte[]> DownloadImage(string relativePath)
-    {
-        return await _api.GetByteArrayAsync(GetImageUrl(relativePath));
-    }
 }

@@ -10,6 +10,7 @@ public partial class MovementDetail : ContentPage
 {
     private readonly InventoryMovementService _inventoryMovementService;
     private readonly AvailableInventoryService _availableInventoryService;
+    private readonly StandardLabelService _standardLabelService;
     private bool _loaded;
     private string _standardId = string.Empty;
     private string _inventoryStatus = "Cargando inventario...";
@@ -18,11 +19,13 @@ public partial class MovementDetail : ContentPage
 
     public MovementDetail(
         InventoryMovementService inventoryMovementService,
-        AvailableInventoryService availableInventoryService)
+        AvailableInventoryService availableInventoryService,
+        StandardLabelService standardLabelService)
     {
         InitializeComponent();
         _inventoryMovementService = inventoryMovementService;
         _availableInventoryService = availableInventoryService;
+        _standardLabelService = standardLabelService;
         BindingContext = this;
     }
 
@@ -89,8 +92,8 @@ public partial class MovementDetail : ContentPage
         InventoryItems.Clear();
         Movements.Clear();
 
-        var standardIdCode = StandardId?.Trim() ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(standardIdCode))
+        var standardId = await ResolveStandardIdAsync(StandardId);
+        if (!standardId.HasValue)
         {
             InventoryStatus = "StandardId inválido.";
             MovementStatus = "No se cargaron movimientos.";
@@ -103,7 +106,7 @@ public partial class MovementDetail : ContentPage
             InventoryStatus = "Cargando inventario...";
             MovementStatus = "Cargando movimientos...";
 
-            var inventoryResponse = await _availableInventoryService.GetAvailableInventoriesByStandardIdCode(standardIdCode);
+            var inventoryResponse = await _availableInventoryService.GetAvailableInventories(standardId.Value);
             if (inventoryResponse.IsSuccess && inventoryResponse.Data != null)
             {
                 foreach (var item in inventoryResponse.Data.OrderBy(x => x.Ubicacion).ThenBy(x => x.PartNumber))
@@ -118,7 +121,7 @@ public partial class MovementDetail : ContentPage
                 InventoryStatus = inventoryResponse.Message ?? "No se pudo cargar el inventario.";
             }
 
-            var movementResponse = await _inventoryMovementService.GetInventoryMovementsByStandardIdCode(standardIdCode);
+            var movementResponse = await _inventoryMovementService.GetInventoryMovements(standardId.Value);
             if (movementResponse.IsSuccess && movementResponse.Data != null)
             {
                 foreach (var movement in movementResponse.Data.OrderByDescending(x => x.MovementId))
@@ -144,4 +147,22 @@ public partial class MovementDetail : ContentPage
         }
     }
 
+    private async Task<int?> ResolveStandardIdAsync(string? standardIdValue)
+    {
+        var value = standardIdValue?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        if (int.TryParse(value, out var parsedStandardId) && parsedStandardId > 0)
+            return parsedStandardId;
+
+        var labelResponse = await _standardLabelService.GetByCode(value);
+        if (!labelResponse.IsSuccess || labelResponse.Data is null || labelResponse.Data.StandarId <= 0)
+        {
+            InventoryStatus = labelResponse.Message ?? "No se encontró la etiqueta StandardId capturada.";
+            return null;
+        }
+
+        return labelResponse.Data.StandarId;
+    }
 }

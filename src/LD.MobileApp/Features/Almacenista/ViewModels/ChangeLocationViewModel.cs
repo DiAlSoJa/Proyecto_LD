@@ -7,7 +7,6 @@ public partial class ChangeLocationViewModel : ObservableObject
 {
     private readonly AvailableInventoryService _availableInventoryService;
     private readonly StandardLabelService _standardLabelService;
-    private readonly AsnService _asnService;
 
     [ObservableProperty]
     private string estandarId = string.Empty;
@@ -21,30 +20,12 @@ public partial class ChangeLocationViewModel : ObservableObject
     [ObservableProperty]
     private bool isBusy;
 
-    private string instructionText = string.Empty;
-
-    public int AsnId { get; set; }
-
-    public bool HasInstructionText => !string.IsNullOrWhiteSpace(InstructionText);
-
-    public string InstructionText
-    {
-        get => instructionText;
-        set
-        {
-            if (SetProperty(ref instructionText, value))
-                OnPropertyChanged(nameof(HasInstructionText));
-        }
-    }
-
     public ChangeLocationViewModel(
         AvailableInventoryService availableInventoryService,
-        StandardLabelService standardLabelService,
-        AsnService asnService)
+        StandardLabelService standardLabelService)
     {
         _availableInventoryService = availableInventoryService;
         _standardLabelService = standardLabelService;
-        _asnService = asnService;
     }
 
     public async Task OnSiguienteClicked()
@@ -76,9 +57,7 @@ public partial class ChangeLocationViewModel : ObservableObject
             if (!standardId.HasValue)
                 return;
 
-            var response = AsnId > 0
-                ? await _asnService.LocateAsnPallet(AsnId, standardId.Value, ubicacionDestino)
-                : await _availableInventoryService.ChangeLocation(standardId.Value, ubicacionDestino);
+            var response = await _availableInventoryService.ChangeLocation(standardId.Value, ubicacionDestino);
 
             if (!response.IsSuccess)
             {

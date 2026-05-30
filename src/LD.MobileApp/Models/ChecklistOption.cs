@@ -1,18 +1,11 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace MauiAppLogin.Models;
-
-public partial class ChecklistOption : ObservableObject
+namespace MauiAppLogin.Models
 {
-    public ChecklistOption(ChecklistQuestion question, string text)
+    public class ChecklistOption
     {
-        Question = question;
-        Text = text;
+        public string Text { get; set; } = string.Empty;
     }
-
-    public ChecklistQuestion Question { get; }
-    public string Text { get; }
-
-    [ObservableProperty]
-    private bool isSelected;
 }

@@ -115,17 +115,6 @@
 
                     <Button Height="34"
                             MinWidth="110"
-                            Margin="0,18,8,10"
-                            Click="VerDetalle_Click"
-                            Background="#233167"
-                            Foreground="White"
-                            BorderThickness="0"
-                            Cursor="Hand">
-                        <TextBlock Text="Ver detalle"/>
-                    </Button>
-
-                    <Button Height="34"
-                            MinWidth="110"
                             Margin="0,18,0,10"
                             Command="{Binding LimpiarFiltrosCommand}"
                             Background="#F3F4F6"
