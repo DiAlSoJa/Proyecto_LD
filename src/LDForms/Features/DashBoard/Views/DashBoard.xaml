@@ -1,4 +1,4 @@
-<Window x:Class="LDForms.DashBoard"
+﻿<Window x:Class="LDForms.DashBoard"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,18 +11,30 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="CanResize"
-        Background="{StaticResource AppBg}"
-        >
+        Background="#DDE3E8"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
-        <!-- Estilos locales — todos los colores provienen de AppTheme.xaml (nivel App) -->
+        <SolidColorBrush x:Key="AppBg" Color="#DDE3E8"/>
+        <SolidColorBrush x:Key="MainBg" Color="#F7F9FC"/>
+        <SolidColorBrush x:Key="CardBg" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="BorderSoft" Color="#E1E7EF"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#233167"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#233167"/>
+        <SolidColorBrush x:Key="AccentBlue" Color="#233167"/>
+
+        <DropShadowEffect x:Key="CardShadow"
+                          BlurRadius="12"
+                          ShadowDepth="2"
+                          Opacity="0.10"
+                          Color="#000000"/>
 
         <Style x:Key="WindowCommandButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="46"/>
             <Setter Property="Height" Value="32"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Foreground" Value="{StaticResource BtnIconColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -33,7 +45,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource BtnChromeHover}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#E5E7EB"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -50,8 +62,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource WindowCloseBg}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TextOnPrimary}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#E81123"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -73,10 +85,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource BtnIconHover}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#E9EDF3"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource BtnIconPressed}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#DCE3EC"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -88,7 +100,7 @@
             <Setter Property="Width" Value="180"/>
             <Setter Property="Height" Value="100"/>
             <Setter Property="Margin" Value="12"/>
-            <Setter Property="Background" Value="{StaticResource SurfaceCard}"/>
+            <Setter Property="Background" Value="{StaticResource CardBg}"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderSoft}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -101,11 +113,12 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="14"
                                 Effect="{StaticResource CardShadow}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#D5DDE7"/>
                                 <Setter TargetName="Bd" Property="RenderTransform">
                                     <Setter.Value>
                                         <TranslateTransform Y="-2"/>
@@ -131,6 +144,14 @@
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
         </Style>
 
+        <SolidColorBrush x:Key="TabActiveBg" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TabInactiveBg" Color="#EEF2F7"/>
+        <SolidColorBrush x:Key="TabHoverBg" Color="#E7EDF5"/>
+        <SolidColorBrush x:Key="TabBorderBrush" Color="#D9E1EC"/>
+        <SolidColorBrush x:Key="TabActiveBorder" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="TabTextActive" Color="#0F172A"/>
+        <SolidColorBrush x:Key="TabTextInactive" Color="#475569"/>
+
         <Style x:Key="ElegantTabControlStyle" TargetType="TabControl">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -145,25 +166,25 @@
                             </Grid.RowDefinitions>
 
                             <Border Grid.Row="0"
-                                    Background="{StaticResource SurfaceTabHeader}"
-                                    BorderBrush="{StaticResource TabBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="12,12,0,0"
-                                    Padding="8,8,8,0">
+                            Background="#F8FAFC"
+                            BorderBrush="{StaticResource TabBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12,12,0,0"
+                            Padding="8,8,8,0">
                                 <TabPanel x:Name="HeaderPanel"
-                                          IsItemsHost="True"
-                                          Background="Transparent"/>
+                                  IsItemsHost="True"
+                                  Background="Transparent"/>
                             </Border>
 
                             <Border Grid.Row="1"
-                                    Background="{StaticResource SurfaceCard}"
-                                    BorderBrush="{StaticResource TabBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="0,0,12,12"
-                                    Padding="10">
+                            Background="White"
+                            BorderBrush="{StaticResource TabBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="0,0,12,12"
+                            Padding="10">
                                 <ContentPresenter x:Name="PART_SelectedContentHost"
-                                                  ContentSource="SelectedContent"
-                                                  Margin="0"/>
+                                          ContentSource="SelectedContent"
+                                          Margin="0"/>
                             </Border>
                         </Grid>
                     </ControlTemplate>
@@ -172,7 +193,7 @@
         </Style>
 
         <Style x:Key="ElegantTabItemStyle" TargetType="TabItem">
-            <Setter Property="Foreground" Value="{StaticResource TabTextInactive}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,0,0,0"/>
@@ -183,23 +204,23 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
                         <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="5,5,0,0"
-                                Padding="{TemplateBinding Padding}">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="5,5,0,0"
+                        Padding="{TemplateBinding Padding}">
                             <ContentPresenter x:Name="ContentSite"
-                                              ContentSource="Header"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              RecognizesAccessKey="True"/>
+                                      ContentSource="Header"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"/>
                         </Border>
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource TabAccentBorder}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TabTextActive}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource TabActiveBorder}"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
                             </Trigger>
 
                             <Trigger Property="IsMouseOver" Value="True">
@@ -226,7 +247,7 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TabCloseIcon}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -234,17 +255,18 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="9">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="9">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabCloseHover}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TabCloseHoverFg}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#E2E8F0"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabClosePressed}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#CBD5E1"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -252,29 +274,16 @@
             </Setter>
         </Style>
 
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-        <ContextMenu x:Key="DefaultTileContextMenu"
-                     x:Shared="False"
-                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Abrir en pestaña"
-                      Command="{Binding OpenCommand}"/>
-            <MenuItem Header="Abrir en ventana"
-                      Command="{Binding OpenInWindowCommand}"/>
-        </ContextMenu>
 
-        <ContextMenu x:Key="PrintTileContextMenu"
-                     x:Shared="False"
-                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="{Binding PrintMenuHeader}"
-                      Command="{Binding OpenCommand}"/>
-        </ContextMenu>
+
+
 
     </Window.Resources>
 
     <Grid Background="{StaticResource AppBg}">
-        <Border Background="{StaticResource SurfaceMain}"
-                BorderBrush="{StaticResource BorderStrong}"
+        <Border Background="{StaticResource MainBg}"
+                BorderBrush="#C9D2DC"
                 BorderThickness="1">
 
             <Grid>
@@ -285,7 +294,7 @@
 
                 <!-- Barra superior -->
                 <Grid Grid.Row="0"
-                      Background="{StaticResource SurfaceTitleBar}"
+                      Background="#EEF2F6"
                       MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
 
                     <Grid.ColumnDefinitions>
@@ -302,11 +311,11 @@
                         <Border Width="22"
                                 Height="22"
                                 CornerRadius="5"
-                                Background="{StaticResource AppPrimary}"/>
+                                Background="#233167"/>
                         <TextBlock Text="LD Warehouse"
                                    Margin="10,0,0,0"
                                    VerticalAlignment="Center"
-                                   Foreground="{StaticResource AppPrimary}"
+                                   Foreground="#233167"
                                    FontSize="13"
                                    FontWeight="SemiBold"/>
                     </StackPanel>
@@ -316,8 +325,8 @@
                             Height="30"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Background="{StaticResource SurfaceCard}"
-                            BorderBrush="{StaticResource BorderSoft}"
+                            Background="White"
+                            BorderBrush="#E2E8F0"
                             BorderThickness="1"
                             CornerRadius="14">
                         <Grid Margin="12,0">
@@ -328,7 +337,7 @@
 
                             <TextBlock Text="⌕"
                                        VerticalAlignment="Center"
-                                       Foreground="{StaticResource TextSecondary}"
+                                       Foreground="{StaticResource TextPrimary}"
                                        FontSize="14"/>
 
                             <TextBox x:Name="txtBuscarGlobal"
@@ -337,9 +346,11 @@
                                      Background="Transparent"
                                      FontSize="13"
                                      VerticalContentAlignment="Center"
-                                     Foreground="{StaticResource TextSecondary}"
-                                     materialDesign:HintAssist.Hint="Buscar módulo..."
-                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                                     Foreground="{StaticResource TextPrimary}"
+                                     TextChanged="TxtBuscarGlobal_TextChanged"
+                                     GotFocus="TxtBuscarGlobal_GotFocus"
+                                     LostFocus="TxtBuscarGlobal_LostFocus"
+                                     Tag="Buscar módulo..."/>
                         </Grid>
                     </Border>
 
@@ -352,7 +363,7 @@
                             <materialDesign:PackIcon Kind="BellOutline"
                                                      Width="20"
                                                      Height="20"
-                                                     Foreground="{StaticResource TextSecondary}"/>
+                                                     Foreground="{StaticResource TextPrimary}"/>
                         </Button>
 
                         <Grid Margin="6,0,0,0">
@@ -362,12 +373,12 @@
                                 <materialDesign:PackIcon Kind="AccountCircleOutline"
                                                          Width="22"
                                                          Height="22"
-                                                         Foreground="{StaticResource TextSecondary}"/>
+                                                         Foreground="{StaticResource TextPrimary}"/>
                             </Button>
 
                             <Ellipse Width="8"
                                      Height="8"
-                                     Fill="{StaticResource AccentError}"
+                                     Fill="#EF4444"
                                      HorizontalAlignment="Right"
                                      VerticalAlignment="Top"
                                      Margin="0,5,5,0"/>
@@ -379,8 +390,8 @@
                                    AllowsTransparency="True"
                                    PopupAnimation="Fade"
                                    HorizontalOffset="-120">
-                                <Border Background="{StaticResource SurfaceCard}"
-                                        BorderBrush="{StaticResource BorderSoft}"
+                                <Border Background="White"
+                                        BorderBrush="#E2E8F0"
                                         BorderThickness="1"
                                         CornerRadius="10"
                                         Padding="0,8"
@@ -397,12 +408,11 @@
                                                        FontSize="14" FontWeight="SemiBold"
                                                        Foreground="{StaticResource TextPrimary}"/>
                                             <TextBlock Text="Usuario activo"
-                                                       FontSize="11"
-                                                       Foreground="{StaticResource TextSecondary}"
+                                                       FontSize="11" Foreground="{StaticResource TextPrimary}"
                                                        Margin="0,2,0,0"/>
                                         </StackPanel>
 
-                                        <Separator Background="{StaticResource SurfaceSubtle}" Margin="0,0,0,4"/>
+                                        <Separator Background="#F1F5F9" Margin="0,0,0,4"/>
 
                                         <!-- Cerrar sesión -->
                                         <Button Click="BtnCerrarSesion_Click"
@@ -418,7 +428,7 @@
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentErrorBg}"/>
+                                                            <Setter TargetName="Bd" Property="Background" Value="#FEF2F2"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -426,11 +436,10 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Kind="LogoutVariant"
                                                                          Width="16" Height="16"
-                                                                         Foreground="{StaticResource AccentError}"
+                                                                         Foreground="#EF4444"
                                                                          VerticalAlignment="Center"/>
                                                 <TextBlock Text="Cerrar sesión"
-                                                           FontSize="13"
-                                                           Foreground="{StaticResource AccentError}"
+                                                           FontSize="13" Foreground="#EF4444"
                                                            VerticalAlignment="Center"
                                                            Margin="8,0,0,0"/>
                                             </StackPanel>
@@ -445,7 +454,7 @@
                             <materialDesign:PackIcon Kind="DotsVertical"
                                                      Width="18"
                                                      Height="18"
-                                                     Foreground="{StaticResource TextSecondary}"/>
+                                                     Foreground="{StaticResource TextPrimary}"/>
                         </Button>
                     </StackPanel>
 
@@ -466,64 +475,472 @@
                                 Click="BtnClose_Click"/>
                     </StackPanel>
                 </Grid>
-
                 <Grid Grid.Row="1" Margin="0">
                     <Grid.RowDefinitions>
+                        
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
+
                     <Grid Grid.Row="1" Margin="12">
                         <TabControl x:Name="MainTabControl"
-                                    Style="{StaticResource ElegantTabControlStyle}">
+                Style="{StaticResource ElegantTabControlStyle}">
                             <TabItem x:Name="TabMenu"
-                                     Style="{StaticResource ElegantTabItemStyle}">
+                 Style="{StaticResource ElegantTabItemStyle}">
                                 <TabItem.Header>
                                     <TextBlock Text="Menú"/>
                                 </TabItem.Header>
 
                                 <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                              HorizontalScrollBarVisibility="Disabled"
-                                              Background="Transparent">
-                                    <ItemsControl ItemsSource="{Binding TilesView}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel HorizontalAlignment="Center"
-                                                           Margin="12"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
+                          HorizontalScrollBarVisibility="Disabled"
+                          Background="Transparent">
+                                    <WrapPanel x:Name="DashboardPanel"
+                                       HorizontalAlignment="Center"
+                                       Margin="12">
+                                        <!-- Clientes-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ClientesBtn"
+                                             Tag="Clientes"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="AccountGroupOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Clientes"
+                                               Margin="0,14,0,0"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimary}"
+                                               HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
 
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Button Command="{Binding OpenCommand}"
-                                                        Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button" BasedOn="{StaticResource DashboardTileStyle}">
-                                                            <Setter Property="ContextMenu" Value="{StaticResource DefaultTileContextMenu}"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsPrintTile}" Value="True">
-                                                                    <Setter Property="ContextMenu" Value="{StaticResource PrintTileContextMenu}"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
+                                        <!-- Proyectos-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ProyectosBtn"
+                                             Tag="Proyectos"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ClipboardListOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Proyectos"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <!-- Almacenes-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="AlmacenesBtn"
+                                             Tag="Almacenes"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="Warehouse"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Almacén"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <!-- Ubicaciones-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="UbicacionesBtn"
+                                             Tag="Ubicaciones"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="MapMarkerOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Ubicaciones"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
 
-                                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                        <materialDesign:PackIcon Kind="{Binding IconKind}"
-                                                                                 Width="44"
-                                                                                 Height="44"
-                                                                                 Foreground="{Binding IconColor}"
-                                                                                 HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding Title}"
-                                                                   Margin="0,14,0,0"
-                                                                   FontSize="15"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="{StaticResource TextPrimary}"
-                                                                   HorizontalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </Button>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+
+                                        <!-- Articulos-->                                       
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ArticulosBtn"
+                                             Tag="Articulos"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="CubeOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Artículos"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <!-- Inventario-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="InventarioBtn"
+                                             Tag="Inventario"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ClipboardCheckOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Inventario"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Movimientos-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="MovimientosBtn"
+                                             Tag="Movimientos"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="SwapHorizontal"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Movimientos"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- ASN-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="AsnBtn"
+                                             Tag="ASN"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="PackageVariantClosed"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="ASN"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Auditar-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="AuditoriaBtn"
+                                             Tag="Auditar"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ClipboardSearchOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Auditar"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Inventario aleatorio-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="InventarioRandomBtn"
+                                             Tag="Aleatorio"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ShuffleVariant"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Inventario aleatorio"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Usuarios-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="UsuariosBtn"
+                                             Tag="Usuarios"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="AccountMultipleOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Usuarios"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- CheckList montacargas-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ChecklistBtn"
+                                             Tag="CheckList"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="Forklift"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Checklist montacargas"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Catalogos-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="CatalogosBtn"
+                                             Tag="Catalogos"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ViewGridOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Catálogos"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Surtido-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="SurtidoBtn"
+                                             Tag="Surtido"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ClipboardArrowDownOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Surtido"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Embarques-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="EmbarquesBtn"
+                                             Tag="Embarques"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="TruckDeliveryOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Embarques"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Reportes-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ReportesBtn"
+                                             Tag="Reportes"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ChartBar"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Reportes"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Diagrama de base de datos-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="DatabaseDiagramBtn"
+                                             Tag="DatabaseDiagram"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="Database"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Diagrama BD"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Reporte de daños-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ReporteDanosBtn"
+                                             Tag="ReporteDanos"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="AlertCircleOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Reporte de daños"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Tareas-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="TareasBtn"
+                                             Tag="Tareas"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="ClipboardSearchOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Tareas"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Impresion-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="ImpresionBtn"
+                                             Tag="Impresion"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="PrinterOutline"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="impresion"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Control de Patio-->
+                                        <Button Style="{StaticResource DashboardTileStyle}"
+                                                x:Name="PatioBtn"
+                                             Tag="Patio"
+                                                Click="DashboardTile_Click"
+                                                MouseRightButtonUp="DashboardTile_RightClick">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="Parking"
+                                                     Width="44"
+                                                     Height="44"
+                                                     Foreground="{StaticResource TextPrimary}"
+                                                     HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Control de patio"
+                                                   Margin="0,14,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        
+                                       
+                                        
+
+                                      
+                                    </WrapPanel>
                                 </ScrollViewer>
                             </TabItem>
                         </TabControl>

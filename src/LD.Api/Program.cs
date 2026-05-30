@@ -54,6 +54,7 @@ builder.Services.AddInfrastructureRepositories(builder.Configuration);
 
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, AnyPermissionHandler>();
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
@@ -173,6 +174,22 @@ using (var scope = app.Services.CreateScope())
     {
         authOptions.Value.AddPolicy(permission, policy =>
             policy.Requirements.Add(new PermissionRequirement(permission)));
+    }
+
+    var anyPermissionPolicies = new[]
+    {
+        AnyPermissionRequirement.BuildPolicyName(new[]
+        {
+            PermissionKeys.Asn_View,
+            PermissionKeys.WarehouseStaff_Asn_View
+        })
+    };
+
+    foreach (var policyName in anyPermissionPolicies)
+    {
+        var policyPermissions = AnyPermissionRequirement.ParsePolicyName(policyName);
+        authOptions.Value.AddPolicy(policyName, policy =>
+            policy.Requirements.Add(new AnyPermissionRequirement(policyPermissions)));
     }
 }
 

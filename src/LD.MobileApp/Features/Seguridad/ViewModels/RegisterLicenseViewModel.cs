@@ -1,13 +1,9 @@
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
-using LD.Contracts.Enums;
-using MauiAppLogin.Controls;
+using MauiAppLogin.Common.Imaging;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
-using MauiAppLogin.Views.Controls;
 using MvvmHelpers.Commands;
 using Plugin.Maui.OCR;
-using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Command = MvvmHelpers.Commands.Command;
@@ -19,7 +15,6 @@ public partial class RegisterLicenseViewModel : ObservableObject
 {
     private readonly SecurityRegistrationContext _context;
     private readonly ILoaderService _loaderService;
-    private readonly IDialogService _dialogService;
 
     public ILoaderService Loader => _loaderService;
 
@@ -42,69 +37,62 @@ public partial class RegisterLicenseViewModel : ObservableObject
     private ImageSource? previewImage;
 
     [ObservableProperty]
+    private ImageSource? thumb1;
+
+    [ObservableProperty]
+    private ImageSource? thumb2;
+
+    [ObservableProperty]
     private bool isBusy;
 
-    public ObservableCollection<LicensePhotoItem> Photos { get; } = new();
+    private byte[]? _foto1Bytes;
+    private byte[]? _foto2Bytes;
 
     public ICommand CapturarCommand { get; }
+    public ICommand GaleriaCommand { get; }
     public ICommand CancelarCommand { get; }
     public ICommand SiguienteCommand { get; }
     public ICommand AtrasCommand { get; }
-    public ICommand RemovePhotoCommand { get; }
-    public ICommand ViewPhotoCommand { get; }
 
-    public RegisterLicenseViewModel(
-        SecurityRegistrationContext context,
-        ILoaderService loaderService,
-        IDialogService dialogService)
+    public RegisterLicenseViewModel(SecurityRegistrationContext context, ILoaderService loaderService)
     {
-        _context       = context;
+        _context = context;
         _loaderService = loaderService;
-        _dialogService = dialogService;
 
-        CapturarCommand    = new AsyncCommand(CapturarAsync);
-        CancelarCommand    = new Command(Cancelar);
-        SiguienteCommand   = new AsyncCommand(SiguienteAsync);
-        AtrasCommand       = new AsyncCommand(AtrasAsync);
-        RemovePhotoCommand = new MvvmHelpers.Commands.Command<LicensePhotoItem>(RemovePhoto);
-        ViewPhotoCommand   = new MvvmHelpers.Commands.Command<LicensePhotoItem>(ViewPhoto);
+        CapturarCommand = new AsyncCommand(CapturarAsync);
+        GaleriaCommand = new AsyncCommand(SeleccionarGaleriaAsync);
+        CancelarCommand = new Command(Cancelar);
+        SiguienteCommand = new AsyncCommand(SiguienteAsync);
+        AtrasCommand = new AsyncCommand(AtrasAsync);
 
         LoadFromContext();
     }
 
     private void LoadFromContext()
     {
-        if (!string.IsNullOrEmpty(_context.Nombre))   Nombre   = _context.Nombre;
+        if (!string.IsNullOrEmpty(_context.Nombre)) Nombre = _context.Nombre;
         if (!string.IsNullOrEmpty(_context.Licencia)) Licencia = _context.Licencia;
-        if (_context.Vencimiento != default)          Vencimiento = _context.Vencimiento;
-        if (!string.IsNullOrEmpty(_context.Celular))  Celular  = _context.Celular;
+        if (_context.Vencimiento != default) Vencimiento = _context.Vencimiento;
+        if (!string.IsNullOrEmpty(_context.Celular)) Celular = _context.Celular;
 
-        Photos.Clear();
-        foreach (var entry in _context.LicenciaFotos)
-        {
-            Photos.Add(new LicensePhotoItem
-            {
-                Bytes  = entry.Bytes,
-                Orden  = entry.Orden,
-                Source = ImageSource.FromStream(() => new MemoryStream(entry.Bytes)),
-            });
-        }
+        _foto1Bytes = _context.LicenciaFoto1;
+        _foto2Bytes = _context.LicenciaFoto2;
+
+        if (_foto1Bytes is not null)
+            Thumb1 = ImageSource.FromStream(() => new MemoryStream(_foto1Bytes));
+        if (_foto2Bytes is not null)
+            Thumb2 = ImageSource.FromStream(() => new MemoryStream(_foto2Bytes));
     }
 
     private void SaveToContext()
     {
-        _context.Tipo      = Tipo;
-        _context.Nombre    = Nombre;
-        _context.Licencia  = Licencia;
+        _context.Tipo = Tipo;
+        _context.Nombre = Nombre;
+        _context.Licencia = Licencia;
         _context.Vencimiento = Vencimiento;
-        _context.Celular   = Celular;
-
-        _context.LicenciaFotos = Photos.Select(p => new SecurityPhotoEntry
-        {
-            Categoria = PhotoCategoria_e.Licencia,
-            Orden     = p.Orden,
-            Bytes     = p.Bytes,
-        }).ToList();
+        _context.Celular = Celular;
+        _context.LicenciaFoto1 = _foto1Bytes;
+        _context.LicenciaFoto2 = _foto2Bytes;
     }
 
     private async Task CapturarAsync()
@@ -113,13 +101,45 @@ public partial class RegisterLicenseViewModel : ObservableObject
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await _dialogService.ShowInfoAsync("Cámara", "Este dispositivo no soporta captura de fotos.");
+                await Shell.Current.DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
                 return;
             }
 
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo is null) return;
 
+            await ProcesarFotoAsync(photo);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task SeleccionarGaleriaAsync()
+    {
+        try
+        {
+            var photos = await MediaPicker.Default.PickPhotosAsync(new MediaPickerOptions
+            {
+                Title = "Selecciona una imagen de la licencia"
+            });
+            var photo = photos?.FirstOrDefault();
+
+            if (photo is null) return;
+
+            await ProcesarFotoAsync(photo);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task ProcesarFotoAsync(FileResult photo)
+    {
+        try
+        {
             _loaderService.Show("Procesando imagen...");
 
             await using var stream = await photo.OpenReadAsync();
@@ -132,19 +152,23 @@ public partial class RegisterLicenseViewModel : ObservableObject
             if (!string.IsNullOrWhiteSpace(text))
                 ParseLicense(text);
 
-            var img = ImageSource.FromStream(() => new MemoryStream(bytes));
-            PreviewImage = img;
+            var bytesFinales = await ComprimirImagenAsync(bytes);
+            var img = ImageSource.FromStream(() => new MemoryStream(bytesFinales));
 
-            Photos.Add(new LicensePhotoItem
+            if (_foto1Bytes is null)
             {
-                Bytes  = bytes,
-                Orden  = Photos.Count,
-                Source = img,
-            });
+                _foto1Bytes = bytesFinales;
+                Thumb1 = img;
+            }
+            else
+            {
+                _foto2Bytes = bytesFinales;
+                Thumb2 = img;
+            }
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Error", ex.Message);
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
         }
         finally
         {
@@ -152,8 +176,21 @@ public partial class RegisterLicenseViewModel : ObservableObject
         }
     }
 
+    private static async Task<byte[]> ComprimirImagenAsync(byte[] bytes)
+    {
+        try
+        {
+            return await ImageCompressor.ComprimirAsync(bytes);
+        }
+        catch
+        {
+            return bytes;
+        }
+    }
+
     private void ParseLicense(string text)
     {
+        // Nombre: etiqueta explícita primero, luego línea con dos o más palabras en mayúsculas
         var nombreLabel = Regex.Match(text,
             @"(?:NOMBRE|NAME)[:\s]+([A-ZÁÉÍÓÚÜÑ][A-ZÁÉÍÓÚÜÑ\s]{3,60})",
             RegexOptions.IgnoreCase);
@@ -171,24 +208,10 @@ public partial class RegisterLicenseViewModel : ObservableObject
                 Nombre = nombreBloque.Groups[1].Value.Trim();
         }
 
+        // Licencia: número de 6-12 dígitos (evita años y teléfonos cortos)
         var licMatch = Regex.Match(text, @"\b(\d{6,12})\b");
         if (licMatch.Success)
             Licencia = licMatch.Groups[1].Value;
-    }
-
-    private void RemovePhoto(LicensePhotoItem? item)
-    {
-        if (item is null) return;
-        Photos.Remove(item);
-        for (int i = 0; i < Photos.Count; i++)
-            Photos[i].Orden = i;
-    }
-
-    private void ViewPhoto(LicensePhotoItem? item)
-    {
-        if (item?.Source is null) return;
-        (Shell.Current.CurrentPage ?? Application.Current?.MainPage)
-            ?.ShowPopup(new ImagePreviewPopup(item.Source));
     }
 
     private void Cancelar()
@@ -198,18 +221,12 @@ public partial class RegisterLicenseViewModel : ObservableObject
 
     private async Task SiguienteAsync()
     {
-        if (string.IsNullOrEmpty(Tipo)     ||
+        if (string.IsNullOrEmpty(Tipo) ||
             string.IsNullOrEmpty(Licencia) ||
-            string.IsNullOrEmpty(Nombre)   ||
+            string.IsNullOrEmpty(Nombre) ||
             string.IsNullOrEmpty(Celular))
         {
-            await _dialogService.ShowInfoAsync("Atención", "Llene todos los campos, por favor.");
-            return;
-        }
-
-        if (Photos.Count < 2)
-        {
-            await _dialogService.ShowInfoAsync("Atención", "Agregue al menos 2 fotos de la licencia.");
+            await Shell.Current.DisplayAlertAsync("Atención", "Llene todos los campos, por favor.", "OK");
             return;
         }
 
@@ -222,11 +239,4 @@ public partial class RegisterLicenseViewModel : ObservableObject
         _context.Clear();
         await Shell.Current.GoToAsync("..");
     }
-}
-
-public class LicensePhotoItem
-{
-    public byte[] Bytes { get; set; } = Array.Empty<byte>();
-    public int Orden { get; set; }
-    public ImageSource? Source { get; set; }
 }

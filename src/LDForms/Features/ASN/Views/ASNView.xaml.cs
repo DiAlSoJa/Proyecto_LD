@@ -720,36 +720,13 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
-        private async void BtnExportarExcel_Click(object sender, RoutedEventArgs e)
+        private void BtnExportarExcel_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (_selectedX == null || _selectedX.AsnId <= 0)
+                if (!HasExportableRows(dgASN) && !HasExportableRows(dgDetalleASN) && !HasExportableRows(dgRecepcionASN))
                 {
-                    DialogHelper.ShowWarning("Selecciona un ASN para exportar.");
-                    return;
-                }
-
-                MostrarLoader(true, "Preparando Excel...");
-
-                var detailsResult = await _asnDetailService.GetAsnDetailsByAsn(_selectedX.AsnId);
-                if (!detailsResult.IsSuccess || detailsResult.Data == null || detailsResult.Data.Count == 0)
-                {
-                    DialogHelper.ShowWarning("El ASN seleccionado no tiene partidas para exportar.");
-                    return;
-                }
-
-                var receiptDetails = new List<AsnReceiptDetailDto>();
-                foreach (var detail in detailsResult.Data)
-                {
-                    var receiptResult = await _asnReceiptService.GetAsnReceiptsByAsnDetailId(detail.AsnDetailId);
-                    if (receiptResult.IsSuccess && receiptResult.Data != null)
-                        receiptDetails.AddRange(receiptResult.Data);
-                }
-
-                if (receiptDetails.Count == 0)
-                {
-                    DialogHelper.ShowWarning("El ASN seleccionado no tiene partidas recibidas para exportar.");
+                    DialogHelper.ShowWarning("No hay datos para exportar.");
                     return;
                 }
 
@@ -757,7 +734,7 @@ namespace LD.FormsX.Views.ASN
                 {
                     Title = "Exportar ASN a Excel",
                     Filter = "Archivo de Excel (*.xlsx)|*.xlsx",
-                    FileName = $"{SanitizeFileName(_selectedX.AsnCode)}_{DateTime.Now:yyyyMMdd_HHmm}.xlsx",
+                    FileName = $"ASN_{DateTime.Now:yyyyMMdd_HHmm}.xlsx",
                     AddExtension = true,
                     DefaultExt = ".xlsx"
                 };
@@ -765,16 +742,17 @@ namespace LD.FormsX.Views.ASN
                 if (dialog.ShowDialog(Window.GetWindow(this)) != true)
                     return;
 
-                ExportAsnReceiptsToExcel(dialog.FileName, _selectedX, receiptDetails);
+                ExportAsnGridsToExcel(
+                    dialog.FileName,
+                    CreateGridSection("ASN", dgASN),
+                    CreateGridSection("Detalle ASN", dgDetalleASN),
+                    CreateGridSection("Recepcion ASN", dgRecepcionASN));
+
                 DialogHelper.ShowSuccess("Excel exportado correctamente.");
             }
             catch (Exception ex)
             {
                 DialogHelper.ShowError(ex.Message);
-            }
-            finally
-            {
-                MostrarLoader(false);
             }
         }
 
@@ -817,10 +795,9 @@ namespace LD.FormsX.Views.ASN
             }
         }
 
-        private static void ExportAsnReceiptsToExcel(
+        private static void ExportAsnGridsToExcel(
             string filePath,
-            AsnDto asn,
-            IEnumerable<AsnReceiptDetailDto> receiptDetails)
+            params ExcelGridSection[] sections)
         {
             if (File.Exists(filePath))
                 File.Delete(filePath);
@@ -879,7 +856,7 @@ namespace LD.FormsX.Views.ASN
                 """);
 
             AddZipEntry(archive, "xl/styles.xml", BuildExcelStylesXml());
-            AddZipEntry(archive, "xl/worksheets/sheet1.xml", BuildAsnWorksheetXml(asn, receiptDetails));
+            AddZipEntry(archive, "xl/worksheets/sheet1.xml", BuildAsnWorksheetXml(sections));
 
             var timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
             AddZipEntry(
@@ -906,41 +883,48 @@ namespace LD.FormsX.Views.ASN
                 """);
         }
 
-        private static string BuildAsnWorksheetXml(AsnDto asn, IEnumerable<AsnReceiptDetailDto> receiptDetails)
+        private static string BuildAsnWorksheetXml(IReadOnlyList<ExcelGridSection> sections)
         {
             var rows = new StringBuilder();
             var rowIndex = 1;
 
-            for (; rowIndex <= 4; rowIndex++)
-                rows.Append(Row(rowIndex));
-
-            rows.Append(Row(rowIndex++, TextCell("A5", "Tipo:", 1), TextCell("B5", asn.VehicleType), TextCell("D5", FormatDateTime(asn.Eta))));
-            rows.Append(Row(rowIndex++, TextCell("A6", "Factura:", 1), TextCell("B6", asn.InvoiceNumber), TextCell("D6", "Guia:", 1), TextCell("E6", asn.GuideNumber)));
-            rows.Append(Row(rowIndex++, TextCell("A7", "Linea:", 1), TextCell("B7", asn.TransportLine), TextCell("D7", "Transporte:", 1), TextCell("E7", asn.Project)));
-            rows.Append(Row(rowIndex++, TextCell("A8", "Chofer:", 1), TextCell("B8", asn.DriverName)));
-            rows.Append(Row(rowIndex++, TextCell("A9", "Sello:", 1), TextCell("B9", asn.SealNumber), TextCell("D9", "Placas:", 1), TextCell("E9", asn.VehiclePlate)));
-            rows.Append(Row(rowIndex++));
-
-            rows.Append(Row(
-                rowIndex,
-                TextCell($"A{rowIndex}", "FOLIO", 2),
-                TextCell($"B{rowIndex}", "No. de parte", 2),
-                TextCell($"C{rowIndex}", "Cantidad", 2),
-                TextCell($"D{rowIndex}", "Dub", 2),
-                TextCell($"E{rowIndex}", "SKID", 2)));
-
-            rowIndex++;
-
-            foreach (var receipt in receiptDetails.OrderBy(x => x.AsnReceiptDetailId))
+            foreach (var section in sections)
             {
-                var rowStyle = rowIndex % 2 == 0 ? 3 : 0;
+                rows.Append(Row(rowIndex, TextCell($"A{rowIndex}", section.Title, 2)));
+                rowIndex++;
+
+                if (section.Columns.Count == 0)
+                {
+                    rows.Append(Row(rowIndex, TextCell($"A{rowIndex}", "Sin columnas visibles", 1)));
+                    rowIndex += 2;
+                    continue;
+                }
+
                 rows.Append(Row(
                     rowIndex,
-                    NumberCell($"A{rowIndex}", receipt.AsnReceiptDetailId, rowStyle),
-                    TextCell($"B{rowIndex}", receipt.PartNumber, rowStyle),
-                    NumberCell($"C{rowIndex}", receipt.ReceivedQuantity ?? 0, rowStyle),
-                    TextCell($"D{rowIndex}", receipt.SD, rowStyle),
-                    TextCell($"E{rowIndex}", receipt.StandardId ?? string.Empty, rowStyle)));
+                    section.Columns
+                        .Select((column, index) => TextCell($"{GetColumnName(index + 1)}{rowIndex}", column, 1))
+                        .ToArray()));
+                rowIndex++;
+
+                if (section.Rows.Count == 0)
+                {
+                    rows.Append(Row(rowIndex, TextCell($"A{rowIndex}", "Sin datos")));
+                    rowIndex += 2;
+                    continue;
+                }
+
+                foreach (var row in section.Rows)
+                {
+                    var rowStyle = rowIndex % 2 == 0 ? 3 : 0;
+                    rows.Append(Row(
+                        rowIndex,
+                        row
+                            .Select((value, index) => TextCell($"{GetColumnName(index + 1)}{rowIndex}", value, rowStyle))
+                            .ToArray()));
+                    rowIndex++;
+                }
+
                 rowIndex++;
             }
 
@@ -952,18 +936,191 @@ namespace LD.FormsX.Views.ASN
                   </sheetViews>
                   <sheetFormatPr defaultRowHeight="18"/>
                   <cols>
-                    <col min="1" max="1" width="10" customWidth="1"/>
-                    <col min="2" max="2" width="34" customWidth="1"/>
-                    <col min="3" max="3" width="14" customWidth="1"/>
-                    <col min="4" max="4" width="14" customWidth="1"/>
+                    <col min="1" max="1" width="18" customWidth="1"/>
+                    <col min="2" max="2" width="24" customWidth="1"/>
+                    <col min="3" max="3" width="24" customWidth="1"/>
+                    <col min="4" max="4" width="18" customWidth="1"/>
                     <col min="5" max="5" width="18" customWidth="1"/>
-                    <col min="6" max="6" width="18" customWidth="1"/>
+                    <col min="6" max="6" width="22" customWidth="1"/>
+                    <col min="7" max="7" width="22" customWidth="1"/>
+                    <col min="8" max="8" width="22" customWidth="1"/>
+                    <col min="9" max="9" width="22" customWidth="1"/>
+                    <col min="10" max="10" width="22" customWidth="1"/>
+                    <col min="11" max="11" width="22" customWidth="1"/>
+                    <col min="12" max="12" width="22" customWidth="1"/>
+                    <col min="13" max="13" width="22" customWidth="1"/>
+                    <col min="14" max="14" width="22" customWidth="1"/>
+                    <col min="15" max="15" width="22" customWidth="1"/>
+                    <col min="16" max="16" width="22" customWidth="1"/>
                   </cols>
                   <sheetData>
                 {rows}
                   </sheetData>
                 </worksheet>
                 """;
+        }
+
+        private static ExcelGridSection CreateGridSection(string title, DataGrid dataGrid)
+        {
+            var columns = dataGrid.Columns
+                .Where(column => column.Visibility == Visibility.Visible)
+                .OrderBy(column => column.DisplayIndex)
+                .ToList();
+
+            var rows = dataGrid.Items
+                .Cast<object>()
+                .Where(item => item != CollectionView.NewItemPlaceholder)
+                .Select(item => (IReadOnlyList<string>)columns.Select(column => GetGridCellValue(column, item)).ToList())
+                .ToList();
+
+            return new ExcelGridSection(
+                title,
+                columns.Select(GetColumnHeaderText).ToList(),
+                rows);
+        }
+
+        private static bool HasExportableRows(DataGrid dataGrid) =>
+            dataGrid.Items
+                .Cast<object>()
+                .Any(item => item != CollectionView.NewItemPlaceholder);
+
+        private static string GetColumnHeaderText(DataGridColumn column)
+        {
+            var headerText = ExtractHeaderText(column.Header);
+            if (!string.IsNullOrWhiteSpace(headerText))
+                return headerText;
+
+            if (!string.IsNullOrWhiteSpace(column.SortMemberPath))
+                return column.SortMemberPath;
+
+            if (column is DataGridBoundColumn boundColumn &&
+                boundColumn.Binding is Binding binding &&
+                !string.IsNullOrWhiteSpace(binding.Path?.Path))
+            {
+                return binding.Path.Path;
+            }
+
+            return "Columna";
+        }
+
+        private static string ExtractHeaderText(object? header)
+        {
+            if (header == null)
+                return string.Empty;
+
+            if (header is string text)
+                return text;
+
+            if (header is TextBlock textBlock)
+                return textBlock.Text ?? string.Empty;
+
+            if (header is ContentControl contentControl)
+                return ExtractHeaderText(contentControl.Content);
+
+            if (header is HeaderedContentControl headeredContentControl)
+                return ExtractHeaderText(headeredContentControl.Header);
+
+            if (header is FrameworkElement frameworkElement)
+            {
+                var nestedText = FindTextInVisualTree(frameworkElement);
+                if (!string.IsNullOrWhiteSpace(nestedText))
+                    return nestedText;
+            }
+
+            return header.ToString() ?? string.Empty;
+        }
+
+        private static string FindTextInVisualTree(DependencyObject parent)
+        {
+            var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (var i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (child is TextBlock textBlock && !string.IsNullOrWhiteSpace(textBlock.Text))
+                    return textBlock.Text;
+
+                var nestedText = FindTextInVisualTree(child);
+                if (!string.IsNullOrWhiteSpace(nestedText))
+                    return nestedText;
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetGridCellValue(DataGridColumn column, object row)
+        {
+            if (column is DataGridBoundColumn boundColumn &&
+                boundColumn.Binding is Binding binding)
+            {
+                var value = GetPropertyValue(row, binding.Path?.Path);
+                return FormatExcelValue(value);
+            }
+
+            return FormatExcelValue(GetPropertyValue(row, column.SortMemberPath));
+        }
+
+        private static object? GetPropertyValue(object item, string? propertyPath)
+        {
+            if (item == null || string.IsNullOrWhiteSpace(propertyPath))
+                return null;
+
+            object? current = item;
+            foreach (var segment in propertyPath.Split('.'))
+            {
+                if (current == null)
+                    return null;
+
+                var property = current.GetType().GetProperty(segment);
+                if (property == null)
+                    return null;
+
+                current = property.GetValue(current);
+            }
+
+            return current;
+        }
+
+        private static string FormatExcelValue(object? value)
+        {
+            if (value == null)
+                return string.Empty;
+
+            return value switch
+            {
+                DateTime dateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                TimeSpan timeSpan => timeSpan.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture),
+                _ => Convert.ToString(value, CultureInfo.CurrentCulture) ?? string.Empty
+            };
+        }
+
+        private static string GetColumnName(int columnNumber)
+        {
+            var dividend = columnNumber;
+            var columnName = string.Empty;
+
+            while (dividend > 0)
+            {
+                var modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar('A' + modulo) + columnName;
+                dividend = (dividend - modulo) / 26;
+            }
+
+            return columnName;
+        }
+
+        private sealed class ExcelGridSection
+        {
+            public ExcelGridSection(string title, IReadOnlyList<string> columns, IReadOnlyList<IReadOnlyList<string>> rows)
+            {
+                Title = title;
+                Columns = columns;
+                Rows = rows;
+            }
+
+            public string Title { get; }
+            public IReadOnlyList<string> Columns { get; }
+            public IReadOnlyList<IReadOnlyList<string>> Rows { get; }
         }
 
         private static string BuildExcelStylesXml() =>

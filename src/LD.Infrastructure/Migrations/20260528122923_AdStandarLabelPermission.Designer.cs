@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260528122923_AdStandarLabelPermission")]
+    partial class AdStandarLabelPermission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4790,6 +4793,10 @@ namespace LD.Infrastructure.Migrations
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
+                    b.Property<string>("Firma")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -4803,6 +4810,14 @@ namespace LD.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LicenciaFoto1")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("LicenciaFoto2")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Linea")
                         .IsRequired()
@@ -4839,6 +4854,14 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<string>("VehiculoFoto1")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("VehiculoFoto2")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("Vencimiento")
                         .HasColumnType("datetime2");
 
@@ -4847,37 +4870,6 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("CortinaId");
 
                     b.ToTable("SecurityRegistrations");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.SecurityRegistrationPhoto", b =>
-                {
-                    b.Property<int>("SecurityRegistrationPhotoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SecurityRegistrationPhotoId"));
-
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Orden")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SecurityRegistrationId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SecurityRegistrationPhotoId");
-
-                    b.HasIndex("SecurityRegistrationId");
-
-                    b.ToTable("SecurityRegistrationPhotos");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.SecurityTask", b =>
@@ -6395,17 +6387,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Cortina");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.SecurityRegistrationPhoto", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.SecurityRegistration", "SecurityRegistration")
-                        .WithMany("Photos")
-                        .HasForeignKey("SecurityRegistrationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("SecurityRegistration");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.SecurityTask", b =>
                 {
                     b.HasOne("LD.Domain.Entities.SecurityRegistration", "SecurityRegistration")
@@ -6548,11 +6529,6 @@ namespace LD.Infrastructure.Migrations
             modelBuilder.Entity("LD.Domain.Entities.Project", b =>
                 {
                     b.Navigation("ScanConfigurations");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.SecurityRegistration", b =>
-                {
-                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Warehouse", b =>

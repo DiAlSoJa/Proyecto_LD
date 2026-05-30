@@ -1,8 +1,25 @@
-using LD.Client.Configuration;
+﻿using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.Constants;
+using LD.Contracts.Enums;
 using LD.FormsX;
 using LD.FormsX.Helpers;
-using LDForms.Features.DashBoard.ViewModels;
+using LD.FormsX.Movimientos;
+using LD.FormsX.Views;
+using LD.FormsX.Views.ASN;
+using LD.FormsX.Views.Auditar;
+using LD.FormsX.Views.Catalogos;
+using LD.FormsX.Views.CheckList;
+using LD.FormsX.Views.ControlPatio;
+using LD.FormsX.Views.DatabaseDiagram;
+using LD.FormsX.Views.Inventario;
+using LD.FormsX.Views.InventarioAleatorio;
+using LD.FormsX.Views.Proyectos;
+using LD.FormsX.Views.ReporteDanos;
+using LD.FormsX.Views.Reportes;
+using LD.FormsX.Views.Tareas;
+using LD.FormsX.Views.Usuarios;
+using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,8 +33,8 @@ namespace LDForms
 {
     public partial class DashBoard : Window
     {
+        private bool _omitNextClick;
         private readonly IServiceProvider _serviceProvider;
-        private readonly DashBoardViewModel _viewModel;
         private const int MONITOR_DEFAULTTONEAREST = 0x00000002;
 
         [DllImport("user32.dll")]
@@ -26,27 +43,23 @@ namespace LDForms
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
-        public DashBoard(IServiceProvider serviceProvider, DashBoardViewModel viewModel)
+        public DashBoard(IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
-            _viewModel = viewModel;
-            DataContext = _viewModel;
-            _viewModel.NavigationRequested += ViewModel_NavigationRequested;
         }
 
-        protected override void OnClosed(EventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _viewModel.NavigationRequested -= ViewModel_NavigationRequested;
-            base.OnClosed(e);
+            SetVisibility();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
 
-            var handle = new WindowInteropHelper(this).Handle;
-            HwndSource.FromHwnd(handle)?.AddHook(WindowProc);
+            var handle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+            System.Windows.Interop.HwndSource.FromHwnd(handle)?.AddHook(WindowProc);
         }
 
         private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -69,7 +82,7 @@ namespace LDForms
             IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
             if (monitor != IntPtr.Zero)
             {
-                MONITORINFO monitorInfo = new();
+                MONITORINFO monitorInfo = new MONITORINFO();
                 GetMonitorInfo(monitor, ref monitorInfo);
 
                 RECT rcWorkArea = monitorInfo.rcWork;
@@ -83,6 +96,8 @@ namespace LDForms
 
             Marshal.StructureToPtr(mmi, lParam, true);
         }
+
+     
 
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
@@ -127,6 +142,8 @@ namespace LDForms
             public int bottom;
         }
 
+       
+
         private void BtnMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
@@ -151,6 +168,46 @@ namespace LDForms
             }
         }
 
+
+
+
+        private void SetVisibility()
+        {
+            RemoveIfNoModule(ClientesBtn,        Module_e.Clients);
+            RemoveIfNoModule(ProyectosBtn,       Module_e.Projects);
+            RemoveIfNoModule(AlmacenesBtn,       Module_e.Warehouses);
+            RemoveIfNoModule(UbicacionesBtn,     Module_e.Locations);
+            RemoveIfNoModule(ArticulosBtn,       Module_e.Products);
+            RemoveIfNoModule(MovimientosBtn,     Module_e.Movements);
+            RemoveIfNoModule(AsnBtn,             Module_e.ASN);
+            RemoveIfNoModule(ChecklistBtn,       Module_e.ForkliftChecklist);
+            RemoveIfNoModule(PatioBtn,           Module_e.YardControl);
+            RemoveIfNoModule(CatalogosBtn,       Module_e.Catalogs);
+            RemoveIfNoModule(SurtidoBtn,         Module_e.Picking);
+            RemoveIfNoModule(EmbarquesBtn,       Module_e.Shipments);
+            RemoveIfNoModule(InventarioBtn,      Module_e.Inventory);
+            RemoveIfNoModule(InventarioRandomBtn,Module_e.RandomInventory);
+            RemoveIfNoModule(ReportesBtn,        Module_e.Reports);
+            RemoveIfNoModule(DatabaseDiagramBtn, Module_e.Reports);
+            RemoveIfNoModule(ReporteDanosBtn,    Module_e.DamageReport);
+            RemoveIfNoModule(TareasBtn,          Module_e.WarehouseStaff);
+            RemoveIfNoModule(UsuariosBtn,        Module_e.Users);
+            RemoveIfNoModule(AuditoriaBtn,       Module_e.Auditing);
+            RemoveIfNoPermission(ImpresionBtn,    PermissionKeys.StandardLabel_Print);
+        }
+
+        private void RemoveIfNoModule(Button btn, Module_e module)
+        {
+            if (!UserData.HasModule((int)module))
+                DashboardPanel.Children.Remove(btn);
+        }
+
+        private void RemoveIfNoPermission(Button btn, string permission)
+        {
+            if (!UserData.HasPermission(permission))
+                DashboardPanel.Children.Remove(btn);
+        }
+
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -160,16 +217,15 @@ namespace LDForms
             }
 
             if (e.ChangedButton == MouseButton.Left)
-            {
                 DragMove();
-            }
         }
+
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             if (Owner != null)
             {
-                Close();
+                Close(); // ventana flotante
                 return;
             }
 
@@ -179,18 +235,259 @@ namespace LDForms
             {
                 Application.Current.Shutdown();
             }
+
+
+
         }
 
-        private void ViewModel_NavigationRequested(object? sender, DashboardNavigationRequestedEventArgs e)
+
+
+
+        private void AbrirModuloEnTab(string key)
         {
-            if (e.Mode == DashboardOpenMode.Tab)
+            switch (key)
             {
-                AbrirTab(e.Title, e.View);
+                case "Clientes":
+                    AbrirTab("Clientes", _serviceProvider.GetRequiredService<CatalogosClientesView>());
+                    break;
+
+                case "Almacenes":
+                    AbrirTab("Almacenes", _serviceProvider.GetRequiredService<AlmacenesView>());
+                    break;
+
+                case "Proyectos":
+                    AbrirTab("Proyectos", _serviceProvider.GetRequiredService<ProyectosView>());
+                    break;
+                case "Ubicaciones":
+                    AbrirTab("Ubicaciones", _serviceProvider.GetRequiredService<UbicacionesView>());
+                    break;
+                case "Articulos":
+                    AbrirTab("Articulos", _serviceProvider.GetRequiredService<ArticulosView>());
+                    break;
+                case "Catalogos":
+                    AbrirTab("Catalogos", _serviceProvider.GetRequiredService<CatalogosView>());
+                    break;
+                case "Inventario":
+                    AbrirTab("Inventario", _serviceProvider.GetRequiredService<InventarioView>());
+                    break;
+                case "Movimientos":
+                    AbrirTab("Movimientos", _serviceProvider.GetRequiredService<MovimientosView>());
+                    break;
+                case "ASN":
+                    AbrirTab("ASN", _serviceProvider.GetRequiredService<ASNView>());
+                    break;
+                case "Auditar":
+                    AbrirTab("Auditar", _serviceProvider.GetRequiredService<AuditarView>());
+                    break;
+                case "Aleatorio":
+                    AbrirTab("Aleatorio", _serviceProvider.GetRequiredService<InventarioCiclicoView>());
+                    break;
+                case "CheckList":
+                    AbrirTab("CheckList", _serviceProvider.GetRequiredService<CheckListView>());
+                    break;
+                case "Reportes":
+                    AbrirTab("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
+                    break;
+                case "DatabaseDiagram":
+                    AbrirTab("Diagrama BD", _serviceProvider.GetRequiredService<DatabaseDiagramView>());
+                    break;
+                case "ReporteDanos":
+                    AbrirTab("Reporte de daños", _serviceProvider.GetRequiredService<DamageReportView>());
+                    break;
+                case "Tareas":
+                    AbrirTab("Tareas", _serviceProvider.GetRequiredService<TasksView>());
+                    break;
+                case "Patio":
+                    AbrirTab("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());
+                    break;
+                case "Usuarios":
+                    AbrirTab("Usuarios", _serviceProvider.GetRequiredService<UsuariosView>());
+                    break;
+            }
+        }
+
+        private void AbrirModuloEnVentana(string key)
+        {
+            switch (key)
+            {
+                case "Clientes":
+                    AbrirVentana("Clientes", _serviceProvider.GetRequiredService<CatalogosClientesView>());
+                    break;
+
+                case "Almacenes":
+                    AbrirVentana("Almacenes", _serviceProvider.GetRequiredService<AlmacenesView>());
+                    break;
+
+                case "Proyectos":
+                    AbrirVentana("Proyectos", _serviceProvider.GetRequiredService<ProyectosView>());
+                    break;
+
+                case "Ubicaciones":
+                    AbrirVentana("Ubicaciones", _serviceProvider.GetRequiredService<UbicacionesView>());
+                    break;
+
+                case "Articulos":
+                    AbrirVentana("Articulos", _serviceProvider.GetRequiredService<ArticulosView>());
+                    break;
+
+                case "Catalogos":
+                    AbrirVentana("Catalogos", _serviceProvider.GetRequiredService<CatalogosView>());
+                    break;
+
+                case "Inventario":
+                    AbrirVentana("Inventario", _serviceProvider.GetRequiredService<InventarioView>());
+                    break;
+
+                case "Movimientos":
+                    AbrirVentana("Movimientos", _serviceProvider.GetRequiredService<MovimientosView>());
+                    break;
+                case "ASN":
+                    AbrirVentana("ASN", _serviceProvider.GetRequiredService<ASNView>());
+                    break;
+                case "Auditar":
+                    AbrirVentana("Auditar", _serviceProvider.GetRequiredService<AuditarView>());
+                    break;
+                case "Aleatorio":
+                    AbrirVentana("Aleatorio", _serviceProvider.GetRequiredService<InventarioCiclicoView>());
+                    break;
+                case "CheckList":
+                    AbrirVentana("CheckList", _serviceProvider.GetRequiredService<CheckListView>());
+                    break;
+                case "Reportes":
+                    AbrirVentana("Reportes", _serviceProvider.GetRequiredService<ReportesView>());
+                    break;
+                case "DatabaseDiagram":
+                    AbrirVentana("Diagrama BD", _serviceProvider.GetRequiredService<DatabaseDiagramView>());
+                    break;
+                case "ReporteDanos":
+                    AbrirVentana("Reporte de daños", _serviceProvider.GetRequiredService<DamageReportView>());
+                    break;
+                case "Tareas":
+                    AbrirVentana("Tareas", _serviceProvider.GetRequiredService<TasksView>());
+                    break;
+                case "Patio":
+                    AbrirVentana("Patio", _serviceProvider.GetRequiredService<ControlPatioView>());
+                    break;
+                case "Usuarios":
+                    AbrirVentana("Usuarios", _serviceProvider.GetRequiredService<UsuariosView>());
+                    break;
+            }
+        }
+
+
+
+
+
+        private void DashboardTile_RightClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not Button btn || btn.Tag is not string key)
+                return;
+
+            var menu = new ContextMenu();
+
+            if (key == "Impresion")
+            {
+                if (!UserData.HasPermission(PermissionKeys.StandardLabel_Print))
+                    return;
+
+                var printItem = new MenuItem { Header = StandardLabelPrintOptionsDialog.StandardIdOption };
+                printItem.Click += async (_, __) => await ImprimirEtiquetasStandardIdAsync();
+                menu.Items.Add(printItem);
+                menu.IsOpen = true;
                 return;
             }
 
-            AbrirVentana(e.Title, e.View);
+            var tabItem = new MenuItem { Header = "Abrir en pestaña" };
+            tabItem.Click += (_, __) => AbrirModuloEnTab(key);
+
+            var windowItem = new MenuItem { Header = "Abrir en ventana" };
+            windowItem.Click += (_, __) => AbrirModuloEnVentana(key);
+
+            menu.Items.Add(tabItem);
+            menu.Items.Add(windowItem);
+
+            menu.IsOpen = true;
         }
+
+        private async void DashboardTile_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn || btn.Tag is not string key)
+                return;
+
+            if (key == "Impresion")
+            {
+                if (!UserData.HasPermission(PermissionKeys.StandardLabel_Print))
+                    return;
+
+                await ImprimirEtiquetasStandardIdAsync();
+                return;
+            }
+
+            AbrirModuloEnTab(key);
+        }
+
+        private async Task ImprimirEtiquetasStandardIdAsync()
+        {
+            if (!UserData.HasPermission(PermissionKeys.StandardLabel_Print))
+            {
+                DialogHelper.ShowWarning("No tienes permiso para imprimir etiquetas.", "Permiso requerido");
+                return;
+            }
+
+            var option = ShowPrintOptionDialog();
+            if (option != StandardLabelPrintOptionsDialog.StandardIdOption)
+                return;
+
+            var quantity = ShowQuantityDialog();
+            if (!quantity.HasValue)
+                return;
+
+            try
+            {
+                var service = _serviceProvider.GetRequiredService<StandardLabelService>();
+                var response = await service.GenerateStandardIds(quantity.Value);
+
+                if (response.IsFailure || response.Data == null || response.Data.Count == 0)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudieron generar los StandardId.");
+                    return;
+                }
+
+                StandardIdLabelPrinter.PrintLabels(response.Data);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private string? ShowPrintOptionDialog()
+        {
+            var dialog = new StandardLabelPrintOptionsDialog
+            {
+                Owner = this
+            };
+
+            return dialog.ShowDialog() == true
+                ? dialog.SelectedOption
+                : null;
+        }
+
+        private int? ShowQuantityDialog()
+        {
+            var dialog = new StandardLabelQuantityDialog
+            {
+                Owner = this
+            };
+
+            return dialog.ShowDialog() == true ? dialog.Quantity : null;
+        }
+
+
+
+
+
+
 
         private void AbrirTab(string titulo, UserControl vista)
         {
@@ -273,15 +570,61 @@ namespace LDForms
                     MainTabControl.Items.Remove(tab);
 
                     if (eraLaActiva)
-                    {
                         MainTabControl.SelectedItem = TabMenu;
-                    }
                 }
             }
         }
 
-        private void BtnAccount_Click(object sender, RoutedEventArgs e)
+        private void TxtBuscarGlobal_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (sender is not TextBox tb) return;
+
+            var query = tb.Text.Trim().ToLowerInvariant();
+            var esPlaceholder = query == ((string)tb.Tag).ToLowerInvariant();
+
+            foreach (var tile in DashboardPanel.Children.OfType<Button>())
+            {
+                if (string.IsNullOrEmpty(query) || esPlaceholder)
+                {
+                    tile.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    var tag  = tile.Tag?.ToString()?.ToLowerInvariant() ?? "";
+                    var text = (tile.Content as StackPanel)
+                                   ?.Children.OfType<TextBlock>()
+                                   .LastOrDefault()
+                                   ?.Text?.ToLowerInvariant() ?? "";
+
+                    tile.Visibility = (tag.Contains(query) || text.Contains(query))
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void TxtBuscarGlobal_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox tb && tb.Text == (string)tb.Tag)
+            {
+                tb.Text = string.Empty;
+                tb.Foreground = new SolidColorBrush(Color.FromRgb(31, 41, 55));
+            }
+        }
+
+        private void TxtBuscarGlobal_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox tb && string.IsNullOrWhiteSpace(tb.Text))
+            {
+                tb.Text = (string)tb.Tag;
+                tb.Foreground = new SolidColorBrush(Color.FromRgb(107, 114, 128));
+
+                foreach (var tile in DashboardPanel.Children.OfType<Button>())
+                    tile.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void BtnAccount_Click(object sender, RoutedEventArgs e) { 
             txtPopupUserName.Text = UserData.UserName ?? "Usuario";
             AccountPopup.IsOpen = !AccountPopup.IsOpen;
         }
@@ -291,9 +634,7 @@ namespace LDForms
             AccountPopup.IsOpen = false;
 
             if (!DialogHelper.ShowConfirm("¿Está seguro de cerrar sesión?"))
-            {
                 return;
-            }
 
             UserSession.LogOut();
             _serviceProvider.GetRequiredService<ApiService>().ClearToken();

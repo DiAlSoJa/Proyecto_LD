@@ -1,17 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace MauiAppLogin.Models
+namespace MauiAppLogin.Models;
+
+public partial class ChecklistQuestion : ObservableObject
 {
-    public class ChecklistQuestion
+    public int QuestionId { get; set; }
+    public string Label { get; set; } = string.Empty;
+
+    public ObservableCollection<string> Options { get; set; } = new();
+    public ObservableCollection<ChecklistOption> OptionItems { get; set; } = new();
+
+    [ObservableProperty]
+    private string? selectedOption;
+
+    public void AddOption(string text)
     {
-        public int QuestionId { get; set; }
-        public string Label { get; set; } = string.Empty;
+        Options.Add(text);
+        OptionItems.Add(new ChecklistOption(this, text));
+    }
 
-        public ObservableCollection<string> Options { get; set; } = new();
+    public void SelectSingleOption(string text)
+    {
+        foreach (var option in OptionItems)
+            option.IsSelected = option.Text == text;
 
-        public string? SelectedOption { get; set; }
+        SelectedOption = text;
+    }
+
+    public void ToggleMultiOption(ChecklistOption selected)
+    {
+        selected.IsSelected = !selected.IsSelected;
+        SelectedOption = string.Join(", ",
+            OptionItems
+                .Where(option => option.IsSelected)
+                .Select(option => option.Text));
     }
 }

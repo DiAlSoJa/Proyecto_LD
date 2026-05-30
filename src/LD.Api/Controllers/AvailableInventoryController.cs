@@ -16,11 +16,14 @@ public class AvailableInventoryController : CommonController
 {
     [HttpGet]
     [Permission(PermissionKeys.Inventory_View)]
-    public async Task<IActionResult> GetAvailableInventory([FromQuery] int? standardId = null)
+    public async Task<IActionResult> GetAvailableInventory(
+        [FromQuery] int? standardId = null,
+        [FromQuery] string? standardIdCode = null)
     {
         return ResultExtensions.ToActionResult(await Mediator.Send(new AvailableInventoryQuery
         {
-            StandardId = standardId
+            StandardId = standardId,
+            StandardIdCode = standardIdCode
         }));
     }
 

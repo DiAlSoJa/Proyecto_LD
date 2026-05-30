@@ -121,21 +121,75 @@
                                                     <Button Text="{Binding Options[0]}"
                                                         Grid.Column="0"
                                                         CornerRadius="10"
-                                                        BackgroundColor="#E2E8F0"
+                                                        BackgroundColor="#CBD5E1"
+                                                        TextColor="#102A43"
                                                         Clicked="OnOptionSelected"/>
 
                                                     <Button Text="{Binding Options[1]}"
                                                     Grid.Column="1"
                                                     CornerRadius="10"
-                                                    BackgroundColor="#E2E8F0"
+                                                    BackgroundColor="#CBD5E1"
+                                                    TextColor="#102A43"
                                                     Clicked="OnOptionSelected"/>
                                                 </Grid>
 
                                                 <!-- PICKER SOLO PARA 3 O MÁS OPCIONES -->
-                                                <Picker Title="Selecciona"
-                                                    ItemsSource="{Binding Options}"
-                                                    SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
-                                                    IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}, ConverterParameter=invert}" />
+                                                <VerticalStackLayout Spacing="8"
+                                                                     IsVisible="{Binding Options, Converter={StaticResource OptionsToBoolConverter}, ConverterParameter=invert}"
+                                                                     BindableLayout.ItemsSource="{Binding OptionItems}">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BackgroundColor="#F8FAFC"
+                                                                    Stroke="#CBD5E1"
+                                                                    StrokeThickness="1"
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Padding="12,10">
+                                                                <Border.GestureRecognizers>
+                                                                    <TapGestureRecognizer Tapped="OnMultiOptionTapped" />
+                                                                </Border.GestureRecognizers>
+                                                                <Border.Triggers>
+                                                                    <DataTrigger TargetType="Border"
+                                                                                 Binding="{Binding IsSelected}"
+                                                                                 Value="True">
+                                                                        <Setter Property="BackgroundColor" Value="#E0F2FE" />
+                                                                        <Setter Property="Stroke" Value="#2563EB" />
+                                                                    </DataTrigger>
+                                                                </Border.Triggers>
+
+                                                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                                                    <Border WidthRequest="24"
+                                                                            HeightRequest="24"
+                                                                            Stroke="#94A3B8"
+                                                                            StrokeThickness="1.5"
+                                                                            StrokeShape="RoundRectangle 7"
+                                                                            BackgroundColor="White"
+                                                                            VerticalOptions="Center">
+                                                                        <Border.Triggers>
+                                                                            <DataTrigger TargetType="Border"
+                                                                                         Binding="{Binding IsSelected}"
+                                                                                         Value="True">
+                                                                                <Setter Property="BackgroundColor" Value="#2563EB" />
+                                                                                <Setter Property="Stroke" Value="#2563EB" />
+                                                                            </DataTrigger>
+                                                                        </Border.Triggers>
+                                                                        <Label Text="✓"
+                                                                               TextColor="White"
+                                                                               FontAttributes="Bold"
+                                                                               FontSize="14"
+                                                                               HorizontalOptions="Center"
+                                                                               VerticalOptions="Center"/>
+                                                                    </Border>
+
+                                                                    <Label Grid.Column="1"
+                                                                           Text="{Binding Text}"
+                                                                           TextColor="#102A43"
+                                                                           FontSize="14"
+                                                                           VerticalOptions="Center"/>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </VerticalStackLayout>
                                             </VerticalStackLayout>
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
@@ -240,23 +294,23 @@
 
             <!-- Area tipo cámara -->
             <Border Grid.Row="1"
-        BackgroundColor="#1B2A3A"
-        Stroke="#0B1B2A"
-        StrokeThickness="1"
-        StrokeShape="RoundRectangle 26"
-        Padding="10">
+                    BackgroundColor="#101D33"
+                    Stroke="#28405E"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="10"
+                    VerticalOptions="Start">
 
-                <Grid RowDefinitions="*,Auto" RowSpacing="12">
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
 
                     <!-- Preview -->
-                    <Grid>
+                    <Grid HeightRequest="78">
                         <Border BackgroundColor="#0F172A"
-                    Stroke="#334155"
+                    Stroke="#32445D"
                     StrokeShape="RoundRectangle 22"
-                    Padding="10">
+                    Padding="16,10">
 
                             <Grid>
-                                <Image x:Name="PreviewImage" Aspect="AspectFit" />
                                 <!-- Retícula / marco -->
                                 <Grid Padding="14">
                                     <Border Stroke="#FFFFFF"
@@ -270,15 +324,8 @@
                         </Border>
                     </Grid>
 
-                    <!-- Controles inferiores (Cancelar / Capturar) -->
+                    <!-- Controles inferiores (Capturar / GalerÃ­a) -->
                     <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
-                        <Button Grid.Column="0"
-                    Text="Cancelar"
-                    Clicked="OnCancelarClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="18"/>
-
                         <Border Grid.Column="1"
                     BackgroundColor="#102A43"
                     Stroke="#FFFFFF"
@@ -297,13 +344,37 @@
                         HeightRequest="60"/>
                         </Border>
 
-                        <Button Grid.Column="2"
-                    Text="Capturar"
-                    Clicked="OnCapturarClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="18"
-                    HorizontalOptions="End"/>
+                        <Border Grid.Column="2"
+                                BackgroundColor="#102A43"
+                                Stroke="#1E3A5F"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="8,7"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnGaleriaClicked" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                <Border WidthRequest="28"
+                                        HeightRequest="28"
+                                        BackgroundColor="#1B2A3A"
+                                        Stroke="#DDE8F4"
+                                        StrokeThickness="1.5"
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="0">
+                                    <Label Text="🖼"
+                                           TextColor="White"
+                                           FontSize="15"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                <Label Text="Galería"
+                                       TextColor="White"
+                                       FontSize="13"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
                     </Grid>
 
                 </Grid>
