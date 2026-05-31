@@ -48,7 +48,11 @@
       "Bash(Test-Path *)",
       "PowerShell(dotnet build *)",
       "Bash(Get-Content *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
