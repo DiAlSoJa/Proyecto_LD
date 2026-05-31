@@ -1,5 +1,6 @@
-using LD.Client.Configuration;
+﻿using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.FormsX;
 using LD.FormsX.Helpers;
 using LDForms.Features.DashBoard.ViewModels;
@@ -190,6 +191,63 @@ namespace LDForms
             }
 
             AbrirVentana(e.Title, e.View);
+        }
+
+        private async Task ImprimirEtiquetasStandardIdAsync()
+        {
+            if (!UserData.HasPermission(PermissionKeys.StandardLabel_Print))
+            {
+                DialogHelper.ShowWarning("No tienes permiso para imprimir etiquetas.", "Permiso requerido");
+                return;
+            }
+
+            var option = ShowPrintOptionDialog();
+            if (option != StandardLabelPrintOptionsDialog.StandardIdOption)
+                return;
+
+            var quantity = ShowQuantityDialog();
+            if (!quantity.HasValue)
+                return;
+
+            try
+            {
+                var service = _serviceProvider.GetRequiredService<StandardLabelService>();
+                var response = await service.GenerateStandardIds(quantity.Value);
+
+                if (response.IsFailure || response.Data == null || response.Data.Count == 0)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudieron generar los StandardId.");
+                    return;
+                }
+
+                StandardIdLabelPrinter.PrintLabels(response.Data);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private string? ShowPrintOptionDialog()
+        {
+            var dialog = new StandardLabelPrintOptionsDialog
+            {
+                Owner = this
+            };
+
+            return dialog.ShowDialog() == true
+                ? dialog.SelectedOption
+                : null;
+        }
+
+        private int? ShowQuantityDialog()
+        {
+            var dialog = new StandardLabelQuantityDialog
+            {
+                Owner = this
+            };
+
+            return dialog.ShowDialog() == true ? dialog.Quantity : null;
         }
 
         private void AbrirTab(string titulo, UserControl vista)

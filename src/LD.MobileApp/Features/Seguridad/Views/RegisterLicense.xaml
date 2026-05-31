@@ -85,25 +85,26 @@
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 26"
                 Padding="10"
-                HeightRequest="280"
-                Margin="0,0,0,12">
 
-            <Grid RowDefinitions="*,Auto" RowSpacing="12">
+                HeightRequest="280"
+                Margin="0,0,0,12"
+                VerticalOptions="Start">
+
+            <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
 
                 <!-- Preview -->
-                <Grid>
+                <Grid HeightRequest="78">
                     <Border BackgroundColor="#0F172A"
                             Stroke="#334155"
                             StrokeShape="RoundRectangle 22"
                             Padding="10">
 
                         <Grid>
-                            <Image Source="{Binding PreviewImage}" Aspect="AspectFit" />
                             <!-- Retícula / marco -->
-                            <Grid Padding="14">
+                            <Grid Padding="16,10">
                                 <Border Stroke="#FFFFFF"
                                         StrokeThickness="3"
-                                        StrokeShape="RoundRectangle 24"
+                                        StrokeShape="RoundRectangle 22"
                                         BackgroundColor="Transparent"
                                         Opacity="0.35"/>
                             </Grid>
@@ -112,15 +113,8 @@
                     </Border>
                 </Grid>
 
-                <!-- Controles inferiores (Cancelar / Capturar) -->
+                <!-- Controles inferiores (Capturar / Galería) -->
                 <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
-                    <Button Grid.Column="0"
-                            Text="Cancelar"
-                            Command="{Binding CancelarCommand}"
-                            BackgroundColor="Transparent"
-                            TextColor="White"
-                            FontSize="18"/>
-
                     <Border Grid.Column="1"
                             BackgroundColor="#102A43"
                             Stroke="#FFFFFF"
@@ -139,13 +133,37 @@
                                 HeightRequest="60"/>
                     </Border>
 
-                    <Button Grid.Column="2"
-                            Text="Capturar"
-                            Command="{Binding CapturarCommand}"
-                            BackgroundColor="Transparent"
-                            TextColor="White"
-                            FontSize="18"
-                            HorizontalOptions="End"/>
+                    <Border Grid.Column="2"
+                            BackgroundColor="#102A43"
+                            Stroke="#1E3A5F"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="8,7"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GaleriaCommand}" />
+                        </Border.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                            <Border BackgroundColor="#1B2A3A"
+                                    Stroke="#DDE8F4"
+                                    StrokeThickness="1.5"
+                                    StrokeShape="RoundRectangle 6"
+                                    WidthRequest="28"
+                                    HeightRequest="28"
+                                    Padding="0">
+                                <Label Text="🖼"
+                                       TextColor="White"
+                                       FontSize="15"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Galería"
+                                   TextColor="White"
+                                   FontSize="13"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                    </Border>
                 </Grid>
 
             </Grid>

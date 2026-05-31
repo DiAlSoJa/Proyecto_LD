@@ -47,7 +47,8 @@
       "Bash(Format-Table FullName)",
       "Bash(Test-Path *)",
       "PowerShell(dotnet build *)",
-      "Bash(Get-Content *)"
+      "Bash(Get-Content *)",
+      "Bash(python3 *)"
     ]
   }
 }
