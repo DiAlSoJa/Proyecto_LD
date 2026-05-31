@@ -52,6 +52,22 @@ namespace LD.Client.Services
             _http.DefaultRequestHeaders.Authorization = null;
         }
 
+        public async Task<TResponse> PostWithoutAuthorizationAsync<TRequest, TResponse>(string endpoint, TRequest body)
+        {
+            var previousAuthorization = _http.DefaultRequestHeaders.Authorization;
+            _http.DefaultRequestHeaders.Authorization = null;
+
+            try
+            {
+                var response = await _http.PostAsJsonAsync(endpoint, body);
+                return await HandleResponse<TResponse>(response);
+            }
+            finally
+            {
+                _http.DefaultRequestHeaders.Authorization = previousAuthorization;
+            }
+        }
+
         public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _http.GetAsync(endpoint);

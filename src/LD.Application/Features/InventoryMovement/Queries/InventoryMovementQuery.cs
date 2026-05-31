@@ -10,6 +10,7 @@ namespace LD.Application.Features.InventoryMovement.Queries;
 public class InventoryMovementQuery : IRequest<Result<List<InventoryMovementDto>?>>
 {
     public int? StandardId { get; set; }
+    public string? StandardIdCode { get; set; }
 }
 
 public class InventoryMovementQueryHandler : IRequestHandler<InventoryMovementQuery, Result<List<InventoryMovementDto>?>>
@@ -30,7 +31,9 @@ public class InventoryMovementQueryHandler : IRequestHandler<InventoryMovementQu
 
     public async Task<Result<List<InventoryMovementDto>?>> Handle(InventoryMovementQuery request, CancellationToken cancellationToken)
     {
-        var inventoryMovements = await _inventoryMovementRepository.GetAllWithRelationsAsync(request.StandardId);
+        var inventoryMovements = await _inventoryMovementRepository.GetAllWithRelationsAsync(
+            request.StandardId,
+            request.StandardIdCode);
         var inventoryMovementDtos = _mapper.Map<List<InventoryMovementDto>>(
             inventoryMovements.OrderByDescending(x => x.MovementId));
 

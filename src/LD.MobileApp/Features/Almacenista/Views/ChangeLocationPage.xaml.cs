@@ -17,13 +17,17 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("TextInformation", out var textInformation))
-            TextInformation = textInformation as string;
-    }
+        if (query.TryGetValue("AsnId", out var asnIdValue) &&
+            int.TryParse(asnIdValue?.ToString(), out var asnId))
+        {
+            _viewModel.AsnId = asnId;
+        }
 
-    private void OnCancelarClicked(object sender, EventArgs e)
-    {
-        PreviewImage.Source = null;
+        if (query.TryGetValue("TextInformation", out var textInformation))
+        {
+            TextInformation = textInformation as string;
+            _viewModel.InstructionText = TextInformation ?? string.Empty;
+        }
     }
 
     private async void OnSiguienteClicked(object sender, EventArgs e)

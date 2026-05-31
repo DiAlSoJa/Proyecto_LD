@@ -2390,6 +2390,13 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             ModuleName = "Operaciones"
+                        },
+                        new
+                        {
+                            ModuleId = 29,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            ModuleName = "Impresion"
                         });
                 });
 
@@ -3310,6 +3317,15 @@ namespace LD.Infrastructure.Migrations
                             Key = "security.cortina.assign",
                             ModuleId = 25,
                             PermissionName = "Asignar cortina"
+                        },
+                        new
+                        {
+                            PermissionId = 86,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "standard-label.print",
+                            ModuleId = 29,
+                            PermissionName = "Imprimir etiquetas StandardId"
                         });
                 });
 
@@ -4393,6 +4409,13 @@ namespace LD.Infrastructure.Migrations
                         {
                             RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
                             PermissionId = 85,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 86,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true
                         },

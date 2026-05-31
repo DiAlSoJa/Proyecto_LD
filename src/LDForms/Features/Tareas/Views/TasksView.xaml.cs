@@ -33,16 +33,28 @@ public partial class TasksView : UserControl
         if (TasksGrid.SelectedItem is not OperationalTaskDto task)
             return;
 
-        var images = BuildImageList(task);
-        if (images.Count == 0)
+        ShowTaskDetail(task);
+    }
+
+    private void VerDetalle_Click(object sender, RoutedEventArgs e)
+    {
+        if (TasksGrid.SelectedItem is not OperationalTaskDto task)
         {
-            DialogHelper.ShowInfo("La tarea seleccionada no tiene imagenes cargadas.");
+            DialogHelper.ShowInfo("Selecciona una tarea para ver el detalle.");
             return;
         }
 
+        ShowTaskDetail(task);
+    }
+
+    private void ShowTaskDetail(OperationalTaskDto task)
+    {
+        var images = BuildImageList(task);
+
         var window = new TaskImagesWindow(task, images)
         {
-            Owner = Window.GetWindow(this)
+            Owner = Window.GetWindow(this),
+            DownloadImageAsync = image => ViewModel.DownloadImageAsync(image.RelativePath)
         };
         window.ShowDialog();
     }
@@ -69,6 +81,10 @@ public partial class TasksView : UserControl
     {
         return string.IsNullOrWhiteSpace(relativePath)
             ? null
-            : new TaskImageItem(title, ViewModel.GetImageUrl(relativePath));
+            : new TaskImageItem(
+                title,
+                ViewModel.GetImageUrl(relativePath),
+                relativePath,
+                title.StartsWith("Foto inicial") ? "Inicial" : "Final");
     }
 }

@@ -25,6 +25,16 @@ public class AvailableInventoryService
             endpoint);
     }
 
+    public async Task<ApiResponseDto<List<AvailableInventoryDto>>> GetAvailableInventoriesByStandardIdCode(string standardIdCode)
+    {
+        var endpoint = _apiEndpoints.AvailableInventory_GetAll;
+        if (!string.IsNullOrWhiteSpace(standardIdCode))
+            endpoint += $"?standardIdCode={Uri.EscapeDataString(standardIdCode.Trim())}";
+
+        return await _api.GetAsync<ApiResponseDto<List<AvailableInventoryDto>>>(
+            endpoint);
+    }
+
     public async Task<ApiResponseDto<string>> ChangeLocation(int standardId, string ubicacionDestino)
     {
         return await ChangeLocation(new[] { standardId }, ubicacionDestino);
