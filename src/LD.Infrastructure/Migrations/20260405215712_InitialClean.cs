@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LD.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialClean : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -164,49 +164,6 @@ namespace LD.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EquipmentSuppliers",
-                columns: table => new
-                {
-                    EquipmentSupplierId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EquipmentSupplierName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EquipmentSuppliers", x => x.EquipmentSupplierId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EquipmentTypes",
-                columns: table => new
-                {
-                    EquipmentTypeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EquipmentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsBattery = table.Column<bool>(type: "bit", nullable: false),
-                    ImagePathLeft = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImagePathRight = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EquipmentTypes", x => x.EquipmentTypeId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "inventaryStatuses",
                 columns: table => new
                 {
@@ -277,25 +234,6 @@ namespace LD.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshTokens",
-                schema: "Auth",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Token = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReplacedByToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Roles",
                 schema: "Auth",
                 columns: table => new
@@ -352,28 +290,6 @@ namespace LD.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ScanTypes", x => x.ScanTypeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StandarIdSequences",
-                columns: table => new
-                {
-                    StandarIdSequenceId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SequenceDate = table.Column<DateTime>(type: "date", nullable: false),
-                    LastNumber = table.Column<int>(type: "int", nullable: false),
-                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StandarIdSequences", x => x.StandarIdSequenceId);
                 });
 
             migrationBuilder.CreateTable(
@@ -623,32 +539,6 @@ namespace LD.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EquipmentQuestions",
-                columns: table => new
-                {
-                    EquipmentQuestionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EquipmentTypeId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EquipmentQuestions", x => x.EquipmentQuestionId);
-                    table.ForeignKey(
-                        name: "FK_EquipmentQuestions_EquipmentTypes_EquipmentTypeId",
-                        column: x => x.EquipmentTypeId,
-                        principalTable: "EquipmentTypes",
-                        principalColumn: "EquipmentTypeId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Permissions",
                 schema: "Auth",
                 columns: table => new
@@ -728,115 +618,6 @@ namespace LD.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cortinas",
-                columns: table => new
-                {
-                    CortinaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Numero = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    EstaDisponible = table.Column<bool>(type: "bit", nullable: false),
-                    WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cortinas", x => x.CortinaId);
-                    table.ForeignKey(
-                        name: "FK_Cortinas_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouses",
-                        principalColumn: "WarehouseId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CyclicInventories",
-                columns: table => new
-                {
-                    CyclicInventoryId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AuditorUserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    AuditorName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    CompletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CyclicInventories", x => x.CyclicInventoryId);
-                    table.ForeignKey(
-                        name: "FK_CyclicInventories_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouses",
-                        principalColumn: "WarehouseId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Equipments",
-                columns: table => new
-                {
-                    EquipmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EquipmentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Hourmeter = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    IsOperative = table.Column<bool>(type: "bit", nullable: false),
-                    EquipmentTypeId = table.Column<int>(type: "int", nullable: false),
-                    WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    EquipmentSupplierId = table.Column<int>(type: "int", nullable: false),
-                    Turn1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Turn2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Turn3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImagePathLeft = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImagePathRight = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Equipments", x => x.EquipmentId);
-                    table.ForeignKey(
-                        name: "FK_Equipments_EquipmentSuppliers_EquipmentSupplierId",
-                        column: x => x.EquipmentSupplierId,
-                        principalTable: "EquipmentSuppliers",
-                        principalColumn: "EquipmentSupplierId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Equipments_EquipmentTypes_EquipmentTypeId",
-                        column: x => x.EquipmentTypeId,
-                        principalTable: "EquipmentTypes",
-                        principalColumn: "EquipmentTypeId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Equipments_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouses",
-                        principalColumn: "WarehouseId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -883,28 +664,42 @@ namespace LD.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OperationalTasks",
+                name: "Projects",
                 columns: table => new
                 {
-                    OperationalTaskId = table.Column<int>(type: "int", nullable: false)
+                    ProjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    WarehouseId = table.Column<int>(type: "int", nullable: true),
-                    Priority = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Activity = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Photo1Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Photo2Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Photo3Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Photo4Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    ResolutionObservations = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    ResolvedPhoto1Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    ResolvedPhoto2Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    ResolvedPhoto3Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    ResolvedPhoto4Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Completed = table.Column<bool>(type: "bit", nullable: false),
-                    CompletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CompletedBy = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    WarehouseId = table.Column<int>(type: "int", nullable: false),
+                    StorageTypeId = table.Column<int>(type: "int", nullable: false),
+                    ProjectName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    AutoPicking = table.Column<bool>(type: "bit", nullable: false),
+                    AllowsBackorder = table.Column<bool>(type: "bit", nullable: false),
+                    IsDistributionArea = table.Column<bool>(type: "bit", nullable: false),
+                    IsFiscalWarehouse = table.Column<bool>(type: "bit", nullable: false),
+                    AllowsOversizedItems = table.Column<bool>(type: "bit", nullable: false),
+                    RequiresLabels = table.Column<bool>(type: "bit", nullable: false),
+                    Entrada = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    StorageArea = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReworkArea = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Salida = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReceiptNotificationEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    ReceiptNotificationMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShipmentNotificationEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    ShipmentNotificationMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InternalNotificationEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    InternalNotificationMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalHrs = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    UrgentHrs = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    AsnNumber = table.Column<int>(type: "int", nullable: true),
+                    AsnPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KittingNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KittingPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliveryOrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliveryOrderPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DoNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DoPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReciveRequired = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -915,13 +710,25 @@ namespace LD.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OperationalTasks", x => x.OperationalTaskId);
+                    table.PrimaryKey("PK_Projects", x => x.ProjectId);
                     table.ForeignKey(
-                        name: "FK_OperationalTasks_Warehouses_WarehouseId",
+                        name: "FK_Projects_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "ClientId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Projects_StorageTypes_StorageTypeId",
+                        column: x => x.StorageTypeId,
+                        principalTable: "StorageTypes",
+                        principalColumn: "StorageTypeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Projects_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
                         principalTable: "Warehouses",
                         principalColumn: "WarehouseId",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -959,35 +766,6 @@ namespace LD.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EquipmentQuestionDets",
-                columns: table => new
-                {
-                    EquipmentQuestionDetId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EquipmentQuestionId = table.Column<int>(type: "int", nullable: false),
-                    QuestionText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OptionAnswerText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsYesNo = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EquipmentQuestionDets", x => x.EquipmentQuestionDetId);
-                    table.ForeignKey(
-                        name: "FK_EquipmentQuestionDets_EquipmentQuestions_EquipmentQuestionId",
-                        column: x => x.EquipmentQuestionId,
-                        principalTable: "EquipmentQuestions",
-                        principalColumn: "EquipmentQuestionId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RolePermissions",
                 schema: "Auth",
                 columns: table => new
@@ -1019,115 +797,6 @@ namespace LD.Infrastructure.Migrations
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SecurityRegistrations",
-                columns: table => new
-                {
-                    SecurityRegistrationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Estado = table.Column<int>(type: "int", nullable: false),
-                    CortinaId = table.Column<int>(type: "int", nullable: true),
-                    Tipo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Nombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Licencia = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Vencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Celular = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    TipoVehiculo = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Linea = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Origen = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Numero = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Placa = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SecurityRegistrations", x => x.SecurityRegistrationId);
-                    table.ForeignKey(
-                        name: "FK_SecurityRegistrations_Cortinas_CortinaId",
-                        column: x => x.CortinaId,
-                        principalTable: "Cortinas",
-                        principalColumn: "CortinaId",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Checklists",
-                columns: table => new
-                {
-                    ChecklistId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EquipmentId = table.Column<int>(type: "int", nullable: false),
-                    EquipmentTypeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Turno = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Horometro = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Observaciones = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Checklists", x => x.ChecklistId);
-                    table.ForeignKey(
-                        name: "FK_Checklists_Equipments_EquipmentId",
-                        column: x => x.EquipmentId,
-                        principalTable: "Equipments",
-                        principalColumn: "EquipmentId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CyclicInventoryDetails",
-                columns: table => new
-                {
-                    CyclicInventoryDetailId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CyclicInventoryId = table.Column<int>(type: "int", nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: false),
-                    Counted = table.Column<bool>(type: "bit", nullable: false),
-                    TheoreticalQty = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PhysicalQty = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    FirstCountResult = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    SecondCountResult = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    FinalResult = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    PartNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Scanned = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CyclicInventoryDetails", x => x.CyclicInventoryDetailId);
-                    table.ForeignKey(
-                        name: "FK_CyclicInventoryDetails_CyclicInventories_CyclicInventoryId",
-                        column: x => x.CyclicInventoryId,
-                        principalTable: "CyclicInventories",
-                        principalColumn: "CyclicInventoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CyclicInventoryDetails_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "LocationId");
                 });
 
             migrationBuilder.CreateTable(
@@ -1166,242 +835,6 @@ namespace LD.Infrastructure.Migrations
                         column: x => x.LocationId,
                         principalTable: "Locations",
                         principalColumn: "LocationId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    ProjectId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: true),
-                    StorageTypeId = table.Column<int>(type: "int", nullable: false),
-                    ProjectName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    AutoPicking = table.Column<bool>(type: "bit", nullable: false),
-                    AllowsBackorder = table.Column<bool>(type: "bit", nullable: false),
-                    IsDistributionArea = table.Column<bool>(type: "bit", nullable: false),
-                    IsFiscalWarehouse = table.Column<bool>(type: "bit", nullable: false),
-                    AllowsOversizedItems = table.Column<bool>(type: "bit", nullable: false),
-                    RequiresLabels = table.Column<bool>(type: "bit", nullable: false),
-                    Entrada = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    StorageArea = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    ReworkArea = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Salida = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    ReceiptNotificationEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    ReceiptNotificationMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ShipmentNotificationEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    ShipmentNotificationMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    InternalNotificationEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    InternalNotificationMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalHrs = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    UrgentHrs = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AsnNumber = table.Column<int>(type: "int", nullable: true),
-                    AsnPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    KittingNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    KittingPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeliveryOrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeliveryOrderPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DoNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DoPrefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReciveRequired = table.Column<bool>(type: "bit", nullable: false),
-                    ScanRequired = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.ProjectId);
-                    table.ForeignKey(
-                        name: "FK_Projects_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "ClientId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Projects_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "LocationId");
-                    table.ForeignKey(
-                        name: "FK_Projects_StorageTypes_StorageTypeId",
-                        column: x => x.StorageTypeId,
-                        principalTable: "StorageTypes",
-                        principalColumn: "StorageTypeId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Projects_Units_Entrada",
-                        column: x => x.Entrada,
-                        principalTable: "Units",
-                        principalColumn: "UnitIdS");
-                    table.ForeignKey(
-                        name: "FK_Projects_Units_ReworkArea",
-                        column: x => x.ReworkArea,
-                        principalTable: "Units",
-                        principalColumn: "UnitIdS");
-                    table.ForeignKey(
-                        name: "FK_Projects_Units_Salida",
-                        column: x => x.Salida,
-                        principalTable: "Units",
-                        principalColumn: "UnitIdS");
-                    table.ForeignKey(
-                        name: "FK_Projects_Units_StorageArea",
-                        column: x => x.StorageArea,
-                        principalTable: "Units",
-                        principalColumn: "UnitIdS");
-                    table.ForeignKey(
-                        name: "FK_Projects_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouses",
-                        principalColumn: "WarehouseId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SecurityRegistrationPhotos",
-                columns: table => new
-                {
-                    SecurityRegistrationPhotoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SecurityRegistrationId = table.Column<int>(type: "int", nullable: false),
-                    Categoria = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Orden = table.Column<int>(type: "int", nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SecurityRegistrationPhotos", x => x.SecurityRegistrationPhotoId);
-                    table.ForeignKey(
-                        name: "FK_SecurityRegistrationPhotos_SecurityRegistrations_SecurityRegistrationId",
-                        column: x => x.SecurityRegistrationId,
-                        principalTable: "SecurityRegistrations",
-                        principalColumn: "SecurityRegistrationId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SecurityTasks",
-                columns: table => new
-                {
-                    SecurityTaskId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SecurityRegistrationId = table.Column<int>(type: "int", nullable: false),
-                    TipoAccion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Completada = table.Column<bool>(type: "bit", nullable: false),
-                    FechaCompletada = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RealizadaPor = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SecurityTasks", x => x.SecurityTaskId);
-                    table.ForeignKey(
-                        name: "FK_SecurityTasks_SecurityRegistrations_SecurityRegistrationId",
-                        column: x => x.SecurityRegistrationId,
-                        principalTable: "SecurityRegistrations",
-                        principalColumn: "SecurityRegistrationId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChecklistAnswers",
-                columns: table => new
-                {
-                    ChecklistAnswerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ChecklistId = table.Column<int>(type: "int", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
-                    QuestionTextSnapshot = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    AnswerText = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    IsOk = table.Column<bool>(type: "bit", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChecklistAnswers", x => x.ChecklistAnswerId);
-                    table.ForeignKey(
-                        name: "FK_ChecklistAnswers_Checklists_ChecklistId",
-                        column: x => x.ChecklistId,
-                        principalTable: "Checklists",
-                        principalColumn: "ChecklistId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChecklistDefectMarks",
-                columns: table => new
-                {
-                    ChecklistDefectMarkId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ChecklistId = table.Column<int>(type: "int", nullable: false),
-                    Side = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    XPercent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    YPercent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChecklistDefectMarks", x => x.ChecklistDefectMarkId);
-                    table.ForeignKey(
-                        name: "FK_ChecklistDefectMarks_Checklists_ChecklistId",
-                        column: x => x.ChecklistId,
-                        principalTable: "Checklists",
-                        principalColumn: "ChecklistId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChecklistPhotos",
-                columns: table => new
-                {
-                    ChecklistPhotoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ChecklistId = table.Column<int>(type: "int", nullable: false),
-                    RelativePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Side = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChecklistPhotos", x => x.ChecklistPhotoId);
-                    table.ForeignKey(
-                        name: "FK_ChecklistPhotos_Checklists_ChecklistId",
-                        column: x => x.ChecklistId,
-                        principalTable: "Checklists",
-                        principalColumn: "ChecklistId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -1528,7 +961,7 @@ namespace LD.Infrastructure.Migrations
                     ScanTypeId = table.Column<int>(type: "int", nullable: false),
                     ScanValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SaveTypeId = table.Column<int>(type: "int", nullable: false),
-                    SaveValue = table.Column<int>(type: "int", nullable: false),
+                    SaveValue = table.Column<int>(type: "int", nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -1563,39 +996,6 @@ namespace LD.Infrastructure.Migrations
                         principalTable: "SystemFields",
                         principalColumn: "SystemFieldId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StandardLabels",
-                columns: table => new
-                {
-                    StandarId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StandarIdStr = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    PartNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    clientId = table.Column<int>(type: "int", nullable: true),
-                    projectId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StandardLabels", x => x.StandarId);
-                    table.ForeignKey(
-                        name: "FK_StandardLabels_Clients_clientId",
-                        column: x => x.clientId,
-                        principalTable: "Clients",
-                        principalColumn: "ClientId");
-                    table.ForeignKey(
-                        name: "FK_StandardLabels_Projects_projectId",
-                        column: x => x.projectId,
-                        principalTable: "Projects",
-                        principalColumn: "ProjectId");
                 });
 
             migrationBuilder.CreateTable(
@@ -1716,9 +1116,6 @@ namespace LD.Infrastructure.Migrations
                     ExchangeRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PurchaseOrder = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     CustomsDeclarationNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    StandardQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    MaximumQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    StatusLine = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1744,136 +1141,6 @@ namespace LD.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AvailableInventories",
-                columns: table => new
-                {
-                    AvailableInventoryId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ProjectId = table.Column<int>(type: "int", nullable: false),
-                    PartNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Hora = table.Column<TimeSpan>(type: "time", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LotNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Reference = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    PurchaseOrder = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    CustomsDeclarationNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DocumentId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StatusId = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
-                    LocationId = table.Column<int>(type: "int", nullable: true),
-                    Qty = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    StandardId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AvailableInventories", x => x.AvailableInventoryId);
-                    table.ForeignKey(
-                        name: "FK_AvailableInventories_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "ClientId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AvailableInventories_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "LocationId");
-                    table.ForeignKey(
-                        name: "FK_AvailableInventories_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "ProjectId");
-                    table.ForeignKey(
-                        name: "FK_AvailableInventories_StandardLabels_StandardId",
-                        column: x => x.StandardId,
-                        principalTable: "StandardLabels",
-                        principalColumn: "StandarId");
-                    table.ForeignKey(
-                        name: "FK_AvailableInventories_items_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "items",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InventoryMovements",
-                columns: table => new
-                {
-                    MovementId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ProjectId = table.Column<int>(type: "int", nullable: false),
-                    PartNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Hora = table.Column<TimeSpan>(type: "time", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LotNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Reference = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    PurchaseOrder = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    CustomsDeclarationNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DocumentType = table.Column<int>(type: "int", nullable: false),
-                    MovementType = table.Column<int>(type: "int", nullable: false),
-                    DocumentId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StatusId = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
-                    LocationId = table.Column<int>(type: "int", nullable: true),
-                    Qty = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    StandardId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InventoryMovements", x => x.MovementId);
-                    table.ForeignKey(
-                        name: "FK_InventoryMovements_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "ClientId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_InventoryMovements_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "LocationId");
-                    table.ForeignKey(
-                        name: "FK_InventoryMovements_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "ProjectId");
-                    table.ForeignKey(
-                        name: "FK_InventoryMovements_StandardLabels_StandardId",
-                        column: x => x.StandardId,
-                        principalTable: "StandardLabels",
-                        principalColumn: "StandarId");
-                    table.ForeignKey(
-                        name: "FK_InventoryMovements_items_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "items",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AsnReceiptDetails",
                 columns: table => new
                 {
@@ -1895,9 +1162,6 @@ namespace LD.Infrastructure.Migrations
                     LotNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Reference = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    PurchaseOrder = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    CustomsDeclarationNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    StatusLine = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1921,97 +1185,7 @@ namespace LD.Infrastructure.Migrations
                         principalTable: "Locations",
                         principalColumn: "LocationId");
                     table.ForeignKey(
-                        name: "FK_AsnReceiptDetails_StandardLabels_StandardId",
-                        column: x => x.StandardId,
-                        principalTable: "StandardLabels",
-                        principalColumn: "StandarId");
-                    table.ForeignKey(
                         name: "FK_AsnReceiptDetails_items_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "items",
-                        principalColumn: "ProductId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DamageReports",
-                columns: table => new
-                {
-                    DamageReportId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AvailableInventoryId = table.Column<int>(type: "int", nullable: true),
-                    StandardId = table.Column<int>(type: "int", nullable: true),
-                    StandardIdCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ProductId = table.Column<int>(type: "int", nullable: true),
-                    ClientId = table.Column<int>(type: "int", nullable: true),
-                    ProjectId = table.Column<int>(type: "int", nullable: true),
-                    WarehouseId = table.Column<int>(type: "int", nullable: true),
-                    LocationId = table.Column<int>(type: "int", nullable: true),
-                    PartNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    CurrentStatus = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
-                    ReceivedQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AvailableQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Warehouse = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    Project = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    Client = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    Asn = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ReceptionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    InventoryState = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    DamageType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    NewStatus = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Comments = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Photo1Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Photo2Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Photo3Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Photo4Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    ReportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReportedByUserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
-                    ReportedByName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DamageReports", x => x.DamageReportId);
-                    table.ForeignKey(
-                        name: "FK_DamageReports_AvailableInventories_AvailableInventoryId",
-                        column: x => x.AvailableInventoryId,
-                        principalTable: "AvailableInventories",
-                        principalColumn: "AvailableInventoryId");
-                    table.ForeignKey(
-                        name: "FK_DamageReports_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "ClientId");
-                    table.ForeignKey(
-                        name: "FK_DamageReports_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "LocationId");
-                    table.ForeignKey(
-                        name: "FK_DamageReports_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "ProjectId");
-                    table.ForeignKey(
-                        name: "FK_DamageReports_StandardLabels_StandardId",
-                        column: x => x.StandardId,
-                        principalTable: "StandardLabels",
-                        principalColumn: "StandarId");
-                    table.ForeignKey(
-                        name: "FK_DamageReports_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouses",
-                        principalColumn: "WarehouseId");
-                    table.ForeignKey(
-                        name: "FK_DamageReports_items_ProductId",
                         column: x => x.ProductId,
                         principalTable: "items",
                         principalColumn: "ProductId");
@@ -2021,13 +1195,7 @@ namespace LD.Infrastructure.Migrations
                 schema: "Auth",
                 table: "AppUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FullName", "IsActive", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[,]
-                {
-                    { "a1b2c3d4-e5f6-7890-abcd-ef1234567890", 0, "00000000-0000-0000-0000-000000000001", "admin@ld.com", true, "Administrador Dev", true, false, null, "ADMIN@LD.COM", "ADMIN", "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==", null, false, "STATIC-SECURITY-STAMP-DEV", false, "admin" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3u101", 0, "00000000-0000-0000-0000-000000000101", "checklist.mobile@ld.com", true, "Checklist Mobile", true, false, null, "CHECKLIST.MOBILE@LD.COM", "CHECKLIST", "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==", null, false, "STATIC-SECURITY-STAMP-CHECKLIST", false, "checklist" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3u102", 0, "00000000-0000-0000-0000-000000000102", "security.mobile@ld.com", true, "Security Mobile", true, false, null, "SECURITY.MOBILE@LD.COM", "SECURITY", "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==", null, false, "STATIC-SECURITY-STAMP-SECURITY", false, "security" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3u103", 0, "00000000-0000-0000-0000-000000000103", "controlpatio.mobile@ld.com", true, "Control Patio Mobile", true, false, null, "CONTROLPATIO.MOBILE@LD.COM", "CONTROLPATIO", "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==", null, false, "STATIC-SECURITY-STAMP-CONTROLPATIO", false, "controlpatio" }
-                });
+                values: new object[] { "a1b2c3d4-e5f6-7890-abcd-ef1234567890", 0, "00000000-0000-0000-0000-000000000001", "admin@ld.com", true, "Administrador Dev", true, false, null, "ADMIN@LD.COM", "ADMIN", "AQAAAAIAAYagAAAAELwhYiHkLhnB8GG70zbiuUeHdrzvTuYGbLTFm4kwRZo9h6aUhKdbe49Ka2+WdRbkoA==", null, false, "STATIC-SECURITY-STAMP-DEV", false, "admin" });
 
             migrationBuilder.InsertData(
                 schema: "Auth",
@@ -2056,30 +1224,22 @@ namespace LD.Infrastructure.Migrations
                     { 25, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null, "Seguridad", null },
                     { 26, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null, "Consultas", null },
                     { 27, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null, "Reporte de Daños", null },
-                    { 28, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null, "Operaciones", null },
-                    { 29, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null, "Impresion", null }
+                    { 28, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null, "Operaciones", null }
                 });
 
             migrationBuilder.InsertData(
                 schema: "Auth",
                 table: "Roles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "87b92599-3be7-4ab5-b19e-9e069e015d4e", "1", "SuperAdmin", "SUPERADMIN" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", "1", "ChecklistMobile", "CHECKLISTMOBILE" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", "1", "SecurityMobile", "SECURITYMOBILE" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3f103", "1", "ControlPatioMobile", "CONTROLPATIOMOBILE" }
-                });
+                values: new object[] { "87b92599-3be7-4ab5-b19e-9e069e015d4e", "1", "SuperAdmin", "SUPERADMIN" });
 
             migrationBuilder.InsertData(
                 table: "ScanSaveTypes",
                 columns: new[] { "ScanSaveTypeId", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "Description", "IsActive", "Key", "LastModifiedAt", "LastModifiedByUserId", "ScanSaveTypeName" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "none", null, null, "Ninguno" },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "remove_first", null, null, "Quitar primeros dígitos" },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "remove_last", null, null, "Quitar últimos dígitos" }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "remove_first", null, null, "Quitar primeros dígitos" },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "remove_last", null, null, "Quitar últimos dígitos" }
                 });
 
             migrationBuilder.InsertData(
@@ -2087,12 +1247,9 @@ namespace LD.Infrastructure.Migrations
                 columns: new[] { "ScanTypeId", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "Description", "IsActive", "Key", "LastModifiedAt", "LastModifiedByUserId", "ScanTypeName" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "none", null, null, "Ninguno" },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "starts_with", null, null, "Empieza con" },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "length", null, null, "Cantidad de dígitos" },
-                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "less_than", null, null, "Es número menor a" },
-                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "is_ld_label", null, null, "Es etiqueta LD" },
-                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "is_part_number", null, null, "Es número de parte" }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "starts_with", null, null, "Empieza con" },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "length", null, null, "Cantidad de dígitos" },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, true, "less_than", null, null, "Es número menor a" }
                 });
 
             migrationBuilder.InsertData(
@@ -2115,26 +1272,7 @@ namespace LD.Infrastructure.Migrations
                     { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Referencia del cliente", true, null, null, 2, "customer_reference" },
                     { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Orden de compra", true, null, null, 3, "purchase_order" },
                     { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Orden de pedimento", true, null, null, 4, "customs_declaration" },
-                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Cantidad", true, null, null, 5, "qty" },
-                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "StandardId", true, null, null, 6, "standard_id" },
-                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Número de Parte", true, null, null, 7, "partnumber" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Warehouses",
-                columns: new[] { "WarehouseId", "Address", "Capacity", "City", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "IsActive", "IsProduction", "LastModifiedAt", "LastModifiedByUserId", "Neighborhood", "WarehouseName", "ZipCode" },
-                values: new object[] { 100, "Dirección por configurar", 0m, "", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, true, false, null, null, "", "Almacén Principal", "" });
-
-            migrationBuilder.InsertData(
-                table: "Cortinas",
-                columns: new[] { "CortinaId", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "Descripcion", "EstaDisponible", "IsActive", "LastModifiedAt", "LastModifiedByUserId", "Numero", "WarehouseId" },
-                values: new object[,]
-                {
-                    { 100, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 1 — Muelle Norte", true, true, null, null, "C-01", 100 },
-                    { 200, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 2 — Muelle Norte", true, true, null, null, "C-02", 100 },
-                    { 300, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 3 — Muelle Sur", true, true, null, null, "C-03", 100 },
-                    { 400, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 4 — Muelle Sur", true, true, null, null, "C-04", 100 },
-                    { 500, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, null, "Cortina 5 — Muelle Este", true, true, null, null, "C-05", 100 }
+                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Cantidad", true, null, null, 5, "qty" }
                 });
 
             migrationBuilder.InsertData(
@@ -2219,25 +1357,14 @@ namespace LD.Infrastructure.Migrations
                     { 60, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "forklift-checklist.update", null, null, 8, "Actualizar checklist de montacargas" },
                     { 61, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "forklift-checklist.delete", null, null, 8, "Eliminar checklist de montacargas" },
                     { 62, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "forklift-checklist.execute", null, null, 8, "Ejecutar checklist de montacargas" },
-                    { 63, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "forklift-checklist.approve", null, null, 8, "Aprobar checklist de montacargas" },
-                    { 82, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "asn.create", null, null, 7, "Crear ASN" },
-                    { 83, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "asn.update", null, null, 7, "Editar ASN" },
-                    { 84, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "asn.delete", null, null, 7, "Eliminar ASN" },
-                    { 85, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "security.cortina.assign", null, null, 25, "Asignar cortina" },
-                    { 86, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "standard-label.print", null, null, 29, "Imprimir etiquetas StandardId" }
+                    { 63, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, "forklift-checklist.approve", null, null, 8, "Aprobar checklist de montacargas" }
                 });
 
             migrationBuilder.InsertData(
                 schema: "Auth",
                 table: "UserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[,]
-                {
-                    { "87b92599-3be7-4ab5-b19e-9e069e015d4e", "a1b2c3d4-e5f6-7890-abcd-ef1234567890" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", "f78a2f0d-32f4-4d66-9db8-0f69f5d3u101" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", "f78a2f0d-32f4-4d66-9db8-0f69f5d3u102" },
-                    { "f78a2f0d-32f4-4d66-9db8-0f69f5d3f103", "f78a2f0d-32f4-4d66-9db8-0f69f5d3u103" }
-                });
+                values: new object[] { "87b92599-3be7-4ab5-b19e-9e069e015d4e", "a1b2c3d4-e5f6-7890-abcd-ef1234567890" });
 
             migrationBuilder.InsertData(
                 schema: "Auth",
@@ -2334,26 +1461,6 @@ namespace LD.Infrastructure.Migrations
                     { 61, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
                     { 62, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
                     { 63, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 82, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 83, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 84, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 85, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 86, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 23, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 59, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 60, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 61, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 62, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 63, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f101", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 43, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 44, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 45, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 46, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 47, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 48, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 49, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 85, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f102", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
-                    { 24, "f78a2f0d-32f4-4d66-9db8-0f69f5d3f103", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
                     { 64, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
                     { 65, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
                     { 66, "87b92599-3be7-4ab5-b19e-9e069e015d4e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, true, null, null },
@@ -2414,11 +1521,6 @@ namespace LD.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AsnReceiptDetails_StandardId",
-                table: "AsnReceiptDetails",
-                column: "StandardId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Asns_ClientId",
                 table: "Asns",
                 column: "ClientId");
@@ -2429,31 +1531,6 @@ namespace LD.Infrastructure.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AvailableInventories_ClientId",
-                table: "AvailableInventories",
-                column: "ClientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AvailableInventories_LocationId",
-                table: "AvailableInventories",
-                column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AvailableInventories_ProductId",
-                table: "AvailableInventories",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AvailableInventories_ProjectId",
-                table: "AvailableInventories",
-                column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AvailableInventories_StandardId",
-                table: "AvailableInventories",
-                column: "StandardId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Categories_ClientId",
                 table: "Categories",
                 column: "ClientId");
@@ -2462,26 +1539,6 @@ namespace LD.Infrastructure.Migrations
                 name: "IX_Categories_ProjectId",
                 table: "Categories",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ChecklistAnswers_ChecklistId",
-                table: "ChecklistAnswers",
-                column: "ChecklistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ChecklistDefectMarks_ChecklistId",
-                table: "ChecklistDefectMarks",
-                column: "ChecklistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ChecklistPhotos_ChecklistId",
-                table: "ChecklistPhotos",
-                column: "ChecklistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Checklists_EquipmentId",
-                table: "Checklists",
-                column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientContacts_ClientId",
@@ -2495,86 +1552,6 @@ namespace LD.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cortinas_WarehouseId",
-                table: "Cortinas",
-                column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CyclicInventories_WarehouseId",
-                table: "CyclicInventories",
-                column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CyclicInventoryDetails_CyclicInventoryId",
-                table: "CyclicInventoryDetails",
-                column: "CyclicInventoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CyclicInventoryDetails_LocationId",
-                table: "CyclicInventoryDetails",
-                column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageReports_AvailableInventoryId",
-                table: "DamageReports",
-                column: "AvailableInventoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageReports_ClientId",
-                table: "DamageReports",
-                column: "ClientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageReports_LocationId",
-                table: "DamageReports",
-                column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageReports_ProductId",
-                table: "DamageReports",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageReports_ProjectId",
-                table: "DamageReports",
-                column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageReports_StandardId",
-                table: "DamageReports",
-                column: "StandardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageReports_WarehouseId",
-                table: "DamageReports",
-                column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EquipmentQuestionDets_EquipmentQuestionId",
-                table: "EquipmentQuestionDets",
-                column: "EquipmentQuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EquipmentQuestions_EquipmentTypeId",
-                table: "EquipmentQuestions",
-                column: "EquipmentTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Equipments_EquipmentSupplierId",
-                table: "Equipments",
-                column: "EquipmentSupplierId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Equipments_EquipmentTypeId",
-                table: "Equipments",
-                column: "EquipmentTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Equipments_WarehouseId",
-                table: "Equipments",
-                column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Families_ClientId",
                 table: "Families",
                 column: "ClientId");
@@ -2585,41 +1562,14 @@ namespace LD.Infrastructure.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InventoryMovements_ClientId",
-                table: "InventoryMovements",
-                column: "ClientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InventoryMovements_LocationId",
-                table: "InventoryMovements",
-                column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InventoryMovements_ProductId",
-                table: "InventoryMovements",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InventoryMovements_ProjectId",
-                table: "InventoryMovements",
-                column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InventoryMovements_StandardId",
-                table: "InventoryMovements",
-                column: "StandardId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_items_CategoryId",
                 table: "items",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_items_ClientId_ProjectId_PartNumber",
+                name: "IX_items_ClientId",
                 table: "items",
-                columns: new[] { "ClientId", "ProjectId", "PartNumber" },
-                unique: true,
-                filter: "[ClientId] IS NOT NULL AND [ProjectId] IS NOT NULL");
+                column: "ClientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_items_DimensionerId",
@@ -2658,11 +1608,6 @@ namespace LD.Infrastructure.Migrations
                 column: "ParentModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OperationalTasks_WarehouseId",
-                table: "OperationalTasks",
-                column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Permissions_ModuleId",
                 schema: "Auth",
                 table: "Permissions",
@@ -2684,31 +1629,6 @@ namespace LD.Infrastructure.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_Entrada",
-                table: "Projects",
-                column: "Entrada");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_LocationId",
-                table: "Projects",
-                column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_ReworkArea",
-                table: "Projects",
-                column: "ReworkArea");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_Salida",
-                table: "Projects",
-                column: "Salida");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_StorageArea",
-                table: "Projects",
-                column: "StorageArea");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Projects_StorageTypeId",
                 table: "Projects",
                 column: "StorageTypeId");
@@ -2717,13 +1637,6 @@ namespace LD.Infrastructure.Migrations
                 name: "IX_Projects_WarehouseId",
                 table: "Projects",
                 column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RefreshTokens_Token",
-                schema: "Auth",
-                table: "RefreshTokens",
-                column: "Token",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -2764,43 +1677,6 @@ namespace LD.Infrastructure.Migrations
                 name: "IX_ScanConfigurations_SystemFieldId",
                 table: "ScanConfigurations",
                 column: "SystemFieldId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SecurityRegistrationPhotos_SecurityRegistrationId",
-                table: "SecurityRegistrationPhotos",
-                column: "SecurityRegistrationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SecurityRegistrations_CortinaId",
-                table: "SecurityRegistrations",
-                column: "CortinaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SecurityTasks_SecurityRegistrationId",
-                table: "SecurityTasks",
-                column: "SecurityRegistrationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StandardLabels_clientId",
-                table: "StandardLabels",
-                column: "clientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StandardLabels_projectId",
-                table: "StandardLabels",
-                column: "projectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StandardLabels_StandarIdStr",
-                table: "StandardLabels",
-                column: "StandarIdStr",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StandarIdSequences_SequenceDate",
-                table: "StandarIdSequences",
-                column: "SequenceDate",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Units_UnitIdS",
@@ -2844,15 +1720,6 @@ namespace LD.Infrastructure.Migrations
                 name: "AsnReceiptDetails");
 
             migrationBuilder.DropTable(
-                name: "ChecklistAnswers");
-
-            migrationBuilder.DropTable(
-                name: "ChecklistDefectMarks");
-
-            migrationBuilder.DropTable(
-                name: "ChecklistPhotos");
-
-            migrationBuilder.DropTable(
                 name: "ClientContacts");
 
             migrationBuilder.DropTable(
@@ -2862,38 +1729,19 @@ namespace LD.Infrastructure.Migrations
                 name: "Currencies");
 
             migrationBuilder.DropTable(
-                name: "CyclicInventoryDetails");
-
-            migrationBuilder.DropTable(
-                name: "DamageReports");
-
-            migrationBuilder.DropTable(
                 name: "DireccionEntregas");
 
             migrationBuilder.DropTable(
                 name: "Drivers");
 
             migrationBuilder.DropTable(
-                name: "EquipmentQuestionDets");
-
-            migrationBuilder.DropTable(
                 name: "inventaryStatuses");
-
-            migrationBuilder.DropTable(
-                name: "InventoryMovements");
-
-            migrationBuilder.DropTable(
-                name: "OperationalTasks");
 
             migrationBuilder.DropTable(
                 name: "PickingZones");
 
             migrationBuilder.DropTable(
                 name: "Printers");
-
-            migrationBuilder.DropTable(
-                name: "RefreshTokens",
-                schema: "Auth");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims",
@@ -2905,15 +1753,6 @@ namespace LD.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ScanConfigurations");
-
-            migrationBuilder.DropTable(
-                name: "SecurityRegistrationPhotos");
-
-            migrationBuilder.DropTable(
-                name: "SecurityTasks");
-
-            migrationBuilder.DropTable(
-                name: "StandarIdSequences");
 
             migrationBuilder.DropTable(
                 name: "UserClaims",
@@ -2941,16 +1780,7 @@ namespace LD.Infrastructure.Migrations
                 name: "AsnDetails");
 
             migrationBuilder.DropTable(
-                name: "Checklists");
-
-            migrationBuilder.DropTable(
-                name: "CyclicInventories");
-
-            migrationBuilder.DropTable(
-                name: "AvailableInventories");
-
-            migrationBuilder.DropTable(
-                name: "EquipmentQuestions");
+                name: "Locations");
 
             migrationBuilder.DropTable(
                 name: "Permissions",
@@ -2966,9 +1796,6 @@ namespace LD.Infrastructure.Migrations
                 name: "SystemFields");
 
             migrationBuilder.DropTable(
-                name: "SecurityRegistrations");
-
-            migrationBuilder.DropTable(
                 name: "Roles",
                 schema: "Auth");
 
@@ -2980,26 +1807,11 @@ namespace LD.Infrastructure.Migrations
                 name: "Asns");
 
             migrationBuilder.DropTable(
-                name: "Equipments");
-
-            migrationBuilder.DropTable(
-                name: "StandardLabels");
-
-            migrationBuilder.DropTable(
                 name: "items");
 
             migrationBuilder.DropTable(
                 name: "Modules",
                 schema: "Auth");
-
-            migrationBuilder.DropTable(
-                name: "Cortinas");
-
-            migrationBuilder.DropTable(
-                name: "EquipmentSuppliers");
-
-            migrationBuilder.DropTable(
-                name: "EquipmentTypes");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -3011,19 +1823,16 @@ namespace LD.Infrastructure.Migrations
                 name: "Families");
 
             migrationBuilder.DropTable(
+                name: "Units");
+
+            migrationBuilder.DropTable(
                 name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "Locations");
-
-            migrationBuilder.DropTable(
                 name: "StorageTypes");
-
-            migrationBuilder.DropTable(
-                name: "Units");
 
             migrationBuilder.DropTable(
                 name: "Warehouses");
