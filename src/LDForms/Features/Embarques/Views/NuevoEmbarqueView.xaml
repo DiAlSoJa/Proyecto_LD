@@ -1,0 +1,748 @@
+<Window x:Class="LD.FormsX.Features.Embarques.Views.NuevoEmbarqueView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:common="clr-namespace:LD.FormsX.Features.Common"
+        mc:Ignorable="d"
+        Title="Embarque"
+        Height="920"
+        Width="1260"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        AllowsTransparency="True"
+        StateChanged="Window_StateChanged"
+        Background="Transparent">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#233167"/>
+        <SolidColorBrush x:Key="BorderBrushSoft" Color="#D1D5DB"/>
+        <SolidColorBrush x:Key="HeaderBrush" Color="#F9FAFB"/>
+        <SolidColorBrush x:Key="AltRowBrush" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#111827"/>
+
+        <ContextMenu x:Key="DetailRowHeaderContextMenu"
+                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Eliminar"
+                      Click="DeleteDetailMenuItem_Click"/>
+        </ContextMenu>
+
+        <ContextMenu x:Key="IssueRowHeaderContextMenu"
+                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Eliminar"
+                      Click="DeleteIssueMenuItem_Click"/>
+        </ContextMenu>
+
+        <Style TargetType="TextBlock" x:Key="LabelStyle">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style TargetType="TextBox" x:Key="InputTextBoxStyle">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="ComboBox" x:Key="InputComboBoxStyle">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="5,1"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style TargetType="DatePicker" x:Key="InputDatePickerStyle">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="SecondaryButtonStyle">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="PrimaryButtonStyle">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource HeaderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Height" Value="32"/>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="MinHeight" Value="26"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderBrush" Value="#D9DEE7"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#111827"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#BFDBFE"/>
+                    <Setter Property="Foreground" Value="#0F172A"/>
+                    <Setter Property="BorderBrush" Value="#2563EB"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="Background" Value="#93C5FD"/>
+                    <Setter Property="Foreground" Value="#0F172A"/>
+                    <Setter Property="BorderBrush" Value="#1D4ED8"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Border Background="White"
+                CornerRadius="14"
+                BorderBrush="#000"
+                BorderThickness="1"
+                SnapsToDevicePixels="True">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="18"
+                                  ShadowDepth="0"
+                                  Opacity="0.16"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="46"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="16,16,0,0"
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="34"/>
+                            <ColumnDefinition Width="34"/>
+                            <ColumnDefinition Width="34"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="txtTituloVentana"
+                                   Text="Embarque"
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   FontSize="13"
+                                   VerticalAlignment="Center"
+                                   Margin="12,0,0,0"/>
+
+                        <Button x:Name="btnMinimizarVentana"
+                                Grid.Column="1"
+                                Content="_"
+                                Click="BtnMinimizarVentana_Click"
+                                Background="Transparent"
+                                Foreground="White"
+                                BorderThickness="0"
+                                FontSize="13"
+                                Cursor="Hand"/>
+
+                        <Button x:Name="btnMaximizarVentana"
+                                Grid.Column="2"
+                                Content="[]"
+                                Click="BtnMaximizarVentana_Click"
+                                Background="Transparent"
+                                Foreground="White"
+                                BorderThickness="0"
+                                FontSize="11"
+                                Cursor="Hand"/>
+
+                        <Button x:Name="btnCerrarVentana"
+                                Grid.Column="3"
+                                Content="X"
+                                Click="BtnCerrarVentana_Click"
+                                Background="Transparent"
+                                Foreground="White"
+                                BorderThickness="0"
+                                FontSize="13"
+                                Cursor="Hand"/>
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Auto">
+                    <Border Background="White"
+                            Padding="16,14,16,10">
+                        <StackPanel>
+                            <Border Background="#F0FDF4"
+                                    BorderBrush="#86EFAC"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Padding="10,6"
+                                    Margin="0,0,0,12">
+                                <TextBlock x:Name="txtCodigoPreview"
+                                           Text="Selecciona un proyecto para generar el codigo."
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Foreground="#166534"/>
+                            </Border>
+
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="410"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <GroupBox Grid.Column="0" Header="Embarque">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="104"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Cliente:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <ComboBox x:Name="cmbCliente"
+                                                  Grid.Row="0"
+                                                  Grid.Column="1"
+                                                  Style="{StaticResource InputComboBoxStyle}"
+                                                  DisplayMemberPath="Value"
+                                                  SelectedValuePath="Key"
+                                                  SelectionChanged="cmbCliente_SelectionChanged"/>
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Proyecto:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <ComboBox x:Name="cmbProyecto"
+                                                  Grid.Row="1"
+                                                  Grid.Column="1"
+                                                  Style="{StaticResource InputComboBoxStyle}"
+                                                  DisplayMemberPath="Value"
+                                                  SelectedValuePath="Key"
+                                                  SelectionChanged="cmbProyecto_SelectionChanged"/>
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="No. Factura:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtNumeroFactura" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="No. Guia:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtNumeroGuia" Grid.Row="3" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="ETA:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <DatePicker x:Name="dpEta" Grid.Row="4" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}"/>
+
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Bultos:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtBultos"
+                                                 Grid.Row="5"
+                                                 Grid.Column="1"
+                                                 Width="120"
+                                                 HorizontalAlignment="Left"
+                                                 Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <StackPanel Grid.Row="6" Grid.Column="1" Margin="0,6,0,0">
+                                            <CheckBox x:Name="chkEsDevolucion" Content="Devolucion" Margin="0,0,0,8"/>
+                                            <CheckBox x:Name="chkMovimientoRequeridoCliente" Content="Movimiento requerido por cliente"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </GroupBox>
+
+                                <GroupBox Grid.Column="2" Header="Transporte y entrega">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Linea transporte:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtLineaTransporte" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Tipo vehiculo:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtTipoVehiculo" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Chofer:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtChofer" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Placas:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtPlacasVehiculo" Grid.Row="3" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Sello:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtSelloTransporte" Grid.Row="4" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Contacto:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtContacto" Grid.Row="5" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Direccion:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtDireccion" Grid.Row="6" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtColonia" Grid.Row="7" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtCiudad" Grid.Row="8" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Telefono:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtTelefono" Grid.Row="9" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Codigo postal:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtCodigoPostal" Grid.Row="10" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+
+                            <GroupBox Header="Entrega" Margin="0,0,0,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tipo entrega:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                    <TextBox x:Name="txtTipoEntrega" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,12,0"/>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Fecha programada:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                    <DatePicker x:Name="dpFechaProgramada" Grid.Row="0" Grid.Column="3" Style="{StaticResource InputDatePickerStyle}"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <Border BorderBrush="{StaticResource BorderBrushSoft}"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Background="White"
+                                    Margin="0,0,0,12">
+                                <DockPanel LastChildFill="True">
+                                    <Border DockPanel.Dock="Top"
+                                            Background="{StaticResource HeaderBrush}"
+                                            BorderBrush="{StaticResource BorderBrushSoft}"
+                                            BorderThickness="0,0,0,1"
+                                            Padding="10,8">
+                                        <TextBlock Text="Kitting details"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextBrush}"/>
+                                    </Border>
+
+                                    <DataGrid x:Name="dgDetail"
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="True"
+                                              CanUserDeleteRows="False"
+                                              IsReadOnly="False"
+                                              ItemsSource="{Binding DetailItems}"
+                                              SelectionChanged="dgDetail_SelectionChanged"
+                                              InitializingNewItem="dgDetail_InitializingNewItem"
+                                              CellEditEnding="dgDetail_CellEditEnding"
+                                              HeadersVisibility="All"
+                                              RowHeaderWidth="26"
+                                              GridLinesVisibility="Vertical"
+                                              AlternatingRowBackground="{StaticResource AltRowBrush}"
+                                              AlternationCount="2"
+                                              RowBackground="White"
+                                              BorderThickness="0"
+                                              RowHeight="26"
+                                              ColumnHeaderHeight="32"
+                                              FontSize="11"
+                                              Margin="0"
+                                              SelectionUnit="CellOrRowHeader"
+                                              SelectionMode="Single"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                        <DataGrid.RowHeaderStyle>
+                                            <Style TargetType="DataGridRowHeader">
+                                                <EventSetter Event="PreviewMouseRightButtonDown" Handler="DetailRowHeader_PreviewMouseRightButtonDown"/>
+                                                <Setter Property="ContextMenu" Value="{StaticResource DetailRowHeaderContextMenu}"/>
+                                            </Style>
+                                        </DataGrid.RowHeaderStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Header="Numero de Parte" Width="170">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding PartNumber}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="2,0,0,0"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                    <DataTemplate>
+                                                        <common:InlineLookupEditor ItemsSource="{Binding DataContext.ProductLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                                   DisplayMemberPath="Code"
+                                                                                   SearchMemberPaths="Code,Description"
+                                                                                   InitialText="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedCode="{Binding PartNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedId="{Binding ProductId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   RequireSelectionMatch="True"
+                                                                                   MaxResults="12"
+                                                                                   OpenDropDownOnLoad="True"
+                                                                                   SelectAllTextOnLoad="True"
+                                                                                   SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTextColumn Header="Descripcion"
+                                                                Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="220"/>
+
+                                            <DataGridTextColumn Header="Cantidad"
+                                                                Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="70"/>
+
+                                            <DataGridTextColumn Header="Estandar"
+                                                                Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="70"/>
+
+                                            <DataGridTextColumn Header="Maxima"
+                                                                Binding="{Binding MaximumQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="70"/>
+
+                                            <DataGridTemplateColumn Header="Status" Width="95">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Status}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="2,0,0,0"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                    <DataTemplate>
+                                                        <common:InlineLookupEditor ItemsSource="{Binding DataContext.StatusLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                                   DisplayMemberPath="Code"
+                                                                                   SearchMemberPaths="Code,Description"
+                                                                                   InitialText="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedCode="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   RequireSelectionMatch="True"
+                                                                                   MaxResults="12"
+                                                                                   OpenDropDownOnLoad="True"
+                                                                                   SelectAllTextOnLoad="True"
+                                                                                   SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTemplateColumn Header="SD" Width="70">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding SD}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="2,0,0,0"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                    <DataTemplate>
+                                                        <common:InlineLookupEditor ItemsSource="{Binding DataContext.SdLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                                   DisplayMemberPath="Code"
+                                                                                   SearchMemberPaths="Code,Description"
+                                                                                   InitialText="{Binding SD, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedCode="{Binding SD, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   RequireSelectionMatch="True"
+                                                                                   MaxResults="12"
+                                                                                   OpenDropDownOnLoad="True"
+                                                                                   SelectAllTextOnLoad="True"
+                                                                                   SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTextColumn Header="Lote"
+                                                                Binding="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="110"/>
+
+                                            <DataGridTextColumn Header="Caducidad"
+                                                                Binding="{Binding ExpirationDate, UpdateSourceTrigger=LostFocus, ConverterCulture=es-MX, StringFormat=dd-MM-yyyy}"
+                                                                Width="110"/>
+
+                                            <DataGridTextColumn Header="Referencia"
+                                                                Binding="{Binding CustomerReference, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="120"/>
+
+                                            <DataGridTextColumn Header="T.C."
+                                                                Binding="{Binding ExchangeRate, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="55"/>
+
+                                            <DataGridTextColumn Header="Orden compra"
+                                                                Binding="{Binding PurchaseOrder, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="120"/>
+
+                                            <DataGridTextColumn Header="Pedimento"
+                                                                Binding="{Binding CustomsDeclarationNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="120"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </Border>
+
+                            <Border BorderBrush="{StaticResource BorderBrushSoft}"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Background="White">
+                                <DockPanel LastChildFill="True">
+                                    <Border DockPanel.Dock="Top"
+                                            Background="{StaticResource HeaderBrush}"
+                                            BorderBrush="{StaticResource BorderBrushSoft}"
+                                            BorderThickness="0,0,0,1"
+                                            Padding="10,8">
+                                        <DockPanel LastChildFill="False">
+                                            <TextBlock DockPanel.Dock="Left"
+                                                       Text="Issue details"
+                                                       FontSize="12"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{StaticResource TextBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <Button x:Name="btnGenerarIssueBase"
+                                                    DockPanel.Dock="Right"
+                                                    Content="Generar issue base"
+                                                    Width="150"
+                                                    Height="28"
+                                                    Padding="10,0"
+                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                    Margin="8,0,0,0"
+                                                    Click="BtnGenerarIssueBase_Click"/>
+                                        </DockPanel>
+                                    </Border>
+
+                                    <DataGrid x:Name="dgIssue"
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="True"
+                                              CanUserDeleteRows="False"
+                                              IsReadOnly="False"
+                                              ItemsSource="{Binding IssueItems}"
+                                              InitializingNewItem="dgIssue_InitializingNewItem"
+                                              CellEditEnding="dgIssue_CellEditEnding"
+                                              HeadersVisibility="All"
+                                              RowHeaderWidth="26"
+                                              GridLinesVisibility="Vertical"
+                                              AlternatingRowBackground="{StaticResource AltRowBrush}"
+                                              AlternationCount="2"
+                                              RowBackground="White"
+                                              BorderThickness="0"
+                                              RowHeight="26"
+                                              ColumnHeaderHeight="32"
+                                              FontSize="11"
+                                              Margin="0"
+                                              SelectionUnit="CellOrRowHeader"
+                                              SelectionMode="Single"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                        <DataGrid.RowHeaderStyle>
+                                            <Style TargetType="DataGridRowHeader">
+                                                <EventSetter Event="PreviewMouseRightButtonDown" Handler="IssueRowHeader_PreviewMouseRightButtonDown"/>
+                                                <Setter Property="ContextMenu" Value="{StaticResource IssueRowHeaderContextMenu}"/>
+                                            </Style>
+                                        </DataGrid.RowHeaderStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Numero de Parte"
+                                                                Binding="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="160"
+                                                                IsReadOnly="True"/>
+
+                                            <DataGridTextColumn Header="Descripcion"
+                                                                Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="180"
+                                                                IsReadOnly="True"/>
+
+                                            <DataGridTextColumn Header="Estandar"
+                                                                Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="60"/>
+
+                                            <DataGridTextColumn Header="Maxima"
+                                                                Binding="{Binding MaximumQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="60"/>
+
+                                            <DataGridTemplateColumn Header="SD" Width="70">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding SD}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="2,0,0,0"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                    <DataTemplate>
+                                                        <common:InlineLookupEditor ItemsSource="{Binding DataContext.SdLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                                   DisplayMemberPath="Code"
+                                                                                   SearchMemberPaths="Code,Description"
+                                                                                   InitialText="{Binding SD, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedCode="{Binding SD, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   RequireSelectionMatch="True"
+                                                                                   MaxResults="12"
+                                                                                   OpenDropDownOnLoad="True"
+                                                                                   SelectAllTextOnLoad="False"
+                                                                                   SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTextColumn Header="Recibida"
+                                                                Binding="{Binding ReceivedQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="80"/>
+
+                                            <DataGridTemplateColumn Header="Status" Width="95">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Status}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="2,0,0,0"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                    <DataTemplate>
+                                                        <common:InlineLookupEditor ItemsSource="{Binding DataContext.StatusLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                                   DisplayMemberPath="Code"
+                                                                                   SearchMemberPaths="Code,Description"
+                                                                                   InitialText="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedCode="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   RequireSelectionMatch="True"
+                                                                                   MaxResults="12"
+                                                                                   OpenDropDownOnLoad="True"
+                                                                                   SelectAllTextOnLoad="False"
+                                                                                   SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTemplateColumn Header="Ubicacion" Width="100">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding LocationCode}"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="2,0,0,0"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                    <DataTemplate>
+                                                        <common:InlineLookupEditor ItemsSource="{Binding DataContext.LocationLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                                   DisplayMemberPath="Code"
+                                                                                   SearchMemberPaths="Code,Description"
+                                                                                   InitialText="{Binding LocationCode, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedCode="{Binding LocationCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   SelectedId="{Binding LocationId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                   RequireSelectionMatch="True"
+                                                                                   MaxResults="12"
+                                                                                   OpenDropDownOnLoad="True"
+                                                                                   SelectAllTextOnLoad="False"
+                                                                                   SelectionConfirmed="InlineLookup_SelectionConfirmed"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTextColumn Header="Lote"
+                                                                Binding="{Binding LotNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="100"/>
+
+                                            <DataGridTextColumn Header="Caducidad"
+                                                                Binding="{Binding ExpirationDate, UpdateSourceTrigger=LostFocus, ConverterCulture=es-MX, StringFormat=dd-MM-yyyy}"
+                                                                Width="110"/>
+
+                                            <DataGridTextColumn Header="Referencia"
+                                                                Binding="{Binding Reference, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="120"/>
+
+                                            <DataGridTextColumn Header="Orden compra"
+                                                                Binding="{Binding PurchaseOrder, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="120"/>
+
+                                            <DataGridTextColumn Header="Pedimento"
+                                                                Binding="{Binding CustomsDeclarationNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="120"/>
+
+                                            <DataGridTextColumn Header="EstandarId"
+                                                                Binding="{Binding StandardId, UpdateSourceTrigger=PropertyChanged}"
+                                                                Width="100"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+
+                <Border Grid.Row="2"
+                        Background="#F3F4F6"
+                        BorderBrush="{StaticResource BorderBrushSoft}"
+                        BorderThickness="1,1,0,0"
+                        Padding="10,6">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="btnGuardar"
+                                Content="Guardar"
+                                Width="116"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="BtnGuardar_Click"/>
+
+                        <Button x:Name="btnCerrar"
+                                Content="Cerrar"
+                                Width="116"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Margin="0"
+                                Click="BtnCerrar_Click"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

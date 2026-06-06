@@ -31,6 +31,7 @@ using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.DatabaseDiagram;
 using LD.FormsX.Views.Dialogs;
 using LD.FormsX.Views.Dimensionador;
+using LD.FormsX.Features.Embarques.Views;
 using LD.FormsX.Views.Equipos;
 using LD.FormsX.Views.Familias;
 using LD.FormsX.Views.Inventario;
@@ -215,6 +216,7 @@ namespace LD.FormsX
             services.AddTransient<InventarioView>();
             services.AddTransient<MovimientosView>();
             services.AddTransient<ASNView>();
+            services.AddTransient<EmbarquesView>();
             services.AddTransient<AuditarView>();
             services.AddTransient<InventarioCiclicoView>();
             services.AddTransient<ChecklistViewModel>();
@@ -257,6 +259,7 @@ namespace LD.FormsX
             services.AddTransient<AsignarUsuarioEquipoView>();
             services.AddTransient<NuevoProveedorCheckListView>();
             services.AddTransient<NuevoASNView>();
+            services.AddTransient<NuevoEmbarqueView>();
             services.AddTransient<NuevoASNEscaneoView>();
             services.AddTransient<BuscarVehiculoView>();
 

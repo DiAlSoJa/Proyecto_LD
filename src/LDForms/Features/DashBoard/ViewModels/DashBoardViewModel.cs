@@ -12,6 +12,7 @@ using LD.FormsX.Views.Catalogos;
 using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.DatabaseDiagram;
+using LD.FormsX.Features.Embarques.Views;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Proyectos;
@@ -53,7 +54,7 @@ public partial class DashBoardViewModel : ObservableObject
             ["CheckList"] = new("Checklist montacargas", "Forklift", "#F59E0B", Module_e.ForkliftChecklist, null, () => _serviceProvider.GetRequiredService<CheckListView>()),
             ["Catalogos"] = new("Catálogos", "ViewGridOutline", "#3B82F6", Module_e.Catalogs, null, () => _serviceProvider.GetRequiredService<CatalogosView>()),
             ["Surtido"] = new("Surtido", "ClipboardArrowDownOutline", "#10B981", Module_e.Picking, null, null),
-            ["Embarques"] = new("Embarques", "TruckDeliveryOutline", "#F97316", Module_e.Shipments, null, null),
+            ["Embarques"] = new("Embarques", "TruckDeliveryOutline", "#F97316", Module_e.Shipments, null, () => _serviceProvider.GetRequiredService<EmbarquesView>()),
             ["Reportes"] = new("Reportes", "ChartBar", "#0EA5E9", Module_e.Reports, null, () => _serviceProvider.GetRequiredService<ReportesView>()),
             ["DatabaseDiagram"] = new("Diagrama BD", "Database", "#0F766E", Module_e.Reports, null, () => _serviceProvider.GetRequiredService<DatabaseDiagramView>()),
             ["ReporteDanos"] = new("Reporte de daños", "AlertCircleOutline", "#DC2626", Module_e.DamageReport, null, () => _serviceProvider.GetRequiredService<DamageReportView>()),

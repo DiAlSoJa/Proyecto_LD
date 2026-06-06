@@ -84,6 +84,7 @@ public static class ConfigureServices
         services.AddScoped<IAsnDetailRepository, AsnDetailRepository>();
         services.AddScoped<IAsnReceiptDetailRepository, AsnReceiptRepository>();
         services.AddScoped<IAsnRepository, AsnRepository>();
+        services.AddScoped<IKittingRepository, KittingRepository>();
         services.AddScoped<ISecurityRegistrationRepository, SecurityRegistrationRepository>();
         services.AddScoped<ISystemFieldRepository, SystemFieldRepository>();
         services.AddScoped<ILookupRepository<ScanType>, ScanTypeLookupRepository>();

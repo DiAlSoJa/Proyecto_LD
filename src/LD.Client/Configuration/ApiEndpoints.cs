@@ -385,6 +385,33 @@ namespace LD.Forms.Configuration
         public string AsnReceipt_Delete => $"{_baseApi}/AsnReceipt/{{asnId}}";
 
         // ======================
+        // KITTING
+        // ======================
+
+        public string Kitting_GetAll => $"{_baseApi}/kitting";
+        public string Kitting_GetById => $"{_baseApi}/kitting/{{kittingId}}";
+        public string Kitting_GetByClient => $"{_baseApi}/kitting/{{clientId}}/{{projectId}}";
+        public string Kitting_Create => $"{_baseApi}/kitting";
+        public string Kitting_Update => $"{_baseApi}/kitting/{{kittingId}}";
+        public string Kitting_Confirm => $"{_baseApi}/kitting/{{kittingId}}/confirm";
+        public string Kitting_Cancel => $"{_baseApi}/kitting/{{kittingId}}/cancel";
+        public string Kitting_Locate => $"{_baseApi}/kitting/{{kittingId}}/locate";
+
+        public string KittingDetail_GetAll => $"{_baseApi}/kittingDetail";
+        public string KittingDetail_GetById => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";
+        public string KittingDetail_GetByKittingId => $"{_baseApi}/kittingDetail/kitting/{{kittingId}}";
+        public string KittingDetail_Create => $"{_baseApi}/kittingDetail";
+        public string KittingDetail_Update => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";
+        public string KittingDetail_Delete => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";
+
+        public string KittingIssue_GetAll => $"{_baseApi}/kittingIssue";
+        public string KittingIssue_GetById => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
+        public string KittingIssue_GetByKittingDetailId => $"{_baseApi}/kittingIssue/kittingDetail/{{kittingDetailId}}";
+        public string KittingIssue_Create => $"{_baseApi}/kittingIssue";
+        public string KittingIssue_Update => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
+        public string KittingIssue_Delete => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
+
+        // ======================
         // CHECKLIST
         // ======================
 

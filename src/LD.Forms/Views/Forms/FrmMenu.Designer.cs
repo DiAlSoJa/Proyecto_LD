@@ -333,6 +333,7 @@
             shipmentBtn.Text = "Embarques";
             shipmentBtn.TextImageRelation = TextImageRelation.ImageAboveText;
             shipmentBtn.UseVisualStyleBackColor = true;
+            shipmentBtn.Click += button9_Click;
             // 
             // reportBtn
             // 

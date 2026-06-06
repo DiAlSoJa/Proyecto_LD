@@ -64,6 +64,9 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Asn> Asns { get; set; }
         public DbSet<AsnDetail> AsnDetails { get; set; }
         public DbSet<AsnReceiptDetail> AsnReceiptDetails { get; set; }
+        public DbSet<Kitting> Kittings { get; set; }
+        public DbSet<KittingDetail> KittingDetails { get; set; }
+        public DbSet<KittingIssueDetail> KittingIssueDetails { get; set; }
         public DbSet<ScanConfiguration> ScanConfigurations { get; set; }
         public DbSet<ScanSaveType> ScanSaveTypes { get; set; }
         public DbSet<ScanType> ScanTypes { get; set; }
@@ -299,6 +302,48 @@ namespace LD.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<AsnReceiptDetail>()
+                .HasOne(r => r.StandardLabel)
+                .WithMany()
+                .HasForeignKey(r => r.StandardId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Kitting>()
+                .HasOne(k => k.Client)
+                .WithMany()
+                .HasForeignKey(k => k.ClientId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Kitting>()
+                .HasOne(k => k.Project)
+                .WithMany()
+                .HasForeignKey(k => k.ProjectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<KittingDetail>()
+                .HasOne(d => d.Kitting)
+                .WithMany(k => k.KittingDetails)
+                .HasForeignKey(d => d.KittingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<KittingDetail>()
+                    .HasOne(d => d.Product)
+                    .WithMany()
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<KittingIssueDetail>()
+                .HasOne(r => r.Product)
+                .WithMany()
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<KittingIssueDetail>()
+                .HasOne(r => r.Location)
+                .WithMany()
+                .HasForeignKey(r => r.LocationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<KittingIssueDetail>()
                 .HasOne(r => r.StandardLabel)
                 .WithMany()
                 .HasForeignKey(r => r.StandardId)

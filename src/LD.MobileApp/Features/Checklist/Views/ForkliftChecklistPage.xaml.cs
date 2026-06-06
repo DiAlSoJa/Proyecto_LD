@@ -201,9 +201,9 @@ public partial class ForkliftChecklistPage : ContentPage
 
     private void OnOptionSelected(object sender, EventArgs e)
     {
-        if (sender is Button btn && btn.BindingContext is Models.ChecklistQuestion question)
+        if (sender is Button btn && btn.BindingContext is ChecklistQuestion question)
         {
-            question.SelectSingleOption(btn.Text);
+            question.SelectedOption = btn.Text;
             var parent = btn.Parent as Grid;
             if (parent is null) return;
             foreach (var child in parent.Children)
@@ -218,7 +218,16 @@ public partial class ForkliftChecklistPage : ContentPage
     private void OnMultiOptionTapped(object sender, TappedEventArgs e)
     {
         if (sender is Border { BindingContext: ChecklistOption option })
-            option.Question.ToggleMultiOption(option);
+        {
+            // Esta vista ya no usa selección múltiple, pero se conserva el handler
+            // por compatibilidad si el XAML vuelve a activarlo en el futuro.
+            System.Diagnostics.Debug.WriteLine($"[ForkliftChecklist] Opción tocada: {option.Text}");
+        }
+    }
+
+    private void OnCancelarClicked(object sender, EventArgs e)
+    {
+        PreviewImage.Source = null;
     }
 
     private async void OnCapturarClicked(object sender, EventArgs e)

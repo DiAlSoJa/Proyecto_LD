@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260605113701_AddKitting")]
+    partial class AddKitting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2265,7 +2268,7 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("KittingDetails");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.KittingIssueDetail", b =>
+            modelBuilder.Entity("LD.Domain.Entities.KittingReceiptDetail", b =>
                 {
                     b.Property<int>("KittingReceiptDetailId")
                         .ValueGeneratedOnAdd()
@@ -2372,7 +2375,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("StandardId");
 
-                    b.ToTable("KittingIssueDetails");
+                    b.ToTable("KittingReceiptDetails");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
@@ -6514,10 +6517,10 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.KittingIssueDetail", b =>
+            modelBuilder.Entity("LD.Domain.Entities.KittingReceiptDetail", b =>
                 {
                     b.HasOne("LD.Domain.Entities.KittingDetail", "KittingDetail")
-                        .WithMany("KittingIssueDetails")
+                        .WithMany("KittingReceiptDetails")
                         .HasForeignKey("KittingDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -6924,7 +6927,7 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("LD.Domain.Entities.KittingDetail", b =>
                 {
-                    b.Navigation("KittingIssueDetails");
+                    b.Navigation("KittingReceiptDetails");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Module", b =>

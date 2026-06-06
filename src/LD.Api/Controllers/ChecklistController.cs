@@ -104,8 +104,9 @@ public class ChecklistController : CommonController
     }
 
     [HttpPost("upload-photo")]
+    [Consumes("multipart/form-data")]
     [Permission(PermissionKeys.Checklist_Submit)]
-    public async Task<IActionResult> UploadPhoto([FromForm] IFormFile file, [FromForm] string side)
+    public async Task<IActionResult> UploadPhoto(IFormFile file, [FromForm] string side)
     {
         if (file is null || file.Length == 0)
             return BadRequest("Archivo inválido.");

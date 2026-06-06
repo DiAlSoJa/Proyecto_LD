@@ -82,6 +82,7 @@ namespace LD
             services.AddTransient<FrmAleatorio>();
             services.AddTransient<FrmUsuarios>();
             services.AddTransient<FrmASN>();
+            services.AddTransient<FrmKitting>();
             services.AddTransient<FrmCheckListMontacargas>();
             services.AddTransient<FrmCatalogos>();
             services.AddTransient<FrmReportes>();
@@ -107,6 +108,10 @@ namespace LD
             services.AddTransient<FrmNuevoCliente>();
             services.AddTransient<FrmNuevoProyecto>();
             services.AddTransient<FrmNuevoASN>();
+            services.AddTransient<FrmNuevoKitting>();
+            services.AddTransient<FrmNuevoKittingDetail>();
+            services.AddTransient<FrmNuevoKittingIssue>();
+            services.AddTransient<FrmAutocompletarKittingIssue>();
             services.AddTransient<FrmNuevoASNEscaneo>();
             services.AddTransient<FrmVehiculosRegistrados>();
             services.AddTransient<FrmNuevoUsuario>();

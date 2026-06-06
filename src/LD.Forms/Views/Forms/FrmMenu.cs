@@ -110,7 +110,7 @@ namespace LD.Forms.Views.Forms
 
         private void button9_Click(object sender, EventArgs e)
         {
-
+            _tabService.Open(AppRoutes.Embarques);
         }
 
         private void button6_Click(object sender, EventArgs e)
