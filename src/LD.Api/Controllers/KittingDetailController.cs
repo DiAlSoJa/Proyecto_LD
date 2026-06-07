@@ -20,6 +20,7 @@ public class KittingDetailController : CommonController
 {
     private readonly LdProyectDbContext _context;
     private readonly IMapper _mapper;
+    private const string DefaultKittingStatus = "Creado";
 
     public KittingDetailController(LdProyectDbContext context, IMapper mapper)
     {
@@ -90,7 +91,7 @@ public class KittingDetailController : CommonController
 
             var entity = _mapper.Map<KittingDetail>(request);
             entity.ProductId = request.ProductId > 0 ? request.ProductId : null;
-            entity.Status = NormalizeStatus(entity.Status);
+            entity.Status = NormalizeStatus(entity.Status) ?? DefaultKittingStatus;
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try

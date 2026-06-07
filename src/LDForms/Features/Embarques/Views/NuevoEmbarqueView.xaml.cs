@@ -22,6 +22,7 @@ namespace LD.FormsX.Features.Embarques.Views
 {
     public partial class NuevoEmbarqueView : Window
     {
+        private const string DefaultKittingStatus = "Creado";
         private readonly KittingService _kittingService;
         private readonly KittingDetailService _kittingDetailService;
         private readonly KittingIssueService _kittingIssueService;
@@ -724,6 +725,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
 
             detailRow.KittingId = _selectedKitting?.KittingId ?? 0;
+            detailRow.Status = DefaultKittingStatus;
         }
 
         private void dgIssue_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
@@ -1322,7 +1324,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 PartNumber = detailRow.PartNumber ?? string.Empty,
                 Description = NullIfWhiteSpace(detailRow.Description),
                 Quantity = detailRow.Quantity,
-                Status = NullIfWhiteSpace(detailRow.Status),
+                Status = GetDetailStatus(detailRow),
                 SD = NullIfWhiteSpace(detailRow.SD),
                 LotNumber = NullIfWhiteSpace(detailRow.LotNumber),
                 ExpirationDate = detailRow.ExpirationDate,
@@ -1695,6 +1697,16 @@ namespace LD.FormsX.Features.Embarques.Views
         private static string? NullIfWhiteSpace(string? value)
         {
             return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        }
+
+        private static string? GetDetailStatus(KittingDetailDto detailRow)
+        {
+            if (!string.IsNullOrWhiteSpace(detailRow.Status))
+                return detailRow.Status.Trim();
+
+            return detailRow.KittingDetailId <= 0
+                ? DefaultKittingStatus
+                : null;
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
