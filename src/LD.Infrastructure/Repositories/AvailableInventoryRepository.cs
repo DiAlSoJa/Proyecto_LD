@@ -46,7 +46,7 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
         }
     }
 
-    public async Task<List<AvailableInventory>> GetAllWithRelationsAsync(int? standardId = null)
+    public async Task<List<AvailableInventory>> GetAllWithRelationsAsync(int? standardId = null, string? standardIdCode = null)
     {
         IQueryable<AvailableInventory> query = _context.AvailableInventories
             .AsNoTracking()
@@ -63,6 +63,14 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
             query = query.Where(x =>
                 x.StandardId == standardId.Value ||
                 (x.StandardLabel != null && x.StandardLabel.StandarIdStr == standardIdText));
+        }
+
+        if (!string.IsNullOrWhiteSpace(standardIdCode))
+        {
+            var normalizedStandardIdCode = standardIdCode.Trim();
+            query = query.Where(x =>
+                x.StandardLabel != null &&
+                x.StandardLabel.StandarIdStr == normalizedStandardIdCode);
         }
 
         return await query

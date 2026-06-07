@@ -8,6 +8,7 @@ using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LD.FormsX.Features.ReporteDanos.ViewModels;
@@ -46,6 +47,9 @@ public partial class DamageReportViewModel : ObservableObject
 
     [ObservableProperty]
     private bool canView;
+
+    [ObservableProperty]
+    private DamageReportDto? selectedReport;
 
     public ObservableCollection<WarehouseDto> Warehouses { get; } = [];
     public ObservableCollection<DamageReportDto> Reports { get; } = [];
@@ -104,6 +108,7 @@ public partial class DamageReportViewModel : ObservableObject
             foreach (var report in result.Data ?? [])
                 Reports.Add(report);
 
+            SelectedReport = Reports.FirstOrDefault();
             StatusText = $"Registros: {Reports.Count}";
         }
         catch (Exception ex)
@@ -145,5 +150,50 @@ public partial class DamageReportViewModel : ObservableObject
         {
             DialogHelper.ShowError(ex.Message);
         }
+    }
+
+    public async Task<DamageReportDto?> ObtenerReporteSeleccionadoAsync()
+    {
+        if (SelectedReport is null)
+            return null;
+
+        try
+        {
+            IsLoading = true;
+            LoadingMessage = "Preparando reporte de daños...";
+
+            var result = await _damageReportService.GetDamageReportById(SelectedReport.DamageReportId);
+            if (result.IsSuccess && result.Data is not null)
+                return result.Data;
+
+            return SelectedReport;
+        }
+        catch
+        {
+            return SelectedReport;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    public string? GetImageUrl(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return null;
+
+        if (Uri.TryCreate(relativePath, UriKind.Absolute, out _))
+            return relativePath;
+
+        return _damageReportService.GetImageUrl(relativePath);
+    }
+
+    public Task<byte[]> GetImageBytesAsync(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return Task.FromResult(Array.Empty<byte>());
+
+        return _damageReportService.GetImageBytesAsync(relativePath);
     }
 }

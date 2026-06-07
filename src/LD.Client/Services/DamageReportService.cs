@@ -88,4 +88,9 @@ public class DamageReportService
     {
         return _apiEndpoints.DamageReport_GetImage.Replace("{path}", Uri.EscapeDataString(relativePath));
     }
+
+    public async Task<byte[]> GetImageBytesAsync(string relativePath)
+    {
+        return await _api.GetByteArrayAsync(GetImageUrl(relativePath));
+    }
 }

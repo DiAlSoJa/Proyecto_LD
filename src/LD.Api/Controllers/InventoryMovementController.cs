@@ -15,11 +15,14 @@ namespace LD.Api.Controllers
     {
         [HttpGet]
         [Permission(PermissionKeys.Movement_View)]
-        public async Task<IActionResult> GetInventoryMovement([FromQuery] int? standardId = null)
+        public async Task<IActionResult> GetInventoryMovement(
+            [FromQuery] int? standardId = null,
+            [FromQuery] string? standardIdCode = null)
         {
             return ResultExtensions.ToActionResult(await Mediator.Send(new InventoryMovementQuery
             {
-                StandardId = standardId
+                StandardId = standardId,
+                StandardIdCode = standardIdCode
             }));
         }
 

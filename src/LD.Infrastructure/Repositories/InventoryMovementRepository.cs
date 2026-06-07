@@ -46,7 +46,7 @@ namespace LD.Infrastructure.Repositories
             }
         }
 
-        public async Task<List<InventoryMovement>> GetAllWithRelationsAsync(int? standardId = null)
+        public async Task<List<InventoryMovement>> GetAllWithRelationsAsync(int? standardId = null, string? standardIdCode = null)
         {
             IQueryable<InventoryMovement> query = _context.InventoryMovements
                 .Include(x => x.Product)
@@ -62,6 +62,14 @@ namespace LD.Infrastructure.Repositories
                 query = query.Where(x =>
                     x.StandardId == standardId.Value ||
                     (x.StandardLabel != null && x.StandardLabel.StandarIdStr == standardIdText));
+            }
+
+            if (!string.IsNullOrWhiteSpace(standardIdCode))
+            {
+                var normalizedStandardIdCode = standardIdCode.Trim();
+                query = query.Where(x =>
+                    x.StandardLabel != null &&
+                    x.StandardLabel.StandarIdStr == normalizedStandardIdCode);
             }
 
             return await query
