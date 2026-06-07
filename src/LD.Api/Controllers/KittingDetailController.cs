@@ -89,6 +89,7 @@ public class KittingDetailController : CommonController
                 return ResultExtensions.ToActionResult(validation);
 
             var entity = _mapper.Map<KittingDetail>(request);
+            entity.ProductId = request.ProductId > 0 ? request.ProductId : null;
             entity.Status = NormalizeStatus(entity.Status);
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -150,13 +151,14 @@ public class KittingDetailController : CommonController
             request.Status = NormalizeStatus(request.Status) ?? NormalizeStatus(entity.Status);
 
             _mapper.Map(request, entity);
+            entity.ProductId = request.ProductId > 0 ? request.ProductId : entity.ProductId;
             await SyncIssueDetailsFromDetailAsync(entity, previousQuantity);
             var updated = await _context.SaveChangesAsync() > 0;
 
             if (!updated)
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("No se pudo actualizar el Kitting Detail.", new List<string> { "No se pudo actualizar el Kitting Detail." }));
+                    Result<string>.Success(entity.KittingDetailId.ToString(), "Kitting Detail actualizado"));
             }
 
             return ResultExtensions.ToActionResult(

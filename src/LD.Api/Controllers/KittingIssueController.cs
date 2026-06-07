@@ -140,12 +140,13 @@ public class KittingIssueController : CommonController
             request.Status = NormalizeStatus(request.Status) ?? NormalizeStatus(entity.Status);
 
             _mapper.Map(request, entity);
+            entity.ProductId = request.ProductId > 0 ? request.ProductId : entity.ProductId;
             var updated = await _context.SaveChangesAsync() > 0;
 
             if (!updated)
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("No se pudo actualizar el Kitting Issue Detail.", new List<string> { "No se pudo actualizar el Kitting Issue Detail." }));
+                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail actualizado"));
             }
 
             return ResultExtensions.ToActionResult(

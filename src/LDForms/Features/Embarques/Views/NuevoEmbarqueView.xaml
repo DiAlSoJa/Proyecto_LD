@@ -221,22 +221,11 @@
                     <Border Background="White"
                             Padding="16,14,16,10">
                         <StackPanel>
-                            <Border Background="#F0FDF4"
-                                    BorderBrush="#86EFAC"
-                                    BorderThickness="1"
-                                    CornerRadius="6"
-                                    Padding="10,6"
-                                    Margin="0,0,0,12">
-                                <TextBlock x:Name="txtCodigoPreview"
-                                           Text="Selecciona un proyecto para generar el codigo."
-                                           FontSize="13"
-                                           FontWeight="SemiBold"
-                                           Foreground="#166534"/>
-                            </Border>
-
                             <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="410"/>
+                                    <ColumnDefinition Width="280"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="360"/>
                                     <ColumnDefinition Width="16"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
@@ -249,69 +238,20 @@
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Cliente:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <ComboBox x:Name="cmbCliente"
-                                                  Grid.Row="0"
-                                                  Grid.Column="1"
-                                                  Style="{StaticResource InputComboBoxStyle}"
-                                                  DisplayMemberPath="Value"
-                                                  SelectedValuePath="Key"
-                                                  SelectionChanged="cmbCliente_SelectionChanged"/>
-
-                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Proyecto:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <ComboBox x:Name="cmbProyecto"
-                                                  Grid.Row="1"
-                                                  Grid.Column="1"
-                                                  Style="{StaticResource InputComboBoxStyle}"
-                                                  DisplayMemberPath="Value"
-                                                  SelectedValuePath="Key"
-                                                  SelectionChanged="cmbProyecto_SelectionChanged"/>
-
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="No. Factura:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtNumeroFactura" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
-
-                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="No. Guia:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtNumeroGuia" Grid.Row="3" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
-
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="ETA:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <DatePicker x:Name="dpEta" Grid.Row="4" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}"/>
-
-                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Bultos:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtBultos"
-                                                 Grid.Row="5"
-                                                 Grid.Column="1"
-                                                 Width="120"
-                                                 HorizontalAlignment="Left"
-                                                 Style="{StaticResource InputTextBoxStyle}"/>
-
-                                        <StackPanel Grid.Row="6" Grid.Column="1" Margin="0,6,0,0">
-                                            <CheckBox x:Name="chkEsDevolucion" Content="Devolucion" Margin="0,0,0,8"/>
-                                            <CheckBox x:Name="chkMovimientoRequeridoCliente" Content="Movimiento requerido por cliente"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="No. Factura:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtNumeroFactura" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
                                     </Grid>
                                 </GroupBox>
 
-                                <GroupBox Grid.Column="2" Header="Transporte y entrega">
+                                <GroupBox Grid.Column="2" Header="Transporte">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
@@ -333,46 +273,102 @@
 
                                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Sello:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
                                         <TextBox x:Name="txtSelloTransporte" Grid.Row="4" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                    </Grid>
+                                </GroupBox>
 
-                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Contacto:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtContacto" Grid.Row="5" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                <GroupBox Grid.Column="4" Header="Entrega" Margin="0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
-                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Direccion:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtDireccion" Grid.Row="6" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Contacto:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtContacto" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
 
-                                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtColonia" Grid.Row="7" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Direccion:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtDireccion" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
 
-                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtCiudad" Grid.Row="8" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Colonia:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtColonia" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
 
-                                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Telefono:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtTelefono" Grid.Row="9" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Ciudad:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtCiudad" Grid.Row="3" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
 
-                                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Codigo postal:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                        <TextBox x:Name="txtCodigoPostal" Grid.Row="10" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Telefono:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtTelefono" Grid.Row="4" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Codigo postal:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <TextBox x:Name="txtCodigoPostal" Grid.Row="5" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+
+                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Tipo entrega:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                        <ComboBox x:Name="cbTipoEntrega"
+                                                  Grid.Row="6"
+                                                  Grid.Column="1"
+                                                  Style="{StaticResource InputComboBoxStyle}"
+                                                  SelectionChanged="CbTipoEntrega_SelectionChanged">
+                                            <ComboBoxItem Content="Normal"/>
+                                            <ComboBoxItem Content="Programada"/>
+                                            <ComboBoxItem Content="Urgente"/>
+                                        </ComboBox>
+
+                                        <Grid x:Name="grFechaProgramada" Grid.Row="7" Grid.ColumnSpan="2" Visibility="Collapsed">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="Fecha programada:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                            <DatePicker x:Name="dpFechaProgramada" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}"/>
+                                        </Grid>
                                     </Grid>
                                 </GroupBox>
                             </Grid>
 
-                            <GroupBox Header="Entrega" Margin="0,0,0,12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="160"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="160"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                <Button x:Name="btnGuardar"
+                                        Width="152"
+                                        Height="32"
+                                        Padding="10,0"
+                                        Click="BtnGuardar_Click"
+                                        Background="#F3F4F6"
+                                        Foreground="#374151"
+                                        BorderBrush="#D1D5DB"
+                                        BorderThickness="1"
+                                        Cursor="Hand">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="6"/>
+                                        </Style>
+                                    </Button.Resources>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tipo entrega:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                    <TextBox x:Name="txtTipoEntrega" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" Margin="0,0,12,0"/>
+                                    <StackPanel Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
+                                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                                   Text="&#xE74E;"
+                                                   Foreground="#15803D"
+                                                   Margin="0,0,6,0"
+                                                   FontSize="12"/>
+                                        <TextBlock Text="Guardar y continuar"
+                                                   FontSize="12"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Fecha programada:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                    <DatePicker x:Name="dpFechaProgramada" Grid.Row="0" Grid.Column="3" Style="{StaticResource InputDatePickerStyle}"/>
-                                </Grid>
-                            </GroupBox>
-
-                            <Border BorderBrush="{StaticResource BorderBrushSoft}"
+                            <Border x:Name="bdKittingDetails"
+                                    Visibility="Collapsed"
+                                    BorderBrush="{StaticResource BorderBrushSoft}"
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     Background="White"
@@ -395,9 +391,10 @@
                                               CanUserDeleteRows="False"
                                               IsReadOnly="False"
                                               ItemsSource="{Binding DetailItems}"
-                                              SelectionChanged="dgDetail_SelectionChanged"
+                                              CurrentCellChanged="dgDetail_CurrentCellChanged"
                                               InitializingNewItem="dgDetail_InitializingNewItem"
                                               CellEditEnding="dgDetail_CellEditEnding"
+                                              PreviewKeyDown="dgDetail_PreviewKeyDown"
                                               HeadersVisibility="All"
                                               RowHeaderWidth="26"
                                               GridLinesVisibility="Vertical"
@@ -537,7 +534,9 @@
                                 </DockPanel>
                             </Border>
 
-                            <Border BorderBrush="{StaticResource BorderBrushSoft}"
+                            <Border x:Name="bdIssueDetails"
+                                    Visibility="Collapsed"
+                                    BorderBrush="{StaticResource BorderBrushSoft}"
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     Background="White">
@@ -574,6 +573,8 @@
                                               ItemsSource="{Binding IssueItems}"
                                               InitializingNewItem="dgIssue_InitializingNewItem"
                                               CellEditEnding="dgIssue_CellEditEnding"
+                                              CurrentCellChanged="dgIssue_CurrentCellChanged"
+                                              PreviewKeyDown="dgIssue_PreviewKeyDown"
                                               HeadersVisibility="All"
                                               RowHeaderWidth="26"
                                               GridLinesVisibility="Vertical"
@@ -728,12 +729,6 @@
                         BorderThickness="1,1,0,0"
                         Padding="10,6">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button x:Name="btnGuardar"
-                                Content="Guardar"
-                                Width="116"
-                                Style="{StaticResource PrimaryButtonStyle}"
-                                Click="BtnGuardar_Click"/>
-
                         <Button x:Name="btnCerrar"
                                 Content="Cerrar"
                                 Width="116"

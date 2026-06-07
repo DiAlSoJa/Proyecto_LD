@@ -1,5 +1,4 @@
 using LD.Client.Services;
-using LD.Contracts.DTOs;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Kitting;
 using LD.Contracts.Location;
@@ -9,7 +8,9 @@ using LD.Contracts.Responses;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model.Lookup;
+using System.Globalization;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -34,12 +35,21 @@ namespace LD.FormsX.Features.Embarques.Views
         private readonly HashSet<KittingIssueDetailDto> _savingIssueRows = new();
         private readonly HashSet<KittingDetailDto> _pendingDetailRows = new();
         private readonly HashSet<KittingIssueDetailDto> _pendingIssueRows = new();
+        private readonly Dictionary<int, string> _detailSnapshots = new();
+        private readonly DataGridNavigationManager _detailGridNavigation;
+        private readonly DataGridNavigationManager _issueGridNavigation;
 
         private KittingDto? _selectedKitting;
         private KittingDetailDto? _selectedDetail;
         private bool _loadingData;
         private int _clientId;
         private int _projectId;
+        private string _guideNumber = string.Empty;
+        private DateTime? _eta;
+        private int? _packagesQty;
+        private bool _isReturn;
+        private bool _isCustomerMovementRequired;
+        private string _kittingCodePreview = string.Empty;
         private string _clientName = string.Empty;
         private string _projectName = string.Empty;
 
@@ -74,9 +84,12 @@ namespace LD.FormsX.Features.Embarques.Views
             _productService = productService;
             _inventaryStatusService = inventaryStatusService;
             _locationService = locationService;
+            _detailGridNavigation = new DataGridNavigationManager(dgDetail);
+            _issueGridNavigation = new DataGridNavigationManager(dgIssue);
 
             UpdateWindowTitle();
             ApplyEditState();
+            HideDetailSections();
         }
 
         public void SetKitting(KittingDto? kitting)
@@ -84,8 +97,11 @@ namespace LD.FormsX.Features.Embarques.Views
             _selectedKitting = kitting;
             _clientName = kitting?.Client?.Trim() ?? string.Empty;
             _projectName = kitting?.Project?.Trim() ?? string.Empty;
+            _clientId = 0;
+            _projectId = 0;
             UpdateWindowTitle();
             ApplyEditState();
+            ShowDetailSections();
         }
 
         public void SetClientProjectContext(int clientId, int projectId, string? clientName, string? projectName)
@@ -95,6 +111,15 @@ namespace LD.FormsX.Features.Embarques.Views
             _clientName = clientName?.Trim() ?? string.Empty;
             _projectName = projectName?.Trim() ?? string.Empty;
             UpdateWindowTitle();
+
+            if (IsLoaded)
+            {
+                _ = Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await LoadProductsForSelectedClientProjectAsync();
+                    await UpdateCodePreviewAsync();
+                }), DispatcherPriority.Background);
+            }
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -112,26 +137,18 @@ namespace LD.FormsX.Features.Embarques.Views
                 await LoadStatusLookupAsync();
                 await LoadSdLookupAsync();
                 await LoadLocationLookupAsync();
-                await LoadClientsAsync();
 
                 if (_selectedKitting != null)
                 {
                     await LoadHeaderAsync();
+                    ShowDetailSections();
                     await LoadDetailItemsAsync();
                 }
                 else
                 {
-                    if (_clientId > 0)
-                    {
-                        cmbCliente.SelectedValue = _clientId.ToString();
-                        await LoadProjectsAsync(_projectId > 0 ? _projectId.ToString() : null);
-
-                        if (_projectId > 0)
-                            cmbProyecto.SelectedValue = _projectId.ToString();
-                    }
-
                     await LoadProductsForSelectedClientProjectAsync();
                     await UpdateCodePreviewAsync();
+                    HideDetailSections();
                 }
 
                 ApplyEditState();
@@ -143,53 +160,6 @@ namespace LD.FormsX.Features.Embarques.Views
             finally
             {
                 _loadingData = false;
-            }
-        }
-
-        private async Task LoadClientsAsync()
-        {
-            var response = await _lookupService.GetClientLookup();
-            if (!response.IsSuccess)
-            {
-                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudieron cargar los clientes.");
-                return;
-            }
-
-            cmbCliente.ItemsSource = response.Data ?? new List<DropDownDto>();
-        }
-
-        private async Task LoadProjectsAsync(string? selectedProjectId = null)
-        {
-            var clientId = GetSelectedId(cmbCliente);
-            if (clientId <= 0)
-            {
-                cmbProyecto.ItemsSource = null;
-                _projectId = 0;
-                _projectName = string.Empty;
-                return;
-            }
-
-            var response = await _lookupService.GetProjectClientLookup(clientId);
-            if (!response.IsSuccess)
-            {
-                cmbProyecto.ItemsSource = null;
-                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudieron cargar los proyectos.");
-                return;
-            }
-
-            cmbProyecto.ItemsSource = response.Data ?? new List<DropDownDto>();
-
-            if (!string.IsNullOrWhiteSpace(selectedProjectId))
-            {
-                cmbProyecto.SelectedValue = selectedProjectId;
-            }
-            else if (_projectId > 0)
-            {
-                cmbProyecto.SelectedValue = _projectId.ToString();
-            }
-            else
-            {
-                cmbProyecto.SelectedIndex = -1;
             }
         }
 
@@ -205,17 +175,15 @@ namespace LD.FormsX.Features.Embarques.Views
             var item = response.Data;
             _clientId = item.ClientId;
             _projectId = item.ProjectId;
-
-            cmbCliente.SelectedValue = item.ClientId.ToString();
-            await LoadProjectsAsync(item.ProjectId.ToString());
-            cmbProyecto.SelectedValue = item.ProjectId.ToString();
+            _guideNumber = item.GuideNumber ?? string.Empty;
+            _eta = item.Eta;
+            _packagesQty = item.PackagesQty;
+            _isReturn = item.IsReturn;
+            _isCustomerMovementRequired = item.IsCustomerMovementRequired;
+            _clientName = _selectedKitting?.Client?.Trim() ?? _clientName;
+            _projectName = _selectedKitting?.Project?.Trim() ?? _projectName;
 
             txtNumeroFactura.Text = item.InvoiceNumber ?? string.Empty;
-            txtNumeroGuia.Text = item.GuideNumber ?? string.Empty;
-            dpEta.SelectedDate = item.Eta;
-            txtBultos.Text = item.PackagesQty?.ToString() ?? string.Empty;
-            chkEsDevolucion.IsChecked = item.IsReturn;
-            chkMovimientoRequeridoCliente.IsChecked = item.IsCustomerMovementRequired;
             txtLineaTransporte.Text = item.TransportLine ?? string.Empty;
             txtTipoVehiculo.Text = item.VehicleType ?? string.Empty;
             txtChofer.Text = item.DriverName ?? string.Empty;
@@ -227,13 +195,15 @@ namespace LD.FormsX.Features.Embarques.Views
             txtCiudad.Text = item.Ciudad ?? string.Empty;
             txtTelefono.Text = item.Telefono ?? string.Empty;
             txtCodigoPostal.Text = item.CodigoPostal ?? string.Empty;
-            txtTipoEntrega.Text = item.TipoEntrega ?? string.Empty;
+            SelectDeliveryType(item.TipoEntrega);
             dpFechaProgramada.SelectedDate = item.FechaProgramada;
+            UpdateFechaProgramadaVisibility();
 
             _selectedKitting ??= new KittingDto();
             _selectedKitting.KittingId = item.KittingId;
             _selectedKitting.KittingCode = item.KittingCode ?? string.Empty;
             _selectedKitting.Status = item.Status ?? string.Empty;
+            _kittingCodePreview = _selectedKitting.KittingCode;
 
             await LoadProductsForSelectedClientProjectAsync();
             await UpdateCodePreviewAsync();
@@ -244,6 +214,7 @@ namespace LD.FormsX.Features.Embarques.Views
         {
             DetailItems.Clear();
             IssueItems.Clear();
+            _detailSnapshots.Clear();
             _selectedDetail = null;
 
             if (_selectedKitting?.KittingId <= 0)
@@ -254,22 +225,27 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
 
             foreach (var item in result.Data)
-                DetailItems.Add(CloneDetail(item));
+            {
+                var detailItem = CloneDetail(item);
+                DetailItems.Add(detailItem);
+                RegisterDetailSnapshot(detailItem);
+            }
 
             ApplyEditState();
         }
 
         private async Task LoadIssueItemsForSelectedDetailAsync()
         {
+            var selectedDetail = _selectedDetail;
             IssueItems.Clear();
 
-            if (_selectedDetail?.KittingDetailId <= 0)
+            if (selectedDetail?.KittingDetailId <= 0)
             {
                 ApplyEditState();
                 return;
             }
 
-            var result = await _kittingIssueService.GetKittingIssuesByKittingDetailId(_selectedDetail.KittingDetailId);
+            var result = await _kittingIssueService.GetKittingIssuesByKittingDetailId(selectedDetail.KittingDetailId);
             if (!result.IsSuccess || result.Data == null)
             {
                 ApplyEditState();
@@ -380,6 +356,9 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
 
             var code = _selectedKitting?.KittingCode?.Trim();
+            if (string.IsNullOrWhiteSpace(code))
+                code = _kittingCodePreview?.Trim();
+
             var titlePrefix = string.IsNullOrWhiteSpace(code)
                 ? "Embarque"
                 : $"Embarque {code}";
@@ -430,15 +409,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
             btnGuardar.IsEnabled = isEditable;
             btnGenerarIssueBase.IsEnabled = isEditable && hasDetailSelection;
-
-            cmbCliente.IsEnabled = isEditable;
-            cmbProyecto.IsEnabled = isEditable;
             txtNumeroFactura.IsEnabled = isEditable;
-            txtNumeroGuia.IsEnabled = isEditable;
-            dpEta.IsEnabled = isEditable;
-            txtBultos.IsEnabled = isEditable;
-            chkEsDevolucion.IsEnabled = isEditable;
-            chkMovimientoRequeridoCliente.IsEnabled = isEditable;
             txtLineaTransporte.IsEnabled = isEditable;
             txtTipoVehiculo.IsEnabled = isEditable;
             txtChofer.IsEnabled = isEditable;
@@ -450,44 +421,63 @@ namespace LD.FormsX.Features.Embarques.Views
             txtCiudad.IsEnabled = isEditable;
             txtTelefono.IsEnabled = isEditable;
             txtCodigoPostal.IsEnabled = isEditable;
-            txtTipoEntrega.IsEnabled = isEditable;
-            dpFechaProgramada.IsEnabled = isEditable;
+            cbTipoEntrega.IsEnabled = isEditable;
+            dpFechaProgramada.IsEnabled = isEditable && IsProgramadaDeliverySelected();
 
             dgDetail.IsReadOnly = !isEditable;
             dgDetail.CanUserAddRows = isEditable;
             dgIssue.IsReadOnly = !isEditable;
             dgIssue.CanUserAddRows = isEditable && hasDetailSelection;
+
+            UpdateFechaProgramadaVisibility();
+        }
+
+        private void ShowDetailSections()
+        {
+            if (bdKittingDetails != null)
+                bdKittingDetails.Visibility = Visibility.Visible;
+
+            if (bdIssueDetails != null)
+                bdIssueDetails.Visibility = Visibility.Visible;
+        }
+
+        private void HideDetailSections()
+        {
+            if (bdKittingDetails != null)
+                bdKittingDetails.Visibility = Visibility.Collapsed;
+
+            if (bdIssueDetails != null)
+                bdIssueDetails.Visibility = Visibility.Collapsed;
         }
 
         private async Task UpdateCodePreviewAsync()
         {
             if (_selectedKitting?.KittingId > 0 && !string.IsNullOrWhiteSpace(_selectedKitting.KittingCode))
             {
-                txtCodigoPreview.Text = $"Codigo actual: {_selectedKitting.KittingCode}";
-                txtCodigoPreview.Foreground = Brushes.DarkGreen;
+                _kittingCodePreview = _selectedKitting.KittingCode.Trim();
+                UpdateWindowTitle();
                 return;
             }
 
-            var projectId = GetSelectedId(cmbProyecto);
-            if (projectId <= 0)
+            if (_projectId <= 0)
             {
-                txtCodigoPreview.Text = "Selecciona un proyecto para generar el codigo.";
-                txtCodigoPreview.Foreground = Brushes.DarkGreen;
+                _kittingCodePreview = string.Empty;
+                UpdateWindowTitle();
                 return;
             }
 
-            var response = await _projectService.GetProjectById(projectId);
+            var response = await _projectService.GetProjectById(_projectId);
             if (!response.IsSuccess || response.Data == null)
             {
-                txtCodigoPreview.Text = response.Message ?? "No se pudo cargar el proyecto.";
-                txtCodigoPreview.Foreground = Brushes.Firebrick;
+                _kittingCodePreview = string.Empty;
+                UpdateWindowTitle();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(response.Data.KittingPrefix))
             {
-                txtCodigoPreview.Text = "El proyecto no tiene configurado KittingPrefix.";
-                txtCodigoPreview.Foreground = Brushes.Firebrick;
+                _kittingCodePreview = string.Empty;
+                UpdateWindowTitle();
                 return;
             }
 
@@ -499,54 +489,8 @@ namespace LD.FormsX.Features.Embarques.Views
                 nextNumber = parsedNumber;
             }
 
-            txtCodigoPreview.Text = $"Codigo sugerido: {response.Data.KittingPrefix}{nextNumber:D5}";
-            txtCodigoPreview.Foreground = Brushes.DarkGreen;
-        }
-
-        private async void cmbCliente_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_loadingData)
-                return;
-
-            try
-            {
-                _loadingData = true;
-                _clientId = GetSelectedId(cmbCliente);
-                _clientName = (cmbCliente.SelectedItem as DropDownDto)?.Value?.Trim() ?? string.Empty;
-                _projectId = 0;
-                _projectName = string.Empty;
-                await LoadProjectsAsync();
-                await LoadProductsForSelectedClientProjectAsync();
-                await UpdateCodePreviewAsync();
-                UpdateWindowTitle();
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-            finally
-            {
-                _loadingData = false;
-            }
-        }
-
-        private async void cmbProyecto_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_loadingData)
-                return;
-
-            try
-            {
-                _projectId = GetSelectedId(cmbProyecto);
-                _projectName = (cmbProyecto.SelectedItem as DropDownDto)?.Value?.Trim() ?? string.Empty;
-                await LoadProductsForSelectedClientProjectAsync();
-                await UpdateCodePreviewAsync();
-                UpdateWindowTitle();
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
+            _kittingCodePreview = $"{response.Data.KittingPrefix}{nextNumber:D5}";
+            UpdateWindowTitle();
         }
 
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
@@ -564,14 +508,13 @@ namespace LD.FormsX.Features.Embarques.Views
                 if (!await SaveHeaderAsync(showSuccessToast: true))
                     return;
 
+                ShowDetailSections();
+
                 foreach (var detailRow in DetailItems.Where(item => !IsEmptyDetailRow(item)).ToList())
                     await SaveDetailRowAsync(detailRow);
 
                 foreach (var issueRow in IssueItems.Where(item => !IsEmptyIssueRow(item)).ToList())
                     await SaveIssueRowAsync(issueRow);
-
-                await LoadDetailItemsAsync();
-                await LoadIssueItemsForSelectedDetailAsync();
             }
             catch (Exception ex)
             {
@@ -586,6 +529,18 @@ namespace LD.FormsX.Features.Embarques.Views
         private async Task<bool> SaveHeaderAsync(bool showSuccessToast)
         {
             var request = BuildHeaderRequest();
+            if (string.IsNullOrWhiteSpace(txtNumeroFactura.Text))
+            {
+                DialogHelper.ShowWarning("La factura es obligatoria.");
+                return false;
+            }
+
+            if (IsProgramadaDeliverySelected() && !dpFechaProgramada.SelectedDate.HasValue)
+            {
+                DialogHelper.ShowWarning("Captura la fecha programada.");
+                return false;
+            }
+
             if (request.ClientId <= 0)
             {
                 DialogHelper.ShowWarning("Selecciona un cliente.");
@@ -639,6 +594,7 @@ namespace LD.FormsX.Features.Embarques.Views
             _selectedKitting.Status = response.Data.Status ?? string.Empty;
             _selectedKitting.Client = _clientName;
             _selectedKitting.Project = _projectName;
+            _kittingCodePreview = _selectedKitting.KittingCode;
 
             await UpdateCodePreviewAsync();
             UpdateWindowTitle();
@@ -657,10 +613,10 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private KittingRequest BuildHeaderRequest()
         {
-            _clientId = GetSelectedId(cmbCliente);
-            _projectId = GetSelectedId(cmbProyecto);
-            _clientName = (cmbCliente.SelectedItem as DropDownDto)?.Value?.Trim() ?? _clientName;
-            _projectName = (cmbProyecto.SelectedItem as DropDownDto)?.Value?.Trim() ?? _projectName;
+            var tipoEntrega = GetSelectedDeliveryType();
+            var fechaProgramada = tipoEntrega == "Programada"
+                ? dpFechaProgramada.SelectedDate
+                : null;
 
             return new KittingRequest
             {
@@ -668,11 +624,11 @@ namespace LD.FormsX.Features.Embarques.Views
                 ClientId = _clientId,
                 ProjectId = _projectId,
                 InvoiceNumber = NullIfWhiteSpace(txtNumeroFactura.Text),
-                GuideNumber = NullIfWhiteSpace(txtNumeroGuia.Text),
-                Eta = dpEta.SelectedDate,
-                PackagesQty = int.TryParse(txtBultos.Text, out var packages) ? packages : null,
-                IsReturn = chkEsDevolucion.IsChecked == true,
-                IsCustomerMovementRequired = chkMovimientoRequeridoCliente.IsChecked == true,
+                GuideNumber = NullIfWhiteSpace(_guideNumber),
+                Eta = _eta,
+                PackagesQty = _packagesQty,
+                IsReturn = _isReturn,
+                IsCustomerMovementRequired = _isCustomerMovementRequired,
                 TransportLine = NullIfWhiteSpace(txtLineaTransporte.Text),
                 VehicleType = NullIfWhiteSpace(txtTipoVehiculo.Text),
                 DriverName = NullIfWhiteSpace(txtChofer.Text),
@@ -684,8 +640,8 @@ namespace LD.FormsX.Features.Embarques.Views
                 Ciudad = NullIfWhiteSpace(txtCiudad.Text),
                 Telefono = NullIfWhiteSpace(txtTelefono.Text),
                 CodigoPostal = NullIfWhiteSpace(txtCodigoPostal.Text),
-                TipoEntrega = NullIfWhiteSpace(txtTipoEntrega.Text),
-                FechaProgramada = dpFechaProgramada.SelectedDate,
+                TipoEntrega = NullIfWhiteSpace(tipoEntrega),
+                FechaProgramada = fechaProgramada,
                 Status = _selectedKitting?.Status
             };
         }
@@ -699,18 +655,30 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private void CommitGridEdits()
         {
-            dgDetail.CommitEdit(DataGridEditingUnit.Cell, true);
-            dgDetail.CommitEdit(DataGridEditingUnit.Row, true);
-            dgIssue.CommitEdit(DataGridEditingUnit.Cell, true);
-            dgIssue.CommitEdit(DataGridEditingUnit.Row, true);
+            _detailGridNavigation.CommitCurrentEdit();
+            _issueGridNavigation.CommitCurrentEdit();
         }
 
-        private async void dgDetail_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void dgDetail_CurrentCellChanged(object? sender, EventArgs e)
         {
             try
             {
-                _selectedDetail = dgDetail.SelectedItem as KittingDetailDto;
-                await LoadIssueItemsForSelectedDetailAsync();
+                if (dgDetail.CurrentCell.Column == null)
+                    return;
+
+                if (dgDetail.CurrentCell.Item is not KittingDetailDto currentDetailItem)
+                    return;
+
+                if (!ReferenceEquals(_selectedDetail, currentDetailItem))
+                {
+                    _selectedDetail = currentDetailItem;
+                    await LoadIssueItemsForSelectedDetailAsync();
+                }
+
+                if (dgDetail.CurrentCell.Column.IsReadOnly)
+                    return;
+
+                _detailGridNavigation.HandleCurrentCellChanged();
             }
             catch (Exception ex)
             {
@@ -756,6 +724,230 @@ namespace LD.FormsX.Features.Embarques.Views
             }), DispatcherPriority.Background);
         }
 
+        private void dgIssue_CurrentCellChanged(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (dgIssue.CurrentCell.Column == null)
+                    return;
+
+                if (dgIssue.CurrentCell.Item is not KittingIssueDetailDto)
+                    return;
+
+                if (dgIssue.CurrentCell.Column.IsReadOnly)
+                    return;
+
+                _issueGridNavigation.HandleCurrentCellChanged();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private void CbTipoEntrega_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateFechaProgramadaVisibility();
+        }
+
+        private string GetSelectedDeliveryType()
+        {
+            if (cbTipoEntrega?.SelectedItem is ComboBoxItem selectedItem)
+                return selectedItem.Content?.ToString()?.Trim() ?? string.Empty;
+
+            return string.Empty;
+        }
+
+        private bool IsProgramadaDeliverySelected() =>
+            string.Equals(GetSelectedDeliveryType(), "Programada", StringComparison.OrdinalIgnoreCase);
+
+        private void SelectDeliveryType(string? tipoEntrega)
+        {
+            if (cbTipoEntrega == null)
+                return;
+
+            var normalized = tipoEntrega?.Trim();
+            if (string.IsNullOrWhiteSpace(normalized))
+            {
+                cbTipoEntrega.SelectedIndex = -1;
+                return;
+            }
+
+            foreach (var item in cbTipoEntrega.Items.OfType<ComboBoxItem>())
+            {
+                if (string.Equals(item.Content?.ToString()?.Trim(), normalized, StringComparison.OrdinalIgnoreCase))
+                {
+                    cbTipoEntrega.SelectedItem = item;
+                    return;
+                }
+            }
+
+            cbTipoEntrega.SelectedIndex = -1;
+        }
+
+        private void UpdateFechaProgramadaVisibility()
+        {
+            if (grFechaProgramada == null)
+                return;
+
+            var visible = IsProgramadaDeliverySelected();
+            grFechaProgramada.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+
+            if (dpFechaProgramada != null)
+                dpFechaProgramada.IsEnabled = (btnGuardar?.IsEnabled ?? true) && visible;
+
+            if (!visible)
+                dpFechaProgramada.SelectedDate = null;
+        }
+
+        private bool TryMoveToNextDetailRowOrAppend()
+        {
+            if (dgDetail.CurrentCell.Column == null || dgDetail.CurrentItem is not KittingDetailDto currentRow)
+                return false;
+
+            var lastEditableColumn = _detailGridNavigation.GetLastEditableColumn();
+            if (lastEditableColumn == null || !ReferenceEquals(dgDetail.CurrentCell.Column, lastEditableColumn))
+                return false;
+
+            var currentIndex = DetailItems.IndexOf(currentRow);
+            if (currentIndex < 0)
+                return false;
+
+            if (currentIndex < DetailItems.Count - 1)
+            {
+                var nextRow = DetailItems[currentIndex + 1];
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    _detailGridNavigation.MoveFocusToFirstEditableCell(nextRow);
+                }), DispatcherPriority.Background);
+
+                return true;
+            }
+
+            if (IsEmptyDetailRow(currentRow))
+                return false;
+
+            var newRow = new KittingDetailDto();
+            DetailItems.Add(newRow);
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                dgDetail.ScrollIntoView(newRow);
+                _detailGridNavigation.MoveFocusToFirstEditableCell(newRow);
+            }), DispatcherPriority.Background);
+
+            return true;
+        }
+
+        private bool TryMoveToNextIssueRowOrAppend()
+        {
+            if (dgIssue.CurrentCell.Column == null || dgIssue.CurrentItem is not KittingIssueDetailDto currentRow)
+                return false;
+
+            var lastEditableColumn = _issueGridNavigation.GetLastEditableColumn();
+            if (lastEditableColumn == null || !ReferenceEquals(dgIssue.CurrentCell.Column, lastEditableColumn))
+                return false;
+
+            var currentIndex = IssueItems.IndexOf(currentRow);
+            if (currentIndex < 0)
+                return false;
+
+            if (currentIndex < IssueItems.Count - 1)
+            {
+                var nextRow = IssueItems[currentIndex + 1];
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    _issueGridNavigation.MoveFocusToFirstEditableCell(nextRow);
+                }), DispatcherPriority.Background);
+
+                return true;
+            }
+
+            if (IsEmptyIssueRow(currentRow) || _selectedDetail == null)
+                return false;
+
+            var newRow = new KittingIssueDetailDto();
+            SeedIssueRowFromSelectedDetail(newRow);
+            IssueItems.Add(newRow);
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                dgIssue.ScrollIntoView(newRow);
+                _issueGridNavigation.MoveFocusToFirstEditableCell(newRow);
+            }), DispatcherPriority.Background);
+
+            return true;
+        }
+
+        private void dgDetail_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.OriginalSource is DependencyObject source &&
+                    _detailGridNavigation.IsEventInsideControl<InlineLookupEditor>(source))
+                {
+                    return;
+                }
+
+                if (e.Key != Key.F4 && e.Key != Key.Enter)
+                    return;
+
+                if (dgDetail.CurrentCell == null || dgDetail.CurrentItem is not KittingDetailDto)
+                    return;
+
+                var currentColumn = dgDetail.CurrentCell.Column;
+                if (currentColumn == null)
+                    return;
+
+                if (e.Key == Key.Enter)
+                {
+                    e.Handled = TryMoveToNextDetailRowOrAppend() || _detailGridNavigation.HandleEnterKeyNavigation();
+                    return;
+                }
+
+                var header = currentColumn.Header?.ToString() ?? string.Empty;
+                if (!header.Equals("Numero de Parte", StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                if (!ProductLookupItems.Any())
+                {
+                    DialogHelper.ShowWarning("No hay productos cargados para el cliente/proyecto seleccionado.");
+                    return;
+                }
+
+                dgDetail.BeginEdit();
+                e.Handled = true;
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private void dgIssue_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.OriginalSource is DependencyObject source &&
+                    _issueGridNavigation.IsEventInsideControl<InlineLookupEditor>(source))
+                {
+                    return;
+                }
+
+                if (e.Key != Key.Enter)
+                    return;
+
+                if (dgIssue.CurrentCell.Column == null || dgIssue.CurrentItem is not KittingIssueDetailDto)
+                    return;
+
+                e.Handled = TryMoveToNextIssueRowOrAppend() || _issueGridNavigation.HandleEnterKeyNavigation();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
         private async Task SaveDetailRowAsync(KittingDetailDto detailRow)
         {
             if (!EnsureCurrentKittingEditable())
@@ -781,6 +973,10 @@ namespace LD.FormsX.Features.Embarques.Views
             try
             {
                 detailRow.KittingId = _selectedKitting?.KittingId ?? detailRow.KittingId;
+
+                if (detailRow.KittingDetailId > 0 && !HasDetailChanged(detailRow))
+                    return;
+
                 var request = BuildDetailRequest(detailRow);
                 var response = detailRow.KittingDetailId > 0
                     ? await _kittingDetailService.UpdateKittingDetail(detailRow.KittingDetailId, request)
@@ -800,6 +996,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 }
 
                 await RefreshDetailRowFromServerAsync(detailRow);
+                RegisterDetailSnapshot(detailRow);
                 await EnsureInitialIssueCreatedAsync(detailRow);
                 HasChanges = true;
             }
@@ -914,6 +1111,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
 
             ApplyDetailRequest(detailRow, response.Data);
+            RegisterDetailSnapshot(detailRow);
         }
 
         private async Task RefreshIssueRowFromServerAsync(KittingIssueDetailDto issueRow)
@@ -999,6 +1197,8 @@ namespace LD.FormsX.Features.Embarques.Views
                     ApplyProductLookupToDetailRow(editor, detailRow);
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
+                        _detailGridNavigation.CommitCurrentEdit();
+                        _detailGridNavigation.MoveFocusToNextCell(detailRow);
                         _ = SaveDetailRowAsync(detailRow);
                     }), DispatcherPriority.Background);
                     return;
@@ -1008,6 +1208,8 @@ namespace LD.FormsX.Features.Embarques.Views
                 {
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
+                        _issueGridNavigation.CommitCurrentEdit();
+                        _issueGridNavigation.MoveFocusToNextCell(issueRow);
                         _ = SaveIssueRowAsync(issueRow);
                     }), DispatcherPriority.Background);
                 }
@@ -1285,6 +1487,9 @@ namespace LD.FormsX.Features.Embarques.Views
                     IssueItems.Clear();
                 }
 
+                if (detailRow.KittingDetailId > 0)
+                    _detailSnapshots.Remove(detailRow.KittingDetailId);
+
                 HasChanges = true;
                 ApplyEditState();
             }
@@ -1372,6 +1577,51 @@ namespace LD.FormsX.Features.Embarques.Views
                 StandardQuantity = source.StandardQuantity,
                 MaximumQuantity = source.MaximumQuantity
             };
+        }
+
+        private void RegisterDetailSnapshot(KittingDetailDto detailRow)
+        {
+            if (detailRow.KittingDetailId <= 0)
+                return;
+
+            _detailSnapshots[detailRow.KittingDetailId] = BuildDetailSnapshot(detailRow);
+        }
+
+        private bool HasDetailChanged(KittingDetailDto detailRow)
+        {
+            if (detailRow.KittingDetailId <= 0)
+                return true;
+
+            if (!_detailSnapshots.TryGetValue(detailRow.KittingDetailId, out var previousSnapshot))
+                return true;
+
+            return !string.Equals(previousSnapshot, BuildDetailSnapshot(detailRow), StringComparison.Ordinal);
+        }
+
+        private static string BuildDetailSnapshot(KittingDetailDto detailRow)
+        {
+            var request = BuildDetailRequest(detailRow);
+
+            static string Safe(string? value) => value?.Trim() ?? string.Empty;
+
+            return string.Join("|", new[]
+            {
+                request.KittingId.ToString(CultureInfo.InvariantCulture),
+                request.ProductId.ToString(CultureInfo.InvariantCulture),
+                Safe(request.PartNumber),
+                Safe(request.Description),
+                request.Quantity.ToString(CultureInfo.InvariantCulture),
+                Safe(request.Status),
+                Safe(request.SD),
+                Safe(request.LotNumber),
+                request.ExpirationDate?.ToString("O", CultureInfo.InvariantCulture) ?? string.Empty,
+                Safe(request.CustomerReference),
+                request.ExchangeRate?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
+                Safe(request.PurchaseOrder),
+                Safe(request.CustomsDeclarationNumber),
+                request.StandardQuantity?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
+                request.MaximumQuantity?.ToString(CultureInfo.InvariantCulture) ?? string.Empty
+            });
         }
 
         private static KittingIssueDetailDto CloneIssue(KittingIssueDetailDto source)
