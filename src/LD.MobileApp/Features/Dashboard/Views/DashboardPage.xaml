@@ -34,7 +34,7 @@
                                 <!-- Fila: Cambio de ubicación -->
                                 <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanChangeLocation}">
                                     <Grid ColumnDefinitions="Auto,*" Padding="20,14">
-                                        <Label Text="📍" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="📍" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                         <Label Grid.Column="1"
                                                Text="Cambio de ubicación"
                                                Margin="10,0,0,0"
@@ -51,7 +51,7 @@
                                 <!-- Fila: Surtir mercancía -->
                                 <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanSupply}">
                                     <Grid ColumnDefinitions="Auto,*" Padding="20,14">
-                                        <Label Text="📦" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="📦" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                         <Label Grid.Column="1"
                                                Text="Surtir Mercancía"
                                                Margin="10,0,0,0"
@@ -68,7 +68,7 @@
                                 <!-- Fila: ASN Por Ubicar -->
                                 <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanViewAsn}">
                                     <Grid ColumnDefinitions="Auto,*" Padding="20,14">
-                                        <Label Text="📥" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="📥" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                         <Label Grid.Column="1"
                                                Text="ASN Por Ubicar"
                                                Margin="10,0,0,0"
@@ -181,7 +181,7 @@
                                 <!-- Fila: Registrar vehículo -->
                                 <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanRegisterVehicle}">
                                     <Grid ColumnDefinitions="Auto,*" Padding="20,14">
-                                        <Label Text="🚗" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="🚗" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                         <Label Grid.Column="1"
                                                Text="Registrar Vehículo"
                                                Margin="10,0,0,0"
@@ -199,7 +199,7 @@
                                 <Border Stroke="Transparent" BackgroundColor="White"
                                         IsVisible="{Binding CanViewSecurityTasks}">
                                     <Grid ColumnDefinitions="Auto,*,Auto" Padding="20,14">
-                                        <Label Text="📋" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="📋" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                         <Label Grid.Column="1"
                                                Text="Task Manager"
                                                FontAttributes="Bold"
@@ -238,7 +238,7 @@
                               Padding="15"
                               BackgroundColor="#F8FAFC">
 
-                                <Label Text="🔍" FontSize="18" VerticalOptions="Center"/>
+                                <Label Text="🔍" FontSize="18" TextColor="#2F5DA8" VerticalOptions="Center"/>
 
                                 <Label Grid.Column="1"
                                        Text="Consultas"
@@ -264,7 +264,7 @@
                             Padding="15"
                             BackgroundColor="#F8FAFC">
 
-                            <Label Text="📸" FontSize="18" VerticalOptions="Center"/>
+                            <Label Text="📸" FontSize="18" TextColor="#2F5DA8" VerticalOptions="Center"/>
 
                             <Label Grid.Column="1"
                                 Text="Reporte de Daños"
@@ -296,7 +296,7 @@
                             <!-- Fila: Control de Patio -->
                             <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanViewPatioPendientes}">
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="20,14">
-                                    <Label Text="🚛" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="🚛" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                     <Label Grid.Column="1"
                                            Text="Control de Patio"
                                            Margin="10,0,0,0"
@@ -329,7 +329,7 @@
 
                                 <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanAudit}">
                                     <Grid ColumnDefinitions="Auto,*" Padding="20,14">
-                                        <Label Text="🔍" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="🔍" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                         <Label Grid.Column="1"
                                            Text="Auditar"
                                            Margin="10,0,0,0"
@@ -345,7 +345,7 @@
 
                                 <Border Stroke="Transparent" BackgroundColor="White" IsVisible="{Binding CanViewInventoryList}">
                                     <Grid ColumnDefinitions="Auto,*" Padding="20,14">
-                                        <Label Text="📋" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="📋" FontSize="16" TextColor="#2F5DA8" VerticalOptions="Center"/>
                                         <Label Grid.Column="1"
                                            Text="Listado"
                                            Margin="10,0,0,0"
@@ -372,7 +372,7 @@
                                  Padding="15"
                                  BackgroundColor="#F8FAFC">
 
-                                <Label Text="🚚" FontSize="18" VerticalOptions="Center"/>
+                                <Label Text="🚚" FontSize="18" TextColor="#2F5DA8" VerticalOptions="Center"/>
 
                                 <Label Grid.Column="1"
                                       Text="Checklist de Montacargas"

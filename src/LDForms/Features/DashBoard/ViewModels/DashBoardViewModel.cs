@@ -31,6 +31,7 @@ namespace LDForms.Features.DashBoard.ViewModels;
 
 public partial class DashBoardViewModel : ObservableObject
 {
+    private const string DashboardIconColor = "#233167";
     private readonly IServiceProvider _serviceProvider;
     private readonly Dictionary<string, ModuleMetadata> _modules;
 
@@ -40,27 +41,27 @@ public partial class DashBoardViewModel : ObservableObject
 
         _modules = new Dictionary<string, ModuleMetadata>(StringComparer.OrdinalIgnoreCase)
         {
-            ["Clientes"] = new("Clientes", "AccountGroupOutline", "#3B82F6", Module_e.Clients, null, () => _serviceProvider.GetRequiredService<CatalogosClientesView>()),
-            ["Proyectos"] = new("Proyectos", "ClipboardListOutline", "#6366F1", Module_e.Projects, null, () => _serviceProvider.GetRequiredService<ProyectosView>()),
-            ["Almacenes"] = new("Almacén", "Warehouse", "#10B981", Module_e.Warehouses, null, () => _serviceProvider.GetRequiredService<AlmacenesView>()),
-            ["Ubicaciones"] = new("Ubicaciones", "MapMarkerOutline", "#F59E0B", Module_e.Locations, null, () => _serviceProvider.GetRequiredService<UbicacionesView>()),
-            ["Articulos"] = new("Artículos", "CubeOutline", "#0EA5E9", Module_e.Products, null, () => _serviceProvider.GetRequiredService<ArticulosView>()),
-            ["Inventario"] = new("Inventario", "ClipboardCheckOutline", "#22C55E", Module_e.Inventory, null, () => _serviceProvider.GetRequiredService<InventarioView>()),
-            ["Movimientos"] = new("Movimientos", "SwapHorizontal", "#8B5CF6", Module_e.Movements, null, () => _serviceProvider.GetRequiredService<MovimientosView>()),
-            ["ASN"] = new("ASN", "PackageVariantClosed", "#3B82F6", Module_e.ASN, null, () => _serviceProvider.GetRequiredService<ASNView>()),
-            ["Auditar"] = new("Auditar", "ClipboardSearchOutline", "#EF4444", Module_e.Auditing, null, () => _serviceProvider.GetRequiredService<AuditarView>()),
-            ["Aleatorio"] = new("Inventario aleatorio", "ShuffleVariant", "#EC4899", Module_e.RandomInventory, null, () => _serviceProvider.GetRequiredService<InventarioCiclicoView>()),
-            ["Usuarios"] = new("Usuarios", "AccountMultipleOutline", "#6366F1", Module_e.Users, null, () => _serviceProvider.GetRequiredService<UsuariosView>()),
-            ["CheckList"] = new("Checklist montacargas", "Forklift", "#F59E0B", Module_e.ForkliftChecklist, null, () => _serviceProvider.GetRequiredService<CheckListView>()),
-            ["Catalogos"] = new("Catálogos", "ViewGridOutline", "#3B82F6", Module_e.Catalogs, null, () => _serviceProvider.GetRequiredService<CatalogosView>()),
-            ["Surtido"] = new("Surtido", "ClipboardArrowDownOutline", "#10B981", Module_e.Picking, null, null),
-            ["Embarques"] = new("Embarques", "TruckDeliveryOutline", "#F97316", Module_e.Shipments, null, () => _serviceProvider.GetRequiredService<EmbarquesView>()),
-            ["Reportes"] = new("Reportes", "ChartBar", "#0EA5E9", Module_e.Reports, null, () => _serviceProvider.GetRequiredService<ReportesView>()),
-            ["DatabaseDiagram"] = new("Diagrama BD", "Database", "#0F766E", Module_e.Reports, null, () => _serviceProvider.GetRequiredService<DatabaseDiagramView>()),
-            ["ReporteDanos"] = new("Reporte de daños", "AlertCircleOutline", "#DC2626", Module_e.DamageReport, null, () => _serviceProvider.GetRequiredService<DamageReportView>()),
-            ["Tareas"] = new("Tareas", "ClipboardSearchOutline", "#16A34A", Module_e.WarehouseStaff, null, () => _serviceProvider.GetRequiredService<TasksView>()),
-            ["Impresion"] = new("Impresión", "PrinterOutline", "#14B8A6", Module_e.Reports, StandardLabelPrintOptionsDialog.StandardIdOption, null),
-            ["Patio"] = new("Control de patio", "Parking", "#64748B", Module_e.YardControl, null, () => _serviceProvider.GetRequiredService<ControlPatioView>())
+            ["Clientes"] = new("Clientes", "AccountGroupOutline", DashboardIconColor, Module_e.Clients, null, () => _serviceProvider.GetRequiredService<CatalogosClientesView>()),
+            ["Proyectos"] = new("Proyectos", "ClipboardListOutline", DashboardIconColor, Module_e.Projects, null, () => _serviceProvider.GetRequiredService<ProyectosView>()),
+            ["Almacenes"] = new("Almacén", "Warehouse", DashboardIconColor, Module_e.Warehouses, null, () => _serviceProvider.GetRequiredService<AlmacenesView>()),
+            ["Ubicaciones"] = new("Ubicaciones", "MapMarkerOutline", DashboardIconColor, Module_e.Locations, null, () => _serviceProvider.GetRequiredService<UbicacionesView>()),
+            ["Articulos"] = new("Artículos", "CubeOutline", DashboardIconColor, Module_e.Products, null, () => _serviceProvider.GetRequiredService<ArticulosView>()),
+            ["Inventario"] = new("Inventario", "ClipboardCheckOutline", DashboardIconColor, Module_e.Inventory, null, () => _serviceProvider.GetRequiredService<InventarioView>()),
+            ["Movimientos"] = new("Movimientos", "SwapHorizontal", DashboardIconColor, Module_e.Movements, null, () => _serviceProvider.GetRequiredService<MovimientosView>()),
+            ["ASN"] = new("ASN", "PackageVariantClosed", DashboardIconColor, Module_e.ASN, null, () => _serviceProvider.GetRequiredService<ASNView>()),
+            ["Auditar"] = new("Auditar", "ClipboardSearchOutline", DashboardIconColor, Module_e.Auditing, null, () => _serviceProvider.GetRequiredService<AuditarView>()),
+            ["Aleatorio"] = new("Inventario aleatorio", "ShuffleVariant", DashboardIconColor, Module_e.RandomInventory, null, () => _serviceProvider.GetRequiredService<InventarioCiclicoView>()),
+            ["Usuarios"] = new("Usuarios", "AccountMultipleOutline", DashboardIconColor, Module_e.Users, null, () => _serviceProvider.GetRequiredService<UsuariosView>()),
+            ["CheckList"] = new("Checklist montacargas", "Forklift", DashboardIconColor, Module_e.ForkliftChecklist, null, () => _serviceProvider.GetRequiredService<CheckListView>()),
+            ["Catalogos"] = new("Catálogos", "ViewGridOutline", DashboardIconColor, Module_e.Catalogs, null, () => _serviceProvider.GetRequiredService<CatalogosView>()),
+            ["Surtido"] = new("Surtido", "ClipboardArrowDownOutline", DashboardIconColor, Module_e.Picking, null, null),
+            ["Embarques"] = new("Embarques", "TruckDeliveryOutline", DashboardIconColor, Module_e.Shipments, null, () => _serviceProvider.GetRequiredService<EmbarquesView>()),
+            ["Reportes"] = new("Reportes", "ChartBar", DashboardIconColor, Module_e.Reports, null, () => _serviceProvider.GetRequiredService<ReportesView>()),
+            ["DatabaseDiagram"] = new("Diagrama BD", "Database", DashboardIconColor, Module_e.Reports, null, () => _serviceProvider.GetRequiredService<DatabaseDiagramView>()),
+            ["ReporteDanos"] = new("Reporte de daños", "AlertCircleOutline", DashboardIconColor, Module_e.DamageReport, null, () => _serviceProvider.GetRequiredService<DamageReportView>()),
+            ["Tareas"] = new("Tareas", "ClipboardSearchOutline", DashboardIconColor, Module_e.WarehouseStaff, null, () => _serviceProvider.GetRequiredService<TasksView>()),
+            ["Impresion"] = new("Impresión", "PrinterOutline", DashboardIconColor, Module_e.Reports, StandardLabelPrintOptionsDialog.StandardIdOption, null),
+            ["Patio"] = new("Control de patio", "Parking", DashboardIconColor, Module_e.YardControl, null, () => _serviceProvider.GetRequiredService<ControlPatioView>())
         };
 
         Tiles = new ObservableCollection<ModuleTileVm>();

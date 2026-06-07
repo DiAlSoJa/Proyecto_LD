@@ -10,6 +10,7 @@
 
         <Label Text="{Binding Icon, Source={x:Reference root}}"
                FontSize="18"
+               TextColor="#2F5DA8"
                VerticalOptions="Center"/>
 
         <Label Grid.Column="1"
