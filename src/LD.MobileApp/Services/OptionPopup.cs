@@ -9,190 +9,167 @@ public sealed class OptionPopup : Popup
     private readonly TaskCompletionSource<string?> _tcs = new();
     public Task<string?> Result => _tcs.Task;
 
-    private static readonly Dictionary<string, string> OptionIcons = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["Carga"]    = "🚚",
-        ["Descarga"] = "📦",
-    };
-
     public OptionPopup(string title, IEnumerable<string> options)
     {
-        var background = new Grid
-        {
-            BackgroundColor = Color.FromRgba(0, 0, 0, 0.45f)
-        };
-
-        var card = new Border
+        // Contenedor (tarjeta)
+        var container = new Border
         {
             BackgroundColor = Colors.White,
-            StrokeThickness = 0,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(24) },
-            Padding = new Thickness(24, 28, 24, 24),
-            WidthRequest = 340,
-            Shadow = new Shadow
+            Stroke = Color.FromArgb("#E2E8F0"),
+            StrokeThickness = 1,
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(18) },
+            Padding = 16,
+            WidthRequest = 320
+        };
+
+        // Header: título + botón cerrar
+        var header = new Grid
+        {
+            ColumnDefinitions =
             {
-                Brush = new SolidColorBrush(Colors.Black),
-                Offset = new Point(0, 8),
-                Radius = 24,
-                Opacity = 0.18f
+                new ColumnDefinition(GridLength.Star),
+                new ColumnDefinition(GridLength.Auto)
             }
         };
 
-        // ── Header ─────────────────────────────────────────────────────────
-        var headerIcon = new Label
-        {
-            Text = "🏢",
-            FontSize = 36,
-            HorizontalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 0, 0, 4)
-        };
-
-        var titleLabel = new Label
+        var titleLbl = new Label
         {
             Text = title,
-            FontSize = 22,
+            FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#0F2E4F"),
-            HorizontalOptions = LayoutOptions.Center
+            TextColor = Color.FromArgb("#1E293B"),
+            VerticalOptions = LayoutOptions.Center
         };
 
-        var subtitleLabel = new Label
+        var closeBtn = new Button
+        {
+            Text = "✕",
+            BackgroundColor = Colors.Transparent,
+            TextColor = Color.FromArgb("#64748B"),
+            Padding = new Thickness(8, 0),
+            FontSize = 16,
+            VerticalOptions = LayoutOptions.Center
+        };
+        closeBtn.Clicked += (_, __) => CloseWith(null);
+
+        header.Add(titleLbl);
+        header.Add(closeBtn);
+        Grid.SetColumn(closeBtn, 1);
+
+        var desc = new Label
         {
             Text = "Selecciona una opción:",
             FontSize = 13,
-            TextColor = Color.FromArgb("#64748B"),
-            HorizontalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 2, 0, 0)
+            TextColor = Color.FromArgb("#64748B")
         };
 
-        var separator = new BoxView
-        {
-            HeightRequest = 1,
-            BackgroundColor = Color.FromArgb("#E2E8F0"),
-            Margin = new Thickness(0, 16, 0, 0)
-        };
-
-        // ── Option cards ───────────────────────────────────────────────────
-        var optionsList = new VerticalStackLayout
-        {
-            Spacing = 10,
-            Margin = new Thickness(0, 16, 0, 0)
-        };
+        // Lista de opciones
+        var list = new VerticalStackLayout { Spacing = 0 };
 
         foreach (var opt in options)
-            optionsList.Add(BuildOptionCard(opt));
+        {
+            list.Add(BuildRow(opt));
+            list.Add(new BoxView
+            {
+                HeightRequest = 1,
+                BackgroundColor = Color.FromArgb("#EEF2F7")
+            });
+        }
 
-        // ── Cancel ─────────────────────────────────────────────────────────
-        var cancelBtn = new Button
+        if (list.Count > 0)
+            list.RemoveAt(list.Count - 1);
+
+        var cancel = new Button
         {
             Text = "Cancelar",
             BackgroundColor = Color.FromArgb("#F1F5F9"),
-            TextColor = Color.FromArgb("#475569"),
-            CornerRadius = 16,
-            HeightRequest = 50,
-            FontSize = 15,
-            FontAttributes = FontAttributes.Bold,
+            TextColor = Color.FromArgb("#1E293B"),
+            CornerRadius = 14,
+            HeightRequest = 44,
             Margin = new Thickness(0, 12, 0, 0)
         };
-        cancelBtn.Clicked += (_, __) => CloseWith(null);
+        cancel.Clicked += (_, __) => CloseWith(null);
 
-        card.Content = new VerticalStackLayout
+        container.Content = new VerticalStackLayout
         {
-            Spacing = 0,
+            Spacing = 10,
             Children =
             {
-                headerIcon,
-                titleLabel,
-                subtitleLabel,
-                separator,
-                optionsList,
-                cancelBtn
+                header,
+                desc,
+                new ScrollView { Content = list, HeightRequest = 260 },
+                cancel
             }
         };
 
-        // Absorb taps so the background overlay doesn't propagate
+        // Fondo semitransparente (SIN tap para cerrar)
+        // Si tocan afuera, no pasa nada.
+        var background = new Grid
+        {
+            BackgroundColor = Color.FromRgba(0, 0, 0, 0.35f)
+        };
+
+        // Captura el tap en el contenedor (solo para evitar propagación)
         var tapInside = new TapGestureRecognizer();
         tapInside.Tapped += (_, __) => { };
-        card.GestureRecognizers.Add(tapInside);
+        container.GestureRecognizers.Add(tapInside);
 
         background.Add(new VerticalStackLayout
         {
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center,
-            Children = { card }
+            Children = { container }
         });
 
         Content = background;
     }
 
-    private View BuildOptionCard(string text)
+    private View BuildRow(string text)
     {
-        var icon = OptionIcons.TryGetValue(text, out var emoji) ? emoji : "•";
-
-        var optCard = new Border
+        var rowBorder = new Border
         {
-            BackgroundColor = Color.FromArgb("#F8FAFC"),
-            StrokeThickness = 1.5,
-            Stroke = Color.FromArgb("#E2E8F0"),
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(16) },
-            Padding = new Thickness(18, 16),
+            StrokeThickness = 0,
+            BackgroundColor = Colors.Transparent,
+            Padding = new Thickness(12, 12),
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(12) }
         };
 
         var grid = new Grid
         {
             ColumnDefinitions =
             {
-                new ColumnDefinition(GridLength.Auto),
                 new ColumnDefinition(GridLength.Star),
-                new ColumnDefinition(GridLength.Auto),
-            },
-            ColumnSpacing = 14
+                new ColumnDefinition(GridLength.Auto)
+            }
         };
 
-        var iconLabel = new Label
-        {
-            Text = icon,
-            FontSize = 30,
-            VerticalOptions = LayoutOptions.Center
-        };
-
-        var textLabel = new Label
+        var lbl = new Label
         {
             Text = text,
-            FontSize = 18,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#0F2E4F"),
+            FontSize = 14,
+            TextColor = Color.FromArgb("#1E293B"),
             VerticalOptions = LayoutOptions.Center
         };
 
         var chevron = new Label
         {
             Text = "›",
-            FontSize = 24,
-            FontAttributes = FontAttributes.Bold,
+            FontSize = 18,
             TextColor = Color.FromArgb("#94A3B8"),
             VerticalOptions = LayoutOptions.Center
         };
 
-        grid.Add(iconLabel);
-        grid.Add(textLabel);
+        grid.Add(lbl);
         grid.Add(chevron);
-        Grid.SetColumn(textLabel, 1);
-        Grid.SetColumn(chevron, 2);
+        Grid.SetColumn(chevron, 1);
 
-        optCard.Content = grid;
+        rowBorder.Content = grid;
 
         var tap = new TapGestureRecognizer();
-        tap.Tapped += async (_, __) =>
-        {
-            optCard.BackgroundColor = Color.FromArgb("#EFF6FF");
-            optCard.Stroke = Color.FromArgb("#3B82F6");
-            await Task.Delay(120);
-            CloseWith(text);
-        };
-        optCard.GestureRecognizers.Add(tap);
+        tap.Tapped += (_, __) => CloseWith(text);
+        rowBorder.GestureRecognizers.Add(tap);
 
-        return optCard;
+        return rowBorder;
     }
 
     private void CloseWith(string? value)

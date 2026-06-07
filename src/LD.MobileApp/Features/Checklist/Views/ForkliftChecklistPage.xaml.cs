@@ -20,6 +20,10 @@ public partial class ForkliftChecklistPage : ContentPage
     private readonly ChecklistService  _checklistService;
     private readonly IDialogService    _dialogService;
 
+    // Bytes de las fotos capturadas en memoria (para subir sin escribir a disco)
+    private byte[]? _foto1Bytes;
+    private byte[]? _foto2Bytes;
+
     // Cuando es true el usuario DEBE completar el checklist antes de salir
     private bool _isMandatory;
 
@@ -50,7 +54,7 @@ public partial class ForkliftChecklistPage : ContentPage
         IDialogService dialogService)
     {
         InitializeComponent();
-        BindingContext     = viewModel;
+        BindingContext    = viewModel;
         _equipmentService = equipmentService;
         _checklistService = checklistService;
         _dialogService    = dialogService;
@@ -77,7 +81,7 @@ public partial class ForkliftChecklistPage : ContentPage
     {
         await ViewModel.InicializarAsync(equipment);
         await CargarImagenEquipoAsync(equipment);
-        ViewModel.Equipo = equipment.NoEquipo;
+        EquipoEntry.Text = equipment.NoEquipo;
 
         // La verificación de checklist diario ahora ocurre antes de navegar (DashboardViewModel.NavigateToChecklist)
         // por lo que no es necesario repetirla aquí.
@@ -201,9 +205,9 @@ public partial class ForkliftChecklistPage : ContentPage
 
     private void OnOptionSelected(object sender, EventArgs e)
     {
-        if (sender is Button btn && btn.BindingContext is ChecklistQuestion question)
+        if (sender is Button btn && btn.BindingContext is Models.ChecklistQuestion question)
         {
-            question.SelectedOption = btn.Text;
+            question.SelectSingleOption(btn.Text);
             var parent = btn.Parent as Grid;
             if (parent is null) return;
             foreach (var child in parent.Children)
@@ -218,16 +222,7 @@ public partial class ForkliftChecklistPage : ContentPage
     private void OnMultiOptionTapped(object sender, TappedEventArgs e)
     {
         if (sender is Border { BindingContext: ChecklistOption option })
-        {
-            // Esta vista ya no usa selección múltiple, pero se conserva el handler
-            // por compatibilidad si el XAML vuelve a activarlo en el futuro.
-            System.Diagnostics.Debug.WriteLine($"[ForkliftChecklist] Opción tocada: {option.Text}");
-        }
-    }
-
-    private void OnCancelarClicked(object sender, EventArgs e)
-    {
-        PreviewImage.Source = null;
+            option.Question.ToggleMultiOption(option);
     }
 
     private async void OnCapturarClicked(object sender, EventArgs e)
@@ -236,33 +231,18 @@ public partial class ForkliftChecklistPage : ContentPage
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await _dialogService.ShowInfoAsync("Cámara", "Este dispositivo no soporta captura de fotos.");
+                await DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de fotos.", "OK");
                 return;
             }
 
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo == null) return;
 
-            await using var stream = await photo.OpenReadAsync();
-            var mem = new MemoryStream();
-            await stream.CopyToAsync(mem);
-            var bytes = mem.ToArray();
-
-            var side = ViewModel.Photos.Count == 0 ? "left" : (ViewModel.Photos.Count == 1 ? "right" : "custom");
-            var order = ViewModel.Photos.Count;
-            var img = ImageSource.FromStream(() => new MemoryStream(bytes));
-
-            ViewModel.Photos.Add(new ChecklistPhotoItem
-            {
-                Bytes  = bytes,
-                Order  = order,
-                Side   = side,
-                Source = img,
-            });
+            await ProcesarFotoAsync(photo);
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Error", ex.Message);
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 
@@ -282,7 +262,7 @@ public partial class ForkliftChecklistPage : ContentPage
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Error", ex.Message);
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
     }
 
@@ -302,17 +282,18 @@ public partial class ForkliftChecklistPage : ContentPage
             // Si la compresion falla, se conserva la imagen original para no bloquear el checklist.
         }
 
-        var side = ViewModel.Photos.Count == 0 ? "left" : (ViewModel.Photos.Count == 1 ? "right" : "custom");
-        var order = ViewModel.Photos.Count;
         var img = ImageSource.FromStream(() => new MemoryStream(bytes));
 
-        ViewModel.Photos.Add(new ChecklistPhotoItem
+        if (_foto1Bytes == null)
         {
-            Bytes  = bytes,
-            Order  = order,
-            Side   = side,
-            Source = img,
-        });
+            _foto1Bytes   = bytes;
+            Thumb1.Source = img;
+        }
+        else
+        {
+            _foto2Bytes   = bytes;
+            Thumb2.Source = img;
+        }
     }
 
     private async void OnGuardarClicked(object sender, EventArgs e)
@@ -326,13 +307,13 @@ public partial class ForkliftChecklistPage : ContentPage
 
         if (pendientes.Any())
         {
-            await _dialogService.ShowErrorAsync("Faltan datos", "Debes contestar todas las preguntas del checklist.");
+            await DisplayAlertAsync("Faltan datos", "Debes contestar todas las preguntas del checklist.", "OK");
             return;
         }
 
         if (_equipment is null)
         {
-            await _dialogService.ShowErrorAsync("Error", "No se detectó el equipo asignado.");
+            await DisplayAlertAsync("Error", "No se detectó el equipo asignado.", "OK");
             return;
         }
 
@@ -341,29 +322,33 @@ public partial class ForkliftChecklistPage : ContentPage
             vm.IsSaving = true;
 
             // Comprimir y subir fotos en serie mostrando progreso
+            var fotosParaSubir = new List<(byte[] bytes, string nombre, string side, int order)>();
+            if (_foto1Bytes is { Length: > 0 }) fotosParaSubir.Add((_foto1Bytes, "foto1.jpg", "left",  1));
+            if (_foto2Bytes is { Length: > 0 }) fotosParaSubir.Add((_foto2Bytes, "foto2.jpg", "right", 2));
+
             var photos = new List<ChecklistPhotoDto>();
-            for (int i = 0; i < vm.Photos.Count; i++)
+            for (int i = 0; i < fotosParaSubir.Count; i++)
             {
-                var item = vm.Photos[i];
-                vm.StatusSubida = $"Subiendo foto {i + 1} de {vm.Photos.Count}...";
+                var (bytes, nombre, side, order) = fotosParaSubir[i];
+                vm.StatusSubida = $"Subiendo foto {i + 1} de {fotosParaSubir.Count}...";
 
                 byte[] bytesFinales;
                 try
                 {
-                    bytesFinales = await ImageCompressor.ComprimirAsync(item.Bytes);
+                    bytesFinales = await ImageCompressor.ComprimirAsync(bytes);
                 }
                 catch
                 {
-                    bytesFinales = item.Bytes;
+                    bytesFinales = bytes;
                 }
 
-                var uploadResult = await vm.UploadPhotoAsync(bytesFinales, $"foto{i + 1}.jpg", item.Side);
+                var uploadResult = await vm.UploadPhotoAsync(bytesFinales, nombre, side);
                 if (uploadResult.IsSuccess && uploadResult.Data is not null)
                     photos.Add(new ChecklistPhotoDto
                     {
                         RelativePath = uploadResult.Data.RelativePath,
-                        Side         = item.Side,
-                        Order        = item.Order
+                        Side         = side,
+                        Order        = order
                     });
             }
 
@@ -400,7 +385,7 @@ public partial class ForkliftChecklistPage : ContentPage
             var request = new SubmitChecklistRequest
             {
                 EquipmentId   = _equipment.EquipmentId,
-                UserName      = vm.Operador?.Trim() ?? string.Empty,
+                UserName      = OperadorEntry.Text?.Trim() ?? string.Empty,
                 Turno         = TurnoPicker.SelectedItem?.ToString() ?? string.Empty,
                 Horometro     = horometro,
                 Observaciones = ObservacionesEditor.Text?.Trim(),
@@ -416,17 +401,17 @@ public partial class ForkliftChecklistPage : ContentPage
             {
                 // Si era obligatorio, el popup de bloqueo ya no aplica (checklist completado)
                 _isMandatory = false;
-                await _dialogService.ShowSuccessAsync("Listo", message);
+                await DisplayAlertAsync("Listo", message, "OK");
                 await Shell.Current.GoToAsync("//dashboard");
             }
             else
             {
-                await _dialogService.ShowErrorAsync("Error al guardar", message);
+                await DisplayAlertAsync("Error al guardar", message, "OK");
             }
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Error", ex.Message);
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
         finally
         {

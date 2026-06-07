@@ -16,15 +16,12 @@
                 WidthRequest="44"
                 HeightRequest="44"
                 VerticalOptions="Center">
-            <Image Source="user_circle.png"
+            <Image Source="person.png"
                    HeightRequest="44"
                    WidthRequest="44"
                    Aspect="AspectFit"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"/>
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnUserTapped"/>
-            </Border.GestureRecognizers>
         </Border>
 
         <!-- Username -->
@@ -34,11 +31,7 @@
                FontAttributes="Bold"
                TextColor="White"
                VerticalOptions="Center"
-               Margin="12,0,0,0">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnUserTapped"/>
-            </Label.GestureRecognizers>
-        </Label>
+               Margin="12,0,0,0"/>
 
         <!-- Badge de tareas -->
         <Border Grid.Column="2"

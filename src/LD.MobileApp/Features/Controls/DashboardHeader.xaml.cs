@@ -16,9 +16,6 @@ public partial class DashboardHeader : ContentView
     public static readonly BindableProperty NavigateToTasksCommandProperty =
         BindableProperty.Create(nameof(NavigateToTasksCommand), typeof(ICommand), typeof(DashboardHeader), null);
 
-    public static readonly BindableProperty OpenUserMenuCommandProperty =
-        BindableProperty.Create(nameof(OpenUserMenuCommand), typeof(ICommand), typeof(DashboardHeader), null);
-
     public string Username
     {
         get => (string)GetValue(UsernameProperty);
@@ -43,17 +40,8 @@ public partial class DashboardHeader : ContentView
         set => SetValue(NavigateToTasksCommandProperty, value);
     }
 
-    public ICommand? OpenUserMenuCommand
-    {
-        get => (ICommand?)GetValue(OpenUserMenuCommandProperty);
-        set => SetValue(OpenUserMenuCommandProperty, value);
-    }
-
     public DashboardHeader()
     {
         InitializeComponent();
     }
-
-    private void OnUserTapped(object? sender, TappedEventArgs e)
-        => OpenUserMenuCommand?.Execute(null);
 }
