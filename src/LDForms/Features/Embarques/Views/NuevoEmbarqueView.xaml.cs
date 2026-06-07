@@ -38,6 +38,7 @@ namespace LD.FormsX.Features.Embarques.Views
         private readonly Dictionary<int, string> _detailSnapshots = new();
         private readonly DataGridNavigationManager _detailGridNavigation;
         private readonly DataGridNavigationManager _issueGridNavigation;
+        private bool _issueGenerationEnabled;
 
         private KittingDto? _selectedKitting;
         private KittingDetailDto? _selectedDetail;
@@ -132,7 +133,7 @@ namespace LD.FormsX.Features.Embarques.Views
         {
             try
             {
-                _loadingData = true;
+                SetLoadingState(true, "Cargando informacion...");
 
                 await LoadStatusLookupAsync();
                 await LoadSdLookupAsync();
@@ -159,7 +160,7 @@ namespace LD.FormsX.Features.Embarques.Views
             }
             finally
             {
-                _loadingData = false;
+                SetLoadingState(false);
             }
         }
 
@@ -216,6 +217,7 @@ namespace LD.FormsX.Features.Embarques.Views
             IssueItems.Clear();
             _detailSnapshots.Clear();
             _selectedDetail = null;
+            _issueGenerationEnabled = false;
 
             if (_selectedKitting?.KittingId <= 0)
                 return;
@@ -238,6 +240,7 @@ namespace LD.FormsX.Features.Embarques.Views
         {
             var selectedDetail = _selectedDetail;
             IssueItems.Clear();
+            _issueGenerationEnabled = false;
 
             if (selectedDetail?.KittingDetailId <= 0)
             {
@@ -255,6 +258,7 @@ namespace LD.FormsX.Features.Embarques.Views
             foreach (var item in result.Data)
                 IssueItems.Add(CloneIssue(item));
 
+            _issueGenerationEnabled = IssueItems.Count > 0;
             ApplyEditState();
         }
 
@@ -363,6 +367,9 @@ namespace LD.FormsX.Features.Embarques.Views
                 ? "Embarque"
                 : $"Embarque {code}";
 
+            if (_loadingData)
+                titlePrefix = $"{titlePrefix} (Cargando...)";
+
             if (string.IsNullOrWhiteSpace(_clientName) && string.IsNullOrWhiteSpace(_projectName))
             {
                 txtTituloVentana.Text = titlePrefix;
@@ -382,6 +389,29 @@ namespace LD.FormsX.Features.Embarques.Views
             }
 
             txtTituloVentana.Text = $"{titlePrefix} - {_clientName} / {_projectName}";
+        }
+
+        private void SetLoadingState(bool isLoading, string? message = null)
+        {
+            _loadingData = isLoading;
+
+            if (bdLoadingHeader != null)
+                bdLoadingHeader.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
+
+            if (loadingOverlay != null)
+                loadingOverlay.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                if (txtLoadingHeader != null)
+                    txtLoadingHeader.Text = message;
+
+                if (txtLoadingBody != null)
+                    txtLoadingBody.Text = message;
+            }
+
+            UpdateWindowTitle();
+            ApplyEditState();
         }
 
         private static bool IsConfirmedStatus(string? status) =>
@@ -406,28 +436,31 @@ namespace LD.FormsX.Features.Embarques.Views
         {
             var isEditable = IsCurrentKittingEditable();
             var hasDetailSelection = _selectedDetail != null && !IsEmptyDetailRow(_selectedDetail);
+            var canInteract = isEditable && !_loadingData;
 
-            btnGuardar.IsEnabled = isEditable;
-            btnGenerarIssueBase.IsEnabled = isEditable && hasDetailSelection;
-            txtNumeroFactura.IsEnabled = isEditable;
-            txtLineaTransporte.IsEnabled = isEditable;
-            txtTipoVehiculo.IsEnabled = isEditable;
-            txtChofer.IsEnabled = isEditable;
-            txtPlacasVehiculo.IsEnabled = isEditable;
-            txtSelloTransporte.IsEnabled = isEditable;
-            txtContacto.IsEnabled = isEditable;
-            txtDireccion.IsEnabled = isEditable;
-            txtColonia.IsEnabled = isEditable;
-            txtCiudad.IsEnabled = isEditable;
-            txtTelefono.IsEnabled = isEditable;
-            txtCodigoPostal.IsEnabled = isEditable;
-            cbTipoEntrega.IsEnabled = isEditable;
-            dpFechaProgramada.IsEnabled = isEditable && IsProgramadaDeliverySelected();
+            btnGuardar.IsEnabled = canInteract;
+            btnGenerarIssueBase.IsEnabled = canInteract && hasDetailSelection;
+            txtNumeroFactura.IsEnabled = canInteract;
+            txtLineaTransporte.IsEnabled = canInteract;
+            txtTipoVehiculo.IsEnabled = canInteract;
+            txtChofer.IsEnabled = canInteract;
+            txtPlacasVehiculo.IsEnabled = canInteract;
+            txtSelloTransporte.IsEnabled = canInteract;
+            txtContacto.IsEnabled = canInteract;
+            txtDireccion.IsEnabled = canInteract;
+            txtColonia.IsEnabled = canInteract;
+            txtCiudad.IsEnabled = canInteract;
+            txtTelefono.IsEnabled = canInteract;
+            txtCodigoPostal.IsEnabled = canInteract;
+            cbTipoEntrega.IsEnabled = canInteract;
+            dpFechaProgramada.IsEnabled = canInteract && IsProgramadaDeliverySelected();
 
-            dgDetail.IsReadOnly = !isEditable;
-            dgDetail.CanUserAddRows = isEditable;
-            dgIssue.IsReadOnly = !isEditable;
-            dgIssue.CanUserAddRows = isEditable && hasDetailSelection;
+            dgDetail.IsReadOnly = !canInteract;
+            dgDetail.CanUserAddRows = canInteract;
+            dgIssue.IsReadOnly = !canInteract;
+            dgIssue.CanUserAddRows = false;
+            dgDetail.IsEnabled = canInteract;
+            dgIssue.IsEnabled = canInteract;
 
             UpdateFechaProgramadaVisibility();
         }
@@ -512,9 +545,6 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 foreach (var detailRow in DetailItems.Where(item => !IsEmptyDetailRow(item)).ToList())
                     await SaveDetailRowAsync(detailRow);
-
-                foreach (var issueRow in IssueItems.Where(item => !IsEmptyIssueRow(item)).ToList())
-                    await SaveIssueRowAsync(issueRow);
             }
             catch (Exception ex)
             {
@@ -659,7 +689,7 @@ namespace LD.FormsX.Features.Embarques.Views
             _issueGridNavigation.CommitCurrentEdit();
         }
 
-        private async void dgDetail_CurrentCellChanged(object? sender, EventArgs e)
+        private void dgDetail_CurrentCellChanged(object? sender, EventArgs e)
         {
             try
             {
@@ -672,7 +702,9 @@ namespace LD.FormsX.Features.Embarques.Views
                 if (!ReferenceEquals(_selectedDetail, currentDetailItem))
                 {
                     _selectedDetail = currentDetailItem;
-                    await LoadIssueItemsForSelectedDetailAsync();
+                    IssueItems.Clear();
+                    _issueGenerationEnabled = false;
+                    ApplyEditState();
                 }
 
                 if (dgDetail.CurrentCell.Column.IsReadOnly)
@@ -696,6 +728,9 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private void dgIssue_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
+            if (!_issueGenerationEnabled)
+                return;
+
             if (e.NewItem is not KittingIssueDetailDto issueRow)
                 return;
 
@@ -997,7 +1032,6 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 await RefreshDetailRowFromServerAsync(detailRow);
                 RegisterDetailSnapshot(detailRow);
-                await EnsureInitialIssueCreatedAsync(detailRow);
                 HasChanges = true;
             }
             catch (Exception ex)
@@ -1039,6 +1073,9 @@ namespace LD.FormsX.Features.Embarques.Views
         private async Task SaveIssueRowAsync(KittingIssueDetailDto issueRow)
         {
             if (!EnsureCurrentKittingEditable())
+                return;
+
+            if (!_issueGenerationEnabled)
                 return;
 
             if (IsEmptyIssueRow(issueRow))
@@ -1176,6 +1213,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 await EnsureInitialIssueCreatedAsync(_selectedDetail);
                 await LoadIssueItemsForSelectedDetailAsync();
+                _issueGenerationEnabled = true;
                 ToastHelper.ShowSuccess("Issue base generado correctamente.");
                 HasChanges = true;
             }

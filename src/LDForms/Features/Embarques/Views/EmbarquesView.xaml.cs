@@ -130,7 +130,32 @@ namespace LD.FormsX.Features.Embarques.Views
             _gridFilterDet = new WpfGridFilter<KittingDetailDto>(dgDetalleKitting);
             _gridFilterIssue = new WpfGridFilter<KittingIssueDetailDto>(dgIssueKitting);
 
-            _gridFilter.SetHiddenColumns("KittingId");
+            _gridFilter.SetHiddenColumns(
+                "KittingId",
+                "GuideNumber",
+                "Eta",
+                "PackagesQty",
+                "IsReturn",
+                "IsCustomerMovementRequired",
+                "Colonia",
+                "Ciudad",
+                "Telefono",
+                "CodigoPostal",
+                "FechaProgramada");
+            _gridFilter.SetColumnOrder(
+                "KittingCode",
+                "Client",
+                "Project",
+                "InvoiceNumber",
+                "TransportLine",
+                "VehicleType",
+                "DriverName",
+                "VehiclePlate",
+                "SealNumber",
+                "Status",
+                "Contacto",
+                "Direccion",
+                "TipoEntrega");
             _gridFilterDet.SetHiddenColumns("KittingDetailId", "KittingId", "ProductId");
             _gridFilterIssue.SetHiddenColumns("KittingReceiptDetailId", "KittingDetailId", "ProductId", "LocationId");
 

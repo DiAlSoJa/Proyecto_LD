@@ -102,6 +102,84 @@
             <Setter Property="Margin" Value="0,0,8,0"/>
         </Style>
 
+        <Style TargetType="Button" x:Key="ToolbarButtonStyle">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F3F4F6"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E5E7EB"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="SuccessButtonStyle">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Background" Value="#15803D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#15803D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#166534"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#14532D"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="{StaticResource HeaderBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
@@ -170,6 +248,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="34"/>
                             <ColumnDefinition Width="34"/>
                             <ColumnDefinition Width="34"/>
@@ -183,8 +262,30 @@
                                    VerticalAlignment="Center"
                                    Margin="12,0,0,0"/>
 
-                        <Button x:Name="btnMinimizarVentana"
+                        <Border x:Name="bdLoadingHeader"
                                 Grid.Column="1"
+                                Background="#1F2937"
+                                CornerRadius="10"
+                                Padding="10,3"
+                                Margin="0,6,8,6"
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <ProgressBar Width="54"
+                                             Height="6"
+                                             IsIndeterminate="True"
+                                             Foreground="#93C5FD"
+                                             Margin="0,0,8,0"/>
+                                <TextBlock x:Name="txtLoadingHeader"
+                                           Text="Cargando"
+                                           Foreground="White"
+                                           FontSize="11"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button x:Name="btnMinimizarVentana"
+                                Grid.Column="2"
                                 Content="_"
                                 Click="BtnMinimizarVentana_Click"
                                 Background="Transparent"
@@ -194,7 +295,7 @@
                                 Cursor="Hand"/>
 
                         <Button x:Name="btnMaximizarVentana"
-                                Grid.Column="2"
+                                Grid.Column="3"
                                 Content="[]"
                                 Click="BtnMaximizarVentana_Click"
                                 Background="Transparent"
@@ -204,7 +305,7 @@
                                 Cursor="Hand"/>
 
                         <Button x:Name="btnCerrarVentana"
-                                Grid.Column="3"
+                                Grid.Column="4"
                                 Content="X"
                                 Click="BtnCerrarVentana_Click"
                                 Background="Transparent"
@@ -218,9 +319,10 @@
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Auto">
-                    <Border Background="White"
-                            Padding="16,14,16,10">
-                        <StackPanel>
+                    <Grid>
+                        <Border Background="White"
+                                Padding="16,14,16,10">
+                            <StackPanel>
                             <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="280"/>
@@ -340,18 +442,9 @@
                                         Width="152"
                                         Height="32"
                                         Padding="10,0"
+                                        Style="{StaticResource ToolbarButtonStyle}"
                                         Click="BtnGuardar_Click"
-                                        Background="#F3F4F6"
-                                        Foreground="#374151"
-                                        BorderBrush="#D1D5DB"
-                                        BorderThickness="1"
                                         Cursor="Hand">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="6"/>
-                                        </Style>
-                                    </Button.Resources>
-
                                     <StackPanel Orientation="Horizontal"
                                                 VerticalAlignment="Center"
                                                 HorizontalAlignment="Center">
@@ -546,28 +639,26 @@
                                             BorderBrush="{StaticResource BorderBrushSoft}"
                                             BorderThickness="0,0,0,1"
                                             Padding="10,8">
-                                        <DockPanel LastChildFill="False">
-                                            <TextBlock DockPanel.Dock="Left"
-                                                       Text="Issue details"
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                            <Button x:Name="btnGenerarIssueBase"
+                                                    Content="Surtir"
+                                                    Width="90"
+                                                    Height="28"
+                                                    Padding="10,0"
+                                                    Style="{StaticResource SuccessButtonStyle}"
+                                                    Margin="0,0,12,0"
+                                                    Click="BtnGenerarIssueBase_Click"/>
+                                            <TextBlock Text="Issue details"
                                                        FontSize="12"
                                                        FontWeight="SemiBold"
                                                        Foreground="{StaticResource TextBrush}"
                                                        VerticalAlignment="Center"/>
-                                            <Button x:Name="btnGenerarIssueBase"
-                                                    DockPanel.Dock="Right"
-                                                    Content="Generar issue base"
-                                                    Width="150"
-                                                    Height="28"
-                                                    Padding="10,0"
-                                                    Style="{StaticResource SecondaryButtonStyle}"
-                                                    Margin="8,0,0,0"
-                                                    Click="BtnGenerarIssueBase_Click"/>
-                                        </DockPanel>
+                                        </StackPanel>
                                     </Border>
 
                                     <DataGrid x:Name="dgIssue"
                                               AutoGenerateColumns="False"
-                                              CanUserAddRows="True"
+                                              CanUserAddRows="False"
                                               CanUserDeleteRows="False"
                                               IsReadOnly="False"
                                               ItemsSource="{Binding IssueItems}"
@@ -719,8 +810,29 @@
                                     </DataGrid>
                                 </DockPanel>
                             </Border>
-                        </StackPanel>
-                    </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <Border x:Name="loadingOverlay"
+                                Background="#CCFFFFFF"
+                                Visibility="Collapsed"
+                                Panel.ZIndex="10">
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <ProgressBar Width="220"
+                                             Height="8"
+                                             IsIndeterminate="True"
+                                             Foreground="{StaticResource PrimaryBrush}"
+                                             Margin="0,0,0,10"/>
+                                <TextBlock x:Name="txtLoadingBody"
+                                           Text="Cargando informacion..."
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </ScrollViewer>
 
                 <Border Grid.Row="2"

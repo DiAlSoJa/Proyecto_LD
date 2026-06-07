@@ -105,7 +105,6 @@ public class KittingDetailController : CommonController
                         Result<string>.Failure("No se pudo guardar el Kitting Detail.", new List<string> { "No se pudo guardar el Kitting Detail." }));
                 }
 
-                await EnsureDefaultIssueDetailAsync(entity);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -249,18 +248,6 @@ public class KittingDetailController : CommonController
         return null;
     }
 
-    private async Task EnsureDefaultIssueDetailAsync(KittingDetail detail)
-    {
-        var hasIssues = await _context.KittingIssueDetails
-            .AsNoTracking()
-            .AnyAsync(x => x.KittingDetailId == detail.KittingDetailId);
-
-        if (hasIssues)
-            return;
-
-        _context.KittingIssueDetails.Add(BuildDefaultIssueDetail(detail));
-    }
-
     private async Task SyncIssueDetailsFromDetailAsync(KittingDetail detail, decimal previousQuantity)
     {
         var issueDetails = await _context.KittingIssueDetails
@@ -269,7 +256,6 @@ public class KittingDetailController : CommonController
 
         if (issueDetails.Count == 0)
         {
-            _context.KittingIssueDetails.Add(BuildDefaultIssueDetail(detail));
             return;
         }
 
@@ -302,27 +288,6 @@ public class KittingDetailController : CommonController
                 issueDetail.SD = detail.SD;
             }
         }
-    }
-
-    private static KittingIssueDetail BuildDefaultIssueDetail(KittingDetail detail)
-    {
-        return new KittingIssueDetail
-        {
-            KittingDetailId = detail.KittingDetailId,
-            ProductId = NormalizeProductId(detail.ProductId),
-            PartNumber = detail.PartNumber,
-            Description = detail.Description,
-            StandardQuantity = detail.StandardQuantity,
-            MaximumQuantity = detail.MaximumQuantity,
-            SD = detail.SD,
-            ReceivedQuantity = detail.Quantity,
-            Status = detail.Status,
-            LotNumber = detail.LotNumber,
-            ExpirationDate = detail.ExpirationDate,
-            Reference = detail.CustomerReference,
-            PurchaseOrder = detail.PurchaseOrder,
-            CustomsDeclarationNumber = detail.CustomsDeclarationNumber
-        };
     }
 
     private static int? NormalizeProductId(int? productId)
