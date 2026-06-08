@@ -4,6 +4,7 @@ using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Common.Results;
 using LD.Contracts.Constants;
+using LD.Contracts.Enums;
 using LD.Contracts.Kitting;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
@@ -93,20 +94,99 @@ public class KittingIssueController : CommonController
             if (string.IsNullOrWhiteSpace(request.PartNumber))
                 return ResultExtensions.ToActionResult(Result<string>.Failure("PartNumber es obligatorio.", new List<string> { "PartNumber es obligatorio." }));
 
+            var standardIdText = NormalizeStandardIdText(request.StandardId);
+            if (standardIdText is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("StandardId es obligatorio para surtir una etiqueta.", new List<string> { "StandardId es obligatorio para surtir una etiqueta." }));
+            }
+
             var validation = await EnsureKittingDetailEditableAsync(request.KittingDetailId);
             if (validation is not null)
                 return ResultExtensions.ToActionResult(validation);
 
-            var entity = _mapper.Map<KittingIssueDetail>(request);
-            entity.Status = NormalizeStatus(entity.Status);
+            var detail = await _context.KittingDetails
+                .AsNoTracking()
+                .Include(x => x.Kitting)
+                .FirstOrDefaultAsync(x => x.KittingDetailId == request.KittingDetailId);
 
-            _context.KittingIssueDetails.Add(entity);
-            var result = await _context.SaveChangesAsync();
+            if (detail is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("Kitting Detail no encontrado.", new List<string> { "No existe el Kitting Detail." }, 404));
+            }
 
-            return ResultExtensions.ToActionResult(
-                result > 0
-                    ? Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail creado con exito")
-                    : Result<string>.Failure("No se pudo guardar el Kitting Issue Detail.", new List<string> { "No se pudo guardar el Kitting Issue Detail." }));
+            if (detail.Kitting is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se encontro el Kitting relacionado.", new List<string> { "No se encontro el Kitting relacionado." }, 404));
+            }
+
+            var standardLabel = await ResolveStandardLabelAsync(standardIdText);
+            if (standardLabel is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No existe la etiqueta indicada.", new List<string> { "No existe la etiqueta indicada." }, 404));
+            }
+
+            var availableInventory = await ResolveAvailableInventoryAsync(standardLabel.StandarId);
+            if (availableInventory is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No existe inventario disponible para esta etiqueta.", new List<string> { "No existe inventario disponible para esta etiqueta." }, 404));
+            }
+
+            if (!availableInventory.Qty.HasValue || availableInventory.Qty.Value <= 0)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("La etiqueta seleccionada ya no tiene inventario disponible.", new List<string> { "La etiqueta seleccionada ya no tiene inventario disponible." }));
+            }
+
+            if (await IssueExistsForStandardIdAsync(request.KittingDetailId, standardLabel.StandarId))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("La etiqueta seleccionada ya fue surtida en este embarque.", new List<string> { "La etiqueta seleccionada ya fue surtida en este embarque." }));
+            }
+
+            var movement = BuildInventoryMovement(request, detail, availableInventory, standardLabel.StandarId);
+            if (movement is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se pudo preparar el movimiento de inventario.", new List<string> { "No se pudo preparar el movimiento de inventario." }));
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var entity = _mapper.Map<KittingIssueDetail>(request);
+                entity.StandardId = standardLabel.StandarId;
+                entity.Status = NormalizeStatus(availableInventory.StatusId) ?? NormalizeStatus(request.Status);
+                entity.ReceivedQuantity = availableInventory.Qty;
+
+                _context.KittingIssueDetails.Add(entity);
+                _context.InventoryMovements.Add(movement);
+
+                availableInventory.Qty = 0m;
+                availableInventory.LastModifiedAt = DateTime.Now;
+                availableInventory.LastModifiedByUserId = CurrentUserId;
+
+                var result = await _context.SaveChangesAsync();
+                if (result <= 0)
+                {
+                    await transaction.RollbackAsync();
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Failure("No se pudo guardar el Kitting Issue Detail.", new List<string> { "No se pudo guardar el Kitting Issue Detail." }));
+                }
+
+                await transaction.CommitAsync();
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail creado con exito"));
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         catch (Exception ex)
         {
@@ -165,7 +245,8 @@ public class KittingIssueController : CommonController
     {
         try
         {
-            var entity = await _context.KittingIssueDetails.FirstOrDefaultAsync(x => x.KittingReceiptDetailId == kittingIssueDetailId);
+            var entity = await _context.KittingIssueDetails
+                .FirstOrDefaultAsync(x => x.KittingReceiptDetailId == kittingIssueDetailId);
             if (entity is null)
             {
                 return ResultExtensions.ToActionResult(
@@ -176,17 +257,77 @@ public class KittingIssueController : CommonController
             if (validation is not null)
                 return ResultExtensions.ToActionResult(validation);
 
-            _context.KittingIssueDetails.Remove(entity);
-            var deleted = await _context.SaveChangesAsync() > 0;
-
-            if (!deleted)
+            if (!entity.StandardId.HasValue || entity.StandardId.Value <= 0)
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("No se pudo eliminar el Kitting Issue Detail.", new List<string> { "No se pudo eliminar el Kitting Issue Detail." }));
+                    Result<string>.Failure("El Kitting Issue Detail no tiene StandardId asociado.", new List<string> { "El Kitting Issue Detail no tiene StandardId asociado." }));
             }
 
-            return ResultExtensions.ToActionResult(
-                Result<string>.Success(kittingIssueDetailId.ToString(), "Kitting Issue Detail eliminado"));
+            if (!entity.ReceivedQuantity.HasValue || entity.ReceivedQuantity.Value <= 0)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("El Kitting Issue Detail no tiene cantidad recibida para liberar inventario.", new List<string> { "El Kitting Issue Detail no tiene cantidad recibida para liberar inventario." }));
+            }
+
+            var detail = await _context.KittingDetails
+                .AsNoTracking()
+                .Include(x => x.Kitting)
+                .FirstOrDefaultAsync(x => x.KittingDetailId == entity.KittingDetailId);
+
+            if (detail is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("Kitting Detail no encontrado.", new List<string> { "No existe el Kitting Detail." }, 404));
+            }
+
+            if (detail.Kitting is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se encontro el Kitting relacionado.", new List<string> { "No se encontro el Kitting relacionado." }, 404));
+            }
+
+            var availableInventory = await ResolveAvailableInventoryForIssueAsync(entity);
+            if (availableInventory is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se encontro el inventario disponible asociado a esta etiqueta.", new List<string> { "No se encontro el inventario disponible asociado a esta etiqueta." }, 404));
+            }
+
+            var movement = BuildInventoryRestorationMovement(entity, detail, availableInventory, entity.StandardId.Value);
+            if (movement is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se pudo preparar el movimiento de inventario.", new List<string> { "No se pudo preparar el movimiento de inventario." }));
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                availableInventory.Qty = entity.ReceivedQuantity;
+                availableInventory.LastModifiedAt = DateTime.Now;
+                availableInventory.LastModifiedByUserId = CurrentUserId;
+
+                _context.InventoryMovements.Add(movement);
+                _context.KittingIssueDetails.Remove(entity);
+
+                var saved = await _context.SaveChangesAsync();
+                if (saved <= 0)
+                {
+                    await transaction.RollbackAsync();
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Failure("No se pudo eliminar el Kitting Issue Detail.", new List<string> { "No se pudo eliminar el Kitting Issue Detail." }));
+                }
+
+                await transaction.CommitAsync();
+
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Success(kittingIssueDetailId.ToString(), "Kitting Issue Detail eliminado y inventario liberado."));
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         catch (Exception ex)
         {
@@ -235,4 +376,150 @@ public class KittingIssueController : CommonController
         string.IsNullOrWhiteSpace(status)
             ? null
             : status.Trim();
+
+    private async Task<StandardLabel?> ResolveStandardLabelAsync(string standardIdText)
+    {
+        if (int.TryParse(standardIdText, out var standardId))
+        {
+            var byId = await _context.StandardLabels
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.StandarId == standardId);
+
+            if (byId is not null)
+                return byId;
+        }
+
+        return await _context.StandardLabels
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.StandarIdStr != null && x.StandarIdStr.Trim() == standardIdText);
+    }
+
+    private async Task<AvailableInventory?> ResolveAvailableInventoryAsync(int standardId)
+    {
+        var inventories = await _context.AvailableInventories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x =>
+                x.Qty.HasValue && x.Qty.Value > 0 &&
+                x.StandardId == standardId);
+
+        return inventories;
+    }
+
+    private async Task<AvailableInventory?> ResolveAvailableInventoryForIssueAsync(KittingIssueDetail issue)
+    {
+        if (!issue.StandardId.HasValue || issue.StandardId.Value <= 0)
+            return null;
+
+        var standardId = issue.StandardId.Value;
+        var inventories = _context.AvailableInventories.Where(x => x.StandardId == standardId);
+
+        var exactMatch = await inventories.FirstOrDefaultAsync(x =>
+            x.PartNumber == issue.PartNumber &&
+            x.ProductId == issue.ProductId &&
+            x.LocationId == issue.LocationId &&
+            x.LotNumber == issue.LotNumber &&
+            x.Reference == issue.Reference &&
+            x.PurchaseOrder == issue.PurchaseOrder &&
+            x.CustomsDeclarationNumber == issue.CustomsDeclarationNumber);
+
+        if (exactMatch is not null)
+            return exactMatch;
+
+        var consumedMatch = await inventories.FirstOrDefaultAsync(x => !x.Qty.HasValue || x.Qty.Value <= 0);
+        if (consumedMatch is not null)
+            return consumedMatch;
+
+        return await inventories.FirstOrDefaultAsync();
+    }
+
+    private async Task<bool> IssueExistsForStandardIdAsync(int kittingDetailId, int standardId)
+    {
+        return await _context.KittingIssueDetails.AsNoTracking().AnyAsync(x =>
+            x.KittingDetailId == kittingDetailId &&
+            x.StandardId == standardId);
+    }
+
+    private InventoryMovement? BuildInventoryMovement(KittingIssueRequest request, KittingDetail detail, AvailableInventory availableInventory, int standardId)
+    {
+        var documentId = !string.IsNullOrWhiteSpace(detail.Kitting?.InvoiceNumber)
+            ? detail.Kitting!.InvoiceNumber!.Trim()
+            : !string.IsNullOrWhiteSpace(detail.Kitting?.KittingCode)
+                ? detail.Kitting!.KittingCode!.Trim()
+                : detail.Kitting?.KittingId > 0
+                    ? detail.Kitting!.KittingId.ToString()
+                    : string.Empty;
+
+        if (string.IsNullOrWhiteSpace(documentId))
+            return null;
+
+        return new InventoryMovement
+        {
+            ProductId = request.ProductId ?? availableInventory.ProductId,
+            ClientId = detail.Kitting!.ClientId,
+            ProjectId = detail.Kitting.ProjectId,
+            PartNumber = availableInventory.PartNumber.Trim(),
+            Description = availableInventory.Description?.Trim() ?? request.Description?.Trim(),
+            Fecha = DateTime.Now,
+            Hora = DateTime.Now.TimeOfDay,
+            UserId = CurrentUserId,
+            LotNumber = availableInventory.LotNumber?.Trim(),
+            Reference = availableInventory.Reference?.Trim(),
+            PurchaseOrder = availableInventory.PurchaseOrder?.Trim(),
+            CustomsDeclarationNumber = availableInventory.CustomsDeclarationNumber?.Trim(),
+            ExpirationDate = availableInventory.ExpirationDate,
+            DocumentType = (LD.Domain.Enums.DocumentType_e)(int)DocumentType_e.Transferencia,
+            MovementType = (LD.Domain.Enums.MovementType_e)(int)MovementType_e.Picking,
+            DocumentId = documentId,
+            StatusId = NormalizeStatus(availableInventory.StatusId) ?? NormalizeStatus(request.Status),
+            LocationId = availableInventory.LocationId,
+            Qty = availableInventory.Qty.HasValue ? -Math.Abs(availableInventory.Qty.Value) : null,
+            StandardId = standardId
+        };
+    }
+
+    private InventoryMovement? BuildInventoryRestorationMovement(KittingIssueDetail issue, KittingDetail detail, AvailableInventory availableInventory, int standardId)
+    {
+        var documentId = !string.IsNullOrWhiteSpace(detail.Kitting?.InvoiceNumber)
+            ? detail.Kitting!.InvoiceNumber!.Trim()
+            : !string.IsNullOrWhiteSpace(detail.Kitting?.KittingCode)
+                ? detail.Kitting!.KittingCode!.Trim()
+                : detail.Kitting?.KittingId > 0
+                    ? detail.Kitting!.KittingId.ToString()
+                    : string.Empty;
+
+        if (string.IsNullOrWhiteSpace(documentId))
+            return null;
+
+        return new InventoryMovement
+        {
+            ProductId = issue.ProductId ?? availableInventory.ProductId,
+            ClientId = detail.Kitting!.ClientId,
+            ProjectId = detail.Kitting.ProjectId,
+            PartNumber = issue.PartNumber?.Trim() ?? availableInventory.PartNumber.Trim(),
+            Description = issue.Description?.Trim() ?? availableInventory.Description?.Trim(),
+            Fecha = DateTime.Now,
+            Hora = DateTime.Now.TimeOfDay,
+            UserId = CurrentUserId,
+            LotNumber = issue.LotNumber?.Trim() ?? availableInventory.LotNumber?.Trim(),
+            Reference = issue.Reference?.Trim() ?? availableInventory.Reference?.Trim(),
+            PurchaseOrder = issue.PurchaseOrder?.Trim() ?? availableInventory.PurchaseOrder?.Trim(),
+            CustomsDeclarationNumber = issue.CustomsDeclarationNumber?.Trim() ?? availableInventory.CustomsDeclarationNumber?.Trim(),
+            ExpirationDate = issue.ExpirationDate ?? availableInventory.ExpirationDate,
+            DocumentType = (LD.Domain.Enums.DocumentType_e)(int)DocumentType_e.Transferencia,
+            MovementType = (LD.Domain.Enums.MovementType_e)(int)MovementType_e.Picking,
+            DocumentId = documentId,
+            StatusId = NormalizeStatus(issue.Status) ?? NormalizeStatus(availableInventory.StatusId),
+            LocationId = issue.LocationId ?? availableInventory.LocationId,
+            Qty = issue.ReceivedQuantity.HasValue ? Math.Abs(issue.ReceivedQuantity.Value) : null,
+            StandardId = standardId
+        };
+    }
+
+    private static string? NormalizeStandardIdText(string? standardId)
+    {
+        if (string.IsNullOrWhiteSpace(standardId))
+            return null;
+
+        return standardId.Trim();
+    }
 }

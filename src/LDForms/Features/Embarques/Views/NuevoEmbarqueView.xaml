@@ -804,7 +804,7 @@
                                                                 Width="120"/>
 
                                             <DataGridTextColumn Header="EstandarId"
-                                                                Binding="{Binding StandardId, UpdateSourceTrigger=PropertyChanged}"
+                                                                Binding="{Binding StandardIdStr, UpdateSourceTrigger=PropertyChanged}"
                                                                 Width="100"/>
                                         </DataGrid.Columns>
                                     </DataGrid>

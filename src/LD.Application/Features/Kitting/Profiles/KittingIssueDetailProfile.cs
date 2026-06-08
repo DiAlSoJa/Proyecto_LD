@@ -26,6 +26,9 @@ public class KittingIssueDetailProfile : Profile
             .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardLabel != null
                 ? src.StandardLabel.StandarIdStr
                 : src.StandardId.HasValue ? src.StandardId.Value.ToString() : string.Empty))
+            .ForMember(dest => dest.StandardIdStr, opt => opt.MapFrom(src => src.StandardLabel != null
+                ? src.StandardLabel.StandarIdStr
+                : src.StandardId.HasValue ? src.StandardId.Value.ToString() : string.Empty))
             .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PartNumber))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.StandardQuantity, opt => opt.MapFrom(src => src.StandardQuantity))

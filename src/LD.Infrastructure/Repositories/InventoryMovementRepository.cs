@@ -46,35 +46,39 @@ namespace LD.Infrastructure.Repositories
             }
         }
 
-        public async Task<List<InventoryMovement>> GetAllWithRelationsAsync(int? standardId = null, string? standardIdCode = null)
-        {
-            IQueryable<InventoryMovement> query = _context.InventoryMovements
-                .Include(x => x.Product)
-                .Include(x => x.Client)
+    public async Task<List<InventoryMovement>> GetAllWithRelationsAsync(int? standardId = null, string? standardIdCode = null)
+    {
+        IQueryable<InventoryMovement> query = _context.InventoryMovements
+            .Include(x => x.Product)
+            .Include(x => x.Client)
                 .Include(x => x.Project)
                 .Include(x => x.Location)
                     .ThenInclude(x => x!.Warehouse)
                 .Include(x => x.StandardLabel);
 
-            if (standardId.HasValue)
-            {
-                var standardIdText = standardId.Value.ToString();
-                query = query.Where(x =>
-                    x.StandardId == standardId.Value ||
-                    (x.StandardLabel != null && x.StandardLabel.StandarIdStr == standardIdText));
-            }
-
-            if (!string.IsNullOrWhiteSpace(standardIdCode))
-            {
-                var normalizedStandardIdCode = standardIdCode.Trim();
-                query = query.Where(x =>
-                    x.StandardLabel != null &&
-                    x.StandardLabel.StandarIdStr == normalizedStandardIdCode);
-            }
-
-            return await query
-                .ToListAsync();
+        if (standardId.HasValue)
+        {
+            query = query.Where(x => x.StandardId == standardId.Value);
         }
+
+        if (!string.IsNullOrWhiteSpace(standardIdCode))
+        {
+            var normalizedStandardIdCode = standardIdCode.Trim();
+            var standardIds = await _context.StandardLabels
+                .AsNoTracking()
+                .Where(x => x.StandarIdStr == normalizedStandardIdCode)
+                .Select(x => x.StandarId)
+                .ToListAsync();
+
+            if (standardIds.Count == 0)
+                return new List<InventoryMovement>();
+
+            query = query.Where(x => x.StandardId.HasValue && standardIds.Contains(x.StandardId.Value));
+        }
+
+        return await query
+            .ToListAsync();
+    }
 
         public async Task<InventoryMovement?> GetByIdAsync(int id)
         {

@@ -15,6 +15,9 @@ namespace LD.Contracts.Kitting
         [DisplayName("EstandarID")]
         public string? StandardId { get; set; }
 
+        [DisplayName("EstandarID")]
+        public string? StandardIdStr { get; set; }
+
         [DisplayName("Número de Parte")]
         public string PartNumber { get; set; } = string.Empty;
 

@@ -1,4 +1,5 @@
 using LD.Contracts.InventoryMovement;
+using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Configuration;
 
@@ -33,5 +34,12 @@ public class InventoryMovementService
 
         return await _api.GetAsync<ApiResponseDto<List<InventoryMovementDto>>>(
             endpoint);
+    }
+
+    public async Task<ApiResponseDto<string>> CreateInventoryMovement(InventoryMovementRequest request)
+    {
+        return await _api.PostAsync<InventoryMovementRequest, ApiResponseDto<string>>(
+            _apiEndpoints.InventoryMovement_Create,
+            request);
     }
 }

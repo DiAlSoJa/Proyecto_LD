@@ -59,18 +59,22 @@ public class AvailableInventoryRepository : IAvailableInventoryRepository
 
         if (standardId.HasValue)
         {
-            var standardIdText = standardId.Value.ToString();
-            query = query.Where(x =>
-                x.StandardId == standardId.Value ||
-                (x.StandardLabel != null && x.StandardLabel.StandarIdStr == standardIdText));
+            query = query.Where(x => x.StandardId == standardId.Value);
         }
 
         if (!string.IsNullOrWhiteSpace(standardIdCode))
         {
             var normalizedStandardIdCode = standardIdCode.Trim();
-            query = query.Where(x =>
-                x.StandardLabel != null &&
-                x.StandardLabel.StandarIdStr == normalizedStandardIdCode);
+            var standardIds = await _context.StandardLabels
+                .AsNoTracking()
+                .Where(x => x.StandarIdStr == normalizedStandardIdCode)
+                .Select(x => x.StandarId)
+                .ToListAsync();
+
+            if (standardIds.Count == 0)
+                return new List<AvailableInventory>();
+
+            query = query.Where(x => x.StandardId.HasValue && standardIds.Contains(x.StandardId.Value));
         }
 
         return await query

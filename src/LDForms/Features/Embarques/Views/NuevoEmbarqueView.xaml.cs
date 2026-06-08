@@ -1,4 +1,5 @@
 using LD.Client.Services;
+using LD.Contracts.AvailableInventory;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Kitting;
 using LD.Contracts.Location;
@@ -26,6 +27,7 @@ namespace LD.FormsX.Features.Embarques.Views
         private readonly KittingService _kittingService;
         private readonly KittingDetailService _kittingDetailService;
         private readonly KittingIssueService _kittingIssueService;
+        private readonly AvailableInventoryService _availableInventoryService;
         private readonly LookupService _lookupService;
         private readonly ProjectService _projectService;
         private readonly ProductService _productService;
@@ -69,6 +71,7 @@ namespace LD.FormsX.Features.Embarques.Views
             KittingService kittingService,
             KittingDetailService kittingDetailService,
             KittingIssueService kittingIssueService,
+            AvailableInventoryService availableInventoryService,
             LookupService lookupService,
             ProjectService projectService,
             ProductService productService,
@@ -81,6 +84,7 @@ namespace LD.FormsX.Features.Embarques.Views
             _kittingService = kittingService;
             _kittingDetailService = kittingDetailService;
             _kittingIssueService = kittingIssueService;
+            _availableInventoryService = availableInventoryService;
             _lookupService = lookupService;
             _projectService = projectService;
             _productService = productService;
@@ -239,17 +243,21 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private async Task LoadIssueItemsForSelectedDetailAsync()
         {
-            var selectedDetail = _selectedDetail;
+            await LoadIssueItemsForDetailIdAsync(_selectedDetail?.KittingDetailId ?? 0);
+        }
+
+        private async Task LoadIssueItemsForDetailIdAsync(int kittingDetailId)
+        {
             IssueItems.Clear();
             _issueGenerationEnabled = false;
 
-            if (selectedDetail?.KittingDetailId <= 0)
+            if (kittingDetailId <= 0)
             {
                 ApplyEditState();
                 return;
             }
 
-            var result = await _kittingIssueService.GetKittingIssuesByKittingDetailId(selectedDetail.KittingDetailId);
+            var result = await _kittingIssueService.GetKittingIssuesByKittingDetailId(kittingDetailId);
             if (!result.IsSuccess || result.Data == null)
             {
                 ApplyEditState();
@@ -700,12 +708,10 @@ namespace LD.FormsX.Features.Embarques.Views
                 if (dgDetail.CurrentCell.Item is not KittingDetailDto currentDetailItem)
                     return;
 
-                if (!ReferenceEquals(_selectedDetail, currentDetailItem))
+                if (_selectedDetail == null || _selectedDetail.KittingDetailId != currentDetailItem.KittingDetailId)
                 {
                     _selectedDetail = currentDetailItem;
-                    IssueItems.Clear();
-                    _issueGenerationEnabled = false;
-                    ApplyEditState();
+                    _ = LoadIssueItemsForDetailIdAsync(currentDetailItem.KittingDetailId);
                 }
 
                 if (dgDetail.CurrentCell.Column.IsReadOnly)
@@ -1068,7 +1074,17 @@ namespace LD.FormsX.Features.Embarques.Views
                 return false;
             }
 
-            await SaveDetailRowAsync(detailRow);
+            // If the row is already in flight, wait for the existing save to finish
+            // instead of aborting the issue generation flow.
+            if (!_savingDetailRows.Contains(detailRow))
+                await SaveDetailRowAsync(detailRow);
+
+            for (var attempt = 0; attempt < 30 && detailRow.KittingDetailId <= 0; attempt++)
+            {
+                await Task.Delay(100);
+                await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            }
+
             return detailRow.KittingDetailId > 0;
         }
 
@@ -1196,6 +1212,10 @@ namespace LD.FormsX.Features.Embarques.Views
                 if (!EnsureCurrentKittingEditable())
                     return;
 
+                CommitGridEdits();
+                RemoveEmptyDetailRows();
+                RemoveEmptyIssueRows();
+
                 if (_selectedDetail == null)
                 {
                     DialogHelper.ShowWarning("Selecciona una linea para generar su issue base.");
@@ -1205,23 +1225,116 @@ namespace LD.FormsX.Features.Embarques.Views
                 if (!await EnsureDetailPersistedAsync(_selectedDetail))
                     return;
 
-                var currentIssues = await _kittingIssueService.GetKittingIssuesByKittingDetailId(_selectedDetail.KittingDetailId);
-                if (currentIssues.IsSuccess && currentIssues.Data?.Any() == true)
+                var dialog = new SurtirInventarioDialog(
+                    _availableInventoryService,
+                    _selectedDetail.PartNumber,
+                    _clientName,
+                    _projectName)
                 {
-                    DialogHelper.ShowWarning("La linea seleccionada ya tiene issue details.");
+                    Owner = Window.GetWindow(this)
+                };
+
+                if (dialog.ShowDialog() != true)
+                    return;
+
+                var selectedInventories = dialog.SelectedInventories.ToList();
+                if (selectedInventories.Count == 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona al menos un registro de inventario.");
+                    return;
+                }
+
+                ShowDetailSections();
+                _issueGenerationEnabled = true;
+
+                var pendingRows = BuildIssueRowsFromInventories(selectedInventories);
+                if (pendingRows.Count == 0)
+                {
+                    DialogHelper.ShowWarning("Los registros seleccionados ya estaban surtidos.");
                     await LoadIssueItemsForSelectedDetailAsync();
                     return;
                 }
 
-                await EnsureInitialIssueCreatedAsync(_selectedDetail);
+                var createdRows = new List<KittingIssueDetailDto>();
+                foreach (var issueRow in pendingRows)
+                {
+                    if (await CreateIssueFromInventorySelectionAsync(issueRow))
+                    {
+                        createdRows.Add(issueRow);
+                        IssueItems.Add(issueRow);
+                    }
+                }
+
+                if (createdRows.Count == 0)
+                {
+                    DialogHelper.ShowWarning("No se pudo insertar ninguna linea en issue.");
+                    await LoadIssueItemsForSelectedDetailAsync();
+                    return;
+                }
+
                 await LoadIssueItemsForSelectedDetailAsync();
-                _issueGenerationEnabled = true;
-                ToastHelper.ShowSuccess("Issue base generado correctamente.");
+
+                ToastHelper.ShowSuccess($"{createdRows.Count} linea(s) agregada(s) a issue.");
                 HasChanges = true;
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    var firstNewRow = IssueItems.FirstOrDefault(x =>
+                        createdRows.Any(created =>
+                            created.KittingReceiptDetailId > 0 &&
+                            created.KittingReceiptDetailId == x.KittingReceiptDetailId));
+
+                    if (firstNewRow == null)
+                        return;
+
+                    dgIssue.ScrollIntoView(firstNewRow);
+                    dgIssue.SelectedItem = firstNewRow;
+                    dgIssue.CurrentItem = firstNewRow;
+                    dgIssue.Focus();
+                    _issueGridNavigation.MoveFocusToFirstEditableCell(firstNewRow);
+                }), DispatcherPriority.Background);
+
             }
             catch (Exception ex)
             {
                 DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async Task<bool> CreateIssueFromInventorySelectionAsync(KittingIssueDetailDto issueRow)
+        {
+            if (!EnsureCurrentKittingEditable())
+                return false;
+
+            var detailRow = ResolveDetailRow(issueRow);
+            if (!await EnsureDetailPersistedAsync(detailRow))
+                return false;
+
+            SeedIssueRowFromDetail(issueRow, detailRow!);
+            if (!IsIssueRowCompleted(issueRow))
+                return false;
+
+            try
+            {
+                var request = BuildIssueRequest(issueRow);
+                var response = await _kittingIssueService.CreateKittingIssue(request);
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del embarque.");
+                    return false;
+                }
+
+                if (int.TryParse(response.Data, out var issueId) && issueId > 0)
+                    issueRow.KittingReceiptDetailId = issueId;
+
+                await RefreshIssueRowFromServerAsync(issueRow);
+                HasChanges = true;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+                return false;
             }
         }
 
@@ -1409,6 +1522,7 @@ namespace LD.FormsX.Features.Embarques.Views
             issueRow.KittingDetailId = request.KittingDetailId;
             issueRow.ProductId = request.ProductId;
             issueRow.StandardId = request.StandardId ?? string.Empty;
+            issueRow.StandardIdStr = request.StandardId ?? string.Empty;
             issueRow.PartNumber = request.PartNumber ?? string.Empty;
             issueRow.Description = request.Description ?? string.Empty;
             issueRow.StandardQuantity = request.StandardQuantity;
@@ -1423,6 +1537,74 @@ namespace LD.FormsX.Features.Embarques.Views
             issueRow.Reference = request.Reference ?? string.Empty;
             issueRow.PurchaseOrder = request.PurchaseOrder ?? string.Empty;
             issueRow.CustomsDeclarationNumber = request.CustomsDeclarationNumber ?? string.Empty;
+        }
+
+        private List<KittingIssueDetailDto> BuildIssueRowsFromInventories(IEnumerable<AvailableInventoryDto> inventories)
+        {
+            var pendingRows = new List<KittingIssueDetailDto>();
+
+            foreach (var inventory in inventories)
+            {
+                var standardId = GetInventoryStandardId(inventory);
+                if (string.IsNullOrWhiteSpace(standardId))
+                    continue;
+
+                if (IssueItems.Any(existing => IssueMatchesInventory(existing, inventory, standardId)))
+                    continue;
+
+                var issueRow = CreateIssueRowFromInventory(inventory, standardId);
+                pendingRows.Add(issueRow);
+            }
+
+            return pendingRows;
+        }
+
+        private KittingIssueDetailDto CreateIssueRowFromInventory(AvailableInventoryDto inventory, string standardId)
+        {
+            return new KittingIssueDetailDto
+            {
+                KittingDetailId = _selectedDetail?.KittingDetailId ?? 0,
+                ProductId = inventory.ProductId ?? _selectedDetail?.ProductId,
+                StandardId = standardId,
+                StandardIdStr = standardId,
+                PartNumber = inventory.PartNumber?.Trim() ?? _selectedDetail?.PartNumber ?? string.Empty,
+                Description = inventory.Description?.Trim() ?? _selectedDetail?.Description ?? string.Empty,
+                StandardQuantity = _selectedDetail?.StandardQuantity,
+                MaximumQuantity = _selectedDetail?.MaximumQuantity,
+                SD = _selectedDetail?.SD ?? string.Empty,
+                ReceivedQuantity = inventory.Qty,
+                Status = string.IsNullOrWhiteSpace(inventory.StatusId)
+                    ? (_selectedDetail?.Status ?? DefaultKittingStatus)
+                    : inventory.StatusId.Trim(),
+                LocationId = inventory.LocationId,
+                LocationCode = inventory.Ubicacion?.Trim() ?? string.Empty,
+                LotNumber = inventory.LotNumber?.Trim() ?? string.Empty,
+                ExpirationDate = inventory.ExpirationDate,
+                Reference = inventory.Reference?.Trim() ?? string.Empty,
+                PurchaseOrder = inventory.PurchaseOrder?.Trim() ?? string.Empty,
+                CustomsDeclarationNumber = inventory.CustomsDeclarationNumber?.Trim() ?? string.Empty
+            };
+        }
+
+        private static bool IssueMatchesInventory(KittingIssueDetailDto issueRow, AvailableInventoryDto inventory, string standardId)
+        {
+            return string.Equals(issueRow.StandardId?.Trim(), standardId, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(issueRow.PartNumber?.Trim(), inventory.PartNumber?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(issueRow.LotNumber?.Trim(), inventory.LotNumber?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(issueRow.Reference?.Trim(), inventory.Reference?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(issueRow.PurchaseOrder?.Trim(), inventory.PurchaseOrder?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(issueRow.CustomsDeclarationNumber?.Trim(), inventory.CustomsDeclarationNumber?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)
+                && issueRow.LocationId == inventory.LocationId;
+        }
+
+        private static string? GetInventoryStandardId(AvailableInventoryDto inventory)
+        {
+            if (inventory.StandardId.HasValue && inventory.StandardId.Value > 0)
+                return inventory.StandardId.Value.ToString(CultureInfo.InvariantCulture);
+
+            return string.IsNullOrWhiteSpace(inventory.StandardIdStr)
+                ? null
+                : inventory.StandardIdStr.Trim();
         }
 
         private static bool IsDetailRowCompleted(KittingDetailDto detailRow)
@@ -1672,6 +1854,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 KittingDetailId = source.KittingDetailId,
                 ProductId = source.ProductId,
                 StandardId = source.StandardId,
+                StandardIdStr = source.StandardIdStr,
                 PartNumber = source.PartNumber,
                 Description = source.Description,
                 StandardQuantity = source.StandardQuantity,

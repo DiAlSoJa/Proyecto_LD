@@ -6,6 +6,7 @@ using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Application.Common.Results;
 using LD.Contracts.Constants;
+using LD.Domain.Entities;
 using LD.Infrastructure;
 using LD.Infrastructure.Authorization;
 using LD.Infrastructure.Logging;
@@ -164,6 +165,31 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
     db.Database.Migrate();
 
+    var movementPermissionsToSeed = new[]
+    {
+        new { Key = PermissionKeys.Movement_Create, Name = "Crear movimientos" },
+        new { Key = PermissionKeys.Movement_Update, Name = "Editar movimientos" },
+        new { Key = PermissionKeys.Movement_Delete, Name = "Eliminar movimientos" }
+    };
+
+    var missingMovementPermissions = movementPermissionsToSeed
+        .Where(permission => !db.Permissions.Any(p => p.Key == permission.Key))
+        .Select(permission => new Permission
+        {
+            PermissionName = permission.Name,
+            Key = permission.Key,
+            ModuleId = 6,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        })
+        .ToList();
+
+    if (missingMovementPermissions.Count > 0)
+    {
+        db.Permissions.AddRange(missingMovementPermissions);
+        db.SaveChanges();
+    }
+
     var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
 
     var permissions = db.Permissions
@@ -172,6 +198,15 @@ using (var scope = app.Services.CreateScope())
 
     foreach (var permission in permissions)
     {
+        authOptions.Value.AddPolicy(permission, policy =>
+            policy.Requirements.Add(new PermissionRequirement(permission)));
+    }
+
+    foreach (var permission in movementPermissionsToSeed.Select(x => x.Key))
+    {
+        if (permissions.Contains(permission))
+            continue;
+
         authOptions.Value.AddPolicy(permission, policy =>
             policy.Requirements.Add(new PermissionRequirement(permission)));
     }
