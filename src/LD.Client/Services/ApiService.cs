@@ -27,10 +27,15 @@ namespace LD.Client.Services
 
         public ApiService()
         {
+#if DEBUG
             var handler = new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
             };
+#else
+            var handler = new HttpClientHandler();
+#endif
 
             _http = new HttpClient(handler)
             {

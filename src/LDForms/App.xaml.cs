@@ -82,9 +82,15 @@ namespace LD.FormsX
                     .ConfigureAppConfiguration((context, config) =>
                     {
                         var env =
-                            Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT") ??
-                            "Development";
+                            Environment.GetEnvironmentVariable("DOTNET_LD_ENVIRONMENT")
+                            ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+#if DEBUG
+                            ?? "Development";
+#else
+                            ?? "Production";
+#endif
 
+                        env = "Production"; 
                         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", env);
                         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env);
 
