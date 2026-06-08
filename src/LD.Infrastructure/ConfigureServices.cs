@@ -28,6 +28,10 @@ public static class ConfigureServices
         IConfiguration configuration,
         IHostEnvironment environment)
     {
+        var blobStorageConnectionString =
+            configuration.GetConnectionString("BlobStorage")
+            ?? configuration["BlobStorage:ConnectionString"];
+
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         var migrationAssembly = typeof(LdProyectDbContext).Assembly.GetName().Name;
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
@@ -50,7 +54,7 @@ public static class ConfigureServices
         services.AddMemoryCache();
         services.AddTransient<IApplicationUserManager, ApplicationUserManager>();
 
-        if (environment.IsDevelopment())
+        if (environment.IsDevelopment() || string.IsNullOrWhiteSpace(blobStorageConnectionString))
         {
             services.AddScoped<IFileStorageService, LocalFileStorageService>();
         }
