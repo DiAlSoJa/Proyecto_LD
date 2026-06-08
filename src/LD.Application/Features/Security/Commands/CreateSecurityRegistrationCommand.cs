@@ -41,7 +41,7 @@ public class CreateSecurityRegistrationCommandHandler : IRequestHandler<CreateSe
 
                 var subfolder = foto.Categoria.ToString().ToLower();
                 var prefix    = subfolder;
-                var path      = await _fileStorage.SaveAsync(foto.Contenido, subfolder, prefix);
+                var path      = await _fileStorage.SaveJpegAsync(foto.Contenido, subfolder, prefix);
 
                 if (path is null) continue;
 

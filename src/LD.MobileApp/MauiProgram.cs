@@ -30,13 +30,7 @@ namespace MauiAppLogin
 
 
             const string defaultApiUrl = "https://ld-api-prod-gzcccygmfnb7gkdz.mexicocentral-01.azurewebsites.net/api";
-#if DEBUG
-            // En desarrollo puedes sobrescribir ApiBaseUrl en Preferences con una URL local.
-            const string debugFallbackApiUrl = "http://192.168.1.100:8050/api";
-            var apiUrl = Preferences.Default.Get("ApiBaseUrl", debugFallbackApiUrl);
-#else
             var apiUrl = Preferences.Default.Get("ApiBaseUrl", defaultApiUrl);
-#endif
 
             builder.Services.AddLDClient(options =>
             {

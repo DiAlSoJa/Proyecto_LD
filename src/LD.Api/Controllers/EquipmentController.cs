@@ -1,10 +1,11 @@
 using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
+using LD.Application.Common.Interfaces.Storage;
 using LD.Application.Features.Equipment.Commands;
 using LD.Application.Features.Equipment.Queries;
-using LD.Contracts.Equipment;
 using LD.Contracts.Constants;
+using LD.Contracts.Equipment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,14 +15,15 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class EquipmentController : CommonController
 {
-    private readonly IWebHostEnvironment _environment;
+    private const string EquipmentSubfolder = "equipos";
+    private readonly IFileStorageService _fileStorage;
 
     private static readonly HashSet<string> _extensionesPermitidas =
         new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png", ".webp" };
 
-    public EquipmentController(IWebHostEnvironment environment)
+    public EquipmentController(IFileStorageService fileStorage)
     {
-        _environment = environment;
+        _fileStorage = fileStorage;
     }
 
     [HttpGet]
@@ -70,20 +72,25 @@ public class EquipmentController : CommonController
             ? "right"
             : "left";
 
-        var uploadsFolder = @"C:\LD\Uploads\Equipos";
-
-        Directory.CreateDirectory(uploadsFolder);
-
         var extension = Path.GetExtension(file.FileName);
-        var fileName = $"equipo_{normalizedSide}_{Guid.NewGuid():N}{extension}";
-        var fullPath = Path.Combine(uploadsFolder, fileName);
+        if (string.IsNullOrWhiteSpace(extension))
+            extension = ".jpg";
 
-        await using (var stream = new FileStream(fullPath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
+        if (!_extensionesPermitidas.Contains(extension))
+            return BadRequest("Extensión no permitida. Use jpg, jpeg, png o webp.");
 
-        var relativePath = Path.Combine("uploads", "equipos", fileName).Replace("\\", "/");
+        await using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+
+        var relativePath = await _fileStorage.SaveAsync(
+            ms.ToArray(),
+            EquipmentSubfolder,
+            $"equipo_{normalizedSide}",
+            extension);
+
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return BadRequest("No se pudo guardar la imagen.");
+
         var imageUrl = Url.ActionLink(nameof(GetImage), values: new { path = relativePath }) ?? string.Empty;
 
         return Ok(new
@@ -101,38 +108,16 @@ public class EquipmentController : CommonController
 
     [HttpGet("image")]
     [Permission(PermissionKeys.ForkliftChecklist_View)]
-    public IActionResult GetImage([FromQuery] string path)
+    public async Task<IActionResult> GetImage([FromQuery] string path)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        if (!TryNormalizeBlobPath(path, out var normalizedPath))
             return NotFound();
 
-        var fileName = Path.GetFileName(path);
-        if (string.IsNullOrWhiteSpace(fileName))
+        var stream = await _fileStorage.OpenReadAsync(normalizedPath);
+        if (stream is null)
             return NotFound();
 
-        var ext = Path.GetExtension(fileName).ToLowerInvariant();
-        if (!_extensionesPermitidas.Contains(ext))
-            return NotFound();
-
-        var uploadsFolder = @"C:\LD\";
-        var baseCanonica = Path.GetFullPath(Path.Combine(uploadsFolder, "uploads", "equipos"));
-        var fullPath     = Path.GetFullPath(Path.Combine(baseCanonica, fileName));
-
-        if (!fullPath.StartsWith(baseCanonica + Path.DirectorySeparatorChar,
-                                  StringComparison.OrdinalIgnoreCase))
-            return NotFound();
-
-        if (!System.IO.File.Exists(fullPath))
-            return NotFound();
-
-        var contentType = ext switch
-        {
-            ".png"  => "image/png",
-            ".webp" => "image/webp",
-            _       => "image/jpeg"
-        };
-
-        return PhysicalFile(fullPath, contentType);
+        return File(stream, GetContentType(normalizedPath));
     }
 
     [HttpGet("{equipmentId}/image/{side}")]
@@ -150,28 +135,38 @@ public class EquipmentController : CommonController
         if (string.IsNullOrWhiteSpace(relativePath))
             return NotFound();
 
-        var fileName = Path.GetFileName(relativePath);
-        if (string.IsNullOrWhiteSpace(fileName))
-            return NotFound();
-        var uploadsFolder = @"C:\LD\";
-        var fullPath = Path.Combine(
-           uploadsFolder,
-            "uploads",
-            "equipos",
-            fileName);
-
-        if (!System.IO.File.Exists(fullPath))
+        var stream = await _fileStorage.OpenReadAsync(relativePath);
+        if (stream is null)
             return NotFound();
 
-        var contentType = fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
-            ? "image/png"
-            : fileName.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
-                ? "image/gif"
-                : fileName.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase)
-                    ? "image/bmp"
-                    : "image/jpeg";
+        return File(stream, GetContentType(relativePath));
+    }
 
-        var bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
-        return File(bytes, contentType);
+    private static bool TryNormalizeBlobPath(string path, out string normalizedPath)
+    {
+        normalizedPath = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(path) || path.Contains("..") || path.Contains('\0'))
+            return false;
+
+        var candidate = path.Replace('\\', '/').Trim('/');
+        if (!candidate.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        normalizedPath = candidate;
+        return true;
+    }
+
+    private static string GetContentType(string path)
+    {
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        return ext switch
+        {
+            ".png" => "image/png",
+            ".webp" => "image/webp",
+            ".gif" => "image/gif",
+            ".bmp" => "image/bmp",
+            _ => "image/jpeg"
+        };
     }
 }

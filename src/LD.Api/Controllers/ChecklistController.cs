@@ -1,6 +1,7 @@
 using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
+using LD.Application.Common.Interfaces.Storage;
 using LD.Application.Features.Checklist.Commands;
 using LD.Application.Features.Checklist.Queries;
 using LD.Contracts.Checklist;
@@ -8,7 +9,6 @@ using LD.Contracts.Constants;
 using LD.Contracts.Equipment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace LD.Api.Controllers;
 
@@ -16,9 +16,10 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class ChecklistController : CommonController
 {
-    private const string UploadsRoot        = @"C:\LD\";
-    private const string ChecklistsSubfolder = @"uploads\checklists";
-    private const long   MaxFotoBytes        = 10 * 1024 * 1024; // 10 MB
+    private const string ChecklistsSubfolder = "checklists";
+    private const long MaxFotoBytes = 10 * 1024 * 1024; // 10 MB
+
+    private readonly IFileStorageService _fileStorage;
 
     private static readonly HashSet<string> _extensionesPermitidas =
         new(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png", ".webp" };
@@ -26,39 +27,9 @@ public class ChecklistController : CommonController
     private static readonly HashSet<string> _sidesPermitidos =
         new(StringComparer.Ordinal) { "left", "right", "custom" };
 
-    // Valida que relativePath sea seguro y resuelve la ruta física completa.
-    // Rechaza traversal (..), nulos, rutas absolutas y extensiones no permitidas.
-    // Devuelve false → llamador debe responder 404 (sin revelar el motivo).
-    private static bool EsRutaSegura(string relativePath, out string rutaCompleta)
+    public ChecklistController(IFileStorageService fileStorage)
     {
-        rutaCompleta = string.Empty;
-
-        if (string.IsNullOrWhiteSpace(relativePath))
-            return false;
-
-        if (relativePath.Contains("..") ||
-            relativePath.Contains('\0') ||
-            Path.IsPathRooted(relativePath))
-            return false;
-
-        var ext = Path.GetExtension(relativePath).ToLowerInvariant();
-        if (!_extensionesPermitidas.Contains(ext))
-            return false;
-
-        // Usar solo el nombre del archivo; descarta cualquier subdirectorio en el input
-        var nombre = Path.GetFileName(relativePath);
-        if (string.IsNullOrWhiteSpace(nombre))
-            return false;
-
-        var baseCanonica = Path.GetFullPath(Path.Combine(UploadsRoot, ChecklistsSubfolder));
-        var candidato    = Path.GetFullPath(Path.Combine(baseCanonica, nombre));
-
-        if (!candidato.StartsWith(baseCanonica + Path.DirectorySeparatorChar,
-                                   StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        rutaCompleta = candidato;
-        return true;
+        _fileStorage = fileStorage;
     }
 
     // Verifica si el usuario tiene equipo asignado y si ya completó su checklist en las últimas 24 horas.
@@ -86,11 +57,12 @@ public class ChecklistController : CommonController
     {
         var query = new GetChecklistsQuery
         {
-            From            = from,
-            To              = to,
+            From = from,
+            To = to,
             EquipmentTypeId = equipmentTypeId,
-            EquipmentId     = equipmentId
+            EquipmentId = equipmentId
         };
+
         return ResultExtensions.ToActionResult(await Mediator.Send(query));
     }
 
@@ -122,18 +94,18 @@ public class ChecklistController : CommonController
         if (normalizedSide is null || !_sidesPermitidos.Contains(normalizedSide))
             return BadRequest("Valor de 'side' no válido. Use: left, right, custom.");
 
-        var uploadsFolder = Path.Combine(UploadsRoot, ChecklistsSubfolder);
-        Directory.CreateDirectory(uploadsFolder);
+        await using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
 
-        var fileName = $"checklist_{normalizedSide}_{Guid.NewGuid():N}{ext}";
-        var fullPath = Path.Combine(uploadsFolder, fileName);
+        var relativePath = await _fileStorage.SaveAsync(
+            ms.ToArray(),
+            ChecklistsSubfolder,
+            $"checklist_{normalizedSide}",
+            ext);
 
-        await using (var stream = new FileStream(fullPath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return BadRequest("No se pudo guardar la foto.");
 
-        var relativePath = Path.Combine("uploads", "checklists", fileName).Replace("\\", "/");
         var photoUrl = Url.ActionLink(nameof(GetPhoto), values: new { path = relativePath }) ?? string.Empty;
 
         return Ok(new
@@ -142,9 +114,9 @@ public class ChecklistController : CommonController
             data = new EquipmentImageUploadDto
             {
                 RelativePath = relativePath,
-                ImageUrl     = photoUrl
+                ImageUrl = photoUrl
             },
-            code    = 200,
+            code = 200,
             message = "Foto cargada correctamente"
         });
     }
@@ -152,22 +124,46 @@ public class ChecklistController : CommonController
     // Requiere autenticación — el cliente HTTP adjunta el JWT automáticamente.
     [HttpGet("photo")]
     [Permission(PermissionKeys.Checklist_ViewSummary)]
-    public IActionResult GetPhoto([FromQuery] string path)
+    public async Task<IActionResult> GetPhoto([FromQuery] string path)
     {
-        if (!EsRutaSegura(path, out var fullPath))
+        if (!TryNormalizeBlobPath(path, out var normalizedPath))
             return NotFound();
 
-        if (!System.IO.File.Exists(fullPath))
+        var stream = await _fileStorage.OpenReadAsync(normalizedPath);
+        if (stream is null)
             return NotFound();
 
-        var ext = System.IO.Path.GetExtension(fullPath).ToLowerInvariant();
-        var contentType = ext switch
+        var contentType = GetContentType(normalizedPath);
+        return File(stream, contentType);
+    }
+
+    private static bool TryNormalizeBlobPath(string path, out string normalizedPath)
+    {
+        normalizedPath = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(path) || path.Contains("..") || path.Contains('\0'))
+            return false;
+
+        var candidate = path.Replace('\\', '/').Trim('/');
+        if (!candidate.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var ext = Path.GetExtension(candidate).ToLowerInvariant();
+        if (!_extensionesPermitidas.Contains(ext))
+            return false;
+
+        normalizedPath = candidate;
+        return true;
+    }
+
+    private static string GetContentType(string path)
+    {
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        return ext switch
         {
-            ".png"  => "image/png",
+            ".png" => "image/png",
             ".webp" => "image/webp",
-            _       => "image/jpeg"
+            _ => "image/jpeg"
         };
-
-        return PhysicalFile(fullPath, contentType);
     }
 }

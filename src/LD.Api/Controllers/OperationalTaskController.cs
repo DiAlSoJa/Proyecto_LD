@@ -1,6 +1,7 @@
 using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
+using LD.Application.Common.Interfaces.Storage;
 using LD.Application.Features.OperationalTasks.Commands;
 using LD.Application.Features.OperationalTasks.Queries;
 using LD.Contracts.Constants;
@@ -15,6 +16,14 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class OperationalTaskController : CommonController
 {
+    private const string OperationalTasksSubfolder = "operational-tasks";
+    private readonly IFileStorageService _fileStorage;
+
+    public OperationalTaskController(IFileStorageService fileStorage)
+    {
+        _fileStorage = fileStorage;
+    }
+
     [HttpGet]
     [Permission(PermissionKeys.WarehouseStaff_Tasks_View)]
     public async Task<IActionResult> GetTasks([FromQuery] bool soloPendientes = false, [FromQuery] int? warehouseId = null)
@@ -57,22 +66,22 @@ public class OperationalTaskController : CommonController
             return BadRequest("Archivo invalido.");
 
         var normalizedPhotoNumber = photoNumber is >= 1 and <= 4 ? photoNumber : 1;
-        var uploadsFolder = @"C:\LD\Uploads\OperationalTasks";
-        Directory.CreateDirectory(uploadsFolder);
-
         var extension = Path.GetExtension(file.FileName);
         if (string.IsNullOrWhiteSpace(extension))
             extension = ".jpg";
 
-        var fileName = $"operational_task_photo{normalizedPhotoNumber}_{Guid.NewGuid():N}{extension}";
-        var fullPath = Path.Combine(uploadsFolder, fileName);
+        await using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
 
-        await using (var stream = new FileStream(fullPath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
+        var relativePath = await _fileStorage.SaveAsync(
+            ms.ToArray(),
+            OperationalTasksSubfolder,
+            $"operational_task_photo{normalizedPhotoNumber}",
+            extension);
 
-        var relativePath = Path.Combine("uploads", "operational-tasks", fileName).Replace("\\", "/");
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return BadRequest("No se pudo guardar la imagen.");
+
         var imageUrl = Url.ActionLink(nameof(GetImage), values: new { path = relativePath }) ?? string.Empty;
 
         return Ok(new
@@ -90,27 +99,43 @@ public class OperationalTaskController : CommonController
 
     [AllowAnonymous]
     [HttpGet("image")]
-    public IActionResult GetImage([FromQuery] string path)
+    public async Task<IActionResult> GetImage([FromQuery] string path)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        if (!TryNormalizeBlobPath(path, out var normalizedPath))
             return NotFound();
 
-        var fileName = Path.GetFileName(path);
-        if (string.IsNullOrWhiteSpace(fileName))
+        var stream = await _fileStorage.OpenReadAsync(normalizedPath);
+        if (stream is null)
             return NotFound();
 
-        var fullPath = Path.Combine(@"C:\LD", "Uploads", "OperationalTasks", fileName);
-        if (!System.IO.File.Exists(fullPath))
-            return NotFound();
+        return File(stream, GetContentType(normalizedPath));
+    }
 
-        var contentType = fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
-            ? "image/png"
-            : fileName.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
-                ? "image/gif"
-                : fileName.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase)
-                    ? "image/bmp"
-                    : "image/jpeg";
+    private static bool TryNormalizeBlobPath(string path, out string normalizedPath)
+    {
+        normalizedPath = string.Empty;
 
-        return PhysicalFile(fullPath, contentType);
+        if (string.IsNullOrWhiteSpace(path) || path.Contains("..") || path.Contains('\0'))
+            return false;
+
+        var candidate = path.Replace('\\', '/').Trim('/');
+        if (!candidate.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        normalizedPath = candidate;
+        return true;
+    }
+
+    private static string GetContentType(string path)
+    {
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        return ext switch
+        {
+            ".png" => "image/png",
+            ".webp" => "image/webp",
+            ".gif" => "image/gif",
+            ".bmp" => "image/bmp",
+            _ => "image/jpeg"
+        };
     }
 }

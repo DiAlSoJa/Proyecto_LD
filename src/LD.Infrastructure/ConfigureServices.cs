@@ -17,12 +17,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LD.Infrastructure;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         var migrationAssembly = typeof(LdProyectDbContext).Assembly.GetName().Name;
@@ -46,7 +50,14 @@ public static class ConfigureServices
         services.AddMemoryCache();
         services.AddTransient<IApplicationUserManager, ApplicationUserManager>();
 
-        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        if (environment.IsDevelopment())
+        {
+            services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        }
+        else
+        {
+            services.AddScoped<IFileStorageService, AzureBlobFileStorageService>();
+        }
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserContextService, UserContextService>();

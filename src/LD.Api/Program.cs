@@ -50,7 +50,7 @@ builder.Services.AddAutoMapper(typeof(AssemblyMarker).Assembly);
 builder.Services.AddApplicationServices();
 
 //infrasctruture
-builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment);
 builder.Services.AddInfrastructureRepositories(builder.Configuration);
 
 builder.Services.AddScoped<IPermissionService, PermissionService>();

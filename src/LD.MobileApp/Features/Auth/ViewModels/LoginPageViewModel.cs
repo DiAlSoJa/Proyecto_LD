@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Configuration;
 using LD.Client.Services;
@@ -6,6 +7,7 @@ using LD.Contracts.User;
 using MauiAppLogin;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Services;
+using MauiAppLogin.Views.Controls;
 using MvvmHelpers.Commands;
 using System;
 using System.Collections.Generic;
@@ -19,24 +21,28 @@ namespace MauiAppLogin.ViewModels
     {
         [ObservableProperty]
         private string username;
+
         [ObservableProperty]
         private string password;
+
         [ObservableProperty]
         private bool isPasswordVisible = false;
+
         [ObservableProperty]
         private bool isBusy = false;
 
         public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordVisible = !IsPasswordVisible);
-        public ICommand LoginCommand      { get; }
+        public ICommand LoginCommand { get; }
         public ICommand ShowIpConfigCommand { get; }
 
-        private readonly AuthService          _authService;
-        private readonly ILoaderService       _loaderService;
-        private readonly IDialogService       _dialogService;
-        private readonly ChecklistService     _checklistService;
+        private readonly AuthService _authService;
+        private readonly ILoaderService _loaderService;
+        private readonly IDialogService _dialogService;
+        private readonly ChecklistService _checklistService;
         private readonly MobileSessionService _sessionService;
 
-        private const string DefaultApiUrl = "http://192.168.0.103:8050/api";
+        private const string DefaultApiUrl = "https://ld-api-prod-gzcccygmfnb7gkdz.mexicocentral-01.azurewebsites.net/api";
+        private const string ConfigurationPassword = "Pa$$w0rd";
 
         public ILoaderService Loader => _loaderService;
 
@@ -47,12 +53,12 @@ namespace MauiAppLogin.ViewModels
             ChecklistService checklistService,
             MobileSessionService sessionService)
         {
-            _authService      = authService;
-            _loaderService    = loaderService;
-            _dialogService    = dialogService;
+            _authService = authService;
+            _loaderService = loaderService;
+            _dialogService = dialogService;
             _checklistService = checklistService;
-            _sessionService   = sessionService;
-            LoginCommand      = new AsyncCommand(Login);
+            _sessionService = sessionService;
+            LoginCommand = new AsyncCommand(Login);
             ShowIpConfigCommand = new AsyncCommand(ShowIpConfigAsync);
             Username = "admin";
             Password = "Pa$$w0rd";
@@ -60,6 +66,15 @@ namespace MauiAppLogin.ViewModels
 
         private async Task ShowIpConfigAsync()
         {
+            var enteredPassword = await PromptForConfigurationPasswordAsync();
+            if (enteredPassword is null) return;
+
+            if (!string.Equals(enteredPassword.Trim(), ConfigurationPassword, StringComparison.Ordinal))
+            {
+                await _dialogService.ShowErrorAsync("Error", "Contraseña incorrecta.");
+                return;
+            }
+
             var currentUrl = Preferences.Default.Get("ApiBaseUrl", DefaultApiUrl);
 
             var newUrl = await Shell.Current.DisplayPromptAsync(
@@ -78,6 +93,20 @@ namespace MauiAppLogin.ViewModels
 
             Preferences.Default.Set("ApiBaseUrl", newUrl);
             await _dialogService.ShowSuccessAsync("Guardado", "La nueva URL se aplicará al próximo inicio de la app.");
+        }
+
+        private static async Task<string?> PromptForConfigurationPasswordAsync()
+        {
+            var page = Shell.Current.CurrentPage ?? Application.Current?.MainPage;
+            if (page is null)
+                return null;
+
+            var popup = new PasswordPromptPopup(
+                "Acceso restringido",
+                "Ingresa la contraseña para cambiar la URL:");
+
+            var result = await page.ShowPopupAsync(popup);
+            return result as string;
         }
 
         // Llamado desde LoginPage.OnAppearing para restaurar sesión en cold start.
@@ -125,7 +154,7 @@ namespace MauiAppLogin.ViewModels
                     return;
                 }
 
-                UserSession.AccessToken  = response.Data?.Accesstoken;
+                UserSession.AccessToken = response.Data?.Accesstoken;
                 UserSession.RefreshToken = response.Data?.RefreshToken;
 
                 // Persistir tokens en SecureStorage para restaurar la sesión al reabrir la app
@@ -157,8 +186,8 @@ namespace MauiAppLogin.ViewModels
             }
         }
 
-        // Después del login: si tiene equipo y no hizo checklist hoy → checklist obligatorio.
-        // Cualquier otro caso (sin equipo, ya hizo checklist, error de red) → dashboard.
+        // Después del login: si tiene equipo y no hizo checklist hoy -> checklist obligatorio.
+        // Cualquier otro caso (sin equipo, ya hizo checklist, error de red) -> dashboard.
         private async Task NavegaAlInicioAsync()
         {
             try
@@ -171,7 +200,7 @@ namespace MauiAppLogin.ViewModels
                     await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
                         new Dictionary<string, object>
                         {
-                            ["Equipment"]   = response.Data.Equipment!,
+                            ["Equipment"] = response.Data.Equipment!,
                             ["IsMandatory"] = true
                         });
                     return;
@@ -185,7 +214,7 @@ namespace MauiAppLogin.ViewModels
             await Shell.Current.GoToAsync("//dashboard");
         }
 
-        /* Referencia del flujo anterior — Sprint 3 Hotfix (2026-05-14)
+        /* Referencia del flujo anterior - Sprint 3 Hotfix (2026-05-14)
          * La verificación de equipo ya no ocurre en el login.
          * Se mantiene comentado como referencia del flujo anterior.
          *
