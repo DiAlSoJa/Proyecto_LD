@@ -19,9 +19,9 @@ namespace LD.Api.Controllers
 
         [HttpGet]
         [Permission(PermissionKeys.Status_View)]
-        public async Task<IActionResult> GetStatus()
+        public async Task<IActionResult> GetStatus([FromQuery] int? clientId = null, [FromQuery] int? projectId = null)
         {
-            return ResultExtensions.ToActionResult(await Mediator.Send(new InventaryStatusQuery()));
+            return ResultExtensions.ToActionResult(await Mediator.Send(new InventaryStatusQuery(clientId, projectId)));
 
         }
 

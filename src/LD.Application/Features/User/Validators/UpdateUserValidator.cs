@@ -13,23 +13,25 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("El nombre completo es requerido");
 
-        RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("El correo es requerido")
-            .EmailAddress().WithMessage("El correo no tiene un formato válido");
+        When(x => !string.IsNullOrWhiteSpace(x.Email), () =>
+        {
+            RuleFor(x => x.Email)
+                .EmailAddress().WithMessage("El correo no tiene un formato valido");
+        });
 
-        // La contraseña es opcional al editar.
-        // Si viene algo, debe cumplir los requisitos de Identity y coincidir con la confirmación.
+        // La contrasena es opcional al editar.
+        // Si viene algo, debe cumplir los requisitos de Identity y coincidir con la confirmacion.
         When(x => !string.IsNullOrWhiteSpace(x.Password), () =>
         {
             RuleFor(x => x.Password)
-                .MinimumLength(6).WithMessage("La contraseña debe tener al menos 6 caracteres")
-                .Matches("[A-Z]").WithMessage("La contraseña debe contener al menos una mayúscula")
-                .Matches("[a-z]").WithMessage("La contraseña debe contener al menos una minúscula")
-                .Matches("[0-9]").WithMessage("La contraseña debe contener al menos un número")
-                .Matches("[^a-zA-Z0-9]").WithMessage("La contraseña debe contener al menos un carácter especial");
+                .MinimumLength(6).WithMessage("La contrasena debe tener al menos 6 caracteres")
+                .Matches("[A-Z]").WithMessage("La contrasena debe contener al menos una mayuscula")
+                .Matches("[a-z]").WithMessage("La contrasena debe contener al menos una minuscula")
+                .Matches("[0-9]").WithMessage("La contrasena debe contener al menos un numero")
+                .Matches("[^a-zA-Z0-9]").WithMessage("La contrasena debe contener al menos un caracter especial");
 
             RuleFor(x => x.ConfirmPassword)
-                .Equal(x => x.Password).WithMessage("Las contraseñas no coinciden");
+                .Equal(x => x.Password).WithMessage("Las contrasenas no coinciden");
         });
     }
 }

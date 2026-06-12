@@ -1,57 +1,123 @@
-﻿using LD.Client.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using LD.Client.Services;
+using LD.Contracts.DTOs;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.FormsX.Helpers;
-using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views.Status
 {
     public partial class NuevoStatusView : Window
     {
         private readonly InventaryStatusService _statusService;
+        private readonly LookupService _lookupService;
         private InventaryStatusDto? StatusSelected;
+        private bool _loaded;
 
         public bool ResponseForm { get; private set; }
 
-        public NuevoStatusView(InventaryStatusService statusService)
+        public NuevoStatusView(InventaryStatusService statusService, LookupService lookupService)
         {
             InitializeComponent();
             _statusService = statusService;
+            _lookupService = lookupService;
+
+            cmbCliente.DisplayMemberPath = nameof(DropDownDto.Value);
+            cmbCliente.SelectedValuePath = nameof(DropDownDto.Key);
+            cmbProyecto.DisplayMemberPath = nameof(DropDownDto.Value);
+            cmbProyecto.SelectedValuePath = nameof(DropDownDto.Key);
         }
 
-        public async void SetInventaryStatus(InventaryStatusDto inventaryStatus)
+        public void SetInventaryStatus(InventaryStatusDto inventaryStatus)
         {
             StatusSelected = inventaryStatus;
-            await CargarDatosAsync();
         }
 
-        private async Task CargarDatosAsync()
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (_loaded)
+            {
+                return;
+            }
+
+            _loaded = true;
+
             try
             {
-                var response = await _statusService.GetStatusById(StatusSelected?.StatusId ?? "");
+                await CargarLookupsAsync();
 
-                if (!response.IsSuccess)
+                if (StatusSelected is not null)
                 {
-                    DialogHelper.ShowError(response.Message ?? "No se pudo cargar el status.");
-                    return;
+                    await CargarDatosAsync();
                 }
-
-                var statusI = response.Data;
-                txtStatus.Text = statusI.InventoryStatusIdS;
-                txtNombreStatus.Text = statusI.FullName;
-                chkDisponible.IsChecked = statusI.IsAvailable;
-
-                txtStatus.IsEnabled = StatusSelected == null;
+                else
+                {
+                    PrepararParaNuevo();
+                }
             }
             catch (Exception ex)
             {
                 DialogHelper.ShowError(ex.Message);
             }
+        }
+
+        private async Task CargarLookupsAsync()
+        {
+            var clientTask = _lookupService.GetClientLookup();
+            var projectTask = _lookupService.GetProjectLookup();
+
+            await Task.WhenAll(clientTask, projectTask);
+
+            var clients = clientTask.Result.Data ?? new List<DropDownDto>();
+            var projects = projectTask.Result.Data ?? new List<DropDownDto>();
+
+            cmbCliente.ItemsSource = clients
+                .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+                .OrderBy(x => x.Value)
+                .ToList();
+
+            cmbProyecto.ItemsSource = projects
+                .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+                .OrderBy(x => x.Value)
+                .ToList();
+        }
+
+        private async Task CargarDatosAsync()
+        {
+            var response = await _statusService.GetStatusById(StatusSelected?.StatusId ?? string.Empty);
+
+            if (!response.IsSuccess || response.Data is null)
+            {
+                DialogHelper.ShowError(response.Message ?? "No se pudo cargar el status.");
+                return;
+            }
+
+            var statusI = response.Data;
+            txtStatus.Text = statusI.InventoryStatusIdS;
+            txtNombreStatus.Text = statusI.FullName;
+            chkDisponible.IsChecked = statusI.IsAvailable;
+
+            cmbCliente.SelectedValue = statusI.ClientId?.ToString();
+            cmbProyecto.SelectedValue = statusI.ProjectId?.ToString();
+
+            txtStatus.IsEnabled = false;
+        }
+
+        private void PrepararParaNuevo()
+        {
+            txtStatus.Text = string.Empty;
+            txtNombreStatus.Text = string.Empty;
+            chkDisponible.IsChecked = false;
+            cmbCliente.SelectedIndex = -1;
+            cmbProyecto.SelectedIndex = -1;
+            txtStatus.IsEnabled = true;
         }
 
         private InventaryStatusRequest BuildRequest()
@@ -60,8 +126,21 @@ namespace LD.FormsX.Views.Status
             {
                 InventoryStatusIdS = StatusSelected != null ? StatusSelected.StatusId : txtStatus.Text.Trim(),
                 FullName = txtNombreStatus.Text.Trim(),
+                ClientId = ReadSelectedId(cmbCliente),
+                ProjectId = ReadSelectedId(cmbProyecto),
                 IsAvailable = chkDisponible.IsChecked ?? false
             };
+        }
+
+        private static int? ReadSelectedId(System.Windows.Controls.ComboBox comboBox)
+        {
+            var value = comboBox.SelectedValue?.ToString() ?? comboBox.Text?.Trim();
+            if (int.TryParse(value, out var parsed))
+            {
+                return parsed;
+            }
+
+            return null;
         }
 
         private Task<ApiResponseDto<string>> CreateStatus(InventaryStatusRequest request) =>
@@ -90,7 +169,7 @@ namespace LD.FormsX.Views.Status
                 {
                     DialogHelper.ShowSuccess(result.Data ?? "Guardado correctamente.");
                     ResponseForm = true;
-                    this.DialogResult = true;
+                    DialogResult = true;
                     Close();
                 }
                 else

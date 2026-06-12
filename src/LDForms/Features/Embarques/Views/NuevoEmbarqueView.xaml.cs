@@ -123,6 +123,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 _ = Dispatcher.BeginInvoke(new Action(async () =>
                 {
                     await LoadProductsForSelectedClientProjectAsync();
+                    await LoadStatusLookupAsync(_clientId, _projectId);
                     await UpdateCodePreviewAsync();
                 }), DispatcherPriority.Background);
             }
@@ -140,7 +141,6 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 SetLoadingState(true, "Cargando informacion...");
 
-                await LoadStatusLookupAsync();
                 await LoadSdLookupAsync();
                 await LoadLocationLookupAsync();
 
@@ -153,6 +153,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 else
                 {
                     await LoadProductsForSelectedClientProjectAsync();
+                    await LoadStatusLookupAsync(_clientId, _projectId);
                     await UpdateCodePreviewAsync();
                     HideDetailSections();
                 }
@@ -212,6 +213,7 @@ namespace LD.FormsX.Features.Embarques.Views
             _kittingCodePreview = _selectedKitting.KittingCode;
 
             await LoadProductsForSelectedClientProjectAsync();
+            await LoadStatusLookupAsync(_clientId, _projectId);
             await UpdateCodePreviewAsync();
             UpdateWindowTitle();
         }
@@ -296,11 +298,14 @@ namespace LD.FormsX.Features.Embarques.Views
             }
         }
 
-        private async Task LoadStatusLookupAsync()
+        private async Task LoadStatusLookupAsync(int? clientId = null, int? projectId = null)
         {
+            clientId = clientId.HasValue && clientId.Value > 0 ? clientId : null;
+            projectId = projectId.HasValue && projectId.Value > 0 ? projectId : null;
+
             StatusLookupItems.Clear();
 
-            var response = await _inventaryStatusService.GetInventaryStatus();
+            var response = await _inventaryStatusService.GetInventaryStatus(clientId, projectId);
             if (!response.IsSuccess || response.Data == null)
                 return;
 

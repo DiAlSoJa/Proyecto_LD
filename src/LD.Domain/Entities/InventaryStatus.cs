@@ -13,11 +13,17 @@ namespace LD.Domain.Entities
         [Key]
         [Required]
         [MaxLength(20)]
-        public string InventoryStatusIdS { get; set; }   // A, C, D, E...
+        public string InventoryStatusIdS { get; set; } = string.Empty;   // A, C, D, E...
 
         [Required]
         [MaxLength(150)]
-        public string FullName { get; set; }  // DISPONIBLE, CUARENTENA, etc.
+        public string FullName { get; set; } = string.Empty;  // DISPONIBLE, CUARENTENA, etc.
+
+        public int? ClientId { get; set; }
+        public int? ProjectId { get; set; }
+
+        public Client? Client { get; set; }
+        public Project? Project { get; set; }
 
         public bool IsAvailable { get; set; } // Impacta stock disponible
 

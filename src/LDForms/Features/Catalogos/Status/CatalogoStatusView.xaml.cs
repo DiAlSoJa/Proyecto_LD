@@ -44,9 +44,14 @@ namespace LD.FormsX.Views
             _gridFilter = new WpfGridFilter<InventaryStatusDto>(dg, txtBuscar);
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
-                { "Unidad", 150 },
-                 { "Descripcion", 250 }
+                { nameof(InventaryStatusDto.StatusId), 110 },
+                { nameof(InventaryStatusDto.Descripcion), 220 },
+                { nameof(InventaryStatusDto.Cliente), 180 },
+                { nameof(InventaryStatusDto.Proyecto), 180 }
             });
+            _gridFilter.SetHiddenColumns(
+                nameof(InventaryStatusDto.ClientId),
+                nameof(InventaryStatusDto.ProjectId));
 
         }
 

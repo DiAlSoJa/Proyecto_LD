@@ -25,9 +25,27 @@ namespace LD.Client.Services
             return await _api.GetAsync<ApiResponseDto<InventaryStatusRequest>>(_apiEndpoints.InventaryStatus_GetById.Replace("{statusId}", statusId));
         }
 
-        public async Task<ApiResponseDto<List<InventaryStatusDto>>> GetInventaryStatus()
+        public async Task<ApiResponseDto<List<InventaryStatusDto>>> GetInventaryStatus(int? clientId = null, int? projectId = null)
         {
-            return await _api.GetAsync<ApiResponseDto<List<InventaryStatusDto>>>(_apiEndpoints.InventaryStatus_GetAll);
+            var query = new List<string>();
+
+            if (clientId.HasValue)
+            {
+                query.Add($"clientId={clientId.Value}");
+            }
+
+            if (projectId.HasValue)
+            {
+                query.Add($"projectId={projectId.Value}");
+            }
+
+            var endpoint = _apiEndpoints.InventaryStatus_GetAll;
+            if (query.Count > 0)
+            {
+                endpoint = $"{endpoint}?{string.Join("&", query)}";
+            }
+
+            return await _api.GetAsync<ApiResponseDto<List<InventaryStatusDto>>>(endpoint);
         }
 
         public async Task<ApiResponseDto<string>> CreateInventaryStatus(InventaryStatusRequest request)

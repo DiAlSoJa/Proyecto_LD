@@ -36,7 +36,15 @@ public class ValidationBehavior<TRequest, TResponse>
 
         if (failures.Any())
         {
-            return (TResponse)(object)Result<string>.Failure("Hubo errores de validacion", failures.Select(f => f.ErrorMessage).ToList(), 400);
+            var detailedErrors = failures
+                .Select(f => string.IsNullOrWhiteSpace(f.PropertyName)
+                    ? f.ErrorMessage
+                    : $"{f.PropertyName}: {f.ErrorMessage}")
+                .ToList();
+
+            var message = "Errores de validacion: " + string.Join(" | ", detailedErrors);
+
+            return (TResponse)(object)Result<string>.Failure(message, detailedErrors, 400);
 
         }
 

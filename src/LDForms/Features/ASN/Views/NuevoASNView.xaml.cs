@@ -116,6 +116,7 @@ namespace LD.FormsX.Views.Dialogs
                     await LoadProductsForSelectedClientProjectAsync();
                     await LoadProjectDefaultLocationAsync();
                     await LoadProjectScanConfigurationsAsync();
+                    await LoadStatusLookupAsync(_clientId, _projectId);
                 }), DispatcherPriority.Background);
             }
         }
@@ -411,7 +412,12 @@ namespace LD.FormsX.Views.Dialogs
                 if (AsnSelected != null)
                 {
                     await CargarDatosAsync();
+                    await LoadStatusLookupAsync(_clientId, _projectId);
                     await CargarDatosAsyncDet();
+                }
+                else
+                {
+                    await LoadStatusLookupAsync(_clientId, _projectId);
                 }
             }
             finally
@@ -1955,7 +1961,6 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task LoadDetailLookupsAsync()
         {
-            await LoadStatusLookupAsync();
             await LoadSdLookupAsync();
         }
 
@@ -2051,13 +2056,16 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.LocationCode = _defaultProjectLocationCode;
         }
 
-        private async Task LoadStatusLookupAsync()
+        private async Task LoadStatusLookupAsync(int? clientId = null, int? projectId = null)
         {
             try
             {
+                clientId = clientId.HasValue && clientId.Value > 0 ? clientId : null;
+                projectId = projectId.HasValue && projectId.Value > 0 ? projectId : null;
+
                 StatusLookupItems.Clear();
 
-                var response = await _inventaryStatusService.GetInventaryStatus();
+                var response = await _inventaryStatusService.GetInventaryStatus(clientId, projectId);
                 if (!response.IsSuccess || response.Data == null)
                     return;
 
