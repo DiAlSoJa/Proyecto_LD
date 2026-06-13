@@ -1,3 +1,4 @@
+using LD.Client.Configuration;
 using LD.Contracts.SignalR;
 using LD.Forms.Configuration;
 using Microsoft.AspNetCore.SignalR.Client;
