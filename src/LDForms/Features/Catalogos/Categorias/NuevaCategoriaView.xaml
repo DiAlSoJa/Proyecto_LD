@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="Nueva categoria"
         Width="760"
-        Height="430"
+        Height="520"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -99,7 +99,7 @@
 
     <Grid>
         <Border Width="720"
-                MinHeight="390"
+                MinHeight="480"
                 Background="White"
                 CornerRadius="16"
                 BorderBrush="#E5E7EB"

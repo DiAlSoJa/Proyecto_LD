@@ -23,8 +23,10 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="52"/>
                     <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
@@ -47,8 +49,15 @@
                                Margin="0,4,0,0"/>
                 </StackPanel>
 
+                <TextBlock Grid.Column="1"
+                           Text="Cliente:"
+                           FontSize="11"
+                           Foreground="#4B5563"
+                           VerticalAlignment="Center"
+                           Margin="0,0,6,0"/>
+
                 <common:InlineLookupEditor x:Name="lookupCliente"
-                                           Grid.Column="1"
+                                           Grid.Column="2"
                                            Height="38"
                                            Tag="Cliente|Clave"
                                            ItemsSource="{Binding ClientLookupItems}"
@@ -69,8 +78,15 @@
                                            SelectAllTextOnLoad="False"
                                            SelectionConfirmed="LookupCliente_SelectionConfirmed"/>
 
+                <TextBlock Grid.Column="4"
+                           Text="Proyecto:"
+                           FontSize="11"
+                           Foreground="#4B5563"
+                           VerticalAlignment="Center"
+                           Margin="0,0,6,0"/>
+
                 <common:InlineLookupEditor x:Name="lookupProyecto"
-                                           Grid.Column="3"
+                                           Grid.Column="5"
                                            Height="38"
                                            Tag="Proyecto|Clave"
                                            ItemsSource="{Binding ProjectLookupItems}"
@@ -92,7 +108,7 @@
                                            SelectionConfirmed="LookupProyecto_SelectionConfirmed"/>
 
                 <Button x:Name="btnNuevo"
-                        Grid.Column="5"
+                        Grid.Column="7"
                         Height="38"
                         Padding="12,0"
                         Click="BtnNuevo_Click"
@@ -121,7 +137,7 @@
                 </Button>
 
                 <Button x:Name="btnEditar"
-                        Grid.Column="7"
+                        Grid.Column="9"
                         Height="38"
                         Padding="12,0"
                         Click="BtnEditar_Click"
@@ -150,7 +166,7 @@
                 </Button>
 
                 <Button x:Name="BtnActualizar"
-                        Grid.Column="9"
+                        Grid.Column="11"
                         Height="38"
                         Padding="12,0"
                         Click="BtnActualizar_Click"
@@ -179,7 +195,7 @@
                 </Button>
 
                 <Button x:Name="btnCargaMasiva"
-                        Grid.Column="11"
+                        Grid.Column="13"
                         Height="38"
                         Padding="12,0"
                         Click="BtnCargaMasiva_Click"

@@ -138,10 +138,6 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="12"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="12"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="12"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
@@ -269,96 +265,6 @@
                                   VerticalContentAlignment="Center"
                                   BorderBrush="#9CA3AF"
                                   Background="White"/>
-
-                        <!-- Imagen Izquierda -->
-                        <TextBlock Grid.Row="14"
-                                   Grid.Column="0"
-                                   Text="Img. Izquierda:"
-                                   VerticalAlignment="Center"
-                                   FontSize="13"
-                                   Foreground="#111827"/>
-
-                        <Grid Grid.Row="14" Grid.Column="1" Grid.ColumnSpan="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="110"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="80"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="txtImagenIzq"
-                                     Grid.Column="0"
-                                     Height="30"
-                                     FontSize="12"
-                                     Padding="8,0"
-                                     VerticalContentAlignment="Center"
-                                     IsReadOnly="True"
-                                     BorderBrush="#9CA3AF"
-                                     Background="#F9FAFB"/>
-                            <Button x:Name="btnCargarIzq"
-                                    Grid.Column="2"
-                                    Height="30"
-                                    Content="Cargar imagen"
-                                    Click="BtnCargarImagenIzq_Click"
-                                    Background="#F3F4F6"
-                                    Foreground="#374151"
-                                    BorderBrush="#D1D5DB"
-                                    Cursor="Hand">
-                                <Button.Resources>
-                                    <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
-                                </Button.Resources>
-                            </Button>
-                            <Image x:Name="imgPreviewIzq"
-                                   Grid.Column="4"
-                                   Height="50"
-                                   Width="70"
-                                   Stretch="Uniform"/>
-                        </Grid>
-
-                        <!-- Imagen Derecha -->
-                        <TextBlock Grid.Row="16"
-                                   Grid.Column="0"
-                                   Text="Img. Derecha:"
-                                   VerticalAlignment="Center"
-                                   FontSize="13"
-                                   Foreground="#111827"/>
-
-                        <Grid Grid.Row="16" Grid.Column="1" Grid.ColumnSpan="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="110"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="80"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="txtImagenDer"
-                                     Grid.Column="0"
-                                     Height="30"
-                                     FontSize="12"
-                                     Padding="8,0"
-                                     VerticalContentAlignment="Center"
-                                     IsReadOnly="True"
-                                     BorderBrush="#9CA3AF"
-                                     Background="#F9FAFB"/>
-                            <Button x:Name="btnCargarDer"
-                                    Grid.Column="2"
-                                    Height="30"
-                                    Content="Cargar imagen"
-                                    Click="BtnCargarImagenDer_Click"
-                                    Background="#F3F4F6"
-                                    Foreground="#374151"
-                                    BorderBrush="#D1D5DB"
-                                    Cursor="Hand">
-                                <Button.Resources>
-                                    <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
-                                </Button.Resources>
-                            </Button>
-                            <Image x:Name="imgPreviewDer"
-                                   Grid.Column="4"
-                                   Height="50"
-                                   Width="70"
-                                   Stretch="Uniform"/>
-                        </Grid>
 
                         <Button x:Name="btnNuevo"
                                 Grid.Row="12"

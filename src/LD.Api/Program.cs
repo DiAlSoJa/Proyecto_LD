@@ -190,6 +190,41 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 
+    const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
+    const string standardLabelPrintPermissionKey = PermissionKeys.StandardLabel_Print;
+
+    var standardLabelPrintPermission = db.Permissions
+        .FirstOrDefault(p => p.Key == standardLabelPrintPermissionKey);
+
+    if (standardLabelPrintPermission == null)
+    {
+        standardLabelPrintPermission = new Permission
+        {
+            PermissionName = "Imprimir etiquetas LD",
+            Key = standardLabelPrintPermissionKey,
+            ModuleId = 22,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+
+        db.Permissions.Add(standardLabelPrintPermission);
+        db.SaveChanges();
+    }
+
+    var hasSuperAdminLabelPermission = db.RolePermissions.Any(rp =>
+        rp.RoleId == superAdminRoleId &&
+        rp.PermissionId == standardLabelPrintPermission.PermissionId);
+
+    if (!hasSuperAdminLabelPermission)
+    {
+        db.RolePermissions.Add(new RolePermission
+        {
+            RoleId = superAdminRoleId,
+            PermissionId = standardLabelPrintPermission.PermissionId
+        });
+        db.SaveChanges();
+    }
+
     var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
 
     var permissions = db.Permissions
@@ -238,13 +273,14 @@ app.UseSwagger();
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 
+//middlewares
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
 app.UseSerilogRequestLogging();
 
-//middlewares
-app.UseMiddleware<GlobalExceptionMiddleware>();
+app.MapControllers();
 
 app.Run();

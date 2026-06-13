@@ -5,14 +5,12 @@ using LD.Contracts.EquipmentType;
 using LD.Contracts.Requests;
 using LD.FormsX.Helpers;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Win32;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace LD.FormsX.Views.CheckList
 {
@@ -23,8 +21,8 @@ namespace LD.FormsX.Views.CheckList
         private readonly EquipmentSupplierService _equipmentSupplierService;
         private readonly IServiceProvider _serviceProvider;
         private EquipmentDto? _selectedEquipment;
-        private string _imagePathLeft = string.Empty;
-        private string _imagePathRight = string.Empty;
+        private string _currentLeftImagePath = string.Empty;
+        private string _currentRightImagePath = string.Empty;
 
         public NuevoEquipoCheckListView(
             EquipmentService equipmentService,
@@ -145,53 +143,13 @@ namespace LD.FormsX.Views.CheckList
                 Turn1 = _selectedEquipment?.Turno1 ?? string.Empty,
                 Turn2 = _selectedEquipment?.Turno2 ?? string.Empty,
                 Turn3 = _selectedEquipment?.Turno3 ?? string.Empty,
-                ImagePathLeft  = string.IsNullOrEmpty(_imagePathLeft)  ? (_selectedEquipment?.ImagePathLeft  ?? string.Empty) : _imagePathLeft,
-                ImagePathRight = string.IsNullOrEmpty(_imagePathRight) ? (_selectedEquipment?.ImagePathRight ?? string.Empty) : _imagePathRight
+                ImagePathLeft = string.IsNullOrWhiteSpace(_currentLeftImagePath)
+                    ? _selectedEquipment?.ImagePathLeft ?? string.Empty
+                    : _currentLeftImagePath,
+                ImagePathRight = string.IsNullOrWhiteSpace(_currentRightImagePath)
+                    ? _selectedEquipment?.ImagePathRight ?? string.Empty
+                    : _currentRightImagePath
             };
-        }
-
-        private async void BtnCargarImagenIzq_Click(object sender, RoutedEventArgs e)
-            => await CargarImagenAsync("left", txtImagenIzq, imgPreviewIzq);
-
-        private async void BtnCargarImagenDer_Click(object sender, RoutedEventArgs e)
-            => await CargarImagenAsync("right", txtImagenDer, imgPreviewDer);
-
-        private async Task CargarImagenAsync(string side, System.Windows.Controls.TextBox txtRuta, System.Windows.Controls.Image imgPreview)
-        {
-            var dlg = new OpenFileDialog
-            {
-                Title = "Selecciona imagen del equipo",
-                Filter = "Imágenes|*.png;*.jpg;*.jpeg;*.bmp;*.gif"
-            };
-            if (dlg.ShowDialog() != true) return;
-
-            try
-            {
-                btnSave.IsEnabled = false;
-                var response = await _equipmentService.UploadImage(dlg.FileName, side);
-                if (!response.IsSuccess || response.Data is null)
-                {
-                    DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudo subir la imagen.");
-                    return;
-                }
-                var relativePath = response.Data.RelativePath;
-                if (side == "left")
-                    _imagePathLeft = relativePath;
-                else
-                    _imagePathRight = relativePath;
-
-                txtRuta.Text = relativePath;
-                var bmp = new BitmapImage(new Uri(dlg.FileName));
-                imgPreview.Source = bmp;
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-            finally
-            {
-                btnSave.IsEnabled = true;
-            }
         }
 
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)
@@ -282,6 +240,8 @@ namespace LD.FormsX.Views.CheckList
             }
 
             var equipment = response.Data;
+            _currentLeftImagePath = equipment.ImagePathLeft ?? string.Empty;
+            _currentRightImagePath = equipment.ImagePathRight ?? string.Empty;
             cmbTipo.SelectedValue = equipment.EquipmentTypeId;
             txtNoEquipo.Text = equipment.EquipmentName;
             txtSerie.Text = equipment.SerialNumber;
@@ -290,23 +250,6 @@ namespace LD.FormsX.Views.CheckList
             rbSi.IsChecked = equipment.IsOperative;
             rbNo.IsChecked = !equipment.IsOperative;
             cmbProveedor.SelectedValue = equipment.EquipmentSupplierId;
-
-            // Mostrar rutas de imagen existentes
-            txtImagenIzq.Text = equipment.ImagePathLeft ?? string.Empty;
-            txtImagenDer.Text = equipment.ImagePathRight ?? string.Empty;
-            MostrarImagenDesdeUrl(equipment.ImagePathLeft, imgPreviewIzq);
-            MostrarImagenDesdeUrl(equipment.ImagePathRight, imgPreviewDer);
-        }
-
-        private void MostrarImagenDesdeUrl(string? relativePath, System.Windows.Controls.Image imgControl)
-        {
-            if (string.IsNullOrWhiteSpace(relativePath)) return;
-            try
-            {
-                var url = _equipmentService.GetImageUrl(relativePath);
-                imgControl.Source = new BitmapImage(new Uri(url));
-            }
-            catch { /* imagen no disponible, no bloquear el flujo */ }
         }
     }
 }

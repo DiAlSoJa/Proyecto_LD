@@ -6,7 +6,7 @@
         xmlns:controls="clr-namespace:LD.FormsX.Controls"
         mc:Ignorable="d"
         Title="Nueva ubicación"
-        Height="560"
+        Height="700"
         Width="980"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
@@ -46,6 +46,7 @@
 
     <Grid>
         <Border Width="950"
+                MinHeight="660"
                 Background="{StaticResource SurfaceCard}"
                 CornerRadius="16"
                 BorderBrush="{StaticResource BorderSoft}"
