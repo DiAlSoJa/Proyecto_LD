@@ -424,6 +424,16 @@ namespace LD.Forms.Configuration
         public string Checklist_GetPhoto    => $"{_baseApi}/Checklist/photo?path={{path}}";
         public string Checklist_DailyStatus => $"{_baseApi}/Checklist/daily-status";
 
+        // ======================
+        // SIGNALR HUBS
+        // ======================
+
+        // _baseApi termina en "/api"; el hub vive fuera de ese prefijo
+        private string BaseHost => _baseApi.EndsWith("/api")
+            ? _baseApi[..^4]
+            : _baseApi;
+
+        public string NotificationsHub => $"{BaseHost}/hubs/notifications";
 
     }
 }

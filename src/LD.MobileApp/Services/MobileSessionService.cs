@@ -15,8 +15,9 @@ public class MobileSessionService
     // Instancias resueltas desde el root scope en MauiProgram.cs.
     // Son las MISMAS que usan todos los ViewModels, por lo que
     // SetBearerToken/ClearToken afecta todas las peticiones de la app.
-    private ApiService?  _apiService;
-    private AuthService? _authService;
+    private ApiService?     _apiService;
+    private AuthService?    _authService;
+    private SignalRService? _signalRService;
 
     public void Configure(ApiService apiService, AuthService authService)
     {
@@ -25,11 +26,22 @@ public class MobileSessionService
         apiService.OnUnauthorizedAsync = TryRefreshAsync;
     }
 
+    public void ConfigureSignalR(SignalRService signalRService)
+    {
+        _signalRService = signalRService;
+    }
+
     public async Task PersistAsync(string accessToken, string refreshToken, DateTime expiry)
     {
         await SecureStorage.Default.SetAsync(KeyAccessToken,  accessToken);
         await SecureStorage.Default.SetAsync(KeyRefreshToken, refreshToken);
         await SecureStorage.Default.SetAsync(KeyTokenExpiry,  expiry.ToString("O"));
+
+        // Conectar SignalR en el primer login (IsConnected=false).
+        // En refreshes de token no reconecta porque ya está conectado;
+        // el AccessTokenProvider de SignalRService lee UserSession.AccessToken dinámicamente.
+        if (_signalRService is not null && !_signalRService.IsConnected)
+            await _signalRService.ConnectAsync(accessToken);
     }
 
     // Restaura el token en memoria + carga UserData desde el API.
@@ -53,6 +65,14 @@ public class MobileSessionService
         }
 
         UserData.SetUserData(getMeResponse.Data);
+
+        // Restaurar la conexión SignalR si no está activa
+        if (_signalRService is not null && !_signalRService.IsConnected &&
+            !string.IsNullOrEmpty(UserSession.AccessToken))
+        {
+            await _signalRService.ConnectAsync(UserSession.AccessToken);
+        }
+
         return true;
     }
 
@@ -88,6 +108,9 @@ public class MobileSessionService
 
     public async Task ClearAsync()
     {
+        if (_signalRService is not null)
+            await _signalRService.DisconnectAsync();
+
         SecureStorage.Default.Remove(KeyAccessToken);
         SecureStorage.Default.Remove(KeyRefreshToken);
         SecureStorage.Default.Remove(KeyTokenExpiry);
@@ -120,6 +143,7 @@ public class MobileSessionService
 
     private async Task InvalidateSessionAsync()
     {
+        // ClearAsync ya llama DisconnectAsync, no duplicar aquí
         await ClearAsync();
         WeakReferenceMessenger.Default.Send(new SessionExpiredMessage());
     }

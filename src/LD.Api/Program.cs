@@ -1,7 +1,11 @@
 using Application;
 using LD.Api.Authorization;
+using LD.Api.Hubs;
 using LD.Api.Middlewares;
+using LD.Api.Services;
+using LD.Api.Workers;
 using LD.Application;
+using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Application.Common.Results;
@@ -85,6 +89,18 @@ builder.Services.AddAuthentication(options =>
 
     options.Events = new JwtBearerEvents
     {
+        // SignalR WebSocket/SSE: el navegador no puede enviar el header Authorization,
+        // así que el token llega en la query string "?access_token=..."
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            if (!string.IsNullOrEmpty(accessToken) &&
+                context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        },
         OnChallenge = async context =>
         {
             context.HandleResponse(); // evita la respuesta default
@@ -119,6 +135,15 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
+builder.Services.AddSignalR();
+
+// SignalR support services
+builder.Services.AddSingleton<ConnectedUsersTracker>();
+builder.Services.AddSingleton<ITaskAssignmentTracker>(sp =>
+    sp.GetRequiredService<ConnectedUsersTracker>());
+builder.Services.AddSingleton<IRealtimeNotifier, SignalRNotifier>();
+builder.Services.AddHostedService<TaskDispatcherWorker>();
 
 builder.Services.AddControllers();
 
@@ -282,5 +307,6 @@ app.UseAuthorization();
 app.UseSerilogRequestLogging();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.Run();
