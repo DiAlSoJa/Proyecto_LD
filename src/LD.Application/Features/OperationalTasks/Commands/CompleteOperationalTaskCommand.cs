@@ -4,6 +4,7 @@ using LD.Application.Common.Results;
 using LD.Application.Features.OperationalTasks.Notifications;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
+using LD.Domain.Enums;
 using MediatR;
 
 namespace LD.Application.Features.OperationalTasks.Commands;
@@ -33,26 +34,38 @@ public class CompleteOperationalTaskCommandHandler : IRequestHandler<CompleteOpe
     {
         var task = await _repository.GetByIdAsync(request.OperationalTaskId);
         if (task is null)
-            return Result<string>.Failure("No se encontro la tarea", new());
+            return Result<string>.Failure("No se encontró la tarea", []);
 
-        task.Completed             = true;
-        task.CompletedAt           = DateTime.UtcNow;
-        task.CompletedBy           = request.CompletedBy;
+        var currentUserId = _userContext.UserId ?? string.Empty;
+
+        // Valida que la tarea siga asignada a quien la intenta completar.
+        // Evita pisar el estado si ya fue liberada por stale-timeout y reasignada a otro usuario.
+        if (!string.IsNullOrEmpty(task.AssignedToUserId) && task.AssignedToUserId != currentUserId)
+            return Result<string>.Failure(
+                "Esta tarea ya no está asignada a tu usuario. Es posible que haya sido reasignada por inactividad.",
+                [], 409);
+
+        task.Status                 = OperationalTaskStatus.Completada;
+        task.AssignedToUserId       = null;
+        task.AssignedAt             = null;
+        task.Completed              = true;
+        task.CompletedAt            = DateTime.UtcNow;
+        task.CompletedByName        = request.CompletedBy;
+        task.CompletedByUserId      = currentUserId;
         task.ResolutionObservations = request.ResolutionObservations;
-        task.ResolvedPhoto1Path    = request.ResolvedPhoto1Path;
-        task.ResolvedPhoto2Path    = request.ResolvedPhoto2Path;
-        task.ResolvedPhoto3Path    = request.ResolvedPhoto3Path;
-        task.ResolvedPhoto4Path    = request.ResolvedPhoto4Path;
+        task.ResolvedPhoto1Path     = request.ResolvedPhoto1Path;
+        task.ResolvedPhoto2Path     = request.ResolvedPhoto2Path;
+        task.ResolvedPhoto3Path     = request.ResolvedPhoto3Path;
+        task.ResolvedPhoto4Path     = request.ResolvedPhoto4Path;
 
         var updated = await _repository.UpdateAsync(task);
         if (!updated)
-            return Result<string>.Failure("No se pudo terminar la tarea", new());
+            return Result<string>.Failure("No se pudo terminar la tarea", []);
 
-        // Notificar para que se asigne la siguiente tarea al mismo usuario
         await _publisher.Publish(new TaskCompletedNotification
         {
-            CompletedTaskId    = request.OperationalTaskId,
-            CompletedByUserId  = _userContext.UserId ?? string.Empty
+            CompletedTaskId   = request.OperationalTaskId,
+            CompletedByUserId = currentUserId
         }, cancellationToken);
 
         return Result<string>.Success("Tarea terminada correctamente", string.Empty);

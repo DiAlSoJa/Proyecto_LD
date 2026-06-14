@@ -37,7 +37,8 @@
                    HorizontalOptions="Center"/>
 
             <!-- Mensaje -->
-            <Label Text="¿Estás seguro de que deseas cerrar sesión?"
+            <Label x:Name="MensajeLabel"
+                   Text="¿Estás seguro de que deseas cerrar sesión?"
                    FontSize="14"
                    TextColor="#64748B"
                    HorizontalTextAlignment="Center"

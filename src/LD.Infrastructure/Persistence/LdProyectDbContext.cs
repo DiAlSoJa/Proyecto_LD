@@ -916,11 +916,21 @@ namespace LD.Infrastructure.Persistence
                 entity.Property(x => x.ResolvedPhoto2Path).HasMaxLength(500);
                 entity.Property(x => x.ResolvedPhoto3Path).HasMaxLength(500);
                 entity.Property(x => x.ResolvedPhoto4Path).HasMaxLength(500);
-                entity.Property(x => x.CompletedBy).HasMaxLength(150);
+                entity.Property(x => x.Status).HasConversion<int>();
+                entity.Property(x => x.AssignedToUserId).HasMaxLength(450);
+                entity.Property(x => x.CompletedByName).HasMaxLength(150);
+                entity.Property(x => x.CompletedByUserId).HasMaxLength(450);
                 entity.HasOne(x => x.Warehouse)
                     .WithMany(x => x.OperationalTasks)
                     .HasForeignKey(x => x.WarehouseId)
                     .OnDelete(DeleteBehavior.SetNull);
+                entity.HasOne<ApplicationUser>()
+                    .WithMany()
+                    .HasForeignKey(x => x.AssignedToUserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+                // CompletedByUserId NO tiene FK enforced: es campo de auditoría histórica.
+                // Si el usuario se elimina, el nombre sigue en CompletedByName.
+                entity.Property(x => x.CompletedByUserId).HasMaxLength(450);
             });
 
             // Seed: warehouse de referencia para cortinas

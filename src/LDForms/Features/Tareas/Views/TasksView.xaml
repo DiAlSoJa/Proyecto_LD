@@ -184,7 +184,7 @@
                                 <DataGridTextColumn Header="Nombre" Binding="{Binding Name}" Width="180"/>
                                 <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="260"/>
                                 <DataGridTextColumn Header="Finalizado" Binding="{Binding CompletedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}}" Width="140"/>
-                                <DataGridTextColumn Header="Finalizo" Binding="{Binding CompletedBy}" Width="150"/>
+                                <DataGridTextColumn Header="Finalizo" Binding="{Binding CompletedByName}" Width="150"/>
                                 <DataGridTextColumn Header="Observaciones" Binding="{Binding ResolutionObservations}" Width="260"/>
                             </DataGrid.Columns>
 

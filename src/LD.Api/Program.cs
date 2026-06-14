@@ -140,7 +140,7 @@ builder.Services.AddSignalR();
 
 // SignalR support services
 builder.Services.AddSingleton<ConnectedUsersTracker>();
-builder.Services.AddSingleton<ITaskAssignmentTracker>(sp =>
+builder.Services.AddSingleton<IConnectedUsersTracker>(sp =>
     sp.GetRequiredService<ConnectedUsersTracker>());
 builder.Services.AddSingleton<IRealtimeNotifier, SignalRNotifier>();
 builder.Services.AddHostedService<TaskDispatcherWorker>();

@@ -217,10 +217,26 @@ namespace MauiAppLogin.ViewModels
         private async Task Logout()
         {
             if (IsBusy) return;
+            IsBusy = true;
             try
             {
-                IsBusy = true;
-                var dialog = new LogoutDialog();
+                bool tieneTarea = false;
+                if (CanViewWarehouseTasks)
+                {
+                    try
+                    {
+                        _dialogService.ShowBlocking("Verificando", "Comprobando tarea asignada...");
+                        var taskResponse = await _operationalTaskService.GetMyAssignedTaskAsync();
+                        tieneTarea = taskResponse.IsSuccess && taskResponse.Data != null;
+                    }
+                    catch { }
+                    finally
+                    {
+                        _dialogService.HideBlocking();
+                    }
+                }
+
+                var dialog = new LogoutDialog(tieneTarea);
                 var result = await Application.Current!.MainPage!.ShowPopupAsync(dialog);
                 if (result is not true) return;
                 await _sessionService.ClearAsync();

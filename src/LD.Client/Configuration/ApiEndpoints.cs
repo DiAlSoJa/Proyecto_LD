@@ -223,6 +223,7 @@ namespace LD.Forms.Configuration
 
         public string OperationalTask_GetAll      => $"{_baseApi}/OperationalTask";
         public string OperationalTask_GetById     => $"{_baseApi}/OperationalTask/{{taskId}}";
+        public string OperationalTask_MyAssigned  => $"{_baseApi}/OperationalTask/my-assigned";
         public string OperationalTask_Create      => $"{_baseApi}/OperationalTask";
         public string OperationalTask_Complete    => $"{_baseApi}/OperationalTask/{{taskId}}/complete";
         public string OperationalTask_UploadImage => $"{_baseApi}/OperationalTask/upload-image";

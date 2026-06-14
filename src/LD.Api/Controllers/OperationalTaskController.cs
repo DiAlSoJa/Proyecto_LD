@@ -24,6 +24,11 @@ public class OperationalTaskController : CommonController
         _fileStorage = fileStorage;
     }
 
+    [HttpGet("my-assigned")]
+    [Permission(PermissionKeys.WarehouseStaff_Tasks_View)]
+    public async Task<IActionResult> GetMyAssignedTask()
+        => ResultExtensions.ToActionResult(await Mediator.Send(new MyAssignedTaskQuery()));
+
     [HttpGet]
     [Permission(PermissionKeys.WarehouseStaff_Tasks_View)]
     public async Task<IActionResult> GetTasks([FromQuery] bool soloPendientes = false, [FromQuery] int? warehouseId = null)

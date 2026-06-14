@@ -4,38 +4,26 @@ using System.Collections.Concurrent;
 namespace LD.Api.Services;
 
 /// <summary>
-/// Singleton que rastrea qué usuarios están conectados al hub y qué tarea tienen asignada.
-/// Implementa ITaskAssignmentTracker para que los handlers de LD.Application puedan
-/// actualizar asignaciones sin saber nada de SignalR.
+/// Singleton que rastrea qué usuarios están conectados al hub SignalR.
+/// La fuente de verdad de qué tarea tiene cada usuario vive en la BD (OperationalTask.AssignedToUserId).
+/// Este tracker solo es caché ligero para saber a quién enviar notificaciones.
 /// </summary>
-public sealed class ConnectedUsersTracker : ITaskAssignmentTracker
+public sealed class ConnectedUsersTracker : IConnectedUsersTracker
 {
-    // userId → taskId asignado (null = conectado pero sin tarea)
-    private readonly ConcurrentDictionary<string, int?> _state = new();
-
-    // ── Lifecycle (llamado desde NotificationHub) ──────────────────────────
+    // userId → byte (la presencia es lo único que importa; byte consume mínima memoria)
+    private readonly ConcurrentDictionary<string, byte> _connected = new();
 
     public void UserConnected(string userId)
-        => _state.TryAdd(userId, null);
+        => _connected.TryAdd(userId, 0);
 
     public void UserDisconnected(string userId)
-        => _state.TryRemove(userId, out _);
+        => _connected.TryRemove(userId, out _);
 
-    // ── ITaskAssignmentTracker ─────────────────────────────────────────────
+    public IReadOnlyCollection<string> GetConnectedUsers()
+        => _connected.Keys.ToList();
 
-    public void AssignTask(string userId, int taskId)
-        => _state.AddOrUpdate(userId, taskId, (_, _) => taskId);
+    public bool IsUserConnected(string userId)
+        => _connected.ContainsKey(userId);
 
-    public void ClearTask(string userId)
-        => _state.AddOrUpdate(userId, (int?)null, (_, _) => null);
-
-    // ── Worker helpers ─────────────────────────────────────────────────────
-
-    public IReadOnlyCollection<string> GetUsersWithoutTask()
-        => _state.Where(kv => !kv.Value.HasValue).Select(kv => kv.Key).ToList();
-
-    public IReadOnlyCollection<int> GetAssignedTaskIds()
-        => _state.Values.Where(v => v.HasValue).Select(v => v!.Value).ToList();
-
-    public int ConnectedCount => _state.Count;
+    public int ConnectedCount => _connected.Count;
 }

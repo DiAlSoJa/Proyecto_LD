@@ -39,6 +39,12 @@ public class OperationalTaskService
             _apiEndpoints.OperationalTask_GetById.Replace("{taskId}", taskId.ToString()));
     }
 
+    // Devuelve la tarea actualmente asignada al usuario autenticado, o null si no tiene ninguna
+    public async Task<ApiResponseDto<OperationalTaskDto?>> GetMyAssignedTaskAsync()
+    {
+        return await _api.GetAsync<ApiResponseDto<OperationalTaskDto?>>(_apiEndpoints.OperationalTask_MyAssigned);
+    }
+
     public async Task<ApiResponseDto<string>> CreateTask(OperationalTaskRequest request)
     {
         return await _api.PostAsync<OperationalTaskRequest, ApiResponseDto<string>>(

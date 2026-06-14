@@ -12,18 +12,15 @@ public class TaskCompletedNotificationHandler : INotificationHandler<TaskComplet
 {
     private readonly IOperationalTaskRepository _taskRepo;
     private readonly IRealtimeNotifier _notifier;
-    private readonly ITaskAssignmentTracker _tracker;
     private readonly IMapper _mapper;
 
     public TaskCompletedNotificationHandler(
         IOperationalTaskRepository taskRepo,
         IRealtimeNotifier notifier,
-        ITaskAssignmentTracker tracker,
         IMapper mapper)
     {
         _taskRepo = taskRepo;
         _notifier = notifier;
-        _tracker  = tracker;
         _mapper   = mapper;
     }
 
@@ -32,31 +29,35 @@ public class TaskCompletedNotificationHandler : INotificationHandler<TaskComplet
         if (string.IsNullOrEmpty(notification.CompletedByUserId))
             return;
 
-        // Liberar el slot del usuario para que el worker no lo cuente como ocupado
-        _tracker.ClearTask(notification.CompletedByUserId);
+        var userId = notification.CompletedByUserId;
 
-        var pendingTasks = await _taskRepo.GetTasksAsync(soloPendientes: true, warehouseId: null);
-
-        // Tomar una tarea pendiente diferente a la que acaba de terminar
-        var nextTask = pendingTasks
+        // Obtener candidatas en orden aleatorio para variedad
+        var candidates = await _taskRepo.GetPendingUnassignedTasksAsync(cancellationToken);
+        var shuffled   = candidates
             .Where(t => t.OperationalTaskId != notification.CompletedTaskId)
             .OrderBy(_ => Guid.NewGuid())
-            .FirstOrDefault();
+            .ToList();
 
-        if (nextTask is null)
-            return;
-
-        _tracker.AssignTask(notification.CompletedByUserId, nextTask.OperationalTaskId);
-
-        var taskDto = _mapper.Map<OperationalTaskDto>(nextTask);
-
-        await _notifier.SendToUserAsync(notification.CompletedByUserId, new HubNotification
+        foreach (var candidate in shuffled)
         {
-            Type      = "task_assigned",
-            Title     = $"Nueva tarea: {nextTask.Name}",
-            Message   = nextTask.Description ?? nextTask.Activity,
-            Payload   = JsonSerializer.Serialize(taskDto),
-            CreatedAt = DateTime.UtcNow
-        });
+            // TryClaimTaskAsync es atómico: UPDATE WHERE Status=NoAsignada
+            // Si otro hilo/worker ya la tomó, devuelve false y probamos la siguiente
+            var claimed = await _taskRepo.TryClaimTaskAsync(candidate.OperationalTaskId, userId, cancellationToken);
+            if (!claimed)
+                continue;
+
+            var taskDto = _mapper.Map<OperationalTaskDto>(candidate);
+
+            await _notifier.SendToUserAsync(userId, new HubNotification
+            {
+                Type      = "task_assigned",
+                Title     = $"Nueva tarea: {candidate.Name}",
+                Message   = candidate.Description ?? candidate.Activity,
+                Payload   = JsonSerializer.Serialize(taskDto),
+                CreatedAt = DateTime.UtcNow
+            });
+
+            return;
+        }
     }
 }

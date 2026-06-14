@@ -6,9 +6,11 @@ public partial class LogoutDialog : Popup
 {
     private bool _closing;
 
-    public LogoutDialog()
+    public LogoutDialog(bool tieneTareaAsignada = false)
     {
         InitializeComponent();
+        if (tieneTareaAsignada)
+            MensajeLabel.Text = "Tienes una tarea operativa asignada que quedará liberada. ¿Seguro que deseas cerrar sesión?";
     }
 
     private void OnCancelTapped(object? sender, TappedEventArgs e)

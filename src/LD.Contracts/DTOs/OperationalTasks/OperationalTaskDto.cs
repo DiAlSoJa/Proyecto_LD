@@ -1,3 +1,5 @@
+using LD.Contracts.Enums;
+
 namespace LD.Contracts.DTOs.OperationalTasks;
 
 public class OperationalTaskDto
@@ -18,8 +20,12 @@ public class OperationalTaskDto
     public string? ResolvedPhoto2Path { get; set; }
     public string? ResolvedPhoto3Path { get; set; }
     public string? ResolvedPhoto4Path { get; set; }
+    public OperationalTaskStatus Status { get; set; }
+    public string? AssignedToUserId { get; set; }
+    public DateTime? AssignedAt { get; set; }
     public bool Completed { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
-    public string? CompletedBy { get; set; }
+    public string? CompletedByName { get; set; }
+    public string? CompletedByUserId { get; set; }
 }
