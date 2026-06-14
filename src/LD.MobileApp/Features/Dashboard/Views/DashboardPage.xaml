@@ -327,15 +327,6 @@
                     </VerticalStackLayout>
             </controls:Card>
 
-            <!-- TEST FASE 1: eliminar en Fase 2 -->
-            <Button Text="[TEST] Notificación local"
-                    Command="{Binding TestNotificationCommand}"
-                    BackgroundColor="#6B7280"
-                    TextColor="White"
-                    CornerRadius="8"
-                    HeightRequest="44"
-                    Margin="0,10,0,0"/>
-
             <!-- CERRAR SESIÓN -->
             <Button Text="Cerrar sesión"
                     Command="{Binding LogoutCommand}"

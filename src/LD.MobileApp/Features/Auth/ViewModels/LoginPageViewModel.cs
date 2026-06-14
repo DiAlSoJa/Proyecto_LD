@@ -9,6 +9,7 @@ using MauiAppLogin.Controls;
 using MauiAppLogin.Services;
 using MauiAppLogin.Views.Controls;
 using MvvmHelpers.Commands;
+using Plugin.LocalNotification;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -191,6 +192,10 @@ namespace MauiAppLogin.ViewModels
         // Cualquier otro caso (sin equipo, ya hizo checklist, error de red) -> dashboard.
         private async Task NavegaAlInicioAsync()
         {
+            // Pide el permiso de notificaciones una sola vez post-login.
+            // Si el usuario ya lo concedió (o negó), el SO retorna inmediatamente sin mostrar diálogo.
+            await LocalNotificationCenter.Current.RequestNotificationPermission();
+
             try
             {
                 var response = await _checklistService.GetDailyStatusAsync();

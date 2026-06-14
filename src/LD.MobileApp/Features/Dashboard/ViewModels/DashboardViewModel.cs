@@ -8,7 +8,6 @@ using LD.Contracts.Enums;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Services;
 using MauiAppLogin.Views.Controls;
-using Plugin.LocalNotification;
 using System.Windows.Input;
 
 namespace MauiAppLogin.ViewModels
@@ -109,8 +108,6 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToInventoryListCommand { get; }
         public ICommand NavigateToChecklistCommand { get; }
         public ICommand NavigateToPatioPendientesCommand { get; }
-        // TEST FASE 1: eliminar en Fase 2
-        public ICommand TestNotificationCommand { get; }
 
         public DashboardViewModel(
             ApiService apiService,
@@ -146,7 +143,6 @@ namespace MauiAppLogin.ViewModels
             NavigateToInventoryListCommand = new AsyncRelayCommand(NavigateToInventoryList);
             NavigateToChecklistCommand = new AsyncRelayCommand(NavigateToChecklist);
             NavigateToPatioPendientesCommand = new AsyncRelayCommand(NavigateToPatioPendientes);
-            TestNotificationCommand = new AsyncRelayCommand(TestNotificationAsync);
 
             LoadPermissions();
         }
@@ -416,19 +412,5 @@ namespace MauiAppLogin.ViewModels
             await Shell.Current.GoToAsync(nameof(PatioPendientesPage));
         }
 
-        // --- TEST FASE 1: eliminar en Fase 2 ---
-        private async Task TestNotificationAsync()
-        {
-            var granted = await LocalNotificationCenter.Current.RequestNotificationPermission();
-            if (!granted) return;
-
-            await LocalNotificationCenter.Current.Show(new NotificationRequest
-            {
-                NotificationId = 9999,
-                Title = "Prueba",
-                Description = "Funciona",
-            });
-        }
-        // ----------------------------------------
     }
 }

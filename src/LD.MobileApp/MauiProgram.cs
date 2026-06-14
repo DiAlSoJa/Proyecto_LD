@@ -79,6 +79,8 @@ namespace MauiAppLogin
 
             builder.Services.AddSingleton<ILoaderService, LoaderService>();
             builder.Services.AddSingleton<IDialogService, DialogService>();
+            builder.Services.AddSingleton<IAppStateService, AppStateService>();
+            builder.Services.AddSingleton<NotificationOrchestrator>();
 
             // Control de Patio
             builder.Services.AddSingleton<IPatioNotificacionService, PatioNotificacionService>();
@@ -109,6 +111,11 @@ namespace MauiAppLogin
 
             sessionService.Configure(apiService, authService);
             sessionService.ConfigureSignalR(signalRService);
+
+            // Forzar construcción del orquestador para que su suscripción a SignalR
+            // quede activa antes de cualquier login. Al ser singleton, el constructor
+            // corre exactamente una vez: el += en SignalRService ocurre una sola vez.
+            mauiApp.Services.GetRequiredService<NotificationOrchestrator>();
 
             return mauiApp;
         }
