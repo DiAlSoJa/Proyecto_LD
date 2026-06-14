@@ -91,6 +91,7 @@ public class KittingDetailController : CommonController
 
             var entity = _mapper.Map<KittingDetail>(request);
             entity.ProductId = request.ProductId > 0 ? request.ProductId : null;
+            entity.CantidadSurtida = 0m;
             entity.Status = NormalizeStatus(entity.Status) ?? DefaultKittingStatus;
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -257,6 +258,7 @@ public class KittingDetailController : CommonController
 
         if (issueDetails.Count == 0)
         {
+            detail.CantidadSurtida = 0m;
             return;
         }
 
@@ -289,6 +291,8 @@ public class KittingDetailController : CommonController
                 issueDetail.SD = detail.SD;
             }
         }
+
+        detail.CantidadSurtida = issueDetails.Sum(x => x.ReceivedQuantity ?? 0m);
     }
 
     private static int? NormalizeProductId(int? productId)

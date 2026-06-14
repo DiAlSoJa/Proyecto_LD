@@ -5,6 +5,16 @@ namespace LD.Application.Features.AvailableInventories.Profiles;
 
 public class AvailableInventoryProfile : Profile
 {
+    private static string ResolveStandardIdText(int? standardId, string? standardIdStr)
+    {
+        if (!string.IsNullOrWhiteSpace(standardIdStr))
+            return standardIdStr.Trim();
+
+        return standardId.HasValue && standardId.Value > 0
+            ? standardId.Value.ToString()
+            : string.Empty;
+    }
+
     public AvailableInventoryProfile()
     {
         CreateMap<LD.Domain.Entities.AvailableInventory, AvailableInventoryDto>()
@@ -23,8 +33,8 @@ public class AvailableInventoryProfile : Profile
             .ForMember(dest => dest.Ubicacion,
                 opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : string.Empty))
             .ForMember(dest => dest.StandardIdStr,
-                opt => opt.MapFrom(src => src.StandardLabel != null
-                    ? src.StandardLabel.StandarIdStr ?? string.Empty
-                    : src.StandardId.HasValue ? src.StandardId.Value.ToString() : string.Empty));
+                opt => opt.MapFrom(src => ResolveStandardIdText(
+                    src.StandardId,
+                    src.StandardLabel != null ? src.StandardLabel.StandarIdStr : null)));
     }
 }

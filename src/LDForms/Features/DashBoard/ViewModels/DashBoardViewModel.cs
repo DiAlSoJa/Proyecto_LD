@@ -12,7 +12,7 @@ using LD.FormsX.Views.Catalogos;
 using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.DatabaseDiagram;
-using LD.FormsX.Features.Embarques.Views;
+using LD.FormsX.Features.Surtidos.Views;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Proyectos;
@@ -54,8 +54,7 @@ public partial class DashBoardViewModel : ObservableObject
             ["Usuarios"] = new("Usuarios", "AccountMultipleOutline", DashboardIconColor, Module_e.Users, null, () => _serviceProvider.GetRequiredService<UsuariosView>()),
             ["CheckList"] = new("Checklist montacargas", "Forklift", DashboardIconColor, Module_e.ForkliftChecklist, null, () => _serviceProvider.GetRequiredService<CheckListView>()),
             ["Catalogos"] = new("Catálogos", "ViewGridOutline", DashboardIconColor, Module_e.Catalogs, null, () => _serviceProvider.GetRequiredService<CatalogosView>()),
-            ["Surtido"] = new("Surtido", "ClipboardArrowDownOutline", DashboardIconColor, Module_e.Picking, null, null),
-            ["Embarques"] = new("Embarques", "TruckDeliveryOutline", DashboardIconColor, Module_e.Shipments, null, () => _serviceProvider.GetRequiredService<EmbarquesView>()),
+            ["Surtido"] = new("Surtido", "ClipboardArrowDownOutline", DashboardIconColor, Module_e.Picking, null, () => _serviceProvider.GetRequiredService<SurtidosView>()),
             ["Reportes"] = new("Reportes", "ChartBar", DashboardIconColor, Module_e.Reports, null, () => _serviceProvider.GetRequiredService<ReportesView>()),
             ["DatabaseDiagram"] = new("Diagrama BD", "Database", DashboardIconColor, Module_e.Reports, null, () => _serviceProvider.GetRequiredService<DatabaseDiagramView>()),
             ["ReporteDanos"] = new("Reporte de daños", "AlertCircleOutline", DashboardIconColor, Module_e.DamageReport, null, () => _serviceProvider.GetRequiredService<DamageReportView>()),

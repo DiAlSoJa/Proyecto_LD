@@ -13,7 +13,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace LD.FormsX.Features.Embarques.Views
+namespace LD.FormsX.Features.Surtidos.Views
 {
     public partial class SurtirInventarioDialog : Window, INotifyPropertyChanged
     {

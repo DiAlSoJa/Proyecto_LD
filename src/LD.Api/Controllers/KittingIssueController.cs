@@ -22,6 +22,16 @@ public class KittingIssueController : CommonController
     private readonly LdProyectDbContext _context;
     private readonly IMapper _mapper;
 
+    private static string ResolveStandardIdText(int? standardId, string? standardIdStr)
+    {
+        if (!string.IsNullOrWhiteSpace(standardIdStr))
+            return standardIdStr.Trim();
+
+        return standardId.HasValue && standardId.Value > 0
+            ? standardId.Value.ToString()
+            : string.Empty;
+    }
+
     public KittingIssueController(LdProyectDbContext context, IMapper mapper)
     {
         _context = context;
@@ -41,6 +51,12 @@ public class KittingIssueController : CommonController
             .ToListAsync();
 
         var dto = _mapper.Map<List<KittingIssueDetailDto>>(entities);
+        for (var i = 0; i < dto.Count; i++)
+        {
+            dto[i].StandardId = await ResolveIssueStandardIdTextAsync(entities[i]);
+            dto[i].StandardIdStr = dto[i].StandardId;
+        }
+
         return ResultExtensions.ToActionResult(Result<List<KittingIssueDetailDto>?>.Success(dto, "Kitting Issue Details obtenidos correctamente"));
     }
 
@@ -62,6 +78,7 @@ public class KittingIssueController : CommonController
         }
 
         var dto = _mapper.Map<KittingIssueRequest>(entity);
+        dto.StandardId = await ResolveIssueStandardIdTextAsync(entity);
         return ResultExtensions.ToActionResult(Result<KittingIssueRequest?>.Success(dto, "Kitting Issue Detail obtenido correctamente"));
     }
 
@@ -79,6 +96,12 @@ public class KittingIssueController : CommonController
             .ToListAsync();
 
         var dto = _mapper.Map<List<KittingIssueDetailDto>>(entities);
+        for (var i = 0; i < dto.Count; i++)
+        {
+            dto[i].StandardId = await ResolveIssueStandardIdTextAsync(entities[i]);
+            dto[i].StandardIdStr = dto[i].StandardId;
+        }
+
         return ResultExtensions.ToActionResult(Result<List<KittingIssueDetailDto>>.Success(dto, "Kitting Issue Details obtenidos correctamente"));
     }
 
@@ -93,13 +116,6 @@ public class KittingIssueController : CommonController
 
             if (string.IsNullOrWhiteSpace(request.PartNumber))
                 return ResultExtensions.ToActionResult(Result<string>.Failure("PartNumber es obligatorio.", new List<string> { "PartNumber es obligatorio." }));
-
-            var standardIdText = NormalizeStandardIdText(request.StandardId);
-            if (standardIdText is null)
-            {
-                return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("StandardId es obligatorio para surtir una etiqueta.", new List<string> { "StandardId es obligatorio para surtir una etiqueta." }));
-            }
 
             var validation = await EnsureKittingDetailEditableAsync(request.KittingDetailId);
             if (validation is not null)
@@ -122,7 +138,16 @@ public class KittingIssueController : CommonController
                     Result<string>.Failure("No se encontro el Kitting relacionado.", new List<string> { "No se encontro el Kitting relacionado." }, 404));
             }
 
-            var standardLabel = await ResolveStandardLabelAsync(standardIdText);
+            var standardId = await ResolveIssueStandardIdAsync(request);
+            if (!standardId.HasValue || standardId.Value <= 0)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("StandardId es obligatorio para surtir una etiqueta.", new List<string> { "StandardId es obligatorio para surtir una etiqueta." }));
+            }
+
+            request.StandardId = standardId.Value.ToString();
+
+            var standardLabel = await ResolveStandardLabelAsync(request.StandardId);
             if (standardLabel is null)
             {
                 return ResultExtensions.ToActionResult(
@@ -178,6 +203,9 @@ public class KittingIssueController : CommonController
                         Result<string>.Failure("No se pudo guardar el Kitting Issue Detail.", new List<string> { "No se pudo guardar el Kitting Issue Detail." }));
                 }
 
+                await UpdateCantidadSurtidaAsync(entity.KittingDetailId);
+                await _context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
                 return ResultExtensions.ToActionResult(
                     Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail creado con exito"));
@@ -219,18 +247,35 @@ public class KittingIssueController : CommonController
             request.KittingDetailId = entity.KittingDetailId;
             request.Status = NormalizeStatus(request.Status) ?? NormalizeStatus(entity.Status);
 
-            _mapper.Map(request, entity);
-            entity.ProductId = request.ProductId > 0 ? request.ProductId : entity.ProductId;
-            var updated = await _context.SaveChangesAsync() > 0;
+            var standardId = await ResolveIssueStandardIdAsync(request, entity);
+            request.StandardId = standardId?.ToString();
 
-            if (!updated)
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
+                _mapper.Map(request, entity);
+                entity.ProductId = request.ProductId > 0 ? request.ProductId : entity.ProductId;
+                var updated = await _context.SaveChangesAsync() > 0;
+
+                await UpdateCantidadSurtidaAsync(entity.KittingDetailId);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                if (!updated)
+                {
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail actualizado"));
+                }
+
                 return ResultExtensions.ToActionResult(
                     Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail actualizado"));
             }
-
-            return ResultExtensions.ToActionResult(
-                Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail actualizado"));
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         catch (Exception ex)
         {
@@ -318,6 +363,9 @@ public class KittingIssueController : CommonController
                         Result<string>.Failure("No se pudo eliminar el Kitting Issue Detail.", new List<string> { "No se pudo eliminar el Kitting Issue Detail." }));
                 }
 
+                await UpdateCantidadSurtidaAsync(entity.KittingDetailId);
+                await _context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
 
                 return ResultExtensions.ToActionResult(
@@ -377,6 +425,20 @@ public class KittingIssueController : CommonController
             ? null
             : status.Trim();
 
+    private async Task UpdateCantidadSurtidaAsync(int kittingDetailId)
+    {
+        var detail = await _context.KittingDetails
+            .FirstOrDefaultAsync(x => x.KittingDetailId == kittingDetailId);
+
+        if (detail is null)
+            return;
+
+        detail.CantidadSurtida = await _context.KittingIssueDetails
+            .AsNoTracking()
+            .Where(x => x.KittingDetailId == kittingDetailId)
+            .SumAsync(x => x.ReceivedQuantity ?? 0m);
+    }
+
     private async Task<StandardLabel?> ResolveStandardLabelAsync(string standardIdText)
     {
         if (int.TryParse(standardIdText, out var standardId))
@@ -430,6 +492,72 @@ public class KittingIssueController : CommonController
             return consumedMatch;
 
         return await inventories.FirstOrDefaultAsync();
+    }
+
+    private async Task<int?> ResolveIssueStandardIdAsync(KittingIssueRequest request, KittingIssueDetail? currentEntity = null)
+    {
+        var standardIdText = NormalizeStandardIdText(request.StandardId);
+        if (standardIdText is not null)
+        {
+            var standardLabel = await ResolveStandardLabelAsync(standardIdText);
+            if (standardLabel is not null)
+                return standardLabel.StandarId;
+        }
+
+        if (currentEntity?.StandardId.HasValue == true && currentEntity.StandardId.Value > 0)
+            return currentEntity.StandardId.Value;
+
+        var exactMatch = await _context.AvailableInventories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x =>
+                x.PartNumber == request.PartNumber &&
+                x.ProductId == request.ProductId &&
+                x.LocationId == request.LocationId &&
+                x.LotNumber == request.LotNumber &&
+                x.Reference == request.Reference &&
+                x.PurchaseOrder == request.PurchaseOrder &&
+                x.CustomsDeclarationNumber == request.CustomsDeclarationNumber);
+
+        if (exactMatch?.StandardId.HasValue == true && exactMatch.StandardId.Value > 0)
+            return exactMatch.StandardId.Value;
+
+        var partialMatch = await _context.AvailableInventories
+            .AsNoTracking()
+            .Where(x => x.PartNumber == request.PartNumber)
+            .Where(x => !request.ProductId.HasValue || request.ProductId <= 0 || x.ProductId == request.ProductId)
+            .Where(x => !request.LocationId.HasValue || request.LocationId <= 0 || x.LocationId == request.LocationId)
+            .Where(x => string.IsNullOrWhiteSpace(request.LotNumber) || x.LotNumber == request.LotNumber)
+            .Where(x => string.IsNullOrWhiteSpace(request.Reference) || x.Reference == request.Reference)
+            .Where(x => string.IsNullOrWhiteSpace(request.PurchaseOrder) || x.PurchaseOrder == request.PurchaseOrder)
+            .Where(x => string.IsNullOrWhiteSpace(request.CustomsDeclarationNumber) || x.CustomsDeclarationNumber == request.CustomsDeclarationNumber)
+            .OrderByDescending(x => x.Fecha)
+            .ThenByDescending(x => x.Hora)
+            .FirstOrDefaultAsync();
+
+        return partialMatch?.StandardId;
+    }
+
+    private async Task<string> ResolveIssueStandardIdTextAsync(KittingIssueDetail issue)
+    {
+        var directStandardId = ResolveStandardIdText(issue.StandardId, issue.StandardLabel?.StandarIdStr);
+        if (!string.IsNullOrWhiteSpace(directStandardId))
+            return directStandardId;
+
+        var inventory = await _context.AvailableInventories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x =>
+                x.PartNumber == issue.PartNumber &&
+                x.ProductId == issue.ProductId &&
+                x.LocationId == issue.LocationId &&
+                x.LotNumber == issue.LotNumber &&
+                x.Reference == issue.Reference &&
+                x.PurchaseOrder == issue.PurchaseOrder &&
+                x.CustomsDeclarationNumber == issue.CustomsDeclarationNumber);
+
+        if (inventory?.StandardId.HasValue == true && inventory.StandardId.Value > 0)
+            return inventory.StandardId.Value.ToString();
+
+        return string.Empty;
     }
 
     private async Task<bool> IssueExistsForStandardIdAsync(int kittingDetailId, int standardId)

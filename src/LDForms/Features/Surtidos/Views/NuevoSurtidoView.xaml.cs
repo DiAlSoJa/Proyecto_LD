@@ -19,9 +19,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace LD.FormsX.Features.Embarques.Views
+namespace LD.FormsX.Features.Surtidos.Views
 {
-    public partial class NuevoEmbarqueView : Window
+    public partial class NuevoSurtidoView : Window
     {
         private const string DefaultKittingStatus = "Creado";
         private readonly KittingService _kittingService;
@@ -67,7 +67,7 @@ namespace LD.FormsX.Features.Embarques.Views
         public ObservableCollection<KittingDetailDto> DetailItems { get; } = new();
         public ObservableCollection<KittingIssueDetailDto> IssueItems { get; } = new();
 
-        public NuevoEmbarqueView(
+        public NuevoSurtidoView(
             KittingService kittingService,
             KittingDetailService kittingDetailService,
             KittingIssueService kittingIssueService,
@@ -175,7 +175,7 @@ namespace LD.FormsX.Features.Embarques.Views
             var response = await _kittingService.GetKittingById(_selectedKitting?.KittingId ?? 0);
             if (!response.IsSuccess || response.Data == null)
             {
-                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudo cargar el embarque.");
+                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudo cargar el surtido.");
                 return;
             }
 
@@ -378,8 +378,8 @@ namespace LD.FormsX.Features.Embarques.Views
                 code = _kittingCodePreview?.Trim();
 
             var titlePrefix = string.IsNullOrWhiteSpace(code)
-                ? "Embarque"
-                : $"Embarque {code}";
+                ? "Surtido"
+                : $"Surtido {code}";
 
             if (_loadingData)
                 titlePrefix = $"{titlePrefix} (Cargando...)";
@@ -442,7 +442,7 @@ namespace LD.FormsX.Features.Embarques.Views
             if (IsCurrentKittingEditable())
                 return true;
 
-            DialogHelper.ShowWarning("El embarque esta confirmado o cancelado y ya no permite cambios.");
+            DialogHelper.ShowWarning("El surtido esta confirmado o cancelado y ya no permite cambios.");
             return false;
         }
 
@@ -600,7 +600,7 @@ namespace LD.FormsX.Features.Embarques.Views
             var result = await SaveHeaderRequestAsync(request);
             if (!result.IsSuccess)
             {
-                DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo guardar el embarque.");
+                DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo guardar el surtido.");
                 return false;
             }
 
@@ -609,7 +609,7 @@ namespace LD.FormsX.Features.Embarques.Views
             HasChanges = true;
 
             if (showSuccessToast)
-                ToastHelper.ShowSuccess("Embarque guardado correctamente.");
+                ToastHelper.ShowSuccess("Surtido guardado correctamente.");
 
             ApplyEditState();
             return true;
@@ -652,7 +652,7 @@ namespace LD.FormsX.Features.Embarques.Views
             if (int.TryParse(result.Data, out var kittingId) && kittingId > 0)
                 return kittingId;
 
-            throw new InvalidOperationException("No se pudo obtener el Id del embarque guardado.");
+            throw new InvalidOperationException("No se pudo obtener el Id del surtido guardado.");
         }
 
         private KittingRequest BuildHeaderRequest()
@@ -686,8 +686,16 @@ namespace LD.FormsX.Features.Embarques.Views
                 CodigoPostal = NullIfWhiteSpace(txtCodigoPostal.Text),
                 TipoEntrega = NullIfWhiteSpace(tipoEntrega),
                 FechaProgramada = fechaProgramada,
-                Status = _selectedKitting?.Status
+                Status = GetHeaderStatusForRequest()
             };
+        }
+
+        private string? GetHeaderStatusForRequest()
+        {
+            if (_selectedKitting?.KittingId > 0)
+                return _selectedKitting.Status;
+
+            return DefaultKittingStatus;
         }
 
         private Task<ApiResponseDto<string>> SaveHeaderRequestAsync(KittingRequest request)
@@ -736,7 +744,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
 
             detailRow.KittingId = _selectedKitting?.KittingId ?? 0;
-            detailRow.Status = DefaultKittingStatus;
+            detailRow.Status = string.Empty;
         }
 
         private void dgIssue_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
@@ -1032,7 +1040,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar la linea del embarque.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar la linea del surtido.");
                     return;
                 }
 
@@ -1075,7 +1083,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
             if (!IsDetailRowCompleted(detailRow))
             {
-                DialogHelper.ShowWarning("La linea del embarque debe tener producto y cantidad antes de capturar issues.");
+                DialogHelper.ShowWarning("La linea del surtido debe tener producto y cantidad antes de capturar issues.");
                 return false;
             }
 
@@ -1129,7 +1137,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del embarque.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del surtido.");
                     return;
                 }
 
@@ -1202,7 +1210,7 @@ namespace LD.FormsX.Features.Embarques.Views
             var createResponse = await _kittingIssueService.CreateKittingIssue(request);
             if (!createResponse.IsSuccess)
             {
-                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el issue base del embarque.");
+                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el issue base del surtido.");
                 return;
             }
 
@@ -1325,7 +1333,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 var response = await _kittingIssueService.CreateKittingIssue(request);
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del embarque.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del surtido.");
                     return false;
                 }
 
@@ -1892,9 +1900,7 @@ namespace LD.FormsX.Features.Embarques.Views
             if (!string.IsNullOrWhiteSpace(detailRow.Status))
                 return detailRow.Status.Trim();
 
-            return detailRow.KittingDetailId <= 0
-                ? DefaultKittingStatus
-                : null;
+            return null;
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

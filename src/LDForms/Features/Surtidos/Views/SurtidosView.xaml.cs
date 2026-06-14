@@ -14,9 +14,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace LD.FormsX.Features.Embarques.Views
+namespace LD.FormsX.Features.Surtidos.Views
 {
-    public partial class EmbarquesView : UserControl, INotifyPropertyChanged
+    public partial class SurtidosView : UserControl, INotifyPropertyChanged
     {
         private readonly KittingService _kittingService;
         private readonly KittingDetailService _kittingDetailService;
@@ -110,7 +110,7 @@ namespace LD.FormsX.Features.Embarques.Views
             }
         }
 
-        public EmbarquesView(
+        public SurtidosView(
             KittingService kittingService,
             KittingDetailService kittingDetailService,
             KittingIssueService kittingIssueService,
@@ -157,6 +157,19 @@ namespace LD.FormsX.Features.Embarques.Views
                 "Direccion",
                 "TipoEntrega");
             _gridFilterDet.SetHiddenColumns("KittingDetailId", "KittingId", "ProductId");
+            _gridFilterDet.SetColumnOrder(
+                "PartNumber",
+                "Description",
+                "Quantity",
+                "CantidadSurtida",
+                "Status",
+                "SD",
+                "LotNumber",
+                "ExpirationDate",
+                "CustomerReference",
+                "ExchangeRate",
+                "PurchaseOrder",
+                "CustomsDeclarationNumber");
             _gridFilterIssue.SetHiddenColumns("KittingReceiptDetailId", "KittingDetailId", "ProductId", "LocationId");
 
             UpdateActionButtons();
@@ -218,42 +231,42 @@ namespace LD.FormsX.Features.Embarques.Views
                 canEdit,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede editar."
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede editar."
                     : hasSelected
-                        ? "Editar embarque"
-                        : "Selecciona un embarque para editar.");
+                        ? "Editar surtido"
+                        : "Selecciona un surtido para editar.");
 
             ConfigureActionButton(
                 btnUbicando,
                 canEdit && !isLocating,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede ubicar."
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede ubicar."
                     : hasSelected && isLocating
-                        ? "El embarque ya esta en estatus Ubicando."
+                        ? "El surtido ya esta en estatus Ubicando."
                         : hasSelected
-                            ? "Marcar embarque como Ubicando"
-                            : "Selecciona un embarque para ubicar.");
+                            ? "Marcar surtido como Ubicando"
+                            : "Selecciona un surtido para ubicar.");
 
             ConfigureActionButton(
                 btnConfirmar,
                 canEdit,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede confirmar."
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede confirmar."
                     : hasSelected
-                        ? "Confirmar embarque"
-                        : "Selecciona un embarque para confirmar.");
+                        ? "Confirmar surtido"
+                        : "Selecciona un surtido para confirmar.");
 
             ConfigureActionButton(
                 btnCancelar,
                 canEdit,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede cancelar."
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede cancelar."
                     : hasSelected
-                        ? "Cancelar embarque"
-                        : "Selecciona un embarque para cancelar.");
+                        ? "Cancelar surtido"
+                        : "Selecciona un surtido para cancelar.");
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -527,7 +540,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = _serviceProvider.GetRequiredService<NuevoEmbarqueView>();
+            var dialog = _serviceProvider.GetRequiredService<NuevoSurtidoView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetClientProjectContext(
                 SelectedClientId,
@@ -549,11 +562,11 @@ namespace LD.FormsX.Features.Embarques.Views
 
             if (IsTerminalStatus(_selectedKitting.Status))
             {
-                DialogHelper.ShowWarning("El embarque seleccionado esta confirmado o cancelado. Ya no se puede editar.");
+                DialogHelper.ShowWarning("El surtido seleccionado esta confirmado o cancelado. Ya no se puede editar.");
                 return;
             }
 
-            var dialog = _serviceProvider.GetRequiredService<NuevoEmbarqueView>();
+            var dialog = _serviceProvider.GetRequiredService<EditarSurtidoView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetKitting(_selectedKitting);
 
@@ -570,36 +583,36 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un embarque para ubicar.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para ubicar.");
                     return;
                 }
 
                 if (IsConfirmedStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta confirmado y no se puede ubicar.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta confirmado y no se puede ubicar.");
                     return;
                 }
 
                 if (IsCancelledStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado esta cancelado y no se puede ubicar.");
+                    DialogHelper.ShowWarning("El surtido seleccionado esta cancelado y no se puede ubicar.");
                     return;
                 }
 
                 if (IsLocatingStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta en estatus Ubicando.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta en estatus Ubicando.");
                     return;
                 }
 
                 var result = await _kittingService.LocateKitting(_selectedKitting.KittingId);
                 if (!result.IsSuccess)
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo marcar el embarque como Ubicando.");
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo marcar el surtido como Ubicando.");
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Embarque marcado como Ubicando correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Surtido marcado como Ubicando correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -614,30 +627,30 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un embarque para confirmar.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para confirmar.");
                     return;
                 }
 
                 if (IsConfirmedStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta confirmado.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta confirmado.");
                     return;
                 }
 
                 if (IsCancelledStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado esta cancelado y no se puede confirmar.");
+                    DialogHelper.ShowWarning("El surtido seleccionado esta cancelado y no se puede confirmar.");
                     return;
                 }
 
                 var result = await _kittingService.ConfirmKitting(_selectedKitting.KittingId);
                 if (!result.IsSuccess)
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo confirmar el embarque.");
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo confirmar el surtido.");
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Embarque confirmado correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Surtido confirmado correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -652,25 +665,25 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un embarque para cancelar.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para cancelar.");
                     return;
                 }
 
                 if (IsConfirmedStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta confirmado y no se puede cancelar.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta confirmado y no se puede cancelar.");
                     return;
                 }
 
                 if (IsCancelledStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta cancelado.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta cancelado.");
                     return;
                 }
 
                 var confirmar = DialogHelper.ShowConfirm(
-                    $"Deseas cancelar el embarque {_selectedKitting.KittingCode ?? _selectedKitting.KittingId.ToString()}?",
-                    "Cancelar embarque");
+                    $"Deseas cancelar el surtido {_selectedKitting.KittingCode ?? _selectedKitting.KittingId.ToString()}?",
+                    "Cancelar surtido");
 
                 if (!confirmar)
                     return;
@@ -678,11 +691,11 @@ namespace LD.FormsX.Features.Embarques.Views
                 var result = await _kittingService.CancelKitting(_selectedKitting.KittingId);
                 if (!result.IsSuccess)
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo cancelar el embarque.");
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo cancelar el surtido.");
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Embarque cancelado correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Surtido cancelado correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)

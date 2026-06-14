@@ -30,6 +30,7 @@ namespace LD.FormsX.Views.Dialogs
     public partial class NuevoASNView : Window
     {
         private const string DefaultAsnStatus = "Creado";
+        private static readonly TimeSpan HeaderAutoSaveDelay = TimeSpan.FromMilliseconds(700);
         
 
         private readonly AsnService _asnService;
@@ -44,6 +45,7 @@ namespace LD.FormsX.Views.Dialogs
         private readonly IServiceProvider _serviceProvider;
         private readonly DataGridNavigationManager _detailGridNavigation;
         private readonly DataGridNavigationManager _receiptGridNavigation;
+        private readonly DispatcherTimer _headerAutoSaveTimer;
         private readonly HashSet<AsnDetailItem> _savingDetailRows = new();
         private readonly HashSet<AsnReceiptItem> _savingReceiptRows = new();
         private readonly HashSet<AsnDetailItem> _pendingDetailRows = new();
@@ -51,6 +53,10 @@ namespace LD.FormsX.Views.Dialogs
         private AsnDto? AsnSelected;
         private AsnDetailItem? _selectedDetailItem;
         private bool _cargandoDatos = false;
+        private bool _suppressHeaderAutoSave;
+        private bool _headerAutoSaveInProgress;
+        private bool _headerAutoSavePending;
+        private string _lastSavedHeaderSignature = string.Empty;
         private int _clientId;
         private int _projectId;
         private int? _defaultProjectLocationId;
@@ -83,6 +89,11 @@ namespace LD.FormsX.Views.Dialogs
             _serviceProvider = serviceProvider;
             _detailGridNavigation = new DataGridNavigationManager(dgDetail);
             _receiptGridNavigation = new DataGridNavigationManager(dgUbicacionesAsignadas);
+            _headerAutoSaveTimer = new DispatcherTimer
+            {
+                Interval = HeaderAutoSaveDelay
+            };
+            _headerAutoSaveTimer.Tick += HeaderAutoSaveTimer_Tick;
             DataContext = this;
 
             UpdateWindowTitle();
@@ -91,14 +102,26 @@ namespace LD.FormsX.Views.Dialogs
 
         public void SetAsn(AsnDto? _asnSelected)
         {
-            AsnSelected = _asnSelected;
-            _clientName = _asnSelected?.Client?.Trim() ?? string.Empty;
-            _projectName = _asnSelected?.Project?.Trim() ?? string.Empty;
-            UpdateWindowTitle();
-            ApplyConfirmedState();
+            _suppressHeaderAutoSave = true;
 
-            if (AsnSelected != null)
-                ShowScanSection();
+            try
+            {
+                AsnSelected = _asnSelected;
+                _clientName = _asnSelected?.Client?.Trim() ?? string.Empty;
+                _projectName = _asnSelected?.Project?.Trim() ?? string.Empty;
+                UpdateWindowTitle();
+                ApplyConfirmedState();
+
+                if (_asnSelected != null)
+                    _lastSavedHeaderSignature = BuildHeaderSignature();
+
+                if (AsnSelected != null)
+                    ShowScanSection();
+            }
+            finally
+            {
+                _suppressHeaderAutoSave = false;
+            }
         }
 
         public void SetClientProjectContext(int clientId, int projectId, string? clientName, string? projectName)
@@ -119,6 +142,111 @@ namespace LD.FormsX.Views.Dialogs
                     await LoadStatusLookupAsync(_clientId, _projectId);
                 }), DispatcherPriority.Background);
             }
+        }
+
+        private void HeaderField_Changed(object sender, TextChangedEventArgs e)
+        {
+            ScheduleHeaderAutoSave();
+        }
+
+        private void HeaderField_Changed(object sender, RoutedEventArgs e)
+        {
+            ScheduleHeaderAutoSave();
+        }
+
+        private void HeaderField_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            ScheduleHeaderAutoSave();
+        }
+
+        private void ScheduleHeaderAutoSave()
+        {
+            if (_suppressHeaderAutoSave || _cargandoDatos)
+                return;
+
+            if (AsnSelected?.AsnId <= 0)
+                return;
+
+            if (_headerAutoSaveInProgress)
+            {
+                _headerAutoSavePending = true;
+                return;
+            }
+
+            _headerAutoSaveTimer.Stop();
+            _headerAutoSaveTimer.Start();
+        }
+
+        private async void HeaderAutoSaveTimer_Tick(object? sender, EventArgs e)
+        {
+            _headerAutoSaveTimer.Stop();
+
+            if (_suppressHeaderAutoSave || _cargandoDatos || AsnSelected?.AsnId <= 0)
+                return;
+
+            if (_headerAutoSaveInProgress)
+            {
+                _headerAutoSavePending = true;
+                return;
+            }
+
+            var currentSignature = BuildHeaderSignature();
+            if (string.Equals(currentSignature, _lastSavedHeaderSignature, StringComparison.Ordinal))
+                return;
+
+            _headerAutoSaveInProgress = true;
+
+            try
+            {
+                var request = BuildRequest();
+
+                if (request.ClientId <= 0 || request.ProjectId <= 0)
+                    return;
+
+                var result = await _asnService.UpdateAsn(AsnSelected!.AsnId, request);
+                if (!result.IsSuccess)
+                {
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo guardar automaticamente el ASN.");
+                    return;
+                }
+
+                _lastSavedHeaderSignature = currentSignature;
+                await RefreshAsnHeaderAsync(AsnSelected.AsnId);
+                UpdateWindowTitle();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                _headerAutoSaveInProgress = false;
+
+                if (_headerAutoSavePending)
+                {
+                    _headerAutoSavePending = false;
+                    ScheduleHeaderAutoSave();
+                }
+            }
+        }
+
+        private string BuildHeaderSignature()
+        {
+            return string.Join("|",
+                AsnSelected?.AsnId.ToString() ?? string.Empty,
+                _clientId.ToString(),
+                _projectId.ToString(),
+                txtNumeroFactura?.Text.Trim() ?? string.Empty,
+                txtNumeroGuia?.Text.Trim() ?? string.Empty,
+                dpEta?.SelectedDate?.ToString("O") ?? string.Empty,
+                txtBultos?.Text.Trim() ?? string.Empty,
+                chkEsDevolucion?.IsChecked == true ? "1" : "0",
+                chkMovimientoRequeridoCliente?.IsChecked == true ? "1" : "0",
+                txtLineaTransporte?.Text.Trim() ?? string.Empty,
+                txtTipoVehiculo?.Text.Trim() ?? string.Empty,
+                txtChofer?.Text.Trim() ?? string.Empty,
+                txtPlacasVehiculo?.Text.Trim() ?? string.Empty,
+                txtSelloTransporte?.Text.Trim() ?? string.Empty);
         }
 
         private void UpdateWindowTitle()
@@ -161,6 +289,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private bool IsScanRequiredForProject() => _projectScanRequired;
 
+        private bool IsNewAsnRecord() =>
+            AsnSelected?.AsnId <= 0 && _clientId > 0 && _projectId > 0;
+
         private bool EnsureCurrentAsnEditable()
         {
             if (!IsCurrentAsnConfirmed())
@@ -192,9 +323,13 @@ namespace LD.FormsX.Views.Dialogs
         {
             var isEditable = !IsCurrentAsnConfirmed();
             var scanRequired = IsScanRequiredForProject();
+            var showSaveButton = isEditable && IsNewAsnRecord();
 
             if (btnGuardar != null)
-                btnGuardar.IsEnabled = isEditable;
+            {
+                btnGuardar.Visibility = showSaveButton ? Visibility.Visible : Visibility.Collapsed;
+                btnGuardar.IsEnabled = showSaveButton;
+            }
 
             if (btnBuscarVehiculo != null)
                 btnBuscarVehiculo.IsEnabled = isEditable;
@@ -286,6 +421,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             try
             {
+                _suppressHeaderAutoSave = true;
                 _cargandoDatos = true;
 
                 var response = await _asnService.GetAsnById(AsnSelected?.AsnId ?? 0);
@@ -321,6 +457,7 @@ namespace LD.FormsX.Views.Dialogs
                 await LoadProductsForSelectedClientProjectAsync();
                 UpdateWindowTitle();
                 ApplyConfirmedState();
+                _lastSavedHeaderSignature = BuildHeaderSignature();
 
             }
             catch (Exception ex)
@@ -330,6 +467,7 @@ namespace LD.FormsX.Views.Dialogs
             finally
             {
                 _cargandoDatos = false;
+                _suppressHeaderAutoSave = false;
             }
         }
 
@@ -546,6 +684,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (!string.IsNullOrWhiteSpace(result.Data) && !int.TryParse(result.Data, out _))
                     AsnSelected.AsnCode = result.Data.Trim();
 
+                _lastSavedHeaderSignature = BuildHeaderSignature();
                 UpdateWindowTitle();
 
                 ToastHelper.ShowSuccess("ASN guardado exitosamente.");

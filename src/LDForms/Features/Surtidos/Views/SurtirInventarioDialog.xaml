@@ -1,4 +1,4 @@
-<Window x:Class="LD.FormsX.Features.Embarques.Views.SurtirInventarioDialog"
+<Window x:Class="LD.FormsX.Features.Surtidos.Views.SurtirInventarioDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Surtir inventario"
@@ -258,6 +258,7 @@
                                         <DataGridTextColumn Header="Orden compra" Binding="{Binding PurchaseOrder}" Width="140"/>
                                         <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber}" Width="130"/>
                                         <DataGridTextColumn Header="Ubicacion" Binding="{Binding Ubicacion}" Width="130"/>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding StatusId}" Width="110"/>
                                         <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>
                                         <DataGridTextColumn Header="StandardId" Binding="{Binding StandardIdStr}" Width="110"/>
                                     </DataGrid.Columns>
