@@ -145,6 +145,9 @@ builder.Services.AddSingleton<IConnectedUsersTracker>(sp =>
 builder.Services.AddSingleton<IRealtimeNotifier, SignalRNotifier>();
 builder.Services.AddHostedService<TaskDispatcherWorker>();
 
+builder.Services.AddSingleton<TaskGeneratorState>();
+builder.Services.AddHostedService<DummyTaskGeneratorWorker>();
+
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

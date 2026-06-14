@@ -5,6 +5,7 @@ using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MauiAppLogin.ViewModels;
 using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 using Plugin.Maui.OCR;
 using ZXing.Net.Maui.Controls;
 using static System.Net.WebRequestMethods;
@@ -19,6 +20,7 @@ namespace MauiAppLogin
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
+                .UseLocalNotification()
                 .UseBarcodeReader()
                 .UseOcr()
                 .ConfigureFonts(fonts =>

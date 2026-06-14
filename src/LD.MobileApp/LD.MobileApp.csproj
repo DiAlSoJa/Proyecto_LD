@@ -85,6 +85,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.*" />
+		<PackageReference Include="Plugin.LocalNotification" Version="11.*" />
 		<PackageReference Include="SkiaSharp" Version="2.88.*" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />

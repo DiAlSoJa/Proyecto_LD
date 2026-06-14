@@ -16,6 +16,13 @@ public partial class DashboardPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _vm.OnNavigatedTo();
         await _vm.CargarTareasPendientesAsync();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _vm.OnNavigatedFrom();
     }
 }

@@ -8,6 +8,7 @@ using LD.Contracts.Enums;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Services;
 using MauiAppLogin.Views.Controls;
+using Plugin.LocalNotification;
 using System.Windows.Input;
 
 namespace MauiAppLogin.ViewModels
@@ -21,6 +22,7 @@ namespace MauiAppLogin.ViewModels
         private readonly LookupService _lookupService;
         private readonly IDialogService _dialogService;
         private readonly MobileSessionService _sessionService;
+        private readonly SignalRService _signalRService;
 
         [ObservableProperty]
         private string username = string.Empty;
@@ -107,6 +109,8 @@ namespace MauiAppLogin.ViewModels
         public ICommand NavigateToInventoryListCommand { get; }
         public ICommand NavigateToChecklistCommand { get; }
         public ICommand NavigateToPatioPendientesCommand { get; }
+        // TEST FASE 1: eliminar en Fase 2
+        public ICommand TestNotificationCommand { get; }
 
         public DashboardViewModel(
             ApiService apiService,
@@ -115,7 +119,8 @@ namespace MauiAppLogin.ViewModels
             OperationalTaskService operationalTaskService,
             LookupService lookupService,
             IDialogService dialogService,
-            MobileSessionService sessionService)
+            MobileSessionService sessionService,
+            SignalRService signalRService)
         {
             _apiService = apiService;
             _patioClientService = patioClientService;
@@ -124,12 +129,13 @@ namespace MauiAppLogin.ViewModels
             _lookupService = lookupService;
             _dialogService = dialogService;
             _sessionService = sessionService;
+            _signalRService = signalRService;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
             NavigateToChangeLocationCommand = new AsyncRelayCommand(NavigateToChangeLocation);
             NavigateToPickingCommand = new AsyncRelayCommand(NavigateToPicking);
             NavigateToReceptionCommand = new AsyncRelayCommand(NavigateToReception);
-            NavigateToTaskManagerCommand = new AsyncRelayCommand<string?>(NavigateToTaskManager);
+            NavigateToTaskManagerCommand = new AsyncRelayCommand(NavigateToTaskManager);
             NavigateToTaskManagerSecurityCommand = new AsyncRelayCommand<string?>(NavigateToTaskManagerSecurity);
             NavigateToTaskListCommand = new AsyncRelayCommand(NavigateToTaskList);
             NavigateToCasetaCommand = new AsyncRelayCommand(NavigateToCaseta);
@@ -140,8 +146,30 @@ namespace MauiAppLogin.ViewModels
             NavigateToInventoryListCommand = new AsyncRelayCommand(NavigateToInventoryList);
             NavigateToChecklistCommand = new AsyncRelayCommand(NavigateToChecklist);
             NavigateToPatioPendientesCommand = new AsyncRelayCommand(NavigateToPatioPendientes);
+            TestNotificationCommand = new AsyncRelayCommand(TestNotificationAsync);
 
             LoadPermissions();
+        }
+
+        public void OnNavigatedTo()
+        {
+            _signalRService.NotificationReceived += HandleSignalRNotification;
+        }
+
+        public void OnNavigatedFrom()
+        {
+            _signalRService.NotificationReceived -= HandleSignalRNotification;
+        }
+
+        private void HandleSignalRNotification(LD.Contracts.SignalR.HubNotification notification)
+        {
+            if (notification.Type != "task_assigned") return;
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                OperationalTasksPendingCount++;
+                await _dialogService.ShowSuccessAsync("Nueva tarea asignada", notification.Title);
+            });
         }
 
         private void LoadPermissions()
@@ -264,13 +292,9 @@ namespace MauiAppLogin.ViewModels
             await Shell.Current.GoToAsync("ReceptionPage");
         }
 
-        private async Task NavigateToTaskManager(string? textInfo)
+        private async Task NavigateToTaskManager()
         {
-            var parameters = new Dictionary<string, object>
-            {
-                { "TextInformation", textInfo ?? "" }
-            };
-            await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
+            await Shell.Current.GoToAsync("TaskList");
         }
 
         private async Task NavigateToTaskManagerSecurity(string? textInfo)
@@ -391,5 +415,20 @@ namespace MauiAppLogin.ViewModels
         {
             await Shell.Current.GoToAsync(nameof(PatioPendientesPage));
         }
+
+        // --- TEST FASE 1: eliminar en Fase 2 ---
+        private async Task TestNotificationAsync()
+        {
+            var granted = await LocalNotificationCenter.Current.RequestNotificationPermission();
+            if (!granted) return;
+
+            await LocalNotificationCenter.Current.Show(new NotificationRequest
+            {
+                NotificationId = 9999,
+                Title = "Prueba",
+                Description = "Funciona",
+            });
+        }
+        // ----------------------------------------
     }
 }

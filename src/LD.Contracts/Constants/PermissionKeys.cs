@@ -170,6 +170,9 @@ public static class PermissionKeys
     // STANDAR LABELS / ETIQUETAS ESTÁNDAR
     public const string StandardLabel_Print = "standard-label.print";//"equipment-types.delete";
 
+    // DEV TOOLS
+    public const string Dev_TaskGenerator = "dev.task-generator";
+
 
 
 

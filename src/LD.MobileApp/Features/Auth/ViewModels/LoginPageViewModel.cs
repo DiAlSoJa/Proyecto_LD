@@ -177,7 +177,8 @@ namespace MauiAppLogin.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowErrorAsync("Error", ex.Message);
+                _loaderService.Hide();
+                await _dialogService.ShowErrorAsync("Error",$"No se pudo iniciar sesion {Environment.NewLine} Revise su conexion o contacte con supervisor");
             }
             finally
             {
