@@ -291,6 +291,8 @@ public class LocateAsnPalletCommandHandler : IRequestHandler<LocateAsnPalletComm
             ExpirationDate = detail.ExpirationDate,
             DocumentId = documentId,
             StatusId = detail.Status,
+            SD = detail.SD,
+            AvailableStatus = "Available",
             LocationId = detail.LocationId,
             Qty = detail.ReceivedQuantity,
             StandardId = detail.StandardId

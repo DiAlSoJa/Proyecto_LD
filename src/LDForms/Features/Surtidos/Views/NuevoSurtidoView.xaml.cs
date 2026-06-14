@@ -437,6 +437,9 @@ namespace LD.FormsX.Features.Surtidos.Views
         private bool IsCurrentKittingEditable() =>
             !IsConfirmedStatus(_selectedKitting?.Status) && !IsCancelledStatus(_selectedKitting?.Status);
 
+        private bool IsNewKittingRecord() =>
+            _selectedKitting?.KittingId <= 0;
+
         private bool EnsureCurrentKittingEditable()
         {
             if (IsCurrentKittingEditable())
@@ -451,8 +454,10 @@ namespace LD.FormsX.Features.Surtidos.Views
             var isEditable = IsCurrentKittingEditable();
             var hasDetailSelection = _selectedDetail != null && !IsEmptyDetailRow(_selectedDetail);
             var canInteract = isEditable && !_loadingData;
+            var showSaveButton = canInteract && IsNewKittingRecord();
 
-            btnGuardar.IsEnabled = canInteract;
+            btnGuardar.Visibility = showSaveButton ? Visibility.Visible : Visibility.Collapsed;
+            btnGuardar.IsEnabled = showSaveButton;
             btnGenerarIssueBase.IsEnabled = canInteract && hasDetailSelection;
             txtNumeroFactura.IsEnabled = canInteract;
             txtLineaTransporte.IsEnabled = canInteract;

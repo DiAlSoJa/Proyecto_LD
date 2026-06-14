@@ -68,6 +68,12 @@ public class AvailableInventoryDto
     [DisplayName("Estandar")]
     public string StandardIdStr { get; set; } = string.Empty;
 
+    [DisplayName("SD")]
+    public string SD { get; set; } = string.Empty;
+
+    [DisplayName("AvailableStatus")]
+    public string AvailableStatus { get; set; } = string.Empty;
+
     public string Cliente { get; set; } = string.Empty;
     public string Proyecto { get; set; } = string.Empty;
     public int? WarehouseId { get; set; }

@@ -164,7 +164,7 @@ namespace LD.FormsX.Views.Dialogs
             if (_suppressHeaderAutoSave || _cargandoDatos)
                 return;
 
-            if (AsnSelected?.AsnId <= 0)
+            if (!HasPersistedAsn())
                 return;
 
             if (_headerAutoSaveInProgress)
@@ -181,7 +181,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             _headerAutoSaveTimer.Stop();
 
-            if (_suppressHeaderAutoSave || _cargandoDatos || AsnSelected?.AsnId <= 0)
+            if (_suppressHeaderAutoSave || _cargandoDatos || !HasPersistedAsn())
                 return;
 
             if (_headerAutoSaveInProgress)
@@ -289,8 +289,10 @@ namespace LD.FormsX.Views.Dialogs
 
         private bool IsScanRequiredForProject() => _projectScanRequired;
 
+        private bool HasPersistedAsn() => AsnSelected != null && AsnSelected.AsnId > 0;
+
         private bool IsNewAsnRecord() =>
-            AsnSelected?.AsnId <= 0 && _clientId > 0 && _projectId > 0;
+            (AsnSelected == null || AsnSelected.AsnId <= 0) && _clientId > 0 && _projectId > 0;
 
         private bool EnsureCurrentAsnEditable()
         {
@@ -835,7 +837,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task<AsnDetailItem> ResolveDetailForScannedReceiptAsync(AsnReceiptItem receiptRow)
         {
-            if (AsnSelected?.AsnId <= 0)
+            if (!HasPersistedAsn())
                 throw new InvalidOperationException("Guarda primero el encabezado del ASN.");
 
             if (ProductLookupItems.Count == 0)
@@ -1201,7 +1203,7 @@ namespace LD.FormsX.Views.Dialogs
             if (!EnsureCurrentAsnEditable())
                 return false;
 
-            if (AsnSelected?.AsnId > 0)
+            if (HasPersistedAsn())
                 return true;
 
             var request = BuildRequest();
@@ -1555,7 +1557,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task SyncSingleReceiptFromDetailAsync(AsnDetailItem detailRow)
         {
-            if (AsnSelected?.AsnId <= 0 || detailRow.AsnDetailId <= 0)
+            if (!HasPersistedAsn() || detailRow.AsnDetailId <= 0)
                 return;
 
             var receiptsResponse = await _asnReceiptService.GetAsnReceiptsByAsnDetailId(detailRow.AsnDetailId);
@@ -1689,7 +1691,7 @@ namespace LD.FormsX.Views.Dialogs
             if (_selectedDetailItem == null)
                 return;
 
-            if (AsnSelected?.AsnId <= 0 || _selectedDetailItem.AsnDetailId <= 0)
+            if (!HasPersistedAsn() || _selectedDetailItem.AsnDetailId <= 0)
                 return;
 
             var result = await _asnReceiptService.GetAsnReceipts();
@@ -1708,7 +1710,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task EnsureInitialReceiptCreatedAsync(AsnDetailItem detailRow)
         {
-            if (AsnSelected?.AsnId <= 0 || detailRow.AsnDetailId <= 0)
+            if (!HasPersistedAsn() || detailRow.AsnDetailId <= 0)
                 return;
 
             var receiptsResult = await _asnReceiptService.GetAsnReceipts();

@@ -357,6 +357,8 @@
                                 <DataGridTextColumn Header="Almacén" Binding="{Binding Almacen}" Width="140"/>
                                 <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
                                 <DataGridTextColumn Header="Status" Binding="{Binding StatusId}" Width="100"/>
+                                <DataGridTextColumn Header="SD" Binding="{Binding SD}" Width="100"/>
+                                <DataGridTextColumn Header="AvailableStatus" Binding="{Binding AvailableStatus}" Width="140"/>
                                 <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>
                                 <DataGridTextColumn Header="StandardId" Binding="{Binding StandardIdStr}" Width="120"/>
                             </DataGrid.Columns>
