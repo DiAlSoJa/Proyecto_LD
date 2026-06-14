@@ -80,6 +80,9 @@ public class AvailableInventoryQueryHandler : IRequestHandler<AvailableInventory
 
         foreach (var inventory in inventories)
         {
+            if (!string.IsNullOrWhiteSpace(inventory.AvailableStatus))
+                continue;
+
             if (string.IsNullOrWhiteSpace(inventory.StatusId))
                 continue;
 

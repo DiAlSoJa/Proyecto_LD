@@ -18,9 +18,10 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class KittingDetailController : CommonController
 {
+    private const string AvailableStatusDisponible = "Disponible";
+
     private readonly LdProyectDbContext _context;
     private readonly IMapper _mapper;
-    private const string DefaultKittingStatus = "Creado";
 
     public KittingDetailController(LdProyectDbContext context, IMapper mapper)
     {
@@ -92,7 +93,7 @@ public class KittingDetailController : CommonController
             var entity = _mapper.Map<KittingDetail>(request);
             entity.ProductId = request.ProductId > 0 ? request.ProductId : null;
             entity.CantidadSurtida = 0m;
-            entity.Status = NormalizeStatus(entity.Status) ?? DefaultKittingStatus;
+            entity.Status = NormalizeStatus(entity.Status) ?? string.Empty;
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -198,6 +199,9 @@ public class KittingDetailController : CommonController
 
                 if (issueDetails.Count > 0)
                 {
+                    foreach (var issueDetail in issueDetails)
+                        await RestoreAvailableInventoryAsync(issueDetail);
+
                     _context.KittingIssueDetails.RemoveRange(issueDetails);
                 }
 
@@ -315,4 +319,40 @@ public class KittingDetailController : CommonController
         string.IsNullOrWhiteSpace(status)
             ? null
             : status.Trim();
+
+    private async Task RestoreAvailableInventoryAsync(KittingIssueDetail issueDetail)
+    {
+        if (!issueDetail.StandardId.HasValue || issueDetail.StandardId.Value <= 0)
+            return;
+
+        var inventory = await _context.AvailableInventories.FirstOrDefaultAsync(x =>
+            x.StandardId == issueDetail.StandardId &&
+            x.PartNumber == issueDetail.PartNumber &&
+            x.ProductId == issueDetail.ProductId &&
+            x.LocationId == issueDetail.LocationId &&
+            x.LotNumber == issueDetail.LotNumber &&
+            x.Reference == issueDetail.Reference &&
+            x.PurchaseOrder == issueDetail.PurchaseOrder &&
+            x.CustomsDeclarationNumber == issueDetail.CustomsDeclarationNumber);
+
+        if (inventory is null)
+            return;
+
+        inventory.Qty = issueDetail.ReceivedQuantity;
+        inventory.AvailableStatus = AvailableStatusDisponible;
+        inventory.AvailableReference = Truncate(inventory.DocumentId, 30);
+        inventory.LastModifiedAt = DateTime.Now;
+        inventory.LastModifiedByUserId = CurrentUserId;
+    }
+
+    private static string Truncate(string? value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var trimmed = value.Trim();
+        return trimmed.Length <= maxLength
+            ? trimmed
+            : trimmed[..maxLength];
+    }
 }

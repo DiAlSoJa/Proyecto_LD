@@ -41,6 +41,9 @@ public class AvailableInventoryDto
     [DisplayName("Referencia")]
     public string Reference { get; set; } = string.Empty;
 
+    [DisplayName("Referencia disponible")]
+    public string AvailableReference { get; set; } = string.Empty;
+
     [DisplayName("Orden de Compra")]
     public string PurchaseOrder { get; set; } = string.Empty;
 

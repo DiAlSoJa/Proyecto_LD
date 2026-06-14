@@ -28,6 +28,7 @@ namespace LD.FormsX.Features.Surtidos.Views
     public partial class EditarSurtidoView : Window
     {
         private const string DefaultKittingStatus = "Creado";
+        private const string DisponibleStatus = "Disponible";
         private readonly KittingService _kittingService;
         private readonly KittingDetailService _kittingDetailService;
         private readonly KittingIssueService _kittingIssueService;
@@ -1596,6 +1597,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             var reservedSignatures = excludedInventorySignatures ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var matchingInventories = response.Data
                 .Where(inventory => inventory.Qty.GetValueOrDefault() > 0)
+                .Where(IsDisponibleInventory)
                 .Where(inventory => string.Equals(inventory.PartNumber?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase))
                 .Where(inventory => string.IsNullOrWhiteSpace(status) ||
                                    string.Equals(inventory.StatusId?.Trim(), status, StringComparison.OrdinalIgnoreCase))
@@ -1972,6 +1974,9 @@ namespace LD.FormsX.Features.Surtidos.Views
 
             foreach (var inventory in inventories)
             {
+                if (!IsDisponibleInventory(inventory))
+                    continue;
+
                 var standardId = GetInventoryStandardId(inventory);
                 if (string.IsNullOrWhiteSpace(standardId))
                     continue;
@@ -2121,6 +2126,16 @@ namespace LD.FormsX.Features.Surtidos.Views
             return string.IsNullOrWhiteSpace(inventory.StandardIdStr)
                 ? null
                 : inventory.StandardIdStr.Trim();
+        }
+
+        private static bool IsDisponibleInventory(AvailableInventoryDto inventory)
+        {
+            var availableStatus = inventory.AvailableStatus?.Trim();
+            if (!string.IsNullOrWhiteSpace(availableStatus))
+                return string.Equals(availableStatus, DisponibleStatus, StringComparison.OrdinalIgnoreCase);
+
+            var statusId = inventory.StatusId?.Trim();
+            return string.Equals(statusId, DisponibleStatus, StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool IsDetailRowCompleted(KittingDetailDto detailRow)

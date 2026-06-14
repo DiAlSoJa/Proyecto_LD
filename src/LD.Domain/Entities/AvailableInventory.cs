@@ -39,6 +39,9 @@ namespace LD.Domain.Entities
         [MaxLength(100)]
         public string? Reference { get; set; }
 
+        [MaxLength(30)]
+        public string? AvailableReference { get; set; }
+
         [MaxLength(50)]
         public string? PurchaseOrder { get; set; }
 

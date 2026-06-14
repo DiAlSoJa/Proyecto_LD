@@ -17,12 +17,16 @@ namespace LD.FormsX.Features.Surtidos.Views
 {
     public partial class SurtirInventarioDialog : Window, INotifyPropertyChanged
     {
+        private const string DisponibleStatus = "Disponible";
+        private const string SurtidoStatus = "Surtido";
+
         private readonly AvailableInventoryService _availableInventoryService;
         private readonly ObservableCollection<AvailableInventoryDto> _inventories = new();
         private readonly DataGridColumnFilterManager _columnFilterManager;
         private readonly ICollectionView _inventoriesView;
         private List<AvailableInventoryDto> _allInventories = new();
         private bool _loading;
+        private bool _soloEstatusDisponible = true;
         private string _clientFilter = string.Empty;
         private string _projectFilter = string.Empty;
         private string _partFilter = string.Empty;
@@ -67,6 +71,20 @@ namespace LD.FormsX.Features.Surtidos.Views
 
                 _partFilter = value;
                 OnPropertyChanged(nameof(PartFilter));
+            }
+        }
+
+        public bool SoloEstatusDisponible
+        {
+            get => _soloEstatusDisponible;
+            set
+            {
+                if (_soloEstatusDisponible == value)
+                    return;
+
+                _soloEstatusDisponible = value;
+                OnPropertyChanged(nameof(SoloEstatusDisponible));
+                ApplyFilter();
             }
         }
 
@@ -119,7 +137,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                 }
 
                 _allInventories = response.Data
-                    .Where(x => x.Qty.GetValueOrDefault() > 0)
+                    .Where(x => x.Qty.GetValueOrDefault() > 0 || IsInventoryStatus(x, DisponibleStatus) || IsInventoryStatus(x, SurtidoStatus))
                     .OrderByDescending(x => x.Fecha)
                     .ThenByDescending(x => x.Hora)
                     .ToList();
@@ -162,6 +180,12 @@ namespace LD.FormsX.Features.Surtidos.Views
             ApplyFilter();
         }
 
+        private void ChkSoloEstatusDisponible_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+                SoloEstatusDisponible = checkBox.IsChecked ?? false;
+        }
+
         private void BtnAceptar_Click(object sender, RoutedEventArgs e)
         {
             var selected = dgInventario.SelectedItems
@@ -177,6 +201,12 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (selected.Any(x => string.IsNullOrWhiteSpace(GetStandardId(x))))
             {
                 DialogHelper.ShowWarning("Todos los registros seleccionados deben tener StandardId.");
+                return;
+            }
+
+            if (selected.Any(x => !IsInventoryStatus(x, DisponibleStatus)))
+            {
+                DialogHelper.ShowWarning("Solo puedes agregar registros con estatus disponible.");
                 return;
             }
 
@@ -213,6 +243,17 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (item is not AvailableInventoryDto inventory)
                 return false;
 
+            if (SoloEstatusDisponible)
+            {
+                if (!IsInventoryStatus(inventory, DisponibleStatus))
+                    return false;
+            }
+            else if (!IsInventoryStatus(inventory, DisponibleStatus) &&
+                     !IsInventoryStatus(inventory, SurtidoStatus))
+            {
+                return false;
+            }
+
             if (!string.IsNullOrWhiteSpace(ClientFilter) && !Contains(inventory.Cliente, ClientFilter))
                 return false;
 
@@ -246,6 +287,16 @@ namespace LD.FormsX.Features.Surtidos.Views
             return string.IsNullOrWhiteSpace(inventory.StandardIdStr)
                 ? null
                 : inventory.StandardIdStr.Trim();
+        }
+
+        private static bool IsInventoryStatus(AvailableInventoryDto inventory, string expectedStatus)
+        {
+            var availableStatus = inventory.AvailableStatus?.Trim();
+            if (!string.IsNullOrWhiteSpace(availableStatus))
+                return string.Equals(availableStatus, expectedStatus, StringComparison.OrdinalIgnoreCase);
+
+            var statusId = inventory.StatusId?.Trim();
+            return string.Equals(statusId, expectedStatus, StringComparison.OrdinalIgnoreCase);
         }
 
         private void SetLoading(bool loading, string message = "")

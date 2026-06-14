@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using LD.Contracts.Enums;
 using LD.Contracts.Requests;
 
@@ -14,12 +15,23 @@ namespace LD.FormsX.Views.Dialogs
 {
     public partial class NuevoASNEscaneoView : Window
     {
+        private const string CorrectSoundFileName = "correcto.mp3";
+        private const string ErrorSoundFileName = "error.mp3";
+        private static readonly Brush SuccessMessageBackground = new SolidColorBrush(Color.FromRgb(240, 253, 244));
+        private static readonly Brush SuccessMessageForeground = new SolidColorBrush(Color.FromRgb(22, 101, 52));
+        private static readonly Brush SuccessMessageBorder = new SolidColorBrush(Color.FromRgb(34, 197, 94));
+        private static readonly Brush ErrorMessageBackground = new SolidColorBrush(Color.FromRgb(254, 242, 242));
+        private static readonly Brush ErrorMessageForeground = new SolidColorBrush(Color.FromRgb(153, 27, 27));
+        private static readonly Brush ErrorMessageBorder = new SolidColorBrush(Color.FromRgb(239, 68, 68));
+
         public ObservableCollection<ScanRuleDisplay> ScanRules { get; } = new();
 
         public event Func<IReadOnlyList<ScanRuleResult>, Task<bool>>? ScanCompleted;
         public event Func<string, Task<UnmatchedScanResult?>>? UnmatchedScanReceived;
+        public event Func<Window, string, Task<bool>>? MissingPartNumberRequested;
 
         private List<ScanConfigurationRequest> _scanConfigurations = [];
+        private readonly List<MediaPlayer> _activePlayers = [];
 
         public NuevoASNEscaneoView()
         {
@@ -44,10 +56,15 @@ namespace LD.FormsX.Views.Dialogs
                 AddMessage("Este proyecto no tiene condiciones de escaneo o guardado configuradas.");
         }
 
-        public void AddMessage(string message)
+        public void AddMessage(string message, bool isError = false)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return;
+
+            txtUltimoMensaje.Text = message;
+            txtUltimoMensaje.Background = isError ? ErrorMessageBackground : SuccessMessageBackground;
+            txtUltimoMensaje.Foreground = isError ? ErrorMessageForeground : SuccessMessageForeground;
+            txtUltimoMensaje.BorderBrush = isError ? ErrorMessageBorder : SuccessMessageBorder;
 
             var timestamp = DateTime.Now.ToString("HH:mm:ss");
             txtMensajes.AppendText($"[{timestamp}] {message}{Environment.NewLine}");
@@ -95,12 +112,14 @@ namespace LD.FormsX.Views.Dialogs
                 if (HasPartNumberOrStandardIdConfiguration() && await TryApplyUnmatchedScanAsync(scanValue))
                     return;
 
-                AddMessage("No coincide con ninguna condición configurada.");
+                AddMessage("No coincide con ninguna condición configurada.", true);
+                PlayErrorSound();
                 return;
             }
 
             var savedValue = ApplySaveConfiguration(match.Configuration, scanValue);
             match.CapturedValue = savedValue;
+            PlayCorrectSound();
 
             AddMessage($"{match.FieldName}: {savedValue}");
 
@@ -119,7 +138,16 @@ namespace LD.FormsX.Views.Dialogs
 
             if (!result.Success)
             {
-                AddMessage(result.Message);
+                AddMessage(result.Message, true);
+                PlayErrorSound();
+
+                if (ShouldRequestMissingPartNumber(result)
+                    && MissingPartNumberRequested != null
+                    && await MissingPartNumberRequested.Invoke(this, scanValue))
+                {
+                    return await TryApplyUnmatchedScanAsync(scanValue);
+                }
+
                 return true;
             }
 
@@ -131,17 +159,29 @@ namespace LD.FormsX.Views.Dialogs
             {
                 AddMessage(string.IsNullOrWhiteSpace(result.Message)
                     ? "El valor existe, pero el campo destino no esta en las condiciones configuradas."
-                    : result.Message);
+                    : result.Message,
+                    true);
+                PlayErrorSound();
                 return true;
             }
 
             targetRule.CapturedValue = result.Value;
+            PlayCorrectSound();
             AddMessage($"{targetRule.FieldName}: {result.Value}");
 
             if (ScanRules.All(rule => !string.IsNullOrWhiteSpace(rule.CapturedValue)))
                 await CompleteCurrentScanAsync();
 
             return true;
+        }
+
+        private bool ShouldRequestMissingPartNumber(UnmatchedScanResult result)
+        {
+            return result.SystemFieldId == (int)SystemField_e.PartNumber
+                && ScanRules.Any(rule => IsSystemFieldConfiguration(rule.Configuration, (int)SystemField_e.PartNumber))
+                && !ScanRules.Any(rule =>
+                    IsSystemFieldConfiguration(rule.Configuration, (int)SystemField_e.PartNumber)
+                    && !string.IsNullOrWhiteSpace(rule.CapturedValue));
         }
 
         private async Task CompleteCurrentScanAsync()
@@ -154,7 +194,7 @@ namespace LD.FormsX.Views.Dialogs
 
             if (!created)
             {
-                AddMessage("Escaneo completo, pero no se pudo generar la línea de recepción.");
+                AddMessage("Escaneo completo, pero no se pudo generar la línea de recepción.", true);
                 return;
             }
 
@@ -233,7 +273,7 @@ namespace LD.FormsX.Views.Dialogs
                 (int)SystemField_e.PartNumber => string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(fieldName, "nÃºmero de parte", StringComparison.OrdinalIgnoreCase),
+                    || string.Equals(fieldName, "número de parte", StringComparison.OrdinalIgnoreCase),
                 _ => false
             };
         }
@@ -259,6 +299,57 @@ namespace LD.FormsX.Views.Dialogs
         private void BtnCerrarVentana_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void PlayCorrectSound()
+        {
+            PlaySound(CorrectSoundFileName);
+        }
+
+        private void PlayErrorSound()
+        {
+            PlaySound(ErrorSoundFileName);
+        }
+
+        private void PlaySound(string fileName)
+        {
+            try
+            {
+                var soundPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Resources", "Raw", fileName);
+                if (!System.IO.File.Exists(soundPath))
+                    return;
+
+                var player = new MediaPlayer();
+                player.MediaEnded += OnMediaPlayerFinished;
+                player.MediaFailed += OnMediaPlayerFailed;
+                _activePlayers.Add(player);
+                player.Open(new Uri(soundPath, UriKind.Absolute));
+                player.Play();
+            }
+            catch
+            {
+            }
+        }
+
+        private void OnMediaPlayerFinished(object? sender, EventArgs e)
+        {
+            DisposeMediaPlayer(sender as MediaPlayer);
+        }
+
+        private void OnMediaPlayerFailed(object? sender, ExceptionEventArgs e)
+        {
+            DisposeMediaPlayer(sender as MediaPlayer);
+        }
+
+        private void DisposeMediaPlayer(MediaPlayer? player)
+        {
+            if (player == null)
+                return;
+
+            player.MediaEnded -= OnMediaPlayerFinished;
+            player.MediaFailed -= OnMediaPlayerFailed;
+            player.Close();
+            _activePlayers.Remove(player);
         }
     }
 
@@ -307,8 +398,11 @@ namespace LD.FormsX.Views.Dialogs
 
                 _capturedValue = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapturedValue)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCaptured)));
             }
         }
+
+        public bool IsCaptured => !string.IsNullOrWhiteSpace(CapturedValue);
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -329,7 +423,7 @@ namespace LD.FormsX.Views.Dialogs
                 || string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(fieldName, "n\u00FAmero de parte", StringComparison.OrdinalIgnoreCase);
+                || string.Equals(fieldName, "número de parte", StringComparison.OrdinalIgnoreCase);
         }
     }
 

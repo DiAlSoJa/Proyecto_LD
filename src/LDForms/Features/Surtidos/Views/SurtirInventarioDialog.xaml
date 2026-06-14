@@ -123,6 +123,8 @@
                             <ColumnDefinition Width="18"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="260"/>
+                            <ColumnDefinition Width="18"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
@@ -176,6 +178,16 @@
                                  BorderBrush="{StaticResource BorderBrushSoft}"
                                  Background="White"
                                  TextChanged="Filtro_TextChanged"/>
+
+                        <CheckBox x:Name="chkSoloEstatusDisponible"
+                                  Grid.Column="9"
+                                  Content="Solo estatus disponible"
+                                  IsChecked="True"
+                                  VerticalAlignment="Center"
+                                  FontSize="12"
+                                  Foreground="{StaticResource TextBrush}"
+                                  Checked="ChkSoloEstatusDisponible_CheckedChanged"
+                                  Unchecked="ChkSoloEstatusDisponible_CheckedChanged"/>
                     </Grid>
                 </Border>
 
@@ -246,6 +258,12 @@
                                             <Setter Property="BorderBrush" Value="#E4E8EE"/>
                                             <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                             <Setter Property="Background" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AvailableStatus}" Value="Surtido">
+                                                    <Setter Property="Background" Value="#FFF7ED"/>
+                                                    <Setter Property="Foreground" Value="#9A3412"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
                                         </Style>
                                     </DataGrid.Resources>
                                     <DataGrid.Columns>
@@ -255,10 +273,12 @@
                                         <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="210"/>
                                         <DataGridTextColumn Header="Lote" Binding="{Binding LotNumber}" Width="120"/>
                                         <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="140"/>
+                                        <DataGridTextColumn Header="Referencia disponible" Binding="{Binding AvailableReference}" Width="160"/>
                                         <DataGridTextColumn Header="Orden compra" Binding="{Binding PurchaseOrder}" Width="140"/>
                                         <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber}" Width="130"/>
                                         <DataGridTextColumn Header="Ubicacion" Binding="{Binding Ubicacion}" Width="130"/>
                                         <DataGridTextColumn Header="Status" Binding="{Binding StatusId}" Width="110"/>
+                                        <DataGridTextColumn Header="Estatus disponible" Binding="{Binding AvailableStatus}" Width="150"/>
                                         <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>
                                         <DataGridTextColumn Header="StandardId" Binding="{Binding StandardIdStr}" Width="110"/>
                                     </DataGrid.Columns>

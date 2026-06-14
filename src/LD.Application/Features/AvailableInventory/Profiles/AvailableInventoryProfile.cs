@@ -36,6 +36,8 @@ public class AvailableInventoryProfile : Profile
                 opt => opt.MapFrom(src => ResolveStandardIdText(
                     src.StandardId,
                     src.StandardLabel != null ? src.StandardLabel.StandarIdStr : null)))
+            .ForMember(dest => dest.AvailableReference,
+                opt => opt.MapFrom(src => src.AvailableReference ?? string.Empty))
             .ForMember(dest => dest.SD,
                 opt => opt.MapFrom(src => src.SD ?? string.Empty))
             .ForMember(dest => dest.AvailableStatus,

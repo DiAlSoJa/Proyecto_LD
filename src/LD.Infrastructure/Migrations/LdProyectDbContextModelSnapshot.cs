@@ -450,6 +450,10 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("AvailableReference")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<string>("SD")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");

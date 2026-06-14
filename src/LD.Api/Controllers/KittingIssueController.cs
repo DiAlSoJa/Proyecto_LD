@@ -19,6 +19,9 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class KittingIssueController : CommonController
 {
+    private const string AvailableStatusDisponible = "Disponible";
+    private const string AvailableStatusSurtido = "Surtido";
+
     private readonly LdProyectDbContext _context;
     private readonly IMapper _mapper;
 
@@ -30,6 +33,17 @@ public class KittingIssueController : CommonController
         return standardId.HasValue && standardId.Value > 0
             ? standardId.Value.ToString()
             : string.Empty;
+    }
+
+    private static string NormalizeAvailabilityText(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+
+    private static string Truncate(string? value, int maxLength)
+    {
+        var normalized = NormalizeAvailabilityText(value);
+        return normalized.Length <= maxLength
+            ? normalized
+            : normalized[..maxLength];
     }
 
     public KittingIssueController(LdProyectDbContext context, IMapper mapper)
@@ -154,7 +168,7 @@ public class KittingIssueController : CommonController
                     Result<string>.Failure("No existe la etiqueta indicada.", new List<string> { "No existe la etiqueta indicada." }, 404));
             }
 
-            var availableInventory = await ResolveAvailableInventoryAsync(standardLabel.StandarId);
+            var availableInventory = await ResolveAvailableInventoryAsync(request, standardLabel.StandarId);
             if (availableInventory is null)
             {
                 return ResultExtensions.ToActionResult(
@@ -183,6 +197,16 @@ public class KittingIssueController : CommonController
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                var inventoryToUpdate = await _context.AvailableInventories
+                    .FirstOrDefaultAsync(x => x.AvailableInventoryId == availableInventory.AvailableInventoryId);
+
+                if (inventoryToUpdate is null)
+                {
+                    await transaction.RollbackAsync();
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Failure("No se encontro el inventario disponible para actualizar.", new List<string> { "No se encontro el inventario disponible para actualizar." }, 404));
+                }
+
                 var entity = _mapper.Map<KittingIssueDetail>(request);
                 entity.StandardId = standardLabel.StandarId;
                 entity.Status = NormalizeStatus(availableInventory.StatusId) ?? NormalizeStatus(request.Status);
@@ -191,9 +215,11 @@ public class KittingIssueController : CommonController
                 _context.KittingIssueDetails.Add(entity);
                 _context.InventoryMovements.Add(movement);
 
-                availableInventory.Qty = 0m;
-                availableInventory.LastModifiedAt = DateTime.Now;
-                availableInventory.LastModifiedByUserId = CurrentUserId;
+                inventoryToUpdate.Qty = 0m;
+                inventoryToUpdate.AvailableStatus = AvailableStatusSurtido;
+                inventoryToUpdate.AvailableReference = Truncate(GetKittingReference(detail.Kitting), 30);
+                inventoryToUpdate.LastModifiedAt = DateTime.Now;
+                inventoryToUpdate.LastModifiedByUserId = CurrentUserId;
 
                 var result = await _context.SaveChangesAsync();
                 if (result <= 0)
@@ -348,9 +374,21 @@ public class KittingIssueController : CommonController
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                availableInventory.Qty = entity.ReceivedQuantity;
-                availableInventory.LastModifiedAt = DateTime.Now;
-                availableInventory.LastModifiedByUserId = CurrentUserId;
+                var inventoryToUpdate = await _context.AvailableInventories
+                    .FirstOrDefaultAsync(x => x.AvailableInventoryId == availableInventory.AvailableInventoryId);
+
+                if (inventoryToUpdate is null)
+                {
+                    await transaction.RollbackAsync();
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Failure("No se encontro el inventario disponible para restaurar.", new List<string> { "No se encontro el inventario disponible para restaurar." }, 404));
+                }
+
+                inventoryToUpdate.Qty = entity.ReceivedQuantity;
+                inventoryToUpdate.AvailableStatus = AvailableStatusDisponible;
+                inventoryToUpdate.AvailableReference = Truncate(availableInventory.DocumentId, 30);
+                inventoryToUpdate.LastModifiedAt = DateTime.Now;
+                inventoryToUpdate.LastModifiedByUserId = CurrentUserId;
 
                 _context.InventoryMovements.Add(movement);
                 _context.KittingIssueDetails.Remove(entity);
@@ -456,15 +494,29 @@ public class KittingIssueController : CommonController
             .FirstOrDefaultAsync(x => x.StandarIdStr != null && x.StandarIdStr.Trim() == standardIdText);
     }
 
-    private async Task<AvailableInventory?> ResolveAvailableInventoryAsync(int standardId)
+    private async Task<AvailableInventory?> ResolveAvailableInventoryAsync(KittingIssueRequest request, int standardId)
     {
-        var inventories = await _context.AvailableInventories
+        var inventories = _context.AvailableInventories
             .AsNoTracking()
-            .FirstOrDefaultAsync(x =>
+            .Where(x =>
                 x.Qty.HasValue && x.Qty.Value > 0 &&
-                x.StandardId == standardId);
+                x.StandardId == standardId &&
+                (x.AvailableStatus == AvailableStatusDisponible ||
+                 (string.IsNullOrWhiteSpace(x.AvailableStatus) && x.StatusId == AvailableStatusDisponible)));
 
-        return inventories;
+        var exactMatch = await inventories.FirstOrDefaultAsync(x =>
+            x.PartNumber == request.PartNumber &&
+            x.ProductId == request.ProductId &&
+            x.LocationId == request.LocationId &&
+            x.LotNumber == request.LotNumber &&
+            x.Reference == request.Reference &&
+            x.PurchaseOrder == request.PurchaseOrder &&
+            x.CustomsDeclarationNumber == request.CustomsDeclarationNumber);
+
+        if (exactMatch is not null)
+            return exactMatch;
+
+        return await inventories.FirstOrDefaultAsync(x => x.PartNumber == request.PartNumber);
     }
 
     private async Task<AvailableInventory?> ResolveAvailableInventoryForIssueAsync(KittingIssueDetail issue)
@@ -475,7 +527,7 @@ public class KittingIssueController : CommonController
         var standardId = issue.StandardId.Value;
         var inventories = _context.AvailableInventories.Where(x => x.StandardId == standardId);
 
-        var exactMatch = await inventories.FirstOrDefaultAsync(x =>
+        return await inventories.FirstOrDefaultAsync(x =>
             x.PartNumber == issue.PartNumber &&
             x.ProductId == issue.ProductId &&
             x.LocationId == issue.LocationId &&
@@ -483,15 +535,6 @@ public class KittingIssueController : CommonController
             x.Reference == issue.Reference &&
             x.PurchaseOrder == issue.PurchaseOrder &&
             x.CustomsDeclarationNumber == issue.CustomsDeclarationNumber);
-
-        if (exactMatch is not null)
-            return exactMatch;
-
-        var consumedMatch = await inventories.FirstOrDefaultAsync(x => !x.Qty.HasValue || x.Qty.Value <= 0);
-        if (consumedMatch is not null)
-            return consumedMatch;
-
-        return await inventories.FirstOrDefaultAsync();
     }
 
     private async Task<int?> ResolveIssueStandardIdAsync(KittingIssueRequest request, KittingIssueDetail? currentEntity = null)
@@ -649,5 +692,18 @@ public class KittingIssueController : CommonController
             return null;
 
         return standardId.Trim();
+    }
+
+    private static string GetKittingReference(Kitting? kitting)
+    {
+        if (kitting is null)
+            return string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(kitting.KittingCode))
+            return kitting.KittingCode.Trim();
+
+        return kitting.KittingId > 0
+            ? kitting.KittingId.ToString()
+            : string.Empty;
     }
 }
