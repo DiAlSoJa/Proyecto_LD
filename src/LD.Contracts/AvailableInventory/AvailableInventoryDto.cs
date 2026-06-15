@@ -65,6 +65,12 @@ public class AvailableInventoryDto
     [DisplayName("Cantidad")]
     public decimal? Qty { get; set; }
 
+    [DisplayName("Supply")]
+    public decimal Supply { get; set; }
+
+    [DisplayName("FinalAvailable")]
+    public decimal FinalAvailable { get; set; }
+
     [DisplayName("Estandar Id")]
     public int? StandardId { get; set; }
 

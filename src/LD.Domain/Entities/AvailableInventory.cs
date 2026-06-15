@@ -66,6 +66,10 @@ namespace LD.Domain.Entities
 
         public decimal? Qty { get; set; }
 
+        public decimal Supply { get; set; }
+
+        public decimal FinalAvailable { get; set; }
+
         public int? StandardId { get; set; }
 
 

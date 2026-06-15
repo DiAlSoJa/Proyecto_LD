@@ -25,6 +25,8 @@ namespace LD.FormsX.Features.Surtidos.Views
         private readonly DataGridColumnFilterManager _columnFilterManager;
         private readonly ICollectionView _inventoriesView;
         private List<AvailableInventoryDto> _allInventories = new();
+        private readonly int _requiredClientId;
+        private readonly int _requiredProjectId;
         private bool _loading;
         private bool _soloEstatusDisponible = true;
         private string _clientFilter = string.Empty;
@@ -92,12 +94,16 @@ namespace LD.FormsX.Features.Surtidos.Views
             AvailableInventoryService availableInventoryService,
             string? initialPartNumber,
             string? initialClient,
-            string? initialProject)
+            string? initialProject,
+            int requiredClientId = 0,
+            int requiredProjectId = 0)
         {
             InitializeComponent();
             DataContext = this;
 
             _availableInventoryService = availableInventoryService;
+            _requiredClientId = requiredClientId;
+            _requiredProjectId = requiredProjectId;
             DataGridFilterStyler.Apply(dgInventario);
             _columnFilterManager = new DataGridColumnFilterManager(dgInventario);
             _inventoriesView = CollectionViewSource.GetDefaultView(_inventories);
@@ -137,7 +143,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 }
 
                 _allInventories = response.Data
-                    .Where(x => x.Qty.GetValueOrDefault() > 0 || IsInventoryStatus(x, DisponibleStatus) || IsInventoryStatus(x, SurtidoStatus))
+                    .Where(InventoryMatchesRequiredClientProject)
+                    .Where(x => x.FinalAvailable > 0 || x.Qty.GetValueOrDefault() > 0 || IsInventoryStatus(x, DisponibleStatus) || IsInventoryStatus(x, SurtidoStatus))
                     .OrderByDescending(x => x.Fecha)
                     .ThenByDescending(x => x.Hora)
                     .ToList();
@@ -204,9 +211,9 @@ namespace LD.FormsX.Features.Surtidos.Views
                 return;
             }
 
-            if (selected.Any(x => !IsInventoryStatus(x, DisponibleStatus)))
+            if (selected.Any(x => x.FinalAvailable <= 0 && x.Qty.GetValueOrDefault() <= 0))
             {
-                DialogHelper.ShowWarning("Solo puedes agregar registros con estatus disponible.");
+                DialogHelper.ShowWarning("Solo puedes agregar registros con inventario disponible.");
                 return;
             }
 
@@ -243,6 +250,9 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (item is not AvailableInventoryDto inventory)
                 return false;
 
+            if (!InventoryMatchesRequiredClientProject(inventory))
+                return false;
+
             if (SoloEstatusDisponible)
             {
                 if (!IsInventoryStatus(inventory, DisponibleStatus))
@@ -266,6 +276,17 @@ namespace LD.FormsX.Features.Surtidos.Views
             {
                 return false;
             }
+
+            return true;
+        }
+
+        private bool InventoryMatchesRequiredClientProject(AvailableInventoryDto inventory)
+        {
+            if (_requiredClientId > 0 && inventory.ClientId != _requiredClientId)
+                return false;
+
+            if (_requiredProjectId > 0 && inventory.ProjectId != _requiredProjectId)
+                return false;
 
             return true;
         }

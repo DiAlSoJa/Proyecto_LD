@@ -338,7 +338,9 @@ public class KittingDetailController : CommonController
         if (inventory is null)
             return;
 
-        inventory.Qty = issueDetail.ReceivedQuantity;
+        var currentQty = inventory.Qty ?? 0m;
+        inventory.Supply = 0m;
+        inventory.FinalAvailable = currentQty;
         inventory.AvailableStatus = AvailableStatusDisponible;
         inventory.AvailableReference = Truncate(inventory.DocumentId, 30);
         inventory.LastModifiedAt = DateTime.Now;

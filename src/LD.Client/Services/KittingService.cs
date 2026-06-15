@@ -67,4 +67,11 @@ public class KittingService
             _apiEndpoints.Kitting_Locate.Replace("{kittingId}", kittingId.ToString()),
             new { });
     }
+
+    public async Task<ApiResponseDto<string>> SendToSupplyKitting(int kittingId)
+    {
+        return await _api.PostAsync<object, ApiResponseDto<string>>(
+            _apiEndpoints.Kitting_SendToSupply.Replace("{kittingId}", kittingId.ToString()),
+            new { });
+    }
 }

@@ -361,6 +361,8 @@
                                 <DataGridTextColumn Header="Referencia disponible" Binding="{Binding AvailableReference}" Width="150"/>
                                 <DataGridTextColumn Header="Estatus disponible" Binding="{Binding AvailableStatus}" Width="160"/>
                                 <DataGridTextColumn Header="Cantidad" Binding="{Binding Qty}" Width="90"/>
+                                <DataGridTextColumn Header="Surtido" Binding="{Binding Supply}" Width="90"/>
+                                <DataGridTextColumn Header="Disponible final" Binding="{Binding FinalAvailable}" Width="120"/>
                                 <DataGridTextColumn Header="StandardId" Binding="{Binding StandardIdStr}" Width="120"/>
                             </DataGrid.Columns>
 

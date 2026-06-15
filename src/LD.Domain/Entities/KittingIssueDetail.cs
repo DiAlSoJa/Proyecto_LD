@@ -38,6 +38,9 @@ namespace LD.Domain.Entities
         [MaxLength(30)]
         public string? Status { get; set; }
 
+        [MaxLength(30)]
+        public string? SupplyStatus { get; set; }
+
         public int? LocationId { get; set; }
 
         [MaxLength(100)]

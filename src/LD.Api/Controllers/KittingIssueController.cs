@@ -175,7 +175,8 @@ public class KittingIssueController : CommonController
                     Result<string>.Failure("No existe inventario disponible para esta etiqueta.", new List<string> { "No existe inventario disponible para esta etiqueta." }, 404));
             }
 
-            if (!availableInventory.Qty.HasValue || availableInventory.Qty.Value <= 0)
+            var availableQuantity = GetAvailableQuantity(availableInventory);
+            if (availableQuantity <= 0)
             {
                 return ResultExtensions.ToActionResult(
                     Result<string>.Failure("La etiqueta seleccionada ya no tiene inventario disponible.", new List<string> { "La etiqueta seleccionada ya no tiene inventario disponible." }));
@@ -210,12 +211,15 @@ public class KittingIssueController : CommonController
                 var entity = _mapper.Map<KittingIssueDetail>(request);
                 entity.StandardId = standardLabel.StandarId;
                 entity.Status = NormalizeStatus(availableInventory.StatusId) ?? NormalizeStatus(request.Status);
-                entity.ReceivedQuantity = availableInventory.Qty;
+                entity.SupplyStatus = Truncate(request.SupplyStatus, 30);
+                entity.ReceivedQuantity = availableQuantity;
 
                 _context.KittingIssueDetails.Add(entity);
                 _context.InventoryMovements.Add(movement);
 
-                inventoryToUpdate.Qty = 0m;
+                var currentQty = inventoryToUpdate.Qty ?? 0m;
+                inventoryToUpdate.Supply = Math.Min(currentQty, inventoryToUpdate.Supply + availableQuantity);
+                inventoryToUpdate.FinalAvailable = Math.Max(currentQty - inventoryToUpdate.Supply, 0m);
                 inventoryToUpdate.AvailableStatus = AvailableStatusSurtido;
                 inventoryToUpdate.AvailableReference = Truncate(GetKittingReference(detail.Kitting), 30);
                 inventoryToUpdate.LastModifiedAt = DateTime.Now;
@@ -281,6 +285,7 @@ public class KittingIssueController : CommonController
             {
                 _mapper.Map(request, entity);
                 entity.ProductId = request.ProductId > 0 ? request.ProductId : entity.ProductId;
+                entity.SupplyStatus = Truncate(request.SupplyStatus, 30);
                 var updated = await _context.SaveChangesAsync() > 0;
 
                 await UpdateCantidadSurtidaAsync(entity.KittingDetailId);
@@ -384,9 +389,16 @@ public class KittingIssueController : CommonController
                         Result<string>.Failure("No se encontro el inventario disponible para restaurar.", new List<string> { "No se encontro el inventario disponible para restaurar." }, 404));
                 }
 
-                inventoryToUpdate.Qty = entity.ReceivedQuantity;
-                inventoryToUpdate.AvailableStatus = AvailableStatusDisponible;
-                inventoryToUpdate.AvailableReference = Truncate(availableInventory.DocumentId, 30);
+                var currentQty = inventoryToUpdate.Qty ?? 0m;
+                var restoredQuantity = entity.ReceivedQuantity ?? 0m;
+                inventoryToUpdate.Supply = Math.Max(inventoryToUpdate.Supply - restoredQuantity, 0m);
+                inventoryToUpdate.FinalAvailable = Math.Max(currentQty - inventoryToUpdate.Supply, 0m);
+                inventoryToUpdate.AvailableStatus = inventoryToUpdate.Supply > 0m
+                    ? AvailableStatusSurtido
+                    : AvailableStatusDisponible;
+                inventoryToUpdate.AvailableReference = inventoryToUpdate.Supply > 0m
+                    ? Truncate(GetKittingReference(detail.Kitting), 30)
+                    : Truncate(availableInventory.DocumentId, 30);
                 inventoryToUpdate.LastModifiedAt = DateTime.Now;
                 inventoryToUpdate.LastModifiedByUserId = CurrentUserId;
 
@@ -499,10 +511,12 @@ public class KittingIssueController : CommonController
         var inventories = _context.AvailableInventories
             .AsNoTracking()
             .Where(x =>
-                x.Qty.HasValue && x.Qty.Value > 0 &&
+                (x.FinalAvailable > 0m || (x.Qty.HasValue && x.Qty.Value > 0)) &&
                 x.StandardId == standardId &&
                 (x.AvailableStatus == AvailableStatusDisponible ||
-                 (string.IsNullOrWhiteSpace(x.AvailableStatus) && x.StatusId == AvailableStatusDisponible)));
+                 x.AvailableStatus == AvailableStatusSurtido ||
+                 (string.IsNullOrWhiteSpace(x.AvailableStatus) &&
+                  (x.StatusId == AvailableStatusDisponible || x.StatusId == AvailableStatusSurtido))));
 
         var exactMatch = await inventories.FirstOrDefaultAsync(x =>
             x.PartNumber == request.PartNumber &&
@@ -643,7 +657,7 @@ public class KittingIssueController : CommonController
             DocumentId = documentId,
             StatusId = NormalizeStatus(availableInventory.StatusId) ?? NormalizeStatus(request.Status),
             LocationId = availableInventory.LocationId,
-            Qty = availableInventory.Qty.HasValue ? -Math.Abs(availableInventory.Qty.Value) : null,
+            Qty = -Math.Abs(GetAvailableQuantity(availableInventory)),
             StandardId = standardId
         };
     }
@@ -684,6 +698,14 @@ public class KittingIssueController : CommonController
             Qty = issue.ReceivedQuantity.HasValue ? Math.Abs(issue.ReceivedQuantity.Value) : null,
             StandardId = standardId
         };
+    }
+
+    private static decimal GetAvailableQuantity(AvailableInventory inventory)
+    {
+        if (inventory.FinalAvailable > 0m)
+            return inventory.FinalAvailable;
+
+        return inventory.Qty.GetValueOrDefault();
     }
 
     private static string? NormalizeStandardIdText(string? standardId)

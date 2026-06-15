@@ -194,6 +194,8 @@ public class ConfirmAsnCommandHandler : IRequestHandler<ConfirmAsnCommand, Resul
                         AvailableStatus = "Disponible",
                         LocationId = detail.LocationId,
                         Qty = detail.ReceivedQuantity,
+                        Supply = 0,
+                        FinalAvailable = detail.ReceivedQuantity ?? 0,
                         StandardId = detail.StandardId
                     };
 

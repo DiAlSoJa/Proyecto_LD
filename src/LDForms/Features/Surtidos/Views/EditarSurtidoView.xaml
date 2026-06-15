@@ -548,6 +548,27 @@
                                         Margin="8,0,0,0"
                                         Click="BtnAutopicking_Click"
                                         Visibility="Collapsed"/>
+
+                                <Button x:Name="btnListaSurtido"
+                                        Width="150"
+                                        Height="32"
+                                        Padding="10,0"
+                                        Style="{StaticResource ToolbarButtonStyle}"
+                                        Margin="8,0,0,0"
+                                        Click="BtnListaSurtido_Click"
+                                        Visibility="Collapsed">
+                                    <StackPanel Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
+                                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                                   Text="&#xE749;"
+                                                   Foreground="#374151"
+                                                   Margin="0,0,6,0"
+                                                   FontSize="12"/>
+                                        <TextBlock Text="Lista de surtido"
+                                                   FontSize="12"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
 
                             <Border x:Name="bdKittingDetails"

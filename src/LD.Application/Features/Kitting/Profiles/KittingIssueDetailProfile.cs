@@ -46,6 +46,7 @@ public class KittingIssueDetailProfile : Profile
             .ForMember(dest => dest.SD, opt => opt.MapFrom(src => src.SD))
             .ForMember(dest => dest.ReceivedQuantity, opt => opt.MapFrom(src => src.ReceivedQuantity))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.SupplyStatus, opt => opt.MapFrom(src => src.SupplyStatus))
             .ForMember(dest => dest.LocationCode, opt => opt.MapFrom(src => src.Location != null
                 ? src.Location.LocationName
                 : src.LocationCode ?? string.Empty))

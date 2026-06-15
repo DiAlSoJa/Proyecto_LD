@@ -1,4 +1,4 @@
-using LD.Client.Services;
+﻿using LD.Client.Services;
 using LD.Client.Configuration;
 using LD.Contracts.DTOs;
 using LD.Contracts.Enums;
@@ -7,8 +7,10 @@ using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model.Lookup;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -176,13 +178,29 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
 
-        private static bool IsLocatingStatus(string? status) =>
+        private static bool IsCreatedStatus(string? status) =>
+            string.Equals(status?.Trim(), "Creado", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsSendingStatus(string? status) =>
+            string.Equals(status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(status?.Trim(), "Ubicando", StringComparison.OrdinalIgnoreCase);
+
+        private static string GetTerminalStatusLabel(string? status)
+        {
+            if (IsCancelledStatus(status))
+                return "cancelado";
+
+            if (string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
+                return "surtido";
+
+            return "confirmado";
+        }
 
         private static bool IsTerminalStatus(string? status) =>
             IsConfirmedStatus(status) || IsCancelledStatus(status);
@@ -221,10 +239,17 @@ namespace LD.FormsX.Features.Surtidos.Views
             var hasSelected = _selectedKitting != null;
             var isConfirmed = IsConfirmedStatus(_selectedKitting?.Status);
             var isCancelled = IsCancelledStatus(_selectedKitting?.Status);
-            var isLocating = IsLocatingStatus(_selectedKitting?.Status);
+            var isSending = IsSendingStatus(_selectedKitting?.Status);
             var isTerminal = isConfirmed || isCancelled;
             var canEdit = hasSelected && !isTerminal;
-            var terminalStatus = isCancelled ? "cancelado" : "confirmado";
+            var terminalStatus = GetTerminalStatusLabel(_selectedKitting?.Status);
+            var confirmTooltip = !hasSelected
+                ? "Selecciona un surtido para surtir."
+                : isTerminal
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede surtir."
+                    : !isSending
+                        ? "El surtido debe estar en estatus Surtiendo para poder marcarlo como Surtido completo."
+                        : "Marcar como Surtido completo";
 
             ConfigureActionButton(
                 btnEditar,
@@ -237,26 +262,30 @@ namespace LD.FormsX.Features.Surtidos.Views
                         : "Selecciona un surtido para editar.");
 
             ConfigureActionButton(
-                btnUbicando,
-                canEdit && !isLocating,
+                btnEnviarASurtir,
+                canEdit && !isSending,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
-                    ? $"Este surtido esta {terminalStatus}. Ya no se puede ubicar."
-                    : hasSelected && isLocating
-                        ? "El surtido ya esta en estatus Ubicando."
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede enviar a surtir."
+                    : hasSelected && isSending
+                        ? "El surtido ya esta en estatus Surtiendo."
                         : hasSelected
-                            ? "Marcar surtido como Ubicando"
-                            : "Selecciona un surtido para ubicar.");
+                            ? "Enviar surtido a surtir"
+                            : "Selecciona un surtido para enviar a surtir.");
 
             ConfigureActionButton(
                 btnConfirmar,
-                canEdit,
+                hasSelected && isSending,
                 hasSelected && isTerminal,
-                hasSelected && isTerminal
-                    ? $"Este surtido esta {terminalStatus}. Ya no se puede confirmar."
-                    : hasSelected
-                        ? "Confirmar surtido"
-                        : "Selecciona un surtido para confirmar.");
+                confirmTooltip);
+
+            ConfigureActionButton(
+                btnListaSurtido,
+                hasSelected,
+                false,
+                hasSelected
+                    ? "Imprimir lista de surtido"
+                    : "Selecciona un surtido para imprimir la lista.");
 
             ConfigureActionButton(
                 btnCancelar,
@@ -407,7 +436,9 @@ namespace LD.FormsX.Features.Surtidos.Views
 
             if (VerSinConfirmar)
             {
-                filtered = filtered.Where(x => !IsConfirmedStatus(x.Status));
+                filtered = filtered.Where(x =>
+                    IsCreatedStatus(x.Status) ||
+                    IsSendingStatus(x.Status));
             }
 
             _gridFilter.SetData(filtered.ToList());
@@ -577,42 +608,45 @@ namespace LD.FormsX.Features.Surtidos.Views
             }
         }
 
-        private async void BtnUbicando_Click(object sender, RoutedEventArgs e)
+        private async void BtnEnviarASurtir_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un surtido para ubicar.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para enviar a surtir.");
                     return;
                 }
 
                 if (IsConfirmedStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido seleccionado ya esta confirmado y no se puede ubicar.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta confirmado y no se puede enviar a surtir.");
                     return;
                 }
 
                 if (IsCancelledStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido seleccionado esta cancelado y no se puede ubicar.");
+                    DialogHelper.ShowWarning("El surtido seleccionado esta cancelado y no se puede enviar a surtir.");
                     return;
                 }
 
-                if (IsLocatingStatus(_selectedKitting.Status))
+                if (IsSendingStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido seleccionado ya esta en estatus Ubicando.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta en estatus Surtiendo.");
                     return;
                 }
 
-                var result = await _kittingService.LocateKitting(_selectedKitting.KittingId);
+                if (!DialogHelper.ShowConfirm("¿Está seguro de enviar a surtir?"))
+                    return;
+
+                var result = await _kittingService.SendToSupplyKitting(_selectedKitting.KittingId);
                 if (!result.IsSuccess)
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo marcar el surtido como Ubicando.");
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo cambiar el surtido a Surtiendo.");
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Surtido marcado como Ubicando correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Surtido correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -627,30 +661,39 @@ namespace LD.FormsX.Features.Surtidos.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un surtido para confirmar.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para surtir.");
                     return;
                 }
 
                 if (IsConfirmedStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido seleccionado ya esta confirmado.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta surtido.");
                     return;
                 }
 
                 if (IsCancelledStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido seleccionado esta cancelado y no se puede confirmar.");
+                    DialogHelper.ShowWarning("El surtido seleccionado esta cancelado y no se puede surtir.");
                     return;
                 }
+
+                if (!IsSendingStatus(_selectedKitting.Status))
+                {
+                    DialogHelper.ShowWarning("El surtido debe estar en estatus Surtiendo para poder marcarlo como Surtido completo.");
+                    return;
+                }
+
+                if (!DialogHelper.ShowConfirm("¿Está seguro de surtir?"))
+                    return;
 
                 var result = await _kittingService.ConfirmKitting(_selectedKitting.KittingId);
                 if (!result.IsSuccess)
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo confirmar el surtido.");
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo surtir el registro.");
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Surtido confirmado correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Surtido correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -695,8 +738,33 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Surtido cancelado correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Surtido correctamente.");
                 await CargarDatosConLoaderAsync();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async void BtnListaSurtido_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un surtido para imprimir la lista de surtido.");
+                    return;
+                }
+
+                var rows = await BuildListaSurtidoRowsAsync(_selectedKitting);
+                if (rows.Count == 0)
+                {
+                    DialogHelper.ShowWarning("No hay lineas surtidas para imprimir.");
+                    return;
+                }
+
+                ListaSurtidoPrinter.Print(_selectedKitting, rows);
             }
             catch (Exception ex)
             {
@@ -768,5 +836,45 @@ namespace LD.FormsX.Features.Surtidos.Views
                 DialogHelper.ShowError(ex.Message);
             }
         }
+
+        private async Task<List<ListaSurtidoPrinter.ListaSurtidoRow>> BuildListaSurtidoRowsAsync(KittingDto kitting)
+        {
+            var rows = new List<ListaSurtidoPrinter.ListaSurtidoRow>();
+
+            var detailsResponse = await _kittingDetailService.GetKittingDetailsByKittingId(kitting.KittingId);
+            if (!detailsResponse.IsSuccess || detailsResponse.Data == null)
+                return rows;
+
+            foreach (var detail in detailsResponse.Data)
+            {
+                if (detail.KittingDetailId <= 0)
+                    continue;
+
+                var issuesResponse = await _kittingIssueService.GetKittingIssuesByKittingDetailId(detail.KittingDetailId);
+                if (!issuesResponse.IsSuccess || issuesResponse.Data == null)
+                    continue;
+
+                foreach (var issue in issuesResponse.Data.Where(x => x.ReceivedQuantity.GetValueOrDefault() > 0))
+                {
+                    rows.Add(new ListaSurtidoPrinter.ListaSurtidoRow
+                    {
+                        PartNumber = issue.PartNumber?.Trim() ?? string.Empty,
+                        Description = issue.Description?.Trim() ?? string.Empty,
+                        Quantity = issue.ReceivedQuantity.GetValueOrDefault(),
+                        Status = issue.Status?.Trim() ?? string.Empty,
+                        LotNumber = issue.LotNumber?.Trim() ?? string.Empty,
+                        SD = issue.SD?.Trim() ?? string.Empty,
+                        LocationCode = issue.LocationCode?.Trim() ?? string.Empty
+                    });
+                }
+            }
+
+            return rows;
+        }
     }
 }
+
+
+
+
+
