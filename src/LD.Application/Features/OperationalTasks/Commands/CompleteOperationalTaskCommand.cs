@@ -40,23 +40,23 @@ public class CompleteOperationalTaskCommandHandler : IRequestHandler<CompleteOpe
 
         // Valida que la tarea siga asignada a quien la intenta completar.
         // Evita pisar el estado si ya fue liberada por stale-timeout y reasignada a otro usuario.
-        if (!string.IsNullOrEmpty(task.AssignedToUserId) && task.AssignedToUserId != currentUserId)
-            return Result<string>.Failure(
-                "Esta tarea ya no está asignada a tu usuario. Es posible que haya sido reasignada por inactividad.",
-                [], 409);
+        //if (!string.IsNullOrEmpty(task.AssignedToUserId) && task.AssignedToUserId != currentUserId)
+        //    return Result<string>.Failure(
+        //        "Esta tarea ya no está asignada a tu usuario. Es posible que haya sido reasignada por inactividad.",
+        //        [], 409);
 
-        task.Status                 = OperationalTaskStatus.Completada;
-        task.AssignedToUserId       = null;
-        task.AssignedAt             = null;
-        task.Completed              = true;
-        task.CompletedAt            = DateTime.UtcNow;
-        task.CompletedByName        = request.CompletedBy;
-        task.CompletedByUserId      = currentUserId;
-        task.ResolutionObservations = request.ResolutionObservations;
-        task.ResolvedPhoto1Path     = request.ResolvedPhoto1Path;
-        task.ResolvedPhoto2Path     = request.ResolvedPhoto2Path;
-        task.ResolvedPhoto3Path     = request.ResolvedPhoto3Path;
-        task.ResolvedPhoto4Path     = request.ResolvedPhoto4Path;
+        //task.Status                 = OperationalTaskStatus.Completada;
+        //task.AssignedToUserId       = null;
+        //task.AssignedAt             = null;
+        //task.Completed              = true;
+        //task.CompletedAt            = DateTime.UtcNow;
+        //task.CompletedByName        = request.CompletedBy;
+        //task.CompletedByUserId      = currentUserId;
+        //task.ResolutionObservations = request.ResolutionObservations;
+        //task.ResolvedPhoto1Path     = request.ResolvedPhoto1Path;
+        //task.ResolvedPhoto2Path     = request.ResolvedPhoto2Path;
+        //task.ResolvedPhoto3Path     = request.ResolvedPhoto3Path;
+        //task.ResolvedPhoto4Path     = request.ResolvedPhoto4Path;
 
         var updated = await _repository.UpdateAsync(task);
         if (!updated)

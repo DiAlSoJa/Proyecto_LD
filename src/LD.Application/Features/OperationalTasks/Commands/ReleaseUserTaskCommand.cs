@@ -22,7 +22,8 @@ public class ReleaseUserTaskCommandHandler : IRequestHandler<ReleaseUserTaskComm
     {
         try
         {
-            await _taskRepo.ReleaseTaskForUserAsync(request.UserId, cancellationToken);
+            //await _taskRepo.ReleaseTaskForUserAsync(request.UserId, cancellationToken);
+            //return Result<string>.Success("Tarea liberada", string.Empty);
             return Result<string>.Success("Tarea liberada", string.Empty);
         }
         catch (Exception ex)

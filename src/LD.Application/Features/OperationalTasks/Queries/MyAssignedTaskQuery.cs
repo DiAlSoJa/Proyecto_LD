@@ -31,9 +31,9 @@ public class MyAssignedTaskQueryHandler : IRequestHandler<MyAssignedTaskQuery, R
         if (string.IsNullOrEmpty(userId))
             return Result<OperationalTaskDto?>.Failure("Usuario no autenticado", [], 401);
 
-        var task = await _taskRepo.GetAssignedTaskForUserAsync(userId, cancellationToken);
-        var dto  = task is not null ? _mapper.Map<OperationalTaskDto>(task) : null;
+        //var task = await _taskRepo.GetAssignedTaskForUserAsync(userId, cancellationToken);
+        //var dto  = task is not null ? _mapper.Map<OperationalTaskDto>(task) : null;
 
-        return Result<OperationalTaskDto?>.Success(dto, "OK");
+        return Result<OperationalTaskDto?>.Success(null, "OK");
     }
 }

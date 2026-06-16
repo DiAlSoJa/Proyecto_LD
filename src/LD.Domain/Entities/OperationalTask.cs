@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using LD.Domain.Common;
-using LD.Domain.Enums;
 
 namespace LD.Domain.Entities;
 
@@ -54,23 +53,10 @@ public class OperationalTask : AuditableEntity
     [MaxLength(500)]
     public string? ResolvedPhoto4Path { get; set; }
 
-    public OperationalTaskStatus Status { get; set; } = OperationalTaskStatus.NoAsignada;
-
-    // Quién tiene la tarea asignada actualmente (nullable: null = sin asignar)
-    [MaxLength(450)]
-    public string? AssignedToUserId { get; set; }
-
-    public DateTime? AssignedAt { get; set; }
-
     public bool Completed { get; set; }
 
     public DateTime? CompletedAt { get; set; }
 
-    // Nombre de texto libre tal como lo envía la app (legacy + display)
     [MaxLength(150)]
-    public string? CompletedByName { get; set; }
-
-    // FK al usuario de Identity que completó la tarea
-    [MaxLength(450)]
-    public string? CompletedByUserId { get; set; }
+    public string? CompletedBy { get; set; }
 }

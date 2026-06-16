@@ -2774,26 +2774,15 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("AssignedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("AssignedToUserId")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("Completed")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("CompletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CompletedByName")
+                    b.Property<string>("CompletedBy")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("CompletedByUserId")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -2866,15 +2855,10 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("OperationalTaskId");
-
-                    b.HasIndex("AssignedToUserId");
 
                     b.HasIndex("WarehouseId");
 
@@ -6637,11 +6621,6 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("LD.Domain.Entities.OperationalTask", b =>
                 {
-                    b.HasOne("LD.Infrastructure.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("AssignedToUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
                         .WithMany("OperationalTasks")
                         .HasForeignKey("WarehouseId")
