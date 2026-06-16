@@ -1,5 +1,6 @@
 using LD.Api.Services;
 using LD.Application.Features.OperationalTasks.Commands;
+using LD.Application.Features.WarehouseTasks.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -39,6 +40,7 @@ public class NotificationHub : Hub
             // Cubre desconexión limpia (logout) y reconexión fallida.
             // Desconexión sucia (red caída sin este callback) la maneja ReleaseStaleAssignedTasksAsync en el worker.
             await _mediator.Send(new ReleaseUserTaskCommand { UserId = userId });
+            await _mediator.Send(new ReleaseWarehouseTaskForUserCommand { UserId = userId });
         }
         await base.OnDisconnectedAsync(exception);
     }

@@ -290,7 +290,7 @@ namespace MauiAppLogin.ViewModels
 
         private async Task NavigateToTaskManager()
         {
-            await Shell.Current.GoToAsync("TaskList");
+            await Shell.Current.GoToAsync(nameof(TaskWaitingPage));
         }
 
         private async Task NavigateToTaskManagerSecurity(string? textInfo)

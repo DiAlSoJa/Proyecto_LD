@@ -1,9 +1,8 @@
 using AutoMapper;
 using LD.Api.Hubs;
 using LD.Api.Services;
-using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Repository;
-using LD.Contracts.DTOs.OperationalTasks;
+using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.SignalR;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
@@ -12,9 +11,9 @@ namespace LD.Api.Workers;
 
 public sealed class TaskDispatcherWorker : BackgroundService
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ConnectedUsersTracker _tracker;
-    private readonly IHubContext<NotificationHub> _hub;
+    private readonly IServiceScopeFactory          _scopeFactory;
+    private readonly ConnectedUsersTracker          _tracker;
+    private readonly IHubContext<NotificationHub>  _hub;
     private readonly ILogger<TaskDispatcherWorker> _logger;
 
     private static readonly TimeSpan CheckInterval   = TimeSpan.FromSeconds(30);
@@ -34,11 +33,11 @@ public sealed class TaskDispatcherWorker : BackgroundService
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        // Asume instancia única — revisar si se escala horizontalmente,
-        // liberaría tareas de usuarios conectados a otra instancia.
-        using var scope    = _scopeFactory.CreateScope();
-        var taskRepo       = scope.ServiceProvider.GetRequiredService<IOperationalTaskRepository>();
-        //await taskRepo.ReleaseAllAssignedTasksAsync(cancellationToken);
+        // Libera todas las tareas que quedaron en estado Asignada de sesiones anteriores.
+        // Asume instancia única — revisar si se escala horizontalmente.
+        using var scope  = _scopeFactory.CreateScope();
+        var taskRepo     = scope.ServiceProvider.GetRequiredService<IWarehouseTaskRepository>();
+        await taskRepo.ReleaseAllAssignedTasksAsync(cancellationToken);
         _logger.LogInformation("TaskDispatcherWorker startup: tareas huérfanas en estado Asignada liberadas");
 
         await base.StartAsync(cancellationToken);
@@ -65,72 +64,80 @@ public sealed class TaskDispatcherWorker : BackgroundService
 
     private async Task DispatchPendingTasksAsync(CancellationToken ct)
     {
-        var connectedUsers = _tracker.GetConnectedUsers();
-        if (connectedUsers.Count == 0)
+        var availableUsers = _tracker.GetAvailableUsers();
+        if (availableUsers.Count == 0)
+        {
+            _logger.LogDebug("No hay usuarios disponibles — saltando ciclo");
             return;
+        }
 
         using var scope = _scopeFactory.CreateScope();
-        var taskRepo    = scope.ServiceProvider.GetRequiredService<IOperationalTaskRepository>();
+        var taskRepo    = scope.ServiceProvider.GetRequiredService<IWarehouseTaskRepository>();
         var mapper      = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-        //// Libera tareas cuyo usuario ya no está conectado y llevan más de StaleTaskWindow asignadas
-        //await taskRepo.ReleaseStaleAssignedTasksAsync(connectedUsers, StaleTaskWindow, ct);
+        // Limpia tareas cuyo usuario ya no está conectado o llevan más de StaleTaskWindow asignadas.
+        var connectedUsers = _tracker.GetConnectedUsers();
+        await taskRepo.ReleaseStaleAssignedTasksAsync(connectedUsers, StaleTaskWindow, ct);
 
-        //// Usuarios conectados que aún no tienen tarea en BD
-        //var usersWithTask    = await taskRepo.GetUserIdsWithAssignedTaskAsync(connectedUsers, ct);
-        //var usersNeedingTask = connectedUsers.Where(u => !usersWithTask.Contains(u)).ToList();
+        // Filtra usuarios disponibles que aún no tienen tarea asignada en BD.
+        var usersWithTask    = await taskRepo.GetUserIdsWithAssignedTaskAsync(availableUsers, ct);
+        var usersNeedingTask = availableUsers.Where(u => !usersWithTask.Contains(u)).ToList();
 
-        //if (usersNeedingTask.Count == 0)
-        //{
-        //    _logger.LogDebug("Todos los usuarios conectados ya tienen tarea asignada");
-        //    return;
-        //}
+        if (usersNeedingTask.Count == 0)
+        {
+            _logger.LogDebug("Todos los usuarios disponibles ya tienen tarea asignada");
+            return;
+        }
 
-        //_logger.LogDebug("{Count} usuario(s) conectados sin tarea — buscando candidatas", usersNeedingTask.Count);
+        _logger.LogDebug("{Count} usuario(s) disponible(s) sin tarea — buscando candidatas", usersNeedingTask.Count);
 
-        //var candidates = (await taskRepo.GetPendingUnassignedTasksAsync(ct))
-        //    .OrderBy(_ => Guid.NewGuid())
-        //    .ToList();
+        // Candidatas en orden de llegada (FIFO). Barajamos dentro del FIFO para
+        // evitar que todos los workers intenten siempre la misma tarea primero.
+        var candidates = (await taskRepo.GetPendingUnassignedTasksAsync(ct))
+            .OrderBy(_ => Guid.NewGuid())
+            .ToList();
 
-        //if (candidates.Count == 0)
-        //{
-        //    _logger.LogDebug("No hay tareas candidatas (NoAsignada) disponibles");
-        //    return;
-        //}
+        if (candidates.Count == 0)
+        {
+            _logger.LogDebug("No hay tareas candidatas (NoAsignada) disponibles");
+            return;
+        }
 
-        //foreach (var userId in usersNeedingTask)
-        //{
-        //    foreach (var candidate in candidates)
-        //    {
-        //        // TryClaimTaskAsync es atómico: UPDATE WHERE Status=0
-        //        // Si otro hilo ya la reclamó, devuelve false y probamos la siguiente
-        //        var claimed = await taskRepo.TryClaimTaskAsync(candidate.OperationalTaskId, userId, ct);
-        //        if (!claimed)
-        //            continue;
+        foreach (var userId in usersNeedingTask)
+        {
+            foreach (var candidate in candidates)
+            {
+                // TryClaimTaskAsync es atómico: UPDATE WHERE Status=NoAsignada.
+                // Si otro proceso ya la reclamó, devuelve false y probamos la siguiente.
+                var claimed = await taskRepo.TryClaimTaskAsync(candidate.WarehouseTaskId, userId, ct);
+                if (!claimed)
+                    continue;
 
-        //        // Eliminamos la candidata reclamada de la lista local para no re-intentarla en este ciclo
-        //        candidates.Remove(candidate);
+                // Remover del set de disponibles para que el siguiente ciclo no re-intente
+                _tracker.MarkUserUnavailable(userId);
 
-        //        var taskDto = mapper.Map<OperationalTaskDto>(candidate);
+                // Eliminar la candidata reclamada de la lista local para no asignarla a otro
+                candidates.Remove(candidate);
 
-        //        await _hub.Clients.User(userId).SendAsync("ReceiveNotification", new HubNotification
-        //        {
-        //            Type      = "task_assigned",
-        //            Title     = $"Nueva tarea: {candidate.Name}",
-        //            Message   = candidate.Description ?? candidate.Activity,
-        //            Payload   = JsonSerializer.Serialize(taskDto),
-        //            CreatedAt = DateTime.UtcNow
-        //        }, ct);
+                var taskDto = mapper.Map<WarehouseTaskDto>(candidate);
 
-        //        _logger.LogInformation(
-        //            "Tarea {TaskId} ({TaskName}) asignada a usuario {UserId}",
-        //            candidate.OperationalTaskId, candidate.Name, userId);
+                await _hub.Clients.User(userId).SendAsync("ReceiveNotification", new HubNotification
+                {
+                    Type      = "task_assigned",
+                    Title     = $"Nueva tarea: {candidate.Name}",
+                    Message   = candidate.Description ?? candidate.Activity,
+                    Payload   = JsonSerializer.Serialize(taskDto),
+                    CreatedAt = DateTime.UtcNow
+                }, ct);
 
-        //        break;
-        //    }
+                _logger.LogInformation(
+                    "Tarea {TaskId} ({TaskName}) asignada a usuario {UserId}",
+                    candidate.WarehouseTaskId, candidate.Name, userId);
 
-        //    if (candidates.Count == 0) break;
-        return;
+                break;
+            }
+
+            if (candidates.Count == 0) break;
         }
     }
-
+}

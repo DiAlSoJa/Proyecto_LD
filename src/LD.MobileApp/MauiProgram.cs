@@ -90,11 +90,13 @@ namespace MauiAppLogin
             builder.Services.AddTransient<PatioDetallePage>();
             builder.Services.AddTransient<CortinaSeleccionPage>();
             builder.Services.AddTransient<TaskSecurityPage>();
+            builder.Services.AddTransient<TaskWaitingPage>();
 
             builder.Services.AddTransient<PatioPendientesViewModel>();
             builder.Services.AddTransient<PatioDetalleViewModel>();
             builder.Services.AddTransient<CortinaSeleccionViewModel>();
             builder.Services.AddTransient<TaskSecurityViewModel>();
+            builder.Services.AddTransient<TaskWaitingViewModel>();
 
             // Session service: maneja SecureStorage + refresh automático
             builder.Services.AddSingleton<MobileSessionService>();

@@ -59,6 +59,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Cortina> Cortinas { get; set; }
         public DbSet<SecurityTask> SecurityTasks { get; set; }
         public DbSet<OperationalTask> OperationalTasks { get; set; }
+        public DbSet<WarehouseTask> WarehouseTasks { get; set; }
 
         // ASN related tables
         public DbSet<Asn> Asns { get; set; }
@@ -921,6 +922,34 @@ namespace LD.Infrastructure.Persistence
                     .HasForeignKey(x => x.WarehouseId)
                     .OnDelete(DeleteBehavior.SetNull);
             });
+
+            // ── WarehouseTask ──────────────────────────────────────────────────────
+            builder.Entity<WarehouseTask>(entity =>
+            {
+                entity.ToTable("WarehouseTasks");
+                entity.Property(x => x.Priority).HasMaxLength(50).IsRequired();
+                entity.Property(x => x.Activity).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.Name).HasMaxLength(150).IsRequired();
+                entity.Property(x => x.Description).HasMaxLength(1000);
+                entity.Property(x => x.Photo1Path).HasMaxLength(500);
+                entity.Property(x => x.Photo2Path).HasMaxLength(500);
+                entity.Property(x => x.Photo3Path).HasMaxLength(500);
+                entity.Property(x => x.Photo4Path).HasMaxLength(500);
+                entity.Property(x => x.ResolutionObservations).HasMaxLength(1000);
+                entity.Property(x => x.ResolvedPhoto1Path).HasMaxLength(500);
+                entity.Property(x => x.ResolvedPhoto2Path).HasMaxLength(500);
+                entity.Property(x => x.ResolvedPhoto3Path).HasMaxLength(500);
+                entity.Property(x => x.ResolvedPhoto4Path).HasMaxLength(500);
+                entity.Property(x => x.AssignedToUserId).HasMaxLength(450);
+                entity.Property(x => x.CompletedByUserId).HasMaxLength(450);
+                entity.Property(x => x.CompletedByName).HasMaxLength(150);
+                entity.Property(x => x.Status).HasConversion<int>();
+                entity.HasOne(x => x.Warehouse)
+                    .WithMany(x => x.WarehouseTasks)
+                    .HasForeignKey(x => x.WarehouseId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+            // ───────────────────────────────────────────────────────────────────────
 
             // Seed: warehouse de referencia para cortinas
             builder.Entity<Warehouse>().HasData(

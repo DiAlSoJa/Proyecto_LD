@@ -170,6 +170,10 @@ public static class PermissionKeys
     // STANDAR LABELS / ETIQUETAS ESTÁNDAR
     public const string StandardLabel_Print = "standard-label.print";//"equipment-types.delete";
 
+    // WAREHOUSE TASKS / TAREAS DE ALMACENISTA
+    public const string WarehouseTask_View   = "warehouse-task.read";
+    public const string WarehouseTask_Manage = "warehouse-task.manage";
+
     // DEV TOOLS
     public const string Dev_TaskGenerator = "dev.task-generator";
 

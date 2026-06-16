@@ -145,9 +145,6 @@ builder.Services.AddSingleton<IConnectedUsersTracker>(sp =>
 builder.Services.AddSingleton<IRealtimeNotifier, SignalRNotifier>();
 builder.Services.AddHostedService<TaskDispatcherWorker>();
 
-builder.Services.AddSingleton<TaskGeneratorState>();
-builder.Services.AddHostedService<DummyTaskGeneratorWorker>();
-
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -199,6 +196,31 @@ using (var scope = app.Services.CreateScope())
         new { Key = PermissionKeys.Movement_Update, Name = "Editar movimientos" },
         new { Key = PermissionKeys.Movement_Delete, Name = "Eliminar movimientos" }
     };
+
+    // WarehouseTask permissions — seeded at runtime so they don't need a migration HasData block
+    var warehouseTaskPermissionsToSeed = new[]
+    {
+        new { Key = PermissionKeys.WarehouseTask_View,   Name = "Ver tareas de almacén" },
+        new { Key = PermissionKeys.WarehouseTask_Manage, Name = "Administrar tareas de almacén" }
+    };
+
+    var missingWarehouseTaskPermissions = warehouseTaskPermissionsToSeed
+        .Where(p => !db.Permissions.Any(x => x.Key == p.Key))
+        .Select(p => new Permission
+        {
+            PermissionName = p.Name,
+            Key            = p.Key,
+            ModuleId       = 1,
+            CreatedAt      = DateTime.UtcNow,
+            IsActive       = true
+        })
+        .ToList();
+
+    if (missingWarehouseTaskPermissions.Count > 0)
+    {
+        db.Permissions.AddRange(missingWarehouseTaskPermissions);
+        db.SaveChanges();
+    }
 
     var missingMovementPermissions = movementPermissionsToSeed
         .Where(permission => !db.Permissions.Any(p => p.Key == permission.Key))
@@ -265,7 +287,7 @@ using (var scope = app.Services.CreateScope())
             policy.Requirements.Add(new PermissionRequirement(permission)));
     }
 
-    foreach (var permission in movementPermissionsToSeed.Select(x => x.Key))
+    foreach (var permission in movementPermissionsToSeed.Concat(warehouseTaskPermissionsToSeed).Select(x => x.Key))
     {
         if (permissions.Contains(permission))
             continue;

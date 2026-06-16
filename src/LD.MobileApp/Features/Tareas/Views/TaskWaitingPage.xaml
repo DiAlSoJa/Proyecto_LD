@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.TaskWaitingPage"
+             BackgroundColor="#1A1A2E"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <!-- Fondo oscuro full-screen -->
+        <BoxView BackgroundColor="#1A1A2E" />
+
+        <!-- Tarjeta central -->
+        <Border BackgroundColor="White"
+                StrokeShape="RoundRectangle 16"
+                Stroke="Transparent"
+                Padding="32,28"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                MinimumWidthRequest="280">
+
+            <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
+
+                <ActivityIndicator IsRunning="True"
+                                   Color="#E76F51"
+                                   WidthRequest="56"
+                                   HeightRequest="56"
+                                   HorizontalOptions="Center" />
+
+                <Label Text="Esperando asignación de tarea..."
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="#1A1A2E"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center" />
+
+                <Label Text="El sistema te asignará la próxima tarea disponible."
+                       FontSize="13"
+                       TextColor="#6B7280"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center" />
+
+                <Button Text="Cancelar"
+                        Command="{Binding CancelCommand}"
+                        BackgroundColor="#6B7280"
+                        TextColor="White"
+                        CornerRadius="8"
+                        HeightRequest="44"
+                        HorizontalOptions="Fill"
+                        Margin="0,8,0,0" />
+
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+
+</ContentPage>

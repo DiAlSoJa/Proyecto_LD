@@ -31,6 +31,9 @@
 
             // Task Manager Seguridad
             Routing.RegisterRoute(nameof(TaskSecurityPage), typeof(TaskSecurityPage));
+
+            // Warehouse Task — pantalla de espera de asignación
+            Routing.RegisterRoute(nameof(TaskWaitingPage), typeof(TaskWaitingPage));
         }
     }
 }

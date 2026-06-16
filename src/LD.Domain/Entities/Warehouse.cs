@@ -34,5 +34,6 @@ namespace LD.Domain.Entities
 
         public ICollection<UserWarehouse> UserWarehouses { get; set; } = new List<UserWarehouse>();
         public ICollection<OperationalTask> OperationalTasks { get; set; } = new List<OperationalTask>();
+        public ICollection<WarehouseTask> WarehouseTasks { get; set; } = new List<WarehouseTask>();
     }
 }

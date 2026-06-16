@@ -230,6 +230,19 @@ namespace LD.Forms.Configuration
         public string OperationalTask_GetImage    => $"{_baseApi}/OperationalTask/image?path={{path}}";
 
         // ======================
+        // WAREHOUSE TASK
+        // ======================
+
+        public string WarehouseTask_GetAll       => $"{_baseApi}/WarehouseTask";
+        public string WarehouseTask_MyAssigned   => $"{_baseApi}/WarehouseTask/my-assigned";
+        public string WarehouseTask_MarkAvailable => $"{_baseApi}/WarehouseTask/mark-available";
+        public string WarehouseTask_CancelWaiting => $"{_baseApi}/WarehouseTask/cancel-waiting";
+        public string WarehouseTask_Create       => $"{_baseApi}/WarehouseTask";
+        public string WarehouseTask_Complete     => $"{_baseApi}/WarehouseTask/{{taskId}}/complete";
+        public string WarehouseTask_UploadImage  => $"{_baseApi}/WarehouseTask/upload-image";
+        public string WarehouseTask_GetImage     => $"{_baseApi}/WarehouseTask/image?path={{path}}";
+
+        // ======================
         // VEHICLE
         // ======================
 

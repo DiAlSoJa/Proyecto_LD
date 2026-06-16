@@ -59,7 +59,17 @@
       "PowerShell(dotnet ef database *)",
       "PowerShell(cd \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\"; $out = dotnet build src/LD.MobileApp/LD.MobileApp.csproj -f net10.0-android -c Release 2>&1; $out | Where-Object { $_ -match \"error CS|Error\\\\\\(s\\\\\\)|Build succeeded|0 Error\" } | Select-Object -First 10)",
       "PowerShell(sqlcmd *)",
-      "PowerShell(Get-ChildItem *)"
+      "PowerShell(Get-ChildItem *)",
+      "Bash(powershell -Command \"ls src | Select-Object Name\")",
+      "Bash(powershell -Command \"Get-ChildItem -Directory | Select-Object Name\")",
+      "Bash(powershell -Command \"ls -File *.cs | Select-Object Name\")",
+      "Bash(powershell -Command \"Get-ChildItem -File *.cs, *.xaml | Select-Object Name\")",
+      "Bash(powershell -Command \"Get-ChildItem -Recurse -File *.cs, *.xaml | Select-Object FullName\")",
+      "Bash(powershell -Command \"Get-ChildItem -Recurse -File -Name 'IDialogService*', '*DashboardViewModel*'\")",
+      "Bash(powershell -Command \"Get-ChildItem -File *.cs\")",
+      "Bash(powershell -Command \"Get-ChildItem -Recurse -Filter '*Dashboard*' | Select-Object FullName\")",
+      "Bash(xargs cat)",
+      "Bash(powershell -Command \"Get-ChildItem -Recurse -File *.cs | Select-Object FullName\")"
     ]
   }
 }
