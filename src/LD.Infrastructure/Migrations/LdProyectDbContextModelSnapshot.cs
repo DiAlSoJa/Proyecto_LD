@@ -371,6 +371,14 @@ namespace LD.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AvailableInventoryId"));
 
+                    b.Property<string>("AvailableReference")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("AvailableStatus")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
@@ -442,9 +450,19 @@ namespace LD.Infrastructure.Migrations
                     b.Property<decimal?>("Qty")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("Supply")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("FinalAvailable")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Reference")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SD")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("StandardId")
                         .HasColumnType("int");
@@ -2187,6 +2205,9 @@ namespace LD.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KittingDetailId"));
 
+                    b.Property<decimal>("CantidadSurtida")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -2369,6 +2390,10 @@ namespace LD.Infrastructure.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("StatusLine")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("SupplyStatus")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -2669,7 +2694,7 @@ namespace LD.Infrastructure.Migrations
                             ModuleId = 19,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            ModuleName = "Embarques"
+                            ModuleName = "Surtidos"
                         },
                         new
                         {
@@ -3227,7 +3252,7 @@ namespace LD.Infrastructure.Migrations
                             IsActive = true,
                             Key = "shipments.read",
                             ModuleId = 19,
-                            PermissionName = "Ver embarques"
+                            PermissionName = "Ver surtidos"
                         },
                         new
                         {

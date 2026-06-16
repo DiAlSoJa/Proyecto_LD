@@ -39,6 +39,9 @@ namespace LD.Domain.Entities
         [MaxLength(100)]
         public string? Reference { get; set; }
 
+        [MaxLength(30)]
+        public string? AvailableReference { get; set; }
+
         [MaxLength(50)]
         public string? PurchaseOrder { get; set; }
 
@@ -52,10 +55,20 @@ namespace LD.Domain.Entities
         [MaxLength(30)]
         public string? StatusId { get; set; }
 
+        [MaxLength(50)]
+        public string? SD { get; set; }
+
+        [MaxLength(150)]
+        public string? AvailableStatus { get; set; }
+
 
         public int? LocationId { get; set; }
 
         public decimal? Qty { get; set; }
+
+        public decimal Supply { get; set; }
+
+        public decimal FinalAvailable { get; set; }
 
         public int? StandardId { get; set; }
 

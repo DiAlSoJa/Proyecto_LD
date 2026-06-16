@@ -543,7 +543,7 @@ namespace LD.Infrastructure.Persistence
                 new Module { ModuleId = 16, ModuleName = "Unidades", ParentModuleId = 10 },  
                 new Module { ModuleId = 17, ModuleName = "Surtido" },
                 new Module { ModuleId = 18, ModuleName = "Auditar" },
-                new Module { ModuleId = 19, ModuleName = "Embarques" },
+                new Module { ModuleId = 19, ModuleName = "Surtidos" },
                 new Module { ModuleId = 20, ModuleName = "Inventario" },
                 new Module { ModuleId = 21, ModuleName = "Inventario Aleatorio" },
                 new Module { ModuleId = 22, ModuleName = "Reportes" },
@@ -619,7 +619,7 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 27, PermissionName = "Ver auditoría", Key = "auditing.read", ModuleId = 18 },
 
                 // SHIPMENTS (ModuleId = 19)
-                new Permission { PermissionId = 28, PermissionName = "Ver embarques", Key = "shipments.read", ModuleId = 19 },
+                new Permission { PermissionId = 28, PermissionName = "Ver surtidos", Key = "shipments.read", ModuleId = 19 },
 
                 // INVENTORY (ModuleId = 20)
                 new Permission { PermissionId = 29, PermissionName = "Ver inventario",                   Key = "inventory.read",          ModuleId = 20 },

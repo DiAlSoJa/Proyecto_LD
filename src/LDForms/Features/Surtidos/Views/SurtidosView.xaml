@@ -1,4 +1,4 @@
-<UserControl x:Class="LD.FormsX.Features.Embarques.Views.EmbarquesView"
+<UserControl x:Class="LD.FormsX.Features.Surtidos.Views.SurtidosView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -46,7 +46,7 @@
                 <StackPanel Orientation="Vertical"
                             Grid.Column="0"
                             VerticalAlignment="Center">
-                    <TextBlock Text="Embarques"
+                    <TextBlock Text="Surtidos"
                                FontSize="22"
                                FontWeight="SemiBold"
                                Foreground="#1F2937"/>
@@ -115,7 +115,7 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left">
                     <CheckBox x:Name="chkVerSinConfirmar"
-                              Content="Ver sin confirmar"
+                              Content="Ver sin surtir"
                               IsChecked="{Binding VerSinConfirmar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               Checked="ChkVerSinConfirmar_Changed"
                               Unchecked="ChkVerSinConfirmar_Changed"
@@ -241,12 +241,12 @@
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="btnUbicando"
+                    <Button x:Name="btnEnviarASurtir"
                             Height="28"
-                            MinWidth="90"
+                            MinWidth="128"
                             Padding="6,0"
                             Margin="0,0,8,0"
-                            Click="BtnUbicando_Click"
+                            Click="BtnEnviarASurtir_Click"
                             Background="#F3F4F6"
                             Foreground="#374151"
                             BorderBrush="#D1D5DB"
@@ -265,7 +265,7 @@
                                        Foreground="#0D9488"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Ubicando" FontSize="11"/>
+                            <TextBlock Text="Enviar a surtir" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
@@ -293,7 +293,35 @@
                                        Foreground="#2563EB"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Confirmar" FontSize="11"/>
+                            <TextBlock Text="Surtido completo" FontSize="11"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="btnListaSurtido"
+                            Height="28"
+                            MinWidth="132"
+                            Padding="6,0"
+                            Margin="0,0,8,0"
+                            Click="BtnListaSurtido_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE749;"
+                                       Foreground="#374151"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+                            <TextBlock Text="Lista de surtido" FontSize="11"/>
                         </StackPanel>
                     </Button>
                 </WrapPanel>

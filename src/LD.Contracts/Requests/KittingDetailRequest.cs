@@ -12,6 +12,7 @@ namespace LD.Contracts.Requests
         public string? Description { get; set; }
 
         public decimal Quantity { get; set; }
+        public decimal CantidadSurtida { get; set; }
 
         public string? Status { get; set; }
         public string? SD { get; set; }

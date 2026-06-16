@@ -265,13 +265,13 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="No. Factura:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                    <TextBox x:Name="txtNumeroFactura" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                    <TextBox x:Name="txtNumeroFactura" Grid.Row="0" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" TextChanged="HeaderField_Changed"/>
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="No. Guía:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                    <TextBox x:Name="txtNumeroGuia" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"/>
+                                    <TextBox x:Name="txtNumeroGuia" Grid.Row="1" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" TextChanged="HeaderField_Changed"/>
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="ETA:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
-                                    <DatePicker x:Name="dpEta" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}"/>
+                                    <DatePicker x:Name="dpEta" Grid.Row="2" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}" SelectedDateChanged="HeaderField_Changed"/>
 
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Bultos:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
                                     <TextBox x:Name="txtBultos"
@@ -279,18 +279,23 @@
                                         Grid.Column="1"
                                          Width="100"
                                          HorizontalAlignment="Left"
-                                         Style="{StaticResource InputTextBoxStyle}"/>
+                                         Style="{StaticResource InputTextBoxStyle}"
+                                         TextChanged="HeaderField_Changed"/>
 
                                     <CheckBox x:Name="chkEsDevolucion"
                                           Grid.Row="4"
                                           Grid.Column="1"
                                           Content="Devolución"
-                                          Margin="0,4,0,10"/>
+                                          Margin="0,4,0,10"
+                                          Checked="HeaderField_Changed"
+                                          Unchecked="HeaderField_Changed"/>
 
                                     <CheckBox x:Name="chkMovimientoRequeridoCliente"
                                           Grid.Row="5"
                                           Grid.Column="1"
-                                          Content="Movimiento requerido por cliente"/>
+                                          Content="Movimiento requerido por cliente"
+                                          Checked="HeaderField_Changed"
+                                          Unchecked="HeaderField_Changed"/>
                                 </Grid>
                             </GroupBox>
 
@@ -352,7 +357,8 @@
                                          Grid.Row="1"
                                          Grid.Column="1"
                                          Grid.ColumnSpan="2"
-                                         Style="{StaticResource InputTextBoxStyle}"/>
+                                         Style="{StaticResource InputTextBoxStyle}"
+                                         TextChanged="HeaderField_Changed"/>
 
                                     <TextBlock Grid.Row="2"
                                        Grid.Column="0"
@@ -365,7 +371,8 @@
                                          Grid.Column="1"
                                          Width="170"
                                          HorizontalAlignment="Left"
-                                         Style="{StaticResource InputTextBoxStyle}"/>
+                                         Style="{StaticResource InputTextBoxStyle}"
+                                         TextChanged="HeaderField_Changed"/>
 
                                     <TextBlock Grid.Row="3"
                                        Grid.Column="0"
@@ -380,7 +387,8 @@
                                          Grid.Column="1"
                                          Grid.ColumnSpan="2"
                                          Margin="0,1,0,0"
-                                         Style="{StaticResource InputTextBoxStyle}"/>
+                                         Style="{StaticResource InputTextBoxStyle}"
+                                         TextChanged="HeaderField_Changed"/>
 
                                     <TextBlock Grid.Row="4"
                                            Grid.Column="0"
@@ -395,7 +403,8 @@
                                          Width="120"
                                          HorizontalAlignment="Left"
                                          Margin="0,35,0,0"
-                                         Style="{StaticResource InputTextBoxStyle}"/>
+                                         Style="{StaticResource InputTextBoxStyle}"
+                                         TextChanged="HeaderField_Changed"/>
 
                                     <TextBlock Grid.Row="4"
                                        Grid.Column="2"
@@ -410,7 +419,8 @@
                                          Width="170"
                                          HorizontalAlignment="Left"
                                          Margin="0,34,0,0"
-                                         Style="{StaticResource InputTextBoxStyle}"/>
+                                         Style="{StaticResource InputTextBoxStyle}"
+                                         TextChanged="HeaderField_Changed"/>
                                 </Grid>
                             </GroupBox>
                         </Grid>
@@ -433,7 +443,8 @@
                             Foreground="#374151"
                             BorderBrush="#D1D5DB"
                             BorderThickness="1"
-                            Cursor="Hand">
+                            Cursor="Hand"
+                            Visibility="Collapsed">
                             <Button.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="6"/>

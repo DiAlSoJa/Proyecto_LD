@@ -20,6 +20,7 @@ namespace LD.Contracts.Requests
         public string? SD { get; set; }
         public decimal? ReceivedQuantity { get; set; }
         public string? Status { get; set; }
+        public string? SupplyStatus { get; set; }
 
         public int? LocationId { get; set; }
         public string? LocationCode { get; set; }

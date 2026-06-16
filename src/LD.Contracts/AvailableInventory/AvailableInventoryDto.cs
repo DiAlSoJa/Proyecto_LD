@@ -41,6 +41,9 @@ public class AvailableInventoryDto
     [DisplayName("Referencia")]
     public string Reference { get; set; } = string.Empty;
 
+    [DisplayName("Referencia disponible")]
+    public string AvailableReference { get; set; } = string.Empty;
+
     [DisplayName("Orden de Compra")]
     public string PurchaseOrder { get; set; } = string.Empty;
 
@@ -62,11 +65,23 @@ public class AvailableInventoryDto
     [DisplayName("Cantidad")]
     public decimal? Qty { get; set; }
 
+    [DisplayName("Supply")]
+    public decimal Supply { get; set; }
+
+    [DisplayName("FinalAvailable")]
+    public decimal FinalAvailable { get; set; }
+
     [DisplayName("Estandar Id")]
     public int? StandardId { get; set; }
 
     [DisplayName("Estandar")]
     public string StandardIdStr { get; set; } = string.Empty;
+
+    [DisplayName("SD")]
+    public string SD { get; set; } = string.Empty;
+
+    [DisplayName("AvailableStatus")]
+    public string AvailableStatus { get; set; } = string.Empty;
 
     public string Cliente { get; set; } = string.Empty;
     public string Proyecto { get; set; } = string.Empty;

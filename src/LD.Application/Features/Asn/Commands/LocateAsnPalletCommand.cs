@@ -286,13 +286,18 @@ public class LocateAsnPalletCommandHandler : IRequestHandler<LocateAsnPalletComm
             UserId = userId,
             LotNumber = detail.LotNumber,
             Reference = detail.Reference,
+            AvailableReference = documentId,
             PurchaseOrder = detail.PurchaseOrder,
             CustomsDeclarationNumber = detail.CustomsDeclarationNumber,
             ExpirationDate = detail.ExpirationDate,
             DocumentId = documentId,
             StatusId = detail.Status,
+            SD = detail.SD,
+            AvailableStatus = "Disponible",
             LocationId = detail.LocationId,
             Qty = detail.ReceivedQuantity,
+            Supply = 0,
+            FinalAvailable = detail.ReceivedQuantity ?? 0,
             StandardId = detail.StandardId
         };
     }

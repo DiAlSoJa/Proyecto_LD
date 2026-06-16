@@ -110,7 +110,7 @@
     <SolidColorBrush x:Key="IconChecklist"              Color="#F59E0B"/>
     <SolidColorBrush x:Key="IconCatalogos"              Color="#3B82F6"/>
     <SolidColorBrush x:Key="IconSurtido"                Color="#10B981"/>
-    <SolidColorBrush x:Key="IconEmbarques"              Color="#F97316"/>
+    <SolidColorBrush x:Key="IconSurtidos"               Color="#F97316"/>
     <SolidColorBrush x:Key="IconReportes"               Color="#0EA5E9"/>
     <SolidColorBrush x:Key="IconBaseDatos"              Color="#0F766E"/>
     <SolidColorBrush x:Key="IconReporteDanos"           Color="#DC2626"/>

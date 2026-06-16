@@ -32,7 +32,7 @@ LD.FormsX (project root: src/LDForms)
 │   ├── Common/                     ← Shared controls: DialogWindow, FilterableLookupComboBox, LookupPopupControl, DataGridNavigationManager, InlineLookupEditor
 │   ├── ControlPatio/               ← Yard control view (ControlPatioView)
 │   ├── DashBoard/                  ← Main dashboard + StandardLabel printing
-│   ├── Embarques/                  ← Shipments (placeholder — Class1.cs stubs only)
+│   ├── Surtidos/                   ← Shipments (placeholder — Class1.cs stubs only)
 │   ├── Inventario/                 ← Inventory view with dialogs for location/status/warehouse change
 │   ├── InventarioAleatorio/        ← Cyclic inventory
 │   ├── Login/                      ← Login screen and ViewModel
@@ -216,4 +216,4 @@ Al leer o editar una vista, aplicar las 3 reglas anteriores en esa misma edició
 - Do not reference `LD.Domain`, `LD.Application`, or `LD.Infrastructure`
 - Do not forget to register new ViewModels and Views in `App.xaml.cs → RegisterServices`
 - Do not put business logic in code-behind — keep it in ViewModels
-- Features/Embarques and Features/Surtido are currently stub/placeholder — do not assume they are complete
+- Features/Surtidos and Features/Surtido are currently stub/placeholder — do not assume they are complete

@@ -17,6 +17,7 @@ public class KittingDetailProfile : Profile
             .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PartNumber))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+            .ForMember(dest => dest.CantidadSurtida, opt => opt.MapFrom(src => src.CantidadSurtida))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.SD, opt => opt.MapFrom(src => src.SD))
             .ForMember(dest => dest.LotNumber, opt => opt.MapFrom(src => src.LotNumber))

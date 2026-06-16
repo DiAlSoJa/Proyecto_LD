@@ -1,11 +1,11 @@
-<Window x:Class="LD.FormsX.Features.Embarques.Views.NuevoEmbarqueView"
+<Window x:Class="LD.FormsX.Features.Surtidos.Views.NuevoSurtidoView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:common="clr-namespace:LD.FormsX.Features.Common"
         mc:Ignorable="d"
-        Title="Embarque"
+        Title="Surtido"
         Height="920"
         Width="1260"
         WindowStartupLocation="CenterOwner"
@@ -255,7 +255,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock x:Name="txtTituloVentana"
-                                   Text="Embarque"
+                                   Text="Surtido"
                                    Foreground="White"
                                    FontWeight="Bold"
                                    FontSize="13"
@@ -332,7 +332,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <GroupBox Grid.Column="0" Header="Embarque">
+                                <GroupBox Grid.Column="0" Header="Surtido">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="104"/>
@@ -465,6 +465,7 @@
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     Background="White"
+                                    Height="140"
                                     Margin="0,0,0,12">
                                 <DockPanel LastChildFill="True">
                                     <Border DockPanel.Dock="Top"
@@ -541,14 +542,6 @@
 
                                             <DataGridTextColumn Header="Cantidad"
                                                                 Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
-                                                                Width="70"/>
-
-                                            <DataGridTextColumn Header="Estandar"
-                                                                Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}"
-                                                                Width="70"/>
-
-                                            <DataGridTextColumn Header="Maxima"
-                                                                Binding="{Binding MaximumQuantity, UpdateSourceTrigger=PropertyChanged}"
                                                                 Width="70"/>
 
                                             <DataGridTemplateColumn Header="Status" Width="95">
@@ -638,7 +631,7 @@
                                             Background="{StaticResource HeaderBrush}"
                                             BorderBrush="{StaticResource BorderBrushSoft}"
                                             BorderThickness="0,0,0,1"
-                                            Padding="10,8">
+                                        Padding="10,8">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                             <Button x:Name="btnGenerarIssueBase"
                                                     Content="Surtir"
@@ -648,6 +641,35 @@
                                                     Style="{StaticResource SuccessButtonStyle}"
                                                     Margin="0,0,12,0"
                                                     Click="BtnGenerarIssueBase_Click"/>
+                                            <Button x:Name="btnAutopicking"
+                                                    Content="Autopicking"
+                                                    Width="126"
+                                                    Height="28"
+                                                    Padding="10,0"
+                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                    Margin="0,0,8,0"
+                                                    Click="BtnAutopicking_Click"
+                                                    Visibility="Collapsed"/>
+                                            <Button x:Name="btnListaSurtido"
+                                                    Width="150"
+                                                    Height="28"
+                                                    Padding="10,0"
+                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                    Margin="0,0,12,0"
+                                                    Click="BtnListaSurtido_Click"
+                                                    Visibility="Collapsed">
+                                                <StackPanel Orientation="Horizontal"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Center">
+                                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                                                               Text="&#xE749;"
+                                                               Foreground="#374151"
+                                                               Margin="0,0,6,0"
+                                                               FontSize="12"/>
+                                                    <TextBlock Text="Lista de surtido"
+                                                               FontSize="12"/>
+                                                </StackPanel>
+                                            </Button>
                                             <TextBlock Text="Issue details"
                                                        FontSize="12"
                                                        FontWeight="SemiBold"
@@ -697,14 +719,6 @@
                                                                 Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                                                                 Width="180"
                                                                 IsReadOnly="True"/>
-
-                                            <DataGridTextColumn Header="Estandar"
-                                                                Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}"
-                                                                Width="60"/>
-
-                                            <DataGridTextColumn Header="Maxima"
-                                                                Binding="{Binding MaximumQuantity, UpdateSourceTrigger=PropertyChanged}"
-                                                                Width="60"/>
 
                                             <DataGridTemplateColumn Header="SD" Width="70">
                                                 <DataGridTemplateColumn.CellTemplate>

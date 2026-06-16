@@ -327,6 +327,7 @@ namespace LD.FormsX.Views.Inventario
 
             var standardId = txtStandardId?.Text?.Trim() ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(standardId) &&
+                !Contains(inventory.SD, standardId) &&
                 !Contains(inventory.StandardIdStr, standardId) &&
                 !Contains(inventory.StandardId?.ToString(), standardId))
             {

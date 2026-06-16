@@ -229,7 +229,7 @@
                                 <DataGridTextColumn Header="Linea"
                                                     Binding="{Binding Linea}"
                                                     Width="170"/>
-                                <DataGridTextColumn Header="Vehículo"
+                                <DataGridTextColumn Header="Chofer"
                                                     Binding="{Binding Nombre}"
                                                     Width="220"/>
                                 <DataGridTextColumn Header="Tipo"

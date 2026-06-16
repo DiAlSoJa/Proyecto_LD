@@ -7,6 +7,16 @@ namespace LD.Application.Features.Kitting.Profiles;
 
 public class KittingIssueDetailProfile : Profile
 {
+    private static string ResolveStandardIdText(int? standardId, string? standardIdStr)
+    {
+        if (!string.IsNullOrWhiteSpace(standardIdStr))
+            return standardIdStr.Trim();
+
+        return standardId.HasValue && standardId.Value > 0
+            ? standardId.Value.ToString()
+            : string.Empty;
+    }
+
     private static int? ParseNullableStandardId(string? standardId)
     {
         if (string.IsNullOrWhiteSpace(standardId))
@@ -23,12 +33,12 @@ public class KittingIssueDetailProfile : Profile
             .ForMember(dest => dest.KittingReceiptDetailId, opt => opt.MapFrom(src => src.KittingReceiptDetailId))
             .ForMember(dest => dest.KittingDetailId, opt => opt.MapFrom(src => src.KittingDetailId))
             .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
-            .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardLabel != null
-                ? src.StandardLabel.StandarIdStr
-                : src.StandardId.HasValue ? src.StandardId.Value.ToString() : string.Empty))
-            .ForMember(dest => dest.StandardIdStr, opt => opt.MapFrom(src => src.StandardLabel != null
-                ? src.StandardLabel.StandarIdStr
-                : src.StandardId.HasValue ? src.StandardId.Value.ToString() : string.Empty))
+            .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => ResolveStandardIdText(
+                src.StandardId,
+                src.StandardLabel != null ? src.StandardLabel.StandarIdStr : null)))
+            .ForMember(dest => dest.StandardIdStr, opt => opt.MapFrom(src => ResolveStandardIdText(
+                src.StandardId,
+                src.StandardLabel != null ? src.StandardLabel.StandarIdStr : null)))
             .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PartNumber))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.StandardQuantity, opt => opt.MapFrom(src => src.StandardQuantity))
@@ -36,6 +46,7 @@ public class KittingIssueDetailProfile : Profile
             .ForMember(dest => dest.SD, opt => opt.MapFrom(src => src.SD))
             .ForMember(dest => dest.ReceivedQuantity, opt => opt.MapFrom(src => src.ReceivedQuantity))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.SupplyStatus, opt => opt.MapFrom(src => src.SupplyStatus))
             .ForMember(dest => dest.LocationCode, opt => opt.MapFrom(src => src.Location != null
                 ? src.Location.LocationName
                 : src.LocationCode ?? string.Empty))
@@ -52,8 +63,6 @@ public class KittingIssueDetailProfile : Profile
 
         CreateMap<KittingIssueDetail, KittingIssueRequest>()
             .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src =>
-                src.StandardLabel != null
-                    ? src.StandardLabel.StandarIdStr
-                    : src.StandardId.HasValue ? src.StandardId.Value.ToString() : null));
+                ResolveStandardIdText(src.StandardId, src.StandardLabel != null ? src.StandardLabel.StandarIdStr : null)));
     }
 }

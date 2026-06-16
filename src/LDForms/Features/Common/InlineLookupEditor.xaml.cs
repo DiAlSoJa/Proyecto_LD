@@ -320,7 +320,7 @@ namespace LD.FormsX.Features.Common
                 ApplyHeadersFromTag();
                 ApplyFilter(txtLookup.Text);
 
-                if (OpenDropDownOnLoad)
+                if (OpenDropDownOnLoad && string.IsNullOrWhiteSpace(txtLookup.Text))
                 {
                     popupLookup.IsOpen = true;
                     txtLookup.Focus();
@@ -340,20 +340,22 @@ namespace LD.FormsX.Features.Common
 
             ApplyFilter(txtLookup.Text);
 
-            if (!popupLookup.IsOpen)
+            if (!popupLookup.IsOpen && string.IsNullOrWhiteSpace(txtLookup.Text))
                 popupLookup.IsOpen = true;
         }
 
         private void txtLookup_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             ApplyFilter(txtLookup.Text);
-            popupLookup.IsOpen = true;
+
+            if (string.IsNullOrWhiteSpace(txtLookup.Text))
+                popupLookup.IsOpen = true;
         }
 
         private void DropDownButton_Click(object sender, RoutedEventArgs e)
         {
             ApplyFilter(txtLookup.Text);
-            popupLookup.IsOpen = !popupLookup.IsOpen;
+            popupLookup.IsOpen = true;
             txtLookup.Focus();
         }
 

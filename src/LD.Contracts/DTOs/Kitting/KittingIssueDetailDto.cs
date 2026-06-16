@@ -42,6 +42,9 @@ namespace LD.Contracts.Kitting
         [DisplayName("Ubicación")]
         public string LocationCode { get; set; } = string.Empty;
 
+        [DisplayName("Supply Status")]
+        public string SupplyStatus { get; set; } = string.Empty;
+
         public int? LocationId { get; set; }
 
         [DisplayName("Número de Lote")]

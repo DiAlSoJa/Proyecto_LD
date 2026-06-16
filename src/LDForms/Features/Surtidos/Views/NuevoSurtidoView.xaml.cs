@@ -19,11 +19,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace LD.FormsX.Features.Embarques.Views
+namespace LD.FormsX.Features.Surtidos.Views
 {
-    public partial class NuevoEmbarqueView : Window
+    public partial class NuevoSurtidoView : Window
     {
         private const string DefaultKittingStatus = "Creado";
+        private const string DisponibleStatus = "Disponible";
+        private const string SurtidoStatus = "Surtido";
         private readonly KittingService _kittingService;
         private readonly KittingDetailService _kittingDetailService;
         private readonly KittingIssueService _kittingIssueService;
@@ -67,7 +69,7 @@ namespace LD.FormsX.Features.Embarques.Views
         public ObservableCollection<KittingDetailDto> DetailItems { get; } = new();
         public ObservableCollection<KittingIssueDetailDto> IssueItems { get; } = new();
 
-        public NuevoEmbarqueView(
+        public NuevoSurtidoView(
             KittingService kittingService,
             KittingDetailService kittingDetailService,
             KittingIssueService kittingIssueService,
@@ -167,6 +169,7 @@ namespace LD.FormsX.Features.Embarques.Views
             finally
             {
                 SetLoadingState(false);
+                ApplyEditState();
             }
         }
 
@@ -175,7 +178,7 @@ namespace LD.FormsX.Features.Embarques.Views
             var response = await _kittingService.GetKittingById(_selectedKitting?.KittingId ?? 0);
             if (!response.IsSuccess || response.Data == null)
             {
-                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudo cargar el embarque.");
+                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudo cargar el surtido.");
                 return;
             }
 
@@ -285,6 +288,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
 
             foreach (var item in response.Data
+                .Where(IsProductForCurrentClientProject)
                 .OrderBy(x => x.NumeroParte)
                 .Select(x => new LookupItem
                 {
@@ -378,8 +382,8 @@ namespace LD.FormsX.Features.Embarques.Views
                 code = _kittingCodePreview?.Trim();
 
             var titlePrefix = string.IsNullOrWhiteSpace(code)
-                ? "Embarque"
-                : $"Embarque {code}";
+                ? "Surtido"
+                : $"Surtido {code}";
 
             if (_loadingData)
                 titlePrefix = $"{titlePrefix} (Cargando...)";
@@ -429,7 +433,8 @@ namespace LD.FormsX.Features.Embarques.Views
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
@@ -437,12 +442,18 @@ namespace LD.FormsX.Features.Embarques.Views
         private bool IsCurrentKittingEditable() =>
             !IsConfirmedStatus(_selectedKitting?.Status) && !IsCancelledStatus(_selectedKitting?.Status);
 
+        private bool IsNewKittingRecord() =>
+            _selectedKitting is null || _selectedKitting.KittingId <= 0;
+
+        private bool IsPersistedKittingRecord() =>
+            _selectedKitting?.KittingId > 0;
+
         private bool EnsureCurrentKittingEditable()
         {
             if (IsCurrentKittingEditable())
                 return true;
 
-            DialogHelper.ShowWarning("El embarque esta confirmado o cancelado y ya no permite cambios.");
+            DialogHelper.ShowWarning("El surtido esta surtido, confirmado o cancelado y ya no permite cambios.");
             return false;
         }
 
@@ -451,9 +462,17 @@ namespace LD.FormsX.Features.Embarques.Views
             var isEditable = IsCurrentKittingEditable();
             var hasDetailSelection = _selectedDetail != null && !IsEmptyDetailRow(_selectedDetail);
             var canInteract = isEditable && !_loadingData;
+            var showSaveButton = canInteract && IsNewKittingRecord();
+            var showIssueButtons = canInteract && IsPersistedKittingRecord();
 
-            btnGuardar.IsEnabled = canInteract;
-            btnGenerarIssueBase.IsEnabled = canInteract && hasDetailSelection;
+            btnGuardar.Visibility = showSaveButton ? Visibility.Visible : Visibility.Collapsed;
+            btnGuardar.IsEnabled = showSaveButton;
+            btnGenerarIssueBase.Visibility = showIssueButtons ? Visibility.Visible : Visibility.Collapsed;
+            btnGenerarIssueBase.IsEnabled = showIssueButtons && hasDetailSelection;
+            btnAutopicking.Visibility = showIssueButtons ? Visibility.Visible : Visibility.Collapsed;
+            btnAutopicking.IsEnabled = showIssueButtons;
+            btnListaSurtido.Visibility = showIssueButtons ? Visibility.Visible : Visibility.Collapsed;
+            btnListaSurtido.IsEnabled = showIssueButtons;
             txtNumeroFactura.IsEnabled = canInteract;
             txtLineaTransporte.IsEnabled = canInteract;
             txtTipoVehiculo.IsEnabled = canInteract;
@@ -600,16 +619,21 @@ namespace LD.FormsX.Features.Embarques.Views
             var result = await SaveHeaderRequestAsync(request);
             if (!result.IsSuccess)
             {
-                DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo guardar el embarque.");
+                DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo guardar el surtido.");
                 return false;
             }
 
             var kittingId = ResolveSavedKittingId(result);
+            _selectedKitting ??= new KittingDto();
+            _selectedKitting.KittingId = kittingId;
+            if (string.IsNullOrWhiteSpace(_selectedKitting.Status))
+                _selectedKitting.Status = DefaultKittingStatus;
+            ApplyEditState();
             await RefreshKittingHeaderAsync(kittingId);
             HasChanges = true;
 
             if (showSuccessToast)
-                ToastHelper.ShowSuccess("Embarque guardado correctamente.");
+                ToastHelper.ShowSuccess("Surtido guardado correctamente.");
 
             ApplyEditState();
             return true;
@@ -652,7 +676,7 @@ namespace LD.FormsX.Features.Embarques.Views
             if (int.TryParse(result.Data, out var kittingId) && kittingId > 0)
                 return kittingId;
 
-            throw new InvalidOperationException("No se pudo obtener el Id del embarque guardado.");
+            throw new InvalidOperationException("No se pudo obtener el Id del surtido guardado.");
         }
 
         private KittingRequest BuildHeaderRequest()
@@ -686,8 +710,16 @@ namespace LD.FormsX.Features.Embarques.Views
                 CodigoPostal = NullIfWhiteSpace(txtCodigoPostal.Text),
                 TipoEntrega = NullIfWhiteSpace(tipoEntrega),
                 FechaProgramada = fechaProgramada,
-                Status = _selectedKitting?.Status
+                Status = GetHeaderStatusForRequest()
             };
+        }
+
+        private string? GetHeaderStatusForRequest()
+        {
+            if (_selectedKitting?.KittingId > 0)
+                return _selectedKitting.Status;
+
+            return DefaultKittingStatus;
         }
 
         private Task<ApiResponseDto<string>> SaveHeaderRequestAsync(KittingRequest request)
@@ -736,7 +768,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
 
             detailRow.KittingId = _selectedKitting?.KittingId ?? 0;
-            detailRow.Status = DefaultKittingStatus;
+            detailRow.Status = string.Empty;
         }
 
         private void dgIssue_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
@@ -1032,7 +1064,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar la linea del embarque.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar la linea del surtido.");
                     return;
                 }
 
@@ -1075,7 +1107,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
             if (!IsDetailRowCompleted(detailRow))
             {
-                DialogHelper.ShowWarning("La linea del embarque debe tener producto y cantidad antes de capturar issues.");
+                DialogHelper.ShowWarning("La linea del surtido debe tener producto y cantidad antes de capturar issues.");
                 return false;
             }
 
@@ -1129,7 +1161,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del embarque.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del surtido.");
                     return;
                 }
 
@@ -1202,7 +1234,7 @@ namespace LD.FormsX.Features.Embarques.Views
             var createResponse = await _kittingIssueService.CreateKittingIssue(request);
             if (!createResponse.IsSuccess)
             {
-                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el issue base del embarque.");
+                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el issue base del surtido.");
                 return;
             }
 
@@ -1234,7 +1266,9 @@ namespace LD.FormsX.Features.Embarques.Views
                     _availableInventoryService,
                     _selectedDetail.PartNumber,
                     _clientName,
-                    _projectName)
+                    _projectName,
+                    _clientId,
+                    _projectId)
                 {
                     Owner = Window.GetWindow(this)
                 };
@@ -1306,6 +1340,109 @@ namespace LD.FormsX.Features.Embarques.Views
             }
         }
 
+        private bool IsProductForCurrentClientProject(ProductAutocompleteDto product)
+        {
+            if (_clientId > 0 && product.ClientId.HasValue && product.ClientId.Value != _clientId)
+                return false;
+
+            if (_projectId > 0 && product.ProjectId.HasValue && product.ProjectId.Value != _projectId)
+                return false;
+
+            return true;
+        }
+
+        private async void BtnAutopicking_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!EnsureCurrentKittingEditable())
+                    return;
+
+                CommitGridEdits();
+                RemoveEmptyDetailRows();
+                RemoveEmptyIssueRows();
+
+                var detailRows = DetailItems
+                    .Where(IsDetailRowCompleted)
+                    .ToList();
+
+                if (detailRows.Count == 0)
+                {
+                    DialogHelper.ShowWarning("No hay lineas validas para autopicking.");
+                    return;
+                }
+
+                ShowDetailSections();
+                _issueGenerationEnabled = true;
+
+                var createdRows = new List<KittingIssueDetailDto>();
+                foreach (var detailRow in detailRows)
+                {
+                    if (!await EnsureDetailPersistedAsync(detailRow))
+                        continue;
+
+                    var autoPickedInventories = await BuildAutoPickedInventoriesAsync(detailRow);
+                    var pendingRows = BuildIssueRowsFromInventories(autoPickedInventories);
+
+                    if (pendingRows.Count == 0)
+                        continue;
+
+                    foreach (var issueRow in pendingRows)
+                    {
+                        if (await CreateIssueFromInventorySelectionAsync(issueRow))
+                        {
+                            createdRows.Add(issueRow);
+                            IssueItems.Add(issueRow);
+                        }
+                    }
+                }
+
+                if (createdRows.Count == 0)
+                {
+                    DialogHelper.ShowWarning("No se pudo generar autopicking.");
+                    await LoadIssueItemsForSelectedDetailAsync();
+                    return;
+                }
+
+                await LoadIssueItemsForSelectedDetailAsync();
+                ToastHelper.ShowSuccess($"{createdRows.Count} linea(s) agregada(s) a issue.");
+                HasChanges = true;
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async void BtnListaSurtido_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedKitting?.KittingId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un surtido guardado para imprimir la lista de surtido.");
+                    return;
+                }
+
+                CommitGridEdits();
+                RemoveEmptyDetailRows();
+                RemoveEmptyIssueRows();
+
+                var rows = await BuildListaSurtidoRowsAsync();
+                if (rows.Count == 0)
+                {
+                    DialogHelper.ShowWarning("No hay lineas surtidas para imprimir.");
+                    return;
+                }
+
+                ListaSurtidoPrinter.Print(_selectedKitting, rows);
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
         private async Task<bool> CreateIssueFromInventorySelectionAsync(KittingIssueDetailDto issueRow)
         {
             if (!EnsureCurrentKittingEditable())
@@ -1325,7 +1462,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 var response = await _kittingIssueService.CreateKittingIssue(request);
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del embarque.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el issue del surtido.");
                     return false;
                 }
 
@@ -1470,6 +1607,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 SD = NullIfWhiteSpace(issueRow.SD),
                 ReceivedQuantity = issueRow.ReceivedQuantity,
                 Status = NullIfWhiteSpace(issueRow.Status),
+                SupplyStatus = NullIfWhiteSpace(issueRow.SupplyStatus),
                 LocationId = issueRow.LocationId,
                 LocationCode = NullIfWhiteSpace(issueRow.LocationCode),
                 LotNumber = NullIfWhiteSpace(issueRow.LotNumber),
@@ -1493,6 +1631,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 SD = NullIfWhiteSpace(detailRow.SD),
                 ReceivedQuantity = detailRow.Quantity,
                 Status = NullIfWhiteSpace(detailRow.Status),
+                SupplyStatus = NullIfWhiteSpace(detailRow.Status),
                 LotNumber = NullIfWhiteSpace(detailRow.LotNumber),
                 ExpirationDate = detailRow.ExpirationDate,
                 Reference = NullIfWhiteSpace(detailRow.CustomerReference),
@@ -1535,6 +1674,7 @@ namespace LD.FormsX.Features.Embarques.Views
             issueRow.SD = request.SD ?? string.Empty;
             issueRow.ReceivedQuantity = request.ReceivedQuantity;
             issueRow.Status = request.Status ?? string.Empty;
+            issueRow.SupplyStatus = request.SupplyStatus ?? string.Empty;
             issueRow.LocationId = request.LocationId;
             issueRow.LocationCode = request.LocationCode ?? string.Empty;
             issueRow.LotNumber = request.LotNumber ?? string.Empty;
@@ -1577,10 +1717,15 @@ namespace LD.FormsX.Features.Embarques.Views
                 StandardQuantity = _selectedDetail?.StandardQuantity,
                 MaximumQuantity = _selectedDetail?.MaximumQuantity,
                 SD = _selectedDetail?.SD ?? string.Empty,
-                ReceivedQuantity = inventory.Qty,
+                ReceivedQuantity = inventory.FinalAvailable > 0 ? inventory.FinalAvailable : inventory.Qty,
                 Status = string.IsNullOrWhiteSpace(inventory.StatusId)
                     ? (_selectedDetail?.Status ?? DefaultKittingStatus)
                     : inventory.StatusId.Trim(),
+                SupplyStatus = string.IsNullOrWhiteSpace(inventory.AvailableStatus)
+                    ? (string.IsNullOrWhiteSpace(inventory.StatusId)
+                        ? (_selectedDetail?.Status ?? DefaultKittingStatus)
+                        : inventory.StatusId.Trim())
+                    : inventory.AvailableStatus.Trim(),
                 LocationId = inventory.LocationId,
                 LocationCode = inventory.Ubicacion?.Trim() ?? string.Empty,
                 LotNumber = inventory.LotNumber?.Trim() ?? string.Empty,
@@ -1610,6 +1755,124 @@ namespace LD.FormsX.Features.Embarques.Views
             return string.IsNullOrWhiteSpace(inventory.StandardIdStr)
                 ? null
                 : inventory.StandardIdStr.Trim();
+        }
+
+        private static bool IsDisponibleInventory(AvailableInventoryDto inventory)
+        {
+            var availableStatus = inventory.AvailableStatus?.Trim();
+            if (!string.IsNullOrWhiteSpace(availableStatus))
+                return string.Equals(availableStatus, DisponibleStatus, StringComparison.OrdinalIgnoreCase) ||
+                       string.Equals(availableStatus, SurtidoStatus, StringComparison.OrdinalIgnoreCase);
+
+            var statusId = inventory.StatusId?.Trim();
+            return string.Equals(statusId, DisponibleStatus, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(statusId, SurtidoStatus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private async Task<List<AvailableInventoryDto>> BuildAutoPickedInventoriesAsync(KittingDetailDto detailRow)
+        {
+            var response = await _availableInventoryService.GetAvailableInventories();
+            if (!response.IsSuccess || response.Data == null)
+            {
+                DialogHelper.ShowError(response.Message ?? response.ErrorMessage ?? "No se pudo cargar el inventario para autopicking.");
+                return new List<AvailableInventoryDto>();
+            }
+
+            var partNumber = detailRow.PartNumber?.Trim() ?? string.Empty;
+            var status = detailRow.Status?.Trim() ?? string.Empty;
+            var lotNumber = detailRow.LotNumber?.Trim() ?? string.Empty;
+            var requiredQuantity = detailRow.Quantity - IssueItems
+                .Where(item => item.KittingDetailId == detailRow.KittingDetailId)
+                .Sum(item => item.ReceivedQuantity.GetValueOrDefault());
+
+            if (requiredQuantity <= 0)
+                return new List<AvailableInventoryDto>();
+
+            return response.Data
+                .Where(IsInventoryForCurrentClientProject)
+                .Where(inventory => inventory.FinalAvailable > 0 || inventory.Qty.GetValueOrDefault() > 0)
+                .Where(IsDisponibleInventory)
+                .Where(inventory => string.Equals(inventory.PartNumber?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase))
+                .Where(inventory => string.IsNullOrWhiteSpace(status) ||
+                                   string.Equals(inventory.StatusId?.Trim(), status, StringComparison.OrdinalIgnoreCase))
+                .Where(inventory => string.IsNullOrWhiteSpace(lotNumber) ||
+                                   string.Equals(inventory.LotNumber?.Trim(), lotNumber, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(inventory => inventory.FinalAvailable > 0 ? inventory.FinalAvailable : inventory.Qty)
+                .ThenByDescending(inventory => inventory.Fecha)
+                .ThenByDescending(inventory => inventory.Hora)
+                .TakeWhile((_, index) =>
+                {
+                    var accumulated = response.Data
+                        .Where(IsInventoryForCurrentClientProject)
+                        .Where(inventory => inventory.FinalAvailable > 0 || inventory.Qty.GetValueOrDefault() > 0)
+                        .Where(IsDisponibleInventory)
+                        .Where(inventory => string.Equals(inventory.PartNumber?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase))
+                        .Where(inventory => string.IsNullOrWhiteSpace(status) ||
+                                           string.Equals(inventory.StatusId?.Trim(), status, StringComparison.OrdinalIgnoreCase))
+                        .Where(inventory => string.IsNullOrWhiteSpace(lotNumber) ||
+                                           string.Equals(inventory.LotNumber?.Trim(), lotNumber, StringComparison.OrdinalIgnoreCase))
+                        .OrderByDescending(inventory => inventory.FinalAvailable > 0 ? inventory.FinalAvailable : inventory.Qty)
+                        .ThenByDescending(inventory => inventory.Fecha)
+                        .ThenByDescending(inventory => inventory.Hora)
+                        .Take(index + 1)
+                        .Sum(inventory => inventory.FinalAvailable > 0 ? inventory.FinalAvailable : inventory.Qty.GetValueOrDefault());
+
+                    return accumulated <= requiredQuantity;
+                })
+                .ToList();
+        }
+
+        private bool IsInventoryForCurrentClientProject(AvailableInventoryDto inventory)
+        {
+            if (_clientId > 0 && inventory.ClientId != _clientId)
+                return false;
+
+            if (_projectId > 0 && inventory.ProjectId != _projectId)
+                return false;
+
+            return true;
+        }
+
+        private async Task<List<ListaSurtidoPrinter.ListaSurtidoRow>> BuildListaSurtidoRowsAsync()
+        {
+            var rows = new List<ListaSurtidoPrinter.ListaSurtidoRow>();
+            var detailRows = DetailItems.Where(IsDetailRowCompleted).ToList();
+
+            if (detailRows.Count == 0 && _selectedDetail != null && IsDetailRowCompleted(_selectedDetail))
+                detailRows.Add(_selectedDetail);
+
+            foreach (var detailRow in detailRows)
+            {
+                IReadOnlyList<KittingIssueDetailDto> issueRows;
+                if (_selectedDetail != null && _selectedDetail.KittingDetailId == detailRow.KittingDetailId)
+                {
+                    issueRows = IssueItems.ToList();
+                }
+                else
+                {
+                    var response = await _kittingIssueService.GetKittingIssuesByKittingDetailId(detailRow.KittingDetailId);
+                    if (!response.IsSuccess || response.Data == null)
+                        continue;
+
+                    issueRows = response.Data.Select(CloneIssue).ToList();
+                }
+
+                foreach (var issueRow in issueRows.Where(IsIssueRowCompleted))
+                {
+                    rows.Add(new ListaSurtidoPrinter.ListaSurtidoRow
+                    {
+                        PartNumber = issueRow.PartNumber?.Trim() ?? string.Empty,
+                        Description = issueRow.Description?.Trim() ?? string.Empty,
+                        Quantity = issueRow.ReceivedQuantity.GetValueOrDefault(),
+                        Status = issueRow.Status?.Trim() ?? string.Empty,
+                        LotNumber = issueRow.LotNumber?.Trim() ?? string.Empty,
+                        SD = issueRow.SD?.Trim() ?? string.Empty,
+                        LocationCode = issueRow.LocationCode?.Trim() ?? string.Empty
+                    });
+                }
+            }
+
+            return rows;
         }
 
         private static bool IsDetailRowCompleted(KittingDetailDto detailRow)
@@ -1867,6 +2130,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 SD = source.SD,
                 ReceivedQuantity = source.ReceivedQuantity,
                 Status = source.Status,
+                SupplyStatus = source.SupplyStatus,
                 LocationCode = source.LocationCode,
                 LocationId = source.LocationId,
                 LotNumber = source.LotNumber,
@@ -1892,9 +2156,7 @@ namespace LD.FormsX.Features.Embarques.Views
             if (!string.IsNullOrWhiteSpace(detailRow.Status))
                 return detailRow.Status.Trim();
 
-            return detailRow.KittingDetailId <= 0
-                ? DefaultKittingStatus
-                : null;
+            return null;
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

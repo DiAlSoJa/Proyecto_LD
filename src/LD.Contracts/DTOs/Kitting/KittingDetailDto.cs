@@ -21,6 +21,9 @@ namespace LD.Contracts.Kitting
         [DisplayName("Cantidad")]
         public decimal Quantity { get; set; }
 
+        [DisplayName("Cantidad Surtida")]
+        public decimal CantidadSurtida { get; set; }
+
         [DisplayName("Status")]
         public string Status { get; set; } = string.Empty;
 

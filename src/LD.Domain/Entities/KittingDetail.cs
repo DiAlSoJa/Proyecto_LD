@@ -26,6 +26,9 @@ namespace LD.Domain.Entities
         [Required]
         public decimal Quantity { get; set; }
 
+        [Required]
+        public decimal CantidadSurtida { get; set; }
+
         [MaxLength(30)]
         public string? Status { get; set; }
 

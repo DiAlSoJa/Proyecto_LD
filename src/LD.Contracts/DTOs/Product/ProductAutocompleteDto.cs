@@ -12,6 +12,12 @@ namespace LD.Contracts.Product
         [DisplayName("Id")]
         public int ItemId { get; set; }
 
+        [DisplayName("Cliente")]
+        public int? ClientId { get; set; }
+
+        [DisplayName("Proyecto")]
+        public int? ProjectId { get; set; }
+
         [DisplayName("No. parte")]
         public string NumeroParte { get; set; } = string.Empty;
 
