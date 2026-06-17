@@ -331,9 +331,9 @@ namespace LD.Forms.Configuration
         // ======================
 
         public string InventaryStatus_GetAll => $"{_baseApi}/inventaryStatus";
-        public string InventaryStatus_GetById => $"{_baseApi}/inventaryStatus/{{statusId}}";
+        public string InventaryStatus_GetById => $"{_baseApi}/inventaryStatus/{{statusId}}/{{clientId}}/{{projectId}}";
         public string InventaryStatus_Create => $"{_baseApi}/inventaryStatus";
-        public string InventaryStatus_Update => $"{_baseApi}/inventaryStatus/{{statusId}}";
+        public string InventaryStatus_Update => $"{_baseApi}/inventaryStatus/{{statusId}}/{{clientId}}/{{projectId}}";
         public string InventaryStatus_Delete => $"{_baseApi}/inventaryStatus/{{statusId}}";
 
 

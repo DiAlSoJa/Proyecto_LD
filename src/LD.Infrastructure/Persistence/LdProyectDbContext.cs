@@ -295,6 +295,9 @@ namespace LD.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<InventaryStatus>()
+                .HasKey(x => new { x.InventoryStatusIdS, x.ClientId, x.ProjectId });
+
+            builder.Entity<InventaryStatus>()
                 .HasOne(x => x.Client)
                 .WithMany()
                 .HasForeignKey(x => x.ClientId)

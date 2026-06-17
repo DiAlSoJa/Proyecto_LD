@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace LD.Application.Features.Status.Queries;
 
-public record InventaryStatusByIdQuery(string StatusId)
+public record InventaryStatusByIdQuery(string StatusId, int ClientId, int ProjectId)
     : IRequest<Result<InventaryStatusRequest?>>;
 
 
@@ -32,7 +32,12 @@ public class InventaryStatusByIdQueryHandler : IRequestHandler<InventaryStatusBy
 
     public async Task<Result<InventaryStatusRequest?>> Handle(InventaryStatusByIdQuery request, CancellationToken cancellationToken)
     {
-        var statusDb = await _statusRepository.GetByIdAsync(request.StatusId);
+        var statusDb = (await _statusRepository.GetManyAsync())
+            ?.FirstOrDefault(x =>
+                string.Equals(x.InventoryStatusIdS?.Trim(), request.StatusId.Trim(), StringComparison.OrdinalIgnoreCase)
+                && x.ClientId == request.ClientId
+                && x.ProjectId == request.ProjectId);
+
         if (statusDb == null) return Result<InventaryStatusRequest?>.Failure("Estatus no encontrado", new(), 404);
         return Result<InventaryStatusRequest?>.Success(_mapper.Map<InventaryStatusRequest>(statusDb), "Estatus obtenido con exito");
     }

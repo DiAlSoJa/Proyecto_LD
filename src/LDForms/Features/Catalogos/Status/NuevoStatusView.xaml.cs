@@ -91,7 +91,10 @@ namespace LD.FormsX.Views.Status
 
         private async Task CargarDatosAsync()
         {
-            var response = await _statusService.GetStatusById(StatusSelected?.StatusId ?? string.Empty);
+            var statusId = StatusSelected?.StatusId ?? string.Empty;
+            var clientId = StatusSelected?.ClientId ?? 0;
+            var projectId = StatusSelected?.ProjectId ?? 0;
+            var response = await _statusService.GetStatusById(statusId, clientId, projectId);
 
             if (!response.IsSuccess || response.Data is null)
             {
@@ -104,8 +107,8 @@ namespace LD.FormsX.Views.Status
             txtNombreStatus.Text = statusI.FullName;
             chkDisponible.IsChecked = statusI.IsAvailable;
 
-            cmbCliente.SelectedValue = statusI.ClientId?.ToString();
-            cmbProyecto.SelectedValue = statusI.ProjectId?.ToString();
+            cmbCliente.SelectedValue = statusI.ClientId.ToString();
+            cmbProyecto.SelectedValue = statusI.ProjectId.ToString();
 
             txtStatus.IsEnabled = false;
         }
@@ -132,7 +135,7 @@ namespace LD.FormsX.Views.Status
             };
         }
 
-        private static int? ReadSelectedId(System.Windows.Controls.ComboBox comboBox)
+        private static int ReadSelectedId(System.Windows.Controls.ComboBox comboBox)
         {
             var value = comboBox.SelectedValue?.ToString() ?? comboBox.Text?.Trim();
             if (int.TryParse(value, out var parsed))
@@ -140,19 +143,19 @@ namespace LD.FormsX.Views.Status
                 return parsed;
             }
 
-            return null;
+            return 0;
         }
 
         private Task<ApiResponseDto<string>> CreateStatus(InventaryStatusRequest request) =>
             _statusService.CreateInventaryStatus(request);
 
-        private Task<ApiResponseDto<string>> EditStatus(string statusId, InventaryStatusRequest request) =>
-            _statusService.UpdateInventaryStatus(statusId, request);
+        private Task<ApiResponseDto<string>> EditStatus(string statusId, int clientId, int projectId, InventaryStatusRequest request) =>
+            _statusService.UpdateInventaryStatus(statusId, clientId, projectId, request);
 
         private async Task<ApiResponseDto<string>> SaveStatus(InventaryStatusRequest request)
         {
             return StatusSelected != null
-                ? await EditStatus(StatusSelected.StatusId ?? txtStatus.Text, request)
+                ? await EditStatus(StatusSelected.StatusId ?? txtStatus.Text, StatusSelected.ClientId, StatusSelected.ProjectId, request)
                 : await CreateStatus(request);
         }
 

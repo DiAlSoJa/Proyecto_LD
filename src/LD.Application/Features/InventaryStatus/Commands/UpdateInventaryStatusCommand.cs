@@ -35,7 +35,12 @@ public class UpdateStatusCommandHandler : IRequestHandler<UpdateInventaryStatusC
     {
         try
         {
-            var statusX = await _statusRepository.GetByIdAsync(request.InventoryStatusIdS);
+            var statusX = (await _statusRepository.GetManyAsync())
+                ?.FirstOrDefault(x =>
+                    string.Equals(x.InventoryStatusIdS?.Trim(), request.InventoryStatusIdS.Trim(), StringComparison.OrdinalIgnoreCase)
+                    && x.ClientId == request.ClientId
+                    && x.ProjectId == request.ProjectId);
+
             if (statusX is null)
                 return Result<string>.Failure("No existe el estatus", new List<string> { "Hubo un error al obtener el estatus" }, 404);
             _mapper.Map(request, statusX);

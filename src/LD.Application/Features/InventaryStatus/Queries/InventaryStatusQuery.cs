@@ -59,22 +59,16 @@ public class StatusQueryHandler : IRequestHandler<InventaryStatusQuery, Result<L
             var entity = filteredStatus[i];
             var dto = statusDtos[i];
 
-            if (entity.ClientId.HasValue)
+            if (clientNamesById.TryGetValue(entity.ClientId, out var clientName))
             {
                 dto.ClientId = entity.ClientId;
-                if (clientNamesById.TryGetValue(entity.ClientId.Value, out var clientName))
-                {
-                    dto.Cliente = clientName;
-                }
+                dto.Cliente = clientName;
             }
 
-            if (entity.ProjectId.HasValue)
+            if (projectNamesById.TryGetValue(entity.ProjectId, out var projectName))
             {
                 dto.ProjectId = entity.ProjectId;
-                if (projectNamesById.TryGetValue(entity.ProjectId.Value, out var projectName))
-                {
-                    dto.Proyecto = projectName;
-                }
+                dto.Proyecto = projectName;
             }
         }
 
@@ -89,12 +83,10 @@ public class StatusQueryHandler : IRequestHandler<InventaryStatusQuery, Result<L
         }
 
         var clientMatches = !clientId.HasValue
-            || !status.ClientId.HasValue
-            || status.ClientId.Value == clientId.Value;
+            || status.ClientId == clientId.Value;
 
         var projectMatches = !projectId.HasValue
-            || !status.ProjectId.HasValue
-            || status.ProjectId.Value == projectId.Value;
+            || status.ProjectId == projectId.Value;
 
         return clientMatches && projectMatches;
     }
