@@ -229,6 +229,13 @@ public class KittingController : CommonController
             if (kitting is null)
                 return Result<string>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404);
 
+            if (IsValidatedStatus(kitting.Status))
+            {
+                return Result<string>.Failure(
+                    "El Kitting ya esta validado y no se puede modificar.",
+                    new List<string> { "El Kitting ya esta validado." });
+            }
+
             if (IsConfirmedStatus(kitting.Status) || IsSurtidoStatus(kitting.Status))
             {
                 return Result<string>.Failure("El Kitting ya esta surtido y no se puede modificar.", new List<string> { "El Kitting ya esta surtido." });
@@ -400,13 +407,16 @@ public class KittingController : CommonController
     }
 
     private static bool IsTerminalStatus(string? status) =>
-        IsConfirmedStatus(status) || IsSurtidoStatus(status) || IsCancelledStatus(status);
+        IsConfirmedStatus(status) || IsSurtidoStatus(status) || IsValidatedStatus(status) || IsCancelledStatus(status);
 
     private static bool IsConfirmedStatus(string? status) =>
         string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsSurtidoStatus(string? status) =>
         string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsValidatedStatus(string? status) =>
+        string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsCancelledStatus(string? status) =>
         string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);

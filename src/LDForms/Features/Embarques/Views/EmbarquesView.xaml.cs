@@ -189,6 +189,9 @@ namespace LD.FormsX.Features.Embarques.Views
         private static bool IsCreatedStatus(string? status) =>
             string.Equals(status?.Trim(), "Creado", StringComparison.OrdinalIgnoreCase);
 
+        private static bool IsValidatedStatus(string? status) =>
+            string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+
         private static bool IsSurtidoStatus(string? status) =>
             string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
 
@@ -210,6 +213,9 @@ namespace LD.FormsX.Features.Embarques.Views
             if (IsCancelledStatus(status))
                 return "cancelado";
 
+            if (IsValidatedStatus(status))
+                return "validado";
+
             if (string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
                 return "surtido";
 
@@ -217,7 +223,7 @@ namespace LD.FormsX.Features.Embarques.Views
         }
 
         private static bool IsTerminalStatus(string? status) =>
-            IsConfirmedStatus(status) || IsCancelledStatus(status);
+            IsConfirmedStatus(status) || IsValidatedStatus(status) || IsCancelledStatus(status);
 
         private static SolidColorBrush CreateBrush(string hexColor) =>
             new((Color)ColorConverter.ConvertFromString(hexColor));
@@ -251,10 +257,8 @@ namespace LD.FormsX.Features.Embarques.Views
         private void UpdateActionButtons()
         {
             var hasSelected = _selectedKitting != null;
-            var isConfirmed = IsConfirmedStatus(_selectedKitting?.Status);
-            var isCancelled = IsCancelledStatus(_selectedKitting?.Status);
             var isSending = IsSendingStatus(_selectedKitting?.Status);
-            var isTerminal = isConfirmed || isCancelled;
+            var isTerminal = IsTerminalStatus(_selectedKitting?.Status);
             var canEdit = hasSelected && !isTerminal;
             var terminalStatus = GetTerminalStatusLabel(_selectedKitting?.Status);
             var confirmTooltip = !hasSelected
@@ -300,6 +304,14 @@ namespace LD.FormsX.Features.Embarques.Views
                 hasSelected
                     ? "Imprimir lista de surtido"
                     : "Selecciona un embarque para imprimir la lista de surtido.");
+
+            ConfigureActionButton(
+                btnValidar,
+                hasSelected,
+                false,
+                hasSelected
+                    ? "Abrir el dialogo de validacion del embarque."
+                    : "Selecciona un embarque para validar.");
 
             ConfigureActionButton(
                 btnImprimirDO,
@@ -642,15 +654,9 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-                if (IsConfirmedStatus(_selectedKitting.Status))
+                if (IsTerminalStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta confirmado y no se puede enviar a surtir.");
-                    return;
-                }
-
-                if (IsCancelledStatus(_selectedKitting.Status))
-                {
-                    DialogHelper.ShowWarning("El embarque seleccionado esta cancelado y no se puede enviar a surtir.");
+                    DialogHelper.ShowWarning($"El embarque seleccionado ya esta {GetTerminalStatusLabel(_selectedKitting.Status)} y no se puede enviar a surtir.");
                     return;
                 }
 
@@ -689,15 +695,9 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-                if (IsConfirmedStatus(_selectedKitting.Status))
+                if (IsTerminalStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta surtido.");
-                    return;
-                }
-
-                if (IsCancelledStatus(_selectedKitting.Status))
-                {
-                    DialogHelper.ShowWarning("El embarque seleccionado esta cancelado y no se puede surtir.");
+                    DialogHelper.ShowWarning($"El embarque seleccionado ya esta {GetTerminalStatusLabel(_selectedKitting.Status)} y no se puede surtir.");
                     return;
                 }
 
@@ -736,15 +736,9 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-                if (IsConfirmedStatus(_selectedKitting.Status))
+                if (IsTerminalStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta confirmado y no se puede cancelar.");
-                    return;
-                }
-
-                if (IsCancelledStatus(_selectedKitting.Status))
-                {
-                    DialogHelper.ShowWarning("El embarque seleccionado ya esta cancelado.");
+                    DialogHelper.ShowWarning($"El embarque seleccionado ya esta {GetTerminalStatusLabel(_selectedKitting.Status)} y no se puede cancelar.");
                     return;
                 }
 
@@ -790,6 +784,31 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 ListaSurtidoPrinter.Print(_selectedKitting, rows);
             }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async void BtnValidar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un embarque para validar.");
+                    return;
+                }
+
+            var dialog = _serviceProvider.GetRequiredService<ValidarEmbarqueDialog>();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.SetKitting(_selectedKitting);
+            dialog.ShowDialog();
+            if (dialog.HasChanges)
+            {
+                await CargarDatosConLoaderAsync();
+            }
+        }
             catch (Exception ex)
             {
                 DialogHelper.ShowError(ex.Message);

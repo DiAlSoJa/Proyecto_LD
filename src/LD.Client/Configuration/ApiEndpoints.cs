@@ -410,6 +410,7 @@ namespace LD.Forms.Configuration
         public string KittingIssue_GetAll => $"{_baseApi}/kittingIssue";
         public string KittingIssue_GetById => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
         public string KittingIssue_GetByKittingDetailId => $"{_baseApi}/kittingIssue/kittingDetail/{{kittingDetailId}}";
+        public string KittingIssue_Validate => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}/validate";
         public string KittingIssue_Create => $"{_baseApi}/kittingIssue";
         public string KittingIssue_Update => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
         public string KittingIssue_Delete => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";

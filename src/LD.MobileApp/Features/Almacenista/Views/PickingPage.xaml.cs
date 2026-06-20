@@ -52,7 +52,8 @@ public partial class PickingPage : ContentPage
                              kitting,
                              issueCountByKitting.TryGetValue(kitting.KittingId, out var issueCount)
                                  ? issueCount
-                                 : 0)))
+                                 : 0))
+                         .Where(item => item.IssueCount > 0))
             {
                 _items.Add(item);
             }

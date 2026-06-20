@@ -36,6 +36,8 @@ public class AvailableInventoryController : CommonController
             StandardId = request.StandardId,
             StandardIds = request.StandardIds,
             UbicacionDestino = request.UbicacionDestino,
+            KittingReceiptDetailId = request.KittingReceiptDetailId,
+            KittingId = request.KittingId,
             UserId = CurrentUserId
         };
 

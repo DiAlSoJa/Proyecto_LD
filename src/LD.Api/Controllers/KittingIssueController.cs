@@ -236,6 +236,12 @@ public class KittingIssueController : CommonController
                 await UpdateCantidadSurtidaAsync(entity.KittingDetailId);
                 await _context.SaveChangesAsync();
 
+                var kittingValidated = await TryMarkKittingValidatedAsync(entity.KittingDetailId);
+                if (kittingValidated)
+                {
+                    await _context.SaveChangesAsync();
+                }
+
                 await transaction.CommitAsync();
                 return ResultExtensions.ToActionResult(
                     Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail creado con exito"));
@@ -291,6 +297,12 @@ public class KittingIssueController : CommonController
                 await UpdateCantidadSurtidaAsync(entity.KittingDetailId);
                 await _context.SaveChangesAsync();
 
+                var kittingValidated = await TryMarkKittingValidatedAsync(entity.KittingDetailId);
+                if (kittingValidated)
+                {
+                    await _context.SaveChangesAsync();
+                }
+
                 await transaction.CommitAsync();
 
                 if (!updated)
@@ -312,6 +324,110 @@ public class KittingIssueController : CommonController
         {
             return ResultExtensions.ToActionResult(
                 Result<string>.Failure("Hubo un error al actualizar el Kitting Issue Detail.", new List<string> { ex.Message }));
+        }
+    }
+
+    [HttpPost("{kittingIssueDetailId}/validate")]
+    [Permission(PermissionKeys.Shipment_View)]
+    public async Task<IActionResult> ValidateKittingIssue(int kittingIssueDetailId, [FromBody] KittingIssueValidateRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(CurrentUserId))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se pudo identificar el usuario actual.", new List<string> { "No se pudo identificar el usuario actual." }, 401));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.StandardIdStr))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("StandardIdStr es obligatorio.", new List<string> { "StandardIdStr es obligatorio." }));
+            }
+
+            var entity = await _context.KittingIssueDetails
+                .Include(x => x.StandardLabel)
+                .FirstOrDefaultAsync(x => x.KittingReceiptDetailId == kittingIssueDetailId);
+
+            if (entity is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No existe el Kitting Issue Detail.", new List<string> { "No existe el Kitting Issue Detail." }, 404));
+            }
+
+            var validation = await EnsureKittingDetailEditableAsync(entity.KittingDetailId);
+            if (validation is not null)
+                return ResultExtensions.ToActionResult(validation);
+
+            var expectedStandardId = await ResolveIssueStandardIdTextAsync(entity);
+            if (string.IsNullOrWhiteSpace(expectedStandardId))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se pudo identificar el StandardId del issue.", new List<string> { "No se pudo identificar el StandardId del issue." }));
+            }
+
+            if (!string.Equals(expectedStandardId.Trim(), request.StandardIdStr.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure(
+                        "El StandardId escaneado no corresponde al issue seleccionado.",
+                        new List<string> { "El StandardId escaneado no corresponde al issue seleccionado." }));
+            }
+
+            if (string.Equals(entity.SupplyStatus?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail ya estaba validado."));
+            }
+
+            if (!string.Equals(entity.SupplyStatus?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure(
+                        "Solo se puede validar un issue en estatus Surtido.",
+                        new List<string> { "Solo se puede validar un issue en estatus Surtido." }));
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                entity.SupplyStatus = "Validado";
+                entity.LastModifiedAt = DateTime.Now;
+                entity.LastModifiedByUserId = CurrentUserId;
+
+                var updated = await _context.SaveChangesAsync() > 0;
+                if (!updated)
+                {
+                    await transaction.RollbackAsync();
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Failure("No se pudo validar el Kitting Issue Detail.", new List<string> { "No se pudo validar el Kitting Issue Detail." }));
+                }
+
+                var kittingValidated = await TryMarkKittingValidatedAsync(entity.KittingDetailId);
+                if (kittingValidated)
+                {
+                    await _context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Success(
+                        entity.KittingReceiptDetailId.ToString(),
+                        kittingValidated
+                            ? "Kitting Issue Detail validado correctamente. Kitting validado correctamente."
+                            : "Kitting Issue Detail validado correctamente."));
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        catch (Exception ex)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<string>.Failure("Hubo un error al validar el Kitting Issue Detail.", new List<string> { ex.Message }));
         }
     }
 
@@ -416,6 +532,12 @@ public class KittingIssueController : CommonController
                 await UpdateCantidadSurtidaAsync(entity.KittingDetailId);
                 await _context.SaveChangesAsync();
 
+                var kittingValidated = await TryMarkKittingValidatedAsync(entity.KittingDetailId);
+                if (kittingValidated)
+                {
+                    await _context.SaveChangesAsync();
+                }
+
                 await transaction.CommitAsync();
 
                 return ResultExtensions.ToActionResult(
@@ -462,7 +584,7 @@ public class KittingIssueController : CommonController
     }
 
     private static bool IsTerminalStatus(string? status) =>
-        IsConfirmedStatus(status) || IsCancelledStatus(status);
+        IsConfirmedStatus(status) || IsCancelledStatus(status) || string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsConfirmedStatus(string? status) =>
         string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
@@ -487,6 +609,51 @@ public class KittingIssueController : CommonController
             .AsNoTracking()
             .Where(x => x.KittingDetailId == kittingDetailId)
             .SumAsync(x => x.ReceivedQuantity ?? 0m);
+    }
+
+    private async Task<bool> TryMarkKittingValidatedAsync(int kittingDetailId)
+    {
+        var kittingId = await _context.KittingDetails
+            .AsNoTracking()
+            .Where(x => x.KittingDetailId == kittingDetailId)
+            .Select(x => x.KittingId)
+            .FirstOrDefaultAsync();
+
+        if (kittingId <= 0)
+            return false;
+
+        var detailIds = await _context.KittingDetails
+            .AsNoTracking()
+            .Where(x => x.KittingId == kittingId)
+            .Select(x => x.KittingDetailId)
+            .ToListAsync();
+
+        if (detailIds.Count == 0)
+            return false;
+
+        var issueStatuses = await _context.KittingIssueDetails
+            .AsNoTracking()
+            .Where(x => detailIds.Contains(x.KittingDetailId))
+            .Select(x => x.SupplyStatus)
+            .ToListAsync();
+
+        if (issueStatuses.Count == 0)
+            return false;
+
+        if (issueStatuses.Any(x => !string.Equals(x?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase)))
+            return false;
+
+        var kitting = await _context.Kittings.FirstOrDefaultAsync(x => x.KittingId == kittingId);
+        if (kitting is null)
+            return false;
+
+        if (string.Equals(kitting.Status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        kitting.Status = "Validado";
+        kitting.LastModifiedAt = DateTime.Now;
+        kitting.LastModifiedByUserId = CurrentUserId;
+        return true;
     }
 
     private async Task<StandardLabel?> ResolveStandardLabelAsync(string standardIdText)

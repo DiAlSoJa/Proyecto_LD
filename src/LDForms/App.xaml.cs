@@ -269,6 +269,7 @@ namespace LD.FormsX
             services.AddTransient<NuevoASNView>();
             services.AddTransient<NuevoSurtidoView>();
             services.AddTransient<EditarSurtidoView>();
+            services.AddTransient<ValidarEmbarqueDialog>();
             services.AddTransient<NuevoASNEscaneoView>();
             services.AddTransient<BuscarVehiculoView>();
 
