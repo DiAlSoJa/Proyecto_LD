@@ -704,7 +704,22 @@ namespace LD.Infrastructure.Persistence
                 new Permission { PermissionId = 81, PermissionName = "Editar unidades", Key = "units.update", ModuleId = 16 },
 
                 // CORTINA (CONTROL DE PATIO)
-                new Permission { PermissionId = 85, PermissionName = "Asignar cortina", Key = "security.cortina.assign", ModuleId = 25 }
+                new Permission { PermissionId = 85, PermissionName = "Asignar cortina", Key = "security.cortina.assign", ModuleId = 25 },
+
+                // MOVIMIENTOS adicionales (agregados fuera del seed inicial)
+                new Permission { PermissionId = 86, PermissionName = "Crear movimientos",  Key = "movements.create", ModuleId = 6 },
+                new Permission { PermissionId = 87, PermissionName = "Editar movimientos",  Key = "movements.update", ModuleId = 6 },
+                new Permission { PermissionId = 88, PermissionName = "Eliminar movimientos", Key = "movements.delete", ModuleId = 6 },
+
+                // STANDARD LABELS / ETIQUETAS
+                new Permission { PermissionId = 89, PermissionName = "Imprimir etiquetas LD",   Key = "standard-label.print", ModuleId = 22 },
+
+                // DEV TOOLS
+                new Permission { PermissionId = 90, PermissionName = "Generador de tareas demo", Key = "dev.task-generator", ModuleId = 23 },
+
+                // WAREHOUSE TASKS / TAREAS DE ALMACÉN
+                new Permission { PermissionId = 91, PermissionName = "Ver tareas de almacén",          Key = "warehouse-task.read",   ModuleId = 1 },
+                new Permission { PermissionId = 92, PermissionName = "Administrar tareas de almacén",   Key = "warehouse-task.manage", ModuleId = 1 }
             );
 
             const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
@@ -744,7 +759,7 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<RolePermission>().HasData(
-                Enumerable.Range(1, 85)
+                Enumerable.Range(1, 92)
                     .Select(id => new RolePermission
                     {
                         RoleId        = superAdminRoleId,

@@ -69,7 +69,9 @@
       "Bash(powershell -Command \"Get-ChildItem -File *.cs\")",
       "Bash(powershell -Command \"Get-ChildItem -Recurse -Filter '*Dashboard*' | Select-Object FullName\")",
       "Bash(xargs cat)",
-      "Bash(powershell -Command \"Get-ChildItem -Recurse -File *.cs | Select-Object FullName\")"
+      "Bash(powershell -Command \"Get-ChildItem -Recurse -File *.cs | Select-Object FullName\")",
+      "Bash(OperationalTaskStatus\" 2>&1)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.Infrastructure\\\\Migrations\" | Where-Object { $_.Name -match \"AddDevTask|OperationalTaskStatus\" } | Select-Object Name)"
     ]
   }
 }
