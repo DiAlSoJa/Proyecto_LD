@@ -35,6 +35,7 @@ public class KittingController : CommonController
             .AsNoTracking()
             .Include(x => x.Client)
             .Include(x => x.Project)
+                .ThenInclude(x => x.Warehouse)
             .OrderByDescending(x => x.KittingId)
             .ToListAsync();
 
@@ -68,6 +69,7 @@ public class KittingController : CommonController
             .AsNoTracking()
             .Include(x => x.Client)
             .Include(x => x.Project)
+                .ThenInclude(x => x.Warehouse)
             .Where(x => x.ClientId == clientId && x.ProjectId == projectId)
             .OrderByDescending(x => x.KittingId)
             .ToListAsync();

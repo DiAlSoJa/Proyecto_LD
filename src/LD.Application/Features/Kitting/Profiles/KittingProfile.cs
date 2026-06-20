@@ -14,6 +14,7 @@ namespace LD.Application.Features.Kitting.Profiles
                 .ForMember(dest => dest.KittingCode, opt => opt.MapFrom(src => src.KittingCode))
                 .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client != null ? src.Client.CommercialName : string.Empty))
                 .ForMember(dest => dest.Project, opt => opt.MapFrom(src => src.Project != null ? src.Project.ProjectName : string.Empty))
+                .ForMember(dest => dest.Warehouse, opt => opt.MapFrom(src => src.Project != null && src.Project.Warehouse != null ? src.Project.Warehouse.WarehouseName : string.Empty))
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.InvoiceNumber))
                 .ForMember(dest => dest.GuideNumber, opt => opt.MapFrom(src => src.GuideNumber))
                 .ForMember(dest => dest.Eta, opt => opt.MapFrom(src => src.Eta))

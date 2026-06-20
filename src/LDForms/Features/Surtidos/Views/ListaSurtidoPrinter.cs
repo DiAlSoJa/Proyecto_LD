@@ -9,18 +9,22 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using LD.Contracts.Kitting;
+using LD.FormsX.Features.Common;
 
 namespace LD.FormsX.Features.Surtidos.Views;
 
 internal static class ListaSurtidoPrinter
 {
     private const double Dpi = 96d;
+    private const double PointToDip = Dpi / 72d;
+    private const double PdfPageHeight = 792d;
     private const double PageWidth = 8.5d * Dpi;
     private const double PageHeight = 11d * Dpi;
-    private const double MarginSize = 36d;
-    private const double HeaderHeight = 220d;
-    private const double FooterHeight = 42d;
-    private const double RowHeight = 24d;
+    private const int RowsPerPage = 18;
+
+    private static readonly FontFamily Arial = new("Arial");
+    private static readonly FontFamily Times = new("Times New Roman");
+    private static readonly FontFamily Courier = new("Courier New");
 
     internal sealed class ListaSurtidoRow
     {
@@ -36,26 +40,32 @@ internal static class ListaSurtidoPrinter
     public static void Print(KittingDto? kitting, IReadOnlyList<ListaSurtidoRow> rows)
     {
         if (rows.Count == 0)
-            throw new InvalidOperationException("No hay lineas surtidas para imprimir.");
+            throw new InvalidOperationException("No hay lineas surtidas para mostrar en vista previa.");
 
-        var printDialog = new PrintDialog();
-        if (printDialog.ShowDialog() != true)
-            return;
+        var document = BuildDocument(kitting, rows);
+        ShowPreview(document, "Vista previa - Lista de surtido", "Lista de surtido");
+    }
 
+    private static FixedDocument BuildDocument(KittingDto? kitting, IReadOnlyList<ListaSurtidoRow> rows)
+    {
         var document = new FixedDocument
         {
             DocumentPaginator = { PageSize = new Size(PageWidth, PageHeight) }
         };
 
-        var rowsPerPage = Math.Max(1, (int)((PageHeight - (MarginSize * 2) - HeaderHeight - FooterHeight) / RowHeight));
-        var pageCount = (int)Math.Ceiling(rows.Count / (double)rowsPerPage);
+        var pageCount = (int)Math.Ceiling(rows.Count / (double)RowsPerPage);
         var totalQuantity = rows.Sum(x => x.Quantity);
         var totalPallets = rows.Count;
+        var printedAt = DateTime.Now;
 
-        var pageNumber = 1;
-        foreach (var pageRows in rows.Chunk(rowsPerPage))
+        for (var pageNumber = 1; pageNumber <= pageCount; pageNumber++)
         {
-            var page = BuildPage(kitting, pageRows.ToList(), pageNumber, pageCount, totalQuantity, totalPallets);
+            var pageRows = rows
+                .Skip((pageNumber - 1) * RowsPerPage)
+                .Take(RowsPerPage)
+                .ToList();
+
+            var page = BuildPage(kitting, pageRows, pageRows.Sum(x => x.Quantity), totalQuantity, totalPallets, printedAt, pageNumber, pageCount);
             page.Measure(new Size(PageWidth, PageHeight));
             page.Arrange(new Rect(0, 0, PageWidth, PageHeight));
             page.UpdateLayout();
@@ -63,19 +73,30 @@ internal static class ListaSurtidoPrinter
             var pageContent = new PageContent();
             ((IAddChild)pageContent).AddChild(page);
             document.Pages.Add(pageContent);
-            pageNumber++;
         }
 
-        printDialog.PrintDocument(document.DocumentPaginator, "Lista de surtido");
+        return document;
+    }
+
+    private static void ShowPreview(FixedDocument document, string title, string jobName)
+    {
+        var preview = new PrintPreviewWindow(document, title, jobName)
+        {
+            Owner = Application.Current?.MainWindow
+        };
+
+        preview.ShowDialog();
     }
 
     private static FixedPage BuildPage(
         KittingDto? kitting,
         IReadOnlyList<ListaSurtidoRow> rows,
-        int pageNumber,
-        int pageCount,
+        decimal pageQuantity,
         decimal totalQuantity,
-        int totalPallets)
+        int totalPallets,
+        DateTime printedAt,
+        int pageNumber,
+        int pageCount)
     {
         var page = new FixedPage
         {
@@ -84,306 +105,331 @@ internal static class ListaSurtidoPrinter
             Background = Brushes.White
         };
 
-        var root = new Grid
+        var canvas = new Canvas
         {
-            Width = PageWidth - (MarginSize * 2),
-            Height = PageHeight - (MarginSize * 2),
-            Margin = new Thickness(MarginSize)
+            Width = PageWidth,
+            Height = PageHeight,
+            Background = Brushes.White
         };
 
-        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        page.Children.Add(canvas);
 
-        var header = BuildHeader(kitting);
-        Grid.SetRow(header, 0);
-        root.Children.Add(header);
+        BuildHeader(canvas, kitting);
+        BuildRowsTable(canvas, rows, pageQuantity, totalQuantity, totalPallets);
+        BuildSignatures(canvas, kitting);
+        BuildPageFooter(canvas, printedAt, pageNumber, pageCount);
 
-        var projectBlock = BuildProjectBlock(kitting);
-        Grid.SetRow(projectBlock, 1);
-        root.Children.Add(projectBlock);
-
-        var infoBlock = BuildInfoBlock(kitting);
-        Grid.SetRow(infoBlock, 2);
-        root.Children.Add(infoBlock);
-
-        var table = BuildTable(rows);
-        Grid.SetRow(table, 3);
-        root.Children.Add(table);
-
-        var footer = BuildFooter(rows.Sum(x => x.Quantity), totalQuantity, totalPallets, pageNumber, pageCount);
-        Grid.SetRow(footer, 4);
-        root.Children.Add(footer);
-
-        page.Children.Add(root);
         return page;
     }
 
-    private static FrameworkElement BuildHeader(KittingDto? kitting)
+    private static void BuildHeader(Canvas canvas, KittingDto? kitting)
     {
-        var grid = new Grid
+        AddBaselineText(canvas, "LOGISTICA FLEXIBLE", 9.1, 762.6, 12, FontWeights.Black, Arial);
+        AddTitleBox(canvas);
+        AddLogo(canvas);
+
+        var addressLines = SplitAddress(FormatValue(kitting?.Direccion));
+        AddTopText(canvas, addressLines.ElementAtOrDefault(0) ?? string.Empty, 11, 64, 16, FontWeights.Bold, Times, 150, TextAlignment.Center);
+        AddTopText(canvas, addressLines.ElementAtOrDefault(1) ?? string.Empty, 11, 82, 16, FontWeights.Bold, Times, 150, TextAlignment.Center);
+
+        AddBaselineText(canvas, FormatValue(kitting?.Project), 327.8, 719.3, 10, FontWeights.Bold, Times, 55, TextAlignment.Center);
+        AddBaselineText(canvas, BuildInfoLine(kitting), 304.7, 686.5, 10, FontWeights.Bold, Times, 260);
+        AddHorizontalLine(canvas, 8, 119, 572, 3.2, Brushes.Black);
+    }
+
+    private static void AddTitleBox(Canvas canvas)
+    {
+        var title = new TextBlock
         {
-            Margin = new Thickness(0, 0, 0, 8)
+            Text = "LISTA DE SURTIDO",
+            FontFamily = Arial,
+            FontSize = Pt(14),
+            FontWeight = FontWeights.Black,
+            TextAlignment = TextAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Stretch
         };
 
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(360) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(84) });
-
-        var company = new StackPanel
-        {
-            VerticalAlignment = VerticalAlignment.Center
-        };
-        company.Children.Add(Text("LOGISTICA FLEXIBLE", 20, FontWeights.Bold));
-        Grid.SetColumn(company, 0);
-        grid.Children.Add(company);
-
-        var title = new Border
+        var inner = new Border
         {
             BorderBrush = Brushes.Black,
-            BorderThickness = new Thickness(2),
-            Padding = new Thickness(12, 6, 12, 6),
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment = VerticalAlignment.Center,
-            Child = Text("LISTA DE SURTIDO", 19, FontWeights.Bold, TextAlignment.Center)
+            BorderThickness = new Thickness(1),
+            Margin = new Thickness(Pt(1.8)),
+            Child = title
         };
-        Grid.SetColumn(title, 1);
-        grid.Children.Add(title);
 
+        var outer = new Border
+        {
+            Width = Pt(285),
+            Height = Pt(29),
+            BorderBrush = Brushes.Black,
+            BorderThickness = new Thickness(1),
+            Child = inner
+        };
+
+        Place(canvas, outer, 210, 18.5);
+    }
+
+    private static void AddLogo(Canvas canvas)
+    {
         var logo = new Image
         {
-            Width = 72,
-            Height = 52,
+            Width = Pt(105),
+            Height = Pt(56),
+            Opacity = 0.35,
             Stretch = Stretch.Uniform,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment = VerticalAlignment.Center,
             Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Images/logo.png"))
         };
-        Grid.SetColumn(logo, 2);
-        grid.Children.Add(logo);
 
-        return grid;
+        Place(canvas, logo, 510, 14);
     }
 
-    private static FrameworkElement BuildProjectBlock(KittingDto? kitting)
-    {
-        var text = string.IsNullOrWhiteSpace(kitting?.Project)
-            ? string.Empty
-            : kitting!.Project.Trim();
-
-        return new TextBlock
-        {
-            Text = text,
-            FontSize = 18,
-            FontWeight = FontWeights.Bold,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            TextAlignment = TextAlignment.Center,
-            Margin = new Thickness(0, 10, 0, 4),
-            Foreground = Brushes.Black
-        };
-    }
-
-    private static FrameworkElement BuildInfoBlock(KittingDto? kitting)
-    {
-        var grid = new Grid
-        {
-            Margin = new Thickness(0, 0, 0, 12)
-        };
-
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-        var picking = BuildInfoLine("Picking", kitting?.KittingCode, kitting?.KittingId.ToString(CultureInfo.InvariantCulture));
-        Grid.SetColumn(picking, 0);
-        grid.Children.Add(picking);
-
-        var req = BuildInfoLine("REQ", kitting?.GuideNumber, null);
-        Grid.SetColumn(req, 1);
-        grid.Children.Add(req);
-
-        var invoice = BuildInfoLine("Factura", kitting?.InvoiceNumber, null);
-        Grid.SetColumn(invoice, 2);
-        grid.Children.Add(invoice);
-
-        return grid;
-    }
-
-    private static FrameworkElement BuildInfoLine(string label, string? primaryValue, string? fallbackValue)
-    {
-        var panel = new StackPanel
-        {
-            Orientation = Orientation.Vertical,
-            HorizontalAlignment = HorizontalAlignment.Center
-        };
-
-        panel.Children.Add(Text($"{label}: {FormatValue(primaryValue, fallbackValue)}", 12.5, FontWeights.Bold));
-        return panel;
-    }
-
-    private static FrameworkElement BuildTable(IReadOnlyList<ListaSurtidoRow> rows)
-    {
-        var table = new Grid();
-        AddColumns(table);
-        table.RowDefinitions.Add(new RowDefinition { Height = new GridLength(28) });
-
-        var headers = new[]
-        {
-            "No Parte",
-            "Descripcion",
-            "Cantidad",
-            "Status",
-            "No Lote",
-            "SD",
-            "Ubicacion"
-        };
-
-        for (var i = 0; i < headers.Length; i++)
-            AddCell(table, headers[i], 0, i, true);
-
-        for (var i = 0; i < rows.Count; i++)
-        {
-            var rowIndex = i + 1;
-            var row = rows[i];
-            table.RowDefinitions.Add(new RowDefinition { Height = new GridLength(RowHeight) });
-
-            AddCell(table, row.PartNumber, rowIndex, 0);
-            AddCell(table, row.Description, rowIndex, 1);
-            AddCell(table, FormatQuantity(row.Quantity), rowIndex, 2, alignRight: true);
-            AddCell(table, row.Status, rowIndex, 3, textAlignment: TextAlignment.Center);
-            AddCell(table, row.LotNumber, rowIndex, 4);
-            AddCell(table, row.SD, rowIndex, 5, textAlignment: TextAlignment.Center);
-            AddCell(table, row.LocationCode, rowIndex, 6);
-        }
-
-        return table;
-    }
-
-    private static FrameworkElement BuildFooter(
+    private static void BuildRowsTable(
+        Canvas canvas,
+        IReadOnlyList<ListaSurtidoRow> rows,
         decimal pageQuantity,
         decimal totalQuantity,
-        int totalPallets,
-        int pageNumber,
-        int pageCount)
+        int totalPallets)
     {
-        var grid = new Grid
+        const double tableLeft = 7;
+        const double tableTop = 133;
+        const double headerHeight = 16;
+        const double rowHeight = 15.85;
+
+        var columns = new[]
         {
-            Margin = new Thickness(0, 10, 0, 0)
+            new TableColumn("No Parte", 87, TextAlignment.Center),
+            new TableColumn("Descripción", 130, TextAlignment.Center),
+            new TableColumn("Cantidad", 47, TextAlignment.Center),
+            new TableColumn("Status", 34, TextAlignment.Center),
+            new TableColumn("No Lote", 72, TextAlignment.Center),
+            new TableColumn("SD", 18, TextAlignment.Center),
+            new TableColumn("Ubicación", 56, TextAlignment.Center)
         };
 
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        var x = tableLeft;
+        foreach (var column in columns)
+        {
+            AddTableHeaderCell(canvas, column.Header, x, tableTop, column.Width, headerHeight, column.Alignment);
+            x += column.Width;
+        }
 
-        var leftPanel = new StackPanel
+        var rowTop = tableTop + headerHeight;
+        for (var i = 0; i < rows.Count; i++)
         {
-            Orientation = Orientation.Vertical
-        };
-        leftPanel.Children.Add(new TextBlock
-        {
-            Text = $"Suma de cantidades: {FormatQuantity(pageQuantity)}",
-            FontSize = 12,
-            FontWeight = FontWeights.Bold,
-            HorizontalAlignment = HorizontalAlignment.Left
-        });
-        leftPanel.Children.Add(new TextBlock
-        {
-            Text = $"Pallets: {totalPallets}",
-            FontSize = 12,
-            FontWeight = FontWeights.Bold,
-            HorizontalAlignment = HorizontalAlignment.Left
-        });
-        Grid.SetColumn(leftPanel, 0);
-        grid.Children.Add(leftPanel);
+            var row = rows[i];
+            var currentTop = rowTop + (i * rowHeight);
 
-        var pagePanel = new StackPanel
-        {
-            Orientation = Orientation.Vertical,
-            HorizontalAlignment = HorizontalAlignment.Right
-        };
-        pagePanel.Children.Add(new TextBlock
-        {
-            Text = $"Pagina {pageNumber} de {pageCount}",
-            FontSize = 11,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            TextAlignment = TextAlignment.Right
-        });
-        pagePanel.Children.Add(new TextBlock
-        {
-            Text = $"Total general: {FormatQuantity(totalQuantity)}",
-            FontSize = 11,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            TextAlignment = TextAlignment.Right
-        });
-        Grid.SetColumn(pagePanel, 1);
-        grid.Children.Add(pagePanel);
+            AddRowText(canvas, row.PartNumber, 9.1, currentTop + 4, 7, 82, TextAlignment.Left);
+            AddRowText(canvas, row.Description, 96.4, currentTop + 4, 8, 120, TextAlignment.Left);
+            AddRowText(canvas, FormatQuantity(row.Quantity), 223, currentTop + 4, 8, 45, TextAlignment.Right);
+            AddRowText(canvas, FormatStatus(row.Status), 271, currentTop + 4, 8, 30, TextAlignment.Center);
+            AddRowText(canvas, row.LotNumber, 304, currentTop + 4, 8, 72, TextAlignment.Right);
+            AddRowText(canvas, row.SD, 377, currentTop + 4, 8, 18, TextAlignment.Center, FontWeights.Bold);
+            AddRowText(canvas, row.LocationCode, 398, currentTop + 4, 8, 52, TextAlignment.Right);
+            AddHorizontalLine(canvas, 8, currentTop + rowHeight - 1, 445, 0.55, Brushes.LightGray);
+        }
 
-        return grid;
+        var totalTop = rowTop + (rows.Count * rowHeight);
+        AddRowText(canvas, FormatQuantity(pageQuantity), 223, totalTop + 4, 8, 45, TextAlignment.Right, FontWeights.Bold);
+        AddHorizontalLine(canvas, 8, totalTop + rowHeight - 1, 445, 0.55, Brushes.LightGray);
+
+        AddRowText(canvas, FormatQuantity(totalQuantity), 223, totalTop + rowHeight + 4, 8, 45, TextAlignment.Right, FontWeights.Bold);
+        AddHorizontalLine(canvas, 8, totalTop + (rowHeight * 2) - 1, 370, 0.55, Brushes.LightGray);
+        AddHorizontalLine(canvas, 396, totalTop + (rowHeight * 2) - 1, 56, 0.55, Brushes.LightGray);
+
+        AddRowText(canvas, $"Pallets: {totalPallets}", 189.6, totalTop + (rowHeight * 2) + 5, 12, 90, TextAlignment.Center, FontWeights.Bold);
+        AddHorizontalLine(canvas, 8, totalTop + (rowHeight * 3) - 1, 370, 0.55, Brushes.LightGray);
+        AddHorizontalLine(canvas, 396, totalTop + (rowHeight * 3) - 1, 56, 0.55, Brushes.LightGray);
+        AddHorizontalLine(canvas, 8, totalTop + (rowHeight * 4) - 1, 370, 0.55, Brushes.LightGray);
+        AddHorizontalLine(canvas, 396, totalTop + (rowHeight * 4) - 1, 56, 0.55, Brushes.LightGray);
     }
 
-    private static void AddColumns(Grid grid)
+    private static void AddTableHeaderCell(
+        Canvas canvas,
+        string text,
+        double x,
+        double y,
+        double width,
+        double height,
+        TextAlignment alignment)
     {
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.5, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2.6, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.9, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.8, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.7, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.0, GridUnitType.Star) });
-    }
-
-    private static void AddCell(
-        Grid grid,
-        string? text,
-        int row,
-        int column,
-        bool isHeader = false,
-        bool alignRight = false,
-        TextAlignment textAlignment = TextAlignment.Left)
-    {
-        var border = new Border
-        {
-            BorderBrush = Brushes.Black,
-            BorderThickness = new Thickness(0.6),
-            Background = isHeader ? new SolidColorBrush(Color.FromRgb(245, 245, 245)) : Brushes.White,
-            Padding = new Thickness(4, 2, 4, 2)
-        };
-
         var block = new TextBlock
         {
-            Text = text ?? string.Empty,
-            FontSize = isHeader ? 11.5 : 11,
-            FontWeight = isHeader ? FontWeights.Bold : FontWeights.Normal,
-            TextWrapping = TextWrapping.Wrap,
-            TextAlignment = textAlignment,
+            Text = text,
+            FontFamily = Arial,
+            FontSize = Pt(10),
+            FontWeight = FontWeights.Bold,
+            TextAlignment = alignment,
             VerticalAlignment = VerticalAlignment.Center,
-            Foreground = Brushes.Black
+            HorizontalAlignment = HorizontalAlignment.Stretch
         };
 
-        if (alignRight)
-            block.HorizontalAlignment = HorizontalAlignment.Right;
+        var border = new Border
+        {
+            Width = Pt(width),
+            Height = Pt(height),
+            BorderBrush = Brushes.Black,
+            BorderThickness = new Thickness(1),
+            Child = block
+        };
 
-        border.Child = block;
-        Grid.SetRow(border, row);
-        Grid.SetColumn(border, column);
-        grid.Children.Add(border);
+        Place(canvas, border, x, y);
     }
 
-    private static TextBlock Text(string text, double fontSize, FontWeight weight, TextAlignment alignment = TextAlignment.Left)
+    private static void AddRowText(
+        Canvas canvas,
+        string? text,
+        double x,
+        double y,
+        double fontSize,
+        double width,
+        TextAlignment alignment,
+        FontWeight? weight = null)
     {
-        return new TextBlock
+        var block = new TextBlock
+        {
+            Text = FormatValue(text),
+            Width = Pt(width),
+            FontFamily = Courier,
+            FontSize = Pt(fontSize),
+            FontWeight = weight ?? FontWeights.Normal,
+            TextAlignment = alignment,
+            Foreground = Brushes.Black,
+            TextWrapping = TextWrapping.NoWrap,
+            ClipToBounds = true
+        };
+
+        Place(canvas, block, x, y);
+    }
+
+    private static void BuildSignatures(Canvas canvas, KittingDto? kitting)
+    {
+        AddHorizontalLine(canvas, 31, 727, 188, 2, Brushes.Black);
+        AddHorizontalLine(canvas, 373, 727, 188, 2, Brushes.Black);
+
+        AddTopText(canvas, "Surtido Por", 100, 735, 10, FontWeights.Bold, Times, 50, TextAlignment.Center);
+        AddTopText(canvas, FormatWarehouseLabel(kitting?.Warehouse), 230, 737, 8, FontWeights.Bold, Times, 140, TextAlignment.Center);
+        AddTopText(canvas, "Auditado Por", 436.4, 735, 10, FontWeights.Bold, Times, 58, TextAlignment.Center);
+    }
+
+    private static void BuildPageFooter(Canvas canvas, DateTime printedAt, int pageNumber, int pageCount)
+    {
+        AddTopText(canvas, $"Impresión: {FormatFooterDateTime(printedAt)}", 19.5, 756, 10, FontWeights.Normal, Times, 150);
+        AddTopText(canvas, $"Transacción: {FormatFooterDateTime(printedAt)}", 203.1, 756, 10, FontWeights.Normal, Times, 160);
+        AddTopText(canvas, $"Página {pageNumber} de {pageCount}", 475.7, 756, 10, FontWeights.Normal, Times, 70, TextAlignment.Center);
+    }
+
+    private static void AddBaselineText(
+        Canvas canvas,
+        string text,
+        double x,
+        double baseline,
+        double fontSize,
+        FontWeight weight,
+        FontFamily family,
+        double width = 220,
+        TextAlignment alignment = TextAlignment.Left)
+    {
+        AddTopText(canvas, text, x, PdfPageHeight - baseline - fontSize, fontSize, weight, family, width, alignment);
+    }
+
+    private static void AddTopText(
+        Canvas canvas,
+        string text,
+        double x,
+        double y,
+        double fontSize,
+        FontWeight weight,
+        FontFamily family,
+        double width = 220,
+        TextAlignment alignment = TextAlignment.Left)
+    {
+        var block = new TextBlock
         {
             Text = text,
-            FontSize = fontSize,
+            Width = Pt(width),
+            FontFamily = family,
+            FontSize = Pt(fontSize),
             FontWeight = weight,
             TextAlignment = alignment,
-            Foreground = Brushes.Black
+            Foreground = Brushes.Black,
+            TextWrapping = TextWrapping.NoWrap
         };
+
+        Place(canvas, block, x, y);
+    }
+
+    private static void AddHorizontalLine(Canvas canvas, double x, double y, double width, double height, Brush brush)
+    {
+        var line = new Border
+        {
+            Width = Pt(width),
+            Height = Pt(height),
+            Background = brush
+        };
+
+        Place(canvas, line, x, y);
+    }
+
+    private static void Place(Canvas canvas, UIElement element, double x, double y)
+    {
+        Canvas.SetLeft(element, Pt(x));
+        Canvas.SetTop(element, Pt(y));
+        canvas.Children.Add(element);
+    }
+
+    private static double Pt(double value) => value * PointToDip;
+
+    private static IReadOnlyList<string> SplitAddress(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return new[] { string.Empty, string.Empty };
+
+        var normalized = value.Trim();
+        var marker = " BASE ";
+        var splitIndex = normalized.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+        if (splitIndex > 0)
+        {
+            return new[]
+            {
+                normalized[..splitIndex].Trim(),
+                normalized[(splitIndex + 1)..].Trim()
+            };
+        }
+
+        const int targetLength = 16;
+        if (normalized.Length <= targetLength)
+            return new[] { normalized, string.Empty };
+
+        var midpoint = normalized.LastIndexOf(' ', Math.Min(normalized.Length - 1, targetLength));
+        if (midpoint <= 0)
+            midpoint = targetLength;
+
+        return new[]
+        {
+            normalized[..midpoint].Trim(),
+            normalized[midpoint..].Trim()
+        };
+    }
+
+    private static string BuildInfoLine(KittingDto? kitting)
+    {
+        var picking = FormatValue(kitting?.KittingCode, kitting?.KittingId.ToString(CultureInfo.InvariantCulture));
+        var request = FormatValue(kitting?.GuideNumber);
+        var invoice = FormatValue(kitting?.InvoiceNumber);
+
+        return $"Picking: {picking}  REQ: {request}  Factura: {invoice}";
     }
 
     private static string FormatQuantity(decimal quantity) =>
         quantity % 1 == 0 ? quantity.ToString("0", CultureInfo.InvariantCulture) : quantity.ToString("0.##", CultureInfo.InvariantCulture);
+
+    private static string FormatStatus(string? value)
+    {
+        var trimmed = FormatValue(value);
+        return trimmed.Length <= 1 ? trimmed : trimmed[..1];
+    }
 
     private static string FormatValue(string? primaryValue, string? fallbackValue = null)
     {
@@ -395,4 +441,20 @@ internal static class ListaSurtidoPrinter
 
         return string.Empty;
     }
+
+    private static string FormatFooterDateTime(DateTime value) =>
+        value.ToString("MM/dd/yyyy hh:mm tt", CultureInfo.InvariantCulture);
+
+    private static string FormatWarehouseLabel(string? warehouse)
+    {
+        var value = FormatValue(warehouse);
+        if (string.IsNullOrWhiteSpace(value))
+            return "ALMACEN";
+
+        return value.StartsWith("ALMACEN", StringComparison.OrdinalIgnoreCase)
+            ? value.ToUpperInvariant()
+            : $"ALMACEN {value}".ToUpperInvariant();
+    }
+
+    private readonly record struct TableColumn(string Header, double Width, TextAlignment Alignment);
 }

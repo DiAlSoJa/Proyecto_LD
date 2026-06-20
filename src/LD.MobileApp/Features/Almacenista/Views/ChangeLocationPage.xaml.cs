@@ -17,10 +17,27 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        if (query.TryGetValue("StandardId", out var standardId))
+        {
+            _viewModel.EstandarId = standardId?.ToString() ?? string.Empty;
+        }
+
         if (query.TryGetValue("AsnId", out var asnIdValue) &&
             int.TryParse(asnIdValue?.ToString(), out var asnId))
         {
             _viewModel.AsnId = asnId;
+        }
+
+        if (query.TryGetValue("KittingReceiptDetailId", out var kittingReceiptDetailIdValue) &&
+            int.TryParse(kittingReceiptDetailIdValue?.ToString(), out var kittingReceiptDetailId))
+        {
+            _viewModel.KittingReceiptDetailId = kittingReceiptDetailId;
+        }
+
+        if (query.TryGetValue("KittingId", out var kittingIdValue) &&
+            int.TryParse(kittingIdValue?.ToString(), out var kittingId))
+        {
+            _viewModel.KittingId = kittingId;
         }
 
         if (query.TryGetValue("TextInformation", out var textInformation))
@@ -42,7 +59,12 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
 
     private async void OnCapturarClicked(object sender, EventArgs e)
     {
-        var page = new Scan3FieldsPage(requiresThreeFields: true);
+        var page = new Scan3FieldsPage(
+            requiresThreeFields: true,
+            contextText: _viewModel.InstructionText,
+            initialEstandarId: _viewModel.EstandarId,
+            initialRack: _viewModel.Rack,
+            initialPosicion: _viewModel.Posicion);
         await Navigation.PushModalAsync(page);
 
         var accepted = await page.WaitForResultAsync();

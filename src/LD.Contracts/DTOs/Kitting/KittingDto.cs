@@ -17,6 +17,9 @@ namespace LD.Contracts.Kitting
         [DisplayName("Proyecto")]
         public string Project { get; set; } = string.Empty;
 
+        [DisplayName("Almacén")]
+        public string Warehouse { get; set; } = string.Empty;
+
         [DisplayName("Factura")]
         public string InvoiceNumber { get; set; } = string.Empty;
 

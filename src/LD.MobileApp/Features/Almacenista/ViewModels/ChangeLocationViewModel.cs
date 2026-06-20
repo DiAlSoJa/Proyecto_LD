@@ -24,6 +24,8 @@ public partial class ChangeLocationViewModel : ObservableObject
     private string instructionText = string.Empty;
 
     public int AsnId { get; set; }
+    public int KittingReceiptDetailId { get; set; }
+    public int KittingId { get; set; }
 
     public bool HasInstructionText => !string.IsNullOrWhiteSpace(InstructionText);
 
@@ -78,7 +80,11 @@ public partial class ChangeLocationViewModel : ObservableObject
 
             var response = AsnId > 0
                 ? await _asnService.LocateAsnPallet(AsnId, standardId.Value, ubicacionDestino)
-                : await _availableInventoryService.ChangeLocation(standardId.Value, ubicacionDestino);
+                : await _availableInventoryService.ChangeLocation(
+                    standardId.Value,
+                    ubicacionDestino,
+                    KittingReceiptDetailId > 0 ? KittingReceiptDetailId : null,
+                    KittingId > 0 ? KittingId : null);
 
             if (!response.IsSuccess)
             {

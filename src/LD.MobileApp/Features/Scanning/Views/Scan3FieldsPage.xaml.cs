@@ -6,6 +6,7 @@ public partial class Scan3FieldsPage : ContentPage
 {
     private static readonly Brush DefaultBorderBrush = new SolidColorBrush(Color.FromArgb("#E2E8F0"));
     private static readonly Brush SuccessBorderBrush = new SolidColorBrush(Color.FromArgb("#22C55E"));
+    private readonly string _contextText;
 
     public string EstandarId { get; private set; } = "";
     public string Rack { get; private set; } = "";
@@ -20,9 +21,15 @@ public partial class Scan3FieldsPage : ContentPage
     private bool _isBusy;
     private readonly TaskCompletionSource<bool> _completion = new();
 
-    public Scan3FieldsPage(bool requiresThreeFields = true)
+    public Scan3FieldsPage(
+        bool requiresThreeFields = true,
+        string? contextText = null,
+        string? initialEstandarId = null,
+        string? initialRack = null,
+        string? initialPosicion = null)
     {
         _requiresThreeFields = requiresThreeFields;
+        _contextText = contextText?.Trim() ?? string.Empty;
         InitializeComponent();
 
         CameraView.Options = new BarcodeReaderOptions
@@ -41,6 +48,8 @@ public partial class Scan3FieldsPage : ContentPage
         };
 
         ApplyScanMode();
+        ApplyContext();
+        ApplyInitialValues(initialEstandarId, initialRack, initialPosicion);
         UpdateHint();
     }
 
@@ -71,6 +80,18 @@ public partial class Scan3FieldsPage : ContentPage
         RackBorder.IsVisible = false;
         PosicionBorder.IsVisible = false;
         TransferMessageLabel.Text = "Consultando movimientos...";
+    }
+
+    private void ApplyContext()
+    {
+        if (string.IsNullOrWhiteSpace(_contextText))
+        {
+            ContextBorder.IsVisible = false;
+            return;
+        }
+
+        ContextLabel.Text = _contextText;
+        ContextBorder.IsVisible = true;
     }
 
     private void SetValueForStep(string value)
@@ -133,6 +154,42 @@ public partial class Scan3FieldsPage : ContentPage
         UpdateHint();
     }
 
+    private void ApplyInitialValues(string? initialEstandarId, string? initialRack, string? initialPosicion)
+    {
+        var standardId = initialEstandarId?.Trim() ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(standardId))
+        {
+            EstandarId = standardId;
+            EstandarIdLabel.Text = standardId;
+            ApplyAcceptedState(EstandarIdBorder);
+            _step = 1;
+        }
+
+        if (_requiresThreeFields && !string.IsNullOrWhiteSpace(standardId))
+        {
+            var rack = initialRack?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(rack))
+            {
+                Rack = rack;
+                RackLabel.Text = rack;
+                ApplyAcceptedState(RackBorder);
+                _step = 2;
+            }
+
+            var posicion = initialPosicion?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(posicion))
+            {
+                Posicion = posicion;
+                PosicionLabel.Text = posicion;
+                ApplyAcceptedState(PosicionBorder);
+                _step = 3;
+            }
+        }
+
+        var completedStep = _requiresThreeFields ? 3 : 1;
+        CameraView.IsDetecting = _step < completedStep;
+    }
+
     private static bool IsStandardLabelCode(string value)
     {
         return value.Length == 12 && value.All(char.IsDigit);
@@ -152,9 +209,14 @@ public partial class Scan3FieldsPage : ContentPage
 
     private void MarkScanAccepted(Border border)
     {
+        ApplyAcceptedState(border);
+        _ = PlayCorrectSoundAsync();
+    }
+
+    private static void ApplyAcceptedState(Border border)
+    {
         border.Stroke = SuccessBorderBrush;
         border.StrokeThickness = 2;
-        _ = PlayCorrectSoundAsync();
     }
 
     private static Task PlayCorrectSoundAsync()

@@ -118,6 +118,9 @@
 	  <MauiXaml Update="Features\Almacenista\Views\PickingPage.xaml">
 		<Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Features\Almacenista\Views\PickingKittingPage.xaml">
+		<Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Features\Almacenista\Views\ReceptionPage.xaml">
 		<Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
