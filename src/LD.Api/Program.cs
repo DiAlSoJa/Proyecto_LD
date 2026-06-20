@@ -3,7 +3,6 @@ using LD.Api.Authorization;
 using LD.Api.Hubs;
 using LD.Api.Middlewares;
 using LD.Api.Services;
-using LD.Api.Workers;
 using LD.Application;
 using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
@@ -143,7 +142,6 @@ builder.Services.AddSingleton<ConnectedUsersTracker>();
 builder.Services.AddSingleton<IConnectedUsersTracker>(sp =>
     sp.GetRequiredService<ConnectedUsersTracker>());
 builder.Services.AddSingleton<IRealtimeNotifier, SignalRNotifier>();
-builder.Services.AddHostedService<TaskDispatcherWorker>();
 
 builder.Services.AddControllers();
 

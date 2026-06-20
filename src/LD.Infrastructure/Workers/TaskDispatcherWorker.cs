@@ -1,19 +1,20 @@
 using AutoMapper;
-using LD.Api.Hubs;
-using LD.Api.Services;
+using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.SignalR;
-using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace LD.Api.Workers;
+namespace LD.Infrastructure.Workers;
 
 public sealed class TaskDispatcherWorker : BackgroundService
 {
     private readonly IServiceScopeFactory          _scopeFactory;
-    private readonly ConnectedUsersTracker          _tracker;
-    private readonly IHubContext<NotificationHub>  _hub;
+    private readonly IConnectedUsersTracker         _tracker;
+    private readonly IRealtimeNotifier              _notifier;
     private readonly ILogger<TaskDispatcherWorker> _logger;
 
     private static readonly TimeSpan CheckInterval   = TimeSpan.FromSeconds(30);
@@ -21,13 +22,13 @@ public sealed class TaskDispatcherWorker : BackgroundService
 
     public TaskDispatcherWorker(
         IServiceScopeFactory scopeFactory,
-        ConnectedUsersTracker tracker,
-        IHubContext<NotificationHub> hub,
+        IConnectedUsersTracker tracker,
+        IRealtimeNotifier notifier,
         ILogger<TaskDispatcherWorker> logger)
     {
         _scopeFactory = scopeFactory;
         _tracker      = tracker;
-        _hub          = hub;
+        _notifier     = notifier;
         _logger       = logger;
     }
 
@@ -121,14 +122,14 @@ public sealed class TaskDispatcherWorker : BackgroundService
 
                 var taskDto = mapper.Map<WarehouseTaskDto>(candidate);
 
-                await _hub.Clients.User(userId).SendAsync("ReceiveNotification", new HubNotification
+                await _notifier.SendToUserAsync(userId, new HubNotification
                 {
                     Type      = "task_assigned",
                     Title     = $"Nueva tarea: {candidate.Name}",
                     Message   = candidate.Description ?? candidate.Activity,
                     Payload   = JsonSerializer.Serialize(taskDto),
                     CreatedAt = DateTime.UtcNow
-                }, ct);
+                });
 
                 _logger.LogInformation(
                     "Tarea {TaskId} ({TaskName}) asignada a usuario {UserId}",

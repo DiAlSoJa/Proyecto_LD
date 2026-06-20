@@ -72,6 +72,7 @@ public static class ConfigureServices
             cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly));
 
         services.AddHostedService<KeepAliveWorker>();
+        services.AddHostedService<TaskDispatcherWorker>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         return services;
