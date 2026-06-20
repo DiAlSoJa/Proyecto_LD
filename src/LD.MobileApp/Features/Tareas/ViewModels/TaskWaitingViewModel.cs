@@ -4,6 +4,7 @@ using LD.Client.Services;
 using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.SignalR;
 using MauiAppLogin.Controls;
+using MvvmHelpers.Commands;
 using System.Text.Json;
 
 namespace MauiAppLogin.ViewModels;
@@ -17,6 +18,8 @@ public partial class TaskWaitingViewModel : ObservableObject
     [ObservableProperty]
     private bool isWaiting;
 
+    public AsyncCommand CancelCommand { get; }
+
     public TaskWaitingViewModel(
         WarehouseTaskService taskService,
         SignalRService signalRService,
@@ -25,6 +28,8 @@ public partial class TaskWaitingViewModel : ObservableObject
         _taskService   = taskService;
         _signalRService = signalRService;
         _dialogService  = dialogService;
+
+        CancelCommand = new AsyncCommand(CancelAsync);
     }
 
     public async Task OnNavigatedToAsync()
@@ -83,7 +88,6 @@ public partial class TaskWaitingViewModel : ObservableObject
         });
     }
 
-    [RelayCommand]
     private async Task CancelAsync()
     {
         try
