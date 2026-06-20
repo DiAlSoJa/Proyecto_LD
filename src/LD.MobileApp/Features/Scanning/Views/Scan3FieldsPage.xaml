@@ -37,6 +37,19 @@
                            FontSize="15"/>
                 </Border>
 
+                <Border x:Name="ContextBorder"
+                        BackgroundColor="#E0F2FE"
+                        Stroke="#7DD3FC"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="12,8"
+                        IsVisible="False">
+                    <Label x:Name="ContextLabel"
+                           TextColor="#0F172A"
+                           FontSize="14"
+                           LineBreakMode="WordWrap"/>
+                </Border>
+
                 <!-- Campos -->
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
 

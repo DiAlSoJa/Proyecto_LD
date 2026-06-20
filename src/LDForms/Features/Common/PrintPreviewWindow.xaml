@@ -1,0 +1,67 @@
+<Window x:Class="LD.FormsX.Features.Common.PrintPreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Vista previa"
+        Width="1100"
+        Height="800"
+        MinWidth="900"
+        MinHeight="650"
+        WindowStartupLocation="CenterOwner"
+        Background="#F3F4F6">
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="White"
+                BorderBrush="#D1D5DB"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="12"
+                Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock x:Name="txtTitle"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="#111827"/>
+                    <TextBlock Text="Revisa el documento antes de enviarlo a impresión."
+                               Margin="0,4,0,0"
+                               Foreground="#6B7280"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button Content="Imprimir"
+                            Width="110"
+                            Height="34"
+                            Margin="0,0,8,0"
+                            Click="BtnPrint_Click"/>
+                    <Button Content="Cerrar"
+                            Width="90"
+                            Height="34"
+                            Click="BtnClose_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Background="White"
+                BorderBrush="#D1D5DB"
+                BorderThickness="1"
+                CornerRadius="10">
+            <DocumentViewer x:Name="documentViewer"
+                            Margin="8"/>
+        </Border>
+    </Grid>
+</Window>

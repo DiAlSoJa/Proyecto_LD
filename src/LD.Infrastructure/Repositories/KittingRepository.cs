@@ -64,6 +64,7 @@ public class KittingRepository : IKittingRepository
             .AsNoTracking()
             .Include(x => x.Client)
             .Include(x => x.Project)
+                .ThenInclude(x => x.Warehouse)
             .Where(x => x.ClientId == clientId && x.ProjectId == projectId)
             .OrderByDescending(x => x.KittingId)
             .ToListAsync();
@@ -74,6 +75,7 @@ public class KittingRepository : IKittingRepository
         return await _context.Kittings
             .AsNoTracking()
             .Include(x => x.Project)
+                .ThenInclude(x => x.Warehouse)
             .Include(x => x.Client)
             .OrderByDescending(x => x.KittingId)
             .ToListAsync();
@@ -85,6 +87,7 @@ public class KittingRepository : IKittingRepository
             .AsNoTracking()
             .Include(x => x.Client)
             .Include(x => x.Project)
+                .ThenInclude(x => x.Warehouse)
             .FirstOrDefaultAsync(x => x.KittingId == id);
     }
 

@@ -10,8 +10,8 @@ namespace LD.Contracts.Requests
     {
         public string InventoryStatusIdS { get; set; } = string.Empty;   // A, C, D, E...
         public string FullName { get; set; } = string.Empty;  // DISPONIBLE, CUARENTENA, etc.
-        public int? ClientId { get; set; }
-        public int? ProjectId { get; set; }
+        public int ClientId { get; set; }
+        public int ProjectId { get; set; }
         public bool IsAvailable { get; set; } // Impacta stock disponible
     }
 }

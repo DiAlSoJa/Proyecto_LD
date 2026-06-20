@@ -16,13 +16,13 @@ namespace LD.Contracts.InventaryStatus
         public string Descripcion { get; set; } = string.Empty;
 
         [DisplayName("Cliente Id")]
-        public int? ClientId { get; set; }
+        public int ClientId { get; set; }
 
         [DisplayName("Cliente")]
         public string Cliente { get; set; } = string.Empty;
 
         [DisplayName("Proyecto Id")]
-        public int? ProjectId { get; set; }
+        public int ProjectId { get; set; }
 
         [DisplayName("Proyecto")]
         public string Proyecto { get; set; } = string.Empty;

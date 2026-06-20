@@ -20,9 +20,14 @@ namespace LD.Client.Services
             _api = api;
             _apiEndpoints = apiEndpoints;
         }
-        public async Task<ApiResponseDto<InventaryStatusRequest>> GetStatusById(string statusId)
+        public async Task<ApiResponseDto<InventaryStatusRequest>> GetStatusById(string statusId, int clientId, int projectId)
         {
-            return await _api.GetAsync<ApiResponseDto<InventaryStatusRequest>>(_apiEndpoints.InventaryStatus_GetById.Replace("{statusId}", statusId));
+            var endpoint = _apiEndpoints.InventaryStatus_GetById
+                .Replace("{statusId}", statusId)
+                .Replace("{clientId}", clientId.ToString())
+                .Replace("{projectId}", projectId.ToString());
+
+            return await _api.GetAsync<ApiResponseDto<InventaryStatusRequest>>(endpoint);
         }
 
         public async Task<ApiResponseDto<List<InventaryStatusDto>>> GetInventaryStatus(int? clientId = null, int? projectId = null)
@@ -53,9 +58,14 @@ namespace LD.Client.Services
             return await _api.PostAsync<InventaryStatusRequest, ApiResponseDto<string>>(_apiEndpoints.InventaryStatus_Create, request);
         }
 
-        public async Task<ApiResponseDto<string>> UpdateInventaryStatus(string statusId, InventaryStatusRequest request)
+        public async Task<ApiResponseDto<string>> UpdateInventaryStatus(string statusId, int clientId, int projectId, InventaryStatusRequest request)
         {
-            return await _api.PutAsync<InventaryStatusRequest, ApiResponseDto<string>>(_apiEndpoints.InventaryStatus_Update.Replace("{statusId}", statusId), request);
+            var endpoint = _apiEndpoints.InventaryStatus_Update
+                .Replace("{statusId}", statusId)
+                .Replace("{clientId}", clientId.ToString())
+                .Replace("{projectId}", projectId.ToString());
+
+            return await _api.PutAsync<InventaryStatusRequest, ApiResponseDto<string>>(endpoint, request);
         }
     }
 }

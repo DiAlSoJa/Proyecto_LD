@@ -1,3 +1,5 @@
+using LD.Client.Services;
+using LD.Contracts.Kitting;
 using MauiAppLogin.Features.Almacenista.Models;
 using System.Collections.ObjectModel;
 
@@ -5,96 +7,167 @@ namespace MauiAppLogin;
 
 public partial class PickingPage : ContentPage
 {
-    private ObservableCollection<PickingGrupo> _listaOriginal = new();
-    private ObservableCollection<PickingGrupo> _listaFiltrada = new();
+    private readonly KittingService _kittingService;
+    private readonly KittingDetailService _kittingDetailService;
+    private readonly KittingIssueService _kittingIssueService;
+    private readonly ObservableCollection<PickingKittingItem> _items = new();
+    private readonly ObservableCollection<PickingKittingItem> _filtered = new();
 
-    public PickingPage()
+    public PickingPage(
+        KittingService kittingService,
+        KittingDetailService kittingDetailService,
+        KittingIssueService kittingIssueService)
     {
         InitializeComponent();
-        CargarDatos();
-        PickingCollection.ItemsSource = _listaFiltrada;
+
+        _kittingService = kittingService;
+        _kittingDetailService = kittingDetailService;
+        _kittingIssueService = kittingIssueService;
+        PickingCollection.ItemsSource = _filtered;
     }
 
-    private void CargarDatos()
+    protected override async void OnAppearing()
     {
-        _listaOriginal = new ObservableCollection<PickingGrupo>
-        {
-            new PickingGrupo
-            {
-                Cantidad = 1,
-                Folio = "1000060",
-                Detalles = new List<PickingDetalle>
-                {
-                    new PickingDetalle
-                    {
-                        Pedido = "202001012003 - G21A",
-                        Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                        Ubicacion = "JABIL B2"
-                    }
-                }
-            },
-            new PickingGrupo
-            {
-                Cantidad = 3,
-                Folio = "1000061",
-                Detalles = new List<PickingDetalle>
-                {
-                    new PickingDetalle
-                    {
-                        Pedido = "20200101255 - D01L",
-                        Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                        Ubicacion = "JABIL B2"
-                    },
-                    new PickingDetalle
-                    {
-                        Pedido = "20200155500 - J60E",
-                        Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                        Ubicacion = "JABIL B2"
-                    },
-                    new PickingDetalle
-                    {
-                        Pedido = "20200185888 - ZD38A",
-                        Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                        Ubicacion = "JABIL B2"
-                    }
-                }
-            }
-        };
+        base.OnAppearing();
+        await LoadSurtiendoKittingsAsync();
+    }
 
-        _listaFiltrada = new ObservableCollection<PickingGrupo>(_listaOriginal);
+    private async Task LoadSurtiendoKittingsAsync()
+    {
+        try
+        {
+            var response = await _kittingService.GetKittings();
+            if (!response.IsSuccess || response.Data is null)
+            {
+                await DisplayAlertAsync("Surtir mercancía", response.Message ?? "No se pudieron cargar los kittings.", "OK");
+                return;
+            }
+
+            var issueCountByKitting = await BuildPendingIssueCountByKittingAsync();
+
+            _items.Clear();
+            foreach (var item in response.Data
+                         .Where(IsSurtiendo)
+                         .Select(kitting => BuildPickingItem(
+                             kitting,
+                             issueCountByKitting.TryGetValue(kitting.KittingId, out var issueCount)
+                                 ? issueCount
+                                 : 0))
+                         .Where(item => item.IssueCount > 0))
+            {
+                _items.Add(item);
+            }
+
+            ApplyFilter(FiltroEntry.Text);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task<Dictionary<int, int>> BuildPendingIssueCountByKittingAsync()
+    {
+        var detailResponse = await _kittingDetailService.GetKittingDetails();
+        var issueResponse = await _kittingIssueService.GetKittingIssues();
+
+        if (!detailResponse.IsSuccess || detailResponse.Data is null ||
+            !issueResponse.IsSuccess || issueResponse.Data is null)
+        {
+            return new Dictionary<int, int>();
+        }
+
+        var detailToKitting = detailResponse.Data
+            .Where(x => x.KittingDetailId > 0)
+            .ToDictionary(x => x.KittingDetailId, x => x.KittingId);
+
+        return issueResponse.Data
+            .Where(x => x.KittingDetailId > 0)
+            .Where(x => x.ReceivedQuantity.GetValueOrDefault() > 0)
+            .Where(x => !string.Equals(x.SupplyStatus?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
+            .Select(x => detailToKitting.TryGetValue(x.KittingDetailId, out var kittingId) ? kittingId : 0)
+            .Where(kittingId => kittingId > 0)
+            .GroupBy(kittingId => kittingId)
+            .ToDictionary(group => group.Key, group => group.Count());
+    }
+
+    private static bool IsSurtiendo(KittingDto kitting) =>
+        string.Equals(kitting.Status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase);
+
+    private static PickingKittingItem BuildPickingItem(KittingDto kitting, int issueCount)
+    {
+        var code = string.IsNullOrWhiteSpace(kitting.KittingCode)
+            ? kitting.KittingId.ToString()
+            : kitting.KittingCode.Trim();
+        var client = kitting.Client?.Trim() ?? string.Empty;
+        var project = kitting.Project?.Trim() ?? string.Empty;
+        var invoice = kitting.InvoiceNumber?.Trim() ?? string.Empty;
+        var status = kitting.Status?.Trim() ?? "Surtiendo";
+        var subtitle = string.IsNullOrWhiteSpace(client) && string.IsNullOrWhiteSpace(project)
+            ? "Sin cliente / proyecto"
+            : string.IsNullOrWhiteSpace(client)
+                ? project
+                : string.IsNullOrWhiteSpace(project)
+                    ? client
+                    : $"{client} - {project}";
+        var instruction = string.IsNullOrWhiteSpace(invoice)
+            ? $"Kitting {code} - {subtitle}".Trim()
+            : $"Kitting {code} - Factura {invoice} - {subtitle}".Trim();
+
+        return new PickingKittingItem
+        {
+            KittingId = kitting.KittingId,
+            KittingCode = code,
+            IssueCount = issueCount,
+            Client = client,
+            Project = project,
+            InvoiceNumber = invoice,
+            Status = status,
+            Title = $"[{issueCount}] {code}",
+            Subtitle = subtitle,
+            InstructionText = instruction
+        };
     }
 
     private void OnFiltroChanged(object sender, TextChangedEventArgs e)
     {
-        var filtro = e.NewTextValue?.Trim().ToLower() ?? string.Empty;
-
-        if (string.IsNullOrWhiteSpace(filtro))
-        {
-            PickingCollection.ItemsSource = new ObservableCollection<PickingGrupo>(_listaOriginal);
-            return;
-        }
-
-        var resultado = _listaOriginal
-            .Where(g =>
-                g.Folio.ToLower().Contains(filtro) ||
-                g.Detalles.Any(d =>
-                    d.Pedido.ToLower().Contains(filtro) ||
-                    d.Ubicacion.ToLower().Contains(filtro)))
-            .ToList();
-
-        PickingCollection.ItemsSource = new ObservableCollection<PickingGrupo>(resultado);
+        ApplyFilter(e.NewTextValue);
     }
 
-    private async void OnPickedClicked(object sender, TappedEventArgs e)
+    private void ApplyFilter(string? value)
     {
-        if (e.Parameter is PickingDetalle detalle)
+        var text = (value ?? string.Empty).Trim().ToLowerInvariant();
+
+        _filtered.Clear();
+        foreach (var item in _items)
         {
-            await DisplayAlertAsync("Seleccionado",
-                $"Pedido: {detalle.Pedido}\nUbicación: {detalle.Ubicacion}",
-                "OK");
+            if (string.IsNullOrWhiteSpace(text) ||
+                item.KittingCode.ToLowerInvariant().Contains(text) ||
+                item.Client.ToLowerInvariant().Contains(text) ||
+                item.Project.ToLowerInvariant().Contains(text) ||
+                item.InvoiceNumber.ToLowerInvariant().Contains(text) ||
+                item.Status.ToLowerInvariant().Contains(text))
+            {
+                _filtered.Add(item);
+            }
         }
+    }
+
+    private async void OnPickedClicked(object sender, SelectionChangedEventArgs e)
+    {
+        var selected = e.CurrentSelection?.FirstOrDefault() as PickingKittingItem;
+        if (selected is null)
+            return;
+
+        PickingCollection.SelectedItem = null;
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "KittingId", selected.KittingId },
+            { "KittingCode", selected.KittingCode },
+            { "IssueCount", selected.IssueCount }
+        };
+
+        await Shell.Current.GoToAsync(nameof(PickingKittingPage), parameters);
     }
 }
-
-
-

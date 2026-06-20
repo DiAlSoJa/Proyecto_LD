@@ -25,10 +25,10 @@ namespace LD.Api.Controllers
 
         }
 
-        [HttpGet("{statusId}")]
+        [HttpGet("{statusId}/{clientId:int}/{projectId:int}")]
         [Permission(PermissionKeys.Status_View)]
-        public async Task<IActionResult> GeStatusById(string statusId)
-            => ResultExtensions.ToActionResult(await Mediator.Send(new InventaryStatusByIdQuery(statusId)));
+        public async Task<IActionResult> GeStatusById(string statusId, int clientId, int projectId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new InventaryStatusByIdQuery(statusId, clientId, projectId)));
 
 
         [HttpPost]
@@ -38,11 +38,13 @@ namespace LD.Api.Controllers
             return ResultExtensions.ToActionResult(await Mediator.Send(command));
         }
 
-        [HttpPut("{statusId}")]
+        [HttpPut("{statusId}/{clientId:int}/{projectId:int}")]
         [Permission(PermissionKeys.Status_Update)]
-        public async Task<IActionResult> UpdateStatus(string statusId, UpdateInventaryStatusCommand command)
+        public async Task<IActionResult> UpdateStatus(string statusId, int clientId, int projectId, UpdateInventaryStatusCommand command)
         {
             command.InventoryStatusIdS = statusId;
+            command.ClientId = clientId;
+            command.ProjectId = projectId;
             var result = await Mediator.Send(command);
             return ResultExtensions.ToActionResult(result);
         }

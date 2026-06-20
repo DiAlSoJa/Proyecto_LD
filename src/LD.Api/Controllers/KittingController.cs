@@ -35,6 +35,7 @@ public class KittingController : CommonController
             .AsNoTracking()
             .Include(x => x.Client)
             .Include(x => x.Project)
+                .ThenInclude(x => x.Warehouse)
             .OrderByDescending(x => x.KittingId)
             .ToListAsync();
 
@@ -68,6 +69,7 @@ public class KittingController : CommonController
             .AsNoTracking()
             .Include(x => x.Client)
             .Include(x => x.Project)
+                .ThenInclude(x => x.Warehouse)
             .Where(x => x.ClientId == clientId && x.ProjectId == projectId)
             .OrderByDescending(x => x.KittingId)
             .ToListAsync();
@@ -226,6 +228,13 @@ public class KittingController : CommonController
             var kitting = await _context.Kittings.FirstOrDefaultAsync(x => x.KittingId == kittingId);
             if (kitting is null)
                 return Result<string>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404);
+
+            if (IsValidatedStatus(kitting.Status))
+            {
+                return Result<string>.Failure(
+                    "El Kitting ya esta validado y no se puede modificar.",
+                    new List<string> { "El Kitting ya esta validado." });
+            }
 
             if (IsConfirmedStatus(kitting.Status) || IsSurtidoStatus(kitting.Status))
             {
@@ -398,13 +407,16 @@ public class KittingController : CommonController
     }
 
     private static bool IsTerminalStatus(string? status) =>
-        IsConfirmedStatus(status) || IsSurtidoStatus(status) || IsCancelledStatus(status);
+        IsConfirmedStatus(status) || IsSurtidoStatus(status) || IsValidatedStatus(status) || IsCancelledStatus(status);
 
     private static bool IsConfirmedStatus(string? status) =>
         string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsSurtidoStatus(string? status) =>
         string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsValidatedStatus(string? status) =>
+        string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsCancelledStatus(string? status) =>
         string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);

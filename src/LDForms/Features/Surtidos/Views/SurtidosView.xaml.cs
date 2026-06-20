@@ -134,6 +134,7 @@ namespace LD.FormsX.Features.Surtidos.Views
 
             _gridFilter.SetHiddenColumns(
                 "KittingId",
+                "Warehouse",
                 "GuideNumber",
                 "Eta",
                 "PackagesQty",
@@ -753,14 +754,14 @@ namespace LD.FormsX.Features.Surtidos.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un surtido para imprimir la lista de surtido.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para ver la vista previa de la lista de surtido.");
                     return;
                 }
 
                 var rows = await BuildListaSurtidoRowsAsync(_selectedKitting);
                 if (rows.Count == 0)
                 {
-                    DialogHelper.ShowWarning("No hay lineas surtidas para imprimir.");
+                    DialogHelper.ShowWarning("No hay lineas surtidas para mostrar en vista previa.");
                     return;
                 }
 

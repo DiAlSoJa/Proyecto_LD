@@ -1911,7 +1911,10 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("ClientId")
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -1943,10 +1946,7 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("LastModifiedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.HasKey("InventoryStatusIdS");
+                    b.HasKey("InventoryStatusIdS", "ClientId", "ProjectId");
 
                     b.HasIndex("ClientId");
 
@@ -6592,12 +6592,14 @@ namespace LD.Infrastructure.Migrations
                     b.HasOne("LD.Domain.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("LD.Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Client");
 

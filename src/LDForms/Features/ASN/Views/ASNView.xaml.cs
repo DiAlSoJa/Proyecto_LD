@@ -784,7 +784,7 @@ namespace LD.FormsX.Views.ASN
             {
                 if (_selectedX == null || _selectedX.AsnId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un ASN para imprimir la orden de almacenamiento.");
+                    DialogHelper.ShowWarning("Selecciona un ASN para ver la vista previa de la orden de almacenamiento.");
                     return;
                 }
 
@@ -793,7 +793,7 @@ namespace LD.FormsX.Views.ASN
                 var detailsResult = await _asnDetailService.GetAsnDetailsByAsn(_selectedX.AsnId);
                 if (!detailsResult.IsSuccess || detailsResult.Data == null || detailsResult.Data.Count == 0)
                 {
-                    DialogHelper.ShowWarning("El ASN seleccionado no tiene partidas para imprimir.");
+                    DialogHelper.ShowWarning("El ASN seleccionado no tiene partidas para mostrar en vista previa.");
                     return;
                 }
 

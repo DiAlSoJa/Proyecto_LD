@@ -35,12 +35,20 @@ public class AvailableInventoryService
             endpoint);
     }
 
-    public async Task<ApiResponseDto<string>> ChangeLocation(int standardId, string ubicacionDestino)
+    public async Task<ApiResponseDto<string>> ChangeLocation(
+        int standardId,
+        string ubicacionDestino,
+        int? kittingReceiptDetailId = null,
+        int? kittingId = null)
     {
-        return await ChangeLocation(new[] { standardId }, ubicacionDestino);
+        return await ChangeLocation(new[] { standardId }, ubicacionDestino, kittingReceiptDetailId, kittingId);
     }
 
-    public async Task<ApiResponseDto<string>> ChangeLocation(IEnumerable<int> standardIds, string ubicacionDestino)
+    public async Task<ApiResponseDto<string>> ChangeLocation(
+        IEnumerable<int> standardIds,
+        string ubicacionDestino,
+        int? kittingReceiptDetailId = null,
+        int? kittingId = null)
     {
         var request = new ChangeInventoryLocationRequest
         {
@@ -48,7 +56,9 @@ public class AvailableInventoryService
                 .Where(x => x > 0)
                 .Distinct()
                 .ToList(),
-            UbicacionDestino = ubicacionDestino
+            UbicacionDestino = ubicacionDestino,
+            KittingReceiptDetailId = kittingReceiptDetailId,
+            KittingId = kittingId
         };
 
         return await _api.PostAsync<ChangeInventoryLocationRequest, ApiResponseDto<string>>(

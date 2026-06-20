@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MauiAppLogin.PickingPage"
-             Title="Lista de Surtido"
+             Title="Surtir Mercancía"
              BackgroundColor="#1F3A5F">
 
     <Grid RowDefinitions="Auto,*" Padding="16">
 
-        <!-- Filtro -->
         <Border Grid.Row="0"
                 BackgroundColor="#F6F8FC"
                 Stroke="#E2E8F0"
@@ -33,7 +31,6 @@
             </Grid>
         </Border>
 
-        <!-- Contenedor principal -->
         <Border Grid.Row="1"
                 BackgroundColor="White"
                 Stroke="#E2E8F0"
@@ -41,91 +38,76 @@
                 Padding="10">
 
             <CollectionView x:Name="PickingCollection"
-                            SelectionMode="None"
+                            SelectionMode="Single"
+                            SelectionChanged="OnPickedClicked"
                             ItemsLayout="VerticalList">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="24"
+                                         Spacing="8"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center">
+                        <Label Text="No hay kittings en Surtiendo"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               TextColor="#64748B"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Cuando exista uno, aparecerá aquí para continuar el surtido."
+                               FontSize="13"
+                               TextColor="#94A3B8"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <toolkit:Expander>
-                            <toolkit:Expander.Header>
-                                <Grid ColumnDefinitions="Auto,*,Auto"
-                                      Padding="15"
-                                      BackgroundColor="#F8FAFC"
-                                      Margin="0,0,0,8">
+                        <VerticalStackLayout Spacing="0">
+                            <Border Stroke="Transparent"
+                                    BackgroundColor="White"
+                                    Padding="0">
+                                <Grid Padding="14,12"
+                                      ColumnDefinitions="Auto,*"
+                                      RowDefinitions="Auto,Auto,Auto">
 
-                                    <Label Text="{Binding Cantidad, StringFormat='[{0}]'}"
-                                           FontSize="20"
-                                           TextColor="#FF0000"
-                                           FontAttributes="Bold"
-                                           VerticalOptions="Center" />
+                                    <Border WidthRequest="34"
+                                            HeightRequest="34"
+                                            BackgroundColor="#EEF2FF"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 12"
+                                            VerticalOptions="Center">
+                                        <Label Text="📦"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
 
                                     <Label Grid.Column="1"
-                                           Text="{Binding Folio, StringFormat='Folio: {0}'}"
+                                           Text="{Binding Title}"
                                            FontAttributes="Bold"
-                                           TextColor="#1E293B"
-                                           VerticalOptions="Center"
                                            FontSize="18"
-                                           Padding="10,0" />
+                                           TextColor="#1E293B"
+                                           Margin="10,0,0,0"
+                                           LineBreakMode="TailTruncation" />
 
-                                    <Label Grid.Column="2"
-                                           Text="⌄"
+                                    <Label Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding Subtitle}"
+                                           FontSize="14"
                                            TextColor="#64748B"
-                                           VerticalOptions="Center" />
+                                           Margin="10,2,0,0"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <Label Grid.Row="2"
+                                           Grid.Column="1"
+                                           Text="{Binding Status, StringFormat='Estatus: {0}'}"
+                                           FontSize="12"
+                                           TextColor="#0F766E"
+                                           Margin="10,4,0,0"
+                                           LineBreakMode="TailTruncation" />
                                 </Grid>
-                            </toolkit:Expander.Header>
+                            </Border>
 
-                            <toolkit:Expander.Content>
-                                <CollectionView ItemsSource="{Binding Detalles}"
-                                                SelectionMode="None">
-
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <VerticalStackLayout Spacing="0">
-
-                                                <Border Stroke="Transparent"
-                                                        BackgroundColor="White"
-                                                        Padding="0">
-                                                    <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer
-                                                            CommandParameter="{Binding .}"
-                                                            Tapped="OnPickedClicked" />
-                                                    </Border.GestureRecognizers>
-
-                                                    <Grid Padding="14,12"
-                                                          ColumnDefinitions="*,Auto"
-                                                          RowDefinitions="Auto,Auto">
-
-                                                        <Label Grid.Row="0"
-                                                               Grid.Column="0"
-                                                               Text="{Binding Pedido}"
-                                                               FontAttributes="Bold"
-                                                               FontSize="18"
-                                                               TextColor="#1E293B"
-                                                               LineBreakMode="TailTruncation" />
-
-                                                        <Label Grid.Row="1"
-                                                               Grid.Column="0"
-                                                               Text="{Binding Fecha, StringFormat='{0:dd-MM-yyyy hh:mm tt}'}"
-                                                               FontSize="12"
-                                                               TextColor="#64748B" />
-
-                                                        <Label Grid.Row="1"
-                                                               Grid.Column="1"
-                                                               Text="{Binding Ubicacion}"
-                                                               FontSize="12"
-                                                               TextColor="#64748B"
-                                                               HorizontalTextAlignment="End" />
-                                                    </Grid>
-                                                </Border>
-
-                                                <BoxView HeightRequest="1"
-                                                         BackgroundColor="#EEF2F7" />
-                                            </VerticalStackLayout>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </toolkit:Expander.Content>
-                        </toolkit:Expander>
+                            <BoxView HeightRequest="1"
+                                     BackgroundColor="#EEF2F7" />
+                        </VerticalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
