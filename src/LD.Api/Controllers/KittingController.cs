@@ -156,8 +156,11 @@ public class KittingController : CommonController
 
             if (IsTerminalStatus(kitting.Status))
             {
-                return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("El Kitting ya esta finalizado y no se puede editar.", new List<string> { "El Kitting ya esta finalizado." }));
+                if (!request.AllowRestrictedUpdate || IsEmbarcadoStatus(kitting.Status))
+                {
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Failure("El Kitting ya esta finalizado y no se puede editar.", new List<string> { "El Kitting ya esta finalizado." }));
+                }
             }
 
             request.KittingId = kitting.KittingId;
@@ -165,7 +168,15 @@ public class KittingController : CommonController
             request.PreKittingCode = kitting.PreKittingCode;
             request.Status = NormalizeStatus(request.Status) ?? NormalizeStatus(kitting.Status);
 
-            _mapper.Map(request, kitting);
+            if (request.AllowRestrictedUpdate)
+            {
+                ApplyTransportAndDeliveryUpdate(kitting, request);
+            }
+            else
+            {
+                _mapper.Map(request, kitting);
+            }
+
             kitting.LastModifiedAt = DateTime.Now;
             kitting.LastModifiedByUserId = CurrentUserId;
 
@@ -420,6 +431,27 @@ public class KittingController : CommonController
 
     private static bool IsCancelledStatus(string? status) =>
         string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsEmbarcadoStatus(string? status) =>
+        string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
+
+    private static void ApplyTransportAndDeliveryUpdate(Kitting kitting, KittingRequest request)
+    {
+        kitting.Status = request.Status;
+        kitting.TransportLine = NormalizeStatus(request.TransportLine);
+        kitting.VehicleType = NormalizeStatus(request.VehicleType);
+        kitting.DriverName = NormalizeStatus(request.DriverName);
+        kitting.VehiclePlate = NormalizeStatus(request.VehiclePlate);
+        kitting.SealNumber = NormalizeStatus(request.SealNumber);
+        kitting.Contacto = NormalizeStatus(request.Contacto);
+        kitting.Direccion = NormalizeStatus(request.Direccion);
+        kitting.Colonia = NormalizeStatus(request.Colonia);
+        kitting.Ciudad = NormalizeStatus(request.Ciudad);
+        kitting.Telefono = NormalizeStatus(request.Telefono);
+        kitting.CodigoPostal = NormalizeStatus(request.CodigoPostal);
+        kitting.TipoEntrega = NormalizeStatus(request.TipoEntrega);
+        kitting.FechaProgramada = request.FechaProgramada;
+    }
 
     private static string? NormalizeStatus(string? status) =>
         string.IsNullOrWhiteSpace(status)

@@ -114,15 +114,21 @@
                             Orientation="Horizontal"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left">
-                    <CheckBox x:Name="chkVerSinEmbarcar"
-                              Content="Ver solo surtido"
-                              IsChecked="{Binding VerSinEmbarcar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              Checked="ChkVerSinEmbarcar_Changed"
-                              Unchecked="ChkVerSinEmbarcar_Changed"
+                    <ComboBox x:Name="cmbFiltroEmbarques"
+                              Width="150"
+                              Height="28"
+                              Margin="0,0,0,0"
+                              Padding="5,1"
+                              FontSize="12"
+                              Background="White"
+                              BorderBrush="#D1D5DB"
+                              BorderThickness="1"
                               VerticalAlignment="Center"
-                              FontSize="11"
-                              Foreground="#374151"
-                              Cursor="Hand"/>
+                              SelectionChanged="CmbFiltroEmbarques_SelectionChanged"
+                              Cursor="Hand">
+                        <ComboBoxItem Content="Ver surtido" Tag="Surtido"/>
+                        <ComboBoxItem Content="Ver validado" Tag="Validado"/>
+                    </ComboBox>
 
                     <Button x:Name="BtnActualizar"
                             Height="28"

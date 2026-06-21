@@ -1,7 +1,6 @@
 ﻿using LD.Client.Services;
 using LD.Client.Configuration;
 using LD.Contracts.DTOs;
-using LD.Contracts.Enums;
 using LD.Contracts.Kitting;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Features.Surtidos.Views;
@@ -41,7 +40,6 @@ namespace LD.FormsX.Features.Embarques.Views
         private int _selectedProjectId;
         private string _selectedClientText = string.Empty;
         private string _selectedProjectText = string.Empty;
-        private bool _verSinEmbarcar = true;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -97,19 +95,6 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 _selectedProjectText = value;
                 OnPropertyChanged(nameof(SelectedProjectText));
-            }
-        }
-
-        public bool VerSinEmbarcar
-        {
-            get => _verSinEmbarcar;
-            set
-            {
-                if (_verSinEmbarcar == value)
-                    return;
-
-                _verSinEmbarcar = value;
-                OnPropertyChanged(nameof(VerSinEmbarcar));
             }
         }
 
@@ -176,6 +161,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 "CustomsDeclarationNumber");
             _gridFilterIssue.SetHiddenColumns("KittingReceiptDetailId", "KittingDetailId", "ProductId", "LocationId");
 
+            cmbFiltroEmbarques.SelectedIndex = 0;
             UpdateActionButtons();
         }
 
@@ -186,9 +172,6 @@ namespace LD.FormsX.Features.Embarques.Views
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
 
-        private static bool IsCreatedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Creado", StringComparison.OrdinalIgnoreCase);
-
         private static bool IsValidatedStatus(string? status) =>
             string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
 
@@ -198,10 +181,7 @@ namespace LD.FormsX.Features.Embarques.Views
         private static bool IsSurtiendoStatus(string? status) =>
             string.Equals(status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase);
 
-        private static bool IsEmbarqueVisibleStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Validando", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase) ||
+        private static bool IsEmbarcadoStatus(string? status) =>
             string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsSendingStatus(string? status) =>
@@ -269,15 +249,14 @@ namespace LD.FormsX.Features.Embarques.Views
                         ? "El embarque debe estar en estatus Surtiendo para poder marcarlo como Surtido completo."
                         : "Marcar como Surtido completo";
 
+            if (btnEditar != null)
+                btnEditar.Visibility = Visibility.Visible;
+
             ConfigureActionButton(
                 btnEditar,
-                canEdit,
-                hasSelected && isTerminal,
-                hasSelected && isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede editar."
-                    : hasSelected
-                        ? "Editar embarque"
-                        : "Selecciona un embarque para editar.");
+                true,
+                false,
+                "Editar embarque");
 
             ConfigureActionButton(
                 btnEnviarASurtir,
@@ -454,6 +433,9 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private void AplicarFiltroKitting()
         {
+            if (_gridFilter == null)
+                return;
+
             var filtered = _allKittings.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(SelectedClientText))
@@ -468,14 +450,10 @@ namespace LD.FormsX.Features.Embarques.Views
                     string.Equals(x.Project?.Trim(), SelectedProjectText.Trim(), StringComparison.OrdinalIgnoreCase));
             }
 
-            if (VerSinEmbarcar)
-            {
-                filtered = filtered.Where(x => IsSurtidoStatus(x.Status));
-            }
+            if (IsValidadoFilterSelected())
+                filtered = filtered.Where(x => IsValidatedStatus(x.Status));
             else
-            {
-                filtered = filtered.Where(x => IsEmbarqueVisibleStatus(x.Status));
-            }
+                filtered = filtered.Where(x => IsSurtidoStatus(x.Status));
 
             _gridFilter.SetData(filtered.ToList());
             _selectedKitting = null;
@@ -594,8 +572,19 @@ namespace LD.FormsX.Features.Embarques.Views
                 AplicarFiltroKitting();
         }
 
-        private async void ChkVerSinEmbarcar_Changed(object sender, RoutedEventArgs e)
+        private bool IsValidadoFilterSelected()
         {
+            if (cmbFiltroEmbarques?.SelectedItem is ComboBoxItem selectedItem)
+                return string.Equals(selectedItem.Tag?.ToString()?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+
+            return false;
+        }
+
+        private async void CmbFiltroEmbarques_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_gridFilter == null || _gridFilterDet == null || _gridFilterIssue == null)
+                return;
+
             if (SelectedClientId > 0 && SelectedProjectId > 0 && _allKittings.Count == 0)
             {
                 await CargarDatosConLoaderAsync();
@@ -625,16 +614,20 @@ namespace LD.FormsX.Features.Embarques.Views
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedKitting == null)
-                return;
-
-            if (IsTerminalStatus(_selectedKitting.Status))
             {
-                DialogHelper.ShowWarning("El embarque seleccionado esta confirmado o cancelado. Ya no se puede editar.");
+                DialogHelper.ShowWarning("Selecciona un embarque para editar.");
+                return;
+            }
+
+            if (IsEmbarcadoStatus(_selectedKitting.Status))
+            {
+                DialogHelper.ShowWarning("El embarque seleccionado esta embarcado. Ya no se puede editar.");
                 return;
             }
 
             var dialog = _serviceProvider.GetRequiredService<EditarSurtidoView>();
             dialog.Owner = Window.GetWindow(this);
+            dialog.SetTransportAndDeliveryOnlyMode();
             dialog.SetKitting(_selectedKitting);
 
             dialog.ShowDialog();

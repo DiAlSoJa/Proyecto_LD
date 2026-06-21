@@ -54,6 +54,7 @@ namespace LD.FormsX.Features.Surtidos.Views
         private readonly DispatcherTimer _headerAutoSaveTimer;
         private readonly SemaphoreSlim _headerSaveSemaphore = new(1, 1);
         private bool _issueGenerationEnabled;
+        private bool _transportAndDeliveryOnlyMode;
 
         private KittingDto? _selectedKitting;
         private KittingDetailDto? _selectedDetail;
@@ -127,6 +128,13 @@ namespace LD.FormsX.Features.Surtidos.Views
             UpdateWindowTitle();
             ApplyEditState();
             ShowDetailSections();
+        }
+
+        public void SetTransportAndDeliveryOnlyMode(bool enabled = true)
+        {
+            _transportAndDeliveryOnlyMode = enabled;
+            UpdateWindowTitle();
+            ApplyEditState();
         }
 
         public void SetClientProjectContext(int clientId, int projectId, string? clientName, string? projectName)
@@ -415,9 +423,13 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (string.IsNullOrWhiteSpace(code))
                 code = _kittingCodePreview?.Trim();
 
+            var titleBase = _transportAndDeliveryOnlyMode
+                ? "Editar Embarque"
+                : "Editar Surtido";
+
             var titlePrefix = string.IsNullOrWhiteSpace(code)
-                ? "Editar Surtido"
-                : $"Editar Surtido {code}";
+                ? titleBase
+                : $"{titleBase} {code}";
 
             if (_loadingData)
                 titlePrefix = $"{titlePrefix} (Cargando...)";
@@ -470,11 +482,24 @@ namespace LD.FormsX.Features.Surtidos.Views
             string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
 
+        private static bool IsValidatedStatus(string? status) =>
+            string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
 
+        private static bool IsEmbarcadoStatus(string? status) =>
+            string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
+
         private bool IsCurrentKittingEditable() =>
-            !IsConfirmedStatus(_selectedKitting?.Status) && !IsCancelledStatus(_selectedKitting?.Status);
+            _transportAndDeliveryOnlyMode
+                ? !IsEmbarcadoStatus(_selectedKitting?.Status)
+                : !IsConfirmedStatus(_selectedKitting?.Status) &&
+                  !IsValidatedStatus(_selectedKitting?.Status) &&
+                  !IsCancelledStatus(_selectedKitting?.Status);
+
+        private bool CanEditHeaderFields() =>
+            IsCurrentKittingEditable() && !_loadingData;
 
         private bool IsNewKittingRecord() =>
             _selectedKitting is null || _selectedKitting.KittingId <= 0;
@@ -487,7 +512,9 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (IsCurrentKittingEditable())
                 return true;
 
-            DialogHelper.ShowWarning("El surtido esta surtido, confirmado o cancelado y ya no permite cambios.");
+            DialogHelper.ShowWarning(_transportAndDeliveryOnlyMode
+                ? "El embarque esta embarcado y ya no permite cambios."
+                : "El surtido esta surtido, confirmado, validado o cancelado y ya no permite cambios.");
             return false;
         }
 
@@ -496,18 +523,19 @@ namespace LD.FormsX.Features.Surtidos.Views
             var isEditable = IsCurrentKittingEditable();
             var hasDetailSelection = _selectedDetail != null && !IsEmptyDetailRow(_selectedDetail);
             var canInteract = isEditable && !_loadingData;
-            var showSaveButton = canInteract && IsNewKittingRecord();
-            var showIssueButtons = canInteract && IsPersistedKittingRecord();
+            var allowFullEdit = canInteract && !_transportAndDeliveryOnlyMode;
+            var showSaveButton = allowFullEdit && IsNewKittingRecord();
+            var showIssueButtons = allowFullEdit && IsPersistedKittingRecord();
 
             btnGuardar.Visibility = showSaveButton ? Visibility.Visible : Visibility.Collapsed;
-            btnGuardar.IsEnabled = canInteract;
+            btnGuardar.IsEnabled = allowFullEdit;
             btnGenerarIssueBase.Visibility = showIssueButtons ? Visibility.Visible : Visibility.Collapsed;
             btnGenerarIssueBase.IsEnabled = showIssueButtons && hasDetailSelection;
             btnAutopicking.Visibility = showIssueButtons ? Visibility.Visible : Visibility.Collapsed;
             btnAutopicking.IsEnabled = showIssueButtons;
             btnListaSurtido.Visibility = showIssueButtons ? Visibility.Visible : Visibility.Collapsed;
             btnListaSurtido.IsEnabled = showIssueButtons;
-            txtNumeroFactura.IsEnabled = canInteract;
+            txtNumeroFactura.IsEnabled = allowFullEdit;
             txtLineaTransporte.IsEnabled = canInteract;
             txtTipoVehiculo.IsEnabled = canInteract;
             btnBuscarVehiculo.IsEnabled = canInteract;
@@ -523,12 +551,12 @@ namespace LD.FormsX.Features.Surtidos.Views
             cbTipoEntrega.IsEnabled = canInteract;
             dpFechaProgramada.IsEnabled = canInteract && IsProgramadaDeliverySelected();
 
-            dgDetail.IsReadOnly = !canInteract;
-            dgDetail.CanUserAddRows = canInteract;
-            dgIssue.IsReadOnly = !canInteract;
+            dgDetail.IsReadOnly = !allowFullEdit;
+            dgDetail.CanUserAddRows = allowFullEdit;
+            dgIssue.IsReadOnly = !allowFullEdit;
             dgIssue.CanUserAddRows = false;
-            dgDetail.IsEnabled = canInteract;
-            dgIssue.IsEnabled = canInteract;
+            dgDetail.IsEnabled = allowFullEdit;
+            dgIssue.IsEnabled = allowFullEdit;
 
             UpdateFechaProgramadaVisibility();
         }
@@ -765,7 +793,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 CodigoPostal = NullIfWhiteSpace(txtCodigoPostal.Text),
                 TipoEntrega = NullIfWhiteSpace(tipoEntrega),
                 FechaProgramada = fechaProgramada,
-                Status = GetHeaderStatusForRequest()
+                Status = GetHeaderStatusForRequest(),
+                AllowRestrictedUpdate = _transportAndDeliveryOnlyMode
             };
         }
 
@@ -785,6 +814,11 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
 
         private void HeaderTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ScheduleHeaderAutoSave();
+        }
+
+        private void ScheduleHeaderAutoSave()
         {
             if (_loadingData || !IsCurrentKittingEditable())
                 return;
@@ -830,7 +864,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (_selectedKitting?.KittingId <= 0)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(txtNumeroFactura?.Text))
+            if (!_transportAndDeliveryOnlyMode && string.IsNullOrWhiteSpace(txtNumeroFactura?.Text))
                 return false;
 
             if (IsProgramadaDeliverySelected() && !dpFechaProgramada.SelectedDate.HasValue)
@@ -938,6 +972,12 @@ namespace LD.FormsX.Features.Surtidos.Views
         private void CbTipoEntrega_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateFechaProgramadaVisibility();
+            ScheduleHeaderAutoSave();
+        }
+
+        private void DpFechaProgramada_SelectedDateChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            ScheduleHeaderAutoSave();
         }
 
         private string GetSelectedDeliveryType()
@@ -984,7 +1024,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             grFechaProgramada.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
             if (dpFechaProgramada != null)
-                dpFechaProgramada.IsEnabled = (btnGuardar?.IsEnabled ?? true) && visible;
+                dpFechaProgramada.IsEnabled = CanEditHeaderFields() && visible;
 
             if (!visible)
                 dpFechaProgramada.SelectedDate = null;

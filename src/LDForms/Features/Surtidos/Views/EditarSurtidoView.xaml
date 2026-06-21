@@ -500,7 +500,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <TextBlock Grid.Column="0" Text="Fecha programada:" Style="{StaticResource LabelStyle}" Margin="0,4,8,0"/>
-                                                <DatePicker x:Name="dpFechaProgramada" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}" Margin="0,0,0,4"/>
+                                                <DatePicker x:Name="dpFechaProgramada" Grid.Column="1" Style="{StaticResource InputDatePickerStyle}" Margin="0,0,0,4" SelectedDateChanged="DpFechaProgramada_SelectedDateChanged"/>
                                             </Grid>
                                         </Grid>
                                     </Grid>

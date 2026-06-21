@@ -36,5 +36,6 @@ namespace LD.Contracts.Requests
         public DateTime? FechaProgramada { get; set; }
 
         public string? Status { get; set; }
+        public bool AllowRestrictedUpdate { get; set; }
     }
 }
