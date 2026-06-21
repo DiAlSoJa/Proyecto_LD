@@ -1,4 +1,4 @@
-﻿using LD.Client.Services;
+using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
 using LD.Contracts.DTOs.Security;
 using LD.Contracts.InventaryStatus;
@@ -276,6 +276,27 @@ namespace LD.FormsX.Features.Surtidos.Views
             }
 
             ApplyEditState();
+        }
+
+        private async Task RefreshDetailItemsAfterAutopickingAsync(int? detailIdToSelect = null)
+        {
+            var selectedDetailId = detailIdToSelect ?? _selectedDetail?.KittingDetailId ?? 0;
+
+            await LoadDetailItemsAsync();
+
+            if (selectedDetailId <= 0)
+                return;
+
+            var refreshedDetail = DetailItems.FirstOrDefault(item => item.KittingDetailId == selectedDetailId);
+            if (refreshedDetail == null)
+                return;
+
+            _selectedDetail = refreshedDetail;
+            dgDetail.SelectedItem = refreshedDetail;
+            dgDetail.CurrentItem = refreshedDetail;
+
+            await LoadIssueItemsForDetailIdAsync(refreshedDetail.KittingDetailId);
+            _issueGenerationEnabled = true;
         }
 
         private async Task LoadIssueItemsForSelectedDetailAsync()
@@ -1451,6 +1472,7 @@ namespace LD.FormsX.Features.Surtidos.Views
 
                 var detailRows = DetailItems
                     .Where(IsDetailRowCompleted)
+                    .Where(detailRow => detailRow.Quantity > detailRow.CantidadSurtida)
                     .ToList();
 
                 if (detailRows.Count == 0)
@@ -1476,29 +1498,21 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                var issueSnapshots = new Dictionary<int, List<KittingIssueDetailDto>>();
-                foreach (var detailRow in persistedDetailRows)
-                    issueSnapshots[detailRow.KittingDetailId] = await LoadIssueItemsSnapshotForDetailAsync(detailRow);
-
-                var reservedInventorySignatures = CreateInventorySignatureSet(issueSnapshots.Values.SelectMany(rows => rows));
+                var reservedInventoryIds = new HashSet<int>();
 
                 var createdRows = new List<KittingIssueDetailDto>();
                 var skippedLines = new List<string>();
 
                 foreach (var detailRow in persistedDetailRows)
                 {
-                    if (!issueSnapshots.TryGetValue(detailRow.KittingDetailId, out var existingIssueRows))
-                        existingIssueRows = new List<KittingIssueDetailDto>();
-
-                    var alreadySurtido = existingIssueRows.Sum(item => item.ReceivedQuantity.GetValueOrDefault());
-                    var remainingQuantity = detailRow.Quantity - alreadySurtido;
+                    var remainingQuantity = detailRow.Quantity - detailRow.CantidadSurtida;
                     if (remainingQuantity <= 0)
                         continue;
 
                     var autoPickedInventories = await BuildAutoPickedInventoriesAsync(
                         detailRow,
-                        alreadySurtido,
-                        reservedInventorySignatures);
+                        detailRow.CantidadSurtida,
+                        reservedInventoryIds);
 
                     if (autoPickedInventories.Count == 0)
                     {
@@ -1506,10 +1520,13 @@ namespace LD.FormsX.Features.Surtidos.Views
                         continue;
                     }
 
+                    foreach (var inventory in autoPickedInventories)
+                        reservedInventoryIds.Add(inventory.AvailableInventoryId);
+
                     var pendingRows = BuildIssueRowsFromInventories(
                         autoPickedInventories,
                         detailRow,
-                        reservedInventorySignatures);
+                        null);
 
                     var fallbackStandardId = autoPickedInventories
                         .Select(GetInventoryStandardId)
@@ -1523,7 +1540,6 @@ namespace LD.FormsX.Features.Surtidos.Views
                         if (await CreateIssueFromInventorySelectionAsync(detailRow, issueRow, standardId))
                         {
                             createdRows.Add(issueRow);
-                            reservedInventorySignatures.Add(GetIssueInventorySignature(issueRow));
                         }
                     }
                 }
@@ -1546,6 +1562,8 @@ namespace LD.FormsX.Features.Surtidos.Views
 
                 if (_selectedDetail != null)
                     await LoadIssueItemsForSelectedDetailAsync();
+
+                await RefreshDetailItemsAfterAutopickingAsync();
 
                 ToastHelper.ShowSuccess($"{createdRows.Count} linea(s) agregada(s) a issue.");
                 HasChanges = true;
@@ -1676,15 +1694,14 @@ namespace LD.FormsX.Features.Surtidos.Views
         {
             var existingIssueRows = IssueItems.ToList();
             var alreadySurtido = existingIssueRows.Sum(item => item.ReceivedQuantity.GetValueOrDefault());
-            var excludedInventorySignatures = CreateInventorySignatureSet(existingIssueRows);
 
-            return await BuildAutoPickedInventoriesAsync(detailRow, alreadySurtido, excludedInventorySignatures);
+            return await BuildAutoPickedInventoriesAsync(detailRow, alreadySurtido, null);
         }
 
         private async Task<List<AvailableInventoryDto>> BuildAutoPickedInventoriesAsync(
             KittingDetailDto detailRow,
             decimal alreadySurtidoQuantity,
-            ISet<string>? excludedInventorySignatures)
+            ISet<int>? excludedInventoryIds)
         {
             var response = await _availableInventoryService.GetAvailableInventories();
             if (!response.IsSuccess || response.Data == null)
@@ -1696,26 +1713,56 @@ namespace LD.FormsX.Features.Surtidos.Views
             var partNumber = detailRow.PartNumber?.Trim() ?? string.Empty;
             var status = detailRow.Status?.Trim() ?? string.Empty;
             var lotNumber = detailRow.LotNumber?.Trim() ?? string.Empty;
-            var requiredQuantity = detailRow.Quantity - alreadySurtidoQuantity;
+            var requiredQuantity = GetDetailRemainingQuantity(detailRow, alreadySurtidoQuantity);
 
             if (requiredQuantity <= 0)
                 return new List<AvailableInventoryDto>();
 
-            var reservedSignatures = excludedInventorySignatures ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var reservedInventoryIds = excludedInventoryIds ?? new HashSet<int>();
             var matchingInventories = response.Data
                 .Where(IsInventoryForCurrentClientProject)
-                .Where(inventory => inventory.FinalAvailable > 0 || inventory.Qty.GetValueOrDefault() > 0)
-                .Where(IsDisponibleInventory)
+                .Where(IsDisponibleInventoryForAutoPicking)
                 .Where(inventory => string.Equals(inventory.PartNumber?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase))
                 .Where(inventory => string.IsNullOrWhiteSpace(status) ||
                                    string.Equals(inventory.StatusId?.Trim(), status, StringComparison.OrdinalIgnoreCase))
                 .Where(inventory => string.IsNullOrWhiteSpace(lotNumber) ||
                                    string.Equals(inventory.LotNumber?.Trim(), lotNumber, StringComparison.OrdinalIgnoreCase))
-                .Where(inventory => !reservedSignatures.Contains(GetInventorySignature(inventory)))
-                .OrderByDescending(inventory => inventory.FinalAvailable > 0 ? inventory.FinalAvailable : inventory.Qty)
-                .ThenByDescending(inventory => inventory.Fecha)
-                .ThenByDescending(inventory => inventory.Hora)
+                .Where(inventory => !reservedInventoryIds.Contains(inventory.AvailableInventoryId))
+                .Select(inventory => new
+                {
+                    Inventory = inventory,
+                    AvailableQuantity = GetInventoryAvailableQuantity(inventory)
+                })
+                .Where(item => item.AvailableQuantity > 0)
+                .OrderBy(item => item.AvailableQuantity >= requiredQuantity ? 0 : 1)
+                .ThenBy(item => Math.Abs(item.AvailableQuantity - requiredQuantity))
+                .ThenByDescending(item => item.AvailableQuantity)
+                .ThenByDescending(item => item.Inventory.Fecha)
+                .ThenByDescending(item => item.Inventory.Hora)
+                .Select(item => item.Inventory)
                 .ToList();
+
+            if (matchingInventories.Count == 0)
+            {
+                matchingInventories = response.Data
+                    .Where(IsInventoryForCurrentClientProject)
+                    .Where(IsDisponibleInventoryForAutoPicking)
+                    .Where(inventory => string.Equals(inventory.PartNumber?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase))
+                    .Where(inventory => !reservedInventoryIds.Contains(inventory.AvailableInventoryId))
+                    .Select(inventory => new
+                    {
+                        Inventory = inventory,
+                        AvailableQuantity = GetInventoryAvailableQuantity(inventory)
+                    })
+                    .Where(item => item.AvailableQuantity > 0)
+                    .OrderBy(item => item.AvailableQuantity >= requiredQuantity ? 0 : 1)
+                    .ThenBy(item => Math.Abs(item.AvailableQuantity - requiredQuantity))
+                    .ThenByDescending(item => item.AvailableQuantity)
+                    .ThenByDescending(item => item.Inventory.Fecha)
+                    .ThenByDescending(item => item.Inventory.Hora)
+                    .Select(item => item.Inventory)
+                    .ToList();
+            }
 
             var selectedInventories = new List<AvailableInventoryDto>();
             decimal accumulatedQuantity = 0;
@@ -1723,9 +1770,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             foreach (var inventory in matchingInventories)
             {
                 selectedInventories.Add(inventory);
-                accumulatedQuantity += inventory.FinalAvailable > 0
-                    ? inventory.FinalAvailable
-                    : inventory.Qty.GetValueOrDefault();
+                accumulatedQuantity += GetInventoryAvailableQuantity(inventory);
 
                 if (accumulatedQuantity >= requiredQuantity)
                     break;
@@ -2105,13 +2150,10 @@ namespace LD.FormsX.Features.Surtidos.Views
                     continue;
 
                 var standardId = GetInventoryStandardId(inventory);
-                if (string.IsNullOrWhiteSpace(standardId))
-                    continue;
-
                 if (excludedInventorySignatures?.Contains(GetInventorySignature(inventory)) == true)
                     continue;
 
-                var issueRow = CreateIssueRowFromInventory(inventory, standardId, currentDetail);
+                var issueRow = CreateIssueRowFromInventory(inventory, standardId ?? string.Empty, currentDetail);
                 pendingRows.Add(issueRow);
             }
 
@@ -2302,6 +2344,25 @@ namespace LD.FormsX.Features.Surtidos.Views
                 : inventory.StandardIdStr.Trim();
         }
 
+        private static decimal GetInventoryAvailableQuantity(AvailableInventoryDto inventory)
+        {
+            return inventory.FinalAvailable > 0
+                ? inventory.FinalAvailable
+                : inventory.Qty.GetValueOrDefault();
+        }
+
+        private static decimal GetDetailRemainingQuantity(KittingDetailDto detailRow, decimal? alreadySurtidoOverride = null)
+        {
+            var issuedQuantity = alreadySurtidoOverride ?? detailRow.CantidadSurtida;
+            var pendingQuantity = detailRow.Quantity - issuedQuantity;
+            return pendingQuantity > 0 ? pendingQuantity : 0;
+        }
+
+        private static bool IsDisponibleInventoryForAutoPicking(AvailableInventoryDto inventory)
+        {
+            return string.Equals(inventory.AvailableStatus?.Trim(), DisponibleStatus, StringComparison.OrdinalIgnoreCase);
+        }
+
         private static bool IsDisponibleInventory(AvailableInventoryDto inventory)
         {
             var availableStatus = inventory.AvailableStatus?.Trim();
@@ -2456,6 +2517,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 }
 
                 IssueItems.Remove(issueRow);
+                if (issueRow.KittingDetailId > 0)
+                    await RefreshDetailItemsAfterAutopickingAsync(issueRow.KittingDetailId);
                 HasChanges = true;
             }
             catch (Exception ex)
