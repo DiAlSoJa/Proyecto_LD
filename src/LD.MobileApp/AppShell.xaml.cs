@@ -9,6 +9,7 @@
             Routing.RegisterRoute(nameof(RegisterLicense), typeof(RegisterLicense));
             Routing.RegisterRoute(nameof(SignatureDriver), typeof(SignatureDriver));
             Routing.RegisterRoute(nameof(ChangeLocationPage), typeof(ChangeLocationPage));
+            Routing.RegisterRoute(nameof(ReceptionDetailPage), typeof(ReceptionDetailPage));
             Routing.RegisterRoute(nameof(MovementPage), typeof(MovementPage));
             Routing.RegisterRoute(nameof(MovementDetail), typeof(MovementDetail));
             Routing.RegisterRoute(nameof(DamageReportPage), typeof(DamageReportPage));

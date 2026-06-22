@@ -2,6 +2,7 @@
 using LD.Client.Configuration;
 using LD.Contracts.DTOs;
 using LD.Contracts.Enums;
+using LD.Contracts.Constants;
 using LD.Contracts.Kitting;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace LD.FormsX.Features.Surtidos.Views
@@ -179,32 +181,49 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase) ||
+            KittingStatusNames.IsValidation(status) ||
+            KittingStatusNames.IsLoading(status);
 
         private static bool IsCancelledStatus(string? status) =>
-            string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsCancelled(status);
 
         private static bool IsCreatedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Creado", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Creado, StringComparison.OrdinalIgnoreCase);
 
         private static bool IsSendingStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Ubicando", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsSending(status);
 
         private static string GetTerminalStatusLabel(string? status)
         {
             if (IsCancelledStatus(status))
                 return "cancelado";
 
-            if (string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
-                return "surtido";
+            if (KittingStatusNames.IsLoading(status))
+                return "cargando";
+
+            if (KittingStatusNames.IsValidation(status))
+                return "validación";
 
             return "confirmado";
         }
 
         private static bool IsTerminalStatus(string? status) =>
             IsConfirmedStatus(status) || IsCancelledStatus(status);
+
+        private void dgKitting_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (!string.Equals(e.PropertyName, nameof(KittingDto.Status), StringComparison.OrdinalIgnoreCase))
+                return;
+
+            if (e.Column is not DataGridTextColumn textColumn)
+                return;
+
+            textColumn.Binding = new Binding(nameof(KittingDto.Status))
+            {
+                Converter = new KittingStatusDisplayConverter()
+            };
+        }
 
         private static SolidColorBrush CreateBrush(string hexColor) =>
             new((Color)ColorConverter.ConvertFromString(hexColor));
@@ -245,12 +264,12 @@ namespace LD.FormsX.Features.Surtidos.Views
             var canEdit = hasSelected && !isTerminal;
             var terminalStatus = GetTerminalStatusLabel(_selectedKitting?.Status);
             var confirmTooltip = !hasSelected
-                ? "Selecciona un surtido para surtir."
+                ? "Selecciona un surtido para pasar a validación."
                 : isTerminal
-                    ? $"Este surtido esta {terminalStatus}. Ya no se puede surtir."
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede pasar a validación."
                     : !isSending
-                        ? "El surtido debe estar en estatus Surtiendo para poder marcarlo como Surtido completo."
-                        : "Marcar como Surtido completo";
+                        ? "El surtido debe estar en estatus Surtiendo para poder pasar a validación."
+                        : "Pasar a validación";
 
             ConfigureActionButton(
                 btnEditar,
@@ -285,8 +304,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 hasSelected,
                 false,
                 hasSelected
-                    ? "Imprimir lista de surtido"
-                    : "Selecciona un surtido para imprimir la lista.");
+                    ? "Imprimir lista de validación"
+                    : "Selecciona un surtido para imprimir la lista de validación.");
 
             ConfigureActionButton(
                 btnCancelar,
@@ -647,7 +666,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Surtido correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -662,13 +681,13 @@ namespace LD.FormsX.Features.Surtidos.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un surtido para surtir.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para pasar a validación.");
                     return;
                 }
 
                 if (IsConfirmedStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido seleccionado ya esta surtido.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta en Validación.");
                     return;
                 }
 
@@ -680,7 +699,7 @@ namespace LD.FormsX.Features.Surtidos.Views
 
                 if (!IsSendingStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido debe estar en estatus Surtiendo para poder marcarlo como Surtido completo.");
+                    DialogHelper.ShowWarning("El surtido debe estar en estatus Surtiendo para poder pasar a validación.");
                     return;
                 }
 
@@ -694,7 +713,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Surtido correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -739,7 +758,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Surtido correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -754,7 +773,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un surtido para ver la vista previa de la lista de surtido.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para ver la vista previa de la lista de validación.");
                     return;
                 }
 

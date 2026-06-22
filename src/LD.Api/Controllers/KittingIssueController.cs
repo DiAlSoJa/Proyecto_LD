@@ -374,24 +374,24 @@ public class KittingIssueController : CommonController
                         new List<string> { "El StandardId escaneado no corresponde al issue seleccionado." }));
             }
 
-            if (string.Equals(entity.SupplyStatus?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase))
+            if (KittingStatusNames.IsLoading(entity.SupplyStatus))
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail ya estaba validado."));
+                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail ya estaba en Cargando."));
             }
 
-            if (!string.Equals(entity.SupplyStatus?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
+            if (!KittingStatusNames.IsValidation(entity.SupplyStatus))
             {
                 return ResultExtensions.ToActionResult(
                     Result<string>.Failure(
-                        "Solo se puede validar un issue en estatus Surtido.",
-                        new List<string> { "Solo se puede validar un issue en estatus Surtido." }));
+                        "Solo se puede validar un issue en estatus Validación.",
+                        new List<string> { "Solo se puede validar un issue en estatus Validación." }));
             }
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                entity.SupplyStatus = "Validado";
+                entity.SupplyStatus = KittingStatusNames.Cargando;
                 entity.LastModifiedAt = DateTime.Now;
                 entity.LastModifiedByUserId = CurrentUserId;
 
@@ -415,8 +415,8 @@ public class KittingIssueController : CommonController
                     Result<string>.Success(
                         entity.KittingReceiptDetailId.ToString(),
                         kittingValidated
-                            ? "Kitting Issue Detail validado correctamente. Kitting validado correctamente."
-                            : "Kitting Issue Detail validado correctamente."));
+                    ? "Kitting Issue Detail actualizado a Cargando correctamente. Kitting actualizado a Cargando correctamente."
+                    : "Kitting Issue Detail actualizado a Cargando correctamente."));
             }
             catch
             {
@@ -584,13 +584,13 @@ public class KittingIssueController : CommonController
     }
 
     private static bool IsTerminalStatus(string? status) =>
-        IsConfirmedStatus(status) || IsCancelledStatus(status) || string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+        IsConfirmedStatus(status) || IsCancelledStatus(status) || KittingStatusNames.IsLoading(status);
 
     private static bool IsConfirmedStatus(string? status) =>
-        string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
+        string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase);
 
     private static bool IsCancelledStatus(string? status) =>
-        string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
+        string.Equals(status?.Trim(), KittingStatusNames.Cancelado, StringComparison.OrdinalIgnoreCase);
 
     private static string? NormalizeStatus(string? status) =>
         string.IsNullOrWhiteSpace(status)
@@ -640,17 +640,17 @@ public class KittingIssueController : CommonController
         if (issueStatuses.Count == 0)
             return false;
 
-        if (issueStatuses.Any(x => !string.Equals(x?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase)))
+        if (issueStatuses.Any(x => !KittingStatusNames.IsLoading(x)))
             return false;
 
         var kitting = await _context.Kittings.FirstOrDefaultAsync(x => x.KittingId == kittingId);
         if (kitting is null)
             return false;
 
-        if (string.Equals(kitting.Status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase))
+        if (KittingStatusNames.IsLoading(kitting.Status))
             return false;
 
-        kitting.Status = "Validado";
+        kitting.Status = KittingStatusNames.Cargando;
         kitting.LastModifiedAt = DateTime.Now;
         kitting.LastModifiedByUserId = CurrentUserId;
         return true;

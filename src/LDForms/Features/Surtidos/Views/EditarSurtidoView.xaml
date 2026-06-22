@@ -332,7 +332,9 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <GroupBox Grid.Column="0" Header="Surtido">
+                                <GroupBox x:Name="gbSurtido"
+                                          Grid.Column="0"
+                                          Header="Surtido">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="104"/>
@@ -565,8 +567,8 @@
                                                    Foreground="#374151"
                                                    Margin="0,0,6,0"
                                                    FontSize="12"/>
-                                        <TextBlock Text="Lista de surtido"
-                                                   FontSize="12"/>
+                                                    <TextBlock Text="Lista de validación"
+                                                               FontSize="12"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>

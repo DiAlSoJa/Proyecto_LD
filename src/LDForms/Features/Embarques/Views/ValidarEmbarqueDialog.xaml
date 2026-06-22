@@ -193,7 +193,7 @@
                             </Grid.RowDefinitions>
 
                             <DockPanel>
-                                <TextBlock Text="Surtido"
+                                <TextBlock Text="Validación"
                                            FontSize="13"
                                            FontWeight="SemiBold"
                                            Foreground="{StaticResource TextBrush}"
@@ -252,7 +252,7 @@
                             </Grid.RowDefinitions>
 
                             <DockPanel>
-                                <TextBlock Text="Validado"
+                                <TextBlock Text="Cargando"
                                            FontSize="13"
                                            FontWeight="SemiBold"
                                            Foreground="{StaticResource TextBrush}"

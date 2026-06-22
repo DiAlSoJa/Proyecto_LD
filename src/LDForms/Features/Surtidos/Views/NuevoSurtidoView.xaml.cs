@@ -1,5 +1,6 @@
 using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
+using LD.Contracts.Constants;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Kitting;
 using LD.Contracts.Location;
@@ -16,6 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -433,8 +435,9 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase) ||
+            KittingStatusNames.IsValidation(status) ||
+            KittingStatusNames.IsLoading(status);
 
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
@@ -453,7 +456,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (IsCurrentKittingEditable())
                 return true;
 
-            DialogHelper.ShowWarning("El surtido esta surtido, confirmado o cancelado y ya no permite cambios.");
+            DialogHelper.ShowWarning("El surtido esta en Validación, Cargando, confirmado o cancelado y ya no permite cambios.");
             return false;
         }
 
@@ -633,7 +636,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             HasChanges = true;
 
             if (showSuccessToast)
-                ToastHelper.ShowSuccess("Surtido guardado correctamente.");
+                ToastHelper.ShowSuccess("Validación guardada correctamente.");
 
             ApplyEditState();
             return true;

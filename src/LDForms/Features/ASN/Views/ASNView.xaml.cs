@@ -376,7 +376,10 @@ namespace LD.FormsX.Views.ASN
                 return;
             }
 
-            _allAsns = result.Data ?? new List<AsnDto>();
+            _allAsns = (result.Data ?? new List<AsnDto>())
+                .OrderByDescending(x => x.CreatedAt)
+                .ThenByDescending(x => x.AsnId)
+                .ToList();
             AplicarFiltroAsn();
         }
 

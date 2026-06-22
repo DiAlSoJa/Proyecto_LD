@@ -1,5 +1,6 @@
-using LD.Client.Services;
+﻿using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
+using LD.Contracts.Constants;
 using LD.Contracts.DTOs.Security;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Kitting;
@@ -21,6 +22,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -57,6 +59,7 @@ namespace LD.FormsX.Features.Surtidos.Views
         private bool _transportAndDeliveryOnlyMode;
 
         private KittingDto? _selectedKitting;
+        private List<KittingDto> _selectedKittings = new();
         private KittingDetailDto? _selectedDetail;
         private bool _loadingData;
         private int _clientId;
@@ -120,9 +123,20 @@ namespace LD.FormsX.Features.Surtidos.Views
 
         public void SetKitting(KittingDto? kitting)
         {
-            _selectedKitting = kitting;
-            _clientName = kitting?.Client?.Trim() ?? string.Empty;
-            _projectName = kitting?.Project?.Trim() ?? string.Empty;
+            SetKittings(kitting is null ? Array.Empty<KittingDto>() : new[] { kitting });
+        }
+
+        public void SetKittings(IEnumerable<KittingDto> kittings)
+        {
+            _selectedKittings = kittings
+                .Where(item => item != null)
+                .GroupBy(item => item.KittingId)
+                .Select(group => group.First())
+                .ToList();
+
+            _selectedKitting = _selectedKittings.FirstOrDefault();
+            _clientName = _selectedKitting?.Client?.Trim() ?? string.Empty;
+            _projectName = _selectedKitting?.Project?.Trim() ?? string.Empty;
             _clientId = 0;
             _projectId = 0;
             UpdateWindowTitle();
@@ -133,8 +147,11 @@ namespace LD.FormsX.Features.Surtidos.Views
         public void SetTransportAndDeliveryOnlyMode(bool enabled = true)
         {
             _transportAndDeliveryOnlyMode = enabled;
+            Height = enabled ? 650 : 920;
+            MinHeight = enabled ? 650 : 920;
             UpdateWindowTitle();
             ApplyEditState();
+            ShowDetailSections();
         }
 
         public void SetClientProjectContext(int clientId, int projectId, string? clientName, string? projectName)
@@ -182,7 +199,19 @@ namespace LD.FormsX.Features.Surtidos.Views
                 {
                     await LoadHeaderAsync();
                     ShowDetailSections();
-                    await LoadDetailItemsAsync();
+
+                    if (!_transportAndDeliveryOnlyMode)
+                    {
+                        await LoadDetailItemsAsync();
+                    }
+                    else
+                    {
+                        DetailItems.Clear();
+                        IssueItems.Clear();
+                        _detailSnapshots.Clear();
+                        _selectedDetail = null;
+                        _issueGenerationEnabled = false;
+                    }
                 }
                 else
                 {
@@ -445,12 +474,15 @@ namespace LD.FormsX.Features.Surtidos.Views
                 code = _kittingCodePreview?.Trim();
 
             var titleBase = _transportAndDeliveryOnlyMode
-                ? "Editar Embarque"
+                ? "Editar transporte y entrega"
                 : "Editar Surtido";
 
             var titlePrefix = string.IsNullOrWhiteSpace(code)
                 ? titleBase
                 : $"{titleBase} {code}";
+
+            if (_transportAndDeliveryOnlyMode && _selectedKittings.Count > 1)
+                titlePrefix = $"{titlePrefix} ({_selectedKittings.Count} seleccionados)";
 
             if (_loadingData)
                 titlePrefix = $"{titlePrefix} (Cargando...)";
@@ -500,11 +532,12 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase) ||
+            KittingStatusNames.IsValidation(status) ||
+            KittingStatusNames.IsLoading(status);
 
         private static bool IsValidatedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsLoading(status);
 
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
@@ -535,7 +568,7 @@ namespace LD.FormsX.Features.Surtidos.Views
 
             DialogHelper.ShowWarning(_transportAndDeliveryOnlyMode
                 ? "El embarque esta embarcado y ya no permite cambios."
-                : "El surtido esta surtido, confirmado, validado o cancelado y ya no permite cambios.");
+                : "El surtido esta en Validación, Cargando, confirmado o cancelado y ya no permite cambios.");
             return false;
         }
 
@@ -584,6 +617,15 @@ namespace LD.FormsX.Features.Surtidos.Views
 
         private void ShowDetailSections()
         {
+            if (_transportAndDeliveryOnlyMode)
+            {
+                HideDetailSections();
+                return;
+            }
+
+            if (gbSurtido != null)
+                gbSurtido.Visibility = Visibility.Visible;
+
             if (bdKittingDetails != null)
                 bdKittingDetails.Visibility = Visibility.Visible;
 
@@ -593,6 +635,9 @@ namespace LD.FormsX.Features.Surtidos.Views
 
         private void HideDetailSections()
         {
+            if (gbSurtido != null)
+                gbSurtido.Visibility = Visibility.Collapsed;
+
             if (bdKittingDetails != null)
                 bdKittingDetails.Visibility = Visibility.Collapsed;
 
@@ -720,26 +765,68 @@ namespace LD.FormsX.Features.Surtidos.Views
                 return false;
             }
 
-            var result = await SaveHeaderRequestAsync(request);
-            if (!result.IsSuccess)
+            var targets = GetHeaderUpdateTargets();
+            if (targets.Count == 0)
             {
-                DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo guardar el surtido.");
+                DialogHelper.ShowWarning("No hay embarques seleccionados para actualizar.");
                 return false;
             }
 
-            var kittingId = ResolveSavedKittingId(result);
-            _selectedKitting ??= new KittingDto();
-            _selectedKitting.KittingId = kittingId;
-            if (string.IsNullOrWhiteSpace(_selectedKitting.Status))
-                _selectedKitting.Status = DefaultKittingStatus;
-            ApplyEditState();
-            await RefreshKittingHeaderAsync(kittingId);
+            var updatedCount = 0;
+            var failureMessages = new List<string>();
+
+            foreach (var target in targets)
+            {
+                var targetRequest = CloneHeaderRequest(request, target.Status);
+                var result = await _kittingService.UpdateKitting(target.KittingId, targetRequest);
+                if (!result.IsSuccess)
+                {
+                    var targetLabel = string.IsNullOrWhiteSpace(target.KittingCode)
+                        ? $"ID {target.KittingId.ToString(CultureInfo.InvariantCulture)}"
+                        : target.KittingCode;
+
+                    failureMessages.Add($"{targetLabel}: {result.ErrorMessage ?? result.Message ?? "No se pudo guardar."}");
+                    continue;
+                }
+
+                updatedCount++;
+
+                if (_selectedKitting?.KittingId == target.KittingId)
+                {
+                    var kittingId = ResolveSavedKittingId(result);
+                    _selectedKitting ??= new KittingDto();
+                    _selectedKitting.KittingId = kittingId;
+                    if (string.IsNullOrWhiteSpace(_selectedKitting.Status))
+                        _selectedKitting.Status = DefaultKittingStatus;
+                    await RefreshKittingHeaderAsync(kittingId);
+                }
+            }
+
+            if (updatedCount == 0)
+            {
+                DialogHelper.ShowError("No se pudo guardar ninguno de los embarques seleccionados.");
+                return false;
+            }
+
             HasChanges = true;
+            ApplyEditState();
+
+            if (failureMessages.Count > 0)
+            {
+                DialogHelper.ShowWarning(
+                    "Se actualizaron algunos embarques, pero otros no se pudieron guardar:\n"
+                    + string.Join("\n", failureMessages));
+                return false;
+            }
 
             if (showSuccessToast)
-                ToastHelper.ShowSuccess("Surtido guardado correctamente.");
+            {
+                if (targets.Count == 1)
+                    ToastHelper.ShowSuccess("Validación guardada correctamente.");
+                else
+                    ToastHelper.ShowSuccess($"Se actualizaron {updatedCount} embarques correctamente.");
+            }
 
-            ApplyEditState();
             return true;
         }
 
@@ -827,11 +914,54 @@ namespace LD.FormsX.Features.Surtidos.Views
             return DefaultKittingStatus;
         }
 
-        private Task<ApiResponseDto<string>> SaveHeaderRequestAsync(KittingRequest request)
+        private List<KittingDto> GetHeaderUpdateTargets()
         {
+            if (_transportAndDeliveryOnlyMode)
+            {
+                var selectedTargets = _selectedKittings
+                    .Where(item => item.KittingId > 0)
+                    .GroupBy(item => item.KittingId)
+                    .Select(group => group.First())
+                    .ToList();
+
+                if (selectedTargets.Count > 0)
+                    return selectedTargets;
+            }
+
             return _selectedKitting?.KittingId > 0
-                ? _kittingService.UpdateKitting(_selectedKitting.KittingId, request)
-                : _kittingService.CreateKitting(request);
+                ? new List<KittingDto> { _selectedKitting }
+                : new List<KittingDto>();
+        }
+
+        private static KittingRequest CloneHeaderRequest(KittingRequest source, string? status)
+        {
+            return new KittingRequest
+            {
+                KittingId = source.KittingId,
+                ClientId = source.ClientId,
+                ProjectId = source.ProjectId,
+                InvoiceNumber = source.InvoiceNumber,
+                GuideNumber = source.GuideNumber,
+                Eta = source.Eta,
+                PackagesQty = source.PackagesQty,
+                IsReturn = source.IsReturn,
+                IsCustomerMovementRequired = source.IsCustomerMovementRequired,
+                TransportLine = source.TransportLine,
+                VehicleType = source.VehicleType,
+                DriverName = source.DriverName,
+                VehiclePlate = source.VehiclePlate,
+                SealNumber = source.SealNumber,
+                Contacto = source.Contacto,
+                Direccion = source.Direccion,
+                Colonia = source.Colonia,
+                Ciudad = source.Ciudad,
+                Telefono = source.Telefono,
+                CodigoPostal = source.CodigoPostal,
+                TipoEntrega = source.TipoEntrega,
+                FechaProgramada = source.FechaProgramada,
+                Status = status,
+                AllowRestrictedUpdate = source.AllowRestrictedUpdate
+            };
         }
 
         private void HeaderTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1477,7 +1607,7 @@ namespace LD.FormsX.Features.Surtidos.Views
 
                 if (detailRows.Count == 0)
                 {
-                    DialogHelper.ShowWarning("No hay lineas vÃ¡lidas para autopicking.");
+                    DialogHelper.ShowWarning("No hay líneas válidas para autopicking.");
                     return;
                 }
 
@@ -2706,5 +2836,4 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
     }
 }
-
 

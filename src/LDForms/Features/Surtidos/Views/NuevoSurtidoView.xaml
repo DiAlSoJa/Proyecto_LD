@@ -666,7 +666,7 @@
                                                                Foreground="#374151"
                                                                Margin="0,0,6,0"
                                                                FontSize="12"/>
-                                                    <TextBlock Text="Lista de surtido"
+                                                    <TextBlock Text="Lista de validación"
                                                                FontSize="12"/>
                                                 </StackPanel>
                                             </Button>

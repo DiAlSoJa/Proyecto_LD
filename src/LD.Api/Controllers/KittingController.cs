@@ -201,7 +201,7 @@ public class KittingController : CommonController
     [Permission(PermissionKeys.Shipment_View)]
     public async Task<IActionResult> ConfirmKitting(int kittingId)
     {
-        return ResultExtensions.ToActionResult(await ChangeKittingStatusAsync(kittingId, "Surtido", "Kitting surtido correctamente."));
+        return ResultExtensions.ToActionResult(await ChangeKittingStatusAsync(kittingId, KittingStatusNames.Validacion, "Kitting en validación correctamente."));
     }
 
     [HttpPost("{kittingId}/cancel")]
@@ -240,16 +240,16 @@ public class KittingController : CommonController
             if (kitting is null)
                 return Result<string>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404);
 
-            if (IsValidatedStatus(kitting.Status))
+            if (IsLoadingStatus(kitting.Status))
             {
                 return Result<string>.Failure(
-                    "El Kitting ya esta validado y no se puede modificar.",
-                    new List<string> { "El Kitting ya esta validado." });
+                    "El Kitting ya esta en Cargando y no se puede modificar.",
+                    new List<string> { "El Kitting ya esta en Cargando." });
             }
 
-            if (IsConfirmedStatus(kitting.Status) || IsSurtidoStatus(kitting.Status))
+            if (IsConfirmedStatus(kitting.Status) || IsValidationStatus(kitting.Status))
             {
-                return Result<string>.Failure("El Kitting ya esta surtido y no se puede modificar.", new List<string> { "El Kitting ya esta surtido." });
+                return Result<string>.Failure("El Kitting ya esta en Validación y no se puede modificar.", new List<string> { "El Kitting ya esta en Validación." });
             }
 
             if (string.Equals(kitting.Status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase))
@@ -265,7 +265,7 @@ public class KittingController : CommonController
             }
 
             var kittingDetails = new List<KittingDetail>();
-            if (requireIssueValidation || IsSurtidoStatus(targetStatus))
+            if (requireIssueValidation || IsValidationStatus(targetStatus))
             {
                 kittingDetails = await GetKittingDetailsForKittingAsync(kittingId);
             }
@@ -276,11 +276,11 @@ public class KittingController : CommonController
                 var issueDetails = await GetIssueDetailsForKittingDetailsAsync(
                     kittingDetails.Select(x => x.KittingDetailId).ToList());
 
-                if ((IsConfirmedStatus(targetStatus) || IsSurtidoStatus(targetStatus)) && kittingDetails.Count == 0)
+                if ((IsConfirmedStatus(targetStatus) || IsValidationStatus(targetStatus)) && kittingDetails.Count == 0)
                 {
                     return Result<string>.Failure(
-                        "El Kitting debe tener al menos un Kitting Detail antes de surtir.",
-                        new List<string> { "El Kitting debe tener al menos un Kitting Detail antes de surtir." });
+                        "El Kitting debe tener al menos un Kitting Detail antes de pasar a Validación.",
+                        new List<string> { "El Kitting debe tener al menos un Kitting Detail antes de pasar a Validación." });
                 }
 
                 if (issueDetails.Count == 0)
@@ -290,7 +290,7 @@ public class KittingController : CommonController
                         new List<string> { "El Kitting debe tener al menos un Kitting Issue Detail." });
                 }
 
-                if (IsConfirmedStatus(targetStatus) || IsSurtidoStatus(targetStatus))
+                if (IsConfirmedStatus(targetStatus) || IsValidationStatus(targetStatus))
                 {
                     var detailIdsWithIssues = issueDetails
                         .Select(x => x.KittingDetailId)
@@ -330,7 +330,7 @@ public class KittingController : CommonController
                 }
             }
 
-            if (IsSurtidoStatus(targetStatus))
+            if (IsValidationStatus(targetStatus))
             {
                 await UpdateIssueDetailsSupplyStatusAsync(
                     kittingDetails.Select(x => x.KittingDetailId).ToList(),
@@ -409,8 +409,8 @@ public class KittingController : CommonController
 
     private static string GetStatusValidationActionLabel(string targetStatus)
     {
-        if (IsSurtidoStatus(targetStatus))
-            return "surtir";
+        if (IsValidationStatus(targetStatus))
+            return "validar";
 
         return IsConfirmedStatus(targetStatus)
             ? "confirmar"
@@ -418,19 +418,19 @@ public class KittingController : CommonController
     }
 
     private static bool IsTerminalStatus(string? status) =>
-        IsConfirmedStatus(status) || IsSurtidoStatus(status) || IsValidatedStatus(status) || IsCancelledStatus(status);
+        IsConfirmedStatus(status) || IsValidationStatus(status) || IsLoadingStatus(status) || IsCancelledStatus(status);
 
     private static bool IsConfirmedStatus(string? status) =>
-        string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase);
+        string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase);
 
-    private static bool IsSurtidoStatus(string? status) =>
-        string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+    private static bool IsValidationStatus(string? status) =>
+        KittingStatusNames.IsValidation(status);
 
-    private static bool IsValidatedStatus(string? status) =>
-        string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+    private static bool IsLoadingStatus(string? status) =>
+        KittingStatusNames.IsLoading(status);
 
     private static bool IsCancelledStatus(string? status) =>
-        string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
+        string.Equals(status?.Trim(), KittingStatusNames.Cancelado, StringComparison.OrdinalIgnoreCase);
 
     private static bool IsEmbarcadoStatus(string? status) =>
         string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
@@ -454,7 +454,5 @@ public class KittingController : CommonController
     }
 
     private static string? NormalizeStatus(string? status) =>
-        string.IsNullOrWhiteSpace(status)
-            ? null
-            : status.Trim();
+        KittingStatusNames.Normalize(status);
 }

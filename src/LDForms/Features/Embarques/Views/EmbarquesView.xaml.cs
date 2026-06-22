@@ -1,6 +1,7 @@
 ﻿using LD.Client.Services;
 using LD.Client.Configuration;
 using LD.Contracts.DTOs;
+using LD.Contracts.Constants;
 using LD.Contracts.Kitting;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Features.Surtidos.Views;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace LD.FormsX.Features.Embarques.Views
@@ -32,6 +34,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private KittingDto? _selectedKitting;
         private KittingDetailDto? _selectedDetail;
+        private List<KittingDto> _selectedKittings = new();
         private List<KittingDto> _allKittings = new();
         private List<UserProjectClientDto> _userProjectClients = new();
         private bool _cargandoCombos;
@@ -166,27 +169,39 @@ namespace LD.FormsX.Features.Embarques.Views
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase) ||
+            KittingStatusNames.IsValidation(status);
 
         private static bool IsCancelledStatus(string? status) =>
-            string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsCancelled(status);
 
         private static bool IsValidatedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsLoading(status);
 
         private static bool IsSurtidoStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsValidation(status);
 
         private static bool IsSurtiendoStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Surtiendo, StringComparison.OrdinalIgnoreCase);
 
         private static bool IsEmbarcadoStatus(string? status) =>
             string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
 
+        private List<KittingDto> GetSelectedKittings()
+        {
+            if (dgKitting?.SelectedItems == null || dgKitting.SelectedItems.Count == 0)
+                return new List<KittingDto>();
+
+            return dgKitting.SelectedItems
+                .OfType<KittingDto>()
+                .ToList();
+        }
+
+        private bool HasMultipleKittingSelection() =>
+            _selectedKittings.Count > 1;
+
         private static bool IsSendingStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Ubicando", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsSending(status);
 
         private static string GetTerminalStatusLabel(string? status)
         {
@@ -194,16 +209,30 @@ namespace LD.FormsX.Features.Embarques.Views
                 return "cancelado";
 
             if (IsValidatedStatus(status))
-                return "validado";
+                return "cargando";
 
-            if (string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
-                return "surtido";
+            if (IsSurtidoStatus(status))
+                return "validación";
 
             return "confirmado";
         }
 
         private static bool IsTerminalStatus(string? status) =>
             IsConfirmedStatus(status) || IsValidatedStatus(status) || IsCancelledStatus(status);
+
+        private void dgKitting_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (!string.Equals(e.PropertyName, nameof(KittingDto.Status), StringComparison.OrdinalIgnoreCase))
+                return;
+
+            if (e.Column is not DataGridTextColumn textColumn)
+                return;
+
+            textColumn.Binding = new Binding(nameof(KittingDto.Status))
+            {
+                Converter = new KittingStatusDisplayConverter()
+            };
+        }
 
         private static SolidColorBrush CreateBrush(string hexColor) =>
             new((Color)ColorConverter.ConvertFromString(hexColor));
@@ -236,31 +265,34 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private void UpdateActionButtons()
         {
-            var hasSelected = _selectedKitting != null;
+            var hasSelected = _selectedKittings.Count > 0;
+            var hasMultipleSelection = HasMultipleKittingSelection();
             var isSending = IsSendingStatus(_selectedKitting?.Status);
             var isTerminal = IsTerminalStatus(_selectedKitting?.Status);
             var canEdit = hasSelected && !isTerminal;
             var terminalStatus = GetTerminalStatusLabel(_selectedKitting?.Status);
             var confirmTooltip = !hasSelected
-                ? "Selecciona un embarque para surtir."
+                ? "Selecciona un embarque para pasar a validación."
                 : isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede surtir."
+                    ? $"Este embarque esta {terminalStatus}. Ya no se puede pasar a validación."
                     : !isSending
-                        ? "El embarque debe estar en estatus Surtiendo para poder marcarlo como Surtido completo."
-                        : "Marcar como Surtido completo";
+                        ? "El embarque debe estar en estatus Surtiendo para poder pasar a validación."
+                        : "Pasar a validación";
 
             if (btnEditar != null)
-                btnEditar.Visibility = Visibility.Visible;
+                btnEditar.Visibility = hasSelected ? Visibility.Visible : Visibility.Collapsed;
 
             ConfigureActionButton(
                 btnEditar,
-                true,
+                hasSelected,
                 false,
-                "Editar embarque");
+                hasMultipleSelection
+                    ? $"Editar transporte y entrega de {_selectedKittings.Count} embarques."
+                    : "Editar transporte y entrega");
 
             ConfigureActionButton(
                 btnEnviarASurtir,
-                canEdit && !isSending,
+                canEdit && !isSending && !hasMultipleSelection,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
                     ? $"Este embarque esta {terminalStatus}. Ya no se puede enviar a surtir."
@@ -272,29 +304,29 @@ namespace LD.FormsX.Features.Embarques.Views
 
             ConfigureActionButton(
                 btnConfirmar,
-                hasSelected && isSending,
+                hasSelected && isSending && !hasMultipleSelection,
                 hasSelected && isTerminal,
                 confirmTooltip);
 
             ConfigureActionButton(
                 btnListaSurtido,
-                hasSelected,
+                hasSelected && !hasMultipleSelection,
                 false,
                 hasSelected
-                    ? "Imprimir lista de surtido"
-                    : "Selecciona un embarque para imprimir la lista de surtido.");
+                    ? "Imprimir lista de validación"
+                    : "Selecciona un embarque para imprimir la lista de validación.");
 
             ConfigureActionButton(
                 btnValidar,
-                hasSelected,
+                hasSelected && !hasMultipleSelection,
                 false,
                 hasSelected
-                    ? "Abrir el dialogo de validacion del embarque."
+                    ? "Abrir el dialogo de validación del embarque."
                     : "Selecciona un embarque para validar.");
 
             ConfigureActionButton(
                 btnImprimirDO,
-                hasSelected,
+                hasSelected && !hasMultipleSelection,
                 false,
                 hasSelected
                     ? "Imprimir orden de entrega DO"
@@ -302,7 +334,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
             ConfigureActionButton(
                 btnCancelar,
-                canEdit,
+                canEdit && !hasMultipleSelection,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
                     ? $"Este embarque esta {terminalStatus}. Ya no se puede cancelar."
@@ -450,7 +482,7 @@ namespace LD.FormsX.Features.Embarques.Views
                     string.Equals(x.Project?.Trim(), SelectedProjectText.Trim(), StringComparison.OrdinalIgnoreCase));
             }
 
-            if (IsValidadoFilterSelected())
+            if (IsCargandoFilterSelected())
                 filtered = filtered.Where(x => IsValidatedStatus(x.Status));
             else
                 filtered = filtered.Where(x => IsSurtidoStatus(x.Status));
@@ -572,10 +604,10 @@ namespace LD.FormsX.Features.Embarques.Views
                 AplicarFiltroKitting();
         }
 
-        private bool IsValidadoFilterSelected()
+        private bool IsCargandoFilterSelected()
         {
             if (cmbFiltroEmbarques?.SelectedItem is ComboBoxItem selectedItem)
-                return string.Equals(selectedItem.Tag?.ToString()?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+                return string.Equals(selectedItem.Tag?.ToString()?.Trim(), KittingStatusNames.Cargando, StringComparison.OrdinalIgnoreCase);
 
             return false;
         }
@@ -613,22 +645,30 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedKitting == null)
+            var selectedKittings = GetSelectedKittings();
+            if (selectedKittings.Count == 0)
             {
-                DialogHelper.ShowWarning("Selecciona un embarque para editar.");
+                DialogHelper.ShowWarning("Selecciona uno o más embarques para editar.");
                 return;
             }
 
-            if (IsEmbarcadoStatus(_selectedKitting.Status))
+            if (selectedKittings.Any(item => IsEmbarcadoStatus(item.Status)))
             {
-                DialogHelper.ShowWarning("El embarque seleccionado esta embarcado. Ya no se puede editar.");
+                DialogHelper.ShowWarning("Uno o más embarques seleccionados estan embarcados. Ya no se pueden editar.");
                 return;
             }
 
             var dialog = _serviceProvider.GetRequiredService<EditarSurtidoView>();
             dialog.Owner = Window.GetWindow(this);
             dialog.SetTransportAndDeliveryOnlyMode();
-            dialog.SetKitting(_selectedKitting);
+            if (selectedKittings.Count == 1)
+            {
+                dialog.SetKitting(selectedKittings[0]);
+            }
+            else
+            {
+                dialog.SetKittings(selectedKittings);
+            }
 
             dialog.ShowDialog();
             if (dialog.HasChanges)
@@ -696,7 +736,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 if (!IsSendingStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque debe estar en estatus Surtiendo para poder marcarlo como Surtido completo.");
+                    DialogHelper.ShowWarning("El embarque debe estar en estatus Surtiendo para poder pasar a validación.");
                     return;
                 }
 
@@ -710,7 +750,7 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el embarque a estatus Surtido correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el embarque a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -764,7 +804,7 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un embarque para imprimir la lista de surtido.");
+                    DialogHelper.ShowWarning("Selecciona un embarque para imprimir la lista de validación.");
                     return;
                 }
 
@@ -875,9 +915,24 @@ namespace LD.FormsX.Features.Embarques.Views
         {
             try
             {
-                _selectedKitting = _gridFilter.SelectedItem;
+                _selectedKittings = GetSelectedKittings();
+                _selectedKitting = _selectedKittings.FirstOrDefault();
                 UpdateActionButtons();
-                await CargarDatosAsyncDet();
+
+                if (_selectedKittings.Count == 1)
+                {
+                    await CargarDatosAsyncDet();
+                }
+                else
+                {
+                    _selectedDetail = null;
+                    _gridFilterDet.SetData(null);
+                    _gridFilterIssue.SetData(null);
+                    txtStatusDetalle.Text = _selectedKittings.Count > 1
+                        ? $"Seleccion multiple: {_selectedKittings.Count} embarques"
+                        : "Sin detalle para mostrar";
+                    txtStatusIssues.Text = "Sin issues para mostrar";
+                }
             }
             catch (Exception ex)
             {

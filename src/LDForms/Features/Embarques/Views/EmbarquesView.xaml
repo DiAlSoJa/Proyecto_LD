@@ -126,8 +126,8 @@
                               VerticalAlignment="Center"
                               SelectionChanged="CmbFiltroEmbarques_SelectionChanged"
                               Cursor="Hand">
-                        <ComboBoxItem Content="Ver surtido" Tag="Surtido"/>
-                        <ComboBoxItem Content="Ver validado" Tag="Validado"/>
+                        <ComboBoxItem Content="Ver validación" Tag="Validación"/>
+                        <ComboBoxItem Content="Ver cargando" Tag="Cargando"/>
                     </ComboBox>
 
                     <Button x:Name="BtnActualizar"
@@ -223,7 +223,7 @@
                     <Button x:Name="btnEditar"
                             Visibility="Collapsed"
                             Height="28"
-                            MinWidth="60"
+                            MinWidth="176"
                             Padding="6,0"
                             Margin="0,0,8,0"
                             Click="BtnEditar_Click"
@@ -245,7 +245,7 @@
                                        Foreground="#F59E0B"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Editar" FontSize="11"/>
+                            <TextBlock Text="Editar transporte y entrega" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
@@ -303,7 +303,7 @@
                                        Foreground="#2563EB"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Surtido completo" FontSize="11"/>
+                            <TextBlock Text="Validación" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
@@ -331,7 +331,7 @@
                                        Foreground="#374151"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Lista de surtido" FontSize="11"/>
+                            <TextBlock Text="Lista de validación" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
@@ -403,7 +403,7 @@
             <Grid>
                 <DataGrid x:Name="dgKitting"
                           AutoGenerateColumns="True"
-                          SelectionMode="Single"
+                          SelectionMode="Extended"
                           SelectionUnit="FullRow"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
@@ -419,7 +419,8 @@
                           HorizontalGridLinesBrush="#E4E8EE"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
-                          SelectionChanged="dgKitting_SelectionChanged"/>
+                          SelectionChanged="dgKitting_SelectionChanged"
+                          AutoGeneratingColumn="dgKitting_AutoGeneratingColumn"/>
             </Grid>
         </Border>
 

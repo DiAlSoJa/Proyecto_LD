@@ -48,7 +48,7 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Posición:" TextColor="#64748B" FontSize="14"/>
+                    <Label Text="Nivel:" TextColor="#64748B" FontSize="14"/>
                     <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
                         <Entry x:Name="PosicionEntry" Placeholder="" TextColor="#0F172A" Text="{Binding Posicion}"/>
                     </Border>
