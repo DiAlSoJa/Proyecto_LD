@@ -95,6 +95,7 @@ namespace MauiAppLogin.ViewModels
         public ICommand LogoutCommand { get; }
         public ICommand NavigateToChangeLocationCommand { get; }
         public ICommand NavigateToPickingCommand { get; }
+        public ICommand NavigateToValidarEmbarqueCommand { get; }
         public ICommand NavigateToReceptionCommand { get; }
         public ICommand NavigateToTaskManagerCommand { get; }
         public ICommand NavigateToTaskManagerSecurityCommand { get; }
@@ -128,6 +129,7 @@ namespace MauiAppLogin.ViewModels
             LogoutCommand = new AsyncRelayCommand(Logout);
             NavigateToChangeLocationCommand = new AsyncRelayCommand(NavigateToChangeLocation);
             NavigateToPickingCommand = new AsyncRelayCommand(NavigateToPicking);
+            NavigateToValidarEmbarqueCommand = new AsyncRelayCommand(NavigateToValidarEmbarque);
             NavigateToReceptionCommand = new AsyncRelayCommand(NavigateToReception);
             NavigateToTaskManagerCommand = new AsyncRelayCommand<string?>(NavigateToTaskManager);
             NavigateToTaskManagerSecurityCommand = new AsyncRelayCommand<string?>(NavigateToTaskManagerSecurity);
@@ -241,6 +243,11 @@ namespace MauiAppLogin.ViewModels
         private async Task NavigateToPicking()
         {
             await Shell.Current.GoToAsync("PickingPage");
+        }
+
+        private async Task NavigateToValidarEmbarque()
+        {
+            await Shell.Current.GoToAsync(nameof(ValidarEmbarquePage));
         }
 
         private async Task NavigateToReception()

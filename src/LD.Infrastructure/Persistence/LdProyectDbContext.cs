@@ -65,6 +65,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<AsnDetail> AsnDetails { get; set; }
         public DbSet<AsnReceiptDetail> AsnReceiptDetails { get; set; }
         public DbSet<Kitting> Kittings { get; set; }
+        public DbSet<KittingValidationPhoto> KittingValidationPhotos { get; set; }
         public DbSet<KittingDetail> KittingDetails { get; set; }
         public DbSet<KittingIssueDetail> KittingIssueDetails { get; set; }
         public DbSet<ScanConfiguration> ScanConfigurations { get; set; }
@@ -333,6 +334,32 @@ namespace LD.Infrastructure.Persistence
                 .WithMany()
                 .HasForeignKey(k => k.ProjectId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo1Path)
+                .HasMaxLength(500);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo2Path)
+                .HasMaxLength(500);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo3Path)
+                .HasMaxLength(500);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo4Path)
+                .HasMaxLength(500);
+
+            builder.Entity<KittingValidationPhoto>(entity =>
+            {
+                entity.ToTable("KittingValidationPhotos");
+                entity.Property(x => x.RelativePath).HasMaxLength(500);
+                entity.HasOne(x => x.Kitting)
+                    .WithMany(x => x.ValidationPhotos)
+                    .HasForeignKey(x => x.KittingId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             builder.Entity<KittingDetail>()
                 .HasOne(d => d.Kitting)

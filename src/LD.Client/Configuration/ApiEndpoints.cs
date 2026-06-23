@@ -399,6 +399,10 @@ namespace LD.Forms.Configuration
         public string Kitting_Cancel => $"{_baseApi}/kitting/{{kittingId}}/cancel";
         public string Kitting_Locate => $"{_baseApi}/kitting/{{kittingId}}/locate";
         public string Kitting_SendToSupply => $"{_baseApi}/kitting/{{kittingId}}/send-to-supply";
+        public string Kitting_UploadImage => $"{_baseApi}/kitting/{{kittingId}}/upload-image";
+        public string Kitting_GetImage => $"{_baseApi}/kitting/image?path={{path}}";
+        public string Kitting_ValidationPhotos => $"{_baseApi}/kitting/{{kittingId}}/validation-photos";
+        public string Kitting_ValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}";
 
         public string KittingDetail_GetAll => $"{_baseApi}/kittingDetail";
         public string KittingDetail_GetById => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";

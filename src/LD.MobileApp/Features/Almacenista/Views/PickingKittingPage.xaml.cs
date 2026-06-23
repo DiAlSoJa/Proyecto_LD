@@ -189,7 +189,7 @@ public partial class PickingKittingPage : ContentPage, IQueryAttributable
 
         var parameters = new Dictionary<string, object>
         {
-            { "StandardId", selected.StandardId },
+            { "ExpectedStandardId", selected.StandardId },
             { "TextInformation", selected.InstructionText },
             { "KittingReceiptDetailId", selected.KittingReceiptDetailId },
             { "KittingId", _kittingId }

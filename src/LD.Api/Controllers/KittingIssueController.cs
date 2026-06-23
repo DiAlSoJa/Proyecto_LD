@@ -46,6 +46,20 @@ public class KittingIssueController : CommonController
             : normalized[..maxLength];
     }
 
+    private static string? ResolveIssueSd(string? requestedSd, string? detailSd, string? existingSd = null)
+    {
+        var candidate = !string.IsNullOrWhiteSpace(requestedSd)
+            ? requestedSd
+            : !string.IsNullOrWhiteSpace(existingSd)
+                ? existingSd
+                : detailSd;
+
+        if (string.IsNullOrWhiteSpace(candidate))
+            return null;
+
+        return Truncate(candidate, 50);
+    }
+
     public KittingIssueController(LdProyectDbContext context, IMapper mapper)
     {
         _context = context;
@@ -213,6 +227,7 @@ public class KittingIssueController : CommonController
                 entity.Status = NormalizeStatus(availableInventory.StatusId) ?? NormalizeStatus(request.Status);
                 entity.SupplyStatus = Truncate(request.SupplyStatus, 30);
                 entity.ReceivedQuantity = availableQuantity;
+                entity.SD = ResolveIssueSd(request.SD, detail.SD);
 
                 _context.KittingIssueDetails.Add(entity);
                 _context.InventoryMovements.Add(movement);
@@ -283,6 +298,12 @@ public class KittingIssueController : CommonController
             request.KittingDetailId = entity.KittingDetailId;
             request.Status = NormalizeStatus(request.Status) ?? NormalizeStatus(entity.Status);
 
+            var detail = await _context.KittingDetails
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.KittingDetailId == entity.KittingDetailId);
+
+            var resolvedSd = ResolveIssueSd(request.SD, detail?.SD, entity.SD);
+
             var standardId = await ResolveIssueStandardIdAsync(request, entity);
             request.StandardId = standardId?.ToString();
 
@@ -292,6 +313,7 @@ public class KittingIssueController : CommonController
                 _mapper.Map(request, entity);
                 entity.ProductId = request.ProductId > 0 ? request.ProductId : entity.ProductId;
                 entity.SupplyStatus = Truncate(request.SupplyStatus, 30);
+                entity.SD = resolvedSd;
                 var updated = await _context.SaveChangesAsync() > 0;
 
                 await UpdateCantidadSurtidaAsync(entity.KittingDetailId);

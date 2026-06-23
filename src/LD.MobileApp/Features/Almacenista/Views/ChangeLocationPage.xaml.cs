@@ -17,6 +17,19 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        _viewModel.ExpectedStandardId = string.Empty;
+        _viewModel.EstandarId = string.Empty;
+        _viewModel.AsnId = 0;
+        _viewModel.KittingReceiptDetailId = 0;
+        _viewModel.KittingId = 0;
+        _viewModel.InstructionText = string.Empty;
+        TextInformation = null;
+
+        if (query.TryGetValue("ExpectedStandardId", out var expectedStandardId))
+        {
+            _viewModel.ExpectedStandardId = expectedStandardId?.ToString() ?? string.Empty;
+        }
+
         if (query.TryGetValue("StandardId", out var standardId))
         {
             _viewModel.EstandarId = standardId?.ToString() ?? string.Empty;

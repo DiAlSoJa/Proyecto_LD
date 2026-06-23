@@ -3,7 +3,9 @@ using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Common.Results;
+using LD.Application.Common.Interfaces.Storage;
 using LD.Contracts.Constants;
+using LD.Contracts.DTOs.Kitting;
 using LD.Contracts.Kitting;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
@@ -18,13 +20,16 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class KittingController : CommonController
 {
+    private const string KittingsSubfolder = "kittings";
     private readonly LdProyectDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IFileStorageService _fileStorage;
 
-    public KittingController(LdProyectDbContext context, IMapper mapper)
+    public KittingController(LdProyectDbContext context, IMapper mapper, IFileStorageService fileStorage)
     {
         _context = context;
         _mapper = mapper;
+        _fileStorage = fileStorage;
     }
 
     [HttpGet]
@@ -225,6 +230,195 @@ public class KittingController : CommonController
         return ResultExtensions.ToActionResult(await ChangeKittingStatusAsync(kittingId, "Surtiendo", "Kitting enviado a surtir correctamente."));
     }
 
+    [HttpPost("{kittingId}/upload-image")]
+    [Consumes("multipart/form-data")]
+    [Permission(PermissionKeys.Shipment_View)]
+    public async Task<IActionResult> UploadImage(int kittingId, IFormFile file, [FromForm] int photoNumber)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest("Archivo invalido.");
+
+        var kitting = await _context.Kittings.FirstOrDefaultAsync(x => x.KittingId == kittingId);
+        if (kitting is null)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<KittingImageUploadDto?>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404));
+        }
+
+        var normalizedPhotoNumber = photoNumber is >= 1 and <= 4 ? photoNumber : 1;
+
+        await using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+
+        var relativePath = await _fileStorage.SaveJpegAsync(
+            ms.ToArray(),
+            KittingsSubfolder,
+            $"kitting_{kittingId}_photo{normalizedPhotoNumber}");
+
+        if (string.IsNullOrWhiteSpace(relativePath))
+        {
+            return ResultExtensions.ToActionResult(
+                Result<KittingImageUploadDto?>.Failure("No se pudo guardar la imagen.", new List<string> { "No se pudo guardar la imagen." }));
+        }
+
+        ApplyPhotoPath(kitting, normalizedPhotoNumber, relativePath);
+        kitting.LastModifiedAt = DateTime.Now;
+        kitting.LastModifiedByUserId = CurrentUserId;
+        await _context.SaveChangesAsync();
+
+        var imageUrl = Url.ActionLink(nameof(GetImage), values: new { path = relativePath }) ?? string.Empty;
+
+        return ResultExtensions.ToActionResult(
+            Result<KittingImageUploadDto?>.Success(new KittingImageUploadDto
+            {
+                RelativePath = relativePath,
+                ImageUrl = imageUrl,
+                PhotoNumber = normalizedPhotoNumber
+            }, "Imagen cargada correctamente"));
+    }
+
+    [HttpGet("{kittingId}/validation-photos")]
+    [Permission(PermissionKeys.Shipment_View)]
+    public async Task<IActionResult> GetValidationPhotos(int kittingId)
+    {
+        var kitting = await _context.Kittings
+            .AsNoTracking()
+            .Include(x => x.ValidationPhotos)
+            .FirstOrDefaultAsync(x => x.KittingId == kittingId);
+
+        if (kitting is null)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<List<KittingValidationPhotoDto>?>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404));
+        }
+
+        var photos = BuildValidationPhotoDtos(kitting);
+        return ResultExtensions.ToActionResult(Result<List<KittingValidationPhotoDto>?>.Success(photos, "Fotos obtenidas correctamente"));
+    }
+
+    [HttpPost("{kittingId}/validation-photos")]
+    [Consumes("multipart/form-data")]
+    [Permission(PermissionKeys.Shipment_View)]
+    public async Task<IActionResult> UploadValidationPhoto(int kittingId, IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest("Archivo invalido.");
+
+        var kitting = await _context.Kittings
+            .Include(x => x.ValidationPhotos)
+            .FirstOrDefaultAsync(x => x.KittingId == kittingId);
+
+        if (kitting is null)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<KittingValidationPhotoDto?>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404));
+        }
+
+        await using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+
+        var nextOrder = kitting.ValidationPhotos.Count == 0
+            ? 1
+            : kitting.ValidationPhotos.Max(x => x.SortOrder) + 1;
+
+        var relativePath = await _fileStorage.SaveJpegAsync(
+            ms.ToArray(),
+            KittingsSubfolder,
+            $"kitting_{kittingId}_validation_{nextOrder}");
+
+        if (string.IsNullOrWhiteSpace(relativePath))
+        {
+            return ResultExtensions.ToActionResult(
+                Result<KittingValidationPhotoDto?>.Failure("No se pudo guardar la imagen.", new List<string> { "No se pudo guardar la imagen." }));
+        }
+
+        var photo = new KittingValidationPhoto
+        {
+            KittingId = kittingId,
+            RelativePath = relativePath,
+            SortOrder = nextOrder,
+            LastModifiedAt = DateTime.Now,
+            LastModifiedByUserId = CurrentUserId
+        };
+
+        _context.KittingValidationPhotos.Add(photo);
+        kitting.LastModifiedAt = DateTime.Now;
+        kitting.LastModifiedByUserId = CurrentUserId;
+        await _context.SaveChangesAsync();
+
+        var dto = BuildValidationPhotoDto(photo);
+        return ResultExtensions.ToActionResult(
+            Result<KittingValidationPhotoDto?>.Success(dto, "Imagen cargada correctamente"));
+    }
+
+    [HttpDelete("{kittingId}/validation-photos/{photoKey}")]
+    [Permission(PermissionKeys.Shipment_View)]
+    public async Task<IActionResult> DeleteValidationPhoto(int kittingId, string photoKey)
+    {
+        var kitting = await _context.Kittings
+            .Include(x => x.ValidationPhotos)
+            .FirstOrDefaultAsync(x => x.KittingId == kittingId);
+
+        if (kitting is null)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<string>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404));
+        }
+
+        var legacy = TryResolveLegacyPhotoKey(photoKey);
+        if (legacy is not null)
+        {
+            var legacyIndex = legacy.Value;
+            var legacyPath = GetLegacyPhotoPath(kitting, legacyIndex);
+            if (string.IsNullOrWhiteSpace(legacyPath))
+            {
+                return ResultExtensions.ToActionResult(Result<string>.Success(string.Empty, "Foto eliminada correctamente"));
+            }
+
+            await _fileStorage.DeleteAsync(legacyPath);
+            ClearLegacyPhoto(kitting, legacyIndex);
+            kitting.LastModifiedAt = DateTime.Now;
+            kitting.LastModifiedByUserId = CurrentUserId;
+            await _context.SaveChangesAsync();
+
+            return ResultExtensions.ToActionResult(Result<string>.Success(string.Empty, "Foto eliminada correctamente"));
+        }
+
+        if (!int.TryParse(photoKey, out var validationPhotoId))
+        {
+            return BadRequest("Identificador de foto invalido.");
+        }
+
+        var photo = kitting.ValidationPhotos.FirstOrDefault(x => x.KittingValidationPhotoId == validationPhotoId);
+        if (photo is null)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<string>.Failure("Foto no encontrada.", new List<string> { "Foto no encontrada." }, 404));
+        }
+
+        await _fileStorage.DeleteAsync(photo.RelativePath);
+        _context.KittingValidationPhotos.Remove(photo);
+        kitting.LastModifiedAt = DateTime.Now;
+        kitting.LastModifiedByUserId = CurrentUserId;
+        await _context.SaveChangesAsync();
+
+        return ResultExtensions.ToActionResult(Result<string>.Success(string.Empty, "Foto eliminada correctamente"));
+    }
+
+    [AllowAnonymous]
+    [HttpGet("image")]
+    public async Task<IActionResult> GetImage([FromQuery] string path)
+    {
+        if (!TryNormalizeBlobPath(path, out var normalizedPath))
+            return NotFound();
+
+        var stream = await _fileStorage.OpenReadAsync(normalizedPath);
+        if (stream is null)
+            return NotFound();
+
+        return File(stream, GetContentType(normalizedPath));
+    }
+
     private async Task<Result<string>> ChangeKittingStatusAsync(
         int kittingId,
         string targetStatus,
@@ -351,6 +545,145 @@ public class KittingController : CommonController
         {
             return Result<string>.Failure("Hubo un error al actualizar el Kitting.", new List<string> { ex.Message });
         }
+    }
+
+    private static void ApplyPhotoPath(Kitting kitting, int photoNumber, string relativePath)
+    {
+        switch (photoNumber)
+        {
+            case 1:
+                kitting.Photo1Path = relativePath;
+                break;
+            case 2:
+                kitting.Photo2Path = relativePath;
+                break;
+            case 3:
+                kitting.Photo3Path = relativePath;
+                break;
+            case 4:
+                kitting.Photo4Path = relativePath;
+                break;
+        }
+    }
+
+    private List<KittingValidationPhotoDto> BuildValidationPhotoDtos(Kitting kitting)
+    {
+        var photos = new List<KittingValidationPhotoDto>();
+
+        AddLegacyPhoto(photos, 1, kitting.Photo1Path);
+        AddLegacyPhoto(photos, 2, kitting.Photo2Path);
+        AddLegacyPhoto(photos, 3, kitting.Photo3Path);
+        AddLegacyPhoto(photos, 4, kitting.Photo4Path);
+
+        foreach (var photo in kitting.ValidationPhotos.OrderBy(x => x.SortOrder).ThenBy(x => x.KittingValidationPhotoId))
+        {
+            photos.Add(BuildValidationPhotoDto(photo));
+        }
+
+        return photos;
+    }
+
+    private void AddLegacyPhoto(List<KittingValidationPhotoDto> photos, int slot, string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return;
+
+        photos.Add(new KittingValidationPhotoDto
+        {
+            PhotoKey = $"legacy-{slot}",
+            SortOrder = slot,
+            RelativePath = relativePath,
+            ImageUrl = Url.ActionLink(nameof(GetImage), values: new { path = relativePath }) ?? string.Empty,
+            IsLegacy = true
+        });
+    }
+
+    private KittingValidationPhotoDto BuildValidationPhotoDto(KittingValidationPhoto photo)
+    {
+        var imageUrl = Url.ActionLink(nameof(GetImage), values: new { path = photo.RelativePath }) ?? string.Empty;
+        return new KittingValidationPhotoDto
+        {
+            PhotoKey = photo.KittingValidationPhotoId.ToString(),
+            KittingValidationPhotoId = photo.KittingValidationPhotoId,
+            SortOrder = photo.SortOrder,
+            RelativePath = photo.RelativePath,
+            ImageUrl = imageUrl,
+            IsLegacy = false
+        };
+    }
+
+    private static int? TryResolveLegacyPhotoKey(string photoKey)
+    {
+        if (string.IsNullOrWhiteSpace(photoKey))
+            return null;
+
+        if (!photoKey.StartsWith("legacy-", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var slotText = photoKey["legacy-".Length..];
+        if (!int.TryParse(slotText, out var slot) || slot is < 1 or > 4)
+            return null;
+
+        return slot;
+    }
+
+    private static string? GetLegacyPhotoPath(Kitting kitting, int legacyIndex)
+    {
+        return legacyIndex switch
+        {
+            1 => kitting.Photo1Path,
+            2 => kitting.Photo2Path,
+            3 => kitting.Photo3Path,
+            4 => kitting.Photo4Path,
+            _ => null
+        };
+    }
+
+    private static void ClearLegacyPhoto(Kitting kitting, int legacyIndex)
+    {
+        switch (legacyIndex)
+        {
+            case 1:
+                kitting.Photo1Path = null;
+                break;
+            case 2:
+                kitting.Photo2Path = null;
+                break;
+            case 3:
+                kitting.Photo3Path = null;
+                break;
+            case 4:
+                kitting.Photo4Path = null;
+                break;
+        }
+    }
+
+    private static bool TryNormalizeBlobPath(string path, out string normalizedPath)
+    {
+        normalizedPath = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(path) || path.Contains("..") || path.Contains('\0'))
+            return false;
+
+        var candidate = path.Replace('\\', '/').Trim('/');
+        if (!candidate.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        normalizedPath = candidate;
+        return true;
+    }
+
+    private static string GetContentType(string path)
+    {
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        return ext switch
+        {
+            ".png" => "image/png",
+            ".webp" => "image/webp",
+            ".gif" => "image/gif",
+            ".bmp" => "image/bmp",
+            _ => "image/jpeg"
+        };
     }
 
     private async Task<List<KittingDetail>> GetKittingDetailsForKittingAsync(int kittingId)

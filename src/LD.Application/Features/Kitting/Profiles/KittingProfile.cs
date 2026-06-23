@@ -34,7 +34,11 @@ namespace LD.Application.Features.Kitting.Profiles
                 .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.CodigoPostal))
                 .ForMember(dest => dest.TipoEntrega, opt => opt.MapFrom(src => src.TipoEntrega))
                 .ForMember(dest => dest.FechaProgramada, opt => opt.MapFrom(src => src.FechaProgramada))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Photo1Path, opt => opt.MapFrom(src => src.Photo1Path))
+                .ForMember(dest => dest.Photo2Path, opt => opt.MapFrom(src => src.Photo2Path))
+                .ForMember(dest => dest.Photo3Path, opt => opt.MapFrom(src => src.Photo3Path))
+                .ForMember(dest => dest.Photo4Path, opt => opt.MapFrom(src => src.Photo4Path));
 
             CreateMap<KittingRequest, KittingEntity>()
                 .ForMember(dest => dest.KittingId, opt => opt.Ignore());

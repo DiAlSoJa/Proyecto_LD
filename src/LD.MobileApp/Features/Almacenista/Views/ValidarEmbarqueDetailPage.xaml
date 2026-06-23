@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.ValidarEmbarqueDetailPage"
+             Title="Validar embarque"
+             BackgroundColor="#1F3A5F">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16,18,16,28" Spacing="14">
+
+            <Border BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeShape="RoundRectangle 26"
+                    Padding="18,16">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                    <Button WidthRequest="42"
+                            HeightRequest="42"
+                            BackgroundColor="#EEF4FF"
+                            TextColor="#2F5DA8"
+                            CornerRadius="14"
+                            Padding="0"
+                            FontSize="22"
+                            Text="&lt;"
+                            Clicked="OnCloseClicked" />
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                        <Label Text="Validar etiquetas"
+                               FontAttributes="Bold"
+                               FontSize="24"
+                               TextColor="#0F172A" />
+                        <Label Text="{Binding KittingSummary}"
+                               FontSize="13"
+                               TextColor="#64748B"
+                               LineBreakMode="TailTruncation" />
+                    </VerticalStackLayout>
+
+                    <Button Grid.Column="2"
+                            WidthRequest="42"
+                            HeightRequest="42"
+                            BackgroundColor="#F8FAFC"
+                            TextColor="#475569"
+                            BorderColor="#E2E8F0"
+                            CornerRadius="14"
+                            Padding="0"
+                            FontSize="18"
+                            Text="#" />
+                </Grid>
+            </Border>
+
+            <Border BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="14">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Escanear etiqueta"
+                           FontAttributes="Bold"
+                           FontSize="17"
+                           TextColor="#0F172A" />
+
+                    <Border BackgroundColor="#F8FAFC"
+                            Stroke="#CBD5E1"
+                            StrokeShape="RoundRectangle 18"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border WidthRequest="42"
+                                    HeightRequest="42"
+                                    BackgroundColor="#EEF4FF"
+                                    Stroke="#BFDBFE"
+                                    StrokeShape="RoundRectangle 14"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnScanIconTapped" />
+                                </Border.GestureRecognizers>
+                                <Label Text="⌘"
+                                       FontSize="20"
+                                       TextColor="#2F5DA8"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+
+                            <Entry x:Name="EscaneoEntry"
+                                   Grid.Column="1"
+                                   Placeholder="Escanea o ingresa el StandardId"
+                                   Completed="OnEscaneoCompleted"
+                                   BackgroundColor="Transparent"
+                                   TextColor="#0F172A"
+                                   PlaceholderColor="#94A3B8"
+                                   ClearButtonVisibility="WhileEditing" />
+                        </Grid>
+                    </Border>
+
+                    <Border BackgroundColor="{Binding StatusBoxBackground}"
+                            Stroke="{Binding StatusBoxStroke}"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="12">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border WidthRequest="28"
+                                    HeightRequest="28"
+                                    BackgroundColor="#2F5DA8"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 14"
+                                    VerticalOptions="Start">
+                                <Label Text="i"
+                                       FontAttributes="Bold"
+                                       FontSize="16"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+
+                            <Label Grid.Column="1"
+                                   Text="{Binding StatusMessage}"
+                                   FontSize="13"
+                                   TextColor="{Binding StatusTextColor}"
+                                   LineBreakMode="WordWrap" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="14">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                        <Button x:Name="PendingTabButton"
+                                Text="{Binding PendingTabTitle}"
+                                Clicked="OnPendingTabClicked"
+                                BackgroundColor="#E8F0FF"
+                                TextColor="#1D4ED8"
+                                CornerRadius="14"
+                                Padding="12,10" />
+
+                        <Button x:Name="ValidatedTabButton"
+                                Grid.Column="1"
+                                Text="{Binding ValidatedTabTitle}"
+                                Clicked="OnValidatedTabClicked"
+                                BackgroundColor="#F8FAFC"
+                                TextColor="#475569"
+                                CornerRadius="14"
+                                Padding="12,10" />
+                    </Grid>
+
+                    <CollectionView x:Name="PendingCollection"
+                                    IsVisible="{Binding IsPendingVisible}"
+                                    SelectionMode="None"
+                                    ItemsLayout="VerticalList">
+                        <CollectionView.EmptyView>
+                            <Border BackgroundColor="#F0FDF4"
+                                    Stroke="#BBF7D0"
+                                    StrokeShape="RoundRectangle 18"
+                                    Padding="16">
+                                <VerticalStackLayout Spacing="6"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center">
+                                    <Label Text="✓"
+                                           FontSize="28"
+                                           TextColor="#0F9D58"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Aun no hay etiquetas pendientes"
+                                           FontAttributes="Bold"
+                                           FontSize="15"
+                                           TextColor="#166534"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Las etiquetas pendientes apareceran aqui."
+                                           FontSize="12"
+                                           TextColor="#4B5563"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="#F8FAFC"
+                                        Stroke="#D7E5FF"
+                                        StrokeShape="RoundRectangle 18"
+                                        Padding="14"
+                                        Margin="0,0,0,10">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                        <Label Text="•"
+                                               FontSize="24"
+                                               TextColor="#2F5DA8"
+                                               VerticalOptions="Center" />
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                            <Label Text="{Binding Title}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="15"
+                                                   TextColor="#0F172A"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Subtitle}"
+                                                   FontSize="13"
+                                                   TextColor="#64748B"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding InstructionText}"
+                                                   FontSize="12"
+                                                   TextColor="#475569"
+                                                   LineBreakMode="TailTruncation" />
+                                        </VerticalStackLayout>
+
+                                        <Label Grid.Column="2"
+                                               Text=">"
+                                               FontSize="24"
+                                               TextColor="#94A3B8"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <CollectionView x:Name="ValidatedCollection"
+                                    IsVisible="{Binding IsValidatedVisible}"
+                                    SelectionMode="None"
+                                    ItemsLayout="VerticalList">
+                        <CollectionView.EmptyView>
+                            <Border BackgroundColor="#F0FDF4"
+                                    Stroke="#BBF7D0"
+                                    StrokeShape="RoundRectangle 18"
+                                    Padding="16">
+                                <VerticalStackLayout Spacing="6"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center">
+                                    <Label Text="✓"
+                                           FontSize="28"
+                                           TextColor="#0F9D58"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Aun no hay etiquetas validadas"
+                                           FontAttributes="Bold"
+                                           FontSize="15"
+                                           TextColor="#166534"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Las etiquetas validadas apareceran aqui."
+                                           FontSize="12"
+                                           TextColor="#4B5563"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="#ECFDF5"
+                                        Stroke="#BBF7D0"
+                                        StrokeShape="RoundRectangle 18"
+                                        Padding="14"
+                                        Margin="0,0,0,10">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                        <Label Text="✓"
+                                               FontSize="18"
+                                               TextColor="#0F9D58"
+                                               VerticalOptions="Center" />
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                            <Label Text="{Binding Title}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="15"
+                                                   TextColor="#065F46"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Subtitle}"
+                                                   FontSize="13"
+                                                   TextColor="#047857"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding InstructionText}"
+                                                   FontSize="12"
+                                                   TextColor="#4B5563"
+                                                   LineBreakMode="TailTruncation" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="14">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*" ColumnSpacing="10">
+                        <Label Text="Fotos de validacion"
+                               FontAttributes="Bold"
+                               FontSize="17"
+                               TextColor="#0F172A" />
+                    </Grid>
+
+                    <CollectionView x:Name="ValidationPhotosCollection"
+                                    SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.EmptyView>
+                            <Border BackgroundColor="#F8FAFC"
+                                    Stroke="#D1D5DB"
+                                    StrokeShape="RoundRectangle 18"
+                                    Padding="16">
+                                <VerticalStackLayout Spacing="6"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center">
+                                    <Label Text="No hay fotos aún"
+                                           FontAttributes="Bold"
+                                           FontSize="15"
+                                           TextColor="#475569"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Toca 'Tomar foto' para agregar la primera."
+                                           FontSize="12"
+                                           TextColor="#94A3B8"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="#F8FAFC"
+                                        Stroke="#D1D5DB"
+                                        StrokeShape="RoundRectangle 18"
+                                        Padding="10">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Text="{Binding Title}"
+                                                   FontSize="12"
+                                                   TextColor="#475569" />
+                                            <Button Grid.Column="1"
+                                                    Text="Eliminar"
+                                                    Clicked="OnDeletePhotoClicked"
+                                                    CommandParameter="{Binding PhotoKey}"
+                                                    BackgroundColor="#FEF2F2"
+                                                    TextColor="#B91C1C"
+                                                    CornerRadius="12"
+                                                    Padding="10,6" />
+                                        </Grid>
+                                        <Grid HeightRequest="132">
+                                            <Image Source="{Binding ImageUrl}"
+                                                   Aspect="AspectFill" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="#EFF6FF"
+                    Stroke="#BFDBFE"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="14">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Border WidthRequest="30"
+                            HeightRequest="30"
+                            BackgroundColor="#2F5DA8"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 15"
+                            VerticalOptions="Center">
+                        <Label Text="✓"
+                               FontSize="16"
+                               TextColor="White"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+
+                    <Label Grid.Column="1"
+                           Text="Escanea cada etiqueta para validarla. Las validadas se moveran automaticamente."
+                           FontSize="13"
+                           TextColor="#334155"
+                           VerticalOptions="Center"
+                           LineBreakMode="WordWrap" />
+                </Grid>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

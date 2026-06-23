@@ -18,6 +18,8 @@
             Routing.RegisterRoute(nameof(ReceptionPage), typeof(ReceptionPage));
             Routing.RegisterRoute(nameof(PickingPage), typeof(PickingPage));
             Routing.RegisterRoute(nameof(PickingKittingPage), typeof(PickingKittingPage));
+            Routing.RegisterRoute(nameof(ValidarEmbarquePage), typeof(ValidarEmbarquePage));
+            Routing.RegisterRoute(nameof(ValidarEmbarqueDetailPage), typeof(ValidarEmbarqueDetailPage));
             Routing.RegisterRoute(nameof(TaskList), typeof(TaskList));
             Routing.RegisterRoute(nameof(NewTask), typeof(NewTask));
             Routing.RegisterRoute(nameof(TaskResolve), typeof(TaskResolve));

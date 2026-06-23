@@ -2044,7 +2044,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             issueRow.Description = detailRow.Description;
             issueRow.StandardQuantity = detailRow.StandardQuantity;
             issueRow.MaximumQuantity = detailRow.MaximumQuantity;
-            issueRow.SD ??= detailRow.SD;
+            if (string.IsNullOrWhiteSpace(issueRow.SD))
+                issueRow.SD = detailRow.SD ?? string.Empty;
             issueRow.ReceivedQuantity ??= detailRow.Quantity;
             issueRow.Status ??= detailRow.Status;
             issueRow.LotNumber ??= detailRow.LotNumber;

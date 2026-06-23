@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.ValidarEmbarquePage"
+             Title="Validar Embarque"
+             BackgroundColor="#1F3A5F">
+
+    <Grid RowDefinitions="Auto,*" Padding="16">
+
+        <Border Grid.Row="0"
+                BackgroundColor="#F6F8FC"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 24"
+                Padding="14"
+                Margin="0,10,0,12">
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Label Text="🔎"
+                       FontSize="18"
+                       VerticalOptions="Center" />
+
+                <Entry x:Name="FiltroEntry"
+                       Grid.Column="1"
+                       Placeholder="Filtrar embarques..."
+                       TextChanged="OnFiltroChanged"
+                       BackgroundColor="Transparent"
+                       TextColor="#1E293B"
+                       PlaceholderColor="#94A3B8"
+                       ClearButtonVisibility="WhileEditing" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeShape="RoundRectangle 25"
+                Padding="10">
+
+            <CollectionView x:Name="KittingCollection"
+                            SelectionMode="Single"
+                            SelectionChanged="OnKittingSelected"
+                            ItemsLayout="VerticalList">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="24"
+                                         Spacing="8"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center">
+                        <Label Text="No hay embarques en validación"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               TextColor="#64748B"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Cuando exista uno, aparecerá aquí para continuar la validación."
+                               FontSize="13"
+                               TextColor="#94A3B8"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout Spacing="0">
+                            <Border Stroke="Transparent"
+                                    BackgroundColor="White"
+                                    Padding="0">
+                                <Grid Padding="14,12"
+                                      ColumnDefinitions="Auto,*"
+                                      RowDefinitions="Auto,Auto,Auto">
+
+                                    <Border WidthRequest="34"
+                                            HeightRequest="34"
+                                            BackgroundColor="#EEF2FF"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 12"
+                                            VerticalOptions="Center">
+                                        <Label Text="📦"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Title}"
+                                           FontAttributes="Bold"
+                                           FontSize="18"
+                                           TextColor="#1E293B"
+                                           Margin="10,0,0,0"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <Label Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding Subtitle}"
+                                           FontSize="14"
+                                           TextColor="#64748B"
+                                           Margin="10,2,0,0"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <Label Grid.Row="2"
+                                           Grid.Column="1"
+                                           Text="{Binding Status, StringFormat='Estatus: {0}'}"
+                                           FontSize="12"
+                                           TextColor="#0F766E"
+                                           Margin="10,4,0,0"
+                                           LineBreakMode="TailTruncation" />
+                                </Grid>
+                            </Border>
+
+                            <BoxView HeightRequest="1"
+                                     BackgroundColor="#EEF2F7" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+    </Grid>
+</ContentPage>

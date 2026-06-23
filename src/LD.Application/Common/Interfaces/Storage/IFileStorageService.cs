@@ -19,4 +19,9 @@ public interface IFileStorageService
     /// Devuelve null si el archivo no existe.
     /// </summary>
     Task<Stream?> OpenReadAsync(string path);
+
+    /// <summary>
+    /// Elimina el archivo indicado si existe.
+    /// </summary>
+    Task<bool> DeleteAsync(string path);
 }

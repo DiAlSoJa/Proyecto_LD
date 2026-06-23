@@ -93,6 +93,20 @@ public class AzureBlobFileStorageService : IFileStorageService
         return new MemoryStream(download.Value.Content.ToArray(), writable: false);
     }
 
+    public async Task<bool> DeleteAsync(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        var blobName = NormalizeBlobName(path);
+        if (string.IsNullOrWhiteSpace(blobName))
+            return false;
+
+        await EnsureContainerAsync();
+        var blobClient = _containerClient.GetBlobClient(blobName);
+        return await blobClient.DeleteIfExistsAsync();
+    }
+
     private async Task EnsureContainerAsync()
     {
         await _containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
