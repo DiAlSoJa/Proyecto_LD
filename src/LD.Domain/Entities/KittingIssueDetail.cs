@@ -13,6 +13,8 @@ namespace LD.Domain.Entities
         [Required]
         public int KittingDetailId { get; set; }
 
+        public int? DeliveryOrderId { get; set; }
+
         public int? ProductId { get; set; }
 
         public bool DeleteRow { get; set; }
@@ -64,6 +66,7 @@ namespace LD.Domain.Entities
         public string? StatusLine { get; set; }
 
         public KittingDetail? KittingDetail { get; set; }
+        public DeliveryOrder? DeliveryOrder { get; set; }
         public Product? Product { get; set; }
         public Location? Location { get; set; }
         public StandardLabel? StandardLabel { get; set; }

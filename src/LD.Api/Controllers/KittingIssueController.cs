@@ -75,6 +75,7 @@ public class KittingIssueController : CommonController
             .Include(x => x.Product)
             .Include(x => x.Location)
             .Include(x => x.StandardLabel)
+            .Include(x => x.DeliveryOrder)
             .OrderByDescending(x => x.KittingReceiptDetailId)
             .ToListAsync();
 
@@ -119,6 +120,7 @@ public class KittingIssueController : CommonController
             .Include(x => x.Product)
             .Include(x => x.Location)
             .Include(x => x.StandardLabel)
+            .Include(x => x.DeliveryOrder)
             .Where(x => x.KittingDetailId == kittingDetailId)
             .OrderByDescending(x => x.KittingReceiptDetailId)
             .ToListAsync();
@@ -228,6 +230,7 @@ public class KittingIssueController : CommonController
                 entity.SupplyStatus = Truncate(request.SupplyStatus, 30);
                 entity.ReceivedQuantity = availableQuantity;
                 entity.SD = ResolveIssueSd(request.SD, detail.SD);
+                entity.DeliveryOrderId = await ResolveDeliveryOrderIdForKittingAsync(detail.KittingId);
 
                 _context.KittingIssueDetails.Add(entity);
                 _context.InventoryMovements.Add(movement);
@@ -811,6 +814,18 @@ public class KittingIssueController : CommonController
         return await _context.KittingIssueDetails.AsNoTracking().AnyAsync(x =>
             x.KittingDetailId == kittingDetailId &&
             x.StandardId == standardId);
+    }
+
+    private async Task<int?> ResolveDeliveryOrderIdForKittingAsync(int kittingId)
+    {
+        if (kittingId <= 0)
+            return null;
+
+        return await _context.DeliveryOrderKittings
+            .AsNoTracking()
+            .Where(x => x.KittingId == kittingId)
+            .Select(x => (int?)x.DeliveryOrderId)
+            .FirstOrDefaultAsync();
     }
 
     private InventoryMovement? BuildInventoryMovement(KittingIssueRequest request, KittingDetail detail, AvailableInventory availableInventory, int standardId)

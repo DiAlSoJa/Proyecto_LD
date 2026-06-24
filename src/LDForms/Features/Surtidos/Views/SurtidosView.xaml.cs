@@ -149,11 +149,14 @@ namespace LD.FormsX.Features.Surtidos.Views
                 "FechaProgramada");
             _gridFilter.SetColumnOrder(
                 "KittingCode",
+                "DeliveryOrderCode",
                 "Client",
                 "Project",
                 "InvoiceNumber",
                 "TransportLine",
                 "VehicleType",
+                "Cortina",
+                "Caja",
                 "DriverName",
                 "VehiclePlate",
                 "SealNumber",

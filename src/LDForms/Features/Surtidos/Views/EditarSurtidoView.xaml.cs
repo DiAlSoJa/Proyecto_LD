@@ -266,6 +266,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             txtCiudad.Text = item.Ciudad ?? string.Empty;
             txtTelefono.Text = item.Telefono ?? string.Empty;
             txtCodigoPostal.Text = item.CodigoPostal ?? string.Empty;
+            txtCortina.Text = item.Cortina ?? string.Empty;
+            txtCaja.Text = item.Caja ?? string.Empty;
             SelectDeliveryType(item.TipoEntrega);
             dpFechaProgramada.SelectedDate = item.FechaProgramada;
             UpdateFechaProgramadaVisibility();
@@ -274,6 +276,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             _selectedKitting.KittingId = item.KittingId;
             _selectedKitting.KittingCode = item.KittingCode ?? string.Empty;
             _selectedKitting.Status = item.Status ?? string.Empty;
+            _selectedKitting.Cortina = item.Cortina;
+            _selectedKitting.Caja = item.Caja;
             _kittingCodePreview = _selectedKitting.KittingCode;
 
             await LoadProductsForSelectedClientProjectAsync();
@@ -602,6 +606,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             txtCiudad.IsEnabled = canInteract;
             txtTelefono.IsEnabled = canInteract;
             txtCodigoPostal.IsEnabled = canInteract;
+            txtCortina.IsEnabled = canInteract;
+            txtCaja.IsEnabled = canInteract;
             cbTipoEntrega.IsEnabled = canInteract;
             dpFechaProgramada.IsEnabled = canInteract && IsProgramadaDeliverySelected();
 
@@ -851,6 +857,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             _selectedKitting.KittingId = response.Data.KittingId;
             _selectedKitting.KittingCode = response.Data.KittingCode ?? string.Empty;
             _selectedKitting.Status = response.Data.Status ?? string.Empty;
+            _selectedKitting.Cortina = response.Data.Cortina;
+            _selectedKitting.Caja = response.Data.Caja;
             _selectedKitting.Client = _clientName;
             _selectedKitting.Project = _projectName;
             _kittingCodePreview = _selectedKitting.KittingCode;
@@ -899,6 +907,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 Ciudad = NullIfWhiteSpace(txtCiudad.Text),
                 Telefono = NullIfWhiteSpace(txtTelefono.Text),
                 CodigoPostal = NullIfWhiteSpace(txtCodigoPostal.Text),
+                Cortina = NullIfWhiteSpace(txtCortina.Text),
+                Caja = NullIfWhiteSpace(txtCaja.Text),
                 TipoEntrega = NullIfWhiteSpace(tipoEntrega),
                 FechaProgramada = fechaProgramada,
                 Status = GetHeaderStatusForRequest(),
@@ -957,6 +967,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 Ciudad = source.Ciudad,
                 Telefono = source.Telefono,
                 CodigoPostal = source.CodigoPostal,
+                Cortina = source.Cortina,
+                Caja = source.Caja,
                 TipoEntrega = source.TipoEntrega,
                 FechaProgramada = source.FechaProgramada,
                 Status = status,

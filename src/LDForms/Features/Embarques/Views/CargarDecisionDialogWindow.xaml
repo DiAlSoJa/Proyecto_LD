@@ -1,0 +1,144 @@
+<Window x:Class="LD.FormsX.Features.Embarques.Views.CargarDecisionDialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cargar embarques"
+        Width="470"
+        SizeToContent="Height"
+        MinHeight="240"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown">
+
+    <Grid Background="Transparent">
+        <Border x:Name="MainBorder"
+                Width="410"
+                MinHeight="250"
+                Background="White"
+                CornerRadius="18"
+                Padding="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MouseLeftButtonDown="MainBorder_MouseLeftButtonDown">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20"
+                                  ShadowDepth="4"
+                                  Opacity="0.20"
+                                  Color="Black"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Button x:Name="BtnClose"
+                        Width="24"
+                        Height="24"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#888888"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Click="BtnClose_Click"
+                        Content="✕"/>
+
+                <StackPanel Grid.Row="1"
+                            Margin="0,6,0,0">
+                    <TextBlock Text="¿Desea cargar?"
+                               FontSize="26"
+                               FontWeight="SemiBold"
+                               Foreground="#111111"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock Text="Elija si desea crear una nueva carga o agregar los embarques a una carga existente."
+                               FontSize="15"
+                               Foreground="#666666"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,6"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,22,0,0">
+                    <Button x:Name="BtnNuevaCarga"
+                            Width="120"
+                            Height="42"
+                            Margin="0,0,10,0"
+                            Background="#2563EB"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            Cursor="Hand"
+                            Click="BtnNuevaCarga_Click"
+                            Content="Nueva carga">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="BtnCargaExistente"
+                            Width="140"
+                            Height="42"
+                            Margin="0,0,10,0"
+                            Background="#F59E0B"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            Cursor="Hand"
+                            Click="BtnCargaExistente_Click"
+                            Content="Carga existente">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="BtnCancelar"
+                            Width="100"
+                            Height="42"
+                            Background="#EAEAEA"
+                            Foreground="#333333"
+                            BorderThickness="0"
+                            FontSize="14"
+                            Cursor="Hand"
+                            IsCancel="True"
+                            Click="BtnCancelar_Click"
+                            Content="Cancelar">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

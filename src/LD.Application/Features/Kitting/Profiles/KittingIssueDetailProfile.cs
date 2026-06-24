@@ -32,6 +32,10 @@ public class KittingIssueDetailProfile : Profile
         CreateMap<KittingIssueDetail, KittingIssueDetailDto>()
             .ForMember(dest => dest.KittingReceiptDetailId, opt => opt.MapFrom(src => src.KittingReceiptDetailId))
             .ForMember(dest => dest.KittingDetailId, opt => opt.MapFrom(src => src.KittingDetailId))
+            .ForMember(dest => dest.DeliveryOrderId, opt => opt.MapFrom(src => src.DeliveryOrderId))
+            .ForMember(dest => dest.DeliveryOrderCode, opt => opt.MapFrom(src => src.DeliveryOrder != null
+                ? src.DeliveryOrder.DeliveryOrderCode
+                : string.Empty))
             .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
             .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => ResolveStandardIdText(
                 src.StandardId,

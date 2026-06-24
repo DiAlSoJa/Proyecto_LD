@@ -405,6 +405,13 @@ namespace LD.Forms.Configuration
         public string Kitting_ValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}";
         public string Kitting_ReplaceValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}/replace";
 
+        // ======================
+        // DELIVERY ORDER / DO
+        // ======================
+
+        public string DeliveryOrder_CreateFromKittings => $"{_baseApi}/deliveryOrder/from-kittings";
+        public string DeliveryOrder_AddKittingsToExisting => $"{_baseApi}/deliveryOrder/add-kittings";
+
         public string KittingDetail_GetAll => $"{_baseApi}/kittingDetail";
         public string KittingDetail_GetById => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";
         public string KittingDetail_GetByKittingId => $"{_baseApi}/kittingDetail/kitting/{{kittingId}}";

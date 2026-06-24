@@ -36,10 +36,8 @@ namespace LD.Contracts.Requests
         public DateTime? FechaProgramada { get; set; }
 
         public string? Status { get; set; }
-        public string? Photo1Path { get; set; }
-        public string? Photo2Path { get; set; }
-        public string? Photo3Path { get; set; }
-        public string? Photo4Path { get; set; }
+        public string? Cortina { get; set; }
+        public string? Caja { get; set; }
         public bool AllowRestrictedUpdate { get; set; }
     }
 }

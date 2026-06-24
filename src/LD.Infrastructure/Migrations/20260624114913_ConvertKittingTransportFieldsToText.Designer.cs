@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260624114913_ConvertKittingTransportFieldsToText")]
+    partial class ConvertKittingTransportFieldsToText
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2451,9 +2454,6 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("DeletedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DeliveryOrderId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
@@ -2529,8 +2529,6 @@ namespace LD.Infrastructure.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("KittingReceiptDetailId");
-
-                    b.HasIndex("DeliveryOrderId");
 
                     b.HasIndex("KittingDetailId");
 
@@ -6788,11 +6786,6 @@ namespace LD.Infrastructure.Migrations
 
             modelBuilder.Entity("LD.Domain.Entities.KittingIssueDetail", b =>
                 {
-                    b.HasOne("LD.Domain.Entities.DeliveryOrder", "DeliveryOrder")
-                        .WithMany("KittingIssueDetails")
-                        .HasForeignKey("DeliveryOrderId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("LD.Domain.Entities.KittingDetail", "KittingDetail")
                         .WithMany("KittingIssueDetails")
                         .HasForeignKey("KittingDetailId")
@@ -6813,8 +6806,6 @@ namespace LD.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("StandardId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("DeliveryOrder");
 
                     b.Navigation("KittingDetail");
 
@@ -7210,8 +7201,6 @@ namespace LD.Infrastructure.Migrations
             modelBuilder.Entity("LD.Domain.Entities.DeliveryOrder", b =>
                 {
                     b.Navigation("DeliveryOrderKittings");
-
-                    b.Navigation("KittingIssueDetails");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Kitting", b =>

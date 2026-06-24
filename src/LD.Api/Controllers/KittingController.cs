@@ -45,6 +45,7 @@ public class KittingController : CommonController
             .ToListAsync();
 
         var dto = _mapper.Map<List<KittingDto>>(entities);
+        await ApplyDeliveryOrderCodesAsync(dto);
         return ResultExtensions.ToActionResult(Result<List<KittingDto>?>.Success(dto, "Kittings obtenidos correctamente"));
     }
 
@@ -80,6 +81,7 @@ public class KittingController : CommonController
             .ToListAsync();
 
         var dto = _mapper.Map<List<KittingDto>>(entities);
+        await ApplyDeliveryOrderCodesAsync(dto);
         return ResultExtensions.ToActionResult(Result<List<KittingDto>>.Success(dto, "Kittings obtenidos correctamente"));
     }
 
@@ -876,8 +878,51 @@ public class KittingController : CommonController
         kitting.CodigoPostal = NormalizeStatus(request.CodigoPostal);
         kitting.TipoEntrega = NormalizeStatus(request.TipoEntrega);
         kitting.FechaProgramada = request.FechaProgramada;
+        kitting.Cortina = NormalizeText(request.Cortina);
+        kitting.Caja = NormalizeText(request.Caja);
     }
 
     private static string? NormalizeStatus(string? status) =>
         KittingStatusNames.Normalize(status);
+
+    private static string? NormalizeText(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private async Task ApplyDeliveryOrderCodesAsync(List<KittingDto> kittings)
+    {
+        if (kittings.Count == 0)
+            return;
+
+        var kittingIds = kittings
+            .Select(x => x.KittingId)
+            .Distinct()
+            .ToList();
+
+        var relations = await _context.DeliveryOrderKittings
+            .AsNoTracking()
+            .Where(x => kittingIds.Contains(x.KittingId))
+            .Select(x => new
+            {
+                x.KittingId,
+                DeliveryOrderCode = x.DeliveryOrder != null
+                    ? x.DeliveryOrder.DeliveryOrderCode ?? x.DeliveryOrder.PreDeliveryOrderCode
+                    : null
+            })
+            .ToListAsync();
+
+        if (relations.Count == 0)
+            return;
+
+        var codeByKittingId = relations
+            .GroupBy(x => x.KittingId)
+            .ToDictionary(group => group.Key, group => group.First().DeliveryOrderCode);
+
+        foreach (var kitting in kittings)
+        {
+            if (codeByKittingId.TryGetValue(kitting.KittingId, out var deliveryOrderCode))
+            {
+                kitting.DeliveryOrderCode = deliveryOrderCode;
+            }
+        }
+    }
 }

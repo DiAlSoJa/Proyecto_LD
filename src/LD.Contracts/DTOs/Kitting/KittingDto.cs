@@ -80,9 +80,13 @@ namespace LD.Contracts.Kitting
         [DisplayName("Status")]
         public string Status { get; set; } = string.Empty;
 
-        public string? Photo1Path { get; set; }
-        public string? Photo2Path { get; set; }
-        public string? Photo3Path { get; set; }
-        public string? Photo4Path { get; set; }
+        [DisplayName("Orden de entrega")]
+        public string? DeliveryOrderCode { get; set; }
+
+        [DisplayName("Cortina")]
+        public string? Cortina { get; set; }
+
+        [DisplayName("Caja")]
+        public string? Caja { get; set; }
     }
 }

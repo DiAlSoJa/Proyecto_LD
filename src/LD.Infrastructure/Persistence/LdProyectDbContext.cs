@@ -65,6 +65,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<AsnDetail> AsnDetails { get; set; }
         public DbSet<AsnReceiptDetail> AsnReceiptDetails { get; set; }
         public DbSet<Kitting> Kittings { get; set; }
+        public DbSet<DeliveryOrder> DeliveryOrders { get; set; }
+        public DbSet<DeliveryOrderKitting> DeliveryOrderKittings { get; set; }
         public DbSet<KittingValidationPhoto> KittingValidationPhotos { get; set; }
         public DbSet<KittingDetail> KittingDetails { get; set; }
         public DbSet<KittingIssueDetail> KittingIssueDetails { get; set; }
@@ -335,6 +337,35 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(k => k.ProjectId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<DeliveryOrder>(entity =>
+            {
+                entity.ToTable("DeliveryOrders");
+                entity.HasOne(x => x.Client)
+                    .WithMany()
+                    .HasForeignKey(x => x.ClientId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.Project)
+                    .WithMany()
+                    .HasForeignKey(x => x.ProjectId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(x => x.DeliveryOrderKittings)
+                    .WithOne(x => x.DeliveryOrder)
+                    .HasForeignKey(x => x.DeliveryOrderId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<DeliveryOrderKitting>(entity =>
+            {
+                entity.ToTable("DeliveryOrderKittings");
+                entity.HasIndex(x => x.KittingId).IsUnique();
+                entity.HasOne(x => x.Kitting)
+                    .WithMany()
+                    .HasForeignKey(x => x.KittingId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
             builder.Entity<Kitting>()
                 .Property(x => x.Photo1Path)
                 .HasMaxLength(500);
@@ -350,6 +381,14 @@ namespace LD.Infrastructure.Persistence
             builder.Entity<Kitting>()
                 .Property(x => x.Photo4Path)
                 .HasMaxLength(500);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Cortina)
+                .HasMaxLength(100);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Caja)
+                .HasMaxLength(100);
 
             builder.Entity<KittingValidationPhoto>(entity =>
             {
@@ -377,6 +416,12 @@ namespace LD.Infrastructure.Persistence
                 .HasOne(r => r.Product)
                 .WithMany()
                 .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<KittingIssueDetail>()
+                .HasOne(r => r.DeliveryOrder)
+                .WithMany(d => d.KittingIssueDetails)
+                .HasForeignKey(r => r.DeliveryOrderId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<KittingIssueDetail>()

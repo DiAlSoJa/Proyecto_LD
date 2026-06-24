@@ -78,6 +78,12 @@ namespace LD.Domain.Entities
         [MaxLength(30)]
         public string? Status { get; set; }
 
+        [MaxLength(100)]
+        public string? Cortina { get; set; }
+
+        [MaxLength(100)]
+        public string? Caja { get; set; }
+
         [MaxLength(500)]
         public string? Photo1Path { get; set; }
 

@@ -361,6 +361,7 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Linea transporte:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
@@ -411,6 +412,31 @@
 
                                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Sello:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
                                         <TextBox x:Name="txtSelloTransporte" Grid.Row="4" Grid.Column="1" Style="{StaticResource InputTextBoxStyle}" TextChanged="HeaderTextBox_TextChanged"/>
+
+                                        <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="16"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="Cortina:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                            <TextBox x:Name="txtCortina"
+                                                     Grid.Column="1"
+                                                     Style="{StaticResource InputTextBoxStyle}"
+                                                     TextChanged="HeaderTextBox_TextChanged"/>
+
+                                            <TextBlock Grid.Column="3"
+                                                       Text="Caja:"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       Margin="0,8,8,0"/>
+                                            <TextBox x:Name="txtCaja"
+                                                     Grid.Column="4"
+                                                     Style="{StaticResource InputTextBoxStyle}"
+                                                     TextChanged="HeaderTextBox_TextChanged"/>
+                                        </Grid>
                                     </Grid>
                                 </GroupBox>
 
