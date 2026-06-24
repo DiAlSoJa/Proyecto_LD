@@ -351,6 +351,93 @@ public class KittingController : CommonController
             Result<KittingValidationPhotoDto?>.Success(dto, "Imagen cargada correctamente"));
     }
 
+    [HttpPost("{kittingId}/validation-photos/{photoKey}/replace")]
+    [Consumes("multipart/form-data")]
+    [Permission(PermissionKeys.Shipment_View)]
+    public async Task<IActionResult> ReplaceValidationPhoto(int kittingId, string photoKey, IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest("Archivo invalido.");
+
+        var kitting = await _context.Kittings
+            .Include(x => x.ValidationPhotos)
+            .FirstOrDefaultAsync(x => x.KittingId == kittingId);
+
+        if (kitting is null)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<KittingValidationPhotoDto?>.Failure("Kitting no encontrado.", new List<string> { "No existe el Kitting." }, 404));
+        }
+
+        await using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+
+        var legacy = TryResolveLegacyPhotoKey(photoKey);
+        if (legacy is not null)
+        {
+            var legacyIndex = legacy.Value;
+            var oldPath = GetLegacyPhotoPath(kitting, legacyIndex);
+            if (string.IsNullOrWhiteSpace(oldPath))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<KittingValidationPhotoDto?>.Failure("Foto no encontrada.", new List<string> { "Foto no encontrada." }, 404));
+            }
+
+            var relativePath = await _fileStorage.SaveJpegAsync(
+                ms.ToArray(),
+                KittingsSubfolder,
+                $"kitting_{kittingId}_validation_legacy_{legacyIndex}");
+
+            if (string.IsNullOrWhiteSpace(relativePath))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<KittingValidationPhotoDto?>.Failure("No se pudo guardar la imagen.", new List<string> { "No se pudo guardar la imagen." }));
+            }
+
+            ApplyPhotoPath(kitting, legacyIndex, relativePath);
+            kitting.LastModifiedAt = DateTime.Now;
+            kitting.LastModifiedByUserId = CurrentUserId;
+            await _context.SaveChangesAsync();
+            await _fileStorage.DeleteAsync(oldPath);
+
+            return ResultExtensions.ToActionResult(
+                Result<KittingValidationPhotoDto?>.Success(BuildLegacyPhotoDto(legacyIndex, relativePath), "Imagen reemplazada correctamente"));
+        }
+
+        if (!int.TryParse(photoKey, out var validationPhotoId))
+            return BadRequest("Identificador de foto invalido.");
+
+        var photo = kitting.ValidationPhotos.FirstOrDefault(x => x.KittingValidationPhotoId == validationPhotoId);
+        if (photo is null)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<KittingValidationPhotoDto?>.Failure("Foto no encontrada.", new List<string> { "Foto no encontrada." }, 404));
+        }
+
+        var previousPath = photo.RelativePath;
+        var newRelativePath = await _fileStorage.SaveJpegAsync(
+            ms.ToArray(),
+            KittingsSubfolder,
+            $"kitting_{kittingId}_validation_{photo.SortOrder}");
+
+        if (string.IsNullOrWhiteSpace(newRelativePath))
+        {
+            return ResultExtensions.ToActionResult(
+                Result<KittingValidationPhotoDto?>.Failure("No se pudo guardar la imagen.", new List<string> { "No se pudo guardar la imagen." }));
+        }
+
+        photo.RelativePath = newRelativePath;
+        photo.LastModifiedAt = DateTime.Now;
+        photo.LastModifiedByUserId = CurrentUserId;
+        kitting.LastModifiedAt = DateTime.Now;
+        kitting.LastModifiedByUserId = CurrentUserId;
+        await _context.SaveChangesAsync();
+        await _fileStorage.DeleteAsync(previousPath);
+
+        return ResultExtensions.ToActionResult(
+            Result<KittingValidationPhotoDto?>.Success(BuildValidationPhotoDto(photo), "Imagen reemplazada correctamente"));
+    }
+
     [HttpDelete("{kittingId}/validation-photos/{photoKey}")]
     [Permission(PermissionKeys.Shipment_View)]
     public async Task<IActionResult> DeleteValidationPhoto(int kittingId, string photoKey)
@@ -588,14 +675,19 @@ public class KittingController : CommonController
         if (string.IsNullOrWhiteSpace(relativePath))
             return;
 
-        photos.Add(new KittingValidationPhotoDto
+        photos.Add(BuildLegacyPhotoDto(slot, relativePath));
+    }
+
+    private KittingValidationPhotoDto BuildLegacyPhotoDto(int slot, string relativePath)
+    {
+        return new KittingValidationPhotoDto
         {
             PhotoKey = $"legacy-{slot}",
             SortOrder = slot,
             RelativePath = relativePath,
             ImageUrl = Url.ActionLink(nameof(GetImage), values: new { path = relativePath }) ?? string.Empty,
             IsLegacy = true
-        });
+        };
     }
 
     private KittingValidationPhotoDto BuildValidationPhotoDto(KittingValidationPhoto photo)

@@ -403,6 +403,7 @@ namespace LD.Forms.Configuration
         public string Kitting_GetImage => $"{_baseApi}/kitting/image?path={{path}}";
         public string Kitting_ValidationPhotos => $"{_baseApi}/kitting/{{kittingId}}/validation-photos";
         public string Kitting_ValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}";
+        public string Kitting_ReplaceValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}/replace";
 
         public string KittingDetail_GetAll => $"{_baseApi}/kittingDetail";
         public string KittingDetail_GetById => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";

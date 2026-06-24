@@ -97,6 +97,22 @@ public class KittingService
             content);
     }
 
+    public async Task<ApiResponseDto<KittingValidationPhotoDto>> ReplaceValidationImage(int kittingId, string photoKey, string filePath)
+    {
+        using var content = new MultipartFormDataContent();
+        using var fileStream = File.OpenRead(filePath);
+        using var fileContent = new StreamContent(fileStream);
+
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+        content.Add(fileContent, "file", Path.GetFileName(filePath));
+
+        return await _api.PostMultipartAsync<ApiResponseDto<KittingValidationPhotoDto>>(
+            _apiEndpoints.Kitting_ReplaceValidationPhotoByKey
+                .Replace("{kittingId}", kittingId.ToString())
+                .Replace("{photoKey}", Uri.EscapeDataString(photoKey)),
+            content);
+    }
+
     public async Task<ApiResponseDto<string>> DeleteValidationImage(int kittingId, string photoKey)
     {
         return await _api.DeleteAsync<ApiResponseDto<string>>(

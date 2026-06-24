@@ -12,29 +12,17 @@
                     Stroke="#E2E8F0"
                     StrokeShape="RoundRectangle 26"
                     Padding="18,16">
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                    <Button WidthRequest="42"
-                            HeightRequest="42"
-                            BackgroundColor="#EEF4FF"
-                            TextColor="#2F5DA8"
-                            CornerRadius="14"
-                            Padding="0"
-                            FontSize="22"
-                            Text="&lt;"
-                            Clicked="OnCloseClicked" />
-
-                    <VerticalStackLayout Grid.Column="1" Spacing="4">
-                        <Label Text="Validar etiquetas"
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <VerticalStackLayout Spacing="4"
+                                         VerticalOptions="Center">
+                        <Label Text="{Binding HeaderTitle}"
                                FontAttributes="Bold"
                                FontSize="24"
-                               TextColor="#0F172A" />
-                        <Label Text="{Binding KittingSummary}"
-                               FontSize="13"
-                               TextColor="#64748B"
+                               TextColor="#0F172A"
                                LineBreakMode="TailTruncation" />
                     </VerticalStackLayout>
 
-                    <Button Grid.Column="2"
+                    <Button Grid.Column="1"
                             WidthRequest="42"
                             HeightRequest="42"
                             BackgroundColor="#F8FAFC"
@@ -324,11 +312,11 @@
                                                    FontSize="12"
                                                    TextColor="#475569" />
                                             <Button Grid.Column="1"
-                                                    Text="Eliminar"
-                                                    Clicked="OnDeletePhotoClicked"
+                                                    Text="Reemplazar foto"
+                                                    Clicked="OnReplacePhotoClicked"
                                                     CommandParameter="{Binding PhotoKey}"
-                                                    BackgroundColor="#FEF2F2"
-                                                    TextColor="#B91C1C"
+                                                    BackgroundColor="#EEF4FF"
+                                                    TextColor="#2F5DA8"
                                                     CornerRadius="12"
                                                     Padding="10,6" />
                                         </Grid>

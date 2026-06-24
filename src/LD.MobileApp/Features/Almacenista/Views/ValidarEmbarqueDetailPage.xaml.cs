@@ -13,6 +13,11 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
     private const float ValidationPhotoMaxSize = 1920f;
     private const float ValidationPhotoQuality = 0.86f;
 
+#if ANDROID
+    private static readonly object FeedbackPlayersLock = new();
+    private static readonly List<Android.Media.MediaPlayer> FeedbackPlayers = new();
+#endif
+
     private readonly KittingService _kittingService;
     private readonly KittingDetailService _kittingDetailService;
     private readonly KittingIssueService _kittingIssueService;
@@ -77,6 +82,9 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
     public Color StatusBoxBackground => StatusIsError ? Color.FromArgb("#FEF2F2") : Color.FromArgb("#EFF6FF");
     public Color StatusBoxStroke => StatusIsError ? Color.FromArgb("#FCA5A5") : Color.FromArgb("#BFDBFE");
     public Color StatusTextColor => StatusIsError ? Color.FromArgb("#B91C1C") : Color.FromArgb("#1D4ED8");
+    public string HeaderTitle => string.IsNullOrWhiteSpace(_kittingCode)
+        ? "Validar"
+        : $"Validar {_kittingCode}";
 
     public string KittingSummary
     {
@@ -176,6 +184,8 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
             ? _kittingCode
             : kitting.KittingCode.Trim();
 
+        OnPropertyChanged(nameof(HeaderTitle));
+
         KittingSummary = $"{_kittingCode} • KittingId: {kitting.KittingId} • ClienteId: {kitting.ClientId} • ProyectoId: {kitting.ProjectId}";
     }
 
@@ -233,6 +243,13 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
 
         if (showDialog)
             await DisplayAlertAsync(dialogTitle, message, "OK");
+    }
+
+    private Task SetScanNotFoundStatusAsync(string scanValue)
+    {
+        return SetErrorStatusAsync(
+            $"No se encontró una línea de Validación con ese StandardIdStr: {scanValue}",
+            playSound: true);
     }
 
     private async Task LoadIssueListsAsync()
@@ -345,7 +362,7 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
                 return;
             }
 
-            await SetErrorStatusAsync($"No se encontró una línea de Validación con ese StandardIdStr: {scanValue}", playSound: true);
+            await SetScanNotFoundStatusAsync(scanValue);
             return;
         }
 
@@ -500,6 +517,7 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
         KittingSummary = string.IsNullOrWhiteSpace(_kittingCode)
             ? "Kit: -"
             : $"Kit: {_kittingCode}";
+        OnPropertyChanged(nameof(HeaderTitle));
     }
 
     private async void OnAddPhotoClicked(object sender, EventArgs e)
@@ -511,6 +529,43 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
         }
 
         await CaptureAndUploadPhotoAsync();
+    }
+
+    private async void OnReplacePhotoClicked(object sender, EventArgs e)
+    {
+        if (sender is not Button button || button.CommandParameter is null)
+            return;
+
+        var photoKey = button.CommandParameter.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(photoKey))
+            return;
+
+        if (!MediaPicker.Default.IsCaptureSupported)
+        {
+            await DisplayAlertAsync("Camara", "Este dispositivo no soporta captura de fotos.", "OK");
+            return;
+        }
+
+        try
+        {
+            var photoPath = await CaptureValidationPhotoPathAsync();
+            if (string.IsNullOrWhiteSpace(photoPath))
+                return;
+
+            var response = await _kittingService.ReplaceValidationImage(_kittingId, photoKey, photoPath);
+            if (!response.IsSuccess || response.Data is null)
+            {
+                await SetErrorStatusAsync(response.Message ?? "No se pudo reemplazar la foto.", playSound: true);
+                return;
+            }
+
+            await RefreshValidationPhotosAsync();
+            SetSuccessStatus("Foto reemplazada correctamente.");
+        }
+        catch (Exception ex)
+        {
+            await SetErrorStatusAsync(ex.Message, playSound: true);
+        }
     }
 
     private async void OnDeletePhotoClicked(object sender, EventArgs e)
@@ -708,33 +763,80 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
         OnPropertyChanged(nameof(ProgressPercent));
     }
 
-    private static Task PlayFeedbackSoundAsync(string assetName)
+    private static async Task PlayFeedbackSoundAsync(string assetName)
     {
+#if ANDROID
         try
         {
-#if ANDROID
-            var activity = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity;
-            var asset = activity?.Assets?.OpenFd(assetName);
-            if (asset is null)
-                return Task.CompletedTask;
-
-            var player = new Android.Media.MediaPlayer();
-            player.SetDataSource(asset.FileDescriptor, asset.StartOffset, asset.Length);
-            player.Prepare();
-            player.Completion += (_, _) =>
-            {
-                player.Release();
-                asset.Close();
-            };
-            player.Start();
-#endif
+            if (await TryPlayAndroidPackagedSoundAsync(assetName))
+                return;
         }
         catch
         {
         }
 
-        return Task.CompletedTask;
+        PlayAndroidFallbackTone();
+#else
+        await Task.CompletedTask;
+#endif
     }
+
+#if ANDROID
+    private static async Task<bool> TryPlayAndroidPackagedSoundAsync(string assetName)
+    {
+        var audioPath = Path.Combine(FileSystem.CacheDirectory, assetName);
+        if (!File.Exists(audioPath))
+        {
+            await using var input = await FileSystem.OpenAppPackageFileAsync(assetName);
+            await using var output = File.Create(audioPath);
+            await input.CopyToAsync(output);
+        }
+
+        var player = new Android.Media.MediaPlayer();
+        player.SetAudioStreamType(Android.Media.Stream.Music);
+        player.SetDataSource(audioPath);
+        player.Prepare();
+
+        lock (FeedbackPlayersLock)
+        {
+            FeedbackPlayers.Add(player);
+        }
+
+        player.Completion += (_, _) => ReleaseFeedbackPlayer(player);
+        player.Error += (_, _) =>
+        {
+            ReleaseFeedbackPlayer(player);
+            PlayAndroidFallbackTone();
+        };
+
+        player.Start();
+        return true;
+    }
+
+    private static void ReleaseFeedbackPlayer(Android.Media.MediaPlayer player)
+    {
+        lock (FeedbackPlayersLock)
+        {
+            FeedbackPlayers.Remove(player);
+        }
+
+        player.Release();
+    }
+
+    private static void PlayAndroidFallbackTone()
+    {
+        try
+        {
+            var tone = new Android.Media.ToneGenerator(Android.Media.Stream.Notification, 100);
+            tone.StartTone(Android.Media.Tone.PropNack, 250);
+
+            _ = Task.Delay(350).ContinueWith(_ => tone.Release());
+        }
+        catch
+        {
+        }
+    }
+#endif
 
     private async void OnCloseClicked(object sender, EventArgs e)
     {
