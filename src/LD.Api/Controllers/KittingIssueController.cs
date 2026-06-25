@@ -391,7 +391,12 @@ public class KittingIssueController : CommonController
                     Result<string>.Failure("No se pudo identificar el StandardId del issue.", new List<string> { "No se pudo identificar el StandardId del issue." }));
             }
 
-            if (!string.Equals(expectedStandardId.Trim(), request.StandardIdStr.Trim(), StringComparison.OrdinalIgnoreCase))
+            var scannedStandardId = request.StandardIdStr.Trim();
+            var matchesExpectedStandardId = string.Equals(expectedStandardId.Trim(), scannedStandardId, StringComparison.OrdinalIgnoreCase) ||
+                (entity.StandardId.HasValue &&
+                 string.Equals(entity.StandardId.Value.ToString(), scannedStandardId, StringComparison.OrdinalIgnoreCase));
+
+            if (!matchesExpectedStandardId)
             {
                 return ResultExtensions.ToActionResult(
                     Result<string>.Failure(
@@ -453,6 +458,92 @@ public class KittingIssueController : CommonController
         {
             return ResultExtensions.ToActionResult(
                 Result<string>.Failure("Hubo un error al validar el Kitting Issue Detail.", new List<string> { ex.Message }));
+        }
+    }
+
+    [HttpPost("{kittingIssueDetailId}/audit-confirm")]
+    [Permission(PermissionKeys.Auditing_View)]
+    public async Task<IActionResult> ConfirmAuditKittingIssue(int kittingIssueDetailId, [FromBody] KittingIssueValidateRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(CurrentUserId))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se pudo identificar el usuario actual.", new List<string> { "No se pudo identificar el usuario actual." }, 401));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.StandardIdStr))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("StandardIdStr es obligatorio.", new List<string> { "StandardIdStr es obligatorio." }));
+            }
+
+            var entity = await _context.KittingIssueDetails
+                .Include(x => x.StandardLabel)
+                .Include(x => x.KittingDetail)
+                    .ThenInclude(x => x!.Kitting)
+                .FirstOrDefaultAsync(x => x.KittingReceiptDetailId == kittingIssueDetailId);
+
+            if (entity is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No existe el Kitting Issue Detail.", new List<string> { "No existe el Kitting Issue Detail." }, 404));
+            }
+
+            if (entity.KittingDetail?.Kitting is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se encontro el Kitting relacionado.", new List<string> { "No se encontro el Kitting relacionado." }, 404));
+            }
+
+            if (IsCancelledStatus(entity.KittingDetail.Kitting.Status))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("El Kitting esta cancelado y no se puede auditar.", new List<string> { "El Kitting esta cancelado." }));
+            }
+
+            var expectedStandardId = await ResolveIssueStandardIdTextAsync(entity);
+            if (string.IsNullOrWhiteSpace(expectedStandardId))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se pudo identificar el StandardId del issue.", new List<string> { "No se pudo identificar el StandardId del issue." }));
+            }
+
+            var scannedStandardId = request.StandardIdStr.Trim();
+            var matchesExpectedStandardId = string.Equals(expectedStandardId.Trim(), scannedStandardId, StringComparison.OrdinalIgnoreCase) ||
+                (entity.StandardId.HasValue &&
+                 string.Equals(entity.StandardId.Value.ToString(), scannedStandardId, StringComparison.OrdinalIgnoreCase));
+
+            if (!matchesExpectedStandardId)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure(
+                        "El StandardId escaneado no corresponde al issue seleccionado.",
+                        new List<string> { "El StandardId escaneado no corresponde al issue seleccionado." }));
+            }
+
+            if (string.Equals(entity.SupplyStatus?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail ya estaba Confirmado."));
+            }
+
+            entity.SupplyStatus = KittingStatusNames.Confirmado;
+            entity.LastModifiedAt = DateTime.Now;
+            entity.LastModifiedByUserId = CurrentUserId;
+
+            var updated = await _context.SaveChangesAsync() > 0;
+
+            return ResultExtensions.ToActionResult(
+                updated
+                    ? Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail confirmado correctamente.")
+                    : Result<string>.Failure("No se pudo confirmar el Kitting Issue Detail.", new List<string> { "No se pudo confirmar el Kitting Issue Detail." }));
+        }
+        catch (Exception ex)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<string>.Failure("Hubo un error al confirmar el Kitting Issue Detail.", new List<string> { ex.Message }));
         }
     }
 

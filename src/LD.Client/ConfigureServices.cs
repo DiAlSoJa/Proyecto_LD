@@ -56,6 +56,7 @@ namespace LD.Client
             services.AddScoped<KittingDetailService>();
             services.AddScoped<KittingIssueService>();
             services.AddScoped<DeliveryOrderService>();
+            services.AddScoped<LoadMappingService>();
             services.AddScoped<ChecklistService>();
 
             return services;

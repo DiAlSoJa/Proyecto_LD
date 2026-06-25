@@ -52,6 +52,13 @@ public class KittingIssueService
             request);
     }
 
+    public async Task<ApiResponseDto<string>> ConfirmAuditKittingIssue(int kittingIssueDetailId, KittingIssueValidateRequest request)
+    {
+        return await _api.PostAsync<KittingIssueValidateRequest, ApiResponseDto<string>>(
+            _apiEndpoints.KittingIssue_AuditConfirm.Replace("{kittingIssueDetailId}", kittingIssueDetailId.ToString()),
+            request);
+    }
+
     public async Task<ApiResponseDto<string>> DeleteKittingIssue(int kittingIssueDetailId)
     {
         return await _api.DeleteAsync<ApiResponseDto<string>>(

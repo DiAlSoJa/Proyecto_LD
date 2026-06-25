@@ -412,6 +412,13 @@ namespace LD.Forms.Configuration
         public string DeliveryOrder_CreateFromKittings => $"{_baseApi}/deliveryOrder/from-kittings";
         public string DeliveryOrder_AddKittingsToExisting => $"{_baseApi}/deliveryOrder/add-kittings";
 
+        public string LoadMapping_GetAll => $"{_baseApi}/loadmapping";
+        public string LoadMapping_GetLoadingOrders => $"{_baseApi}/loadmapping/loading-orders";
+        public string LoadMapping_Create => $"{_baseApi}/loadmapping";
+        public string LoadMapping_GetScans => $"{_baseApi}/loadmapping/{{loadMappingId}}/scans";
+        public string LoadMapping_CreateScan => $"{_baseApi}/loadmapping/{{loadMappingId}}/scans";
+        public string LoadMapping_DeleteScan => $"{_baseApi}/loadmapping/{{loadMappingId}}/scans/{{scanId}}";
+
         public string KittingDetail_GetAll => $"{_baseApi}/kittingDetail";
         public string KittingDetail_GetById => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";
         public string KittingDetail_GetByKittingId => $"{_baseApi}/kittingDetail/kitting/{{kittingId}}";
@@ -423,6 +430,7 @@ namespace LD.Forms.Configuration
         public string KittingIssue_GetById => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
         public string KittingIssue_GetByKittingDetailId => $"{_baseApi}/kittingIssue/kittingDetail/{{kittingDetailId}}";
         public string KittingIssue_Validate => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}/validate";
+        public string KittingIssue_AuditConfirm => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}/audit-confirm";
         public string KittingIssue_Create => $"{_baseApi}/kittingIssue";
         public string KittingIssue_Update => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
         public string KittingIssue_Delete => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";

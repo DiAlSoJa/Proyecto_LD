@@ -225,6 +225,40 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 
+    const string loadMappingScanDeletePermissionKey = PermissionKeys.LoadMappingScan_Delete;
+
+    var loadMappingScanDeletePermission = db.Permissions
+        .FirstOrDefault(p => p.Key == loadMappingScanDeletePermissionKey);
+
+    if (loadMappingScanDeletePermission == null)
+    {
+        loadMappingScanDeletePermission = new Permission
+        {
+            PermissionName = "Eliminar escaneo de mapeo de carga",
+            Key = loadMappingScanDeletePermissionKey,
+            ModuleId = 18,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+
+        db.Permissions.Add(loadMappingScanDeletePermission);
+        db.SaveChanges();
+    }
+
+    var hasSuperAdminLoadMappingScanDeletePermission = db.RolePermissions.Any(rp =>
+        rp.RoleId == superAdminRoleId &&
+        rp.PermissionId == loadMappingScanDeletePermission.PermissionId);
+
+    if (!hasSuperAdminLoadMappingScanDeletePermission)
+    {
+        db.RolePermissions.Add(new RolePermission
+        {
+            RoleId = superAdminRoleId,
+            PermissionId = loadMappingScanDeletePermission.PermissionId
+        });
+        db.SaveChanges();
+    }
+
     var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
 
     var permissions = db.Permissions

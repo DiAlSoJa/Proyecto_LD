@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260625115438_AddLoadMappings")]
+    partial class AddLoadMappings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2638,99 +2641,6 @@ namespace LD.Infrastructure.Migrations
                         .HasFilter("[DeliveryOrderCode] IS NOT NULL");
 
                     b.ToTable("LoadMappings", (string)null);
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.LoadMappingScan", b =>
-                {
-                    b.Property<int>("LoadMappingScanId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoadMappingScanId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSuccess")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Kitting")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("KittingReceiptDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LoadMappingId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LotNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("PartNumber")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal?>("Quantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Result")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("ScannedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Side")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("StandardId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("LoadMappingScanId");
-
-                    b.HasIndex("KittingReceiptDetailId");
-
-                    b.HasIndex("LoadMappingId", "ScannedAt");
-
-                    b.ToTable("LoadMappingScans", (string)null);
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
@@ -6998,24 +6908,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("LD.Domain.Entities.LoadMappingScan", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.KittingIssueDetail", "KittingIssueDetail")
-                        .WithMany()
-                        .HasForeignKey("KittingReceiptDetailId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("LD.Domain.Entities.LoadMapping", "LoadMapping")
-                        .WithMany("Scans")
-                        .HasForeignKey("LoadMappingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("KittingIssueDetail");
-
-                    b.Navigation("LoadMapping");
-                });
-
             modelBuilder.Entity("LD.Domain.Entities.Location", b =>
                 {
                     b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
@@ -7404,11 +7296,6 @@ namespace LD.Infrastructure.Migrations
             modelBuilder.Entity("LD.Domain.Entities.KittingDetail", b =>
                 {
                     b.Navigation("KittingIssueDetails");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.LoadMapping", b =>
-                {
-                    b.Navigation("Scans");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.Module", b =>

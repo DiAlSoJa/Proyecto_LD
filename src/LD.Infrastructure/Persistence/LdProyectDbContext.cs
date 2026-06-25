@@ -67,6 +67,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<Kitting> Kittings { get; set; }
         public DbSet<DeliveryOrder> DeliveryOrders { get; set; }
         public DbSet<DeliveryOrderKitting> DeliveryOrderKittings { get; set; }
+        public DbSet<LoadMapping> LoadMappings { get; set; }
+        public DbSet<LoadMappingScan> LoadMappingScans { get; set; }
         public DbSet<KittingValidationPhoto> KittingValidationPhotos { get; set; }
         public DbSet<KittingDetail> KittingDetails { get; set; }
         public DbSet<KittingIssueDetail> KittingIssueDetails { get; set; }
@@ -363,6 +365,49 @@ namespace LD.Infrastructure.Persistence
                 entity.HasOne(x => x.Kitting)
                     .WithMany()
                     .HasForeignKey(x => x.KittingId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<LoadMapping>(entity =>
+            {
+                entity.ToTable("LoadMappings");
+                entity.Property(x => x.DeliveryOrderCode).HasMaxLength(30);
+                entity.HasIndex(x => new { x.ClientId, x.ProjectId, x.DeliveryOrderCode }).IsUnique();
+
+                entity.HasOne(x => x.Client)
+                    .WithMany()
+                    .HasForeignKey(x => x.ClientId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.Project)
+                    .WithMany()
+                    .HasForeignKey(x => x.ProjectId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<LoadMappingScan>(entity =>
+            {
+                entity.ToTable("LoadMappingScans");
+                entity.Property(x => x.Side).HasMaxLength(20).IsRequired();
+                entity.Property(x => x.StandardId).HasMaxLength(100);
+                entity.Property(x => x.Result).HasMaxLength(20).IsRequired();
+                entity.Property(x => x.Kitting).HasMaxLength(100);
+                entity.Property(x => x.PartNumber).HasMaxLength(100);
+                entity.Property(x => x.Description).HasMaxLength(250);
+                entity.Property(x => x.Quantity).HasColumnType("decimal(18,2)");
+                entity.Property(x => x.LotNumber).HasMaxLength(50);
+                entity.Property(x => x.Message).HasMaxLength(500);
+                entity.HasIndex(x => new { x.LoadMappingId, x.ScannedAt });
+                entity.HasIndex(x => x.KittingReceiptDetailId);
+
+                entity.HasOne(x => x.LoadMapping)
+                    .WithMany(x => x.Scans)
+                    .HasForeignKey(x => x.LoadMappingId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.KittingIssueDetail)
+                    .WithMany()
+                    .HasForeignKey(x => x.KittingReceiptDetailId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 

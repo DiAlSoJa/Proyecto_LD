@@ -8,12 +8,14 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="AuditCardTemplate">
-            <Border Margin="0,0,0,10"
-                    Padding="15,13"
-                    Background="#F8FAFC"
-                    BorderBrush="#D7DEE8"
+            <Border Margin="4,0,4,10"
+                    Padding="12,10"
+                    Background="{Binding Background}"
+                    BorderBrush="{Binding BorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="14">
+                    CornerRadius="8"
+                    Cursor="Hand"
+                    MouseLeftButtonUp="AuditCard_MouseLeftButtonUp">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="14"
                                       ShadowDepth="1"
@@ -25,18 +27,18 @@
                     <TextBlock Text="{Binding Title}"
                                FontSize="14"
                                FontWeight="SemiBold"
-                               Foreground="#0F172A"
+                               Foreground="{Binding TitleForeground}"
                                TextTrimming="CharacterEllipsis"/>
                     <TextBlock Text="{Binding Subtitle}"
                                Margin="0,6,0,0"
                                FontSize="12"
-                               Foreground="#475569"
-                               TextTrimming="CharacterEllipsis"/>
+                               Foreground="{Binding TextForeground}"
+                               TextWrapping="Wrap"/>
                     <TextBlock Text="{Binding Details}"
                                Margin="0,4,0,0"
                                FontSize="11"
-                               Foreground="#64748B"
-                               TextTrimming="CharacterEllipsis"/>
+                               Foreground="{Binding TextForeground}"
+                               TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
         </DataTemplate>
@@ -116,7 +118,7 @@
 	                Grid.Column="3"
 	                Height="38"
 	                Padding="12,0"
-	                
+	                Click="BtnNuevo_Click"
 	                Background="#F3F4F6"
 	                Foreground="#374151"
 	                BorderBrush="#D1D5DB"
@@ -239,7 +241,7 @@
 
                         <TextBlock x:Name="txtStatusAuditoria"
                                    Grid.Row="0"
-                                   Text="Sin auditorías por mostrar"
+                                   Text="Sin mapeos de carga por mostrar"
                                    FontSize="12"
                                    Foreground="#6B7280"
                                    Margin="4,0,0,8"/>
@@ -262,7 +264,7 @@
                                             BorderThickness="1"
                                             CornerRadius="4"
                                             Background="White">
-                                        <DataGrid x:Name="dgAuditoriasResumen"
+                                        <DataGrid x:Name="dgMapeoCarga"
                                                   AutoGenerateColumns="False"
                                                   SelectionMode="Single"
                                                   SelectionUnit="FullRow"
@@ -278,10 +280,11 @@
                                                   HorizontalGridLinesBrush="#E4E8EE"
                                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                  ItemsSource="{Binding AuditoriaResumenItems}"
-                                                  SelectionChanged="dgAuditorias_SelectionChanged">
+                                                  SelectionChanged="dgMapeoCarga_SelectionChanged"
+                                                  ItemsSource="{Binding MapeoCargaItems}">
 
                                             <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Id mapeo" Binding="{Binding MapeoCargaId}" Width="90"/>
                                                 <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="*"/>
                                                 <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="*"/>
                                                 <DataGridTextColumn Header="Orden de entrega" Binding="{Binding OrdenEntrega}" Width="140"/>
@@ -336,11 +339,11 @@
                                                   HorizontalGridLinesBrush="#E4E8EE"
                                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                  ItemsSource="{Binding AuditoriaResumenItems}"
-                                                  SelectionChanged="dgAuditorias_SelectionChanged">
+                                                  ItemsSource="{Binding KittingItems}">
 
                                             <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Kitting" Binding="{Binding Kitting}" Width="*"/>
+                                                <DataGridTextColumn Header="Kitting" Binding="{Binding KittingCode}" Width="*"/>
+                                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="110"/>
                                             </DataGrid.Columns>
 
                                             <DataGrid.Resources>
@@ -437,15 +440,17 @@
                                           HorizontalGridLinesBrush="#E4E8EE"
                                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                           ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                          ItemsSource="{Binding KittingIssueItems}"
                                           SelectionChanged="dgDetalleAuditoria_SelectionChanged">
 
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="No Parte" Binding="{Binding NoParte}" Width="130"/>
-                                        <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="150"/>
-                                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="95"/>
-                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="95"/>
-                                        <DataGridTextColumn Header="Lote" Binding="{Binding Lote}" Width="110"/>
-                                        <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
+                                        <DataGridTextColumn Header="Kitting" Binding="{Binding Kitting}" Width="120"/>
+                                        <DataGridTextColumn Header="StandardId" Binding="{Binding StandardIdStr}" Width="120"/>
+                                        <DataGridTextColumn Header="Numero de Parte" Binding="{Binding PartNumber}" Width="140"/>
+                                        <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="*"/>
+                                        <DataGridTextColumn Header="Cantidad" Binding="{Binding ReceivedQuantity}" Width="95"/>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding SupplyStatus}" Width="110"/>
+                                        <DataGridTextColumn Header="Lote" Binding="{Binding LotNumber}" Width="120"/>
                                     </DataGrid.Columns>
 
                                     <DataGrid.Resources>
@@ -508,160 +513,197 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="10"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0">
-                        <TextBlock Text="Vista de ubicación"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Foreground="#1F2937"/>
-                        <TextBlock Text="Lista de ubicaciones simulada"
-                                   FontSize="12"
-                                   Foreground="#6B7280"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
+                    <Border Grid.Row="0"
+                            Background="#F9FAFB"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="36"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="34"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="170"/>
+                            </Grid.ColumnDefinitions>
 
-                    <ScrollViewer Grid.Row="2"
-                                  VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled">
-                        <Grid HorizontalAlignment="Center"
-                              Width="460"
-                              MinHeight="1040"
-                              Margin="0,4,0,0">
-                            <!-- sombra del camión -->
-                            <Border Width="420"
-                                    Height="980"
-                                    CornerRadius="14"
-                                    Background="#10000000"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top"
-                                    Margin="0,14,0,0"/>
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="Escanear StandardId"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="#1F2937"/>
 
-                            <!-- caja del camión -->
-                            <Grid Width="420"
-                                  Height="980"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Top">
-                                <Border Background="#A4652D"
-                                        CornerRadius="14"
-                                        BorderBrush="#81481F"
-                                        BorderThickness="1"/>
+                            <TextBox x:Name="txtScanStandardId"
+                                     Grid.Row="2"
+                                     Grid.Column="0"
+                                     Height="34"
+                                     Padding="10,4"
+                                     FontSize="14"
+                                     VerticalContentAlignment="Center"
+                                     BorderBrush="#CBD5E1"
+                                     BorderThickness="1"
+                                     Background="White"
+                                     KeyDown="TxtScanStandardId_KeyDown"/>
 
-                                <TextBlock Text="Fondo"
-                                           Foreground="#F8FAFC"
-                                           FontSize="14"
+                            <StackPanel Grid.Row="0"
+                                        Grid.RowSpan="3"
+                                        Grid.Column="2">
+                                <TextBlock Text="Ubicar en"
+                                           FontSize="12"
                                            FontWeight="SemiBold"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Bottom"
-                                           Margin="0,0,0,18"/>
-                            </Grid>
+                                           Foreground="#1F2937"/>
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,8,0,0">
+                                    <RadioButton x:Name="rbScanIzquierda"
+                                                 Content="Izquierda"
+                                                 GroupName="ScanSide"
+                                                 Margin="0,0,12,0"
+                                                 Checked="ScanSide_Checked"/>
+                                    <RadioButton x:Name="rbScanDerecha"
+                                                 Content="Derecha"
+                                                 GroupName="ScanSide"
+                                                 Checked="ScanSide_Checked"/>
+                                </StackPanel>
+                                <TextBlock x:Name="txtSelectedScanSide"
+                                           Margin="0,8,0,0"
+                                           Text="Siguiente: Izquierda"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2563EB"/>
+                            </StackPanel>
 
-                            <!-- cabina -->
-                            <Grid Width="420"
-                                  Height="126"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Top">
-                                <Border Background="#1E293B"
-                                        Height="84"
-                                        CornerRadius="16,16,8,8"
-                                        Margin="20,0,20,0"
-                                        VerticalAlignment="Top"/>
-
-                                <Border Background="#334155"
-                                        Height="24"
-                                        CornerRadius="10"
-                                        Margin="58,8,58,0"
-                                        VerticalAlignment="Top"/>
-                                <Grid Height="24"
-                                      Margin="58,8,58,0"
-                                      VerticalAlignment="Top">
-                                    <TextBlock Text="Puerta"
-                                               Foreground="#F8FAFC"
-                                               FontSize="10"
-                                               FontWeight="SemiBold"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                                </Grid>
-
-                                <Rectangle Fill="#1E293B"
-                                           Width="18"
-                                           Height="72"
-                                           HorizontalAlignment="Left"
-                                           Margin="56,20,0,0"
-                                           RadiusX="4"
-                                           RadiusY="4"/>
-
-                                <Rectangle Fill="#1E293B"
-                                           Width="18"
-                                           Height="72"
-                                           HorizontalAlignment="Right"
-                                           Margin="0,20,56,0"
-                                           RadiusX="4"
-                                           RadiusY="4"/>
-
-                                <Border Background="#475569"
-                                        Height="22"
-                                        CornerRadius="0,0,8,8"
-                                        Margin="68,58,68,0"
-                                        VerticalAlignment="Top"
-                                        Opacity="0.96"/>
-                            </Grid>
-
-                            <!-- tarjetas -->
-                            <Grid Margin="30,112,30,0"
-                                  VerticalAlignment="Top">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="12"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Grid Grid.Column="0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="8"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Text="Izquierda"
-                                               FontSize="14"
-                                               FontWeight="SemiBold"
-                                               Foreground="#1F2937"/>
-                                    <TextBlock Grid.Row="1"
-                                               Text="10 tarjetas"
-                                               FontSize="11"
-                                               Foreground="#6B7280"/>
-
-                                    <ItemsControl Grid.Row="2"
-                                                  ItemsSource="{Binding LeftCards}"
-                                                  ItemTemplate="{StaticResource AuditCardTemplate}"/>
-                                </Grid>
-
-                                <Grid Grid.Column="2">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="8"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Text="Derecha"
-                                               FontSize="14"
-                                               FontWeight="SemiBold"
-                                               Foreground="#1F2937"/>
-                                    <TextBlock Grid.Row="1"
-                                               Text="10 tarjetas"
-                                               FontSize="11"
-                                               Foreground="#6B7280"/>
-
-                                    <ItemsControl Grid.Row="2"
-                                                  ItemsSource="{Binding RightCards}"
-                                                  ItemTemplate="{StaticResource AuditCardTemplate}"/>
-                                </Grid>
-                            </Grid>
+                            <TextBox x:Name="txtUltimoMensajeEscaneo"
+                                     Grid.Row="4"
+                                     Grid.Column="0"
+                                     Grid.ColumnSpan="3"
+                                     Height="34"
+                                     Padding="8,4"
+                                     FontSize="11"
+                                     FontWeight="SemiBold"
+                                     TextWrapping="Wrap"
+                                     VerticalContentAlignment="Center"
+                                     IsReadOnly="True"
+                                     Background="#F0FDF4"
+                                     Foreground="#166534"
+                                     BorderBrush="#22C55E"
+                                     BorderThickness="1"/>
                         </Grid>
-                    </ScrollViewer>
+                    </Border>
+
+                    <Grid Grid.Row="2"
+                          MinWidth="260"
+                          Margin="0,4,0,0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="42"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0"
+                                Background="#4778C7"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="2"
+                                CornerRadius="7"
+                                Panel.ZIndex="2">
+                            <TextBlock Text="Fondo"
+                                       Foreground="White"
+                                       FontSize="24"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border Grid.Row="1"
+                                Margin="0,-1,0,-1"
+                                Background="White"
+                                BorderBrush="#111827"
+                                BorderThickness="2"
+                                CornerRadius="24"
+                                Padding="12,16"
+                                ClipToBounds="True">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Auto">
+                                <Grid MinWidth="330">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" MinWidth="150"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*" MinWidth="150"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="Izquierda"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#1F2937"/>
+                                        <TextBlock Grid.Row="1"
+                                                   Margin="0,2,0,8"
+                                                   Text="StandardId y parte"
+                                                   FontSize="11"
+                                                   Foreground="#6B7280"/>
+
+                                        <ItemsControl Grid.Row="2"
+                                                      ItemsSource="{Binding LeftCards}"
+                                                      ItemTemplate="{StaticResource AuditCardTemplate}"/>
+                                    </Grid>
+
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="Derecha"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#1F2937"/>
+                                        <TextBlock Grid.Row="1"
+                                                   Margin="0,2,0,8"
+                                                   Text="StandardId y parte"
+                                                   FontSize="11"
+                                                   Foreground="#6B7280"/>
+
+                                        <ItemsControl Grid.Row="2"
+                                                      ItemsSource="{Binding RightCards}"
+                                                      ItemTemplate="{StaticResource AuditCardTemplate}"/>
+                                    </Grid>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+
+                        <Border Grid.Row="2"
+                                Background="#4778C7"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="2"
+                                CornerRadius="7"
+                                Panel.ZIndex="2">
+                            <TextBlock Text="Puerta"
+                               Foreground="White"
+                                       FontSize="24"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

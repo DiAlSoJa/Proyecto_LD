@@ -74,6 +74,7 @@ public static class PermissionKeys
 
     // AUDITING
     public const string Auditing_View = "auditing.read";
+    public const string LoadMappingScan_Delete = "load-mapping-scans.delete";
 
     // SHIPMENTS
     public const string Shipment_View = "shipments.read";
