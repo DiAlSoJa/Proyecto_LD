@@ -1282,9 +1282,10 @@ namespace LD.FormsX.Features.Surtidos.Views
                     _projectName,
                     _clientId,
                     _projectId)
-                {
-                    Owner = Window.GetWindow(this)
-                };
+                ;
+                WindowOwnerHelper.AttachOwnerOrCenter(
+                    dialog,
+                    WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
                 if (dialog.ShowDialog() != true)
                     return;

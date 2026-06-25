@@ -160,7 +160,7 @@ namespace LD.FormsX.Views.CheckList
         private async void BtnNuevoProveedor_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoProveedorCheckListView>();
-            dialog.Owner = this;
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(this));
 
             var result = dialog.ShowDialog();
             if (result == true)
@@ -253,3 +253,4 @@ namespace LD.FormsX.Views.CheckList
         }
     }
 }
+

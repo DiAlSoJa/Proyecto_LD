@@ -74,10 +74,9 @@ internal static class AsnStorageOrderPrinter
 
     private static void ShowPreview(FixedDocument document, string title, string jobName)
     {
-        var preview = new PrintPreviewWindow(document, title, jobName)
-        {
-            Owner = Application.Current?.MainWindow
-        };
+        var preview = new PrintPreviewWindow(document, title, jobName);
+
+        WindowOwnerHelper.AttachOwnerOrCenter(preview, Application.Current?.MainWindow);
 
         preview.ShowDialog();
     }

@@ -6,6 +6,42 @@
              mc:Ignorable="d"
              Loaded="UserControl_Loaded">
 
+    <UserControl.Resources>
+        <DataTemplate x:Key="AuditCardTemplate">
+            <Border Margin="0,0,0,10"
+                    Padding="15,13"
+                    Background="#F8FAFC"
+                    BorderBrush="#D7DEE8"
+                    BorderThickness="1"
+                    CornerRadius="14">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="14"
+                                      ShadowDepth="1"
+                                      Opacity="0.05"
+                                      Color="#111827"/>
+                </Border.Effect>
+
+                <StackPanel>
+                    <TextBlock Text="{Binding Title}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="#0F172A"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Subtitle}"
+                               Margin="0,6,0,0"
+                               FontSize="12"
+                               Foreground="#475569"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Details}"
+                               Margin="0,4,0,0"
+                               FontSize="11"
+                               Foreground="#64748B"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid Background="#F8FAFC">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -174,9 +210,9 @@
         <!-- Contenido -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.15*"/>
+                <ColumnDefinition Width="1.95*"/>
                 <ColumnDefinition Width="12"/>
-                <ColumnDefinition Width="1.1*"/>
+                <ColumnDefinition Width="1.35*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Lado izquierdo -->
@@ -203,7 +239,7 @@
 
                         <TextBlock x:Name="txtStatusAuditoria"
                                    Grid.Row="0"
-                                   Text="Sin auditorías para mostrar"
+                                   Text="Sin auditorías por mostrar"
                                    FontSize="12"
                                    Foreground="#6B7280"
                                    Margin="4,0,0,8"/>
@@ -214,59 +250,127 @@
                                 CornerRadius="4"
                                 Background="White">
                             <Grid>
-                                <DataGrid x:Name="dgAuditorias"
-                                          AutoGenerateColumns="False"
-                                          SelectionMode="Single"
-                                          SelectionUnit="FullRow"
-                                          CanUserAddRows="False"
-                                          CanUserDeleteRows="False"
-                                          IsReadOnly="True"
-                                          HeadersVisibility="Column"
-                                          GridLinesVisibility="Vertical"
-                                          RowHeight="28"
-                                          ColumnHeaderHeight="40"
-                                          FontSize="12"
-                                          VerticalGridLinesBrush="#D9D9D9"
-                                          HorizontalGridLinesBrush="#E4E8EE"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                          SelectionChanged="dgAuditorias_SelectionChanged">
+                                <Grid Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.7*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="0.9*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Requisición" Binding="{Binding Requisicion}" Width="110"/>
-                                        <DataGridTextColumn Header="Picking" Binding="{Binding Picking}" Width="110"/>
-                                        <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="150"/>
-                                        <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="150"/>
-                                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="80"/>
-                                        <DataGridTextColumn Header="Hora" Binding="{Binding Hora}" Width="70"/>
-                                    </DataGrid.Columns>
+                                    <Border Grid.Column="0"
+                                            BorderBrush="#D9DEE7"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Background="White">
+                                        <DataGrid x:Name="dgAuditoriasResumen"
+                                                  AutoGenerateColumns="False"
+                                                  SelectionMode="Single"
+                                                  SelectionUnit="FullRow"
+                                                  CanUserAddRows="False"
+                                                  CanUserDeleteRows="False"
+                                                  IsReadOnly="True"
+                                                  HeadersVisibility="Column"
+                                                  GridLinesVisibility="Vertical"
+                                                  RowHeight="28"
+                                                  ColumnHeaderHeight="40"
+                                                  FontSize="12"
+                                                  VerticalGridLinesBrush="#D9D9D9"
+                                                  HorizontalGridLinesBrush="#E4E8EE"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                  ItemsSource="{Binding AuditoriaResumenItems}"
+                                                  SelectionChanged="dgAuditorias_SelectionChanged">
 
-                                    <DataGrid.Resources>
-                                        <Style TargetType="DataGridColumnHeader">
-                                            <Setter Property="Background" Value="#EEF1F5"/>
-                                            <Setter Property="Foreground" Value="#16263D"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                            <Setter Property="BorderBrush" Value="#D9DEE7"/>
-                                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                            <Setter Property="Padding" Value="8,6"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        </Style>
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="*"/>
+                                                <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="*"/>
+                                                <DataGridTextColumn Header="Orden de entrega" Binding="{Binding OrdenEntrega}" Width="140"/>
+                                            </DataGrid.Columns>
 
-                                        <Style TargetType="DataGridCell">
-                                            <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                            <Setter Property="Padding" Value="8,4"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        </Style>
+                                            <DataGrid.Resources>
+                                                <Style TargetType="DataGridColumnHeader">
+                                                    <Setter Property="Background" Value="#EEF1F5"/>
+                                                    <Setter Property="Foreground" Value="#16263D"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                                    <Setter Property="Padding" Value="8,6"/>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                </Style>
 
-                                        <Style TargetType="DataGridRow">
-                                            <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                            <Setter Property="Background" Value="White"/>
-                                        </Style>
-                                    </DataGrid.Resources>
-                                </DataGrid>
+                                                <Style TargetType="DataGridCell">
+                                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                                    <Setter Property="Padding" Value="8,4"/>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                </Style>
+
+                                                <Style TargetType="DataGridRow">
+                                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                    <Setter Property="Background" Value="White"/>
+                                                </Style>
+                                            </DataGrid.Resources>
+                                        </DataGrid>
+                                    </Border>
+
+                                    <Border Grid.Column="2"
+                                            BorderBrush="#D9DEE7"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Background="White">
+                                        <DataGrid x:Name="dgAuditoriasKitting"
+                                                  AutoGenerateColumns="False"
+                                                  SelectionMode="Single"
+                                                  SelectionUnit="FullRow"
+                                                  CanUserAddRows="False"
+                                                  CanUserDeleteRows="False"
+                                                  IsReadOnly="True"
+                                                  HeadersVisibility="Column"
+                                                  GridLinesVisibility="Vertical"
+                                                  RowHeight="28"
+                                                  ColumnHeaderHeight="40"
+                                                  FontSize="12"
+                                                  VerticalGridLinesBrush="#D9D9D9"
+                                                  HorizontalGridLinesBrush="#E4E8EE"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                  ItemsSource="{Binding AuditoriaResumenItems}"
+                                                  SelectionChanged="dgAuditorias_SelectionChanged">
+
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Kitting" Binding="{Binding Kitting}" Width="*"/>
+                                            </DataGrid.Columns>
+
+                                            <DataGrid.Resources>
+                                                <Style TargetType="DataGridColumnHeader">
+                                                    <Setter Property="Background" Value="#EEF1F5"/>
+                                                    <Setter Property="Foreground" Value="#16263D"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="BorderBrush" Value="#D9DEE7"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                                    <Setter Property="Padding" Value="8,6"/>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                </Style>
+
+                                                <Style TargetType="DataGridCell">
+                                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                                    <Setter Property="Padding" Value="8,4"/>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                </Style>
+
+                                                <Style TargetType="DataGridRow">
+                                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                    <Setter Property="Background" Value="White"/>
+                                                </Style>
+                                            </DataGrid.Resources>
+                                        </DataGrid>
+                                    </Border>
+                                </Grid>
 
                                 <Border x:Name="LoadingOverlayAuditoria"
                                         Background="#80FFFFFF"
@@ -413,164 +517,151 @@
                                    FontSize="18"
                                    FontWeight="SemiBold"
                                    Foreground="#1F2937"/>
-                        <TextBlock Text="Representación visual de la tarima o rack"
+                        <TextBlock Text="Lista de ubicaciones simulada"
                                    FontSize="12"
                                    Foreground="#6B7280"
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <Border Grid.Row="2"
-                            Background="#F9FAFB"
-                            BorderBrush="#E5E7EB"
-                            BorderThickness="1"
-                            CornerRadius="10"
-                            Padding="10">
-                        <Viewbox Stretch="Uniform">
-                            <Grid Width="360"
-                                  Height="620">
+                    <ScrollViewer Grid.Row="2"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <Grid HorizontalAlignment="Center"
+                              Width="460"
+                              MinHeight="1040"
+                              Margin="0,4,0,0">
+                            <!-- sombra del camión -->
+                            <Border Width="420"
+                                    Height="980"
+                                    CornerRadius="14"
+                                    Background="#10000000"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    Margin="0,14,0,0"/>
 
-                                <!-- sombra -->
-                                <Border Width="300"
-                                        Height="560"
-                                        CornerRadius="12"
-                                        Background="#11000000"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Margin="10,12,0,0"/>
+                            <!-- caja del camión -->
+                            <Grid Width="420"
+                                  Height="980"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Top">
+                                <Border Background="#A4652D"
+                                        CornerRadius="14"
+                                        BorderBrush="#81481F"
+                                        BorderThickness="1"/>
 
-                                <!-- base rack -->
-                                <Border Width="300"
-                                        Height="560"
-                                        CornerRadius="12"
-                                        Background="#E67E22"
-                                        BorderBrush="#C96A16"
-                                        BorderThickness="1"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"/>
+                                <TextBlock Text="Fondo"
+                                           Foreground="#F8FAFC"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Bottom"
+                                           Margin="0,0,0,18"/>
+                            </Grid>
 
-                                <!-- cabecera -->
-                                <Grid VerticalAlignment="Top"
-                                      HorizontalAlignment="Center"
-                                      Margin="0,0,0,0"
-                                      Width="300"
-                                      Height="120">
-                                    <Border Background="#65B51D"
-                                            Height="90"
-                                            CornerRadius="18,18,8,8"
-                                            Margin="18,0,18,0"
-                                            VerticalAlignment="Top"/>
+                            <!-- cabina -->
+                            <Grid Width="420"
+                                  Height="126"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Top">
+                                <Border Background="#1E293B"
+                                        Height="84"
+                                        CornerRadius="16,16,8,8"
+                                        Margin="20,0,20,0"
+                                        VerticalAlignment="Top"/>
 
-                                    <Border Background="#102A54"
-                                            Height="44"
-                                            CornerRadius="10"
-                                            Margin="36,6,36,0"
-                                            VerticalAlignment="Top"/>
-
-                                    <Rectangle Fill="#102A54"
-                                               Width="18"
-                                               Height="70"
-                                               HorizontalAlignment="Left"
-                                               Margin="34,20,0,0"
-                                               RadiusX="4"
-                                               RadiusY="4"/>
-
-                                    <Rectangle Fill="#102A54"
-                                               Width="18"
-                                               Height="70"
-                                               HorizontalAlignment="Right"
-                                               Margin="0,20,34,0"
-                                               RadiusX="4"
-                                               RadiusY="4"/>
+                                <Border Background="#334155"
+                                        Height="24"
+                                        CornerRadius="10"
+                                        Margin="58,8,58,0"
+                                        VerticalAlignment="Top"/>
+                                <Grid Height="24"
+                                      Margin="58,8,58,0"
+                                      VerticalAlignment="Top">
+                                    <TextBlock Text="Puerta"
+                                               Foreground="#F8FAFC"
+                                               FontSize="10"
+                                               FontWeight="SemiBold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
                                 </Grid>
 
-                                <!-- barrotes -->
-                                <UniformGrid Rows="1"
-                                             Columns="10"
-                                             Width="250"
-                                             Height="430"
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Bottom"
-                                             Margin="0,0,0,14">
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                    <Rectangle Fill="#8F4310" RadiusX="4" RadiusY="4" Margin="7,0"/>
-                                </UniformGrid>
+                                <Rectangle Fill="#1E293B"
+                                           Width="18"
+                                           Height="72"
+                                           HorizontalAlignment="Left"
+                                           Margin="56,20,0,0"
+                                           RadiusX="4"
+                                           RadiusY="4"/>
 
-                                <!-- tarjetas -->
-                                <UniformGrid Rows="2"
-                                             Columns="2"
-                                             Width="250"
-                                             Height="110"
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Top"
-                                             Margin="0,120,0,0">
+                                <Rectangle Fill="#1E293B"
+                                           Width="18"
+                                           Height="72"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,20,56,0"
+                                           RadiusX="4"
+                                           RadiusY="4"/>
 
-                                    <Border Margin="8"
-                                            CornerRadius="14"
-                                            Background="White"
-                                            BorderBrush="#D1D5DB"
-                                            BorderThickness="1"
-                                            Padding="8">
-                                        <TextBlock Text="20260101-2000&#10;# 5226200222520"
-                                                   TextAlignment="Center"
-                                                   FontSize="13"
-                                                   Foreground="#111827"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center"/>
-                                    </Border>
-
-                                    <Border Margin="8"
-                                            CornerRadius="14"
-                                            Background="White"
-                                            BorderBrush="#D1D5DB"
-                                            BorderThickness="1"
-                                            Padding="8">
-                                        <TextBlock Text="20260101-2000&#10;# 5226200222520"
-                                                   TextAlignment="Center"
-                                                   FontSize="13"
-                                                   Foreground="#111827"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center"/>
-                                    </Border>
-
-                                    <Border Margin="8"
-                                            CornerRadius="14"
-                                            Background="White"
-                                            BorderBrush="#D1D5DB"
-                                            BorderThickness="1"
-                                            Padding="8">
-                                        <TextBlock Text="20260101-2000&#10;# 5226200222520"
-                                                   TextAlignment="Center"
-                                                   FontSize="13"
-                                                   Foreground="#111827"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center"/>
-                                    </Border>
-
-                                    <Border Margin="8"
-                                            CornerRadius="14"
-                                            Background="White"
-                                            BorderBrush="#D1D5DB"
-                                            BorderThickness="1"
-                                            Padding="8">
-                                        <TextBlock Text="20260101-2000&#10;# 5226200222520"
-                                                   TextAlignment="Center"
-                                                   FontSize="13"
-                                                   Foreground="#111827"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center"/>
-                                    </Border>
-                                </UniformGrid>
+                                <Border Background="#475569"
+                                        Height="22"
+                                        CornerRadius="0,0,8,8"
+                                        Margin="68,58,68,0"
+                                        VerticalAlignment="Top"
+                                        Opacity="0.96"/>
                             </Grid>
-                        </Viewbox>
-                    </Border>
+
+                            <!-- tarjetas -->
+                            <Grid Margin="30,112,30,0"
+                                  VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Column="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Izquierda"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="#1F2937"/>
+                                    <TextBlock Grid.Row="1"
+                                               Text="10 tarjetas"
+                                               FontSize="11"
+                                               Foreground="#6B7280"/>
+
+                                    <ItemsControl Grid.Row="2"
+                                                  ItemsSource="{Binding LeftCards}"
+                                                  ItemTemplate="{StaticResource AuditCardTemplate}"/>
+                                </Grid>
+
+                                <Grid Grid.Column="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Derecha"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="#1F2937"/>
+                                    <TextBlock Grid.Row="1"
+                                               Text="10 tarjetas"
+                                               FontSize="11"
+                                               Foreground="#6B7280"/>
+
+                                    <ItemsControl Grid.Row="2"
+                                                  ItemsSource="{Binding RightCards}"
+                                                  ItemTemplate="{StaticResource AuditCardTemplate}"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </Border>
         </Grid>

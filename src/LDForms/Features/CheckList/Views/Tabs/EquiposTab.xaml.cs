@@ -48,7 +48,7 @@ namespace LD.FormsX.Views.CheckList.Tabs
                 return;
             }
             var dialog = _serviceProvider.GetRequiredService<AsignarUsuarioEquipoView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetEquipment(ViewModel.SelectedEquipment);
             var result = dialog.ShowDialog();
             if (result == true)
@@ -58,7 +58,7 @@ namespace LD.FormsX.Views.CheckList.Tabs
         private async void BtnNuevoEquipo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoEquipoCheckListView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             var result = dialog.ShowDialog();
             if (result == true)
                 await ViewModel.CargarEquiposAsync();
@@ -72,7 +72,7 @@ namespace LD.FormsX.Views.CheckList.Tabs
                 return;
             }
             var dialog = _serviceProvider.GetRequiredService<NuevoEquipoCheckListView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetEquipment(ViewModel.SelectedEquipment);
             var result = dialog.ShowDialog();
             if (result == true)
@@ -80,3 +80,4 @@ namespace LD.FormsX.Views.CheckList.Tabs
         }
     }
 }
+

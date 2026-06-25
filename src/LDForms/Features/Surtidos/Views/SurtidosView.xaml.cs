@@ -1,4 +1,4 @@
-ï»¿using LD.Client.Services;
+using LD.Client.Services;
 using LD.Client.Configuration;
 using LD.Contracts.DTOs;
 using LD.Contracts.Enums;
@@ -206,7 +206,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                 return "cargando";
 
             if (KittingStatusNames.IsValidation(status))
-                return "validaciÃ³n";
+                return "validación";
 
             return "confirmado";
         }
@@ -267,12 +267,12 @@ namespace LD.FormsX.Features.Surtidos.Views
             var canEdit = hasSelected && !isTerminal;
             var terminalStatus = GetTerminalStatusLabel(_selectedKitting?.Status);
             var confirmTooltip = !hasSelected
-                ? "Selecciona un surtido para pasar a validaciÃ³n."
+                ? "Selecciona un surtido para pasar a validación."
                 : isTerminal
-                    ? $"Este surtido esta {terminalStatus}. Ya no se puede pasar a validaciÃ³n."
+                    ? $"Este surtido esta {terminalStatus}. Ya no se puede pasar a validación."
                     : !isSending
-                        ? "El surtido debe estar en estatus Surtiendo para poder pasar a validaciÃ³n."
-                        : "Pasar a validaciÃ³n";
+                        ? "El surtido debe estar en estatus Surtiendo para poder pasar a validación."
+                        : "Pasar a validación";
 
             ConfigureActionButton(
                 btnEditar,
@@ -307,8 +307,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 hasSelected,
                 false,
                 hasSelected
-                    ? "Imprimir lista de validaciÃ³n"
-                    : "Selecciona un surtido para imprimir la lista de validaciÃ³n.");
+                    ? "Imprimir lista de validación"
+                    : "Selecciona un surtido para imprimir la lista de validación.");
 
             ConfigureActionButton(
                 btnCancelar,
@@ -595,7 +595,7 @@ namespace LD.FormsX.Features.Surtidos.Views
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoSurtidoView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetClientProjectContext(
                 SelectedClientId,
                 SelectedProjectId,
@@ -621,7 +621,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             }
 
             var dialog = _serviceProvider.GetRequiredService<EditarSurtidoView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetKitting(_selectedKitting);
 
             dialog.ShowDialog();
@@ -659,7 +659,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                if (!DialogHelper.ShowConfirm("Â¿EstÃ¡ seguro de enviar a surtir?"))
+                if (!DialogHelper.ShowConfirm("¿Está seguro de enviar a surtir?"))
                     return;
 
                 var result = await _kittingService.SendToSupplyKitting(_selectedKitting.KittingId);
@@ -669,7 +669,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambiÃ³ el surtido a estatus ValidaciÃ³n correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -684,13 +684,13 @@ namespace LD.FormsX.Features.Surtidos.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un surtido para pasar a validaciÃ³n.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para pasar a validación.");
                     return;
                 }
 
                 if (IsConfirmedStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido seleccionado ya esta en ValidaciÃ³n.");
+                    DialogHelper.ShowWarning("El surtido seleccionado ya esta en Validación.");
                     return;
                 }
 
@@ -702,11 +702,11 @@ namespace LD.FormsX.Features.Surtidos.Views
 
                 if (!IsSendingStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El surtido debe estar en estatus Surtiendo para poder pasar a validaciÃ³n.");
+                    DialogHelper.ShowWarning("El surtido debe estar en estatus Surtiendo para poder pasar a validación.");
                     return;
                 }
 
-                if (!DialogHelper.ShowConfirm("Â¿EstÃ¡ seguro de surtir?"))
+                if (!DialogHelper.ShowConfirm("¿Está seguro de surtir?"))
                     return;
 
                 var result = await _kittingService.ConfirmKitting(_selectedKitting.KittingId);
@@ -716,7 +716,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambiÃ³ el surtido a estatus ValidaciÃ³n correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -761,7 +761,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambiÃ³ el surtido a estatus ValidaciÃ³n correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el surtido a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -776,7 +776,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un surtido para ver la vista previa de la lista de validaciÃ³n.");
+                    DialogHelper.ShowWarning("Selecciona un surtido para ver la vista previa de la lista de validación.");
                     return;
                 }
 
@@ -896,6 +896,7 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
     }
 }
+
 
 
 

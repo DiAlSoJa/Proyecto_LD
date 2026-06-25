@@ -1583,9 +1583,10 @@ namespace LD.FormsX.Features.Surtidos.Views
                     _projectName,
                     _clientId,
                     _projectId)
-                {
-                    Owner = Window.GetWindow(this)
-                };
+                ;
+                WindowOwnerHelper.AttachOwnerOrCenter(
+                    dialog,
+                    WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
                 if (dialog.ShowDialog() != true)
                     return;
@@ -2210,7 +2211,9 @@ namespace LD.FormsX.Features.Surtidos.Views
             try
             {
                 var view = _serviceProvider.GetRequiredService<BuscarVehiculoView>();
-                view.Owner = this;
+                WindowOwnerHelper.AttachOwnerOrCenter(
+                    view,
+                    WindowOwnerHelper.GetVisibleOwner(this));
 
                 if (view.ShowDialog() != true || view.SelectedVehicle == null)
                     return;
@@ -2230,8 +2233,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             txtChofer.Text = vehicle.Nombre ?? string.Empty;
             txtPlacasVehiculo.Text = vehicle.Placa ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(txtSelloTransporte.Text))
-                txtSelloTransporte.Text = vehicle.Numero ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(txtCaja.Text))
+                txtCaja.Text = vehicle.Numero ?? string.Empty;
         }
 
         private static void ApplyStandardIdFallback(

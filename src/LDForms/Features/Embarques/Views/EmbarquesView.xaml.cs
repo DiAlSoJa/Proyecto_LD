@@ -295,6 +295,9 @@ namespace LD.FormsX.Features.Embarques.Views
             var isTerminal = IsTerminalStatus(_selectedKitting?.Status);
             var canEdit = hasSelected && !isTerminal;
             var terminalStatus = GetTerminalStatusLabel(_selectedKitting?.Status);
+            var editTargetsCount = _selectedKittings.Count == 1
+                ? GetDeliveryOrderEditTargets(_selectedKittings[0]).Count
+                : _selectedKittings.Count;
             var confirmTooltip = !hasSelected
                 ? "Selecciona un embarque para pasar a validación."
                 : isTerminal
@@ -310,9 +313,11 @@ namespace LD.FormsX.Features.Embarques.Views
                 btnEditar,
                 hasSelected,
                 false,
-                hasMultipleSelection
-                    ? $"Editar transporte y entrega de {_selectedKittings.Count} embarques."
-                    : "Editar transporte y entrega");
+                _selectedKittings.Count == 1 && editTargetsCount > 1
+                    ? $"Editar transporte y entrega de {editTargetsCount} embarques de la misma orden en Cargando."
+                    : hasMultipleSelection
+                        ? $"Editar transporte y entrega de {_selectedKittings.Count} embarques."
+                        : "Editar transporte y entrega");
 
             ConfigureActionButton(
                 btnEnviarASurtir,
@@ -665,7 +670,7 @@ namespace LD.FormsX.Features.Embarques.Views
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoSurtidoView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetClientProjectContext(
                 SelectedClientId,
                 SelectedProjectId,
@@ -694,8 +699,25 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
             }
 
+            if (selectedKittings.Count == 1)
+            {
+                var expandedKittings = GetDeliveryOrderEditTargets(selectedKittings[0]);
+                if (expandedKittings.Count > 1)
+                {
+                    var deliveryOrderCode = selectedKittings[0].DeliveryOrderCode?.Trim() ?? "sin folio";
+                    if (!DialogHelper.ShowConfirm(
+                            $"El embarque seleccionado pertenece a la orden de entrega {deliveryOrderCode} y se editarán {expandedKittings.Count} embarques con esa misma orden. ¿Deseas continuar?",
+                            "Editar embarques"))
+                    {
+                        return;
+                    }
+                }
+
+                selectedKittings = expandedKittings;
+            }
+
             var dialog = _serviceProvider.GetRequiredService<EditarSurtidoView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetTransportAndDeliveryOnlyMode();
             if (selectedKittings.Count == 1)
             {
@@ -711,6 +733,26 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 await CargarDatosConLoaderAsync();
             }
+        }
+
+        private List<KittingDto> GetDeliveryOrderEditTargets(KittingDto selectedKitting)
+        {
+            if (!IsValidatedStatus(selectedKitting.Status) || string.IsNullOrWhiteSpace(selectedKitting.DeliveryOrderCode))
+                return new List<KittingDto> { selectedKitting };
+
+            var deliveryOrderCode = selectedKitting.DeliveryOrderCode.Trim();
+            // Toma todos los embarques en Cargando que comparten la misma orden de entrega.
+            var targets = _allKittings
+                .Where(item => item.KittingId > 0)
+                .Where(item => IsValidatedStatus(item.Status))
+                .Where(item => string.Equals(item.DeliveryOrderCode?.Trim(), deliveryOrderCode, StringComparison.OrdinalIgnoreCase))
+                .GroupBy(item => item.KittingId)
+                .Select(group => group.First())
+                .ToList();
+
+            return targets.Count > 0
+                ? targets
+                : new List<KittingDto> { selectedKitting };
         }
 
         private async void BtnEnviarASurtir_Click(object sender, RoutedEventArgs e)
@@ -870,7 +912,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 }
 
                 var dialog = _serviceProvider.GetRequiredService<ValidarEmbarqueDialog>();
-                dialog.Owner = Window.GetWindow(this);
+                WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
                 dialog.SetKitting(_selectedKitting);
                 dialog.ShowDialog();
                 if (dialog.HasChanges)
@@ -951,7 +993,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 }
 
                 var dialog = new CargarDecisionDialogWindow();
-                dialog.Owner = Window.GetWindow(this);
+                WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
                 if (dialog.ShowDialog() != true || dialog.Decision == CargarDecision.Cancelar)
                     return;
@@ -1011,7 +1053,7 @@ namespace LD.FormsX.Features.Embarques.Views
             }
 
             var dialog = new SeleccionCargaExistenteWindow(availableOrders, clientText, projectText);
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() != true || string.IsNullOrWhiteSpace(dialog.SelectedDeliveryOrderCode))
                 return;

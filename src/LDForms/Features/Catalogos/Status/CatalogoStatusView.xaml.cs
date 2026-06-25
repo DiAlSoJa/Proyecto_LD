@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LD.FormsX.Views
 {
     /// <summary>
-    /// LÃ³gica de interacciÃ³n para CatalogoStatusView.xaml
+    /// Lógica de interacción para CatalogoStatusView.xaml
     /// </summary>
     public partial class CatalogoStatusView : UserControl
     {
@@ -134,7 +134,7 @@ namespace LD.FormsX.Views
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoStatusView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             var result = dialog.ShowDialog();
 
@@ -150,7 +150,7 @@ namespace LD.FormsX.Views
                 return;
 
             var dialog = _serviceProvider.GetRequiredService<NuevoStatusView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetInventaryStatus(_selectedX);
 
             var result = dialog.ShowDialog();
@@ -164,3 +164,4 @@ namespace LD.FormsX.Views
        
     }
 }
+

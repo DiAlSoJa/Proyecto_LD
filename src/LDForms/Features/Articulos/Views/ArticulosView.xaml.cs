@@ -193,7 +193,7 @@ namespace LD.FormsX.Views
             }
 
             var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetContext(clienteId, proyectoId);
 
             var result = dialog.ShowDialog();
@@ -213,7 +213,7 @@ namespace LD.FormsX.Views
                 return;
 
             var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetContext(clienteId, proyectoId);
             dialog.SetItem(_selectedX);
 
@@ -231,7 +231,7 @@ namespace LD.FormsX.Views
             }
 
             var dialog = _serviceProvider.GetRequiredService<CargaMasivaArticulosView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetContext(clienteId, proyectoId, SelectedClientText, SelectedProjectText);
             var result = dialog.ShowDialog();
             if (result == true)
@@ -421,3 +421,4 @@ namespace LD.FormsX.Views
         }
     }
 }
+
