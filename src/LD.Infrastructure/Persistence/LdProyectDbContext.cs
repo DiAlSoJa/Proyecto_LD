@@ -427,14 +427,6 @@ namespace LD.Infrastructure.Persistence
                 .Property(x => x.Photo4Path)
                 .HasMaxLength(500);
 
-            builder.Entity<Kitting>()
-                .Property(x => x.Cortina)
-                .HasMaxLength(100);
-
-            builder.Entity<Kitting>()
-                .Property(x => x.Caja)
-                .HasMaxLength(100);
-
             builder.Entity<KittingValidationPhoto>(entity =>
             {
                 entity.ToTable("KittingValidationPhotos");

@@ -845,7 +845,7 @@ public class KittingController : CommonController
     }
 
     private static bool IsTerminalStatus(string? status) =>
-        IsConfirmedStatus(status) || IsValidationStatus(status) || IsLoadingStatus(status) || IsCancelledStatus(status);
+        KittingStatusNames.IsTerminal(status);
 
     private static bool IsConfirmedStatus(string? status) =>
         string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase);

@@ -523,13 +523,14 @@ public class KittingIssueController : CommonController
                         new List<string> { "El StandardId escaneado no corresponde al issue seleccionado." }));
             }
 
-            if (string.Equals(entity.SupplyStatus?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(entity.SupplyStatus?.Trim(), KittingStatusNames.Cargado, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(entity.SupplyStatus?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase))
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail ya estaba Confirmado."));
+                    Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail ya estaba Cargado."));
             }
 
-            entity.SupplyStatus = KittingStatusNames.Confirmado;
+            entity.SupplyStatus = KittingStatusNames.Cargado;
             entity.LastModifiedAt = DateTime.Now;
             entity.LastModifiedByUserId = CurrentUserId;
 
@@ -537,13 +538,13 @@ public class KittingIssueController : CommonController
 
             return ResultExtensions.ToActionResult(
                 updated
-                    ? Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail confirmado correctamente.")
-                    : Result<string>.Failure("No se pudo confirmar el Kitting Issue Detail.", new List<string> { "No se pudo confirmar el Kitting Issue Detail." }));
+                    ? Result<string>.Success(entity.KittingReceiptDetailId.ToString(), "Kitting Issue Detail cargado correctamente.")
+                    : Result<string>.Failure("No se pudo cargar el Kitting Issue Detail.", new List<string> { "No se pudo cargar el Kitting Issue Detail." }));
         }
         catch (Exception ex)
         {
             return ResultExtensions.ToActionResult(
-                Result<string>.Failure("Hubo un error al confirmar el Kitting Issue Detail.", new List<string> { ex.Message }));
+                Result<string>.Failure("Hubo un error al cargar el Kitting Issue Detail.", new List<string> { ex.Message }));
         }
     }
 
@@ -700,7 +701,7 @@ public class KittingIssueController : CommonController
     }
 
     private static bool IsTerminalStatus(string? status) =>
-        IsConfirmedStatus(status) || IsCancelledStatus(status) || KittingStatusNames.IsLoading(status);
+        KittingStatusNames.IsTerminal(status);
 
     private static bool IsConfirmedStatus(string? status) =>
         string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase);

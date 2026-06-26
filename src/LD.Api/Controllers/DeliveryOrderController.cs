@@ -3,6 +3,7 @@ using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
 using LD.Application.Common.Results;
 using LD.Contracts.Constants;
+using LD.Contracts.DTOs.DeliveryOrder;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
@@ -99,7 +100,7 @@ public class DeliveryOrderController : CommonController
                     ProjectId = first.ProjectId,
                     DeliveryOrderCode = deliveryOrderCode,
                     PreDeliveryOrderCode = deliveryOrderCode,
-                    Status = "Cargado"
+                    Status = KittingStatusNames.Cargando
                 };
 
                 _context.DeliveryOrders.Add(deliveryOrder);
@@ -280,6 +281,153 @@ public class DeliveryOrderController : CommonController
         }
     }
 
+    [HttpPost("finish-loading")]
+    [Permission(PermissionKeys.Auditing_View)]
+    public async Task<IActionResult> FinishLoading([FromBody] FinishDeliveryOrderLoadingRequest request)
+    {
+        try
+        {
+            var deliveryOrderCode = request.DeliveryOrderCode?.Trim();
+            if (string.IsNullOrWhiteSpace(deliveryOrderCode))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<FinishDeliveryOrderLoadingResultDto>.Failure(
+                        "Debes seleccionar una orden de entrega.",
+                        new List<string> { "Debes seleccionar una orden de entrega." }));
+            }
+
+            var deliveryOrder = await _context.DeliveryOrders
+                .Include(x => x.DeliveryOrderKittings)
+                    .ThenInclude(x => x.Kitting)
+                .FirstOrDefaultAsync(x =>
+                    x.DeliveryOrderCode == deliveryOrderCode ||
+                    x.PreDeliveryOrderCode == deliveryOrderCode);
+
+            if (deliveryOrder is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<FinishDeliveryOrderLoadingResultDto>.Failure(
+                        "No se encontro la orden de entrega seleccionada.",
+                        new List<string> { "No se encontro la orden de entrega seleccionada." },
+                        404));
+            }
+
+            var kittings = deliveryOrder.DeliveryOrderKittings
+                .Where(x => x.Kitting != null)
+                .OrderBy(x => x.SortOrder)
+                .Select(x => x.Kitting!)
+                .GroupBy(x => x.KittingId)
+                .Select(group => group.First())
+                .ToList();
+
+            if (kittings.Count == 0)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<FinishDeliveryOrderLoadingResultDto>.Failure(
+                        "La orden de entrega no tiene kittings relacionados.",
+                        new List<string> { "La orden de entrega no tiene kittings relacionados." }));
+            }
+
+            var kittingIds = kittings.Select(x => x.KittingId).Distinct().ToList();
+            var detailRows = await _context.KittingDetails
+                .AsNoTracking()
+                .Where(x => kittingIds.Contains(x.KittingId))
+                .Select(x => new
+                {
+                    x.KittingDetailId,
+                    x.KittingId
+                })
+                .ToListAsync();
+
+            var detailIdToKittingId = detailRows
+                .GroupBy(x => x.KittingDetailId)
+                .ToDictionary(group => group.Key, group => group.First().KittingId);
+
+            var issueDetails = await _context.KittingIssueDetails
+                .AsNoTracking()
+                .Include(x => x.StandardLabel)
+                .Where(x => x.DeliveryOrderId == deliveryOrder.DeliveryOrderId)
+                .ToListAsync();
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var now = DateTime.Now;
+                var resultKittings = new List<FinishDeliveryOrderKittingResultDto>();
+
+                foreach (var kitting in kittings)
+                {
+                    var kittingIssueDetails = issueDetails
+                        .Where(issue => detailIdToKittingId.TryGetValue(issue.KittingDetailId, out var mappedKittingId) &&
+                                        mappedKittingId == kitting.KittingId)
+                        .ToList();
+
+                    var loadedIssues = kittingIssueDetails.Count(issue => KittingStatusNames.IsLoaded(issue.SupplyStatus));
+                    var missingLabels = kittingIssueDetails
+                        .Where(issue => !KittingStatusNames.IsLoaded(issue.SupplyStatus))
+                        .Select(ResolveMissingLabel)
+                        .Where(label => !string.IsNullOrWhiteSpace(label))
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+
+                    if (kittingIssueDetails.Count == 0)
+                        missingLabels.Add("Sin etiquetas cargadas");
+
+                    var isPartial = missingLabels.Count > 0;
+                    kitting.Status = isPartial ? KittingStatusNames.CargadoParcial : KittingStatusNames.Cargado;
+                    kitting.LastModifiedAt = now;
+                    kitting.LastModifiedByUserId = CurrentUserId;
+
+                    resultKittings.Add(new FinishDeliveryOrderKittingResultDto
+                    {
+                        KittingId = kitting.KittingId,
+                        KittingCode = kitting.KittingCode ?? kitting.PreKittingCode ?? kitting.KittingId.ToString(),
+                        Status = kitting.Status ?? string.Empty,
+                        TotalIssues = kittingIssueDetails.Count,
+                        LoadedIssues = loadedIssues,
+                        MissingLabels = missingLabels
+                    });
+                }
+
+                deliveryOrder.Status = KittingStatusNames.Cargado;
+                deliveryOrder.LastModifiedAt = now;
+                deliveryOrder.LastModifiedByUserId = CurrentUserId;
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                var response = new FinishDeliveryOrderLoadingResultDto
+                {
+                    DeliveryOrderCode = deliveryOrder.DeliveryOrderCode ?? deliveryOrder.PreDeliveryOrderCode ?? deliveryOrder.DeliveryOrderId.ToString(),
+                    DeliveryOrderStatus = deliveryOrder.Status ?? string.Empty,
+                    TotalKittings = resultKittings.Count,
+                    LoadedKittings = resultKittings.Count(x => !x.IsPartial),
+                    PartialKittings = resultKittings.Count(x => x.IsPartial),
+                    Kittings = resultKittings
+                };
+
+                return ResultExtensions.ToActionResult(
+                    Result<FinishDeliveryOrderLoadingResultDto>.Success(
+                        response,
+                        response.HasPartials
+                            ? "Orden de entrega cerrada con parciales."
+                            : "Orden de entrega cerrada correctamente."));
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        catch (Exception ex)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<FinishDeliveryOrderLoadingResultDto>.Failure(
+                    "Hubo un error al cerrar la orden de entrega.",
+                    new List<string> { ex.Message }));
+        }
+    }
+
     private async Task AssignDeliveryOrderToIssueDetailsAsync(List<int> kittingIds, int deliveryOrderId)
     {
         if (kittingIds.Count == 0 || deliveryOrderId <= 0)
@@ -337,5 +485,27 @@ public class DeliveryOrderController : CommonController
         var value = nextNumber.ToString();
         project.DoNumber = value;
         project.DeliveryOrderNumber = value;
+    }
+
+    private static string ResolveMissingLabel(KittingIssueDetail issue)
+    {
+        var standardId = issue.StandardLabel?.StandarIdStr?.Trim();
+        if (!string.IsNullOrWhiteSpace(standardId))
+        {
+            return string.IsNullOrWhiteSpace(issue.PartNumber)
+                ? standardId
+                : $"{standardId} ({issue.PartNumber.Trim()})";
+        }
+
+        if (issue.StandardId.HasValue && issue.StandardId.Value > 0)
+        {
+            return string.IsNullOrWhiteSpace(issue.PartNumber)
+                ? issue.StandardId.Value.ToString()
+                : $"{issue.StandardId.Value} ({issue.PartNumber.Trim()})";
+        }
+
+        return string.IsNullOrWhiteSpace(issue.PartNumber)
+            ? issue.KittingReceiptDetailId.ToString()
+            : issue.PartNumber.Trim();
     }
 }

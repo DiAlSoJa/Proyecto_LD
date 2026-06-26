@@ -25,6 +25,8 @@ namespace LD.Contracts.Requests
         public string? DriverName { get; set; }
         public string? VehiclePlate { get; set; }
         public string? SealNumber { get; set; }
+        public string? Cortina { get; set; }
+        public string? Caja { get; set; }
 
         public string? Contacto { get; set; }
         public string? Direccion { get; set; }
@@ -36,8 +38,6 @@ namespace LD.Contracts.Requests
         public DateTime? FechaProgramada { get; set; }
 
         public string? Status { get; set; }
-        public string? Cortina { get; set; }
-        public string? Caja { get; set; }
         public bool AllowRestrictedUpdate { get; set; }
     }
 }

@@ -92,7 +92,7 @@ namespace LD.FormsX
                             ?? "Production";
 #endif
 
-                        env = "Development"; 
+                        env = "Production"; 
                         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", env);
                         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", env);
 

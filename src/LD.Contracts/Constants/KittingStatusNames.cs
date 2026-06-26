@@ -7,6 +7,8 @@ public static class KittingStatusNames
     public const string Confirmado = "Confirmado";
     public const string Cancelado = "Cancelado";
     public const string Creado = "Creado";
+    public const string Cargado = "Cargado";
+    public const string CargadoParcial = "Cargado Parcial";
     public const string Surtiendo = "Surtiendo";
     public const string Ubicando = "Ubicando";
     public const string Validacion = "Validación";
@@ -21,11 +23,17 @@ public static class KittingStatusNames
     public static bool IsLoading(string? status) =>
         EqualsAny(status, Cargando, LegacyCargando);
 
+    public static bool IsLoaded(string? status) =>
+        EqualsAny(status, Cargado, Confirmado);
+
+    public static bool IsPartiallyLoaded(string? status) =>
+        EqualsAny(status, CargadoParcial);
+
     public static bool IsConfirmed(string? status) =>
         EqualsAny(status, Confirmado, Validacion, LegacyValidacion);
 
     public static bool IsTerminal(string? status) =>
-        IsConfirmed(status) || IsLoading(status) || IsCancelled(status);
+        IsConfirmed(status) || IsLoading(status) || IsLoaded(status) || IsPartiallyLoaded(status) || IsCancelled(status);
 
     public static bool IsCancelled(string? status) =>
         EqualsAny(status, Cancelado);

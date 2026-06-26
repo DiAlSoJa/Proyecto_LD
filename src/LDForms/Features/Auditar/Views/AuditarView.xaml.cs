@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using LD.Client.Services;
 using LD.Contracts.Constants;
+using LD.Contracts.DTOs.DeliveryOrder;
 using LD.Contracts.DTOs.LoadMapping;
 using LD.Contracts.Kitting;
 using LD.Contracts.Requests;
@@ -35,8 +36,8 @@ namespace LD.FormsX.Views.Auditar
         private static readonly Brush ErrorMessageBackground = new SolidColorBrush(Color.FromRgb(254, 242, 242));
         private static readonly Brush ErrorMessageForeground = new SolidColorBrush(Color.FromRgb(153, 27, 27));
         private static readonly Brush ErrorMessageBorder = new SolidColorBrush(Color.FromRgb(239, 68, 68));
-        private static readonly Brush SuccessCardBackground = new SolidColorBrush(Color.FromRgb(248, 250, 252));
-        private static readonly Brush SuccessCardBorder = new SolidColorBrush(Color.FromRgb(215, 222, 232));
+        private static readonly Brush SuccessCardBackground = new SolidColorBrush(Color.FromRgb(240, 253, 244));
+        private static readonly Brush SuccessCardBorder = new SolidColorBrush(Color.FromRgb(34, 197, 94));
         private static readonly Brush SuccessCardTitle = new SolidColorBrush(Color.FromRgb(15, 23, 42));
         private static readonly Brush SuccessCardText = new SolidColorBrush(Color.FromRgb(71, 85, 105));
         private static readonly Brush ErrorCardBackground = new SolidColorBrush(Color.FromRgb(254, 226, 226));
@@ -46,6 +47,7 @@ namespace LD.FormsX.Views.Auditar
 
         private readonly IServiceProvider _serviceProvider;
         private readonly LoadMappingService _loadMappingService;
+        private readonly DeliveryOrderService _deliveryOrderService;
         private readonly KittingService _kittingService;
         private readonly KittingDetailService _kittingDetailService;
         private readonly KittingIssueService _kittingIssueService;
@@ -64,6 +66,7 @@ namespace LD.FormsX.Views.Auditar
         public AuditarView(
             IServiceProvider serviceProvider,
             LoadMappingService loadMappingService,
+            DeliveryOrderService deliveryOrderService,
             KittingService kittingService,
             KittingDetailService kittingDetailService,
             KittingIssueService kittingIssueService)
@@ -71,6 +74,7 @@ namespace LD.FormsX.Views.Auditar
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _loadMappingService = loadMappingService;
+            _deliveryOrderService = deliveryOrderService;
             _kittingService = kittingService;
             _kittingDetailService = kittingDetailService;
             _kittingIssueService = kittingIssueService;
@@ -128,7 +132,56 @@ namespace LD.FormsX.Views.Auditar
             }
         }
 
-        private void BtnEditar_Click(object sender, RoutedEventArgs e) { }
+        private async void BtnTerminar_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgMapeoCarga.SelectedItem is not LoadMappingDto selectedMapping)
+            {
+                DialogHelper.ShowWarning("Selecciona una orden de entrega valida.");
+                return;
+            }
+
+            var deliveryOrderCode = selectedMapping.OrdenEntrega?.Trim();
+            if (string.IsNullOrWhiteSpace(deliveryOrderCode))
+            {
+                DialogHelper.ShowWarning("La orden seleccionada no tiene folio.");
+                return;
+            }
+
+            try
+            {
+                SetAuditoriaLoading(true, $"Terminando {deliveryOrderCode}...");
+                SetDetalleLoading(true, "Validando parciales...");
+
+                var response = await _deliveryOrderService.FinishDeliveryOrderLoading(deliveryOrderCode);
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo cerrar la orden de entrega.");
+                    return;
+                }
+
+                var result = response.Data;
+                var message = result is null
+                    ? response.Message ?? "Orden de entrega cerrada correctamente."
+                    : BuildFinishLoadingMessage(result);
+
+                if (result?.HasPartials == true)
+                    DialogHelper.ShowWarning(message);
+                else
+                    DialogHelper.ShowSuccess(message);
+
+                await LoadMapeosAsync();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+            finally
+            {
+                SetDetalleLoading(false);
+                SetAuditoriaLoading(false);
+            }
+        }
+
         private void dgDetalleAuditoria_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
         private async void dgMapeoCarga_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -428,9 +481,9 @@ namespace LD.FormsX.Views.Auditar
                     return;
                 }
 
-                if (IsConfirmedSupplyStatus(match.SupplyStatus))
+                if (IsLoadedSupplyStatus(match.SupplyStatus))
                 {
-                    await AddRejectedScanAsync(loadMappingId, selectedSide, scanValue, $"El StandardId {GetStandardIdText(match)} ya esta Confirmado.", match);
+                    await AddRejectedScanAsync(loadMappingId, selectedSide, scanValue, $"El StandardId {GetStandardIdText(match)} ya esta Cargado.", match);
                     return;
                 }
 
@@ -447,12 +500,12 @@ namespace LD.FormsX.Views.Auditar
                         loadMappingId,
                         selectedSide,
                         scanValue,
-                        response.ErrorMessage ?? response.Message ?? "No se pudo confirmar el kitting issue.",
+                        response.ErrorMessage ?? response.Message ?? "No se pudo cargar el kitting issue.",
                         match);
                     return;
                 }
 
-                match.Issue.SupplyStatus = KittingStatusNames.Confirmado;
+                match.Issue.SupplyStatus = KittingStatusNames.Cargado;
                 dgDetalleAuditoria.Items.Refresh();
 
                 await AddAcceptedScanAsync(
@@ -460,7 +513,7 @@ namespace LD.FormsX.Views.Auditar
                     selectedSide,
                     scanValue,
                     match,
-                    response.Message ?? "Kitting issue confirmado correctamente.");
+                    response.Message ?? "Kitting issue cargado correctamente.");
             }
             finally
             {
@@ -474,7 +527,7 @@ namespace LD.FormsX.Views.Auditar
                 .Where(issue => MatchesScan(GetStandardIdText(issue), scanValue))
                 .ToList();
 
-            return matches.FirstOrDefault(issue => !IsConfirmedSupplyStatus(issue.SupplyStatus))
+            return matches.FirstOrDefault(issue => !IsLoadedSupplyStatus(issue.SupplyStatus))
                 ?? matches.FirstOrDefault();
         }
 
@@ -496,7 +549,7 @@ namespace LD.FormsX.Views.Auditar
                 return;
 
             AddSavedScanToUi(savedScan);
-            SetScanMessage($"{side}: {standardId} confirmado.", false);
+            SetScanMessage($"{side}: {standardId} cargado.", false);
             PlayCorrectSound();
         }
 
@@ -564,7 +617,7 @@ namespace LD.FormsX.Views.Auditar
         private static LocationCardPreview CreateScanCard(LoadMappingScanDto scan)
         {
             var subtitle = string.IsNullOrWhiteSpace(scan.PartNumber)
-                ? scan.IsSuccess ? "Escaneo confirmado" : "Escaneo rechazado"
+                ? scan.IsSuccess ? "Escaneo cargado" : "Escaneo rechazado"
                 : $"Parte: {scan.PartNumber}";
 
             var details = scan.IsSuccess
@@ -738,8 +791,35 @@ namespace LD.FormsX.Views.Auditar
             txtUltimoMensajeEscaneo.BorderBrush = isError ? ErrorMessageBorder : SuccessMessageBorder;
         }
 
-        private static bool IsConfirmedSupplyStatus(string? status) =>
-            string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase);
+        private static bool IsLoadedSupplyStatus(string? status) =>
+            KittingStatusNames.IsLoaded(status);
+
+        private static string BuildFinishLoadingMessage(FinishDeliveryOrderLoadingResultDto result)
+        {
+            var lines = new List<string>
+            {
+                result.HasPartials
+                    ? $"Orden {result.DeliveryOrderCode} cerrada con parciales."
+                    : $"Orden {result.DeliveryOrderCode} cerrada correctamente.",
+                $"Kittings en Cargado: {result.LoadedKittings}/{result.TotalKittings}"
+            };
+
+            if (result.PartialKittings > 0)
+            {
+                lines.Add("Kittings con Cargado Parcial:");
+
+                foreach (var kitting in result.Kittings.Where(x => x.IsPartial))
+                {
+                    var missingLabels = kitting.MissingLabels.Count > 0
+                        ? string.Join(", ", kitting.MissingLabels)
+                        : "sin etiquetas cargadas";
+
+                    lines.Add($"- {kitting.KittingCode}: faltan {kitting.MissingLabels.Count} etiqueta(s) ({missingLabels})");
+                }
+            }
+
+            return string.Join(Environment.NewLine, lines);
+        }
 
         private void PlayCorrectSound()
         {

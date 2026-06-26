@@ -160,140 +160,178 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(defaultConnectionString))
 {
-    var db = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
-    db.Database.Migrate();
-
-    var movementPermissionsToSeed = new[]
+    app.Logger.LogWarning(
+        "DefaultConnection is not configured. Skipping database migration and permission seeding so the API can start.");
+}
+else
+{
+    try
     {
-        new { Key = PermissionKeys.Movement_Create, Name = "Crear movimientos" },
-        new { Key = PermissionKeys.Movement_Update, Name = "Editar movimientos" },
-        new { Key = PermissionKeys.Movement_Delete, Name = "Eliminar movimientos" }
-    };
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
+        db.Database.Migrate();
 
-    var missingMovementPermissions = movementPermissionsToSeed
-        .Where(permission => !db.Permissions.Any(p => p.Key == permission.Key))
-        .Select(permission => new Permission
+        var movementPermissionsToSeed = new[]
         {
-            PermissionName = permission.Name,
-            Key = permission.Key,
-            ModuleId = 6,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
-        })
-        .ToList();
-
-    if (missingMovementPermissions.Count > 0)
-    {
-        db.Permissions.AddRange(missingMovementPermissions);
-        db.SaveChanges();
-    }
-
-    const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
-    const string standardLabelPrintPermissionKey = PermissionKeys.StandardLabel_Print;
-
-    var standardLabelPrintPermission = db.Permissions
-        .FirstOrDefault(p => p.Key == standardLabelPrintPermissionKey);
-
-    if (standardLabelPrintPermission == null)
-    {
-        standardLabelPrintPermission = new Permission
-        {
-            PermissionName = "Imprimir etiquetas LD",
-            Key = standardLabelPrintPermissionKey,
-            ModuleId = 22,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
+            new { Key = PermissionKeys.Movement_Create, Name = "Crear movimientos" },
+            new { Key = PermissionKeys.Movement_Update, Name = "Editar movimientos" },
+            new { Key = PermissionKeys.Movement_Delete, Name = "Eliminar movimientos" }
         };
 
-        db.Permissions.Add(standardLabelPrintPermission);
-        db.SaveChanges();
-    }
+        var missingMovementPermissions = movementPermissionsToSeed
+            .Where(permission => !db.Permissions.Any(p => p.Key == permission.Key))
+            .Select(permission => new Permission
+            {
+                PermissionName = permission.Name,
+                Key = permission.Key,
+                ModuleId = 6,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            })
+            .ToList();
 
-    var hasSuperAdminLabelPermission = db.RolePermissions.Any(rp =>
-        rp.RoleId == superAdminRoleId &&
-        rp.PermissionId == standardLabelPrintPermission.PermissionId);
-
-    if (!hasSuperAdminLabelPermission)
-    {
-        db.RolePermissions.Add(new RolePermission
+        if (missingMovementPermissions.Count > 0)
         {
-            RoleId = superAdminRoleId,
-            PermissionId = standardLabelPrintPermission.PermissionId
-        });
-        db.SaveChanges();
-    }
+            db.Permissions.AddRange(missingMovementPermissions);
+            db.SaveChanges();
+        }
 
-    const string loadMappingScanDeletePermissionKey = PermissionKeys.LoadMappingScan_Delete;
+        const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
+        const string standardLabelPrintPermissionKey = PermissionKeys.StandardLabel_Print;
 
-    var loadMappingScanDeletePermission = db.Permissions
-        .FirstOrDefault(p => p.Key == loadMappingScanDeletePermissionKey);
+        var standardLabelPrintPermission = db.Permissions
+            .FirstOrDefault(p => p.Key == standardLabelPrintPermissionKey);
 
-    if (loadMappingScanDeletePermission == null)
-    {
-        loadMappingScanDeletePermission = new Permission
+        if (standardLabelPrintPermission == null)
         {
-            PermissionName = "Eliminar escaneo de mapeo de carga",
-            Key = loadMappingScanDeletePermissionKey,
-            ModuleId = 18,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
+            standardLabelPrintPermission = new Permission
+            {
+                PermissionName = "Imprimir etiquetas LD",
+                Key = standardLabelPrintPermissionKey,
+                ModuleId = 22,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+
+            db.Permissions.Add(standardLabelPrintPermission);
+            db.SaveChanges();
+        }
+
+        var hasSuperAdminLabelPermission = db.RolePermissions.Any(rp =>
+            rp.RoleId == superAdminRoleId &&
+            rp.PermissionId == standardLabelPrintPermission.PermissionId);
+
+        if (!hasSuperAdminLabelPermission)
+        {
+            db.RolePermissions.Add(new RolePermission
+            {
+                RoleId = superAdminRoleId,
+                PermissionId = standardLabelPrintPermission.PermissionId
+            });
+            db.SaveChanges();
+        }
+
+        const string loadMappingScanDeletePermissionKey = PermissionKeys.LoadMappingScan_Delete;
+
+        var loadMappingScanDeletePermission = db.Permissions
+            .FirstOrDefault(p => p.Key == loadMappingScanDeletePermissionKey);
+
+        if (loadMappingScanDeletePermission == null)
+        {
+            loadMappingScanDeletePermission = new Permission
+            {
+                PermissionName = "Eliminar escaneo de mapeo de carga",
+                Key = loadMappingScanDeletePermissionKey,
+                ModuleId = 18,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+
+            db.Permissions.Add(loadMappingScanDeletePermission);
+            db.SaveChanges();
+        }
+
+        var hasSuperAdminLoadMappingScanDeletePermission = db.RolePermissions.Any(rp =>
+            rp.RoleId == superAdminRoleId &&
+            rp.PermissionId == loadMappingScanDeletePermission.PermissionId);
+
+        if (!hasSuperAdminLoadMappingScanDeletePermission)
+        {
+            db.RolePermissions.Add(new RolePermission
+            {
+                RoleId = superAdminRoleId,
+                PermissionId = loadMappingScanDeletePermission.PermissionId
+            });
+            db.SaveChanges();
+        }
+
+        var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
+
+        var permissions = db.Permissions
+            .Select(p => p.Key)
+            .ToList();
+
+        foreach (var permission in permissions)
+        {
+            authOptions.Value.AddPolicy(permission, policy =>
+                policy.Requirements.Add(new PermissionRequirement(permission)));
+        }
+
+        foreach (var permission in movementPermissionsToSeed.Select(x => x.Key))
+        {
+            if (permissions.Contains(permission))
+                continue;
+
+            authOptions.Value.AddPolicy(permission, policy =>
+                policy.Requirements.Add(new PermissionRequirement(permission)));
+        }
+
+        var anyPermissionPolicies = new[]
+        {
+            AnyPermissionRequirement.BuildPolicyName(new[]
+            {
+                PermissionKeys.Asn_View,
+                PermissionKeys.WarehouseStaff_Asn_View
+            })
         };
 
-        db.Permissions.Add(loadMappingScanDeletePermission);
-        db.SaveChanges();
-    }
-
-    var hasSuperAdminLoadMappingScanDeletePermission = db.RolePermissions.Any(rp =>
-        rp.RoleId == superAdminRoleId &&
-        rp.PermissionId == loadMappingScanDeletePermission.PermissionId);
-
-    if (!hasSuperAdminLoadMappingScanDeletePermission)
-    {
-        db.RolePermissions.Add(new RolePermission
+        foreach (var policyName in anyPermissionPolicies)
         {
-            RoleId = superAdminRoleId,
-            PermissionId = loadMappingScanDeletePermission.PermissionId
-        });
-        db.SaveChanges();
+            var policyPermissions = AnyPermissionRequirement.ParsePolicyName(policyName);
+            authOptions.Value.AddPolicy(policyName, policy =>
+                policy.Requirements.Add(new AnyPermissionRequirement(policyPermissions)));
+        }
     }
-
-    var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
-
-    var permissions = db.Permissions
-        .Select(p => p.Key)
-        .ToList();
-
-    foreach (var permission in permissions)
+    catch (Exception ex)
     {
-        authOptions.Value.AddPolicy(permission, policy =>
-            policy.Requirements.Add(new PermissionRequirement(permission)));
-    }
+        app.Logger.LogError(
+            ex,
+            "Database initialization failed during startup. Swagger will remain available, but database-backed features may not work until the connection string or database are fixed.");
 
-    foreach (var permission in movementPermissionsToSeed.Select(x => x.Key))
-    {
-        if (permissions.Contains(permission))
-            continue;
-
-        authOptions.Value.AddPolicy(permission, policy =>
-            policy.Requirements.Add(new PermissionRequirement(permission)));
-    }
-
-    var anyPermissionPolicies = new[]
-    {
-        AnyPermissionRequirement.BuildPolicyName(new[]
+        try
         {
-            PermissionKeys.Asn_View,
-            PermissionKeys.WarehouseStaff_Asn_View
-        })
-    };
+            var startupLogDir = Path.Combine(builder.Environment.ContentRootPath, "logs");
+            Directory.CreateDirectory(startupLogDir);
 
-    foreach (var policyName in anyPermissionPolicies)
-    {
-        var policyPermissions = AnyPermissionRequirement.ParsePolicyName(policyName);
-        authOptions.Value.AddPolicy(policyName, policy =>
-            policy.Requirements.Add(new AnyPermissionRequirement(policyPermissions)));
+            var startupLogPath = Path.Combine(startupLogDir, "startup-exception.txt");
+            var startupLogContent = $"""
+                {DateTime.UtcNow:O}
+                {ex}
+
+                """;
+
+            File.AppendAllText(startupLogPath, startupLogContent);
+        }
+        catch
+        {
+            // Best-effort fallback only. If writing the file fails, we still rethrow the original exception.
+        }
+
+        throw;
     }
 }
 

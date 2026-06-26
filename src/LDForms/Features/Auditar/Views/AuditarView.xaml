@@ -145,41 +145,11 @@
 	                </StackPanel>
                 </Button>
 
-               <Button x:Name="btnEnviar"
-	                Grid.Column="5"
-	                Height="38"
-	                Padding="12,0"
-	              
-	                Background="#F3F4F6"
-	                Foreground="#374151"
-	                BorderBrush="#D1D5DB"
-	                BorderThickness="1"
-	                Cursor="Hand">
-
-	                <Button.Resources>
-		                <Style TargetType="Border">
-			                <Setter Property="CornerRadius" Value="6"/>
-		                </Style>
-	                </Button.Resources>
-
-	                <StackPanel Orientation="Horizontal"
-		                VerticalAlignment="Center"
-		                HorizontalAlignment="Center">
-
-		                <TextBlock FontFamily="Segoe MDL2 Assets"
-		                   Text="&#xE70F;"
-		                   Foreground="#F59E0B"
-		                   Margin="0,0,6,0"
-		                   FontSize="14"/>
-
-		                <TextBlock Text="Editar"/>
-	                </StackPanel>
-                </Button>
-
-              <Button x:Name="btnEditar"
+              <Button x:Name="btnTerminar"
 	                Grid.Column="7"
 	                Height="38"
 	                Padding="12,0"
+	                Click="BtnTerminar_Click"
 	              
 	                Background="#F3F4F6"
 	                Foreground="#374151"
@@ -203,7 +173,7 @@
 		                   Margin="0,0,6,0"
 		                   FontSize="14"/>
 
-		                <TextBlock Text="Enviar"/>
+		                <TextBlock Text="Terminar"/>
 	                </StackPanel>
                 </Button>
             </Grid>

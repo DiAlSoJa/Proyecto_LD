@@ -35,10 +35,11 @@
         </ContextMenu>
 
         <Style TargetType="TextBlock" x:Key="LabelStyle">
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
         </Style>
 
         <Style TargetType="TextBox" x:Key="InputTextBoxStyle">
@@ -352,7 +353,7 @@
                                 <GroupBox Grid.Column="2" Header="Transporte">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="120"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
@@ -417,25 +418,34 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="16"/>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <TextBlock Text="Cortina:" Style="{StaticResource LabelStyle}" Margin="0,8,8,0"/>
+                                            <TextBlock Grid.Column="0"
+                                                       Text="Cortina:"
+                                                       Style="{StaticResource LabelStyle}"
+                                                       FontSize="11"
+                                                       Margin="0,4,4,0"/>
                                             <TextBox x:Name="txtCortina"
                                                      Grid.Column="1"
                                                      Style="{StaticResource InputTextBoxStyle}"
+                                                     MinWidth="120"
+                                                     Margin="0,0,0,4"
                                                      TextChanged="HeaderTextBox_TextChanged"/>
 
-                                            <TextBlock Grid.Column="3"
+                                            <TextBlock Grid.Column="2"
                                                        Text="Caja:"
                                                        Style="{StaticResource LabelStyle}"
-                                                       Margin="0,8,8,0"/>
+                                                       FontSize="11"
+                                                       Margin="8,4,4,0"/>
                                             <TextBox x:Name="txtCaja"
-                                                     Grid.Column="4"
+                                                     Grid.Column="3"
                                                      Style="{StaticResource InputTextBoxStyle}"
+                                                     MinWidth="120"
+                                                     Margin="0,0,0,4"
                                                      TextChanged="HeaderTextBox_TextChanged"/>
+
                                         </Grid>
                                     </Grid>
                                 </GroupBox>
@@ -443,7 +453,7 @@
                                 <GroupBox Grid.Column="4" Header="Entrega" Margin="0">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="120"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
@@ -455,10 +465,10 @@
 
                                         <Grid Grid.Row="0" Grid.ColumnSpan="2">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="92"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="16"/>
-                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="92"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
@@ -471,10 +481,10 @@
 
                                         <Grid Grid.Row="1" Grid.ColumnSpan="2">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="92"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="16"/>
-                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="92"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
@@ -487,10 +497,10 @@
 
                                         <Grid Grid.Row="2" Grid.ColumnSpan="2">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="92"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="16"/>
-                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="92"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
@@ -503,10 +513,10 @@
 
                                         <Grid Grid.Row="3" Grid.ColumnSpan="2">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="92"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="16"/>
-                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="120"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 

@@ -1,3 +1,4 @@
+using LD.Contracts.DTOs.DeliveryOrder;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Configuration;
@@ -37,6 +38,29 @@ public class DeliveryOrderService
 
         return await _api.PostAsync<AddKittingsToDeliveryOrderRequest, ApiResponseDto<string>>(
             _apiEndpoints.DeliveryOrder_AddKittingsToExisting,
+            request);
+    }
+
+    public async Task<ApiResponseDto<FinishDeliveryOrderLoadingResultDto>> FinishDeliveryOrderLoading(string? deliveryOrderCode)
+    {
+        var normalizedCode = deliveryOrderCode?.Trim();
+        if (string.IsNullOrWhiteSpace(normalizedCode))
+        {
+            return new ApiResponseDto<FinishDeliveryOrderLoadingResultDto>
+            {
+                IsSuccess = false,
+                Code = 400,
+                Message = "Debes seleccionar una orden de entrega."
+            };
+        }
+
+        var request = new FinishDeliveryOrderLoadingRequest
+        {
+            DeliveryOrderCode = normalizedCode
+        };
+
+        return await _api.PostAsync<FinishDeliveryOrderLoadingRequest, ApiResponseDto<FinishDeliveryOrderLoadingResultDto>>(
+            _apiEndpoints.DeliveryOrder_FinishLoading,
             request);
     }
 }

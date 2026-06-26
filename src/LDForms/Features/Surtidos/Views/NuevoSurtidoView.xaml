@@ -398,6 +398,7 @@
                                             <TextBox x:Name="txtCaja"
                                                      Grid.Column="4"
                                                      Style="{StaticResource InputTextBoxStyle}"/>
+
                                         </Grid>
                                     </Grid>
                                 </GroupBox>
