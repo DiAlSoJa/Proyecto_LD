@@ -34,6 +34,7 @@ namespace LD.Infrastructure.Mappers
                     .Select(p => new PermissionDto
                     {
                         PermissionId = p.PermissionId,
+                        PermissionKey = p.Permission.Key,
                         PermissionName = p.Permission.PermissionName ?? ""
                     })
                     .ToList()));

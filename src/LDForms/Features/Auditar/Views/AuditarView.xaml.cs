@@ -147,6 +147,9 @@ namespace LD.FormsX.Views.Auditar
                 return;
             }
 
+            if (!DialogHelper.ShowConfirm("¿Está seguro de terminar la carga?", "Advertencia"))
+                return;
+
             try
             {
                 SetAuditoriaLoading(true, $"Terminando {deliveryOrderCode}...");
@@ -155,6 +158,7 @@ namespace LD.FormsX.Views.Auditar
                 var response = await _deliveryOrderService.FinishDeliveryOrderLoading(deliveryOrderCode);
                 if (!response.IsSuccess)
                 {
+                    SetScanMessage(response.Message ?? "No se pudo cerrar la orden de entrega.", true);
                     DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo cerrar la orden de entrega.");
                     return;
                 }
