@@ -154,7 +154,7 @@ namespace LD.FormsX.Views
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() == true)
                 await ViewModel.CargarDatosAsync();
@@ -163,7 +163,7 @@ namespace LD.FormsX.Views
         private async void BtnNuevoMasivo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionMasivaView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() == true)
                 await ViewModel.CargarDatosAsync();
@@ -172,7 +172,7 @@ namespace LD.FormsX.Views
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetLocation(ViewModel.SelectedLocation);
 
             if (dialog.ShowDialog() == true)
@@ -180,3 +180,4 @@ namespace LD.FormsX.Views
         }
     }
 }
+

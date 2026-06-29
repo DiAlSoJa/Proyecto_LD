@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using LD.Contracts.Warehouse;
@@ -57,7 +57,7 @@ namespace LDForms.Views
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() == true)
                 await ViewModel.CargarDatosAsync();
@@ -66,7 +66,7 @@ namespace LDForms.Views
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoAlmacenView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetWarehouse(ViewModel.SelectedWarehouse);
 
             if (dialog.ShowDialog() == true)

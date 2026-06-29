@@ -66,6 +66,11 @@ namespace LD.Infrastructure.Persistence
         public DbSet<AsnDetail> AsnDetails { get; set; }
         public DbSet<AsnReceiptDetail> AsnReceiptDetails { get; set; }
         public DbSet<Kitting> Kittings { get; set; }
+        public DbSet<DeliveryOrder> DeliveryOrders { get; set; }
+        public DbSet<DeliveryOrderKitting> DeliveryOrderKittings { get; set; }
+        public DbSet<LoadMapping> LoadMappings { get; set; }
+        public DbSet<LoadMappingScan> LoadMappingScans { get; set; }
+        public DbSet<KittingValidationPhoto> KittingValidationPhotos { get; set; }
         public DbSet<KittingDetail> KittingDetails { get; set; }
         public DbSet<KittingIssueDetail> KittingIssueDetails { get; set; }
         public DbSet<ScanConfiguration> ScanConfigurations { get; set; }
@@ -335,6 +340,104 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(k => k.ProjectId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<DeliveryOrder>(entity =>
+            {
+                entity.ToTable("DeliveryOrders");
+                entity.HasOne(x => x.Client)
+                    .WithMany()
+                    .HasForeignKey(x => x.ClientId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.Project)
+                    .WithMany()
+                    .HasForeignKey(x => x.ProjectId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(x => x.DeliveryOrderKittings)
+                    .WithOne(x => x.DeliveryOrder)
+                    .HasForeignKey(x => x.DeliveryOrderId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<DeliveryOrderKitting>(entity =>
+            {
+                entity.ToTable("DeliveryOrderKittings");
+                entity.HasIndex(x => x.KittingId).IsUnique();
+                entity.HasOne(x => x.Kitting)
+                    .WithMany()
+                    .HasForeignKey(x => x.KittingId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<LoadMapping>(entity =>
+            {
+                entity.ToTable("LoadMappings");
+                entity.Property(x => x.DeliveryOrderCode).HasMaxLength(30);
+                entity.HasIndex(x => new { x.ClientId, x.ProjectId, x.DeliveryOrderCode }).IsUnique();
+
+                entity.HasOne(x => x.Client)
+                    .WithMany()
+                    .HasForeignKey(x => x.ClientId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.Project)
+                    .WithMany()
+                    .HasForeignKey(x => x.ProjectId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<LoadMappingScan>(entity =>
+            {
+                entity.ToTable("LoadMappingScans");
+                entity.Property(x => x.Side).HasMaxLength(20).IsRequired();
+                entity.Property(x => x.StandardId).HasMaxLength(100);
+                entity.Property(x => x.Result).HasMaxLength(20).IsRequired();
+                entity.Property(x => x.Kitting).HasMaxLength(100);
+                entity.Property(x => x.PartNumber).HasMaxLength(100);
+                entity.Property(x => x.Description).HasMaxLength(250);
+                entity.Property(x => x.Quantity).HasColumnType("decimal(18,2)");
+                entity.Property(x => x.LotNumber).HasMaxLength(50);
+                entity.Property(x => x.Message).HasMaxLength(500);
+                entity.HasIndex(x => new { x.LoadMappingId, x.ScannedAt });
+                entity.HasIndex(x => x.KittingReceiptDetailId);
+
+                entity.HasOne(x => x.LoadMapping)
+                    .WithMany(x => x.Scans)
+                    .HasForeignKey(x => x.LoadMappingId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.KittingIssueDetail)
+                    .WithMany()
+                    .HasForeignKey(x => x.KittingReceiptDetailId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo1Path)
+                .HasMaxLength(500);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo2Path)
+                .HasMaxLength(500);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo3Path)
+                .HasMaxLength(500);
+
+            builder.Entity<Kitting>()
+                .Property(x => x.Photo4Path)
+                .HasMaxLength(500);
+
+            builder.Entity<KittingValidationPhoto>(entity =>
+            {
+                entity.ToTable("KittingValidationPhotos");
+                entity.Property(x => x.RelativePath).HasMaxLength(500);
+                entity.HasOne(x => x.Kitting)
+                    .WithMany(x => x.ValidationPhotos)
+                    .HasForeignKey(x => x.KittingId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
             builder.Entity<KittingDetail>()
                 .HasOne(d => d.Kitting)
                 .WithMany(k => k.KittingDetails)
@@ -351,6 +454,12 @@ namespace LD.Infrastructure.Persistence
                 .HasOne(r => r.Product)
                 .WithMany()
                 .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<KittingIssueDetail>()
+                .HasOne(r => r.DeliveryOrder)
+                .WithMany(d => d.KittingIssueDetails)
+                .HasForeignKey(r => r.DeliveryOrderId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<KittingIssueDetail>()

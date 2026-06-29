@@ -10,6 +10,12 @@ namespace LD.Contracts.Kitting
 
         public int KittingDetailId { get; set; }
 
+        [DisplayName("DeliveryOrderId")]
+        public int? DeliveryOrderId { get; set; }
+
+        [DisplayName("Orden de entrega")]
+        public string? DeliveryOrderCode { get; set; }
+
         public int? ProductId { get; set; }
 
         [DisplayName("EstandarID")]

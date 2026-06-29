@@ -48,6 +48,7 @@ namespace MauiAppLogin
             builder.Services.AddTransient<SignatureDriver>();
             builder.Services.AddTransient<DashboardPage>();
             builder.Services.AddTransient<ChangeLocationPage>();
+            builder.Services.AddTransient<ReceptionDetailPage>();
             builder.Services.AddTransient<MovementPage>();
             builder.Services.AddTransient<MovementDetail>();
             builder.Services.AddTransient<DamageReportPage>();

@@ -61,7 +61,7 @@ namespace LD.FormsX.Views.Articulos
             }
 
             var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
-            dialog.Owner = this;
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(this));
             dialog.SetContext(_clientId, _projectId);
             dialog.SetCargaMasivaItems(Items.ToList());
             var result = dialog.ShowDialog();
@@ -139,3 +139,4 @@ namespace LD.FormsX.Views.Articulos
         public string Description { get; set; } = string.Empty;
     }
 }
+

@@ -22,10 +22,17 @@ public partial class ChangeLocationViewModel : ObservableObject
     private bool isBusy;
 
     private string instructionText = string.Empty;
+    private string expectedStandardId = string.Empty;
 
     public int AsnId { get; set; }
     public int KittingReceiptDetailId { get; set; }
     public int KittingId { get; set; }
+
+    public string ExpectedStandardId
+    {
+        get => expectedStandardId;
+        set => SetProperty(ref expectedStandardId, value?.Trim() ?? string.Empty);
+    }
 
     public bool HasInstructionText => !string.IsNullOrWhiteSpace(InstructionText);
 
@@ -77,6 +84,22 @@ public partial class ChangeLocationViewModel : ObservableObject
             var standardId = await ResolveStandardIdAsync(EstandarId);
             if (!standardId.HasValue)
                 return;
+
+            if (!string.IsNullOrWhiteSpace(ExpectedStandardId))
+            {
+                var expectedStandardId = await ResolveStandardIdAsync(ExpectedStandardId);
+                if (!expectedStandardId.HasValue)
+                    return;
+
+                if (expectedStandardId.Value != standardId.Value)
+                {
+                    await Shell.Current.DisplayAlertAsync(
+                        "Standard ID incorrecto",
+                        "El Standard ID capturado no corresponde al que se seleccionó.",
+                        "OK");
+                    return;
+                }
+            }
 
             var response = AsnId > 0
                 ? await _asnService.LocateAsnPallet(AsnId, standardId.Value, ubicacionDestino)

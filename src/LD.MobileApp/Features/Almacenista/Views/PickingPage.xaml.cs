@@ -1,4 +1,5 @@
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.Kitting;
 using MauiAppLogin.Features.Almacenista.Models;
 using System.Collections.ObjectModel;
@@ -84,7 +85,7 @@ public partial class PickingPage : ContentPage
         return issueResponse.Data
             .Where(x => x.KittingDetailId > 0)
             .Where(x => x.ReceivedQuantity.GetValueOrDefault() > 0)
-            .Where(x => !string.Equals(x.SupplyStatus?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
+            .Where(x => !KittingStatusNames.IsValidation(x.SupplyStatus))
             .Select(x => detailToKitting.TryGetValue(x.KittingDetailId, out var kittingId) ? kittingId : 0)
             .Where(kittingId => kittingId > 0)
             .GroupBy(kittingId => kittingId)
@@ -92,7 +93,7 @@ public partial class PickingPage : ContentPage
     }
 
     private static bool IsSurtiendo(KittingDto kitting) =>
-        string.Equals(kitting.Status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase);
+        string.Equals(kitting.Status?.Trim(), KittingStatusNames.Surtiendo, StringComparison.OrdinalIgnoreCase);
 
     private static PickingKittingItem BuildPickingItem(KittingDto kitting, int issueCount)
     {
@@ -102,7 +103,7 @@ public partial class PickingPage : ContentPage
         var client = kitting.Client?.Trim() ?? string.Empty;
         var project = kitting.Project?.Trim() ?? string.Empty;
         var invoice = kitting.InvoiceNumber?.Trim() ?? string.Empty;
-        var status = kitting.Status?.Trim() ?? "Surtiendo";
+        var status = KittingStatusNames.Normalize(kitting.Status);
         var subtitle = string.IsNullOrWhiteSpace(client) && string.IsNullOrWhiteSpace(project)
             ? "Sin cliente / proyecto"
             : string.IsNullOrWhiteSpace(client)

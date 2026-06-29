@@ -230,10 +230,10 @@ namespace LDForms
 
         private string? ShowPrintOptionDialog()
         {
-            var dialog = new StandardLabelPrintOptionsDialog
-            {
-                Owner = this
-            };
+            var dialog = new StandardLabelPrintOptionsDialog();
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(
+                dialog,
+                LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(this));
 
             return dialog.ShowDialog() == true
                 ? dialog.SelectedOption
@@ -242,10 +242,10 @@ namespace LDForms
 
         private int? ShowQuantityDialog()
         {
-            var dialog = new StandardLabelQuantityDialog
-            {
-                Owner = this
-            };
+            var dialog = new StandardLabelQuantityDialog();
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(
+                dialog,
+                LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(this));
 
             return dialog.ShowDialog() == true ? dialog.Quantity : null;
         }

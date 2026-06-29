@@ -40,10 +40,10 @@ public partial class TasksView : UserControl
             return;
         }
 
-        var window = new TaskImagesWindow(task, images)
-        {
-            Owner = Window.GetWindow(this)
-        };
+        var window = new TaskImagesWindow(task, images);
+        LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(
+            window,
+            LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
         window.ShowDialog();
     }
 
@@ -72,3 +72,4 @@ public partial class TasksView : UserControl
             : new TaskImageItem(title, ViewModel.GetImageUrl(relativePath));
     }
 }
+

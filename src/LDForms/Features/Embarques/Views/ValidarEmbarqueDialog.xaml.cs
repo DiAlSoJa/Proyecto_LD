@@ -1,4 +1,5 @@
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.Kitting;
 using LD.Contracts.Requests;
 using LD.FormsX.Helpers;
@@ -139,7 +140,7 @@ namespace LD.FormsX.Features.Embarques.Views
                     .ToList();
 
                 foreach (var issue in issues
-                    .Where(x => IsSupplyStatus(x.SupplyStatus, "Surtido"))
+                    .Where(x => IsSupplyStatus(x.SupplyStatus, KittingStatusNames.Validacion))
                     .OrderBy(x => x.StandardIdStr ?? string.Empty)
                     .ThenBy(x => x.PartNumber ?? string.Empty)
                     .ThenBy(x => x.ReceivedQuantity ?? 0m))
@@ -148,7 +149,7 @@ namespace LD.FormsX.Features.Embarques.Views
                 }
 
                 foreach (var issue in issues
-                    .Where(x => IsSupplyStatus(x.SupplyStatus, "Validado"))
+                    .Where(x => IsSupplyStatus(x.SupplyStatus, KittingStatusNames.Cargando))
                     .OrderBy(x => x.StandardIdStr ?? string.Empty)
                     .ThenBy(x => x.PartNumber ?? string.Empty)
                     .ThenBy(x => x.ReceivedQuantity ?? 0m))
@@ -158,7 +159,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 OnPropertyChanged(nameof(SurtidoCountText));
                 OnPropertyChanged(nameof(ValidadoCountText));
-                SetSuccessMessage($"Listo. Surtido: {SurtidoItems.Count} | Validado: {ValidadoItems.Count}.");
+                SetSuccessMessage($"Listo. Validación: {SurtidoItems.Count} | Cargando: {ValidadoItems.Count}.");
             }
             catch (Exception ex)
             {
@@ -188,21 +189,21 @@ namespace LD.FormsX.Features.Embarques.Views
             var match = FindMatchingIssue(scanValue);
             if (match == null)
             {
-                SetErrorMessage($"No se encontro una linea Surtido con ese StandardIdStr: {scanValue}");
+                SetErrorMessage($"No se encontro una linea de Validación con ese StandardIdStr: {scanValue}");
                 PlayErrorSound();
                 return;
             }
 
-            if (IsSupplyStatus(match.SupplyStatus, "Validado"))
+            if (IsSupplyStatus(match.SupplyStatus, KittingStatusNames.Cargando))
             {
-                SetErrorMessage($"La linea {match.PartNumber} ya esta Validada.");
+                SetErrorMessage($"La linea {match.PartNumber} ya esta en Cargando.");
                 PlayErrorSound();
                 return;
             }
 
-            if (!IsSupplyStatus(match.SupplyStatus, "Surtido"))
+            if (!IsSupplyStatus(match.SupplyStatus, KittingStatusNames.Validacion))
             {
-                SetErrorMessage($"La linea {match.StandardIdStr} no esta en estatus Surtido.");
+                SetErrorMessage($"La linea {match.StandardIdStr} no esta en estatus Validación.");
                 PlayErrorSound();
                 return;
             }
@@ -224,7 +225,7 @@ namespace LD.FormsX.Features.Embarques.Views
             MoveToValidated(match);
             HasChanges = true;
 
-            SetSuccessMessage(response.Message ?? $"Validado: {match.StandardIdStr} | Cantidad: {match.ReceivedQuantity}");
+            SetSuccessMessage(response.Message ?? $"Cargando: {match.StandardIdStr} | Cantidad: {match.ReceivedQuantity}");
             PlayCorrectSound();
             txtEscaneo.SelectAll();
         }
@@ -284,7 +285,7 @@ namespace LD.FormsX.Features.Embarques.Views
             SurtidoItems.Remove(itemToMove);
             if (ValidadoItems.All(x => x.KittingReceiptDetailId != itemToMove.KittingReceiptDetailId))
             {
-                itemToMove.SupplyStatus = "Validado";
+                itemToMove.SupplyStatus = KittingStatusNames.Cargando;
                 ValidadoItems.Add(itemToMove);
             }
 
@@ -293,7 +294,11 @@ namespace LD.FormsX.Features.Embarques.Views
         }
 
         private static bool IsSupplyStatus(string? value, string expected) =>
-            string.Equals(value?.Trim(), expected, StringComparison.OrdinalIgnoreCase);
+            string.Equals(value?.Trim(), expected, StringComparison.OrdinalIgnoreCase) ||
+            (string.Equals(expected, KittingStatusNames.Validacion, StringComparison.OrdinalIgnoreCase) &&
+             string.Equals(value?.Trim(), KittingStatusNames.LegacyValidacion, StringComparison.OrdinalIgnoreCase)) ||
+            (string.Equals(expected, KittingStatusNames.Cargando, StringComparison.OrdinalIgnoreCase) &&
+             string.Equals(value?.Trim(), KittingStatusNames.LegacyCargando, StringComparison.OrdinalIgnoreCase));
 
         private void SetSuccessMessage(string message)
         {

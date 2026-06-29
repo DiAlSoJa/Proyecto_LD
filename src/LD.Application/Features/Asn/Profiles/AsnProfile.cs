@@ -11,6 +11,7 @@ namespace LD.Application.Features.Asn.Profiles
         {
             CreateMap<LD.Domain.Entities.Asn, AsnDto>()
                 .ForMember(dest => dest.AsnId, opt => opt.MapFrom(src => src.AsnId))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.AsnCode, opt => opt.MapFrom(src => src.AsnCode))                
                 .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client != null ? src.Client.CommercialName: string.Empty))                
                 .ForMember(dest => dest.Project, opt => opt.MapFrom(src => src.Project != null ? src.Project.ProjectName : string.Empty))                

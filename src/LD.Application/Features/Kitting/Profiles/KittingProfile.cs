@@ -34,7 +34,9 @@ namespace LD.Application.Features.Kitting.Profiles
                 .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.CodigoPostal))
                 .ForMember(dest => dest.TipoEntrega, opt => opt.MapFrom(src => src.TipoEntrega))
                 .ForMember(dest => dest.FechaProgramada, opt => opt.MapFrom(src => src.FechaProgramada))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Cortina, opt => opt.MapFrom(src => src.Cortina))
+                .ForMember(dest => dest.Caja, opt => opt.MapFrom(src => src.Caja));
 
             CreateMap<KittingRequest, KittingEntity>()
                 .ForMember(dest => dest.KittingId, opt => opt.Ignore());

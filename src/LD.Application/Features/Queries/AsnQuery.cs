@@ -23,7 +23,10 @@ namespace LD.Application.Features.Queries
         public async Task<Result<List<AsnDto>?>> Handle(AsnQuery request, CancellationToken cancellationToken)
         {
             var asns = await _asnRepository.GetManyAsync();
-            var dtos = _mapper.Map<List<AsnDto>>(asns);
+            var dtos = _mapper.Map<List<AsnDto>>(asns)
+                .OrderByDescending(x => x.CreatedAt)
+                .ThenByDescending(x => x.AsnId)
+                .ToList();
             return Result<List<AsnDto>?>.Success(dtos, "ASNs obtenidos correctamente");
         }
     }

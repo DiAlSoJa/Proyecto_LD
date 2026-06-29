@@ -1,4 +1,4 @@
-Ôªøusing System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -404,9 +404,9 @@ namespace LD.FormsX.Views.Dialogs
             if (scanRequired)
                 return !IsScanRequiredReceiptEditableColumn(header);
 
-            return header.Equals("N√∫mero de Parte", StringComparison.OrdinalIgnoreCase)
+            return header.Equals("N˙mero de Parte", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Numero de Parte", StringComparison.OrdinalIgnoreCase)
-                || header.Equals("Descripci√≥n", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("DescripciÛn", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Descripcion", StringComparison.OrdinalIgnoreCase);
         }
 
@@ -415,7 +415,7 @@ namespace LD.FormsX.Views.Dialogs
             return header.Equals("Status", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Estatus", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("SD", StringComparison.OrdinalIgnoreCase)
-                || header.Equals("Ubicaci√≥n", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("UbicaciÛn", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Ubicacion", StringComparison.OrdinalIgnoreCase);
         }
 
@@ -609,7 +609,7 @@ namespace LD.FormsX.Views.Dialogs
             if (btnMaximizarVentana == null)
                 return;
 
-            btnMaximizarVentana.Content = WindowState == WindowState.Maximized ? "‚ùê" : "‚ñ°";
+            btnMaximizarVentana.Content = WindowState == WindowState.Maximized ? "?" : "?";
         }
 
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)
@@ -633,7 +633,7 @@ namespace LD.FormsX.Views.Dialogs
                 _selectedDetailItem = scanTarget;
 
             var view = _serviceProvider.GetRequiredService<NuevoASNEscaneoView>();
-            view.Owner = this;
+            WindowOwnerHelper.AttachOwnerOrCenter(view, WindowOwnerHelper.GetVisibleOwner(this));
             view.SetScanConfigurations(_projectScanConfigurations);
             view.ScanCompleted += CreateReceiptFromCompletedScanAsync;
             view.UnmatchedScanReceived += ResolveUnmatchedScanAsync;
@@ -709,7 +709,7 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 var view = _serviceProvider.GetRequiredService<BuscarVehiculoView>();
-                view.Owner = this;
+                WindowOwnerHelper.AttachOwnerOrCenter(view, WindowOwnerHelper.GetVisibleOwner(this));
 
                 if (view.ShowDialog() != true || view.SelectedVehicle == null)
                     return;
@@ -821,7 +821,7 @@ namespace LD.FormsX.Views.Dialogs
 
             if (!response.IsSuccess)
             {
-                DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo crear la recepci√≥n escaneada del ASN.");
+                DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo crear la recepciÛn escaneada del ASN.");
                 return false;
             }
 
@@ -847,7 +847,7 @@ namespace LD.FormsX.Views.Dialogs
 
             var quantityToAdd = receiptRow.ReceivedQuantity ?? 0m;
             if (quantityToAdd <= 0)
-                throw new InvalidOperationException("La l√≠nea escaneada no tiene cantidad recibida v√°lida.");
+                throw new InvalidOperationException("La lÌnea escaneada no tiene cantidad recibida v·lida.");
 
             var detailRow = FindMatchingDetailForReceipt(receiptRow);
             if (detailRow == null)
@@ -859,13 +859,13 @@ namespace LD.FormsX.Views.Dialogs
                     detailRow.AsnId, detailRow.PartNumber, createResponse.IsSuccess, createResponse.Code, createResponse.Message, createResponse.Data);
 
                 if (!createResponse.IsSuccess)
-                    throw new InvalidOperationException(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el detail para la recepci√≥n escaneada.");
+                    throw new InvalidOperationException(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el detail para la recepciÛn escaneada.");
 
                 if (int.TryParse(createResponse.Data, out var asnDetailId) && asnDetailId > 0)
                     detailRow.AsnDetailId = asnDetailId;
 
                 if (detailRow.AsnDetailId <= 0)
-                    throw new InvalidOperationException("No se pudo obtener el Id del detail creado para la recepci√≥n escaneada.");
+                    throw new InvalidOperationException("No se pudo obtener el Id del detail creado para la recepciÛn escaneada.");
 
                 var emptyDetailRow = DetailItems.FirstOrDefault(IsEmptyDetailRow);
                 if (emptyDetailRow != null)
@@ -891,7 +891,7 @@ namespace LD.FormsX.Views.Dialogs
             if (!updateResponse.IsSuccess)
             {
                 detailRow.Quantity -= quantityToAdd;
-                throw new InvalidOperationException(updateResponse.ErrorMessage ?? updateResponse.Message ?? "No se pudo actualizar la cantidad del detail para la recepci√≥n escaneada.");
+                throw new InvalidOperationException(updateResponse.ErrorMessage ?? updateResponse.Message ?? "No se pudo actualizar la cantidad del detail para la recepciÛn escaneada.");
             }
 
             return detailRow;
@@ -991,7 +991,7 @@ namespace LD.FormsX.Views.Dialogs
                 SystemField_e.PartNumber => string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(fieldName, "n√∫mero de parte", StringComparison.OrdinalIgnoreCase),
+                    || string.Equals(fieldName, "n˙mero de parte", StringComparison.OrdinalIgnoreCase),
                 _ => false
             };
         }
@@ -1110,7 +1110,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             var partNumber = receiptRow.PartNumber?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(partNumber))
-                throw new InvalidOperationException("La l√≠nea escaneada no tiene n√∫mero de parte.");
+                throw new InvalidOperationException("La lÌnea escaneada no tiene n˙mero de parte.");
 
             var productLookup = ProductLookupItems.FirstOrDefault(item =>
                 string.Equals(item.Code?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase));
@@ -1156,7 +1156,7 @@ namespace LD.FormsX.Views.Dialogs
                     break;
                 case "part_number":
                 case "partnumber":
-                case "n√∫mero de parte":
+                case "n˙mero de parte":
                 case "numero de parte":
                     receiptRow.PartNumber = scannedValue;
                     break;
@@ -1366,7 +1366,7 @@ namespace LD.FormsX.Views.Dialogs
             if (linkedReceiptsCount > 0)
                 return true;
 
-            DialogHelper.ShowWarning("No se puede eliminar la recepci√≥n porque es el unico registro ligado al detail.");
+            DialogHelper.ShowWarning("No se puede eliminar la recepciÛn porque es el unico registro ligado al detail.");
             return false;
         }
 
@@ -1497,15 +1497,15 @@ namespace LD.FormsX.Views.Dialogs
             var remainder = splitQuantities.Last();
 
             if (splitQuantities.Count == 1)
-                return $"¬øEst√° seguro de generar 1 registro de {splitQuantities[0]:0.##}?";
+                return $"øEst· seguro de generar 1 registro de {splitQuantities[0]:0.##}?";
 
             if (remainder == maximumQuantity)
-                return $"¬øEst√° seguro de generar {splitQuantities.Count} registros de {maximumQuantity:0.##}?";
+                return $"øEst· seguro de generar {splitQuantities.Count} registros de {maximumQuantity:0.##}?";
 
             if (fullChunks <= 0)
-                return $"¬øEst√° seguro de generar {splitQuantities.Count} registros?";
+                return $"øEst· seguro de generar {splitQuantities.Count} registros?";
 
-            return $"¬øEst√° seguro de generar {splitQuantities.Count} registros: {fullChunks} de {maximumQuantity:0.##} y 1 de {remainder:0.##}?";
+            return $"øEst· seguro de generar {splitQuantities.Count} registros: {fullChunks} de {maximumQuantity:0.##} y 1 de {remainder:0.##}?";
         }
 
         private async Task SplitReceiptRowAsync(AsnReceiptItem receiptRow)
@@ -1517,13 +1517,13 @@ namespace LD.FormsX.Views.Dialogs
 
             if (maximumQuantity <= 0)
             {
-                DialogHelper.ShowError("La cantidad m√°xima debe ser mayor a cero para dividir el registro.");
+                DialogHelper.ShowError("La cantidad m·xima debe ser mayor a cero para dividir el registro.");
                 return;
             }
 
             if (receivedQuantity <= maximumQuantity)
             {
-                DialogHelper.ShowError("La cantidad recibida debe ser mayor a la m√°xima para poder dividir el registro.");
+                DialogHelper.ShowError("La cantidad recibida debe ser mayor a la m·xima para poder dividir el registro.");
                 return;
             }
 
@@ -1579,7 +1579,7 @@ namespace LD.FormsX.Views.Dialogs
                 var response = await _asnReceiptService.UpdateAsnReceipt(receiptRow.AsnReceiptDetailId, receiptRow.ToRequest());
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo sincronizar la recepci√≥n del ASN.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo sincronizar la recepciÛn del ASN.");
                     return;
                 }
             }
@@ -1740,7 +1740,7 @@ namespace LD.FormsX.Views.Dialogs
 
             if (!createResponse.IsSuccess)
             {
-                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear la recepci√≥n inicial del ASN.");
+                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear la recepciÛn inicial del ASN.");
                 return;
             }
 
@@ -1879,7 +1879,7 @@ namespace LD.FormsX.Views.Dialogs
                 var isNewDetail = row.AsnDetailId <= 0;
 
                 if (string.IsNullOrWhiteSpace(row.PartNumber))
-                    throw new InvalidOperationException($"La partida {index + 1} debe tener n√∫mero de parte.");
+                    throw new InvalidOperationException($"La partida {index + 1} debe tener n˙mero de parte.");
 
                 row.AsnId = asnId;
 
@@ -2086,7 +2086,7 @@ namespace LD.FormsX.Views.Dialogs
                     var response = await _asnReceiptService.DeleteAsnReceipt(receiptRow.AsnReceiptDetailId);
                     if (!response.IsSuccess)
                     {
-                        DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la recepci√≥n.");
+                        DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la recepciÛn.");
                         return;
                     }
                 }
@@ -2267,7 +2267,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (_clientId <= 0 || _projectId <= 0)
                     return;
 
-                var response = await _productService.GetProductByClientId(_clientId, _projectId); // ajusta al m√©todo real
+                var response = await _productService.GetProductByClientId(_clientId, _projectId); // ajusta al mÈtodo real
 
                 if (!response.IsSuccess || response.Data == null)
                     return;
@@ -2315,7 +2315,7 @@ namespace LD.FormsX.Views.Dialogs
             }
 
             var dialog = _serviceProvider.GetRequiredService<NuevoArticuloView>();
-            dialog.Owner = this;
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(this));
             dialog.SetContext(_clientId, _projectId);
             dialog.SetInitialPartNumber(partNumber);
 
@@ -2330,7 +2330,7 @@ namespace LD.FormsX.Views.Dialogs
 
             if (createdLookupItem?.Data is not ProductAutocompleteDto createdProduct)
             {
-                DialogHelper.ShowWarning("El art√≠culo se guard√≥, pero no se pudo recargar autom√°ticamente en el ASN.");
+                DialogHelper.ShowWarning("El artÌculo se guardÛ, pero no se pudo recargar autom·ticamente en el ASN.");
                 return true;
             }
 
@@ -2546,7 +2546,7 @@ namespace LD.FormsX.Views.Dialogs
                 }
 
                 var header = currentColumn.Header?.ToString() ?? string.Empty;
-                if (!header.Equals("N√∫mero de Parte", StringComparison.OrdinalIgnoreCase))
+                if (!header.Equals("N˙mero de Parte", StringComparison.OrdinalIgnoreCase))
                     return;
 
                 if (!ProductLookupItems.Any())
@@ -2567,3 +2567,5 @@ namespace LD.FormsX.Views.Dialogs
 
     }
 }
+
+

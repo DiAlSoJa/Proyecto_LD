@@ -1,5 +1,6 @@
 using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
+using LD.Contracts.Constants;
 using LD.Contracts.InventaryStatus;
 using LD.Contracts.Kitting;
 using LD.Contracts.Location;
@@ -16,6 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -205,6 +207,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             txtCiudad.Text = item.Ciudad ?? string.Empty;
             txtTelefono.Text = item.Telefono ?? string.Empty;
             txtCodigoPostal.Text = item.CodigoPostal ?? string.Empty;
+            txtCortina.Text = item.Cortina ?? string.Empty;
+            txtCaja.Text = item.Caja ?? string.Empty;
             SelectDeliveryType(item.TipoEntrega);
             dpFechaProgramada.SelectedDate = item.FechaProgramada;
             UpdateFechaProgramadaVisibility();
@@ -213,6 +217,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             _selectedKitting.KittingId = item.KittingId;
             _selectedKitting.KittingCode = item.KittingCode ?? string.Empty;
             _selectedKitting.Status = item.Status ?? string.Empty;
+            _selectedKitting.Cortina = item.Cortina;
+            _selectedKitting.Caja = item.Caja;
             _kittingCodePreview = _selectedKitting.KittingCode;
 
             await LoadProductsForSelectedClientProjectAsync();
@@ -433,8 +439,9 @@ namespace LD.FormsX.Features.Surtidos.Views
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase) ||
+            KittingStatusNames.IsValidation(status) ||
+            KittingStatusNames.IsLoading(status);
 
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
@@ -453,7 +460,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             if (IsCurrentKittingEditable())
                 return true;
 
-            DialogHelper.ShowWarning("El surtido esta surtido, confirmado o cancelado y ya no permite cambios.");
+            DialogHelper.ShowWarning("El surtido esta en Validación, Cargando, confirmado o cancelado y ya no permite cambios.");
             return false;
         }
 
@@ -485,6 +492,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             txtCiudad.IsEnabled = canInteract;
             txtTelefono.IsEnabled = canInteract;
             txtCodigoPostal.IsEnabled = canInteract;
+            txtCortina.IsEnabled = canInteract;
+            txtCaja.IsEnabled = canInteract;
             cbTipoEntrega.IsEnabled = canInteract;
             dpFechaProgramada.IsEnabled = canInteract && IsProgramadaDeliverySelected();
 
@@ -633,7 +642,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             HasChanges = true;
 
             if (showSuccessToast)
-                ToastHelper.ShowSuccess("Surtido guardado correctamente.");
+                ToastHelper.ShowSuccess("Validación guardada correctamente.");
 
             ApplyEditState();
             return true;
@@ -660,6 +669,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             _selectedKitting.KittingId = response.Data.KittingId;
             _selectedKitting.KittingCode = response.Data.KittingCode ?? string.Empty;
             _selectedKitting.Status = response.Data.Status ?? string.Empty;
+            _selectedKitting.Cortina = response.Data.Cortina;
+            _selectedKitting.Caja = response.Data.Caja;
             _selectedKitting.Client = _clientName;
             _selectedKitting.Project = _projectName;
             _kittingCodePreview = _selectedKitting.KittingCode;
@@ -708,6 +719,8 @@ namespace LD.FormsX.Features.Surtidos.Views
                 Ciudad = NullIfWhiteSpace(txtCiudad.Text),
                 Telefono = NullIfWhiteSpace(txtTelefono.Text),
                 CodigoPostal = NullIfWhiteSpace(txtCodigoPostal.Text),
+                Cortina = NullIfWhiteSpace(txtCortina.Text),
+                Caja = NullIfWhiteSpace(txtCaja.Text),
                 TipoEntrega = NullIfWhiteSpace(tipoEntrega),
                 FechaProgramada = fechaProgramada,
                 Status = GetHeaderStatusForRequest()
@@ -1269,9 +1282,10 @@ namespace LD.FormsX.Features.Surtidos.Views
                     _projectName,
                     _clientId,
                     _projectId)
-                {
-                    Owner = Window.GetWindow(this)
-                };
+                ;
+                WindowOwnerHelper.AttachOwnerOrCenter(
+                    dialog,
+                    WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
                 if (dialog.ShowDialog() != true)
                     return;
@@ -1547,7 +1561,8 @@ namespace LD.FormsX.Features.Surtidos.Views
             issueRow.Description = detailRow.Description;
             issueRow.StandardQuantity = detailRow.StandardQuantity;
             issueRow.MaximumQuantity = detailRow.MaximumQuantity;
-            issueRow.SD ??= detailRow.SD;
+            if (string.IsNullOrWhiteSpace(issueRow.SD))
+                issueRow.SD = detailRow.SD ?? string.Empty;
             issueRow.ReceivedQuantity ??= detailRow.Quantity;
             issueRow.Status ??= detailRow.Status;
             issueRow.LotNumber ??= detailRow.LotNumber;

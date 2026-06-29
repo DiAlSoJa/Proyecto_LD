@@ -1,4 +1,5 @@
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.Kitting;
 using MauiAppLogin.Features.Almacenista.Models;
 using System.Collections.ObjectModel;
@@ -84,7 +85,7 @@ public partial class PickingKittingPage : ContentPage, IQueryAttributable
             var items = issueResponse.Data
                 .Where(x => detailIds.Contains(x.KittingDetailId))
                 .Where(x => x.ReceivedQuantity.GetValueOrDefault() > 0)
-                .Where(x => !string.Equals(x.SupplyStatus?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
+                .Where(x => !KittingStatusNames.IsValidation(x.SupplyStatus))
                 .OrderBy(x => x.StandardIdStr ?? x.StandardId ?? string.Empty)
                 .ThenBy(x => x.PartNumber)
                 .Select(issue => BuildIssueItem(issue, _kittingCode))
@@ -188,7 +189,7 @@ public partial class PickingKittingPage : ContentPage, IQueryAttributable
 
         var parameters = new Dictionary<string, object>
         {
-            { "StandardId", selected.StandardId },
+            { "ExpectedStandardId", selected.StandardId },
             { "TextInformation", selected.InstructionText },
             { "KittingReceiptDetailId", selected.KittingReceiptDetailId },
             { "KittingId", _kittingId }

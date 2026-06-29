@@ -80,7 +80,7 @@
                             <TapGestureRecognizer Tapped="OnPosicionTapped"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Posición" TextColor="#64748B" FontSize="12"/>
+                            <Label Text="Nivel" TextColor="#64748B" FontSize="12"/>
                             <Label x:Name="PosicionLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
                         </VerticalStackLayout>
                     </Border>

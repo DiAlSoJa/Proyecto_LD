@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using LD.Contracts.User;
@@ -51,7 +51,7 @@ namespace LD.FormsX.Views.Usuarios
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoUsuarioView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() == true)
                 await ViewModel.CargarDatosAsync();
@@ -60,7 +60,7 @@ namespace LD.FormsX.Views.Usuarios
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoUsuarioView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetUser(ViewModel.SelectedUser);
 
             var selectedUserId = ViewModel.SelectedUser.User?.Id;
@@ -71,7 +71,7 @@ namespace LD.FormsX.Views.Usuarios
         private async void BtnAlmacenes_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<UsuarioAlmacenView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetUser(ViewModel.SelectedUser);
 
             if (dialog.ShowDialog() == true)
@@ -88,10 +88,13 @@ namespace LD.FormsX.Views.Usuarios
                 Width = 1000,
                 Height = 660,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = Window.GetWindow(this),
                 Background = System.Windows.Media.Brushes.White,
             };
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(
+                window,
+                LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             window.ShowDialog();
         }
     }
 }
+

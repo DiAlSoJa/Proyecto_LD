@@ -277,6 +277,7 @@ namespace LD.Forms.Configuration
         public string Lookup_GetAll => $"{_baseApi}/Lookup";
         public string Lookup_Warehouse => $"{_baseApi}/Lookup/warehouse";
         public string Lookup_WarehouseByUser => $"{_baseApi}/Lookup/warehouse/user/{{userId}}";
+        public string Lookup_CycleCountAuditorByUser => $"{_baseApi}/Lookup/auditor/user/{{userId}}";
         public string Lookup_Client => $"{_baseApi}/Lookup/client";
         public string Lookup_Project => $"{_baseApi}/Lookup/project";
         public string Lookup_ProjectClient => $"{_baseApi}/Lookup/project";
@@ -413,6 +414,26 @@ namespace LD.Forms.Configuration
         public string Kitting_Cancel => $"{_baseApi}/kitting/{{kittingId}}/cancel";
         public string Kitting_Locate => $"{_baseApi}/kitting/{{kittingId}}/locate";
         public string Kitting_SendToSupply => $"{_baseApi}/kitting/{{kittingId}}/send-to-supply";
+        public string Kitting_UploadImage => $"{_baseApi}/kitting/{{kittingId}}/upload-image";
+        public string Kitting_GetImage => $"{_baseApi}/kitting/image?path={{path}}";
+        public string Kitting_ValidationPhotos => $"{_baseApi}/kitting/{{kittingId}}/validation-photos";
+        public string Kitting_ValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}";
+        public string Kitting_ReplaceValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}/replace";
+
+        // ======================
+        // DELIVERY ORDER / DO
+        // ======================
+
+        public string DeliveryOrder_CreateFromKittings => $"{_baseApi}/deliveryOrder/from-kittings";
+        public string DeliveryOrder_AddKittingsToExisting => $"{_baseApi}/deliveryOrder/add-kittings";
+        public string DeliveryOrder_FinishLoading => $"{_baseApi}/deliveryOrder/finish-loading";
+
+        public string LoadMapping_GetAll => $"{_baseApi}/loadmapping";
+        public string LoadMapping_GetLoadingOrders => $"{_baseApi}/loadmapping/loading-orders";
+        public string LoadMapping_Create => $"{_baseApi}/loadmapping";
+        public string LoadMapping_GetScans => $"{_baseApi}/loadmapping/{{loadMappingId}}/scans";
+        public string LoadMapping_CreateScan => $"{_baseApi}/loadmapping/{{loadMappingId}}/scans";
+        public string LoadMapping_DeleteScan => $"{_baseApi}/loadmapping/{{loadMappingId}}/scans/{{scanId}}";
 
         public string KittingDetail_GetAll => $"{_baseApi}/kittingDetail";
         public string KittingDetail_GetById => $"{_baseApi}/kittingDetail/{{kittingDetailId}}";
@@ -425,6 +446,7 @@ namespace LD.Forms.Configuration
         public string KittingIssue_GetById => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
         public string KittingIssue_GetByKittingDetailId => $"{_baseApi}/kittingIssue/kittingDetail/{{kittingDetailId}}";
         public string KittingIssue_Validate => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}/validate";
+        public string KittingIssue_AuditConfirm => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}/audit-confirm";
         public string KittingIssue_Create => $"{_baseApi}/kittingIssue";
         public string KittingIssue_Update => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";
         public string KittingIssue_Delete => $"{_baseApi}/kittingIssue/{{kittingIssueDetailId}}";

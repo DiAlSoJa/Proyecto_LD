@@ -15,8 +15,27 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
         BindingContext = _viewModel;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        RefreshEntryTexts();
+    }
+
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        _viewModel.ExpectedStandardId = string.Empty;
+        _viewModel.EstandarId = string.Empty;
+        _viewModel.AsnId = 0;
+        _viewModel.KittingReceiptDetailId = 0;
+        _viewModel.KittingId = 0;
+        _viewModel.InstructionText = string.Empty;
+        TextInformation = null;
+
+        if (query.TryGetValue("ExpectedStandardId", out var expectedStandardId))
+        {
+            _viewModel.ExpectedStandardId = expectedStandardId?.ToString() ?? string.Empty;
+        }
+
         if (query.TryGetValue("StandardId", out var standardId))
         {
             _viewModel.EstandarId = standardId?.ToString() ?? string.Empty;
@@ -45,10 +64,13 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
             TextInformation = textInformation as string;
             _viewModel.InstructionText = TextInformation ?? string.Empty;
         }
+
+        RefreshEntryTexts();
     }
 
     private async void OnSiguienteClicked(object sender, EventArgs e)
     {
+        SyncEntriesToViewModel();
         await _viewModel.OnSiguienteClicked();
     }
 
@@ -71,13 +93,32 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
         if (!accepted)
             return;
 
-        if (!string.IsNullOrWhiteSpace(page.EstandarId))
-            _viewModel.EstandarId = page.EstandarId;
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            if (!string.IsNullOrWhiteSpace(page.EstandarId))
+                _viewModel.EstandarId = page.EstandarId;
 
-        if (!string.IsNullOrWhiteSpace(page.Rack))
-            _viewModel.Rack = page.Rack;
+            if (!string.IsNullOrWhiteSpace(page.Rack))
+                _viewModel.Rack = page.Rack;
 
-        if (!string.IsNullOrWhiteSpace(page.Posicion))
-            _viewModel.Posicion = page.Posicion;
+            if (!string.IsNullOrWhiteSpace(page.Posicion))
+                _viewModel.Posicion = page.Posicion;
+
+            RefreshEntryTexts();
+        });
+    }
+
+    private void SyncEntriesToViewModel()
+    {
+        _viewModel.EstandarId = EstandarIdEntry.Text?.Trim() ?? string.Empty;
+        _viewModel.Rack = RackEntry.Text?.Trim() ?? string.Empty;
+        _viewModel.Posicion = PosicionEntry.Text?.Trim() ?? string.Empty;
+    }
+
+    private void RefreshEntryTexts()
+    {
+        EstandarIdEntry.Text = _viewModel.EstandarId;
+        RackEntry.Text = _viewModel.Rack;
+        PosicionEntry.Text = _viewModel.Posicion;
     }
 }

@@ -114,15 +114,21 @@
                             Orientation="Horizontal"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left">
-                    <CheckBox x:Name="chkVerSinEmbarcar"
-                              Content="Ver solo surtido"
-                              IsChecked="{Binding VerSinEmbarcar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              Checked="ChkVerSinEmbarcar_Changed"
-                              Unchecked="ChkVerSinEmbarcar_Changed"
+                    <ComboBox x:Name="cmbFiltroEmbarques"
+                              Width="150"
+                              Height="28"
+                              Margin="0,0,0,0"
+                              Padding="5,1"
+                              FontSize="12"
+                              Background="White"
+                              BorderBrush="#D1D5DB"
+                              BorderThickness="1"
                               VerticalAlignment="Center"
-                              FontSize="11"
-                              Foreground="#374151"
-                              Cursor="Hand"/>
+                              SelectionChanged="CmbFiltroEmbarques_SelectionChanged"
+                              Cursor="Hand">
+                        <ComboBoxItem Content="Ver validación" Tag="Validación"/>
+                        <ComboBoxItem Content="Ver cargando" Tag="Cargando"/>
+                    </ComboBox>
 
                     <Button x:Name="BtnActualizar"
                             Height="28"
@@ -217,7 +223,7 @@
                     <Button x:Name="btnEditar"
                             Visibility="Collapsed"
                             Height="28"
-                            MinWidth="60"
+                            MinWidth="176"
                             Padding="6,0"
                             Margin="0,0,8,0"
                             Click="BtnEditar_Click"
@@ -239,7 +245,7 @@
                                        Foreground="#F59E0B"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Editar" FontSize="11"/>
+                            <TextBlock Text="Editar transporte y entrega" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
@@ -297,7 +303,7 @@
                                        Foreground="#2563EB"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Surtido completo" FontSize="11"/>
+                            <TextBlock Text="Validación" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
@@ -325,7 +331,7 @@
                                        Foreground="#374151"
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
-                            <TextBlock Text="Lista de surtido" FontSize="11"/>
+                            <TextBlock Text="Lista de validación" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
@@ -384,6 +390,35 @@
                             <TextBlock Text="Vista previa DO" FontSize="11"/>
                         </StackPanel>
                     </Button>
+
+                    <Button x:Name="btnCargar"
+                            Visibility="Collapsed"
+                            Height="28"
+                            MinWidth="84"
+                            Padding="6,0"
+                            Margin="0,0,8,0"
+                            Click="BtnCargar_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE73E;"
+                                       Foreground="#0E7490"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+                            <TextBlock Text="Cargar" FontSize="11"/>
+                        </StackPanel>
+                    </Button>
                 </WrapPanel>
             </Grid>
         </Border>
@@ -397,7 +432,7 @@
             <Grid>
                 <DataGrid x:Name="dgKitting"
                           AutoGenerateColumns="True"
-                          SelectionMode="Single"
+                          SelectionMode="Extended"
                           SelectionUnit="FullRow"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
@@ -413,7 +448,8 @@
                           HorizontalGridLinesBrush="#E4E8EE"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
-                          SelectionChanged="dgKitting_SelectionChanged"/>
+                          SelectionChanged="dgKitting_SelectionChanged"
+                          AutoGeneratingColumn="dgKitting_AutoGeneratingColumn"/>
             </Grid>
         </Border>
 

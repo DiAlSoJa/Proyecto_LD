@@ -9,11 +9,11 @@ using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Models;
 using LD.Application.Common.Results;
 using LD.Contracts.Constants;
-using LD.Domain.Entities;
 using LD.Infrastructure;
 using LD.Infrastructure.Authorization;
 using LD.Infrastructure.Logging;
 using LD.Infrastructure.Persistence;
+using LD.Infrastructure.Persistence.Seeders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -183,131 +183,79 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(defaultConnectionString))
 {
-    var db = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
-    db.Database.Migrate();
-
-    var movementPermissionsToSeed = new[]
+    app.Logger.LogWarning(
+        "DefaultConnection is not configured. Skipping database migration and permission seeding so the API can start.");
+}
+else
+{
+    try
     {
-        new { Key = PermissionKeys.Movement_Create, Name = "Crear movimientos" },
-        new { Key = PermissionKeys.Movement_Update, Name = "Editar movimientos" },
-        new { Key = PermissionKeys.Movement_Delete, Name = "Eliminar movimientos" }
-    };
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<LdProyectDbContext>();
+        db.Database.Migrate();
 
-    // WarehouseTask permissions — seeded at runtime so they don't need a migration HasData block
-    var warehouseTaskPermissionsToSeed = new[]
-    {
-        new { Key = PermissionKeys.WarehouseTask_View,   Name = "Ver tareas de almacén" },
-        new { Key = PermissionKeys.WarehouseTask_Manage, Name = "Administrar tareas de almacén" }
-    };
+        // Permisos que no se gestionan vía migración (HasData) se siembran aquí.
+        PermissionSeeder.Seed(db);
 
-    var missingWarehouseTaskPermissions = warehouseTaskPermissionsToSeed
-        .Where(p => !db.Permissions.Any(x => x.Key == p.Key))
-        .Select(p => new Permission
+        // Carga de policies dinámicas: cada permiso en BD se registra como policy.
+        var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
+
+        var permissions = db.Permissions
+            .Select(p => p.Key)
+            .ToList();
+
+        foreach (var permission in permissions)
         {
-            PermissionName = p.Name,
-            Key            = p.Key,
-            ModuleId       = 1,
-            CreatedAt      = DateTime.UtcNow,
-            IsActive       = true
-        })
-        .ToList();
+            authOptions.Value.AddPolicy(permission, policy =>
+                policy.Requirements.Add(new PermissionRequirement(permission)));
+        }
 
-    if (missingWarehouseTaskPermissions.Count > 0)
-    {
-        db.Permissions.AddRange(missingWarehouseTaskPermissions);
-        db.SaveChanges();
-    }
-
-    var missingMovementPermissions = movementPermissionsToSeed
-        .Where(permission => !db.Permissions.Any(p => p.Key == permission.Key))
-        .Select(permission => new Permission
+        var anyPermissionPolicies = new[]
         {
-            PermissionName = permission.Name,
-            Key = permission.Key,
-            ModuleId = 6,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
-        })
-        .ToList();
-
-    if (missingMovementPermissions.Count > 0)
-    {
-        db.Permissions.AddRange(missingMovementPermissions);
-        db.SaveChanges();
-    }
-
-    const string superAdminRoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e";
-    const string standardLabelPrintPermissionKey = PermissionKeys.StandardLabel_Print;
-
-    var standardLabelPrintPermission = db.Permissions
-        .FirstOrDefault(p => p.Key == standardLabelPrintPermissionKey);
-
-    if (standardLabelPrintPermission == null)
-    {
-        standardLabelPrintPermission = new Permission
-        {
-            PermissionName = "Imprimir etiquetas LD",
-            Key = standardLabelPrintPermissionKey,
-            ModuleId = 22,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
+            AnyPermissionRequirement.BuildPolicyName(new[]
+            {
+                PermissionKeys.Asn_View,
+                PermissionKeys.WarehouseStaff_Asn_View
+            })
         };
 
-        db.Permissions.Add(standardLabelPrintPermission);
-        db.SaveChanges();
-    }
-
-    var hasSuperAdminLabelPermission = db.RolePermissions.Any(rp =>
-        rp.RoleId == superAdminRoleId &&
-        rp.PermissionId == standardLabelPrintPermission.PermissionId);
-
-    if (!hasSuperAdminLabelPermission)
-    {
-        db.RolePermissions.Add(new RolePermission
+        foreach (var policyName in anyPermissionPolicies)
         {
-            RoleId = superAdminRoleId,
-            PermissionId = standardLabelPrintPermission.PermissionId
-        });
-        db.SaveChanges();
+            var policyPermissions = AnyPermissionRequirement.ParsePolicyName(policyName);
+            authOptions.Value.AddPolicy(policyName, policy =>
+                policy.Requirements.Add(new AnyPermissionRequirement(policyPermissions)));
+        }
     }
-
-    var authOptions = scope.ServiceProvider.GetRequiredService<IOptions<AuthorizationOptions>>();
-
-    var permissions = db.Permissions
-        .Select(p => p.Key)
-        .ToList();
-
-    foreach (var permission in permissions)
+    catch (Exception ex)
     {
-        authOptions.Value.AddPolicy(permission, policy =>
-            policy.Requirements.Add(new PermissionRequirement(permission)));
-    }
+        app.Logger.LogError(
+            ex,
+            "Database initialization failed during startup. Swagger will remain available, but database-backed features may not work until the connection string or database are fixed.");
 
-    foreach (var permission in movementPermissionsToSeed.Concat(warehouseTaskPermissionsToSeed).Select(x => x.Key))
-    {
-        if (permissions.Contains(permission))
-            continue;
-
-        authOptions.Value.AddPolicy(permission, policy =>
-            policy.Requirements.Add(new PermissionRequirement(permission)));
-    }
-
-    var anyPermissionPolicies = new[]
-    {
-        AnyPermissionRequirement.BuildPolicyName(new[]
+        try
         {
-            PermissionKeys.Asn_View,
-            PermissionKeys.WarehouseStaff_Asn_View
-        })
-    };
+            var startupLogDir = Path.Combine(builder.Environment.ContentRootPath, "logs");
+            Directory.CreateDirectory(startupLogDir);
 
-    foreach (var policyName in anyPermissionPolicies)
-    {
-        var policyPermissions = AnyPermissionRequirement.ParsePolicyName(policyName);
-        authOptions.Value.AddPolicy(policyName, policy =>
-            policy.Requirements.Add(new AnyPermissionRequirement(policyPermissions)));
+            var startupLogPath = Path.Combine(startupLogDir, "startup-exception.txt");
+            var startupLogContent = $"""
+                {DateTime.UtcNow:O}
+                {ex}
+
+                """;
+
+            File.AppendAllText(startupLogPath, startupLogContent);
+        }
+        catch
+        {
+            // Best-effort fallback only. If writing the file fails, we still rethrow the original exception.
+        }
+
+        throw;
     }
 }
 

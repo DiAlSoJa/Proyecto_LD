@@ -24,6 +24,7 @@ using LD.FormsX.Views.Auditar;
 using LD.FormsX.Views.Catalogos;
 using LD.FormsX.Views.Categorias;
 using LD.FormsX.Features.CheckList.ViewModels;
+using LD.FormsX.Features.Common;
 using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.CheckList.Tabs;
 using LD.FormsX.Views.Common;
@@ -251,6 +252,7 @@ namespace LD.FormsX
 
             // dialogs
             services.AddTransient<DialogWindow>();
+            services.AddTransient<PermissionLoginDialog>();
             services.AddTransient<NuevoClienteView>();
             services.AddTransient<NuevoAlmacenView>();
             services.AddTransient<NuevaUbicacionView>();

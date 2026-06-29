@@ -110,7 +110,7 @@ namespace LD.FormsX.Views
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoDimensionadorView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             var result = dialog.ShowDialog();
 
@@ -126,7 +126,7 @@ namespace LD.FormsX.Views
                 return;
 
             var dialog = _serviceProvider.GetRequiredService<NuevoDimensionadorView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetDimensioner(ViewModel.SelectedDimensioner);
 
             var result = dialog.ShowDialog();
@@ -138,3 +138,4 @@ namespace LD.FormsX.Views
         }
     }
 }
+

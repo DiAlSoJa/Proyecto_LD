@@ -52,6 +52,12 @@ namespace LD.Domain.Entities
         [MaxLength(50)]
         public string? SealNumber { get; set; }
 
+        [MaxLength(100)]
+        public string? Cortina { get; set; }
+
+        [MaxLength(100)]
+        public string? Caja { get; set; }
+
         [MaxLength(150)]
         public string? Contacto { get; set; }
 
@@ -78,9 +84,22 @@ namespace LD.Domain.Entities
         [MaxLength(30)]
         public string? Status { get; set; }
 
+        [MaxLength(500)]
+        public string? Photo1Path { get; set; }
+
+        [MaxLength(500)]
+        public string? Photo2Path { get; set; }
+
+        [MaxLength(500)]
+        public string? Photo3Path { get; set; }
+
+        [MaxLength(500)]
+        public string? Photo4Path { get; set; }
+
         public Client? Client { get; set; }
         public Project? Project { get; set; }
 
+        public ICollection<KittingValidationPhoto> ValidationPhotos { get; set; } = new List<KittingValidationPhoto>();
         public ICollection<KittingDetail> KittingDetails { get; set; } = new List<KittingDetail>();
     }
 }

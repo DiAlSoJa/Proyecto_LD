@@ -30,6 +30,10 @@ namespace LD.Api.Controllers
         public async Task<IActionResult> GetWarehouseLookupByUser(string userId)
             => ResultExtensions.ToActionResult(await Mediator.Send(new GetUserWarehouseLookupQuery(userId)));
 
+        [HttpGet("auditor/user/{userId}")]
+        public async Task<IActionResult> GetCycleCountAuditorLookupByUser(string userId)
+            => ResultExtensions.ToActionResult(await Mediator.Send(new GetCycleCountAuditorLookupQuery(userId)));
+
         [HttpGet("location")]
         public async Task<IActionResult> GetLocationLookup()
             => ResultExtensions.ToActionResult(await Mediator.Send(new GetLocationLookupQuery()));

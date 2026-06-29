@@ -33,10 +33,9 @@ internal static class EmbarquesDoPrinter
             throw new InvalidOperationException("No hay partidas para mostrar en vista previa del DO.");
 
         var document = BuildDocument(kitting, rows);
-        var preview = new PrintPreviewWindow(document, "Vista previa - Orden de entrega DO", "Orden de entrega DO")
-        {
-            Owner = Application.Current?.MainWindow
-        };
+        var preview = new PrintPreviewWindow(document, "Vista previa - Orden de entrega DO", "Orden de entrega DO");
+
+        WindowOwnerHelper.AttachOwnerOrCenter(preview, Application.Current?.MainWindow);
 
         preview.ShowDialog();
     }

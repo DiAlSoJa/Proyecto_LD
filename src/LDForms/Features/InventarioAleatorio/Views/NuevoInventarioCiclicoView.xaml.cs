@@ -1,38 +1,51 @@
 using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.DTOs;
-using LD.Contracts.DTOs.User;
 using LD.Contracts.Location;
 using LD.Contracts.Requests;
+using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
+using LD.FormsX.Model.Lookup;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
 
 namespace LD.FormsX.Views.InventarioAleatorio
 {
     public partial class NuevoInventarioCiclicoView : Window
     {
-        private readonly UserService _userService;
+        private readonly LookupService _lookupService;
         private readonly LocationService _locationService;
         private readonly CyclicInventoryService _cyclicInventoryService;
+        private readonly DataGridColumnFilterManager _availableGridManager;
+        private readonly DataGridColumnFilterManager _selectedGridManager;
+        private readonly ObservableCollection<LookupItem> _auditorLookupItems = new();
         private List<LocationDto> _locations = [];
         private List<LocationDto> _warehouseLocations = [];
         private List<LocationDto> _selectedLocations = [];
+        private ICollectionView? _availableLocationsView;
+        private ICollectionView? _selectedLocationsView;
+
+        public ObservableCollection<LookupItem> AuditorLookupItems => _auditorLookupItems;
 
         public NuevoInventarioCiclicoView(
-            UserService userService,
+            LookupService lookupService,
             LocationService locationService,
             CyclicInventoryService cyclicInventoryService)
         {
             InitializeComponent();
 
-            _userService = userService;
+            _lookupService = lookupService;
             _locationService = locationService;
             _cyclicInventoryService = cyclicInventoryService;
+            _availableGridManager = new DataGridColumnFilterManager(dgUbicacionesDisponibles);
+            _selectedGridManager = new DataGridColumnFilterManager(dgUbicacionesSeleccionadas);
 
             Loaded += NuevoInventarioCiclicoView_Loaded;
         }
@@ -46,30 +59,28 @@ namespace LD.FormsX.Views.InventarioAleatorio
         {
             try
             {
-                var usersResult = await _userService.GetUsers();
-                if (!usersResult.IsSuccess)
+                if (string.IsNullOrWhiteSpace(UserData.Id))
                 {
-                    DialogHelper.ShowWarning(usersResult.Message);
+                    DialogHelper.ShowWarning("No se pudo identificar al usuario actual.");
                     return;
                 }
 
-                var users = usersResult.Data ?? [];
-                var currentUser = users.FirstOrDefault(x => x.User?.Id == UserData.Id);
-                var currentWarehouseIds = currentUser?.Warehouse?
-                    .Where(x => x.Activo)
-                    .Select(x => x.Id)
-                    .Distinct()
-                    .ToHashSet() ?? [];
+                var warehousesResult = await _lookupService.GetWarehouseLookupByUser(UserData.Id);
+                if (!warehousesResult.IsSuccess)
+                {
+                    DialogHelper.ShowWarning(warehousesResult.Message);
+                    return;
+                }
 
-                var warehouses = currentUser?.Warehouse?
-                    .Where(x => x.Activo)
-                    .OrderBy(x => x.NombreAlmacen)
-                    .Select(x => new DropDownDto
-                    {
-                        Key = x.Id.ToString(),
-                        Value = x.NombreAlmacen
-                    })
-                    .ToList() ?? [];
+                var auditorsResult = await _lookupService.GetCycleCountAuditorLookupByUser(UserData.Id);
+                if (!auditorsResult.IsSuccess)
+                {
+                    DialogHelper.ShowWarning(auditorsResult.Message);
+                    return;
+                }
+
+                var warehouses = warehousesResult.Data ?? [];
+                var auditors = auditorsResult.Data ?? [];
 
                 cmbAlmacen.ItemsSource = warehouses;
                 if (warehouses.Count > 0)
@@ -77,7 +88,13 @@ namespace LD.FormsX.Views.InventarioAleatorio
                     cmbAlmacen.SelectedIndex = 0;
                 }
 
-                cmbAuditor.ItemsSource = BuildAuditorLookup(users, currentWarehouseIds);
+                _auditorLookupItems.Clear();
+                foreach (var auditor in auditors.Select(ToAuditorLookupItem))
+                {
+                    _auditorLookupItems.Add(auditor);
+                }
+
+                lookupAuditor.ClearSelection();
 
                 var locationsResult = await _locationService.GetLocations();
                 if (!locationsResult.IsSuccess)
@@ -95,30 +112,6 @@ namespace LD.FormsX.Views.InventarioAleatorio
             }
         }
 
-        private static List<DropDownDto> BuildAuditorLookup(
-            List<GetUserDto> users,
-            HashSet<int> currentWarehouseIds)
-        {
-            if (currentWarehouseIds.Count == 0)
-            {
-                return [];
-            }
-
-            return users
-                .Where(x => x.User?.Activo == true)
-                .Where(x => x.Warehouse?.Any(w => currentWarehouseIds.Contains(w.Id)) == true)
-                .OrderBy(x => x.User?.Nombre ?? x.User?.UserName)
-                .Select(x => new DropDownDto
-                {
-                    Key = x.User?.Id,
-                    Value = string.IsNullOrWhiteSpace(x.User?.Nombre)
-                        ? x.User?.UserName
-                        : x.User?.Nombre
-                })
-                .Where(x => !string.IsNullOrWhiteSpace(x.Key) && !string.IsNullOrWhiteSpace(x.Value))
-                .ToList();
-        }
-
         private void CmbAlmacen_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadLocationFilters();
@@ -128,7 +121,9 @@ namespace LD.FormsX.Views.InventarioAleatorio
         {
             if (!int.TryParse(cmbAlmacen.SelectedValue?.ToString(), out var warehouseId))
             {
+                _availableLocationsView = null;
                 SetLocationLookup([], [], []);
+                dgUbicacionesDisponibles.ItemsSource = null;
                 return;
             }
 
@@ -138,7 +133,6 @@ namespace LD.FormsX.Views.InventarioAleatorio
 
             _warehouseLocations = warehouseLocations;
             _selectedLocations = [];
-            dgUbicacionesSeleccionadas.ItemsSource = _selectedLocations;
 
             SetLocationLookup(
                 CreateLookup(warehouseLocations.Select(x => x.Rack)),
@@ -146,6 +140,7 @@ namespace LD.FormsX.Views.InventarioAleatorio
                 CreateLookup(warehouseLocations.Select(x => x.Nivel)));
 
             ApplyLocationFilters();
+            RefreshSelectedLocations();
         }
 
         private void SetLocationLookup(
@@ -234,40 +229,62 @@ namespace LD.FormsX.Views.InventarioAleatorio
                 filtered = filtered.Where(x => x.Ubicacion.Contains(ubicacion, StringComparison.OrdinalIgnoreCase));
             }
 
-            dgUbicacionesDisponibles.ItemsSource = filtered
+            var availableLocations = filtered
                 .Where(x => !_selectedLocations.Any(selected => selected.LocationId == x.LocationId))
                 .OrderBy(x => x.Ubicacion)
                 .ToList();
+
+            _availableLocationsView = CollectionViewSource.GetDefaultView(availableLocations);
+            _availableGridManager.ApplyTo(_availableLocationsView);
+            dgUbicacionesDisponibles.ItemsSource = _availableLocationsView;
         }
 
         private void BtnAgregarUbicacion_Click(object sender, RoutedEventArgs e)
         {
-            if (dgUbicacionesDisponibles.SelectedItem is not LocationDto selectedLocation)
+            var selectedLocations = dgUbicacionesDisponibles.SelectedItems
+                .OfType<LocationDto>()
+                .ToList();
+
+            if (selectedLocations.Count == 0)
             {
                 DialogHelper.ShowWarning("Selecciona una ubicacion para agregar.");
                 return;
             }
 
-            if (_selectedLocations.Any(x => x.LocationId == selectedLocation.LocationId))
+            var selectedLocationIds = _selectedLocations
+                .Select(x => x.LocationId)
+                .ToHashSet();
+
+            foreach (var selectedLocation in selectedLocations)
             {
-                return;
+                if (selectedLocationIds.Add(selectedLocation.LocationId))
+                {
+                    _selectedLocations.Add(selectedLocation);
+                }
             }
 
-            _selectedLocations.Add(selectedLocation);
             RefreshSelectedLocations();
             ApplyLocationFilters();
         }
 
         private void BtnQuitarUbicacion_Click(object sender, RoutedEventArgs e)
         {
-            if (dgUbicacionesSeleccionadas.SelectedItem is not LocationDto selectedLocation)
+            var selectedLocations = dgUbicacionesSeleccionadas.SelectedItems
+                .OfType<LocationDto>()
+                .ToList();
+
+            if (selectedLocations.Count == 0)
             {
                 DialogHelper.ShowWarning("Selecciona una ubicacion para quitar.");
                 return;
             }
 
+            var selectedLocationIds = selectedLocations
+                .Select(x => x.LocationId)
+                .ToHashSet();
+
             _selectedLocations = _selectedLocations
-                .Where(x => x.LocationId != selectedLocation.LocationId)
+                .Where(x => !selectedLocationIds.Contains(x.LocationId))
                 .ToList();
 
             RefreshSelectedLocations();
@@ -276,15 +293,18 @@ namespace LD.FormsX.Views.InventarioAleatorio
 
         private void RefreshSelectedLocations()
         {
-            dgUbicacionesSeleccionadas.ItemsSource = null;
-            dgUbicacionesSeleccionadas.ItemsSource = _selectedLocations
+            var selectedLocations = _selectedLocations
                 .OrderBy(x => x.Ubicacion)
                 .ToList();
+
+            _selectedLocationsView = CollectionViewSource.GetDefaultView(selectedLocations);
+            _selectedGridManager.ApplyTo(_selectedLocationsView);
+            dgUbicacionesSeleccionadas.ItemsSource = _selectedLocationsView;
         }
 
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            if (cmbAuditor.SelectedValue is null)
+            if (!lookupAuditor.TryCommitSelection() || lookupAuditor.SelectedLookupItem is not LookupItem auditorLookup)
             {
                 DialogHelper.ShowWarning("Selecciona un auditor.");
                 return;
@@ -307,8 +327,8 @@ namespace LD.FormsX.Views.InventarioAleatorio
                 var request = new InventarioCiclicoRequest
                 {
                     Fecha = DateTime.Today,
-                    AuditorUserId = cmbAuditor.SelectedValue.ToString() ?? string.Empty,
-                    AuditorNombre = (cmbAuditor.SelectedItem as DropDownDto)?.Value,
+                    AuditorUserId = auditorLookup.Id?.ToString() ?? string.Empty,
+                    AuditorNombre = auditorLookup.Code,
                     WarehouseId = warehouseId,
                     Estatus = "Abierto",
                     LocationIds = _selectedLocations.Select(x => x.LocationId).Distinct().ToList()
@@ -344,6 +364,17 @@ namespace LD.FormsX.Views.InventarioAleatorio
             lookup.Insert(0, new DropDownDto { Key = "", Value = "Todos" });
 
             return lookup;
+        }
+
+        private static LookupItem ToAuditorLookupItem(DropDownDto auditor)
+        {
+            return new LookupItem
+            {
+                Id = auditor.Key ?? string.Empty,
+                Code = auditor.Value ?? auditor.Key ?? string.Empty,
+                Description = auditor.Description ?? auditor.Value ?? string.Empty,
+                Data = auditor
+            };
         }
 
         private static bool IsSpecificFilterValue(string? value)

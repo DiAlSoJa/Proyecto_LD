@@ -396,10 +396,10 @@ namespace LD.FormsX.Views.Inventario
             if (!LocationLookupItems.Any())
                 await LoadLocationsAsync();
 
-            var dialog = new CambiarUbicacionInventarioDialog(selectedInventories.First(), LocationLookupItems)
-            {
-                Owner = Window.GetWindow(this)
-            };
+            var dialog = new CambiarUbicacionInventarioDialog(selectedInventories.First(), LocationLookupItems);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(
+                dialog,
+                LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() != true)
                 return;
@@ -466,10 +466,10 @@ namespace LD.FormsX.Views.Inventario
             if (!StatusLookupItems.Any())
                 await LoadStatusesAsync();
 
-            var dialog = new CambiarStatusInventarioDialog(selectedInventories.First(), StatusLookupItems)
-            {
-                Owner = Window.GetWindow(this)
-            };
+            var dialog = new CambiarStatusInventarioDialog(selectedInventories.First(), StatusLookupItems);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(
+                dialog,
+                LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() != true)
                 return;
@@ -526,10 +526,10 @@ namespace LD.FormsX.Views.Inventario
             if (!WarehouseLookupItems.Any())
                 await LoadWarehousesAsync();
 
-            var dialog = new CambiarAlmacenInventarioDialog(selectedInventories.First(), WarehouseLookupItems, _lookupService)
-            {
-                Owner = Window.GetWindow(this)
-            };
+            var dialog = new CambiarAlmacenInventarioDialog(selectedInventories.First(), WarehouseLookupItems, _lookupService);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(
+                dialog,
+                LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() != true)
                 return;

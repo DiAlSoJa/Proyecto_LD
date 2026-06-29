@@ -2,6 +2,7 @@ using LD.Application.Common.Interfaces.Persistence;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
 using LD.Contracts.AvailableInventory;
+using LD.Contracts.Constants;
 using LD.Domain.Entities;
 using LD.Domain.Enums;
 using MediatR;
@@ -274,7 +275,7 @@ public class ChangeInventoryLocationCommandHandler : IRequestHandler<ChangeInven
 
         issueDetail.LocationId = destinationLocation.LocationId;
         issueDetail.LocationCode = destinationLocation.LocationName?.Trim() ?? request.UbicacionDestino.Trim();
-        issueDetail.SupplyStatus = "Surtido";
+        issueDetail.SupplyStatus = KittingStatusNames.Validacion;
         issueDetail.LastModifiedAt = now;
         issueDetail.LastModifiedByUserId = request.UserId;
 
@@ -307,7 +308,7 @@ public class ChangeInventoryLocationCommandHandler : IRequestHandler<ChangeInven
         if (effectiveKittingId <= 0)
             return (null, false);
 
-        var finalized = await AreAllIssueLinesSurtidoAsync(effectiveKittingId);
+        var finalized = await AreAllIssueLinesValidacionAsync(effectiveKittingId);
         if (!finalized)
             return (null, false);
 
@@ -321,9 +322,9 @@ public class ChangeInventoryLocationCommandHandler : IRequestHandler<ChangeInven
                 false);
         }
 
-        if (!string.Equals(kitting.Status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
+        if (!KittingStatusNames.IsValidation(kitting.Status))
         {
-            kitting.Status = "Surtido";
+            kitting.Status = KittingStatusNames.Validacion;
             kitting.LastModifiedAt = now;
             kitting.LastModifiedByUserId = request.UserId;
 
@@ -348,7 +349,7 @@ public class ChangeInventoryLocationCommandHandler : IRequestHandler<ChangeInven
             .Sum(x => x.ReceivedQuantity ?? 0m);
     }
 
-    private async Task<bool> AreAllIssueLinesSurtidoAsync(int kittingId)
+    private async Task<bool> AreAllIssueLinesValidacionAsync(int kittingId)
     {
         var detailIds = (await _kittingDetailRepository.GetManyAsync() ?? new List<KittingDetail>())
             .Where(x => x.KittingId == kittingId)
@@ -365,6 +366,6 @@ public class ChangeInventoryLocationCommandHandler : IRequestHandler<ChangeInven
         if (issueDetails.Count == 0)
             return false;
 
-        return issueDetails.All(x => string.Equals(x.SupplyStatus?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase));
+        return issueDetails.All(x => KittingStatusNames.IsValidation(x.SupplyStatus));
     }
 }

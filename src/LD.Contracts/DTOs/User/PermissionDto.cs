@@ -9,6 +9,7 @@ namespace LD.Contracts.DTOs.User
     public class PermissionDto
     {
         public int? PermissionId { get; set; }
+        public string? PermissionKey { get; set; }
         public string? PermissionName { get; set; }
     }
 }

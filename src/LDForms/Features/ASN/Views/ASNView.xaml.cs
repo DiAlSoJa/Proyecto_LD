@@ -376,7 +376,10 @@ namespace LD.FormsX.Views.ASN
                 return;
             }
 
-            _allAsns = result.Data ?? new List<AsnDto>();
+            _allAsns = (result.Data ?? new List<AsnDto>())
+                .OrderByDescending(x => x.CreatedAt)
+                .ThenByDescending(x => x.AsnId)
+                .ToList();
             AplicarFiltroAsn();
         }
 
@@ -539,7 +542,7 @@ namespace LD.FormsX.Views.ASN
         private async void BtnNuevoASN_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetClientProjectContext(
                 SelectedClientId,
                 SelectedProjectId,
@@ -563,7 +566,7 @@ namespace LD.FormsX.Views.ASN
             }
 
             var dialog = _serviceProvider.GetRequiredService<NuevoASNView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetClientProjectContext(0, 0, _selectedX.Client, _selectedX.Project);
             dialog.SetAsn(_selectedX);
 
@@ -1161,3 +1164,4 @@ namespace LD.FormsX.Views.ASN
 
     }
 }
+

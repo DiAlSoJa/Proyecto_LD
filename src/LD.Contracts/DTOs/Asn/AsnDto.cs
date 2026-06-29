@@ -8,6 +8,9 @@ namespace LD.Contracts.ASN
         [DisplayName("Id")]
         public int AsnId { get; set; }
 
+        [DisplayName("Creado")]
+        public DateTime CreatedAt { get; set; }
+
         [DisplayName("ASN")]
         public string AsnCode { get; set; } = string.Empty;
 

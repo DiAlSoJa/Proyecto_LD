@@ -19,6 +19,7 @@ public partial class Scan3FieldsPage : ContentPage
     private DateTime _lastScanAt = DateTime.MinValue;
     private string _lastValue = "";
     private bool _isBusy;
+    private bool _isClosing;
     private readonly TaskCompletionSource<bool> _completion = new();
 
     public Scan3FieldsPage(
@@ -122,9 +123,10 @@ public partial class Scan3FieldsPage : ContentPage
         }
         else if (_step == 1)
         {
-            if (IsPositionCode(value))
+            var normalizedPosition = NormalizePositionCode(value);
+            if (normalizedPosition is not null)
             {
-                SetPosition(value);
+                SetPosition(normalizedPosition);
                 _step = string.IsNullOrWhiteSpace(Rack) ? 1 : 3;
                 CameraView.IsDetecting = _step < 3;
                 UpdateHint();
@@ -139,14 +141,15 @@ public partial class Scan3FieldsPage : ContentPage
         }
         else if (_step == 2)
         {
-            if (!IsPositionCode(value))
+            var normalizedPosition = NormalizePositionCode(value);
+            if (normalizedPosition is null)
             {
-                HintLabel.Text = "La posicion debe ser una sola letra.";
+                HintLabel.Text = "La posicion debe ser una letra o un codigo NIV + letra.";
                 CameraView.IsDetecting = true;
                 return;
             }
 
-            SetPosition(value);
+            SetPosition(normalizedPosition);
             _step = 3;
             CameraView.IsDetecting = false;
         }
@@ -177,10 +180,11 @@ public partial class Scan3FieldsPage : ContentPage
             }
 
             var posicion = initialPosicion?.Trim() ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(posicion))
+            var normalizedPosition = NormalizePositionCode(posicion);
+            if (normalizedPosition is not null)
             {
-                Posicion = posicion;
-                PosicionLabel.Text = posicion;
+                Posicion = normalizedPosition;
+                PosicionLabel.Text = normalizedPosition;
                 ApplyAcceptedState(PosicionBorder);
                 _step = 3;
             }
@@ -197,7 +201,24 @@ public partial class Scan3FieldsPage : ContentPage
 
     private static bool IsPositionCode(string value)
     {
-        return value.Length == 1 && char.IsLetter(value[0]);
+        return NormalizePositionCode(value) is not null;
+    }
+
+    private static string? NormalizePositionCode(string value)
+    {
+        var normalized = value.Trim().ToUpperInvariant();
+
+        if (normalized.Length == 1 && char.IsLetter(normalized[0]))
+            return normalized;
+
+        if (normalized.Length == 4 &&
+            normalized.StartsWith("NIV", StringComparison.Ordinal) &&
+            char.IsLetter(normalized[3]))
+        {
+            return normalized[3].ToString();
+        }
+
+        return null;
     }
 
     private void SetPosition(string value)
@@ -375,15 +396,16 @@ public partial class Scan3FieldsPage : ContentPage
 
         if (_requiresThreeFields && !IsPositionCode(Posicion))
         {
-            await DisplayAlertAsync("Posicion invalida", "La posicion debe ser una sola letra.", "OK");
+            await DisplayAlertAsync("Posicion invalida", "La posicion debe ser una letra o un codigo NIV + letra.", "OK");
             return;
         }
 
         try
         {
             SetBusy(true);
-            _completion.TrySetResult(true);
+            _isClosing = true;
             await Navigation.PopModalAsync();
+            _completion.TrySetResult(true);
         }
         finally
         {
@@ -406,7 +428,7 @@ public partial class Scan3FieldsPage : ContentPage
         base.OnDisappearing();
         CameraView.IsDetecting = false;
 
-        if (!_completion.Task.IsCompleted)
+        if (!_completion.Task.IsCompleted && !_isClosing)
             _completion.TrySetResult(false);
     }
 }

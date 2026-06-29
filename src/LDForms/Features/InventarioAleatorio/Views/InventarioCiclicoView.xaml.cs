@@ -49,7 +49,7 @@ namespace LD.FormsX.Views.InventarioAleatorio
         private async void BtnNuevoInventario_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoInventarioCiclicoView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             var result = dialog.ShowDialog();
             if (result == true)
@@ -158,3 +158,4 @@ namespace LD.FormsX.Views.InventarioAleatorio
         private sealed record ResultadoInventarioRow(string NoParte, bool Escaneado);
     }
 }
+

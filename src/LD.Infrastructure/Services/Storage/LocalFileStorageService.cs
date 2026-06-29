@@ -62,6 +62,19 @@ public class LocalFileStorageService : IFileStorageService
         return File.OpenRead(fullPath);
     }
 
+    public Task<bool> DeleteAsync(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return Task.FromResult(false);
+
+        var fullPath = GetFullPath(path);
+        if (!File.Exists(fullPath))
+            return Task.FromResult(false);
+
+        File.Delete(fullPath);
+        return Task.FromResult(true);
+    }
+
     private string GetFullPath(string relativePath)
     {
         var normalized = NormalizeBlobPath(relativePath);

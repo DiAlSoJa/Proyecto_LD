@@ -1,7 +1,7 @@
 ﻿using LD.Client.Services;
 using LD.Client.Configuration;
 using LD.Contracts.DTOs;
-using LD.Contracts.Enums;
+using LD.Contracts.Constants;
 using LD.Contracts.Kitting;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Features.Surtidos.Views;
@@ -15,6 +15,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace LD.FormsX.Features.Embarques.Views
@@ -22,6 +23,7 @@ namespace LD.FormsX.Features.Embarques.Views
     public partial class EmbarquesView : UserControl, INotifyPropertyChanged
     {
         private readonly KittingService _kittingService;
+        private readonly DeliveryOrderService _deliveryOrderService;
         private readonly KittingDetailService _kittingDetailService;
         private readonly KittingIssueService _kittingIssueService;
         private readonly LookupService _lookupService;
@@ -33,6 +35,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private KittingDto? _selectedKitting;
         private KittingDetailDto? _selectedDetail;
+        private List<KittingDto> _selectedKittings = new();
         private List<KittingDto> _allKittings = new();
         private List<UserProjectClientDto> _userProjectClients = new();
         private bool _cargandoCombos;
@@ -41,7 +44,6 @@ namespace LD.FormsX.Features.Embarques.Views
         private int _selectedProjectId;
         private string _selectedClientText = string.Empty;
         private string _selectedProjectText = string.Empty;
-        private bool _verSinEmbarcar = true;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -100,21 +102,9 @@ namespace LD.FormsX.Features.Embarques.Views
             }
         }
 
-        public bool VerSinEmbarcar
-        {
-            get => _verSinEmbarcar;
-            set
-            {
-                if (_verSinEmbarcar == value)
-                    return;
-
-                _verSinEmbarcar = value;
-                OnPropertyChanged(nameof(VerSinEmbarcar));
-            }
-        }
-
         public EmbarquesView(
             KittingService kittingService,
+            DeliveryOrderService deliveryOrderService,
             KittingDetailService kittingDetailService,
             KittingIssueService kittingIssueService,
             LookupService lookupService,
@@ -124,6 +114,7 @@ namespace LD.FormsX.Features.Embarques.Views
             DataContext = this;
 
             _kittingService = kittingService;
+            _deliveryOrderService = deliveryOrderService;
             _kittingDetailService = kittingDetailService;
             _kittingIssueService = kittingIssueService;
             _lookupService = lookupService;
@@ -148,11 +139,14 @@ namespace LD.FormsX.Features.Embarques.Views
                 "FechaProgramada");
             _gridFilter.SetColumnOrder(
                 "KittingCode",
+                "DeliveryOrderCode",
                 "Client",
                 "Project",
                 "InvoiceNumber",
                 "TransportLine",
                 "VehicleType",
+                "Cortina",
+                "Caja",
                 "DriverName",
                 "VehiclePlate",
                 "SealNumber",
@@ -174,39 +168,64 @@ namespace LD.FormsX.Features.Embarques.Views
                 "ExchangeRate",
                 "PurchaseOrder",
                 "CustomsDeclarationNumber");
-            _gridFilterIssue.SetHiddenColumns("KittingReceiptDetailId", "KittingDetailId", "ProductId", "LocationId");
+            _gridFilterIssue.SetHiddenColumns("KittingReceiptDetailId", "KittingDetailId", "DeliveryOrderId", "StandardIdStr", "ProductId", "LocationId");
+            _gridFilterIssue.SetColumnOrder(
+                "StandardId",
+                "PartNumber",
+                "Description",
+                "StandardQuantity",
+                "MaximumQuantity",
+                "SD",
+                "ReceivedQuantity",
+                "Status",
+                "LocationCode",
+                "SupplyStatus",
+                "DeliveryOrderCode",
+                "LotNumber",
+                "ExpirationDate",
+                "Reference",
+                "PurchaseOrder",
+                "CustomsDeclarationNumber");
 
+            cmbFiltroEmbarques.SelectedIndex = 0;
             UpdateActionButtons();
         }
 
         private static bool IsConfirmedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Confirmado", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Confirmado, StringComparison.OrdinalIgnoreCase) ||
+            KittingStatusNames.IsValidation(status);
 
         private static bool IsCancelledStatus(string? status) =>
-            string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
-
-        private static bool IsCreatedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Creado", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsCancelled(status);
 
         private static bool IsValidatedStatus(string? status) =>
-            string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsLoading(status);
 
         private static bool IsSurtidoStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsValidation(status);
 
         private static bool IsSurtiendoStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase);
+            string.Equals(status?.Trim(), KittingStatusNames.Surtiendo, StringComparison.OrdinalIgnoreCase);
 
-        private static bool IsEmbarqueVisibleStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Validando", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Validado", StringComparison.OrdinalIgnoreCase) ||
+        private static bool IsEmbarcadoStatus(string? status) =>
             string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
 
+        private List<KittingDto> GetSelectedKittings()
+        {
+            if (dgKitting?.SelectedItems == null || dgKitting.SelectedItems.Count == 0)
+                return new List<KittingDto>();
+
+            return dgKitting.SelectedItems
+                .OfType<KittingDto>()
+                .OrderBy(item => dgKitting.Items.IndexOf(item))
+                .ToList();
+        }
+
+        private bool HasMultipleKittingSelection() =>
+            _selectedKittings.Count > 1;
+
         private static bool IsSendingStatus(string? status) =>
-            string.Equals(status?.Trim(), "Surtiendo", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(status?.Trim(), "Ubicando", StringComparison.OrdinalIgnoreCase);
+            KittingStatusNames.IsSending(status);
 
         private static string GetTerminalStatusLabel(string? status)
         {
@@ -214,16 +233,30 @@ namespace LD.FormsX.Features.Embarques.Views
                 return "cancelado";
 
             if (IsValidatedStatus(status))
-                return "validado";
+                return "cargando";
 
-            if (string.Equals(status?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase))
-                return "surtido";
+            if (IsSurtidoStatus(status))
+                return "validación";
 
             return "confirmado";
         }
 
         private static bool IsTerminalStatus(string? status) =>
             IsConfirmedStatus(status) || IsValidatedStatus(status) || IsCancelledStatus(status);
+
+        private void dgKitting_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (!string.Equals(e.PropertyName, nameof(KittingDto.Status), StringComparison.OrdinalIgnoreCase))
+                return;
+
+            if (e.Column is not DataGridTextColumn textColumn)
+                return;
+
+            textColumn.Binding = new Binding(nameof(KittingDto.Status))
+            {
+                Converter = new KittingStatusDisplayConverter()
+            };
+        }
 
         private static SolidColorBrush CreateBrush(string hexColor) =>
             new((Color)ColorConverter.ConvertFromString(hexColor));
@@ -256,32 +289,39 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private void UpdateActionButtons()
         {
-            var hasSelected = _selectedKitting != null;
+            var hasSelected = _selectedKittings.Count > 0;
+            var hasMultipleSelection = HasMultipleKittingSelection();
             var isSending = IsSendingStatus(_selectedKitting?.Status);
             var isTerminal = IsTerminalStatus(_selectedKitting?.Status);
             var canEdit = hasSelected && !isTerminal;
             var terminalStatus = GetTerminalStatusLabel(_selectedKitting?.Status);
+            var editTargetsCount = _selectedKittings.Count == 1
+                ? GetDeliveryOrderEditTargets(_selectedKittings[0]).Count
+                : _selectedKittings.Count;
             var confirmTooltip = !hasSelected
-                ? "Selecciona un embarque para surtir."
+                ? "Selecciona un embarque para pasar a validación."
                 : isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede surtir."
+                    ? $"Este embarque esta {terminalStatus}. Ya no se puede pasar a validación."
                     : !isSending
-                        ? "El embarque debe estar en estatus Surtiendo para poder marcarlo como Surtido completo."
-                        : "Marcar como Surtido completo";
+                        ? "El embarque debe estar en estatus Surtiendo para poder pasar a validación."
+                        : "Pasar a validación";
+
+            if (btnEditar != null)
+                btnEditar.Visibility = hasSelected ? Visibility.Visible : Visibility.Collapsed;
 
             ConfigureActionButton(
                 btnEditar,
-                canEdit,
-                hasSelected && isTerminal,
-                hasSelected && isTerminal
-                    ? $"Este embarque esta {terminalStatus}. Ya no se puede editar."
-                    : hasSelected
-                        ? "Editar embarque"
-                        : "Selecciona un embarque para editar.");
+                hasSelected,
+                false,
+                _selectedKittings.Count == 1 && editTargetsCount > 1
+                    ? $"Editar transporte y entrega de {editTargetsCount} embarques de la misma orden en Cargando."
+                    : hasMultipleSelection
+                        ? $"Editar transporte y entrega de {_selectedKittings.Count} embarques."
+                        : "Editar transporte y entrega");
 
             ConfigureActionButton(
                 btnEnviarASurtir,
-                canEdit && !isSending,
+                canEdit && !isSending && !hasMultipleSelection,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
                     ? $"Este embarque esta {terminalStatus}. Ya no se puede enviar a surtir."
@@ -293,37 +333,49 @@ namespace LD.FormsX.Features.Embarques.Views
 
             ConfigureActionButton(
                 btnConfirmar,
-                hasSelected && isSending,
+                hasSelected && isSending && !hasMultipleSelection,
                 hasSelected && isTerminal,
                 confirmTooltip);
 
             ConfigureActionButton(
                 btnListaSurtido,
-                hasSelected,
+                hasSelected && !hasMultipleSelection,
                 false,
                 hasSelected
-                    ? "Imprimir lista de surtido"
-                    : "Selecciona un embarque para imprimir la lista de surtido.");
+                    ? "Imprimir lista de validación"
+                    : "Selecciona un embarque para imprimir la lista de validación.");
 
             ConfigureActionButton(
                 btnValidar,
-                hasSelected,
+                hasSelected && !hasMultipleSelection,
                 false,
                 hasSelected
-                    ? "Abrir el dialogo de validacion del embarque."
+                    ? "Abrir el dialogo de validación del embarque."
                     : "Selecciona un embarque para validar.");
 
             ConfigureActionButton(
                 btnImprimirDO,
-                hasSelected,
+                hasSelected && !hasMultipleSelection,
                 false,
                 hasSelected
                     ? "Imprimir orden de entrega DO"
                     : "Selecciona un embarque para imprimir el DO.");
 
+            var canShowCargar = hasSelected && _selectedKittings.All(item => IsValidatedStatus(item.Status));
+            if (btnCargar != null)
+                btnCargar.Visibility = canShowCargar ? Visibility.Visible : Visibility.Collapsed;
+
+            ConfigureActionButton(
+                btnCargar,
+                canShowCargar && _selectedKittings.All(item => !IsCancelledStatus(item.Status) && !IsEmbarcadoStatus(item.Status)),
+                hasSelected && _selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsEmbarcadoStatus(item.Status)),
+                hasSelected
+                    ? $"Cargar {_selectedKittings.Count} embarque(s) a orden de entrega."
+                    : "Selecciona uno o más embarques para cargar.");
+
             ConfigureActionButton(
                 btnCancelar,
-                canEdit,
+                canEdit && !hasMultipleSelection,
                 hasSelected && isTerminal,
                 hasSelected && isTerminal
                     ? $"Este embarque esta {terminalStatus}. Ya no se puede cancelar."
@@ -454,6 +506,9 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private void AplicarFiltroKitting()
         {
+            if (_gridFilter == null)
+                return;
+
             var filtered = _allKittings.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(SelectedClientText))
@@ -468,14 +523,10 @@ namespace LD.FormsX.Features.Embarques.Views
                     string.Equals(x.Project?.Trim(), SelectedProjectText.Trim(), StringComparison.OrdinalIgnoreCase));
             }
 
-            if (VerSinEmbarcar)
-            {
-                filtered = filtered.Where(x => IsSurtidoStatus(x.Status));
-            }
+            if (IsCargandoFilterSelected())
+                filtered = filtered.Where(x => IsValidatedStatus(x.Status));
             else
-            {
-                filtered = filtered.Where(x => IsEmbarqueVisibleStatus(x.Status));
-            }
+                filtered = filtered.Where(x => IsSurtidoStatus(x.Status));
 
             _gridFilter.SetData(filtered.ToList());
             _selectedKitting = null;
@@ -594,8 +645,19 @@ namespace LD.FormsX.Features.Embarques.Views
                 AplicarFiltroKitting();
         }
 
-        private async void ChkVerSinEmbarcar_Changed(object sender, RoutedEventArgs e)
+        private bool IsCargandoFilterSelected()
         {
+            if (cmbFiltroEmbarques?.SelectedItem is ComboBoxItem selectedItem)
+                return string.Equals(selectedItem.Tag?.ToString()?.Trim(), KittingStatusNames.Cargando, StringComparison.OrdinalIgnoreCase);
+
+            return false;
+        }
+
+        private async void CmbFiltroEmbarques_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_gridFilter == null || _gridFilterDet == null || _gridFilterIssue == null)
+                return;
+
             if (SelectedClientId > 0 && SelectedProjectId > 0 && _allKittings.Count == 0)
             {
                 await CargarDatosConLoaderAsync();
@@ -608,7 +670,7 @@ namespace LD.FormsX.Features.Embarques.Views
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoSurtidoView>();
-            dialog.Owner = Window.GetWindow(this);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetClientProjectContext(
                 SelectedClientId,
                 SelectedProjectId,
@@ -624,24 +686,73 @@ namespace LD.FormsX.Features.Embarques.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedKitting == null)
-                return;
-
-            if (IsTerminalStatus(_selectedKitting.Status))
+            var selectedKittings = GetSelectedKittings();
+            if (selectedKittings.Count == 0)
             {
-                DialogHelper.ShowWarning("El embarque seleccionado esta confirmado o cancelado. Ya no se puede editar.");
+                DialogHelper.ShowWarning("Selecciona uno o más embarques para editar.");
                 return;
             }
 
+            if (selectedKittings.Any(item => IsEmbarcadoStatus(item.Status)))
+            {
+                DialogHelper.ShowWarning("Uno o más embarques seleccionados estan embarcados. Ya no se pueden editar.");
+                return;
+            }
+
+            if (selectedKittings.Count == 1)
+            {
+                var expandedKittings = GetDeliveryOrderEditTargets(selectedKittings[0]);
+                if (expandedKittings.Count > 1)
+                {
+                    var deliveryOrderCode = selectedKittings[0].DeliveryOrderCode?.Trim() ?? "sin folio";
+                    if (!DialogHelper.ShowConfirm(
+                            $"El embarque seleccionado pertenece a la orden de entrega {deliveryOrderCode} y se editarán {expandedKittings.Count} embarques con esa misma orden. ¿Deseas continuar?",
+                            "Editar embarques"))
+                    {
+                        return;
+                    }
+                }
+
+                selectedKittings = expandedKittings;
+            }
+
             var dialog = _serviceProvider.GetRequiredService<EditarSurtidoView>();
-            dialog.Owner = Window.GetWindow(this);
-            dialog.SetKitting(_selectedKitting);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
+            dialog.SetTransportAndDeliveryOnlyMode();
+            if (selectedKittings.Count == 1)
+            {
+                dialog.SetKitting(selectedKittings[0]);
+            }
+            else
+            {
+                dialog.SetKittings(selectedKittings);
+            }
 
             dialog.ShowDialog();
             if (dialog.HasChanges)
             {
                 await CargarDatosConLoaderAsync();
             }
+        }
+
+        private List<KittingDto> GetDeliveryOrderEditTargets(KittingDto selectedKitting)
+        {
+            if (!IsValidatedStatus(selectedKitting.Status) || string.IsNullOrWhiteSpace(selectedKitting.DeliveryOrderCode))
+                return new List<KittingDto> { selectedKitting };
+
+            var deliveryOrderCode = selectedKitting.DeliveryOrderCode.Trim();
+            // Toma todos los embarques en Cargando que comparten la misma orden de entrega.
+            var targets = _allKittings
+                .Where(item => item.KittingId > 0)
+                .Where(item => IsValidatedStatus(item.Status))
+                .Where(item => string.Equals(item.DeliveryOrderCode?.Trim(), deliveryOrderCode, StringComparison.OrdinalIgnoreCase))
+                .GroupBy(item => item.KittingId)
+                .Select(group => group.First())
+                .ToList();
+
+            return targets.Count > 0
+                ? targets
+                : new List<KittingDto> { selectedKitting };
         }
 
         private async void BtnEnviarASurtir_Click(object sender, RoutedEventArgs e)
@@ -703,7 +814,7 @@ namespace LD.FormsX.Features.Embarques.Views
 
                 if (!IsSendingStatus(_selectedKitting.Status))
                 {
-                    DialogHelper.ShowWarning("El embarque debe estar en estatus Surtiendo para poder marcarlo como Surtido completo.");
+                    DialogHelper.ShowWarning("El embarque debe estar en estatus Surtiendo para poder pasar a validación.");
                     return;
                 }
 
@@ -717,7 +828,7 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el embarque a estatus Surtido correctamente.");
+                DialogHelper.ShowSuccess(result.Message ?? "Se cambió el embarque a estatus Validación correctamente.");
                 await CargarDatosConLoaderAsync();
             }
             catch (Exception ex)
@@ -771,7 +882,7 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
                 {
-                    DialogHelper.ShowWarning("Selecciona un embarque para imprimir la lista de surtido.");
+                    DialogHelper.ShowWarning("Selecciona un embarque para imprimir la lista de validación.");
                     return;
                 }
 
@@ -800,15 +911,15 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-            var dialog = _serviceProvider.GetRequiredService<ValidarEmbarqueDialog>();
-            dialog.Owner = Window.GetWindow(this);
-            dialog.SetKitting(_selectedKitting);
-            dialog.ShowDialog();
-            if (dialog.HasChanges)
-            {
-                await CargarDatosConLoaderAsync();
+                var dialog = _serviceProvider.GetRequiredService<ValidarEmbarqueDialog>();
+                WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
+                dialog.SetKitting(_selectedKitting);
+                dialog.ShowDialog();
+                if (dialog.HasChanges)
+                {
+                    await CargarDatosConLoaderAsync();
+                }
             }
-        }
             catch (Exception ex)
             {
                 DialogHelper.ShowError(ex.Message);
@@ -838,6 +949,131 @@ namespace LD.FormsX.Features.Embarques.Views
             {
                 DialogHelper.ShowError(ex.Message);
             }
+        }
+
+        private async void BtnCargar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var selectedKittings = GetSelectedKittings();
+                if (selectedKittings.Count == 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona uno o más embarques para cargar.");
+                    return;
+                }
+
+                if (selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsEmbarcadoStatus(item.Status)))
+                {
+                    DialogHelper.ShowWarning("No se pueden cargar embarques cancelados o ya embarcados.");
+                    return;
+                }
+
+                if (selectedKittings.Any(item => !string.IsNullOrWhiteSpace(item.DeliveryOrderCode)))
+                {
+                    DialogHelper.ShowWarning("Uno o más embarques seleccionados ya tienen una orden de entrega asignada.");
+                    return;
+                }
+
+                if (selectedKittings
+                    .Select(x => x.Client?.Trim() ?? string.Empty)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .Count() > 1)
+                {
+                    DialogHelper.ShowWarning("Todos los embarques seleccionados deben pertenecer al mismo cliente.");
+                    return;
+                }
+
+                if (selectedKittings
+                    .Select(x => x.Project?.Trim() ?? string.Empty)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .Count() > 1)
+                {
+                    DialogHelper.ShowWarning("Todos los embarques seleccionados deben pertenecer al mismo proyecto.");
+                    return;
+                }
+
+                var dialog = new CargarDecisionDialogWindow();
+                WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
+
+                if (dialog.ShowDialog() != true || dialog.Decision == CargarDecision.Cancelar)
+                    return;
+
+                if (dialog.Decision == CargarDecision.NuevaCarga)
+                {
+                    await CrearNuevaCargaAsync(selectedKittings);
+                    return;
+                }
+
+                if (dialog.Decision == CargarDecision.CargaExistente)
+                {
+                    await AgregarACargaExistenteAsync(selectedKittings);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+
+        private async Task CrearNuevaCargaAsync(List<KittingDto> selectedKittings)
+        {
+            var result = await _deliveryOrderService.CreateDeliveryOrderFromKittings(
+                selectedKittings.Select(x => x.KittingId).ToList());
+
+            if (!result.IsSuccess)
+            {
+                DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo crear la orden de entrega.");
+                return;
+            }
+
+            DialogHelper.ShowSuccess(
+                string.IsNullOrWhiteSpace(result.Data)
+                    ? result.Message ?? "Orden de entrega creada correctamente."
+                    : $"{result.Message} Folio: {result.Data}");
+
+            await CargarDatosConLoaderAsync();
+        }
+
+        private async Task AgregarACargaExistenteAsync(List<KittingDto> selectedKittings)
+        {
+            var clientText = selectedKittings.FirstOrDefault()?.Client?.Trim() ?? string.Empty;
+            var projectText = selectedKittings.FirstOrDefault()?.Project?.Trim() ?? string.Empty;
+
+            var availableOrders = _allKittings
+                .Where(x => IsValidatedStatus(x.Status))
+                .Where(x => !string.IsNullOrWhiteSpace(x.DeliveryOrderCode))
+                .Where(x => string.Equals(x.Client?.Trim(), clientText, StringComparison.OrdinalIgnoreCase))
+                .Where(x => string.Equals(x.Project?.Trim(), projectText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (availableOrders.Count == 0)
+            {
+                DialogHelper.ShowWarning("No hay cargas existentes disponibles para este cliente y proyecto.");
+                return;
+            }
+
+            var dialog = new SeleccionCargaExistenteWindow(availableOrders, clientText, projectText);
+            WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
+
+            if (dialog.ShowDialog() != true || string.IsNullOrWhiteSpace(dialog.SelectedDeliveryOrderCode))
+                return;
+
+            var result = await _deliveryOrderService.AddKittingsToExistingDeliveryOrder(
+                dialog.SelectedDeliveryOrderCode,
+                selectedKittings.Select(x => x.KittingId).ToList());
+
+            if (!result.IsSuccess)
+            {
+                DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "No se pudo agregar a la orden de entrega existente.");
+                return;
+            }
+
+            DialogHelper.ShowSuccess(
+                string.IsNullOrWhiteSpace(result.Data)
+                    ? result.Message ?? "Kittings agregados correctamente a la orden de entrega."
+                    : $"{result.Message} Folio: {result.Data}");
+
+            await CargarDatosConLoaderAsync();
         }
 
         private static LookupItem ToLookupItem(DropDownDto item)
@@ -882,9 +1118,24 @@ namespace LD.FormsX.Features.Embarques.Views
         {
             try
             {
-                _selectedKitting = _gridFilter.SelectedItem;
+                _selectedKittings = GetSelectedKittings();
+                _selectedKitting = _selectedKittings.FirstOrDefault();
                 UpdateActionButtons();
-                await CargarDatosAsyncDet();
+
+                if (_selectedKittings.Count == 1)
+                {
+                    await CargarDatosAsyncDet();
+                }
+                else
+                {
+                    _selectedDetail = null;
+                    _gridFilterDet.SetData(null);
+                    _gridFilterIssue.SetData(null);
+                    txtStatusDetalle.Text = _selectedKittings.Count > 1
+                        ? $"Seleccion multiple: {_selectedKittings.Count} embarques"
+                        : "Sin detalle para mostrar";
+                    txtStatusIssues.Text = "Sin issues para mostrar";
+                }
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using LD.Contracts.Project;
@@ -51,7 +51,7 @@ namespace LD.FormsX.Views.Proyectos
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevoProyectoView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
 
             if (dialog.ShowDialog() == true)
                 await ViewModel.CargarDatosAsync();
@@ -66,7 +66,7 @@ namespace LD.FormsX.Views.Proyectos
             }
 
             var dialog = _serviceProvider.GetRequiredService<NuevoProyectoView>();
-            dialog.Owner = Window.GetWindow(this);
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
             dialog.SetProject(ViewModel.SelectedProject);
 
             if (dialog.ShowDialog() == true)
@@ -74,5 +74,6 @@ namespace LD.FormsX.Views.Proyectos
         }
     }
 }
+
 
 

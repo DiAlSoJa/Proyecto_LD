@@ -71,7 +71,9 @@
       "Bash(xargs cat)",
       "Bash(powershell -Command \"Get-ChildItem -Recurse -File *.cs | Select-Object FullName\")",
       "Bash(OperationalTaskStatus\" 2>&1)",
-      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.Infrastructure\\\\Migrations\" | Where-Object { $_.Name -match \"AddDevTask|OperationalTaskStatus\" } | Select-Object Name)"
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\DIEGO ALFREDO\\\\source\\\\repos\\\\Proyecto_LD\\\\src\\\\LD.Infrastructure\\\\Migrations\" | Where-Object { $_.Name -match \"AddDevTask|OperationalTaskStatus\" } | Select-Object Name)",
+      "Bash(grep -rn \"class Permission\\\\b\\\\|PermissionName\\\\|public.*Key\\\\|ModuleId\\\\|PermissionId\\\\|IsActive\\\\|namespace\" Entities/Permission.cs)",
+      "Bash(grep -rn \"class RolePermission\\\\|RoleId\\\\|PermissionId\\\\|namespace\" Entities/RolePermission.cs)"
     ]
   }
 }

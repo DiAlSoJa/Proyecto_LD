@@ -79,5 +79,14 @@ namespace LD.Contracts.Kitting
 
         [DisplayName("Status")]
         public string Status { get; set; } = string.Empty;
+
+        [DisplayName("Orden de entrega")]
+        public string? DeliveryOrderCode { get; set; }
+
+        [DisplayName("Cortina")]
+        public string? Cortina { get; set; }
+
+        [DisplayName("Caja")]
+        public string? Caja { get; set; }
     }
 }

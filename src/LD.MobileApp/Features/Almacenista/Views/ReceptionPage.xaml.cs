@@ -103,9 +103,12 @@ public partial class ReceptionPage : ContentPage
         var parameters = new Dictionary<string, object>
         {
             { "AsnId", selected.AsnId },
+            { "AsnCode", selected.AsnCode },
+            { "LocationCode", selected.LocationCode },
+            { "PalletsPorMover", selected.PalletsPorMover },
             { "TextInformation", selected.InstructionText }
         };
 
-        await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
+        await Shell.Current.GoToAsync(nameof(ReceptionDetailPage), parameters);
     }
 }

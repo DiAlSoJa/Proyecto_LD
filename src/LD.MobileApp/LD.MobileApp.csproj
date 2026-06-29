@@ -116,10 +116,19 @@
 	  <MauiXaml Update="Features\Almacenista\Views\ChangeLocationPage.xaml">
 		<Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Features\Almacenista\Views\ReceptionDetailPage.xaml">
+		<Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Features\Almacenista\Views\PickingPage.xaml">
 		<Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Features\Almacenista\Views\PickingKittingPage.xaml">
+		<Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Features\Almacenista\Views\ValidarEmbarquePage.xaml">
+		<Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Features\Almacenista\Views\ValidarEmbarqueDetailPage.xaml">
 		<Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Features\Almacenista\Views\ReceptionPage.xaml">

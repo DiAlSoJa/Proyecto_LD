@@ -1,7 +1,9 @@
 using LD.Contracts.Kitting;
+using LD.Contracts.DTOs.Kitting;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
 using LD.Forms.Configuration;
+using System.Net.Http.Headers;
 
 namespace LD.Client.Services;
 
@@ -73,5 +75,54 @@ public class KittingService
         return await _api.PostAsync<object, ApiResponseDto<string>>(
             _apiEndpoints.Kitting_SendToSupply.Replace("{kittingId}", kittingId.ToString()),
             new { });
+    }
+
+    public async Task<ApiResponseDto<List<KittingValidationPhotoDto>>> GetValidationPhotos(int kittingId)
+    {
+        return await _api.GetAsync<ApiResponseDto<List<KittingValidationPhotoDto>>>(
+            _apiEndpoints.Kitting_ValidationPhotos.Replace("{kittingId}", kittingId.ToString()));
+    }
+
+    public async Task<ApiResponseDto<KittingValidationPhotoDto>> UploadValidationImage(int kittingId, string filePath)
+    {
+        using var content = new MultipartFormDataContent();
+        using var fileStream = File.OpenRead(filePath);
+        using var fileContent = new StreamContent(fileStream);
+
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+        content.Add(fileContent, "file", Path.GetFileName(filePath));
+
+        return await _api.PostMultipartAsync<ApiResponseDto<KittingValidationPhotoDto>>(
+            _apiEndpoints.Kitting_ValidationPhotos.Replace("{kittingId}", kittingId.ToString()),
+            content);
+    }
+
+    public async Task<ApiResponseDto<KittingValidationPhotoDto>> ReplaceValidationImage(int kittingId, string photoKey, string filePath)
+    {
+        using var content = new MultipartFormDataContent();
+        using var fileStream = File.OpenRead(filePath);
+        using var fileContent = new StreamContent(fileStream);
+
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+        content.Add(fileContent, "file", Path.GetFileName(filePath));
+
+        return await _api.PostMultipartAsync<ApiResponseDto<KittingValidationPhotoDto>>(
+            _apiEndpoints.Kitting_ReplaceValidationPhotoByKey
+                .Replace("{kittingId}", kittingId.ToString())
+                .Replace("{photoKey}", Uri.EscapeDataString(photoKey)),
+            content);
+    }
+
+    public async Task<ApiResponseDto<string>> DeleteValidationImage(int kittingId, string photoKey)
+    {
+        return await _api.DeleteAsync<ApiResponseDto<string>>(
+            _apiEndpoints.Kitting_ValidationPhotoByKey
+                .Replace("{kittingId}", kittingId.ToString())
+                .Replace("{photoKey}", Uri.EscapeDataString(photoKey)));
+    }
+
+    public string GetImageUrl(string relativePath)
+    {
+        return _apiEndpoints.Kitting_GetImage.Replace("{path}", Uri.EscapeDataString(relativePath));
     }
 }
