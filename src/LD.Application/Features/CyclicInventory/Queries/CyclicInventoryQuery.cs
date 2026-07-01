@@ -11,6 +11,7 @@ public class CyclicInventoryQuery : IRequest<Result<List<CyclicInventoryDto>?>>
     public DateTime? Desde { get; set; }
     public DateTime? Hasta { get; set; }
     public string? Estatus { get; set; }
+    public string? AuditorUserId { get; set; }
 }
 
 public class CyclicInventoryQueryHandler : IRequestHandler<CyclicInventoryQuery, Result<List<CyclicInventoryDto>?>>
@@ -26,7 +27,11 @@ public class CyclicInventoryQueryHandler : IRequestHandler<CyclicInventoryQuery,
 
     public async Task<Result<List<CyclicInventoryDto>?>> Handle(CyclicInventoryQuery request, CancellationToken cancellationToken)
     {
-        var inventarios = await _repository.GetAllWithRelationsAsync(request.Desde, request.Hasta, request.Estatus);
+        var inventarios = await _repository.GetAllWithRelationsAsync(
+            request.Desde,
+            request.Hasta,
+            request.Estatus,
+            request.AuditorUserId);
         return Result<List<CyclicInventoryDto>?>.Success(
             _mapper.Map<List<CyclicInventoryDto>>(inventarios),
             "Inventarios ciclicos obtenidos correctamente");

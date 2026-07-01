@@ -82,6 +82,8 @@ namespace LD.Infrastructure.Persistence
         public DbSet<AvailableInventory> AvailableInventories { get; set; }
         public DbSet<CyclicInventory> CyclicInventories { get; set; }
         public DbSet<CyclicInventoryDetail> CyclicInventoryDetails { get; set; }
+        public DbSet<CyclicInventoryAvailableInventory> CyclicInventoryAvailableInventories { get; set; }
+        public DbSet<CyclicInventoryScan> CyclicInventoryScans { get; set; }
         public DbSet<DamageReport> DamageReports { get; set; }
 
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
@@ -548,6 +550,9 @@ namespace LD.Infrastructure.Persistence
             builder.Entity<CyclicInventoryDetail>(entity =>
             {
                 entity.ToTable("CyclicInventoryDetails");
+                entity.Property(x => x.TakeNumber).HasDefaultValue(1);
+                entity.Property(x => x.SameLocationQty).HasColumnType("decimal(18,2)");
+                entity.Property(x => x.AnotherLocationQty).HasColumnType("decimal(18,2)");
                 entity.HasOne(x => x.Location)
                     .WithMany()
                     .HasForeignKey(x => x.LocationId)
@@ -556,6 +561,80 @@ namespace LD.Infrastructure.Persistence
 
 
             // ── Auth: RefreshTokens ────────────────────────────────────────────────
+            builder.Entity<CyclicInventoryAvailableInventory>(entity =>
+            {
+                entity.ToTable("CyclicInventoryAvailableInventories");
+                entity.Property(x => x.TakeNumber).HasDefaultValue(1);
+                entity.Property(x => x.StandardIdCode).HasMaxLength(100);
+                entity.Property(x => x.PartNumber).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.Description).HasMaxLength(250);
+                entity.Property(x => x.LotNumber).HasMaxLength(50);
+                entity.Property(x => x.Reference).HasMaxLength(100);
+                entity.Property(x => x.AvailableReference).HasMaxLength(30);
+                entity.Property(x => x.PurchaseOrder).HasMaxLength(50);
+                entity.Property(x => x.CustomsDeclarationNumber).HasMaxLength(50);
+                entity.Property(x => x.DocumentId).HasMaxLength(50);
+                entity.Property(x => x.StatusId).HasMaxLength(30);
+                entity.Property(x => x.SD).HasMaxLength(50);
+                entity.Property(x => x.AvailableStatus).HasMaxLength(150);
+                entity.Property(x => x.Qty).HasColumnType("decimal(18,2)");
+                entity.Property(x => x.Supply).HasColumnType("decimal(18,2)");
+                entity.Property(x => x.FinalAvailable).HasColumnType("decimal(18,2)");
+                entity.HasIndex(x => new { x.CyclicInventoryDetailId, x.TakeNumber, x.StandardIdCode });
+                entity.HasIndex(x => x.CyclicInventoryId);
+                entity.HasIndex(x => x.AvailableInventoryId);
+
+                entity.HasOne(x => x.CyclicInventory)
+                    .WithMany()
+                    .HasForeignKey(x => x.CyclicInventoryId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.CyclicInventoryDetail)
+                    .WithMany(x => x.AvailableInventories)
+                    .HasForeignKey(x => x.CyclicInventoryDetailId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.AvailableInventory)
+                    .WithMany()
+                    .HasForeignKey(x => x.AvailableInventoryId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.Location)
+                    .WithMany()
+                    .HasForeignKey(x => x.LocationId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.StandardLabel)
+                    .WithMany()
+                    .HasForeignKey(x => x.StandardId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<CyclicInventoryScan>(entity =>
+            {
+                entity.ToTable("CyclicInventoryScans");
+                entity.Property(x => x.StandardId).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.CurrentLocation).HasMaxLength(250);
+                entity.HasIndex(x => new { x.CyclicInventoryId, x.CyclicInventoryDetailId, x.ScannedAt });
+                entity.HasIndex(x => x.CyclicInventoryDetailId);
+                entity.HasIndex(x => x.CurrentLocationId);
+
+                entity.HasOne(x => x.CyclicInventory)
+                    .WithMany()
+                    .HasForeignKey(x => x.CyclicInventoryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.CyclicInventoryDetail)
+                    .WithMany()
+                    .HasForeignKey(x => x.CyclicInventoryDetailId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.Location)
+                    .WithMany()
+                    .HasForeignKey(x => x.LocationId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
             builder.Entity<RefreshToken>(entity =>
             {
                 entity.HasKey(e => e.Id);

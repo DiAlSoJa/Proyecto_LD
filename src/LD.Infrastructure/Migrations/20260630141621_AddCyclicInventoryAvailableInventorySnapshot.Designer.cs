@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260630141621_AddCyclicInventoryAvailableInventorySnapshot")]
+    partial class AddCyclicInventoryAvailableInventorySnapshot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1324,9 +1327,6 @@ namespace LD.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CyclicInventoryDetailId"));
 
-                    b.Property<decimal?>("AnotherLocationQty")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<bool>("Counted")
                         .HasColumnType("bit");
 
@@ -1379,9 +1379,6 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal?>("SameLocationQty")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("TakeNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -1416,9 +1413,6 @@ namespace LD.Infrastructure.Migrations
                     b.Property<string>("CurrentLocation")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<int?>("CurrentLocationId")
-                        .HasColumnType("int");
 
                     b.Property<int>("CyclicInventoryDetailId")
                         .HasColumnType("int");
@@ -1464,8 +1458,6 @@ namespace LD.Infrastructure.Migrations
                     b.HasKey("CyclicInventoryScanId");
 
                     b.HasIndex("CyclicInventoryDetailId");
-
-                    b.HasIndex("CurrentLocationId");
 
                     b.HasIndex("LocationId");
 

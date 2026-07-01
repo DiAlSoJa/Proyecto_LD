@@ -8,6 +8,7 @@ using LD.Contracts.Enums;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Services;
 using MauiAppLogin.Views.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Input;
 
 namespace MauiAppLogin.ViewModels
@@ -21,6 +22,7 @@ namespace MauiAppLogin.ViewModels
         private readonly LookupService _lookupService;
         private readonly IDialogService _dialogService;
         private readonly MobileSessionService _sessionService;
+        private readonly IServiceProvider _serviceProvider;
 
         [ObservableProperty]
         private string username = string.Empty;
@@ -116,7 +118,8 @@ namespace MauiAppLogin.ViewModels
             OperationalTaskService operationalTaskService,
             LookupService lookupService,
             IDialogService dialogService,
-            MobileSessionService sessionService)
+            MobileSessionService sessionService,
+            IServiceProvider serviceProvider)
         {
             _apiService = apiService;
             _patioClientService = patioClientService;
@@ -125,6 +128,7 @@ namespace MauiAppLogin.ViewModels
             _lookupService = lookupService;
             _dialogService = dialogService;
             _sessionService = sessionService;
+            _serviceProvider = serviceProvider;
 
             LogoutCommand = new AsyncRelayCommand(Logout);
             NavigateToChangeLocationCommand = new AsyncRelayCommand(NavigateToChangeLocation);
@@ -144,6 +148,66 @@ namespace MauiAppLogin.ViewModels
             NavigateToPatioPendientesCommand = new AsyncRelayCommand(NavigateToPatioPendientes);
 
             LoadPermissions();
+        }
+
+        private static Shell? GetActiveShell()
+            => Shell.Current ?? Application.Current?.MainPage as Shell;
+
+        private static Page? GetActivePage()
+            => Shell.Current?.CurrentPage ?? Application.Current?.MainPage;
+
+        private async Task NavigateAsync(string route)
+        {
+            if (route == nameof(InventoryList))
+            {
+                await OpenInventoryListAsync();
+                return;
+            }
+
+            var shell = GetActiveShell();
+            if (shell is null)
+            {
+                await _dialogService.ShowErrorAsync(
+                    "Error",
+                    "No se pudo abrir la pantalla porque la navegación de Shell no está disponible.");
+                return;
+            }
+
+            await MainThread.InvokeOnMainThreadAsync(() => shell.GoToAsync(route));
+        }
+
+        private async Task NavigateAsync(string route, IDictionary<string, object> parameters)
+        {
+            var shell = GetActiveShell();
+            if (shell is null)
+            {
+                await _dialogService.ShowErrorAsync(
+                    "Error",
+                    "No se pudo abrir la pantalla porque la navegación de Shell no está disponible.");
+                return;
+            }
+
+            await MainThread.InvokeOnMainThreadAsync(() => shell.GoToAsync(route, parameters));
+        }
+
+        private async Task OpenInventoryListAsync()
+        {
+            var shell = GetActiveShell();
+            if (shell is null)
+            {
+                await _dialogService.ShowErrorAsync(
+                    "Error",
+                    "No se pudo abrir el listado porque no hay una pagina activa.");
+                return;
+            }
+
+            var inventoryPage = new NavigationPage(_serviceProvider.GetRequiredService<InventoryList>())
+            {
+                BarBackgroundColor = Color.FromArgb("#1F3A5F"),
+                BarTextColor = Colors.White
+            };
+
+            await MainThread.InvokeOnMainThreadAsync(() => shell.Navigation.PushModalAsync(inventoryPage));
         }
 
         private void LoadPermissions()
@@ -223,10 +287,19 @@ namespace MauiAppLogin.ViewModels
             {
                 IsBusy = true;
                 var dialog = new LogoutDialog();
-                var result = await Application.Current!.MainPage!.ShowPopupAsync(dialog);
+                var page = GetActivePage();
+                if (page is null)
+                {
+                    await _dialogService.ShowErrorAsync(
+                        "Error",
+                        "No se pudo mostrar el diálogo de cierre de sesión.");
+                    return;
+                }
+
+                var result = await page.ShowPopupAsync(dialog);
                 if (result is not true) return;
                 await _sessionService.ClearAsync();
-                await Shell.Current.GoToAsync("//login");
+                await NavigateAsync("//login");
             }
             finally
             {
@@ -237,22 +310,22 @@ namespace MauiAppLogin.ViewModels
         private async Task NavigateToChangeLocation()
         {
             var parameters = new Dictionary<string, object> { { "TextInformation", "" } };
-            await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
+            await NavigateAsync("ChangeLocationPage", parameters);
         }
 
         private async Task NavigateToPicking()
         {
-            await Shell.Current.GoToAsync("PickingPage");
+            await NavigateAsync("PickingPage");
         }
 
         private async Task NavigateToValidarEmbarque()
         {
-            await Shell.Current.GoToAsync(nameof(ValidarEmbarquePage));
+            await NavigateAsync(nameof(ValidarEmbarquePage));
         }
 
         private async Task NavigateToReception()
         {
-            await Shell.Current.GoToAsync("ReceptionPage");
+            await NavigateAsync("ReceptionPage");
         }
 
         private async Task NavigateToTaskManager(string? textInfo)
@@ -261,17 +334,17 @@ namespace MauiAppLogin.ViewModels
             {
                 { "TextInformation", textInfo ?? "" }
             };
-            await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
+            await NavigateAsync("ChangeLocationPage", parameters);
         }
 
         private async Task NavigateToTaskManagerSecurity(string? textInfo)
         {
-            await Shell.Current.GoToAsync(nameof(TaskSecurityPage));
+            await NavigateAsync(nameof(TaskSecurityPage));
         }
 
         private async Task NavigateToTaskList()
         {
-            await Shell.Current.GoToAsync("TaskList");
+            await NavigateAsync("TaskList");
         }
 
         private async Task NavigateToCaseta()
@@ -279,28 +352,37 @@ namespace MauiAppLogin.ViewModels
             var opciones = new[] { "Carga", "Descarga" };
             var popup = new OptionPopup("Caseta", opciones);
 
-            Application.Current!.MainPage!.ShowPopup(popup);
+            var page = GetActivePage();
+            if (page is null)
+            {
+                await _dialogService.ShowErrorAsync(
+                    "Error",
+                    "No se pudo mostrar el selector de caseta.");
+                return;
+            }
+
+            page.ShowPopup(popup);
 
             var seleccion = await popup.Result;
 
             if (string.IsNullOrWhiteSpace(seleccion)) return;
 
-            await Shell.Current.GoToAsync($"RegisterLicense?tipo={Uri.EscapeDataString(seleccion)}");
+            await NavigateAsync($"RegisterLicense?tipo={Uri.EscapeDataString(seleccion)}");
         }
 
         private async Task NavigateToMovement()
         {
-            await Shell.Current.GoToAsync("MovementPage");
+            await NavigateAsync("MovementPage");
         }
 
         private async Task NavigateToDamageReport()
         {
-            await Shell.Current.GoToAsync("DamageReportPage");
+            await NavigateAsync("DamageReportPage");
         }
 
         private async Task NavigateToOperations()
         {
-            await Shell.Current.GoToAsync("WarehouseOperations");
+            await NavigateAsync("WarehouseOperations");
         }
 
         private async Task NavigateToAudit()
@@ -309,12 +391,12 @@ namespace MauiAppLogin.ViewModels
             {
                 { "TextInformation", "Auditar Ubicación: DC01A" }
             };
-            await Shell.Current.GoToAsync("ChangeLocationPage", parameters);
+            await NavigateAsync("ChangeLocationPage", parameters);
         }
 
         private async Task NavigateToInventoryList()
         {
-            await Shell.Current.GoToAsync("InventoryList");
+            await OpenInventoryListAsync();
         }
 
         private async Task NavigateToChecklist()
@@ -352,7 +434,7 @@ namespace MauiAppLogin.ViewModels
 
                     if (!registrarOtro) return;
 
-                    await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
+                    await NavigateAsync(nameof(ForkliftChecklistPage),
                         new Dictionary<string, object>
                         {
                             ["Equipment"]   = status.Equipment!,
@@ -362,7 +444,7 @@ namespace MauiAppLogin.ViewModels
                 }
 
                 // No ha hecho checklist hoy → modo obligatorio
-                await Shell.Current.GoToAsync(nameof(ForkliftChecklistPage),
+                await NavigateAsync(nameof(ForkliftChecklistPage),
                     new Dictionary<string, object>
                     {
                         ["Equipment"]   = status.Equipment!,
@@ -380,7 +462,7 @@ namespace MauiAppLogin.ViewModels
 
         private async Task NavigateToPatioPendientes()
         {
-            await Shell.Current.GoToAsync(nameof(PatioPendientesPage));
+            await NavigateAsync(nameof(PatioPendientesPage));
         }
     }
 }

@@ -227,6 +227,7 @@
                                       SelectionChanged="dgAuditores_SelectionChanged">
 
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Id" Binding="{Binding InventarioCiclicoId}" Width="80"/>
                                     <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="140"/>
                                     <DataGridTextColumn Header="Almacen" Binding="{Binding Almacen}" Width="140"/>
                                     <DataGridTextColumn Header="Auditor" Binding="{Binding Auditor}" Width="300"/>
