@@ -3,8 +3,6 @@ using LD.Contracts.DamageReports;
 using LD.Contracts.Requests;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
-using ZXing;
-using ZXing.Common;
 
 #if ANDROID
 using Android.Content;
@@ -28,9 +26,8 @@ public class BluetoothPrinterService : IBluetoothPrinterService
 {
     private const string PrinterAddressPreferenceKey = "BluetoothPrinterAddress";
     private const string PrinterNamePreferenceKey = "BluetoothPrinterName";
-    private const int PrinterWidthDots = 384;
-    private const int QrWidthDots = 240;
-    private const int QrHeightDots = 240;
+    private const byte QrModuleSize = 6;
+    private const byte QrErrorCorrectionLevel = 50; // Q
     private static readonly Encoding PrinterEncoding = Encoding.ASCII;
 
 #if ANDROID
@@ -67,7 +64,9 @@ public class BluetoothPrinterService : IBluetoothPrinterService
             WriteCommand(output, 0x1B, 0x40);
             WriteTextLine(output, "REPORTE DE DANOS", center: true, bold: true);
             WriteTextLine(output, damageReportCode, center: true);
-            WriteQrImage(output, qrUrl);
+            WriteFeed(output, 1);
+            WriteQrCode(output, qrUrl);
+            WriteFeed(output, 1);
             WriteTextLine(output, "rd.ld.com.mx", center: true);
             WriteFeed(output, 4);
             output.Flush();
@@ -376,60 +375,34 @@ public class BluetoothPrinterService : IBluetoothPrinterService
         WriteCommand(stream, 0x1B, 0x64, lines);
     }
 
-    private static void WriteQrImage(Stream stream, string qrValue)
+    // Comando QR nativo ESC/POS. Evita que la impresora interprete los bytes del bitmap como texto basura.
+    private static void WriteQrCode(Stream stream, string qrValue)
     {
-        var writer = new BarcodeWriterPixelData
-        {
-            Format = BarcodeFormat.QR_CODE,
-            Options = new EncodingOptions
-            {
-                Width = QrWidthDots,
-                Height = QrHeightDots,
-                Margin = 1,
-                PureBarcode = true
-            }
-        };
+        var data = PrinterEncoding.GetBytes(qrValue ?? string.Empty);
+        if (data.Length == 0)
+            throw new InvalidOperationException("No se pudo generar el contenido del codigo QR.");
 
-        var pixelData = writer.Write(qrValue);
-        var bytesPerRow = PrinterWidthDots / 8;
-        var canvasHeight = pixelData.Height + 16;
-        var raster = new byte[bytesPerRow * canvasHeight];
-        var leftOffset = (PrinterWidthDots - pixelData.Width) / 2;
-        var topOffset = 8;
+        // Selecciona modelo 2.
+        WriteCommand(stream, 0x1D, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00);
+        // Ajusta el tamano del modulo.
+        WriteCommand(stream, 0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, QrModuleSize);
+        // Nivel de correccion Q.
+        WriteCommand(stream, 0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x45, QrErrorCorrectionLevel);
 
-        for (var y = 0; y < pixelData.Height; y++)
-        {
-            for (var x = 0; x < pixelData.Width; x++)
-            {
-                var sourceIndex = ((y * pixelData.Width) + x) * 4;
-                var luminance =
-                    (pixelData.Pixels[sourceIndex] +
-                     pixelData.Pixels[sourceIndex + 1] +
-                     pixelData.Pixels[sourceIndex + 2]) / 3;
-
-                if (luminance > 128)
-                    continue;
-
-                var targetX = x + leftOffset;
-                var targetY = y + topOffset;
-                var targetIndex = (targetY * bytesPerRow) + (targetX / 8);
-                raster[targetIndex] |= (byte)(0x80 >> (targetX % 8));
-            }
-        }
-
-        var xBytes = (ushort)bytesPerRow;
-        var yBytes = (ushort)canvasHeight;
+        var payloadLength = data.Length + 3;
         WriteCommand(
             stream,
             0x1D,
-            0x76,
-            0x30,
-            0x00,
-            (byte)(xBytes & 0xFF),
-            (byte)(xBytes >> 8),
-            (byte)(yBytes & 0xFF),
-            (byte)(yBytes >> 8));
-        WriteBytes(stream, raster);
+            0x28,
+            0x6B,
+            (byte)(payloadLength & 0xFF),
+            (byte)(payloadLength >> 8),
+            0x31,
+            0x50,
+            0x30);
+        WriteBytes(stream, data);
+
+        WriteCommand(stream, 0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30);
     }
 
     private static void WriteCommand(Stream stream, params byte[] command)
