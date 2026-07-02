@@ -27,6 +27,8 @@ namespace MauiAppLogin.Features.Inventario.Models
         public decimal? EnOtraUbicacion { get; set; }
         public string? ResultadoPrimeraToma { get; set; }
         public string? ResultadoSegundaToma { get; set; }
+        public string? ResultadoTerceraToma { get; set; }
+        public string? ResultadoCuartaToma { get; set; }
         public string? ResultadoFinal { get; set; }
 
         public bool Tomada

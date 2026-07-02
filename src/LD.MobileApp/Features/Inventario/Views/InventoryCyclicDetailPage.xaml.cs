@@ -1,8 +1,8 @@
 using System;
-using MauiAppLogin.Features.Inventario.Models;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MauiAppLogin.Features.Inventario.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MauiAppLogin;
 
@@ -54,13 +54,7 @@ public partial class InventoryCyclicDetailPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-
         RefreshInventorySummary();
-
-        if (FiltroEntry is not null)
-        {
-            FiltroEntry.Focus();
-        }
     }
 
     public void SetInventory(InventoryGroup inventory)
@@ -77,7 +71,7 @@ public partial class InventoryCyclicDetailPage : ContentPage
             _allDetails.Add(detail);
         }
 
-        ApplyFilter(FiltroEntry?.Text);
+        RefreshDetailsView();
     }
 
     private void RefreshInventorySummary()
@@ -90,43 +84,19 @@ public partial class InventoryCyclicDetailPage : ContentPage
         _inventory.Cantidad = $"{_inventory.Escaneados}/{_inventory.Detalles.Count}";
     }
 
-    private void OnFiltroChanged(object sender, TextChangedEventArgs e)
+    private void RefreshDetailsView()
     {
-        ApplyFilter(e.NewTextValue);
-    }
-
-    private void ApplyFilter(string? value)
-    {
-        var text = (value ?? string.Empty).Trim().ToLowerInvariant();
-
         _filteredDetails.Clear();
         foreach (var detail in _allDetails)
         {
-            if (MatchesFilter(detail, text))
-            {
-                _filteredDetails.Add(detail);
-            }
+            _filteredDetails.Add(detail);
         }
 
-        UpdateEmptyState(text);
+        UpdateEmptyState();
         OnPropertyChanged(nameof(FilteredCountText));
     }
 
-    private static bool MatchesFilter(InventoryDetail detail, string text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return true;
-
-        return detail.Pedido.ToLowerInvariant().Contains(text)
-            || detail.Ubicacion.ToLowerInvariant().Contains(text)
-            || (detail.PartNumber ?? string.Empty).ToLowerInvariant().Contains(text)
-            || (detail.ResultadoFinal ?? string.Empty).ToLowerInvariant().Contains(text)
-            || (detail.ResultadoPrimeraToma ?? string.Empty).ToLowerInvariant().Contains(text)
-            || (detail.ResultadoSegundaToma ?? string.Empty).ToLowerInvariant().Contains(text)
-            || detail.DetailSummary.ToLowerInvariant().Contains(text);
-    }
-
-    private void UpdateEmptyState(string filterText)
+    private void UpdateEmptyState()
     {
         if (_inventory is null)
         {
@@ -142,32 +112,26 @@ public partial class InventoryCyclicDetailPage : ContentPage
             return;
         }
 
-        if (_filteredDetails.Count == 0 && !string.IsNullOrWhiteSpace(filterText))
-        {
-            EmptyTitleText = "Sin coincidencias";
-            EmptySubtitleText = "Prueba con otra ubicacion o pedido.";
-            return;
-        }
-
         EmptyTitleText = "No hay detalles";
         EmptySubtitleText = "Este inventario no tiene ubicaciones cargadas.";
     }
 
-    private async void OnDetailSelected(object sender, SelectionChangedEventArgs e)
+    private async void OnScanLocationClicked(object sender, EventArgs e)
     {
-        if (e.CurrentSelection?.FirstOrDefault() is not InventoryDetail selected)
-            return;
-
-        if (sender is CollectionView collectionView)
+        if (_inventory is null)
         {
-            collectionView.SelectedItem = null;
+            await DisplayAlert("Inventario", "Selecciona un inventario primero.", "OK");
+            return;
         }
 
-        if (_inventory is null)
+        if (_inventory.Detalles.Count == 0)
+        {
+            await DisplayAlert("Inventario", "Este inventario no tiene ubicaciones cargadas.", "OK");
             return;
+        }
 
         var scanPage = _serviceProvider.GetRequiredService<InventoryCyclicScanPage>();
-        scanPage.SetContext(_inventory, selected);
+        scanPage.SetContext(_inventory);
         await Navigation.PushAsync(scanPage);
     }
 }

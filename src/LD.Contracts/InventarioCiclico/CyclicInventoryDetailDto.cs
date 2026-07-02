@@ -14,6 +14,8 @@ namespace LD.Contracts.InventarioCiclico
         public decimal? EnOtraUbicacion { get; set; }
         public string? ResultadoPrimeraToma { get; set; }
         public string? ResultadoSegundaToma { get; set; }
+        public string? ResultadoTerceraToma { get; set; }
+        public string? ResultadoCuartaToma { get; set; }
         public string? ResultadoFinal { get; set; }
         public string? PartNumber { get; set; }
         public bool Escaneado { get; set; }

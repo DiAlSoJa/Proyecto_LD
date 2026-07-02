@@ -240,6 +240,8 @@ public partial class InventoryList : ContentPage
                 EnOtraUbicacion = x.EnOtraUbicacion,
                 ResultadoPrimeraToma = x.ResultadoPrimeraToma,
                 ResultadoSegundaToma = x.ResultadoSegundaToma,
+                ResultadoTerceraToma = x.ResultadoTerceraToma,
+                ResultadoCuartaToma = x.ResultadoCuartaToma,
                 ResultadoFinal = x.ResultadoFinal,
                 Tomada = x.Tomada,
                 Escaneado = x.Escaneado

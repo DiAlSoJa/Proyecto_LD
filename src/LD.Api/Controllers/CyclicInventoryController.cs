@@ -634,7 +634,10 @@ public class CyclicInventoryController : CommonController
         detail.PhysicalQty = physicalQty;
         detail.SameLocationQty = sameLocationQty;
         detail.AnotherLocationQty = anotherLocationQty;
-        detail.FirstCountResult = FormatCountResult(sameLocationQty - theoreticalQty);
+        SetCountResultByTakeNumber(
+            detail,
+            takeNumber,
+            FormatCountPercentage(theoreticalQty, sameLocationQty));
         detail.LastModifiedAt = DateTime.Now;
         detail.LastModifiedByUserId = CurrentUserId;
     }
@@ -718,9 +721,36 @@ public class CyclicInventoryController : CommonController
             : string.Empty;
     }
 
-    private static string FormatCountResult(decimal result)
+    private static void SetCountResultByTakeNumber(
+        CyclicInventoryDetail detail,
+        int takeNumber,
+        string result)
     {
-        return result.ToString("0.##", CultureInfo.InvariantCulture);
+        switch (NormalizeTakeNumber(takeNumber))
+        {
+            case 1:
+                detail.FirstCountResult = result;
+                break;
+            case 2:
+                detail.SecondCountResult = result;
+                break;
+            case 3:
+                detail.ThirdCountResult = result;
+                break;
+            case 4:
+                detail.FourthCountResult = result;
+                break;
+        }
+    }
+
+    private static string FormatCountPercentage(decimal theoreticalQty, decimal sameLocationQty)
+    {
+        if (theoreticalQty == 0m)
+        {
+            return "0";
+        }
+
+        return ((sameLocationQty / theoreticalQty) * 100m).ToString("0.##", CultureInfo.InvariantCulture);
     }
 
     private static string Truncate(string value, int maxLength)

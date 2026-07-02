@@ -433,6 +433,8 @@
                                 <DataGridTextColumn Header="Fisico" Binding="{Binding Fisico}" Width="90"/>
                                 <DataGridTextColumn Header="Resultado primera toma" Binding="{Binding ResultadoPrimeraToma}" Width="160"/>
                                 <DataGridTextColumn Header="Resultado segunda toma" Binding="{Binding ResultadoSegundaToma}" Width="160"/>
+                                <DataGridTextColumn Header="Resultado tercera toma" Binding="{Binding ResultadoTerceraToma}" Width="160"/>
+                                <DataGridTextColumn Header="Resultado cuarta toma" Binding="{Binding ResultadoCuartaToma}" Width="160"/>
                                 <DataGridTextColumn Header="Resultado final" Binding="{Binding ResultadoFinal}" Width="150"/>
                             </DataGrid.Columns>
 

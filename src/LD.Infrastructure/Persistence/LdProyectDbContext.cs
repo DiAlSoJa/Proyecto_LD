@@ -1114,6 +1114,14 @@ namespace LD.Infrastructure.Persistence
                     .OnDelete(DeleteBehavior.SetNull);
             });
 
+            builder.Entity<DamageReport>(entity =>
+            {
+                entity.Property(x => x.DamageReportCode).HasMaxLength(50);
+                entity.HasIndex(x => x.DamageReportCode)
+                    .IsUnique()
+                    .HasFilter("[DamageReportCode] IS NOT NULL");
+            });
+
             // Seed: warehouse de referencia para cortinas
             builder.Entity<Warehouse>().HasData(
                 new Warehouse

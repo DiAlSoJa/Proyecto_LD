@@ -11,13 +11,14 @@ namespace MauiAppLogin;
 
 public partial class InventoryCyclicScanPage : ContentPage
 {
+    private const string LocationPromptText = "Escanea o escribe la ubicacion. Si empieza con INV, se quitara ese prefijo antes de validar.";
     private readonly CyclicInventoryService _cyclicInventoryService;
     private readonly IDialogService _dialogService;
     private readonly ObservableCollection<InventoryScanItem> _scans = new();
     private InventoryGroup? _inventory;
     private InventoryDetail? _detail;
-    private string _locationText = string.Empty;
-    private string _statusMessage = "Escanea un StandardId de al menos 12 digitos para comenzar.";
+    private string _locationText = LocationPromptText;
+    private string _statusMessage = "Escanea o escribe la ubicacion para continuar.";
     private bool _statusIsError;
     private bool _isSaving;
     private bool _isLoadingScans;
@@ -46,6 +47,10 @@ public partial class InventoryCyclicScanPage : ContentPage
             OnPropertyChanged();
         }
     }
+
+    public bool CanEditLocation => _inventory is not null && !_isSaving && !_isLoadingScans;
+
+    public bool CanScanStandardId => _detail is not null && _scansLoaded && !_detail.Escaneado && !_isSaving && !_isLoadingScans;
 
     public string StatusMessage
     {
@@ -80,16 +85,21 @@ public partial class InventoryCyclicScanPage : ContentPage
     public Color StatusBoxStroke => StatusIsError ? Color.FromArgb("#FCA5A5") : Color.FromArgb("#BFDBFE");
     public Color StatusTextColor => StatusIsError ? Color.FromArgb("#B91C1C") : Color.FromArgb("#1D4ED8");
     public string ScansCountText => _scans.Count.ToString();
-    public bool CanEditLocation => _detail?.Escaneado != true && !_isSaving && !_isLoadingScans;
     public string FinishLocationButtonText => _detail?.Escaneado == true ? "Ubicacion cerrada" : "Terminar ubicacion";
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        if (_inventory is null || _detail is null)
+        if (_inventory is null)
         {
-            RefreshInteractionState(focusEntry: true);
+            RefreshInteractionState(focusLocation: true);
+            return;
+        }
+
+        if (_detail is null)
+        {
+            RefreshInteractionState(focusLocation: true);
             return;
         }
 
@@ -99,33 +109,35 @@ public partial class InventoryCyclicScanPage : ContentPage
             return;
         }
 
-        RefreshInteractionState(focusEntry: true);
+        RefreshInteractionState(
+            focusStandardId: CanScanStandardId,
+            focusLocation: _detail.Escaneado);
     }
 
-    public void SetContext(InventoryGroup inventory, InventoryDetail detail)
+    public void SetContext(InventoryGroup inventory)
     {
         _inventory = inventory;
-        _detail = detail;
+        _detail = null;
+        _scansLoaded = false;
 
-        LocationText = string.IsNullOrWhiteSpace(detail.Ubicacion)
-            ? "Sin ubicacion"
-            : detail.Ubicacion.Trim();
+        LocationText = LocationPromptText;
 
         _scans.Clear();
-        _scansLoaded = false;
         StatusIsError = false;
-        StatusMessage = detail.Escaneado
-            ? "La ubicacion ya esta cerrada."
-            : "Escanea un StandardId de al menos 12 digitos para comenzar.";
+        StatusMessage = "Escanea o escribe la ubicacion para continuar.";
         OnPropertyChanged(nameof(ScansCountText));
+
+        if (LocationEntry is not null)
+        {
+            LocationEntry.Text = string.Empty;
+        }
 
         if (StandardIdEntry is not null)
         {
             StandardIdEntry.Text = string.Empty;
-            StandardIdEntry.IsEnabled = false;
         }
 
-        RefreshInteractionState();
+        RefreshInteractionState(focusLocation: true);
     }
 
     private async Task LoadScansAsync(bool updateStatus = true)
@@ -143,6 +155,7 @@ public partial class InventoryCyclicScanPage : ContentPage
 
             if (!response.IsSuccess)
             {
+                _scansLoaded = false;
                 SetErrorStatus(response.Message ?? "No se pudieron cargar los escaneos guardados.");
                 return;
             }
@@ -169,7 +182,7 @@ public partial class InventoryCyclicScanPage : ContentPage
                 }
                 else if (_scans.Count == 0)
                 {
-                    SetSuccessStatus("Escanea un StandardId de al menos 12 digitos para comenzar.");
+                    SetSuccessStatus("Ubicacion validada. Escanea un StandardId.");
                 }
                 else
                 {
@@ -179,12 +192,15 @@ public partial class InventoryCyclicScanPage : ContentPage
         }
         catch (Exception ex)
         {
+            _scansLoaded = false;
             SetErrorStatus($"Error al cargar los escaneos: {ex.Message}");
         }
         finally
         {
             SetLoadingScans(false);
-            RefreshInteractionState(focusEntry: true);
+            RefreshInteractionState(
+                focusStandardId: _detail is not null && _scansLoaded && !_detail.Escaneado,
+                focusLocation: _detail is not null && (_detail.Escaneado || !_scansLoaded));
         }
     }
 
@@ -234,10 +250,83 @@ public partial class InventoryCyclicScanPage : ContentPage
         await GoBackAsync();
     }
 
+    private async void OnLocationCompleted(object sender, EventArgs e)
+    {
+        if (_isSaving || _isLoadingScans)
+            return;
+
+        if (_inventory is null)
+        {
+            await HandleLocationErrorAsync("No se pudo identificar el inventario.");
+            return;
+        }
+
+        var locationCode = NormalizeLocationCode(LocationEntry?.Text);
+        if (string.IsNullOrWhiteSpace(locationCode))
+        {
+            await HandleLocationErrorAsync("Captura o escanea una ubicacion.");
+            return;
+        }
+
+        var detail = FindDetailByLocation(locationCode);
+        if (detail is null)
+        {
+            await HandleLocationErrorAsync($"La ubicacion {locationCode} no existe en este inventario.");
+            return;
+        }
+
+        _detail = detail;
+        _scans.Clear();
+        _scansLoaded = false;
+        OnPropertyChanged(nameof(ScansCountText));
+
+        if (LocationEntry is not null)
+        {
+            LocationEntry.Text = detail.Ubicacion.Trim();
+        }
+
+        if (StandardIdEntry is not null)
+        {
+            StandardIdEntry.Text = string.Empty;
+        }
+
+        LocationText = $"Ubicacion validada: {detail.Ubicacion.Trim()}";
+        StatusIsError = false;
+        StatusMessage = "Cargando escaneos guardados...";
+
+        await LoadScansAsync();
+    }
+
+    private async Task HandleLocationErrorAsync(string message)
+    {
+        SetErrorStatus(message);
+        LocationText = LocationPromptText;
+
+        if (LocationEntry is not null)
+        {
+            LocationEntry.Text = string.Empty;
+        }
+
+        if (StandardIdEntry is not null)
+        {
+            StandardIdEntry.Text = string.Empty;
+        }
+
+        await PlayFeedbackSoundAsync("error.mp3");
+        RefreshInteractionState(focusLocation: true);
+    }
+
     private async void OnStandardIdCompleted(object sender, EventArgs e)
     {
         if (_isSaving || _isLoadingScans)
             return;
+
+        if (!CanScanStandardId)
+        {
+            SetErrorStatus("Valida la ubicacion antes de escanear StandardId.");
+            RefreshInteractionState(focusLocation: true);
+            return;
+        }
 
         if (_detail?.Escaneado == true)
         {
@@ -286,7 +375,7 @@ public partial class InventoryCyclicScanPage : ContentPage
         if (IsDuplicateStandardId(standardId))
         {
             SetErrorStatus($"La etiqueta {standardId} ya fue escaneada.");
-            RefreshInteractionState(focusEntry: true);
+            RefreshInteractionState(focusStandardId: true);
             return;
         }
 
@@ -393,7 +482,7 @@ public partial class InventoryCyclicScanPage : ContentPage
         finally
         {
             SetSaving(false);
-            RefreshInteractionState(focusEntry: true);
+            RefreshInteractionState(focusStandardId: true);
         }
     }
 
@@ -464,7 +553,7 @@ public partial class InventoryCyclicScanPage : ContentPage
         finally
         {
             SetSaving(false);
-            RefreshInteractionState(focusEntry: true);
+            RefreshInteractionState(focusStandardId: true);
         }
     }
 
@@ -499,6 +588,8 @@ public partial class InventoryCyclicScanPage : ContentPage
                 EnOtraUbicacion = x.EnOtraUbicacion,
                 ResultadoPrimeraToma = x.ResultadoPrimeraToma,
                 ResultadoSegundaToma = x.ResultadoSegundaToma,
+                ResultadoTerceraToma = x.ResultadoTerceraToma,
+                ResultadoCuartaToma = x.ResultadoCuartaToma,
                 ResultadoFinal = x.ResultadoFinal,
                 PartNumber = x.PartNumber,
                 Escaneado = x.Escaneado
@@ -552,17 +643,19 @@ public partial class InventoryCyclicScanPage : ContentPage
         RefreshInteractionState();
     }
 
-    private void RefreshInteractionState(bool focusEntry = false)
+    private void RefreshInteractionState(bool focusStandardId = false, bool focusLocation = false)
     {
         OnPropertyChanged(nameof(CanEditLocation));
+        OnPropertyChanged(nameof(CanScanStandardId));
         OnPropertyChanged(nameof(FinishLocationButtonText));
 
-        if (StandardIdEntry is null)
+        if (focusLocation && LocationEntry is not null && CanEditLocation)
+        {
+            LocationEntry.Focus();
             return;
+        }
 
-        StandardIdEntry.IsEnabled = CanEditLocation;
-
-        if (focusEntry && CanEditLocation)
+        if (focusStandardId && StandardIdEntry is not null && CanScanStandardId)
         {
             StandardIdEntry.Focus();
         }
@@ -573,9 +666,111 @@ public partial class InventoryCyclicScanPage : ContentPage
         return standardId.Length >= 12 && standardId.All(char.IsDigit);
     }
 
+    private static string NormalizeLocationCode(string? value)
+    {
+        var normalized = (value ?? string.Empty).Trim();
+
+        if (normalized.StartsWith("INV", StringComparison.OrdinalIgnoreCase))
+        {
+            normalized = normalized[3..].TrimStart('-', ' ', ':');
+        }
+
+        return normalized.Trim();
+    }
+
+    private InventoryDetail? FindDetailByLocation(string locationCode)
+    {
+        if (_inventory is null)
+            return null;
+
+        return _inventory.Detalles
+            .Where(detail => string.Equals(detail.Ubicacion?.Trim(), locationCode, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(detail => detail.Escaneado ? 1 : 0)
+            .ThenBy(detail => detail.TakeNumber)
+            .ThenBy(detail => detail.InventarioCiclicoDetalleId)
+            .FirstOrDefault();
+    }
+
     private bool IsDuplicateStandardId(string standardId)
     {
         return _scans.Any(x =>
             string.Equals(x.StandardId?.Trim(), standardId.Trim(), StringComparison.OrdinalIgnoreCase));
     }
+
+    private static async Task PlayFeedbackSoundAsync(string assetName)
+    {
+#if ANDROID
+        try
+        {
+            if (await TryPlayAndroidPackagedSoundAsync(assetName))
+                return;
+        }
+        catch
+        {
+        }
+
+        PlayAndroidFallbackTone();
+#elif WINDOWS
+        try
+        {
+            Console.Beep();
+        }
+        catch
+        {
+        }
+#else
+        try
+        {
+            Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(120));
+        }
+        catch
+        {
+        }
+
+        await Task.CompletedTask;
+#endif
+    }
+
+#if ANDROID
+    private static async Task<bool> TryPlayAndroidPackagedSoundAsync(string assetName)
+    {
+        var audioPath = Path.Combine(FileSystem.CacheDirectory, assetName);
+        if (!File.Exists(audioPath))
+        {
+            await using var input = await FileSystem.OpenAppPackageFileAsync(assetName);
+            await using var output = File.Create(audioPath);
+            await input.CopyToAsync(output);
+        }
+
+        var player = new Android.Media.MediaPlayer();
+        player.SetAudioStreamType(Android.Media.Stream.Music);
+        player.SetDataSource(audioPath);
+        player.Prepare();
+        player.Completion += (_, _) =>
+        {
+            player.Release();
+        };
+        player.Error += (_, _) =>
+        {
+            player.Release();
+            PlayAndroidFallbackTone();
+        };
+        player.Start();
+        return true;
+    }
+
+    private static void PlayAndroidFallbackTone()
+    {
+        try
+        {
+            var tone = new Android.Media.ToneGenerator(Android.Media.Stream.Notification, 100);
+            tone.StartTone(Android.Media.Tone.PropNack, 250);
+
+            _ = Task.Delay(350).ContinueWith(_ => tone.Release());
+        }
+        catch
+        {
+        }
+    }
+#endif
 }

@@ -50,6 +50,10 @@ public class CyclicInventoryProfile : Profile
                 opt => opt.MapFrom(src => src.FirstCountResult))
             .ForMember(dest => dest.ResultadoSegundaToma,
                 opt => opt.MapFrom(src => src.SecondCountResult))
+            .ForMember(dest => dest.ResultadoTerceraToma,
+                opt => opt.MapFrom(src => src.ThirdCountResult))
+            .ForMember(dest => dest.ResultadoCuartaToma,
+                opt => opt.MapFrom(src => src.FourthCountResult))
             .ForMember(dest => dest.ResultadoFinal,
                 opt => opt.MapFrom(src => src.FinalResult))
             .ForMember(dest => dest.Escaneado,
@@ -102,6 +106,10 @@ public class CyclicInventoryProfile : Profile
                 opt => opt.MapFrom(src => src.ResultadoPrimeraToma))
             .ForMember(dest => dest.SecondCountResult,
                 opt => opt.MapFrom(src => src.ResultadoSegundaToma))
+            .ForMember(dest => dest.ThirdCountResult,
+                opt => opt.MapFrom(src => src.ResultadoTerceraToma))
+            .ForMember(dest => dest.FourthCountResult,
+                opt => opt.MapFrom(src => src.ResultadoCuartaToma))
             .ForMember(dest => dest.FinalResult,
                 opt => opt.MapFrom(src => src.ResultadoFinal))
             .ForMember(dest => dest.Scanned,

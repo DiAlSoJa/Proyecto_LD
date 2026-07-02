@@ -15,40 +15,27 @@
                 StrokeShape="RoundRectangle 24"
                 Padding="14">
             <VerticalStackLayout Spacing="10">
-                <Label Text="Filtrar ubicaciones"
+                <Label Text="Escanear ubicación"
                        FontAttributes="Bold"
                        FontSize="17"
                        TextColor="#0F172A" />
 
-                <Border BackgroundColor="#F8FAFC"
-                        Stroke="#CBD5E1"
-                        StrokeShape="RoundRectangle 18"
-                        Padding="12,10">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                        <Border WidthRequest="42"
-                                HeightRequest="42"
-                                BackgroundColor="#EEF4FF"
-                                Stroke="#BFDBFE"
-                                StrokeShape="RoundRectangle 14"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center">
-                            <Label Text="?"
-                                   FontSize="20"
-                                   TextColor="#2F5DA8"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                        </Border>
+                <Button x:Name="BtnEscanearUbicacion"
+                        Text="Abrir captura de ubicación"
+                        ImageSource="scan.svg"
+                        ContentLayout="Left,10"
+                        Clicked="OnScanLocationClicked"
+                        BackgroundColor="#EEF4FF"
+                        TextColor="#2F5DA8"
+                        BorderColor="#BFDBFE"
+                        CornerRadius="18"
+                        Padding="14,12"
+                        FontAttributes="Bold" />
 
-                        <Entry x:Name="FiltroEntry"
-                               Grid.Column="1"
-                               Placeholder="Filtrar detalles..."
-                               TextChanged="OnFiltroChanged"
-                               BackgroundColor="Transparent"
-                               TextColor="#0F172A"
-                               PlaceholderColor="#94A3B8"
-                               ClearButtonVisibility="WhileEditing" />
-                    </Grid>
-                </Border>
+                <Label Text="Se validará la ubicación antes de escanear el StandardId."
+                       FontSize="12"
+                       TextColor="#64748B"
+                       LineBreakMode="WordWrap" />
             </VerticalStackLayout>
         </Border>
 
@@ -76,8 +63,7 @@
 
                 <CollectionView Grid.Row="1"
                                 x:Name="DetailsCollection"
-                                SelectionMode="Single"
-                                SelectionChanged="OnDetailSelected"
+                                SelectionMode="None"
                                 ItemsLayout="VerticalList"
                                 VerticalOptions="FillAndExpand">
                     <CollectionView.EmptyView>
@@ -111,25 +97,17 @@
                                     StrokeShape="RoundRectangle 18"
                                     Padding="14"
                                     Margin="0,0,0,10">
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                    <VerticalStackLayout Spacing="4">
-                                        <Label Text="{Binding Ubicacion}"
-                                               FontAttributes="Bold"
-                                               FontSize="15"
-                                               TextColor="#0F172A"
-                                               LineBreakMode="TailTruncation" />
-                                        <Label Text="{Binding DetailSummary}"
-                                               FontSize="12"
-                                               TextColor="#475569"
-                                               LineBreakMode="WordWrap" />
-                                    </VerticalStackLayout>
-
-                                    <Label Grid.Column="1"
-                                           Text=">"
-                                           FontSize="24"
-                                           TextColor="#94A3B8"
-                                           VerticalOptions="Center" />
-                                </Grid>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding Ubicacion}"
+                                           FontAttributes="Bold"
+                                           FontSize="15"
+                                           TextColor="#0F172A"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Text="{Binding DetailSummary}"
+                                           FontSize="12"
+                                           TextColor="#475569"
+                                           LineBreakMode="WordWrap" />
+                                </VerticalStackLayout>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

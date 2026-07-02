@@ -15,16 +15,49 @@
                 StrokeShape="RoundRectangle 26"
                 Padding="18,16">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                <VerticalStackLayout Spacing="4"
+                <VerticalStackLayout Spacing="12"
                                      VerticalOptions="Center">
                     <Label Text="Ubicacion a tomar"
-                           FontSize="13"
-                           TextColor="#64748B" />
-                    <Label Text="{Binding LocationText}"
                            FontAttributes="Bold"
-                           FontSize="24"
-                           TextColor="#0F172A"
-                           LineBreakMode="TailTruncation" />
+                           FontSize="17"
+                           TextColor="#0F172A" />
+
+                    <Border BackgroundColor="#F8FAFC"
+                            Stroke="#CBD5E1"
+                            StrokeShape="RoundRectangle 18"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border WidthRequest="42"
+                                    HeightRequest="42"
+                                    BackgroundColor="#EEF4FF"
+                                    Stroke="#BFDBFE"
+                                    StrokeShape="RoundRectangle 14"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                <Label Text="?"
+                                       FontSize="20"
+                                       TextColor="#2F5DA8"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+
+                            <Entry x:Name="LocationEntry"
+                                   Grid.Column="1"
+                                   Placeholder="Escanea o escribe la ubicacion"
+                                   Completed="OnLocationCompleted"
+                                   BackgroundColor="Transparent"
+                                   TextColor="#0F172A"
+                                   PlaceholderColor="#94A3B8"
+                                   ClearButtonVisibility="WhileEditing"
+                                   ReturnType="Done"
+                                   IsEnabled="{Binding CanEditLocation}" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="{Binding LocationText}"
+                           FontSize="13"
+                           TextColor="#64748B"
+                           LineBreakMode="WordWrap" />
                 </VerticalStackLayout>
 
                 <Button Grid.Column="1"
@@ -37,7 +70,8 @@
                         Padding="0"
                         FontSize="18"
                         Clicked="OnBackClicked"
-                        Text="&lt;" />
+                        Text="&lt;"
+                        VerticalOptions="Center" />
             </Grid>
         </Border>
 
@@ -78,7 +112,9 @@
                                BackgroundColor="Transparent"
                                TextColor="#0F172A"
                                PlaceholderColor="#94A3B8"
-                               ClearButtonVisibility="WhileEditing" />
+                               ClearButtonVisibility="WhileEditing"
+                               ReturnType="Done"
+                               IsEnabled="{Binding CanScanStandardId}" />
                     </Grid>
                 </Border>
 
@@ -214,7 +250,7 @@
         <Button Grid.Row="3"
                 Text="{Binding FinishLocationButtonText}"
                 Clicked="OnFinishLocationClicked"
-                IsEnabled="{Binding CanEditLocation}"
+                IsEnabled="{Binding CanScanStandardId}"
                 BackgroundColor="#1D4ED8"
                 TextColor="White"
                 CornerRadius="18"

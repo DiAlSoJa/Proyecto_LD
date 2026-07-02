@@ -25,6 +25,12 @@ namespace LD.Domain.Entities
         public string? SecondCountResult { get; set; }
 
         [MaxLength(100)]
+        public string? ThirdCountResult { get; set; }
+
+        [MaxLength(100)]
+        public string? FourthCountResult { get; set; }
+
+        [MaxLength(100)]
         public string? FinalResult { get; set; }
 
         [MaxLength(100)]

@@ -58,6 +58,8 @@ public class CreateCyclicInventoryCommandHandler : IRequestHandler<CreateCyclicI
                     AnotherLocationQty = x.EnOtraUbicacion,
                     FirstCountResult = x.ResultadoPrimeraToma,
                     SecondCountResult = x.ResultadoSegundaToma,
+                    ThirdCountResult = x.ResultadoTerceraToma,
+                    FourthCountResult = x.ResultadoCuartaToma,
                     FinalResult = x.ResultadoFinal,
                     PartNumber = x.PartNumber,
                     Scanned = x.Escaneado

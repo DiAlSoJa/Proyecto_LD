@@ -1,4 +1,8 @@
+using LD.Contracts.DamageReports;
 using LD.Contracts.Requests;
+using MauiAppLogin.Controls;
+using MauiAppLogin.Services;
+using System.Globalization;
 using System.Text;
 
 namespace MauiAppLogin;
@@ -6,14 +10,22 @@ namespace MauiAppLogin;
 public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
 {
     private readonly List<string> _photoPaths = new();
+    private readonly IDialogService _dialogService;
+    private readonly IBluetoothPrinterService _bluetoothPrinterService;
+    private DamageReportRequest? _report;
 
-    public DamageReportPrintPage()
+    public DamageReportPrintPage(
+        IDialogService dialogService,
+        IBluetoothPrinterService bluetoothPrinterService)
     {
         InitializeComponent();
+        _dialogService = dialogService;
+        _bluetoothPrinterService = bluetoothPrinterService;
         BindingContext = this;
     }
 
     public string StandardIdText { get; private set; } = "Estandar ID: -";
+    public string DamageReportCodeText { get; private set; } = "Codigo QR: -";
     public string PartNumberText { get; private set; } = "Numero de Parte: -";
     public string UbicacionText { get; private set; } = "Ubicacion: -";
     public string StatusText { get; private set; } = "Status: -";
@@ -56,7 +68,19 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
 
     private void ApplyReport(DamageReportRequest report)
     {
+        _report = report;
+
         StandardIdText = BuildText("Estandar ID", FirstNotEmpty(report.StandardIdCode, report.StandardId?.ToString()));
+
+        var reportCode = DamageReportCodeGenerator.Normalize(report.DamageReportCode);
+        if (string.IsNullOrWhiteSpace(reportCode))
+        {
+            reportCode = DamageReportCodeGenerator.Generate(
+                report.ReportDate == default ? DateTime.Now : report.ReportDate);
+            report.DamageReportCode = reportCode;
+        }
+
+        DamageReportCodeText = BuildText("Codigo QR", reportCode);
         PartNumberText = BuildText("Numero de Parte", report.PartNumber);
         UbicacionText = BuildText("Ubicacion", report.Location);
         StatusText = BuildText("Status", report.CurrentStatus);
@@ -119,6 +143,7 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
     private void RefreshBindings()
     {
         OnPropertyChanged(nameof(StandardIdText));
+        OnPropertyChanged(nameof(DamageReportCodeText));
         OnPropertyChanged(nameof(PartNumberText));
         OnPropertyChanged(nameof(UbicacionText));
         OnPropertyChanged(nameof(StatusText));
@@ -142,8 +167,41 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
         OnPropertyChanged(nameof(Photo4Source));
     }
 
-    private void OnPrintClicked(object sender, EventArgs e)
+    private async void OnPrintClicked(object sender, EventArgs e)
     {
+        if (_report is null)
+        {
+            await _dialogService.ShowErrorAsync("Impresion", "No se encontro el reporte para imprimir.");
+            return;
+        }
+
+        var savedPrinter = await _bluetoothPrinterService.GetSavedPrinterAsync();
+        if (savedPrinter is null)
+        {
+            var goToSettings = await _dialogService.ShowWarningAsync(
+                "Impresion",
+                "No hay una impresora Bluetooth guardada. Deseas configurarla ahora?");
+
+            if (goToSettings)
+                await Shell.Current.GoToAsync(nameof(BluetoothPrinterSettingsPage));
+
+            return;
+        }
+
+        try
+        {
+            await _bluetoothPrinterService.PrintDamageReportAsync(_report);
+            await _dialogService.ShowSuccessAsync("Impresion", "El reporte se envio a la impresora Bluetooth.");
+        }
+        catch (Exception ex)
+        {
+            await _dialogService.ShowErrorAsync("Impresion", ex.Message);
+        }
+    }
+
+    private async void OnConfigurePrinterClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(BluetoothPrinterSettingsPage));
     }
 
     private async void OnPDFClicked(object sender, EventArgs e)
@@ -159,7 +217,7 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("PDF", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("PDF", ex.Message);
         }
     }
 
@@ -186,6 +244,7 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
         return new[]
         {
             StandardIdText,
+            DamageReportCodeText,
             PartNumberText,
             UbicacionText,
             StatusText,
@@ -447,26 +506,39 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
 
         private static string Sanitize(string value)
         {
-            var builder = new StringBuilder(value.Length);
-            foreach (var c in value)
-                builder.Append(c is >= ' ' and <= '~' ? c : RemoveAccent(c));
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
 
-            return builder.ToString();
+            var normalized = value.Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder(normalized.Length);
+
+            foreach (var c in normalized)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark)
+                    continue;
+
+                builder.Append(c is >= ' ' and <= '~' ? c : '?');
+            }
+
+            return builder.ToString().Normalize(NormalizationForm.FormC);
         }
 
+        #if false
         private static char RemoveAccent(char value)
         {
             return value switch
             {
-                'á' or 'à' or 'ä' or 'â' or 'Á' or 'À' or 'Ä' or 'Â' => 'a',
-                'é' or 'è' or 'ë' or 'ê' or 'É' or 'È' or 'Ë' or 'Ê' => 'e',
-                'í' or 'ì' or 'ï' or 'î' or 'Í' or 'Ì' or 'Ï' or 'Î' => 'i',
-                'ó' or 'ò' or 'ö' or 'ô' or 'Ó' or 'Ò' or 'Ö' or 'Ô' => 'o',
-                'ú' or 'ù' or 'ü' or 'û' or 'Ú' or 'Ù' or 'Ü' or 'Û' => 'u',
-                'ñ' or 'Ñ' => 'n',
+                'Ã¡' or 'Ã ' or 'Ã¤' or 'Ã¢' or 'Ã' or 'Ã€' or 'Ã„' or 'Ã‚' => 'a',
+                'Ã©' or 'Ã¨' or 'Ã«' or 'Ãª' or 'Ã‰' or 'Ãˆ' or 'Ã‹' or 'ÃŠ' => 'e',
+                'Ã­' or 'Ã¬' or 'Ã¯' or 'Ã®' or 'Ã' or 'ÃŒ' or 'Ã' or 'ÃŽ' => 'i',
+                'Ã³' or 'Ã²' or 'Ã¶' or 'Ã´' or 'Ã“' or 'Ã’' or 'Ã–' or 'Ã”' => 'o',
+                'Ãº' or 'Ã¹' or 'Ã¼' or 'Ã»' or 'Ãš' or 'Ã™' or 'Ãœ' or 'Ã›' => 'u',
+                'Ã±' or 'Ã‘' => 'n',
                 _ => '?'
             };
         }
+
+        #endif
 
         private readonly record struct PdfPage(string Content, IReadOnlyList<PdfImage> Images);
 

@@ -1353,6 +1353,10 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("FourthCountResult")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -1389,6 +1393,10 @@ namespace LD.Infrastructure.Migrations
 
                     b.Property<decimal?>("TheoreticalQty")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ThirdCountResult")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("CyclicInventoryDetailId");
 
@@ -1558,6 +1566,10 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("DamageReportCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("PartNumber")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1623,6 +1635,10 @@ namespace LD.Infrastructure.Migrations
                     b.HasKey("DamageReportId");
 
                     b.HasIndex("AvailableInventoryId");
+
+                    b.HasIndex("DamageReportCode")
+                        .IsUnique()
+                        .HasFilter("[DamageReportCode] IS NOT NULL");
 
                     b.HasIndex("ClientId");
 

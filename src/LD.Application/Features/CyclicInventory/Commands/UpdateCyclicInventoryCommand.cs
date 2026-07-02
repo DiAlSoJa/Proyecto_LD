@@ -85,6 +85,8 @@ public class UpdateCyclicInventoryCommandHandler : IRequestHandler<UpdateCyclicI
             detalle.AnotherLocationQty = detalleRequest.EnOtraUbicacion;
             detalle.FirstCountResult = detalleRequest.ResultadoPrimeraToma;
             detalle.SecondCountResult = detalleRequest.ResultadoSegundaToma;
+            detalle.ThirdCountResult = detalleRequest.ResultadoTerceraToma;
+            detalle.FourthCountResult = detalleRequest.ResultadoCuartaToma;
             detalle.FinalResult = detalleRequest.ResultadoFinal;
             detalle.PartNumber = detalleRequest.PartNumber;
             detalle.Scanned = detalleRequest.Escaneado;

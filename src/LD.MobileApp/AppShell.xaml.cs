@@ -15,6 +15,7 @@
             Routing.RegisterRoute(nameof(DamageReportPage), typeof(DamageReportPage));
             Routing.RegisterRoute(nameof(DamageReportDetailPage), typeof(DamageReportDetailPage));
             Routing.RegisterRoute(nameof(DamageReportPrintPage), typeof(DamageReportPrintPage));
+            Routing.RegisterRoute(nameof(BluetoothPrinterSettingsPage), typeof(BluetoothPrinterSettingsPage));
             Routing.RegisterRoute(nameof(ReceptionPage), typeof(ReceptionPage));
             Routing.RegisterRoute(nameof(PickingPage), typeof(PickingPage));
             Routing.RegisterRoute(nameof(PickingKittingPage), typeof(PickingKittingPage));

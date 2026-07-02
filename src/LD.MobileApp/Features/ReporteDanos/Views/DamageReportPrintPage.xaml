@@ -7,7 +7,7 @@
     BackgroundColor="#0F2E4F">
 
     <ScrollView>
-        <Grid RowDefinitions="Auto,Auto,Auto" Padding="16">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto" Padding="16">
             <Border Grid.Row="0"
                     BackgroundColor="#F6F8FC"
                     Stroke="#E2E8F0"
@@ -21,9 +21,14 @@
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 16"
                             Padding="12,8">
-                        <Label Text="{Binding StandardIdText}"
-                               TextColor="White"
-                               FontSize="15"/>
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="{Binding StandardIdText}"
+                                   TextColor="White"
+                                   FontSize="15"/>
+                            <Label Text="{Binding DamageReportCodeText}"
+                                   TextColor="#D1D5DB"
+                                   FontSize="12"/>
+                        </VerticalStackLayout>
                     </Border>
 
                     <Label Text="{Binding PartNumberText}" TextColor="#64748B" FontSize="14"/>
@@ -86,7 +91,18 @@
                     FontSize="18"
                     Margin="0,14,0,6"/>
 
-            <Grid Grid.Row="2"
+            <Button Grid.Row="2"
+                    Text="Configurar impresora Bluetooth"
+                    Clicked="OnConfigurePrinterClicked"
+                    HeightRequest="56"
+                    CornerRadius="18"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#1E293B"
+                    FontAttributes="Bold"
+                    FontSize="17"
+                    Margin="0,8,0,6"/>
+
+            <Grid Grid.Row="3"
                   ColumnDefinitions="*,*"
                   ColumnSpacing="12"
                   Margin="0,8,0,6">
