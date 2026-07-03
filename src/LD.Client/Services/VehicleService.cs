@@ -1,4 +1,5 @@
 using LD.Contracts.Responses;
+using LD.Contracts.Requests;
 using LD.Contracts.Vehicle;
 using LD.Forms.Configuration;
 
@@ -24,6 +25,26 @@ namespace LD.Client.Services
         {
             return await _api.GetAsync<ApiResponseDto<VehicleDto>>(
                 _apiEndpoints.Vehicle_GetById.Replace("{id}", plates));
+        }
+
+        public async Task<ApiResponseDto<string>> CreateVehicle(VechicleRequest request)
+        {
+            return await _api.PostAsync<VechicleRequest, ApiResponseDto<string>>(
+                _apiEndpoints.Vehicle_Create,
+                request);
+        }
+
+        public async Task<ApiResponseDto<string>> UpdateVehicle(string plates, VechicleRequest request)
+        {
+            return await _api.PutAsync<VechicleRequest, ApiResponseDto<string>>(
+                _apiEndpoints.Vehicle_Update.Replace("{id}", plates),
+                request);
+        }
+
+        public async Task<ApiResponseDto<string>> DeleteVehicle(string plates)
+        {
+            return await _api.DeleteAsync<ApiResponseDto<string>>(
+                _apiEndpoints.Vehicle_Delete.Replace("{id}", plates));
         }
     }
 }
