@@ -4,15 +4,17 @@ using LD.Application.Common.Interfaces.Repository;
 using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.SignalR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace LD.Infrastructure.Workers;
 
-public sealed class TaskDispatcherWorker : BackgroundService
+/// <summary>
+/// Asigna tareas pendientes (NoAsignada) a los usuarios disponibles conectados.
+/// Corre en ciclo cada <see cref="CheckInterval"/> tomando un scope nuevo por iteración.
+/// </summary>
+public sealed class TaskDispatcherWorker : ScopedBackgroundService
 {
-    private readonly IServiceScopeFactory          _scopeFactory;
     private readonly IConnectedUsersTracker         _tracker;
     private readonly IRealtimeNotifier              _notifier;
     private readonly ILogger<TaskDispatcherWorker> _logger;
@@ -25,45 +27,41 @@ public sealed class TaskDispatcherWorker : BackgroundService
         IConnectedUsersTracker tracker,
         IRealtimeNotifier notifier,
         ILogger<TaskDispatcherWorker> logger)
+        : base(scopeFactory)
     {
-        _scopeFactory = scopeFactory;
-        _tracker      = tracker;
-        _notifier     = notifier;
-        _logger       = logger;
+        _tracker  = tracker;
+        _notifier = notifier;
+        _logger   = logger;
     }
+
+    protected override TimeSpan GetInterval() => CheckInterval;
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
         // Libera todas las tareas que quedaron en estado Asignada de sesiones anteriores.
         // Asume instancia única — revisar si se escala horizontalmente.
-        using var scope  = _scopeFactory.CreateScope();
-        var taskRepo     = scope.ServiceProvider.GetRequiredService<IWarehouseTaskRepository>();
+        using var scope = CreateScope();
+        var taskRepo    = scope.ServiceProvider.GetRequiredService<IWarehouseTaskRepository>();
         await taskRepo.ReleaseAllAssignedTasksAsync(cancellationToken);
         _logger.LogInformation("TaskDispatcherWorker startup: tareas huérfanas en estado Asignada liberadas");
 
         await base.StartAsync(cancellationToken);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task DoWorkAsync(IServiceProvider serviceProvider, CancellationToken stoppingToken)
     {
-        _logger.LogInformation("TaskDispatcherWorker iniciado — intervalo {Interval}s", CheckInterval.TotalSeconds);
-
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            try
-            {
-                await DispatchPendingTasksAsync(stoppingToken);
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                _logger.LogError(ex, "Error en ciclo de TaskDispatcherWorker");
-            }
-
-            await Task.Delay(CheckInterval, stoppingToken);
+            await DispatchPendingTasksAsync(serviceProvider, stoppingToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // Un ciclo con error no debe tumbar el worker; se reintenta al próximo intervalo.
+            _logger.LogError(ex, "Error en ciclo de TaskDispatcherWorker");
         }
     }
 
-    private async Task DispatchPendingTasksAsync(CancellationToken ct)
+    private async Task DispatchPendingTasksAsync(IServiceProvider serviceProvider, CancellationToken ct)
     {
         var availableUsers = _tracker.GetAvailableUsers();
         if (availableUsers.Count == 0)
@@ -72,9 +70,8 @@ public sealed class TaskDispatcherWorker : BackgroundService
             return;
         }
 
-        using var scope = _scopeFactory.CreateScope();
-        var taskRepo    = scope.ServiceProvider.GetRequiredService<IWarehouseTaskRepository>();
-        var mapper      = scope.ServiceProvider.GetRequiredService<IMapper>();
+        var taskRepo = serviceProvider.GetRequiredService<IWarehouseTaskRepository>();
+        var mapper   = serviceProvider.GetRequiredService<IMapper>();
 
         // Limpia tareas cuyo usuario ya no está conectado o llevan más de StaleTaskWindow asignadas.
         var connectedUsers = _tracker.GetConnectedUsers();
