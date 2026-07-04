@@ -6,12 +6,97 @@
              mc:Ignorable="d"
              Loaded="UserControl_Loaded">
 
-    <Grid Background="#F8FAFC">
+    <UserControl.Resources>
+        <Style x:Key="ElegantTabControlStyle" TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid KeyboardNavigation.TabNavigation="Local">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0"
+                                    Background="{StaticResource SurfaceTabHeader}"
+                                    BorderBrush="{StaticResource TabBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12,12,0,0"
+                                    Padding="8,8,8,0">
+                                <TabPanel x:Name="HeaderPanel"
+                                          IsItemsHost="True"
+                                          Background="Transparent"/>
+                            </Border>
+                            <Border Grid.Row="1"
+                                    Background="{StaticResource SurfaceCard}"
+                                    BorderBrush="{StaticResource TabBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="0,0,12,12"
+                                    Padding="10">
+                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                  ContentSource="SelectedContent"
+                                                  Margin="0"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ElegantTabItemStyle" TargetType="TabItem">
+            <Setter Property="Foreground" Value="{StaticResource TabTextInactive}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="Background" Value="{StaticResource TabInactiveBg}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="5,5,0,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentSite"
+                                              ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource TabAccentBorder}"/>
+                                <Setter Property="Foreground" Value="{StaticResource TabTextActive}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabHoverBg}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource SurfaceMain}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
             <RowDefinition Height="1.1*"/>
-            <RowDefinition Height="12"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="1.25*"/>
         </Grid.RowDefinitions>
 
@@ -19,20 +104,20 @@
         <Border Grid.Row="0"
                 Background="White"
                 CornerRadius="12"
-                Padding="16"
+                Padding="10"
                 BorderBrush="#E5E7EB"
                 BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="70"/>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="18"/>
-                    <ColumnDefinition Width="55"/>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="18"/>
-                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="64"/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="140"/>
                     <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="8"/>
@@ -42,13 +127,13 @@
                 <TextBlock Grid.Column="0"
                            Text="Desde:"
                            VerticalAlignment="Center"
-                           FontSize="13"
+                           FontSize="12"
                            Foreground="#374151"/>
 
                 <DatePicker x:Name="dpDesde"
                             Grid.Column="1"
-                            Height="38"
-                            FontSize="13"
+                            Height="32"
+                            FontSize="12"
                             SelectedDateFormat="Short"
                             BorderBrush="#D1D5DB"
                             Background="White"/>
@@ -56,21 +141,21 @@
                 <TextBlock Grid.Column="3"
                            Text="Hasta:"
                            VerticalAlignment="Center"
-                           FontSize="13"
+                           FontSize="12"
                            Foreground="#374151"/>
 
                 <DatePicker x:Name="dpHasta"
                             Grid.Column="4"
-                            Height="38"
-                            FontSize="13"
+                            Height="32"
+                            FontSize="12"
                             SelectedDateFormat="Short"
                             BorderBrush="#D1D5DB"
                             Background="White"/>
 
                 <ComboBox x:Name="cmbEstatus"
                           Grid.Column="6"
-                          Height="38"
-                          FontSize="13"
+                          Height="32"
+                          FontSize="12"
                           SelectedIndex="0"
                           BorderBrush="#D1D5DB"
                           Background="White">
@@ -80,8 +165,8 @@
 
                <Button x:Name="BtnActualizar"
 		                Grid.Column="8"
-		                Height="38"
-		                Padding="12,0"
+		                Height="32"
+		                Padding="10,0"
 		                Click="BtnActualizar_Click"
 		                Background="#F3F4F6"
 		                Foreground="#374151"
@@ -89,9 +174,9 @@
 		                BorderThickness="1"
 		                Cursor="Hand">
 
-	                <Button.Resources>
+                <Button.Resources>
 		                <Style TargetType="Border">
-			                <Setter Property="CornerRadius" Value="6"/>
+			                <Setter Property="CornerRadius" Value="5"/>
 		                </Style>
 	                </Button.Resources>
 
@@ -103,16 +188,17 @@
 		                   Text="&#xE895;"
 		                   Foreground="#10B981"
 		                   Margin="0,0,6,0"
-		                   FontSize="14"/>
+		                   FontSize="12"/>
 
-		                <TextBlock Text="Actualizar"/>
+		                <TextBlock Text="Actualizar"
+                                   FontSize="12"/>
 	                </StackPanel>
                 </Button>
 
                <Button x:Name="btnNuevo"
 	                Grid.Column="10"
-	                Height="38"
-	                Padding="12,0"
+	                Height="32"
+	                Padding="10,0"
 	                Background="#F3F4F6"
 	                Foreground="#374151"
 	                BorderBrush="#D1D5DB"
@@ -120,9 +206,9 @@
                     Click="BtnNuevoInventario_Click"
 	                Cursor="Hand">
 
-	                <Button.Resources>
+                <Button.Resources>
 		                <Style TargetType="Border">
-			                <Setter Property="CornerRadius" Value="6"/>
+			                <Setter Property="CornerRadius" Value="5"/>
 		                </Style>
 	                </Button.Resources>
 
@@ -134,16 +220,17 @@
 		                   Text="&#xE710;"
 		                   Foreground="#2563EB"
 		                   Margin="0,0,6,0"
-		                   FontSize="14"/>
+		                   FontSize="12"/>
 
-		                <TextBlock Text="Nuevo"/>
+		                <TextBlock Text="Nuevo"
+                                   FontSize="12"/>
 	                </StackPanel>
                 </Button>
 
                 <Button x:Name="btnEditar"
 	                Grid.Column="12"
-	                Height="38"
-	                Padding="12,0"
+	                Height="32"
+	                Padding="10,0"
 	                Click="BtnEditar_Click"
 	                Background="#F3F4F6"
 	                Foreground="#374151"
@@ -151,9 +238,9 @@
 	                BorderThickness="1"
 	                Cursor="Hand">
 
-	                <Button.Resources>
+                <Button.Resources>
 		                <Style TargetType="Border">
-			                <Setter Property="CornerRadius" Value="6"/>
+			                <Setter Property="CornerRadius" Value="5"/>
 		                </Style>
 	                </Button.Resources>
 
@@ -165,13 +252,25 @@
 		                   Text="&#xE70F;"
 		                   Foreground="#F59E0B"
 		                   Margin="0,0,6,0"
-		                   FontSize="14"/>
+		                   FontSize="12"/>
 
-		                <TextBlock Text="Editar"/>
+		                <TextBlock Text="Editar"
+                                   FontSize="12"/>
 	                </StackPanel>
                 </Button>
             </Grid>
         </Border>
+
+        <GridSplitter Grid.Row="3"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Height="8"
+                      Background="{StaticResource BorderMuted}"
+                      ResizeDirection="Rows"
+                      ResizeBehavior="PreviousAndNext"
+                      ShowsPreview="True"
+                      Cursor="SizeNS"
+                      Margin="0,0"/>
 
         <!-- Sección media -->
         <Grid Grid.Row="2">
@@ -227,6 +326,7 @@
                                       SelectionChanged="dgAuditores_SelectionChanged">
 
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Id" Binding="{Binding InventarioCiclicoId}" Width="80"/>
                                     <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="140"/>
                                     <DataGridTextColumn Header="Almacen" Binding="{Binding Almacen}" Width="140"/>
                                     <DataGridTextColumn Header="Auditor" Binding="{Binding Auditor}" Width="300"/>
@@ -282,13 +382,116 @@
                 </Grid>
             </Border>
 
-            <!-- Derecha -->
-            <Border Grid.Column="2"
-                    Background="White"
+        </Grid>
+
+        <!-- Grid inferior -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.05*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="1.35*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.Resources>
+                <Style TargetType="DataGrid">
+                    <Setter Property="AutoGenerateColumns" Value="False"/>
+                    <Setter Property="SelectionMode" Value="Single"/>
+                    <Setter Property="SelectionUnit" Value="FullRow"/>
+                    <Setter Property="CanUserAddRows" Value="False"/>
+                    <Setter Property="CanUserDeleteRows" Value="False"/>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                    <Setter Property="HeadersVisibility" Value="Column"/>
+                    <Setter Property="GridLinesVisibility" Value="Vertical"/>
+                    <Setter Property="RowHeight" Value="28"/>
+                    <Setter Property="ColumnHeaderHeight" Value="40"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderGrid}"/>
+                    <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderRow}"/>
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
+                    <Setter Property="Background" Value="{StaticResource SurfaceCard}"/>
+                    <Setter Property="AlternatingRowBackground" Value="{StaticResource DataGridAltRow}"/>
+                </Style>
+
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{StaticResource DataGridHeaderBg}"/>
+                    <Setter Property="Foreground" Value="{StaticResource DataGridHeaderFg}"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="Padding" Value="8,6"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                </Style>
+
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="Padding" Value="8,4"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                </Style>
+
+                <Style TargetType="DataGridRow">
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    <Setter Property="Background" Value="White"/>
+                </Style>
+
+                <Style x:Key="BottomNumericCellStyle" TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                    <Setter Property="TextAlignment" Value="Right"/>
+                </Style>
+
+                <Style x:Key="SelectedLocationComparisonGridStyle" TargetType="DataGrid">
+                    <Setter Property="AutoGenerateColumns" Value="False"/>
+                    <Setter Property="SelectionMode" Value="Single"/>
+                    <Setter Property="SelectionUnit" Value="FullRow"/>
+                    <Setter Property="CanUserAddRows" Value="False"/>
+                    <Setter Property="CanUserDeleteRows" Value="False"/>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                    <Setter Property="HeadersVisibility" Value="Column"/>
+                    <Setter Property="GridLinesVisibility" Value="Vertical"/>
+                    <Setter Property="RowHeight" Value="28"/>
+                    <Setter Property="ColumnHeaderHeight" Value="40"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderGrid}"/>
+                    <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderRow}"/>
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
+                    <Setter Property="Background" Value="{StaticResource SurfaceCard}"/>
+                    <Setter Property="AlternatingRowBackground" Value="{StaticResource DataGridAltRow}"/>
+                    <Setter Property="RowStyle">
+                        <Setter.Value>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="{Binding RowBackground}"/>
+                                <Setter Property="Foreground" Value="{Binding RowForeground}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="CellStyle">
+                        <Setter.Value>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                <Setter Property="Padding" Value="8,4"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Grid.Resources>
+
+            <Border Grid.Column="0"
+                    Background="{StaticResource SurfaceCard}"
                     CornerRadius="12"
-                    BorderBrush="#E5E7EB"
+                    BorderBrush="{StaticResource BorderSoft}"
                     BorderThickness="1"
-                    Padding="10">
+                    Padding="12">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -296,192 +499,234 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="txtStatusResultados"
-                               Grid.Row="0"
-                               Text="Resultados"
-                               FontSize="12"
-                               Foreground="#6B7280"
-                               Margin="4,0,0,8"/>
+                    <StackPanel Grid.Row="0"
+                                Margin="4,0,0,8"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <TextBlock x:Name="txtStatusUbicacionesBottom"
+                                   Text="Ubicaciones"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Resumen consolidado de todas las tomas"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}"
+                                   Margin="8,0,0,0"/>
+                    </StackPanel>
 
                     <Border Grid.Row="2"
-                            BorderBrush="#D9DEE7"
+                            BorderBrush="{StaticResource BorderMuted}"
                             BorderThickness="1"
-                            CornerRadius="4"
-                            Background="White">
+                            CornerRadius="6"
+                            Background="{StaticResource SurfaceCard}">
                         <Grid>
-                            <DataGrid x:Name="dgResultados"
-                                      AutoGenerateColumns="False"
-                                      SelectionMode="Single"
-                                      SelectionUnit="FullRow"
-                                      CanUserAddRows="False"
-                                      CanUserDeleteRows="False"
-                                      IsReadOnly="True"
-                                      HeadersVisibility="Column"
-                                      GridLinesVisibility="Vertical"
-                                      RowHeight="28"
-                                      ColumnHeaderHeight="40"
-                                      FontSize="12"
-                                      VerticalGridLinesBrush="#D9D9D9"
-                                      HorizontalGridLinesBrush="#E4E8EE"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
-
+                            <DataGrid x:Name="dgUbicacionesDetalle"
+                                      SelectionChanged="dgUbicacionesDetalle_SelectionChanged">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="No. Parte" Binding="{Binding NoParte}" Width="150"/>
-                                    <DataGridCheckBoxColumn Header="Escaneado" Binding="{Binding Escaneado}" Width="110"/>
+                                    <DataGridTextColumn Header="Toma" Binding="{Binding TakeNumber}" Width="55"/>
+                                    <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="140"/>
+                                    <DataGridCheckBoxColumn Header="Tomada" Binding="{Binding Tomada}" Width="70"/>
+                                    <DataGridTextColumn Header="Teórico" Binding="{Binding Teorico}" Width="80" ElementStyle="{StaticResource BottomNumericCellStyle}"/>
+                                    <DataGridTextColumn Header="Físico" Binding="{Binding Fisico}" Width="80" ElementStyle="{StaticResource BottomNumericCellStyle}"/>
+                                    <DataGridTextColumn Header="1ra toma" Binding="{Binding ResultadoPrimeraToma}" Width="110"/>
+                                    <DataGridTextColumn Header="2da toma" Binding="{Binding ResultadoSegundaToma}" Width="110"/>
+                                    <DataGridTextColumn Header="3ra toma" Binding="{Binding ResultadoTerceraToma}" Width="110"/>
+                                    <DataGridTextColumn Header="4ta toma" Binding="{Binding ResultadoCuartaToma}" Width="110"/>
+                                    <DataGridTextColumn Header="Resultado final" Binding="{Binding ResultadoFinal}" Width="130"/>
                                 </DataGrid.Columns>
-
-                                <DataGrid.Resources>
-                                    <Style TargetType="DataGridColumnHeader">
-                                        <Setter Property="Background" Value="#EEF1F5"/>
-                                        <Setter Property="Foreground" Value="#16263D"/>
-                                        <Setter Property="FontWeight" Value="SemiBold"/>
-                                        <Setter Property="BorderBrush" Value="#D9DEE7"/>
-                                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                        <Setter Property="Padding" Value="8,6"/>
-                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    </Style>
-
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                        <Setter Property="Padding" Value="8,4"/>
-                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    </Style>
-
-                                    <Style TargetType="DataGridRow">
-                                        <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                        <Setter Property="Background" Value="White"/>
-                                    </Style>
-                                </DataGrid.Resources>
                             </DataGrid>
 
-                            <Border x:Name="LoadingOverlayResultados"
-                                    Background="#80FFFFFF"
+                            <Border x:Name="LoadingOverlayUbicacionesBottom"
+                                    Background="{StaticResource LoadingOverlayBg}"
                                     Visibility="Collapsed">
                                 <StackPanel HorizontalAlignment="Center"
                                             VerticalAlignment="Center">
                                     <ProgressBar IsIndeterminate="True"
                                                  Width="220"
                                                  Height="18"/>
-                                    <TextBlock x:Name="TxtLoadingResultados"
-                                               Text="Cargando resultados..."
+                                    <TextBlock x:Name="TxtLoadingUbicacionesBottom"
+                                               Text="Cargando detalle..."
                                                HorizontalAlignment="Center"
                                                Margin="0,12,0,0"
                                                FontSize="14"
                                                FontWeight="SemiBold"
-                                               Foreground="#24344D"/>
+                                               Foreground="{StaticResource TextOnLoading}"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
                     </Border>
                 </Grid>
             </Border>
-        </Grid>
 
-        <!-- Grid inferior -->
-        <Border Grid.Row="4"
-                Background="White"
-                CornerRadius="12"
-                BorderBrush="#E5E7EB"
-                BorderThickness="1"
-                Padding="10">
-            <Grid>
+            <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="8"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="txtStatusUbicacionesBottom"
-                           Grid.Row="0"
-                           Text="Ubicaciones"
-                           FontSize="12"
-                           Foreground="#6B7280"
-                           Margin="4,0,0,8"/>
+                <StackPanel Grid.Row="0"
+                            Margin="4,0,0,8">
+                    <TextBlock x:Name="txtStatusResultados"
+                               Text="Detalle de ubicación"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"/>
+                    <TextBlock x:Name="txtDetalleUbicacionSeleccionada"
+                               Text="Selecciona una ubicación a la izquierda para ver el detalle de standardId."
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}"
+                               Margin="0,2,0,0"/>
+                </StackPanel>
 
                 <Border Grid.Row="2"
-                        BorderBrush="#D9DEE7"
+                        Background="{StaticResource SurfaceCard}"
+                        CornerRadius="12"
+                        BorderBrush="{StaticResource BorderSoft}"
                         BorderThickness="1"
-                        CornerRadius="4"
-                        Background="White">
+                        Padding="12">
                     <Grid>
-                        <DataGrid x:Name="dgUbicacionesDetalle"
-                                  AutoGenerateColumns="False"
-                                  SelectionMode="Single"
-                                  SelectionUnit="FullRow"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  IsReadOnly="True"
-                                  HeadersVisibility="Column"
-                                  GridLinesVisibility="Vertical"
-                                  RowHeight="28"
-                                  ColumnHeaderHeight="40"
-                                  FontSize="12"
-                                  VerticalGridLinesBrush="#D9D9D9"
-                                  HorizontalGridLinesBrush="#E4E8EE"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="140"/>
-                                <DataGridCheckBoxColumn Header="Tomada" Binding="{Binding Tomada}" Width="110"/>
-                                <DataGridTextColumn Header="Teorico" Binding="{Binding Teorico}" Width="90"/>
-                                <DataGridTextColumn Header="Fisico" Binding="{Binding Fisico}" Width="90"/>
-                                <DataGridTextColumn Header="Resultado primera toma" Binding="{Binding ResultadoPrimeraToma}" Width="160"/>
-                                <DataGridTextColumn Header="Resultado segunda toma" Binding="{Binding ResultadoSegundaToma}" Width="160"/>
-                                <DataGridTextColumn Header="Resultado final" Binding="{Binding ResultadoFinal}" Width="150"/>
-                            </DataGrid.Columns>
+                        <Border Grid.Row="0"
+                                Background="{StaticResource SurfaceTabHeader}"
+                                BorderBrush="{StaticResource BorderMuted}"
+                                BorderThickness="0,0,0,1"
+                                Padding="10,8">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Background="#DCFCE7"
+                                        CornerRadius="999"
+                                        Padding="10,4"
+                                        Margin="0,0,8,0">
+                                    <TextBlock Text="Coincide"
+                                               Foreground="#166534"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                                <Border Background="#FEE2E2"
+                                        CornerRadius="999"
+                                        Padding="10,4"
+                                        Margin="0,0,8,0">
+                                    <TextBlock Text="Falta"
+                                               Foreground="#991B1B"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                                <Border Background="#FEF3C7"
+                                        CornerRadius="999"
+                                        Padding="10,4"
+                                        Margin="0,0,8,0">
+                                    <TextBlock Text="Extra"
+                                               Foreground="#92400E"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                                <Border Background="#EDE9FE"
+                                        CornerRadius="999"
+                                        Padding="10,4">
+                                    <TextBlock Text="Otra ubicación"
+                                               Foreground="#6B21A8"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
 
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#EEF1F5"/>
-                                    <Setter Property="Foreground" Value="#16263D"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="BorderBrush" Value="#D9DEE7"/>
-                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                    <Setter Property="Padding" Value="8,6"/>
-                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
+                        <TabControl x:Name="tabTomas"
+                                    Grid.Row="1"
+                                    Style="{StaticResource ElegantTabControlStyle}"
+                                    ItemContainerStyle="{StaticResource ElegantTabItemStyle}"
+                                    SelectionChanged="TabTomas_SelectionChanged"
+                                    SelectedIndex="0">
+                            <TabItem Header="1ra toma">
+                                <DataGrid x:Name="dgPrimeraToma"
+                                          Margin="0,12,0,0"
+                                          Style="{StaticResource SelectedLocationComparisonGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="StandardId" Binding="{Binding StandardId}" Width="120"/>
+                                        <DataGridTextColumn Header="PartNumber" Binding="{Binding PartNumber}" Width="130"/>
+                                        <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="220"/>
+                                        <DataGridTextColumn Header="Disponible" Binding="{Binding Disponible}" Width="90"/>
+                                        <DataGridTextColumn Header="Escaneado" Binding="{Binding Escaneado}" Width="90"/>
+                                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="170"/>
+                                        <DataGridTextColumn Header="Ubicación actual" Binding="{Binding UbicacionActual}" Width="180"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabItem>
 
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                    <Setter Property="Padding" Value="8,4"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
+                            <TabItem Header="2da toma">
+                                <DataGrid x:Name="dgSegundaToma"
+                                          Margin="0,12,0,0"
+                                          Style="{StaticResource SelectedLocationComparisonGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="StandardId" Binding="{Binding StandardId}" Width="120"/>
+                                        <DataGridTextColumn Header="PartNumber" Binding="{Binding PartNumber}" Width="130"/>
+                                        <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="220"/>
+                                        <DataGridTextColumn Header="Disponible" Binding="{Binding Disponible}" Width="90"/>
+                                        <DataGridTextColumn Header="Escaneado" Binding="{Binding Escaneado}" Width="90"/>
+                                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="170"/>
+                                        <DataGridTextColumn Header="Ubicación actual" Binding="{Binding UbicacionActual}" Width="180"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabItem>
 
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="BorderBrush" Value="#E4E8EE"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                    <Setter Property="Background" Value="White"/>
-                                </Style>
-                            </DataGrid.Resources>
-                        </DataGrid>
+                            <TabItem Header="3ra toma">
+                                <DataGrid x:Name="dgTerceraToma"
+                                          Margin="0,12,0,0"
+                                          Style="{StaticResource SelectedLocationComparisonGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="StandardId" Binding="{Binding StandardId}" Width="120"/>
+                                        <DataGridTextColumn Header="PartNumber" Binding="{Binding PartNumber}" Width="130"/>
+                                        <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="220"/>
+                                        <DataGridTextColumn Header="Disponible" Binding="{Binding Disponible}" Width="90"/>
+                                        <DataGridTextColumn Header="Escaneado" Binding="{Binding Escaneado}" Width="90"/>
+                                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="170"/>
+                                        <DataGridTextColumn Header="Ubicación actual" Binding="{Binding UbicacionActual}" Width="180"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabItem>
 
-                        <Border x:Name="LoadingOverlayUbicacionesBottom"
-                                Background="#80FFFFFF"
+                            <TabItem Header="4ta toma">
+                                <DataGrid x:Name="dgCuartaToma"
+                                          Margin="0,12,0,0"
+                                          Style="{StaticResource SelectedLocationComparisonGridStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="StandardId" Binding="{Binding StandardId}" Width="120"/>
+                                        <DataGridTextColumn Header="PartNumber" Binding="{Binding PartNumber}" Width="130"/>
+                                        <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="220"/>
+                                        <DataGridTextColumn Header="Disponible" Binding="{Binding Disponible}" Width="90"/>
+                                        <DataGridTextColumn Header="Escaneado" Binding="{Binding Escaneado}" Width="90"/>
+                                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="170"/>
+                                        <DataGridTextColumn Header="Ubicación actual" Binding="{Binding UbicacionActual}" Width="180"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabItem>
+                        </TabControl>
+
+                        <Border x:Name="LoadingOverlayResultados"
+                                Grid.RowSpan="2"
+                                Background="{StaticResource LoadingOverlayBg}"
                                 Visibility="Collapsed">
                             <StackPanel HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
                                 <ProgressBar IsIndeterminate="True"
                                              Width="220"
                                              Height="18"/>
-                                <TextBlock x:Name="TxtLoadingUbicacionesBottom"
-                                           Text="Cargando detalle..."
+                                <TextBlock x:Name="TxtLoadingResultados"
+                                           Text="Cargando detalle de ubicación..."
                                            HorizontalAlignment="Center"
                                            Margin="0,12,0,0"
                                            FontSize="14"
                                            FontWeight="SemiBold"
-                                           Foreground="#24344D"/>
+                                           Foreground="{StaticResource TextOnLoading}"/>
                             </StackPanel>
                         </Border>
                     </Grid>
                 </Border>
             </Grid>
-        </Border>
+        </Grid>
     </Grid>
 </UserControl>

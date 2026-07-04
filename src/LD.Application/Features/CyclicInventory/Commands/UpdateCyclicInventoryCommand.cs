@@ -4,6 +4,7 @@ using LD.Application.Common.Results;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using MediatR;
+using CyclicInventoryEntity = LD.Domain.Entities.CyclicInventory;
 using CyclicInventoryDetailEntity = LD.Domain.Entities.CyclicInventoryDetail;
 
 namespace LD.Application.Features.CyclicInventory.Commands;
@@ -35,13 +36,9 @@ public class UpdateCyclicInventoryCommandHandler : IRequestHandler<UpdateCyclicI
 
             _mapper.Map(request, inventario);
 
-            if (request.Detalles.Count > 0 || request.LocationIds.Count > 0)
+            if (request.Detalles.Count > 0)
             {
-                inventario.Details.Clear();
-                foreach (var detalle in BuildDetalles(request))
-                {
-                    inventario.Details.Add(detalle);
-                }
+                SyncDetalles(inventario, request);
             }
 
             var result = await _repository.UpdateAsync(inventario);
@@ -55,34 +52,44 @@ public class UpdateCyclicInventoryCommandHandler : IRequestHandler<UpdateCyclicI
         }
     }
 
-    private static List<CyclicInventoryDetailEntity> BuildDetalles(InventarioCiclicoRequest request)
+    private static void SyncDetalles(CyclicInventoryEntity inventario, InventarioCiclicoRequest request)
     {
-        if (request.Detalles.Count > 0)
+        foreach (var detalleRequest in request.Detalles)
         {
-            return request.Detalles
-                .Select(x => new CyclicInventoryDetailEntity
+            var detalle = inventario.Details.FirstOrDefault(x =>
+                x.CyclicInventoryDetailId == detalleRequest.InventarioCiclicoDetalleId);
+
+            if (detalle is null)
+            {
+                detalle = inventario.Details.FirstOrDefault(x => x.LocationId == detalleRequest.LocationId);
+            }
+
+            if (detalle is null)
+            {
+                detalle = new CyclicInventoryDetailEntity
                 {
                     CyclicInventoryId = request.InventarioCiclicoId,
-                    LocationId = x.LocationId,
-                    Counted = x.Tomada,
-                    TheoreticalQty = x.Teorico,
-                    PhysicalQty = x.Fisico,
-                    FirstCountResult = x.ResultadoPrimeraToma,
-                    SecondCountResult = x.ResultadoSegundaToma,
-                    FinalResult = x.ResultadoFinal,
-                    PartNumber = x.PartNumber,
-                    Scanned = x.Escaneado
-                })
-                .ToList();
-        }
+                    LocationId = detalleRequest.LocationId
+                };
+                inventario.Details.Add(detalle);
+            }
 
-        return request.LocationIds
-            .Distinct()
-            .Select(locationId => new CyclicInventoryDetailEntity
-            {
-                CyclicInventoryId = request.InventarioCiclicoId,
-                LocationId = locationId
-            })
-            .ToList();
+            detalle.LocationId = detalleRequest.LocationId;
+            detalle.TakeNumber = detalleRequest.TakeNumber <= 0
+                ? (detalle.TakeNumber <= 0 ? 1 : detalle.TakeNumber)
+                : detalleRequest.TakeNumber;
+            detalle.Counted = detalleRequest.Tomada;
+            detalle.TheoreticalQty = detalleRequest.Teorico;
+            detalle.PhysicalQty = detalleRequest.Fisico;
+            detalle.SameLocationQty = detalleRequest.MismaUbicacion;
+            detalle.AnotherLocationQty = detalleRequest.EnOtraUbicacion;
+            detalle.FirstCountResult = detalleRequest.ResultadoPrimeraToma;
+            detalle.SecondCountResult = detalleRequest.ResultadoSegundaToma;
+            detalle.ThirdCountResult = detalleRequest.ResultadoTerceraToma;
+            detalle.FourthCountResult = detalleRequest.ResultadoCuartaToma;
+            detalle.FinalResult = detalleRequest.ResultadoFinal;
+            detalle.PartNumber = detalleRequest.PartNumber;
+            detalle.Scanned = detalleRequest.Escaneado;
+        }
     }
 }

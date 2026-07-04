@@ -49,6 +49,7 @@ using LD.FormsX.Views.Ubicaciones;
 using LD.FormsX.Views.Unidades;
 using LD.FormsX.Views.Usuarios;
 using LDForms.Features.DashBoard.ViewModels;
+using LDForms.Features.DockDelivery.Views;
 using LDForms;
 using LDForms.Views;
 using Microsoft.Extensions.Configuration;
@@ -244,6 +245,7 @@ namespace LD.FormsX
             services.AddTransient<DatabaseDiagramView>();
             services.AddTransient<DamageReportView>();
             services.AddTransient<TasksView>();
+            services.AddTransient<DockDeliveryView>();
             services.AddTransient<ControlPatioView>();
             services.AddTransient<UsuariosView>();
             services.AddTransient<ProyectosView>();
@@ -275,6 +277,10 @@ namespace LD.FormsX
             services.AddTransient<ValidarEmbarqueDialog>();
             services.AddTransient<NuevoASNEscaneoView>();
             services.AddTransient<BuscarVehiculoView>();
+            services.AddTransient<VehiculosDockDeliveryView>();
+            services.AddTransient<NuevoVehiculoDockDeliveryView>();
+            services.AddTransient<ChoferesDockDeliveryView>();
+            services.AddTransient<NuevoChoferDockDeliveryView>();
 
             services.AddTransient<NuevoUsuarioView>();
             services.AddTransient<UsuarioAlmacenView>();

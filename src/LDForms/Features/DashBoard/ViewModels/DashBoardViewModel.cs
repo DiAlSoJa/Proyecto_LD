@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LD.Client.Configuration;
 using LD.Client.Services;
+using LD.Contracts.Constants;
 using LD.Contracts.Enums;
 using LD.FormsX.Helpers;
 using LD.FormsX.Movimientos;
@@ -21,6 +22,7 @@ using LD.FormsX.Views.ReporteDanos;
 using LD.FormsX.Views.Reportes;
 using LD.FormsX.Views.Tareas;
 using LD.FormsX.Views.Usuarios;
+using LDForms.Features.DockDelivery.Views;
 using LDForms.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
@@ -61,6 +63,7 @@ public partial class DashBoardViewModel : ObservableObject
             ["DatabaseDiagram"] = new("Diagrama BD", "Database", DashboardIconColor, Module_e.Reports, null, () => _serviceProvider.GetRequiredService<DatabaseDiagramView>()),
             ["ReporteDanos"] = new("Reporte de daños", "AlertCircleOutline", DashboardIconColor, Module_e.DamageReport, null, () => _serviceProvider.GetRequiredService<DamageReportView>()),
             ["Tareas"] = new("Tareas", "ClipboardSearchOutline", DashboardIconColor, Module_e.WarehouseStaff, null, () => _serviceProvider.GetRequiredService<TasksView>()),
+            ["DockDelivery"] = new("Dock delivery", "TruckFlatbed", DashboardIconColor, Module_e.Operations, null, () => _serviceProvider.GetRequiredService<DockDeliveryView>()),
             ["Impresion"] = new("Impresión", "PrinterOutline", DashboardIconColor, Module_e.Reports, StandardLabelPrintOptionsDialog.StandardIdOption, null),
             ["Patio"] = new("Control de patio", "Parking", DashboardIconColor, Module_e.YardControl, null, () => _serviceProvider.GetRequiredService<ControlPatioView>())
         };
@@ -86,7 +89,9 @@ public partial class DashBoardViewModel : ObservableObject
                 openCommand,
                 openInWindowCommand)
             {
-                IsVisible = UserData.HasModule((int)meta.Module)
+                IsVisible = key.Equals("DockDelivery", StringComparison.OrdinalIgnoreCase)
+                    ? HasDockDeliveryAccess()
+                    : UserData.HasModule((int)meta.Module)
             });
         }
 
@@ -164,6 +169,14 @@ public partial class DashBoardViewModel : ObservableObject
     private bool TryGetMetadata(string key, out ModuleMetadata metadata)
     {
         return _modules.TryGetValue(key, out metadata!);
+    }
+
+    private static bool HasDockDeliveryAccess()
+    {
+        return UserData.HasPermission(PermissionKeys.Vehicle_View)
+            || UserData.HasPermission(PermissionKeys.Vehicle_Create)
+            || UserData.HasPermission(PermissionKeys.Vehicle_Update)
+            || UserData.HasPermission(PermissionKeys.Vehicle_Delete);
     }
 
     private async Task PrintStandardLabelsAsync()

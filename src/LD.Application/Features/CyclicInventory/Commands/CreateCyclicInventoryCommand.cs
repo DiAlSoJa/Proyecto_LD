@@ -50,11 +50,16 @@ public class CreateCyclicInventoryCommandHandler : IRequestHandler<CreateCyclicI
                 .Select(x => new CyclicInventoryDetailEntity
                 {
                     LocationId = x.LocationId,
+                    TakeNumber = x.TakeNumber <= 0 ? 1 : x.TakeNumber,
                     Counted = x.Tomada,
                     TheoreticalQty = x.Teorico,
                     PhysicalQty = x.Fisico,
+                    SameLocationQty = x.MismaUbicacion,
+                    AnotherLocationQty = x.EnOtraUbicacion,
                     FirstCountResult = x.ResultadoPrimeraToma,
                     SecondCountResult = x.ResultadoSegundaToma,
+                    ThirdCountResult = x.ResultadoTerceraToma,
+                    FourthCountResult = x.ResultadoCuartaToma,
                     FinalResult = x.ResultadoFinal,
                     PartNumber = x.PartNumber,
                     Scanned = x.Escaneado
@@ -64,7 +69,7 @@ public class CreateCyclicInventoryCommandHandler : IRequestHandler<CreateCyclicI
 
         return request.LocationIds
             .Distinct()
-            .Select(locationId => new CyclicInventoryDetailEntity { LocationId = locationId })
+            .Select(locationId => new CyclicInventoryDetailEntity { LocationId = locationId, TakeNumber = 1 })
             .ToList();
     }
 }

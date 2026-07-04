@@ -1,7 +1,10 @@
 using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
+using LD.Contracts.DamageReports;
 using LD.Contracts.Requests;
+using MauiAppLogin.Controls;
 using Microsoft.Maui.Graphics.Platform;
+using System.Text;
 
 namespace MauiAppLogin;
 
@@ -14,6 +17,7 @@ public partial class DamageReportDetailPage : ContentPage
     private readonly DamageReportService _damageReportService;
     private readonly AvailableInventoryService _availableInventoryService;
     private readonly StandardLabelService _standardLabelService;
+    private readonly IDialogService _dialogService;
     private ImageSource? _foto1;
     private ImageSource? _foto2;
     private ImageSource? _foto3;
@@ -31,12 +35,14 @@ public partial class DamageReportDetailPage : ContentPage
     public DamageReportDetailPage(
         DamageReportService damageReportService,
         AvailableInventoryService availableInventoryService,
-        StandardLabelService standardLabelService)
+        StandardLabelService standardLabelService,
+        IDialogService dialogService)
     {
         InitializeComponent();
         _damageReportService = damageReportService;
         _availableInventoryService = availableInventoryService;
         _standardLabelService = standardLabelService;
+        _dialogService = dialogService;
         BindingContext = this;
     }
 
@@ -102,7 +108,7 @@ public partial class DamageReportDetailPage : ContentPage
         var resolvedStandardId = await ResolveStandardIdAsync(StandardId);
         if (!resolvedStandardId.HasValue)
         {
-            await DisplayAlertAsync("StandardId invalido", "No se encontro la etiqueta StandardId capturada.", "OK");
+            await _dialogService.ShowErrorAsync("StandardId invalido", "No se encontro la etiqueta StandardId capturada.");
             await Shell.Current.GoToAsync("..");
             return;
         }
@@ -114,7 +120,7 @@ public partial class DamageReportDetailPage : ContentPage
             var response = await _availableInventoryService.GetAvailableInventories(resolvedStandardId.Value);
             if (!response.IsSuccess || response.Data == null || response.Data.Count == 0)
             {
-                await DisplayAlertAsync("Inventario", response.Message ?? "No se encontro inventario para este StandardId.", "OK");
+                await _dialogService.ShowErrorAsync("Inventario", response.Message ?? "No se encontro inventario para este StandardId.");
                 await Shell.Current.GoToAsync("..");
                 return;
             }
@@ -128,7 +134,7 @@ public partial class DamageReportDetailPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("Error", ex.Message);
         }
         finally
         {
@@ -209,7 +215,7 @@ public partial class DamageReportDetailPage : ContentPage
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await DisplayAlertAsync("Camara", "Este dispositivo no soporta captura de fotos.", "OK");
+                await _dialogService.ShowInfoAsync("Camara", "Este dispositivo no soporta captura de fotos.");
                 return;
             }
 
@@ -252,7 +258,7 @@ public partial class DamageReportDetailPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("Error", ex.Message);
         }
     }
 
@@ -290,25 +296,25 @@ public partial class DamageReportDetailPage : ContentPage
     {
         if (_selectedInventory is null)
         {
-            await DisplayAlertAsync("Inventario", "Primero carga un StandardId valido.", "OK");
+            await _dialogService.ShowInfoAsync("Inventario", "Primero carga un StandardId valido.");
             return;
         }
 
         if (EstadoPicker.SelectedItem is null)
         {
-            await DisplayAlertAsync("Tipo de daño", "Selecciona el tipo de daño.", "OK");
+            await _dialogService.ShowInfoAsync("Tipo de dano", "Selecciona el tipo de dano.");
             return;
         }
 
         if (EstadoPickewr.SelectedItem is null)
         {
-            await DisplayAlertAsync("Categoria", "Selecciona la categoria.", "OK");
+            await _dialogService.ShowInfoAsync("Categoria", "Selecciona la categoria.");
             return;
         }
 
         if (EstadoPickewsr.SelectedItem is null)
         {
-            await DisplayAlertAsync("Nuevo estatus", "Selecciona el nuevo estatus.", "OK");
+            await _dialogService.ShowInfoAsync("Nuevo estatus", "Selecciona el nuevo estatus.");
             return;
         }
 
@@ -322,7 +328,7 @@ public partial class DamageReportDetailPage : ContentPage
             var response = await _damageReportService.CreateDamageReport(request);
             if (!response.IsSuccess)
             {
-                await DisplayAlertAsync("Reporte de daños", response.Message ?? "No se pudo guardar el reporte.", "OK");
+                await _dialogService.ShowErrorAsync("Reporte de danos", response.Message ?? "No se pudo guardar el reporte.");
                 return;
             }
 
@@ -337,7 +343,7 @@ public partial class DamageReportDetailPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await _dialogService.ShowErrorAsync("Error", ex.Message);
         }
         finally
         {
@@ -372,6 +378,8 @@ public partial class DamageReportDetailPage : ContentPage
 
     private DamageReportRequest BuildDamageReportRequest(AvailableInventoryDto inventory)
     {
+        var reportDate = DateTime.Now;
+
         return new DamageReportRequest
         {
             AvailableInventoryId = inventory.AvailableInventoryId,
@@ -397,13 +405,13 @@ public partial class DamageReportDetailPage : ContentPage
             DamageType = EstadoPicker.SelectedItem?.ToString() ?? string.Empty,
             Category = EstadoPickewr.SelectedItem?.ToString() ?? string.Empty,
             NewStatus = EstadoPickewsr.SelectedItem?.ToString() ?? string.Empty,
+            DamageReportCode = DamageReportCodeGenerator.Generate(reportDate),
             Comments = LicenciaEntry.Text,
             Photo1Path = _foto1Path,
             Photo2Path = _foto2Path,
             Photo3Path = _foto3Path,
             Photo4Path = _foto4Path,
-            ReportDate = DateTime.Now
+            ReportDate = reportDate
         };
     }
-
 }

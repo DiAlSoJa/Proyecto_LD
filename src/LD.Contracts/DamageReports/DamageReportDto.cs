@@ -26,6 +26,7 @@ public class DamageReportDto
     public string DamageType { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public string NewStatus { get; set; } = string.Empty;
+    public string? DamageReportCode { get; set; }
     public string? Comments { get; set; }
     public string? Photo1Path { get; set; }
     public string? Photo2Path { get; set; }

@@ -1,123 +1,125 @@
+using System;
+using LD.Client.Configuration;
+using LD.Client.Services;
+using LD.Contracts.InventarioCiclico;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Features.Inventario.Models;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace MauiAppLogin;
 
 public partial class InventoryList : ContentPage
 {
+    private readonly CyclicInventoryService _cyclicInventoryService;
+    private readonly IDialogService _dialogService;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ObservableCollection<InventoryGroup> _primeraToma = new();
     private readonly ObservableCollection<InventoryGroup> _segundaToma = new();
     private readonly ObservableCollection<InventoryGroup> _terceraToma = new();
+    private bool _isLoading;
+    private string _activeTab = "P";
 
-    public InventoryList()
+    public InventoryList(
+        CyclicInventoryService cyclicInventoryService,
+        IDialogService dialogService,
+        IServiceProvider serviceProvider)
     {
         InitializeComponent();
-        CargarDatos();
-        ActualizarContadores();
-        MostrarTab("P");
+
+        _cyclicInventoryService = cyclicInventoryService;
+        _dialogService = dialogService;
+        _serviceProvider = serviceProvider;
     }
 
-    private void CargarDatos()
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (_isLoading)
+            return;
+
+        await CargarDatosAsync();
+    }
+
+    private async Task CargarDatosAsync()
+    {
+        if (_isLoading)
+            return;
+
+        try
+        {
+            _isLoading = true;
+
+            LimpiarDatos();
+            MostrarTab("P");
+            ActualizarContadores();
+
+            if (string.IsNullOrWhiteSpace(UserData.Id))
+            {
+                await _dialogService.ShowErrorAsync(
+                    "Inventario",
+                    "No se pudo identificar al usuario actual.");
+                return;
+            }
+
+            var response = await _cyclicInventoryService.GetCyclicInventories(
+                auditorUserId: UserData.Id);
+
+            if (!response.IsSuccess)
+            {
+                await _dialogService.ShowErrorAsync(
+                    "Inventario",
+                    response.Message ?? "No se pudieron cargar los inventarios ciclicos.");
+                return;
+            }
+
+            foreach (var inventario in (response.Data ?? [])
+                         .OrderByDescending(x => x.Fecha)
+                         .ThenByDescending(x => x.InventarioCiclicoId))
+            {
+                _primeraToma.Add(MapToInventoryGroup(inventario));
+            }
+
+            ActualizarContadores();
+        }
+        catch (Exception ex)
+        {
+            await _dialogService.ShowErrorAsync(
+                "Inventario",
+                $"Error al cargar los inventarios ciclicos: {ex.Message}");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void LimpiarDatos()
     {
         _primeraToma.Clear();
         _segundaToma.Clear();
         _terceraToma.Clear();
-
-        _primeraToma.Add(new InventoryGroup
-        {
-            Cantidad = "1/1",
-            Folio = "1000060",
-            Detalles = new List<InventoryDetail>
-            {
-                new InventoryDetail
-                {
-                    Pedido = "202001012003 - G21A",
-                    Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                    Ubicacion = "JABIL B2",
-                    Color ="#D2F2B6"
-                }
-            }
-        });
-
-        _primeraToma.Add(new InventoryGroup
-        {
-            Cantidad = "2/3",
-            Folio = "1000061",
-            Detalles = new List<InventoryDetail>
-            {
-                new InventoryDetail
-                {
-                    Pedido = "20200101255 - D01L",
-                    Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                    Ubicacion = "JABIL B2",
-                    Color ="#D2F2B6"
-                },
-                new InventoryDetail
-                {
-                    Pedido = "20200155500 - J60E",
-                    Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                    Ubicacion = "JABIL B2",
-                    Color ="#D2F2B6"
-                },
-                new InventoryDetail
-                {
-                    Pedido = "20200185888 - ZD38A",
-                    Fecha = new DateTime(2026, 03, 03, 11, 00, 00),
-                    Ubicacion = "JABIL B2",
-                    Color ="#FFFFFF"
-                }
-            }
-        });
-
-        _segundaToma.Add(new InventoryGroup
-        {
-            Cantidad = "0/2",
-            Folio = "2000010",
-            Detalles = new List<InventoryDetail>
-            {
-                new InventoryDetail
-                {
-                    Pedido = "HOLD0001 - QA01",
-                    Fecha = new DateTime(2026, 03, 03, 09, 30, 00),
-                    Ubicacion = "HOLD A1",
-                    Color ="#FFFFFF"
-                },
-                new InventoryDetail
-                {
-                    Pedido = "HOLD0002 - QA02",
-                    Fecha = new DateTime(2026, 03, 03, 09, 45, 00),
-                    Ubicacion = "HOLD A2",
-                    Color ="#FFFFFF"
-                }
-            }
-        });
-
-        _terceraToma.Add(new InventoryGroup
-        {
-            Cantidad = "1/1",
-            Folio = "3000001",
-            Detalles = new List<InventoryDetail>
-            {
-                new InventoryDetail
-                {
-                    Pedido = "DMG0001 - BOX01",
-                    Fecha = new DateTime(2026, 03, 03, 08, 15, 00),
-                    Ubicacion = "SCRAP B1",
-                    Color ="#D2F2B6"
-                }
-            }
-        });
     }
 
     private void ActualizarContadores()
     {
-        LblCountPrimera.Text = "("+_primeraToma.Count.ToString()+")";
-        LblCountSegunda.Text = "(" + _segundaToma.Count.ToString() + ")";
-        LblCountTercera.Text = "(" + _terceraToma.Count.ToString() + ")";
+        if (LblCountPrimera is null || LblCountSegunda is null || LblCountTercera is null)
+            return;
+
+        LblCountPrimera.Text = $"({_primeraToma.Count})";
+        LblCountSegunda.Text = $"({_segundaToma.Count})";
+        LblCountTercera.Text = $"({_terceraToma.Count})";
     }
 
     private void MostrarTab(string tab)
     {
+        if (InventoryCollection is null)
+            return;
+
+        _activeTab = tab;
+
         switch (tab)
         {
             case "P":
@@ -139,20 +141,28 @@ public partial class InventoryList : ContentPage
 
     private void ActivarTab(string tab)
     {
+        if (TabPrimera is null || TabSegunda is null || TabTercera is null
+            || LblPrimeraText is null || LblCountPrimera is null
+            || LblSegundaText is null || LblCountSegunda is null
+            || LblTerceraText is null || LblCountTercera is null)
+        {
+            return;
+        }
+
         bool esPrimera = tab == "P";
         bool esSegunda = tab == "S";
         bool esTercera = tab == "T";
 
         TabPrimera.BackgroundColor = esPrimera ? Color.FromArgb("#1F3A5F") : Color.FromArgb("#F8FAFC");
-        TabPrimera.Stroke = esPrimera ? null : Color.FromArgb("#CBD5E1");
+        TabPrimera.Stroke = esPrimera ? Colors.Transparent : Color.FromArgb("#CBD5E1");
         TabPrimera.StrokeThickness = esPrimera ? 0 : 1;
 
         TabSegunda.BackgroundColor = esSegunda ? Color.FromArgb("#1F3A5F") : Color.FromArgb("#F8FAFC");
-        TabSegunda.Stroke = esSegunda ? null : Color.FromArgb("#CBD5E1");
+        TabSegunda.Stroke = esSegunda ? Colors.Transparent : Color.FromArgb("#CBD5E1");
         TabSegunda.StrokeThickness = esSegunda ? 0 : 1;
 
         TabTercera.BackgroundColor = esTercera ? Color.FromArgb("#1F3A5F") : Color.FromArgb("#F8FAFC");
-        TabTercera.Stroke = esTercera ? null : Color.FromArgb("#CBD5E1");
+        TabTercera.Stroke = esTercera ? Colors.Transparent : Color.FromArgb("#CBD5E1");
         TabTercera.StrokeThickness = esTercera ? 0 : 1;
 
         LblPrimeraText.TextColor = esPrimera ? Colors.White : Color.FromArgb("#334155");
@@ -180,16 +190,94 @@ public partial class InventoryList : ContentPage
         MostrarTab("T");
     }
 
-    private async void OnDetailTapped(object sender, TappedEventArgs e)
+    private async void OnCloseClicked(object sender, EventArgs e)
     {
-        if (e.Parameter is InventoryDetail detail)
+        if (Navigation.ModalStack.Count > 0)
         {
-            await DisplayAlertAsync(
-                "Detalle",
-                $"Pedido: {detail.Pedido}\nFecha: {detail.Fecha:dd-MM-yyyy hh:mm tt}\nUbicación: {detail.Ubicacion}",
-                "OK");
+            await Navigation.PopModalAsync();
+            return;
+        }
+
+        if (Navigation.NavigationStack.Count > 1)
+        {
+            await Navigation.PopAsync();
         }
     }
+
+    private async void OnInventorySelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection?.FirstOrDefault() is not InventoryGroup selected)
+            return;
+
+        if (sender is CollectionView collectionView)
+        {
+            collectionView.SelectedItem = null;
+        }
+
+        var detailPage = _serviceProvider.GetRequiredService<InventoryCyclicDetailPage>();
+        detailPage.SetInventory(selected);
+        await Navigation.PushAsync(detailPage);
+    }
+
+    private static InventoryGroup MapToInventoryGroup(CyclicInventoryDto inventario)
+    {
+        var detalles = inventario.Detalles
+            .OrderBy(x => x.Ubicacion)
+            .ThenBy(x => x.PartNumber ?? string.Empty)
+            .Select(x => new InventoryDetail
+            {
+                InventarioCiclicoDetalleId = x.InventarioCiclicoDetalleId,
+                LocationId = x.LocationId,
+                TakeNumber = x.TakeNumber <= 0 ? 1 : x.TakeNumber,
+                Pedido = string.IsNullOrWhiteSpace(x.PartNumber) ? x.Ubicacion : x.PartNumber!.Trim(),
+                PartNumber = string.IsNullOrWhiteSpace(x.PartNumber) ? null : x.PartNumber.Trim(),
+                Fecha = inventario.Fecha,
+                Ubicacion = x.Ubicacion,
+                Color = GetDetailColor(x),
+                Teorico = x.Teorico,
+                Fisico = x.Fisico,
+                MismaUbicacion = x.MismaUbicacion,
+                EnOtraUbicacion = x.EnOtraUbicacion,
+                ResultadoPrimeraToma = x.ResultadoPrimeraToma,
+                ResultadoSegundaToma = x.ResultadoSegundaToma,
+                ResultadoTerceraToma = x.ResultadoTerceraToma,
+                ResultadoCuartaToma = x.ResultadoCuartaToma,
+                ResultadoFinal = x.ResultadoFinal,
+                Tomada = x.Tomada,
+                Escaneado = x.Escaneado
+            })
+            .ToList();
+
+        var completados = inventario.Detalles.Count(x => x.Tomada);
+        var escaneados = inventario.Detalles.Count(x => x.Escaneado);
+        var totalUbicaciones = inventario.Detalles.Count;
+
+        return new InventoryGroup
+        {
+            InventarioCiclicoId = inventario.InventarioCiclicoId,
+            WarehouseId = inventario.WarehouseId,
+            AuditorUserId = inventario.AuditorUserId?.Trim() ?? string.Empty,
+            Fecha = inventario.Fecha,
+            FechaTerminado = inventario.FechaTerminado,
+            Almacen = inventario.Almacen?.Trim() ?? string.Empty,
+            Auditor = inventario.Auditor?.Trim() ?? string.Empty,
+            Estatus = inventario.Estatus?.Trim() ?? string.Empty,
+            Completados = completados,
+            Escaneados = escaneados,
+            Cantidad = $"{escaneados}/{totalUbicaciones}",
+            Folio = inventario.InventarioCiclicoId.ToString(),
+            Detalles = detalles
+        };
+    }
+
+    private static string GetDetailColor(CyclicInventoryDetailDto detail)
+    {
+        if (detail.Tomada)
+            return "#D2F2B6";
+
+        if (detail.Escaneado)
+            return "#FDE68A";
+
+        return "#FFFFFF";
+    }
 }
-
-

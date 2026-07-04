@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppLogin.InventoryCyclicScanPage"
+             Title=""
+             BackgroundColor="#1F3A5F">
+
+    <Grid Padding="16,18,16,28"
+          RowDefinitions="Auto,Auto,*,Auto"
+          RowSpacing="14">
+
+        <Border Grid.Row="0"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeShape="RoundRectangle 26"
+                Padding="18,16">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <VerticalStackLayout Spacing="12"
+                                     VerticalOptions="Center">
+                    <Label Text="Ubicacion a tomar"
+                           FontAttributes="Bold"
+                           FontSize="17"
+                           TextColor="#0F172A" />
+
+                    <Border BackgroundColor="#F8FAFC"
+                            Stroke="#CBD5E1"
+                            StrokeShape="RoundRectangle 18"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border WidthRequest="42"
+                                    HeightRequest="42"
+                                    BackgroundColor="#EEF4FF"
+                                    Stroke="#BFDBFE"
+                                    StrokeShape="RoundRectangle 14"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                <Label Text="?"
+                                       FontSize="20"
+                                       TextColor="#2F5DA8"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+
+                            <Entry x:Name="LocationEntry"
+                                   Grid.Column="1"
+                                   Placeholder="Escanea o escribe la ubicacion"
+                                   Completed="OnLocationCompleted"
+                                   BackgroundColor="Transparent"
+                                   TextColor="#0F172A"
+                                   PlaceholderColor="#94A3B8"
+                                   ClearButtonVisibility="WhileEditing"
+                                   ReturnType="Done"
+                                   IsEnabled="{Binding CanEditLocation}" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="{Binding LocationText}"
+                           FontSize="13"
+                           TextColor="#64748B"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+
+                <Button Grid.Column="1"
+                        WidthRequest="42"
+                        HeightRequest="42"
+                        BackgroundColor="#F8FAFC"
+                        TextColor="#475569"
+                        BorderColor="#E2E8F0"
+                        CornerRadius="14"
+                        Padding="0"
+                        FontSize="18"
+                        Clicked="OnBackClicked"
+                        Text="&lt;"
+                        VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeShape="RoundRectangle 24"
+                Padding="14">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Escanear StandardId"
+                       FontAttributes="Bold"
+                       FontSize="17"
+                       TextColor="#0F172A" />
+
+                <Border BackgroundColor="#F8FAFC"
+                        Stroke="#CBD5E1"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="12,10">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Border WidthRequest="42"
+                                HeightRequest="42"
+                                BackgroundColor="#EEF4FF"
+                                Stroke="#BFDBFE"
+                                StrokeShape="RoundRectangle 14"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                            <Label Text="?"
+                                   FontSize="20"
+                                   TextColor="#2F5DA8"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <Entry x:Name="StandardIdEntry"
+                               Grid.Column="1"
+                               Placeholder="Escanea o ingresa el StandardId de 12 digitos"
+                               Completed="OnStandardIdCompleted"
+                               BackgroundColor="Transparent"
+                               TextColor="#0F172A"
+                               PlaceholderColor="#94A3B8"
+                               ClearButtonVisibility="WhileEditing"
+                               ReturnType="Done"
+                               IsEnabled="{Binding CanScanStandardId}" />
+                    </Grid>
+                </Border>
+
+                <Border BackgroundColor="{Binding StatusBoxBackground}"
+                        Stroke="{Binding StatusBoxStroke}"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="12">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Border WidthRequest="28"
+                                HeightRequest="28"
+                                BackgroundColor="#2F5DA8"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 14"
+                                VerticalOptions="Start">
+                            <Label Text="i"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <Label Grid.Column="1"
+                               Text="{Binding StatusMessage}"
+                               FontSize="13"
+                               TextColor="{Binding StatusTextColor}"
+                               LineBreakMode="WordWrap" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="2"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeShape="RoundRectangle 24"
+                Padding="14">
+            <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*,Auto"
+                      ColumnSpacing="10">
+                    <Label Text="Escaneado"
+                           FontAttributes="Bold"
+                           FontSize="17"
+                           TextColor="#0F172A" />
+                    <Label Grid.Column="1"
+                           Text="{Binding ScansCountText, StringFormat='{0} registro(s)'}"
+                           FontSize="13"
+                           TextColor="#64748B"
+                           VerticalOptions="Center" />
+                </Grid>
+
+                <CollectionView Grid.Row="1"
+                                x:Name="ScansCollection"
+                                SelectionMode="None"
+                                ItemsLayout="VerticalList"
+                                VerticalOptions="FillAndExpand">
+                    <CollectionView.EmptyView>
+                        <Border BackgroundColor="#F0F9FF"
+                                Stroke="#BAE6FD"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="6"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center">
+                                <Label Text="[]"
+                                       FontSize="28"
+                                       TextColor="#0284C7"
+                                       HorizontalTextAlignment="Center" />
+                                <Label Text="Aun no hay escaneos"
+                                       FontAttributes="Bold"
+                                       FontSize="15"
+                                       TextColor="#075985"
+                                       HorizontalTextAlignment="Center" />
+                                <Label Text="Los StandardId escaneados apareceran aqui."
+                                       FontSize="12"
+                                       TextColor="#475569"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="#F8FAFC"
+                                    Stroke="#D7E5FF"
+                                    StrokeShape="RoundRectangle 18"
+                                    Padding="12"
+                                    Margin="0,0,0,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnScanTapped"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="48,*,Auto" ColumnSpacing="12">
+                                    <Border WidthRequest="42"
+                                            HeightRequest="42"
+                                            BackgroundColor="#EEF4FF"
+                                            Stroke="#D7E5FF"
+                                            StrokeShape="RoundRectangle 14"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding Numero}"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               TextColor="#2F5DA8"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                        <Label Text="{Binding StandardId}"
+                                               FontAttributes="Bold"
+                                               FontSize="14"
+                                               TextColor="#0F172A"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Hora}"
+                                               FontSize="12"
+                                               TextColor="#64748B" />
+                                    </VerticalStackLayout>
+
+                                    <Label Grid.Column="2"
+                                           Text=">"
+                                           FontSize="22"
+                                           TextColor="#94A3B8"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
+
+        <Button Grid.Row="3"
+                Text="{Binding FinishLocationButtonText}"
+                Clicked="OnFinishLocationClicked"
+                IsEnabled="{Binding CanScanStandardId}"
+                BackgroundColor="#1D4ED8"
+                TextColor="White"
+                CornerRadius="18"
+                Padding="14,14"
+                FontAttributes="Bold" />
+    </Grid>
+</ContentPage>

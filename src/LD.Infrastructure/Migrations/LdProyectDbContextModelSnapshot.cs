@@ -1182,6 +1182,140 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("CyclicInventories", (string)null);
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryAvailableInventory", b =>
+                {
+                    b.Property<int>("CyclicInventoryAvailableInventoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CyclicInventoryAvailableInventoryId"));
+
+                    b.Property<int?>("AvailableInventoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AvailableReference")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("AvailableStatus")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomsDeclarationNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("CyclicInventoryDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CyclicInventoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("DocumentId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("FinalAvailable")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LotNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PurchaseOrder")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal?>("Qty")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SD")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("StandardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StandardIdCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("StatusId")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("Supply")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TakeNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("CyclicInventoryAvailableInventoryId");
+
+                    b.HasIndex("AvailableInventoryId");
+
+                    b.HasIndex("CyclicInventoryId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("StandardId");
+
+                    b.HasIndex("CyclicInventoryDetailId", "TakeNumber", "StandardIdCode");
+
+                    b.ToTable("CyclicInventoryAvailableInventories", (string)null);
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryDetail", b =>
                 {
                     b.Property<int>("CyclicInventoryDetailId")
@@ -1189,6 +1323,9 @@ namespace LD.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CyclicInventoryDetailId"));
+
+                    b.Property<decimal?>("AnotherLocationQty")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("Counted")
                         .HasColumnType("bit");
@@ -1213,6 +1350,10 @@ namespace LD.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FirstCountResult")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FourthCountResult")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -1242,8 +1383,20 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<decimal?>("SameLocationQty")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TakeNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<decimal?>("TheoreticalQty")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ThirdCountResult")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("CyclicInventoryDetailId");
 
@@ -1252,6 +1405,81 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("CyclicInventoryDetails", (string)null);
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryScan", b =>
+                {
+                    b.Property<int>("CyclicInventoryScanId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CyclicInventoryScanId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentLocation")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int?>("CurrentLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CyclicInventoryDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CyclicInventoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("InventoryNotAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCorrectScan")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInAnotherLocation")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ScannedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StandardId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("CyclicInventoryScanId");
+
+                    b.HasIndex("CyclicInventoryDetailId");
+
+                    b.HasIndex("CurrentLocationId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("CyclicInventoryId", "CyclicInventoryDetailId", "ScannedAt");
+
+                    b.ToTable("CyclicInventoryScans", (string)null);
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.DamageReport", b =>
@@ -1338,6 +1566,10 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("DamageReportCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("PartNumber")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1403,6 +1635,10 @@ namespace LD.Infrastructure.Migrations
                     b.HasKey("DamageReportId");
 
                     b.HasIndex("AvailableInventoryId");
+
+                    b.HasIndex("DamageReportCode")
+                        .IsUnique()
+                        .HasFilter("[DamageReportCode] IS NOT NULL");
 
                     b.HasIndex("ClientId");
 
@@ -6890,6 +7126,47 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryAvailableInventory", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.AvailableInventory", "AvailableInventory")
+                        .WithMany()
+                        .HasForeignKey("AvailableInventoryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("LD.Domain.Entities.CyclicInventoryDetail", "CyclicInventoryDetail")
+                        .WithMany("AvailableInventories")
+                        .HasForeignKey("CyclicInventoryDetailId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.CyclicInventory", "CyclicInventory")
+                        .WithMany()
+                        .HasForeignKey("CyclicInventoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.StandardLabel", "StandardLabel")
+                        .WithMany()
+                        .HasForeignKey("StandardId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("AvailableInventory");
+
+                    b.Navigation("CyclicInventory");
+
+                    b.Navigation("CyclicInventoryDetail");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("StandardLabel");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryDetail", b =>
                 {
                     b.HasOne("LD.Domain.Entities.CyclicInventory", "CyclicInventory")
@@ -6905,6 +7182,33 @@ namespace LD.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("CyclicInventory");
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryScan", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.CyclicInventoryDetail", "CyclicInventoryDetail")
+                        .WithMany()
+                        .HasForeignKey("CyclicInventoryDetailId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.CyclicInventory", "CyclicInventory")
+                        .WithMany()
+                        .HasForeignKey("CyclicInventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LD.Domain.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CyclicInventory");
+
+                    b.Navigation("CyclicInventoryDetail");
 
                     b.Navigation("Location");
                 });
@@ -7622,6 +7926,11 @@ namespace LD.Infrastructure.Migrations
             modelBuilder.Entity("LD.Domain.Entities.CyclicInventory", b =>
                 {
                     b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.CyclicInventoryDetail", b =>
+                {
+                    b.Navigation("AvailableInventories");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.DeliveryOrder", b =>

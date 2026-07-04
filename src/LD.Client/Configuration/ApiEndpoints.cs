@@ -328,6 +328,10 @@ namespace LD.Forms.Configuration
         public string CyclicInventory_GetById => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}";
         public string CyclicInventory_Create => $"{_baseApi}/CyclicInventory";
         public string CyclicInventory_Update => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}";
+        public string CyclicInventory_GetScans => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}/details/{{cyclicInventoryDetailId}}/scans";
+        public string CyclicInventory_CreateScan => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}/details/{{cyclicInventoryDetailId}}/scans";
+        public string CyclicInventory_DeleteScan => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}/details/{{cyclicInventoryDetailId}}/scans/{{cyclicInventoryScanId}}";
+        public string CyclicInventory_FinishLocation => $"{_baseApi}/CyclicInventory/{{cyclicInventoryId}}/details/{{cyclicInventoryDetailId}}/finish-location";
 
         // ======================
         // DAMAGE REPORT

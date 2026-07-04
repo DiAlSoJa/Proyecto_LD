@@ -19,7 +19,8 @@ public class CyclicInventoryService
     public async Task<ApiResponseDto<List<CyclicInventoryDto>>> GetCyclicInventories(
         DateTime? desde = null,
         DateTime? hasta = null,
-        string? estatus = null)
+        string? estatus = null,
+        string? auditorUserId = null)
     {
         var query = new List<string>();
 
@@ -36,6 +37,11 @@ public class CyclicInventoryService
         if (!string.IsNullOrWhiteSpace(estatus))
         {
             query.Add($"estatus={Uri.EscapeDataString(estatus)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(auditorUserId))
+        {
+            query.Add($"auditorUserId={Uri.EscapeDataString(auditorUserId)}");
         }
 
         var endpoint = query.Count == 0
@@ -63,5 +69,56 @@ public class CyclicInventoryService
         return await _api.PutAsync<InventarioCiclicoRequest, ApiResponseDto<string>>(
             _apiEndpoints.CyclicInventory_Update.Replace("{cyclicInventoryId}", cyclicInventoryId.ToString()),
             request);
+    }
+
+    public async Task<ApiResponseDto<List<CyclicInventoryScanDto>>> GetCyclicInventoryScans(
+        int cyclicInventoryId,
+        int cyclicInventoryDetailId)
+    {
+        var endpoint = _apiEndpoints.CyclicInventory_GetScans
+            .Replace("{cyclicInventoryId}", cyclicInventoryId.ToString())
+            .Replace("{cyclicInventoryDetailId}", cyclicInventoryDetailId.ToString());
+
+        return await _api.GetAsync<ApiResponseDto<List<CyclicInventoryScanDto>>>(endpoint);
+    }
+
+    public async Task<ApiResponseDto<CyclicInventoryScanDto>> CreateCyclicInventoryScan(
+        int cyclicInventoryId,
+        int cyclicInventoryDetailId,
+        CreateCyclicInventoryScanRequest request)
+    {
+        var endpoint = _apiEndpoints.CyclicInventory_CreateScan
+            .Replace("{cyclicInventoryId}", cyclicInventoryId.ToString())
+            .Replace("{cyclicInventoryDetailId}", cyclicInventoryDetailId.ToString());
+
+        return await _api.PostAsync<CreateCyclicInventoryScanRequest, ApiResponseDto<CyclicInventoryScanDto>>(
+            endpoint,
+            request);
+    }
+
+    public async Task<ApiResponseDto<string>> DeleteCyclicInventoryScan(
+        int cyclicInventoryId,
+        int cyclicInventoryDetailId,
+        int cyclicInventoryScanId)
+    {
+        var endpoint = _apiEndpoints.CyclicInventory_DeleteScan
+            .Replace("{cyclicInventoryId}", cyclicInventoryId.ToString())
+            .Replace("{cyclicInventoryDetailId}", cyclicInventoryDetailId.ToString())
+            .Replace("{cyclicInventoryScanId}", cyclicInventoryScanId.ToString());
+
+        return await _api.DeleteAsync<ApiResponseDto<string>>(endpoint);
+    }
+
+    public async Task<ApiResponseDto<List<CyclicInventoryScanDto>>> FinishCyclicInventoryLocation(
+        int cyclicInventoryId,
+        int cyclicInventoryDetailId)
+    {
+        var endpoint = _apiEndpoints.CyclicInventory_FinishLocation
+            .Replace("{cyclicInventoryId}", cyclicInventoryId.ToString())
+            .Replace("{cyclicInventoryDetailId}", cyclicInventoryDetailId.ToString());
+
+        return await _api.PostAsync<object, ApiResponseDto<List<CyclicInventoryScanDto>>>(
+            endpoint,
+            new { });
     }
 }

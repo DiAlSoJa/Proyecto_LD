@@ -11,7 +11,11 @@ public class InventarioCiclicoRepository : Repository<CyclicInventory>, IInventa
     {
     }
 
-    public async Task<List<CyclicInventory>> GetAllWithRelationsAsync(DateTime? desde, DateTime? hasta, string? estatus)
+    public async Task<List<CyclicInventory>> GetAllWithRelationsAsync(
+        DateTime? desde,
+        DateTime? hasta,
+        string? estatus,
+        string? auditorUserId)
     {
         var query = _context.CyclicInventories
             .AsNoTracking()
@@ -19,6 +23,11 @@ public class InventarioCiclicoRepository : Repository<CyclicInventory>, IInventa
             .Include(x => x.Details)
                 .ThenInclude(x => x.Location)
             .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(auditorUserId))
+        {
+            query = query.Where(x => x.AuditorUserId == auditorUserId);
+        }
 
         if (desde.HasValue)
         {

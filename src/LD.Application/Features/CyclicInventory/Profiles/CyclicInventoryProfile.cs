@@ -34,16 +34,26 @@ public class CyclicInventoryProfile : Profile
                 opt => opt.MapFrom(src => src.CyclicInventoryId))
             .ForMember(dest => dest.Ubicacion,
                 opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : string.Empty))
+            .ForMember(dest => dest.TakeNumber,
+                opt => opt.MapFrom(src => src.TakeNumber <= 0 ? 1 : src.TakeNumber))
             .ForMember(dest => dest.Tomada,
                 opt => opt.MapFrom(src => src.Counted))
             .ForMember(dest => dest.Teorico,
                 opt => opt.MapFrom(src => src.TheoreticalQty))
             .ForMember(dest => dest.Fisico,
                 opt => opt.MapFrom(src => src.PhysicalQty))
+            .ForMember(dest => dest.MismaUbicacion,
+                opt => opt.MapFrom(src => src.SameLocationQty))
+            .ForMember(dest => dest.EnOtraUbicacion,
+                opt => opt.MapFrom(src => src.AnotherLocationQty))
             .ForMember(dest => dest.ResultadoPrimeraToma,
                 opt => opt.MapFrom(src => src.FirstCountResult))
             .ForMember(dest => dest.ResultadoSegundaToma,
                 opt => opt.MapFrom(src => src.SecondCountResult))
+            .ForMember(dest => dest.ResultadoTerceraToma,
+                opt => opt.MapFrom(src => src.ThirdCountResult))
+            .ForMember(dest => dest.ResultadoCuartaToma,
+                opt => opt.MapFrom(src => src.FourthCountResult))
             .ForMember(dest => dest.ResultadoFinal,
                 opt => opt.MapFrom(src => src.FinalResult))
             .ForMember(dest => dest.Escaneado,
@@ -80,16 +90,26 @@ public class CyclicInventoryProfile : Profile
                 opt => opt.MapFrom(src => src.InventarioCiclicoDetalleId))
             .ForMember(dest => dest.CyclicInventoryId,
                 opt => opt.MapFrom(src => src.InventarioCiclicoId))
+            .ForMember(dest => dest.TakeNumber,
+                opt => opt.MapFrom(src => src.TakeNumber <= 0 ? 1 : src.TakeNumber))
             .ForMember(dest => dest.Counted,
                 opt => opt.MapFrom(src => src.Tomada))
             .ForMember(dest => dest.TheoreticalQty,
                 opt => opt.MapFrom(src => src.Teorico))
             .ForMember(dest => dest.PhysicalQty,
                 opt => opt.MapFrom(src => src.Fisico))
+            .ForMember(dest => dest.SameLocationQty,
+                opt => opt.MapFrom(src => src.MismaUbicacion))
+            .ForMember(dest => dest.AnotherLocationQty,
+                opt => opt.MapFrom(src => src.EnOtraUbicacion))
             .ForMember(dest => dest.FirstCountResult,
                 opt => opt.MapFrom(src => src.ResultadoPrimeraToma))
             .ForMember(dest => dest.SecondCountResult,
                 opt => opt.MapFrom(src => src.ResultadoSegundaToma))
+            .ForMember(dest => dest.ThirdCountResult,
+                opt => opt.MapFrom(src => src.ResultadoTerceraToma))
+            .ForMember(dest => dest.FourthCountResult,
+                opt => opt.MapFrom(src => src.ResultadoCuartaToma))
             .ForMember(dest => dest.FinalResult,
                 opt => opt.MapFrom(src => src.ResultadoFinal))
             .ForMember(dest => dest.Scanned,

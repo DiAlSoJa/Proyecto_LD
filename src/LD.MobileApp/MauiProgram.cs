@@ -54,6 +54,8 @@ namespace MauiAppLogin
             builder.Services.AddTransient<DamageReportPage>();
             builder.Services.AddTransient<DamageReportDetailPage>();
             builder.Services.AddTransient<DamageReportPrintPage>();
+            builder.Services.AddTransient<BluetoothPrinterSettingsPage>();
+            builder.Services.AddSingleton<IBluetoothPrinterService, BluetoothPrinterService>();
             builder.Services.AddTransient<ReceptionPage>();
             builder.Services.AddTransient<PickingPage>();
             builder.Services.AddTransient<PickingKittingPage>();
@@ -61,6 +63,8 @@ namespace MauiAppLogin
             builder.Services.AddTransient<TaskResolve>();
             builder.Services.AddTransient<WarehouseOperations>();
             builder.Services.AddTransient<InventoryList>();
+            builder.Services.AddTransient<InventoryCyclicDetailPage>();
+            builder.Services.AddTransient<InventoryCyclicScanPage>();
             builder.Services.AddTransient<ForkliftChecklistPage>();
             builder.Services.AddTransient<NoEquipmentPage>();
             builder.Services.AddTransient<LoginPage>();

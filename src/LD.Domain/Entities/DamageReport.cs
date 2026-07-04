@@ -74,6 +74,9 @@ namespace LD.Domain.Entities
         [MaxLength(100)]
         public string NewStatus { get; set; } = string.Empty;
 
+        [MaxLength(50)]
+        public string? DamageReportCode { get; set; }
+
         [MaxLength(1000)]
         public string? Comments { get; set; }
 

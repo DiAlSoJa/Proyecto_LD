@@ -1,6 +1,7 @@
 using AutoMapper;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
+using LD.Contracts.DamageReports;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using MediatR;
@@ -40,6 +41,10 @@ public class CreateDamageReportCommandHandler : IRequestHandler<CreateDamageRepo
 
             var damageReport = _mapper.Map<DamageReport>(request);
             damageReport.ReportDate = request.ReportDate == default ? DateTime.UtcNow : request.ReportDate;
+            damageReport.DamageReportCode = DamageReportCodeGenerator.Normalize(request.DamageReportCode);
+
+            if (string.IsNullOrWhiteSpace(damageReport.DamageReportCode))
+                damageReport.DamageReportCode = DamageReportCodeGenerator.Generate(damageReport.ReportDate);
 
             var result = await _repository.CreateAsync(damageReport);
             return result
