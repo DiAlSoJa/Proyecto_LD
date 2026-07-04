@@ -71,7 +71,6 @@ public static class ConfigureServices
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly));
 
-        services.AddHostedService<KeepAliveWorker>();
         services.AddHostedService<TaskDispatcherWorker>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
