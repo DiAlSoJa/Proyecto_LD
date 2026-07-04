@@ -81,7 +81,7 @@ public static class DependencyInjection
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Mi API",
+                Title = "Warehouse System Api",
                 Version = "v1"
             });
 
