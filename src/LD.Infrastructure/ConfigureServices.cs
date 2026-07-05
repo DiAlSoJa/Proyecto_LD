@@ -74,6 +74,7 @@ public static class ConfigureServices
             cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly));
 
         services.AddHostedService<TaskDispatcherWorker>();
+        services.AddHostedService<SysLogRetentionWorker>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddRealtime();

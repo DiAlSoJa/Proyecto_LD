@@ -109,6 +109,10 @@ public static class WebApplicationExtensions
         app.UseAuthentication();
         app.UseAuthorization();
 
+        // Enriquece el LogContext con usuario/origen/request. Va después de auth
+        // (para tener context.User) y antes de UseSerilogRequestLogging.
+        app.UseMiddleware<SysLogEnrichmentMiddleware>();
+
         app.UseSerilogRequestLogging();
 
         app.MapControllers();
