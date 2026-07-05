@@ -9,8 +9,13 @@
              Background="#F8FAFC">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        <local:TaskStatusConverter x:Key="TaskStatusConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/ElegantTabStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            <local:TaskStatusConverter x:Key="TaskStatusConverter"/>
 
         <Style x:Key="FilterLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12"/>
@@ -42,9 +47,14 @@
             <Setter Property="Padding" Value="8,4"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Margin="12">
+        <TabControl Style="{StaticResource ElegantTabControlStyle}">
+
+        <TabItem Header="Tareas" Style="{StaticResource ElegantTabItemStyle}">
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
@@ -212,5 +222,19 @@
                 </Border>
             </Grid>
         </Border>
+        </Grid>
+        </TabItem>
+
+        <TabItem Header="Tareas asignadas" Style="{StaticResource ElegantTabItemStyle}">
+            <Grid>
+                <TextBlock Text="Tareas asignadas"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           Foreground="#6B7280"/>
+            </Grid>
+        </TabItem>
+
+        </TabControl>
     </Grid>
 </UserControl>

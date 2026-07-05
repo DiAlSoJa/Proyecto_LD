@@ -9,101 +9,11 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="TabActiveBg" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="TabInactiveBg" Color="#EEF2F7"/>
-        <SolidColorBrush x:Key="TabHoverBg" Color="#E7EDF5"/>
-        <SolidColorBrush x:Key="TabBorderBrush" Color="#D9E1EC"/>
-        <SolidColorBrush x:Key="TabActiveBorder" Color="#3B82F6"/>
-        <SolidColorBrush x:Key="TabTextActive" Color="#0F172A"/>
-        <SolidColorBrush x:Key="TabTextInactive" Color="#475569"/>
-
-        <Style x:Key="ElegantTabControlStyle" TargetType="TabControl">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabControl">
-                        <Grid KeyboardNavigation.TabNavigation="Local">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <Border Grid.Row="0"
-                                    Background="#F8FAFC"
-                                    BorderBrush="{StaticResource TabBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="12,12,0,0"
-                                    Padding="8,8,8,0">
-                                <TabPanel x:Name="HeaderPanel"
-                                          IsItemsHost="True"
-                                          Background="Transparent"/>
-                            </Border>
-
-                            <Border Grid.Row="1"
-                                    Background="White"
-                                    BorderBrush="{StaticResource TabBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="0,0,12,12"
-                                    Padding="10">
-                                <ContentPresenter x:Name="PART_SelectedContentHost"
-                                                  ContentSource="SelectedContent"
-                                                  Margin="0"/>
-                            </Border>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ElegantTabItemStyle" TargetType="TabItem">
-            <Setter Property="Foreground" Value="{StaticResource TabTextInactive}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,0"/>
-            <Setter Property="Padding" Value="16,10"/>
-            <Setter Property="Background" Value="{StaticResource TabInactiveBg}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="5,5,0,0"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter x:Name="ContentSite"
-                                              ContentSource="Header"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              RecognizesAccessKey="True"/>
-                        </Border>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource TabActiveBorder}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TabTextActive}"/>
-                            </Trigger>
-
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabHoverBg}"/>
-                            </Trigger>
-
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabActiveBg}"/>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/ElegantTabStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Margin="12">

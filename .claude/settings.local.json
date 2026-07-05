@@ -75,7 +75,10 @@
       "Bash(grep -rn \"class Permission\\\\b\\\\|PermissionName\\\\|public.*Key\\\\|ModuleId\\\\|PermissionId\\\\|IsActive\\\\|namespace\" Entities/Permission.cs)",
       "Bash(grep -rn \"class RolePermission\\\\|RoleId\\\\|PermissionId\\\\|namespace\" Entities/RolePermission.cs)",
       "Bash(git rm *)",
-      "Bash(rmdir src/LD.Api/Services src/LD.Api/Hubs)"
+      "Bash(rmdir src/LD.Api/Services src/LD.Api/Hubs)",
+      "Bash(adb devices *)",
+      "PowerShell($paths = @\\(\"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\", \"$env:USERPROFILE\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\", \"C:\\\\Program Files \\(x86\\)\\\\Android\\\\android-sdk\\\\platform-tools\\\\adb.exe\", \"C:\\\\Android\\\\platform-tools\\\\adb.exe\"\\); $found = $paths | Where-Object { Test-Path $_ }; if \\($found\\) { Write-Output \"Encontrado:\"; $found } else { Write-Output \"No encontrado en rutas comunes. Buscando...\"; Get-ChildItem -Path \"$env:LOCALAPPDATA\",\"C:\\\\Program Files \\(x86\\)\\\\Android\",\"$env:USERPROFILE\" -Filter adb.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 3 -ExpandProperty FullName })",
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices -l)"
     ]
   }
 }
