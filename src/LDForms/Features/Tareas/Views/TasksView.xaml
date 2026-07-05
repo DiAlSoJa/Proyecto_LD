@@ -16,6 +16,7 @@
 
             <BooleanToVisibilityConverter x:Key="BoolToVis"/>
             <local:TaskStatusConverter x:Key="TaskStatusConverter"/>
+            <local:WarehouseTaskStatusConverter x:Key="WarehouseTaskStatusConverter"/>
 
         <Style x:Key="FilterLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12"/>
@@ -226,12 +227,110 @@
         </TabItem>
 
         <TabItem Header="Tareas asignadas" Style="{StaticResource ElegantTabItemStyle}">
-            <Grid>
-                <TextBlock Text="Tareas asignadas"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontSize="14"
-                           Foreground="#6B7280"/>
+            <Grid Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding AsignadasStatusText}"
+                               FontSize="12"
+                               Foreground="#6B7280"
+                               VerticalAlignment="Center"
+                               Margin="4,0,0,0"/>
+                    <Button Content="Actualizar"
+                            Height="28"
+                            MinWidth="90"
+                            Margin="12,0,0,0"
+                            Padding="10,0"
+                            Command="{Binding CargarTareasAsignadasCommand}"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand"/>
+                </StackPanel>
+
+                <Border Grid.Row="2"
+                        BorderBrush="#D9DEE7"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Background="White">
+                    <Grid>
+                        <DataGrid ItemsSource="{Binding WarehouseTasks}"
+                                  AutoGenerateColumns="False"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="30"
+                                  ColumnHeaderHeight="40"
+                                  AlternatingRowBackground="#F8FAFC"
+                                  AlternationCount="2"
+                                  FontSize="12"
+                                  VerticalGridLinesBrush="#D9D9D9"
+                                  HorizontalGridLinesBrush="#E4E8EE"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Orden" Binding="{Binding OrderIndex}" Width="60"/>
+                                <DataGridTextColumn Header="Folio" Binding="{Binding WarehouseTaskId}" Width="70"/>
+                                <DataGridTextColumn Header="Prioridad" Binding="{Binding Priority}" Width="100"/>
+                                <DataGridTextColumn Header="Actividad" Binding="{Binding Activity}" Width="150"/>
+                                <DataGridTextColumn Header="Nombre" Binding="{Binding Name}" Width="180"/>
+                                <DataGridTextColumn Header="Almacen" Binding="{Binding WarehouseName}" Width="150"/>
+                                <DataGridTextColumn Header="Estatus"
+                                                    Binding="{Binding Status, Converter={StaticResource WarehouseTaskStatusConverter}}"
+                                                    Width="110"/>
+                                <DataGridTextColumn Header="Asignado a" Binding="{Binding AssignedToUserId}" Width="150"/>
+                                <DataGridTextColumn Header="Asignada"
+                                                    Binding="{Binding AssignedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
+                                                    Width="130"/>
+
+                                <DataGridTemplateColumn Header="Acciones" Width="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Asignar"
+                                                    Height="26"
+                                                    Margin="4,0"
+                                                    Padding="10,0"
+                                                    Background="#2563EB"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    Cursor="Hand"
+                                                    Command="{Binding DataContext.AsignarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                            </DataGrid.Resources>
+                        </DataGrid>
+
+                        <Border Background="#80FFFFFF"
+                                Visibility="{Binding IsLoadingAsignadas, Converter={StaticResource BoolToVis}}">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True" Width="220" Height="18"/>
+                                <TextBlock Text="Cargando tareas..."
+                                           HorizontalAlignment="Center"
+                                           Margin="0,12,0,0"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#24344D"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
             </Grid>
         </TabItem>
 

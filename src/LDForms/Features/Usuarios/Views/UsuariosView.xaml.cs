@@ -41,6 +41,7 @@ namespace LD.FormsX.Views.Usuarios
             _loaded = true;
 
             await ViewModel.CargarDatosAsync();
+            await ViewModel.CargarConectadosAsync();
         }
 
         private void DgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)

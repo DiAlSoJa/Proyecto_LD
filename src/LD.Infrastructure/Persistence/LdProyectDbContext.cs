@@ -1150,6 +1150,7 @@ namespace LD.Infrastructure.Persistence
                 entity.Property(x => x.CompletedByUserId).HasMaxLength(450);
                 entity.Property(x => x.CompletedByName).HasMaxLength(150);
                 entity.Property(x => x.Status).HasConversion<int>();
+                entity.Property(x => x.OrderIndex).HasDefaultValue(0);
                 entity.HasOne(x => x.Warehouse)
                     .WithMany(x => x.WarehouseTasks)
                     .HasForeignKey(x => x.WarehouseId)

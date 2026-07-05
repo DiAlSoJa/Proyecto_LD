@@ -20,6 +20,7 @@ public class WarehouseTaskDto
     public string? ResolvedPhoto2Path { get; set; }
     public string? ResolvedPhoto3Path { get; set; }
     public string? ResolvedPhoto4Path { get; set; }
+    public int OrderIndex { get; set; }
     public WarehouseTaskStatus Status { get; set; }
     public string? AssignedToUserId { get; set; }
     public DateTime? AssignedAt { get; set; }

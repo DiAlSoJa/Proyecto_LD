@@ -4,6 +4,7 @@ using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Constants;
 using LD.Contracts.DTOs.OperationalTasks;
+using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
 using System;
@@ -18,6 +19,7 @@ public partial class TasksViewModel : ObservableObject
 {
     private readonly OperationalTaskService _operationalTaskService;
     private readonly WarehouseService _warehouseService;
+    private readonly WarehouseTaskService _warehouseTaskService;
     private readonly List<OperationalTaskDto> _allTasks = [];
 
     [ObservableProperty]
@@ -44,8 +46,17 @@ public partial class TasksViewModel : ObservableObject
     [ObservableProperty]
     private bool canView;
 
+    [ObservableProperty]
+    private bool isLoadingAsignadas;
+
+    [ObservableProperty]
+    private string asignadasStatusText = "";
+
     public ObservableCollection<WarehouseDto> Warehouses { get; } = [];
     public ObservableCollection<OperationalTaskDto> Tasks { get; } = [];
+
+    // Listado de la tabla WarehouseTasks (tab "Tareas asignadas"), ordenado por OrderIndex.
+    public ObservableCollection<WarehouseTaskDto> WarehouseTasks { get; } = [];
     public ObservableCollection<string> Statuses { get; } =
     [
         "Todos",
@@ -53,10 +64,14 @@ public partial class TasksViewModel : ObservableObject
         "Finalizado"
     ];
 
-    public TasksViewModel(OperationalTaskService operationalTaskService, WarehouseService warehouseService)
+    public TasksViewModel(
+        OperationalTaskService operationalTaskService,
+        WarehouseService warehouseService,
+        WarehouseTaskService warehouseTaskService)
     {
         _operationalTaskService = operationalTaskService;
         _warehouseService = warehouseService;
+        _warehouseTaskService = warehouseTaskService;
         CanView = UserData.HasPermission(PermissionKeys.WarehouseStaff_Tasks_View);
     }
 
@@ -67,6 +82,50 @@ public partial class TasksViewModel : ObservableObject
 
         await LoadWarehousesAsync();
         await CargarDatosAsync();
+        await CargarTareasAsignadasAsync();
+    }
+
+    [RelayCommand]
+    public async Task CargarTareasAsignadasAsync()
+    {
+        if (!CanView) return;
+
+        try
+        {
+            IsLoadingAsignadas = true;
+
+            var result = await _warehouseTaskService.GetTasksAsync();
+
+            if (!result.IsSuccess)
+            {
+                DialogHelper.ShowWarning(result.Message);
+                return;
+            }
+
+            WarehouseTasks.Clear();
+            foreach (var task in result.Data ?? [])
+                WarehouseTasks.Add(task);
+
+            AsignadasStatusText = $"Registros: {WarehouseTasks.Count}";
+        }
+        catch (Exception ex)
+        {
+            DialogHelper.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoadingAsignadas = false;
+        }
+    }
+
+    [RelayCommand]
+    private void Asignar(WarehouseTaskDto? task)
+    {
+        // Placeholder: la lógica de asignación manual aún no está implementada.
+        var nombre = task?.Name ?? "la tarea seleccionada";
+        DialogHelper.ShowInfo(
+            $"Aquí se asignará manualmente «{nombre}» a un usuario.\n\n(Funcionalidad pendiente de implementar.)",
+            "Asignar tarea");
     }
 
     [RelayCommand]

@@ -54,6 +54,12 @@ public class WarehouseTask : AuditableEntity
     [MaxLength(500)]
     public string? ResolvedPhoto4Path { get; set; }
 
+    /// <summary>
+    /// Orden manual para priorizar tareas. Menor = mayor prioridad.
+    /// El listado se ordena por este campo; la lógica de reordenamiento aún no está implementada.
+    /// </summary>
+    public int OrderIndex { get; set; }
+
     public WarehouseTaskStatus Status { get; set; } = WarehouseTaskStatus.NoAsignada;
 
     [MaxLength(450)]

@@ -24,8 +24,28 @@ public class WarehouseTaskRepository : Repository<WarehouseTask>, IWarehouseTask
             query = query.Where(x => x.WarehouseId == warehouseId.Value);
 
         return await query
-            .OrderByDescending(x => x.CreatedAt)
+            .OrderBy(x => x.OrderIndex)
+            .ThenByDescending(x => x.CreatedAt)
             .ToListAsync();
+    }
+
+    public async Task<List<WarehouseTask>> GetAssignedTasksForUsersAsync(
+        IReadOnlyCollection<string> userIds,
+        CancellationToken ct = default)
+    {
+        if (userIds.Count == 0)
+            return [];
+
+        return await _context.WarehouseTasks
+            .AsNoTracking()
+            .Include(x => x.Warehouse)
+            .Where(x =>
+                x.Status == WarehouseTaskStatus.Asignada &&
+                x.AssignedToUserId != null &&
+                userIds.Contains(x.AssignedToUserId!))
+            .OrderBy(x => x.OrderIndex)
+            .ThenBy(x => x.AssignedAt)
+            .ToListAsync(ct);
     }
 
     public async Task<WarehouseTask?> GetTaskByIdAsync(int warehouseTaskId)

@@ -10,6 +10,11 @@ public interface IWarehouseTaskRepository : IRepository<WarehouseTask>
     // Retorna la tarea actualmente asignada al usuario, o null si no tiene ninguna.
     Task<WarehouseTask?> GetAssignedTaskForUserAsync(string userId, CancellationToken ct = default);
 
+    // Retorna todas las tareas en estado Asignada de los usuarios dados, ordenadas por OrderIndex.
+    Task<List<WarehouseTask>> GetAssignedTasksForUsersAsync(
+        IReadOnlyCollection<string> userIds,
+        CancellationToken ct = default);
+
     // Tareas con Status=NoAsignada, ordenadas por CreatedAt ascendente (FIFO).
     Task<List<WarehouseTask>> GetPendingUnassignedTasksAsync(CancellationToken ct = default);
 

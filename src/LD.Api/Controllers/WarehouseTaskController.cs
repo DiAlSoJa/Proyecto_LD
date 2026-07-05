@@ -29,6 +29,11 @@ public class WarehouseTaskController : CommonController
     public async Task<IActionResult> GetMyAssignedTask()
         => ResultExtensions.ToActionResult(await Mediator.Send(new MyAssignedWarehouseTaskQuery()));
 
+    [HttpGet("connected-users")]
+    [Permission(PermissionKeys.WarehouseTask_View)]
+    public async Task<IActionResult> GetConnectedUsers()
+        => ResultExtensions.ToActionResult(await Mediator.Send(new ConnectedUsersQuery()));
+
     [HttpGet]
     [Permission(PermissionKeys.WarehouseTask_View)]
     public async Task<IActionResult> GetTasks(

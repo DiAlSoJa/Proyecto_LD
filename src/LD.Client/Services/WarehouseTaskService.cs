@@ -1,3 +1,4 @@
+using LD.Contracts.DTOs.Realtime;
 using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.Requests;
 using LD.Contracts.Responses;
@@ -34,6 +35,9 @@ public class WarehouseTaskService
 
     public async Task<ApiResponseDto<WarehouseTaskDto?>> GetMyAssignedTaskAsync()
         => await _api.GetAsync<ApiResponseDto<WarehouseTaskDto?>>(_apiEndpoints.WarehouseTask_MyAssigned);
+
+    public async Task<ApiResponseDto<List<ConnectedUserDto>>> GetConnectedUsersAsync()
+        => await _api.GetAsync<ApiResponseDto<List<ConnectedUserDto>>>(_apiEndpoints.WarehouseTask_ConnectedUsers);
 
     public async Task<ApiResponseDto<string>> MarkUserAvailableAsync()
         => await _api.PostAsync<object, ApiResponseDto<string>>(_apiEndpoints.WarehouseTask_MarkAvailable, new { });

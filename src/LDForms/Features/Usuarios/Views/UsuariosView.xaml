@@ -4,15 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:LD.FormsX.Controls"
+             xmlns:local="clr-namespace:LD.FormsX.Views.Usuarios"
+             xmlns:tareas="clr-namespace:LD.FormsX.Views.Tareas"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1300"
              Loaded="UserControl_Loaded">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/ElegantTabStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            <local:WarehousesSummaryConverter x:Key="WarehousesSummaryConverter"/>
+            <tareas:WarehouseTaskStatusConverter x:Key="WarehouseTaskStatusConverter"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Margin="12">
+        <TabControl Style="{StaticResource ElegantTabControlStyle}">
+
+        <TabItem Header="Usuarios" Style="{StaticResource ElegantTabItemStyle}">
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
@@ -330,5 +344,172 @@
                 </Border>
             </Grid>
         </Grid>
+        </Grid>
+        </TabItem>
+
+        <!-- ══════════════ Usuarios conectados ══════════════ -->
+        <TabItem Header="Usuarios conectados" Style="{StaticResource ElegantTabItemStyle}">
+            <Grid Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Toolbar -->
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding ConectadosStatusText}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               VerticalAlignment="Center"
+                               Margin="4,0,0,0"/>
+                    <Button Content="Actualizar"
+                            Height="28"
+                            MinWidth="90"
+                            Margin="12,0,0,0"
+                            Padding="10,0"
+                            Command="{Binding CargarConectadosCommand}"
+                            Background="{StaticResource SurfaceSubtle}"
+                            Foreground="{StaticResource TextSubtle}"
+                            BorderBrush="{StaticResource BorderInput}"
+                            BorderThickness="1"
+                            Cursor="Hand"/>
+                </StackPanel>
+
+                <!-- Grid de usuarios conectados -->
+                <Border Grid.Row="2"
+                        BorderBrush="{StaticResource BorderMuted}" BorderThickness="1"
+                        CornerRadius="4" Background="{StaticResource SurfaceCard}">
+                    <Grid>
+                        <DataGrid ItemsSource="{Binding ConnectedUsers}"
+                                  AutoGenerateColumns="False"
+                                  SelectionMode="Single" SelectionUnit="FullRow"
+                                  CanUserAddRows="False" CanUserDeleteRows="False"
+                                  IsReadOnly="True" HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="30" ColumnHeaderHeight="40"
+                                  FontSize="12"
+                                  VerticalGridLinesBrush="{StaticResource BorderGrid}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Usuario" Binding="{Binding FullName}" Width="*"/>
+                                <DataGridTextColumn Header="Login" Binding="{Binding UserName}" Width="160"/>
+                                <DataGridTemplateColumn Header="Almacenes" Width="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Warehouses, Converter={StaticResource WarehousesSummaryConverter}}"
+                                                       HorizontalAlignment="Center"
+                                                       FontWeight="SemiBold"
+                                                       ToolTipService.ShowDuration="20000">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip>
+                                                        <StackPanel>
+                                                            <TextBlock Text="Almacenes asignados"
+                                                                       FontWeight="SemiBold"
+                                                                       Margin="0,0,0,4"/>
+                                                            <ItemsControl ItemsSource="{Binding Warehouses}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Text="{Binding WarehouseName}" Margin="0,1"/>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </StackPanel>
+                                                    </ToolTip>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Conectado desde"
+                                                    Binding="{Binding ConnectedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
+                                                    Width="150"/>
+                            </DataGrid.Columns>
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{StaticResource DataGridHeaderBg}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource DataGridHeaderFg}"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="Padding" Value="9,6"/>
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                </Style>
+                            </DataGrid.Resources>
+                        </DataGrid>
+
+                        <Border Background="{StaticResource LoadingOverlayBg}"
+                                Visibility="{Binding IsLoadingConectados, Converter={StaticResource BoolToVis}}">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True" Width="220" Height="18"/>
+                                <TextBlock Text="Consultando usuarios conectados..."
+                                           HorizontalAlignment="Center" Margin="0,12,0,0"
+                                           FontSize="14" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextOnLoading}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Grid de tareas asignadas de los conectados -->
+                <Border Grid.Row="4"
+                        BorderBrush="{StaticResource BorderMuted}" BorderThickness="1"
+                        CornerRadius="4" Background="{StaticResource SurfaceCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Tareas asignadas por usuario"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSubtle}"
+                                   Margin="8,8,0,4"/>
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding ConnectedAssignedTasks}"
+                                  AutoGenerateColumns="False"
+                                  SelectionMode="Single" SelectionUnit="FullRow"
+                                  CanUserAddRows="False" CanUserDeleteRows="False"
+                                  IsReadOnly="True" HeadersVisibility="Column"
+                                  GridLinesVisibility="Vertical"
+                                  RowHeight="28" ColumnHeaderHeight="36"
+                                  FontSize="12"
+                                  VerticalGridLinesBrush="{StaticResource BorderGrid}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Usuario" Binding="{Binding UserName}" Width="*"/>
+                                <DataGridTextColumn Header="Folio" Binding="{Binding Folio}" Width="70"/>
+                                <DataGridTextColumn Header="Tarea" Binding="{Binding TaskName}" Width="200"/>
+                                <DataGridTextColumn Header="Almacen" Binding="{Binding WarehouseName}" Width="150"/>
+                                <DataGridTextColumn Header="Estatus"
+                                                    Binding="{Binding Status, Converter={StaticResource WarehouseTaskStatusConverter}}"
+                                                    Width="110"/>
+                                <DataGridTextColumn Header="Asignada"
+                                                    Binding="{Binding AssignedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}}"
+                                                    Width="130"/>
+                            </DataGrid.Columns>
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{StaticResource DataGridHeaderBg}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource DataGridHeaderFg}"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource BorderMuted}"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="Padding" Value="9,6"/>
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="BorderBrush" Value="{StaticResource BorderRow}"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                </Style>
+                            </DataGrid.Resources>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </TabItem>
+
+        </TabControl>
     </Grid>
 </UserControl>

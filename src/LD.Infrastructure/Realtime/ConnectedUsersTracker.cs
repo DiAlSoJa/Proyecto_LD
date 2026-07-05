@@ -13,14 +13,14 @@ namespace LD.Infrastructure.Realtime;
 /// </summary>
 public sealed class ConnectedUsersTracker : IConnectedUsersTracker
 {
-    // userId → byte (la presencia es lo único que importa; byte consume mínima memoria)
-    private readonly ConcurrentDictionary<string, byte> _connected        = new();
-    private readonly ConcurrentDictionary<string, byte> _availableForTask = new();
+    // userId → instante (UTC) de conexión. Se usa para exponer "conectado desde".
+    private readonly ConcurrentDictionary<string, DateTime> _connected        = new();
+    private readonly ConcurrentDictionary<string, byte>     _availableForTask = new();
 
     // ── Conexión ──────────────────────────────────────────────────────────────
 
     public void UserConnected(string userId)
-        => _connected.TryAdd(userId, 0);
+        => _connected[userId] = DateTime.UtcNow;
 
     public void UserDisconnected(string userId)
     {
@@ -34,6 +34,9 @@ public sealed class ConnectedUsersTracker : IConnectedUsersTracker
 
     public bool IsUserConnected(string userId)
         => _connected.ContainsKey(userId);
+
+    public DateTime? GetConnectedSince(string userId)
+        => _connected.TryGetValue(userId, out var since) ? since : null;
 
     public int ConnectedCount => _connected.Count;
 
