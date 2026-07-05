@@ -32,4 +32,10 @@ public interface IWarehouseTaskRepository : IRepository<WarehouseTask>
     Task<List<string>> GetUserIdsWithAssignedTaskAsync(
         IReadOnlyCollection<string> userIds,
         CancellationToken ct = default);
+
+    // Retorna, para cada userId dado, el conjunto de WarehouseId que tiene asignados (UserWarehouse).
+    // Usuarios sin almacenes no aparecen en el diccionario.
+    Task<Dictionary<string, HashSet<int>>> GetWarehouseIdsForUsersAsync(
+        IReadOnlyCollection<string> userIds,
+        CancellationToken ct = default);
 }

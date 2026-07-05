@@ -134,4 +134,22 @@ public class WarehouseTaskRepository : Repository<WarehouseTask>, IWarehouseTask
             .Distinct()
             .ToListAsync(ct);
     }
+
+    public async Task<Dictionary<string, HashSet<int>>> GetWarehouseIdsForUsersAsync(
+        IReadOnlyCollection<string> userIds,
+        CancellationToken ct = default)
+    {
+        var rows = await _context.UserWarehouses
+            .AsNoTracking()
+            .Where(x =>
+                x.UserId != null &&
+                x.WarehouseId.HasValue &&
+                userIds.Contains(x.UserId!))
+            .Select(x => new { UserId = x.UserId!, WarehouseId = x.WarehouseId!.Value })
+            .ToListAsync(ct);
+
+        return rows
+            .GroupBy(x => x.UserId)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.WarehouseId).ToHashSet());
+    }
 }

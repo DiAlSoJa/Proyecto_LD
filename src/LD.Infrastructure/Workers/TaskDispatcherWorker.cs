@@ -89,22 +89,36 @@ public sealed class TaskDispatcherWorker : ScopedBackgroundService
 
         _logger.LogDebug("{Count} usuario(s) disponible(s) sin tarea — buscando candidatas", usersNeedingTask.Count);
 
+        // Almacenes que cada usuario tiene permitido operar (UserWarehouse).
+        // Un usuario sin almacenes asignados no aparece aquí y no recibe tareas.
+        var userWarehouses = await taskRepo.GetWarehouseIdsForUsersAsync(usersNeedingTask, ct);
+
         // Candidatas en orden de llegada (FIFO). Barajamos dentro del FIFO para
         // evitar que todos los workers intenten siempre la misma tarea primero.
+        // Se excluyen las tareas sin almacén: no se auto-asignan (se asignarán manualmente).
         var candidates = (await taskRepo.GetPendingUnassignedTasksAsync(ct))
+            .Where(x => x.WarehouseId.HasValue)
             .OrderBy(_ => Guid.NewGuid())
             .ToList();
 
         if (candidates.Count == 0)
         {
-            _logger.LogDebug("No hay tareas candidatas (NoAsignada) disponibles");
+            _logger.LogDebug("No hay tareas candidatas (NoAsignada con almacén) disponibles");
             return;
         }
 
         foreach (var userId in usersNeedingTask)
         {
+            // Sin almacenes asignados → este usuario no puede recibir ninguna tarea.
+            if (!userWarehouses.TryGetValue(userId, out var allowedWarehouses) || allowedWarehouses.Count == 0)
+                continue;
+
             foreach (var candidate in candidates)
             {
+                // El usuario solo puede tomar tareas de un almacén que tenga asignado.
+                if (!allowedWarehouses.Contains(candidate.WarehouseId!.Value))
+                    continue;
+
                 // TryClaimTaskAsync es atómico: UPDATE WHERE Status=NoAsignada.
                 // Si otro proceso ya la reclamó, devuelve false y probamos la siguiente.
                 var claimed = await taskRepo.TryClaimTaskAsync(candidate.WarehouseTaskId, userId, ct);
