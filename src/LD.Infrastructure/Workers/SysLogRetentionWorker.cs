@@ -1,5 +1,6 @@
 using LD.Infrastructure.Logging;
 using LD.Infrastructure.Persistence;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -35,9 +36,14 @@ public sealed class SysLogRetentionWorker : ScopedBackgroundService
             var db = serviceProvider.GetRequiredService<LdProyectDbContext>();
             var cutoff = DateTimeOffset.UtcNow - RetentionPeriod;
 
+            // El nombre de tabla no puede parametrizarse en SQL, pero el corte sí:
+            // va como SqlParameter con nombre en lugar del placeholder posicional {0}.
+            var sql = $"DELETE FROM [{LoggingConfiguration.SysLogTableName}] "
+                    + "WHERE [TimeStamp] < @cutoff";
+
             var deleted = await db.Database.ExecuteSqlRawAsync(
-                $"DELETE FROM [{LoggingConfiguration.SysLogTableName}] WHERE [TimeStamp] < {{0}}",
-                new object[] { cutoff },
+                sql,
+                new[] { new SqlParameter("@cutoff", cutoff) },
                 stoppingToken);
 
             if (deleted > 0)
