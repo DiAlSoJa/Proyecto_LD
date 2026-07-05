@@ -1,6 +1,4 @@
 using Application;
-using LD.Api.Services;
-using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +22,6 @@ public static class DependencyInjection
             .AddJwtAuthentication(configuration)
             .AddPermissionAuthorization()
             .AddDefaultCors()
-            .AddRealtime()
             .AddSwaggerDocumentation();
 
         services.AddControllers();
@@ -57,19 +54,6 @@ public static class DependencyInjection
                     .AllowAnyHeader();
             });
         });
-
-        return services;
-    }
-
-    /// <summary>SignalR y sus servicios de soporte (tracker de conexiones + notifier).</summary>
-    public static IServiceCollection AddRealtime(this IServiceCollection services)
-    {
-        services.AddSignalR();
-
-        services.AddSingleton<ConnectedUsersTracker>();
-        services.AddSingleton<IConnectedUsersTracker>(sp =>
-            sp.GetRequiredService<ConnectedUsersTracker>());
-        services.AddSingleton<IRealtimeNotifier, SignalRNotifier>();
 
         return services;
     }

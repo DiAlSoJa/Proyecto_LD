@@ -1,6 +1,6 @@
 using LD.Api.Authorization;
-using LD.Api.Hubs;
 using LD.Api.Middlewares;
+using LD.Infrastructure.Realtime;
 using LD.Contracts.Constants;
 using LD.Infrastructure.Persistence;
 using LD.Infrastructure.Persistence.Seeders;

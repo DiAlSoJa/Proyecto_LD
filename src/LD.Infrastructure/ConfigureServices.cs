@@ -1,3 +1,4 @@
+using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Interfaces.Persistence;
 using LD.Application.Common.Interfaces.Repository;
@@ -8,6 +9,7 @@ using LD.Application.Features.Auth.Commands;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
 using LD.Infrastructure.Persistence.Interceptors;
+using LD.Infrastructure.Realtime;
 using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
 using LD.Infrastructure.Services.StandardLabel;
@@ -73,6 +75,28 @@ public static class ConfigureServices
 
         services.AddHostedService<TaskDispatcherWorker>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        services.AddRealtime();
+
+        return services;
+    }
+
+    /// <summary>
+    /// SignalR y sus servicios de soporte (tracker de conexiones + notifier).
+    /// El realtime es un detalle de transporte, por eso vive en la capa de infraestructura.
+    /// El mapeo del endpoint del hub (MapHub) se hace en el pipeline de LD.Api.
+    /// </summary>
+    private static IServiceCollection AddRealtime(this IServiceCollection services)
+    {
+        services.AddSignalR();
+
+        // El tracker es un singleton con estado en memoria. Se registra una sola vez
+        // como concreto y la interfaz resuelve a esa MISMA instancia, para que el Hub
+        // (concreto) y los consumidores (interfaz) compartan el mismo estado.
+        services.AddSingleton<ConnectedUsersTracker>();
+        services.AddSingleton<IConnectedUsersTracker>(sp =>
+            sp.GetRequiredService<ConnectedUsersTracker>());
+        services.AddSingleton<IRealtimeNotifier, SignalRNotifier>();
 
         return services;
     }
