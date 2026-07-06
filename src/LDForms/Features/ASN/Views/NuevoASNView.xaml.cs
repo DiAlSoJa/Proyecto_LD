@@ -65,6 +65,7 @@ namespace LD.FormsX.Views.Dialogs
         private string _projectName = string.Empty;
         private bool _projectScanRequired;
         private List<ScanConfigurationRequest> _projectScanConfigurations = [];
+        private List<AsnReceiptDetailDto> _asnReceiptDetailsCache = [];
 
         public ObservableCollection<LookupItem> ProductLookupItems { get; } = new();
         public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
@@ -404,10 +405,11 @@ namespace LD.FormsX.Views.Dialogs
             if (scanRequired)
                 return !IsScanRequiredReceiptEditableColumn(header);
 
-            return header.Equals("Número de Parte", StringComparison.OrdinalIgnoreCase)
+            return header.Equals("NÃºmero de Parte", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Numero de Parte", StringComparison.OrdinalIgnoreCase)
-                || header.Equals("Descripción", StringComparison.OrdinalIgnoreCase)
-                || header.Equals("Descripcion", StringComparison.OrdinalIgnoreCase);
+                || header.Equals("DescripciÃ³n", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Descripcion", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("Pallet Number", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool IsScanRequiredReceiptEditableColumn(string header)
@@ -415,7 +417,7 @@ namespace LD.FormsX.Views.Dialogs
             return header.Equals("Status", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Estatus", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("SD", StringComparison.OrdinalIgnoreCase)
-                || header.Equals("Ubicación", StringComparison.OrdinalIgnoreCase)
+                || header.Equals("UbicaciÃ³n", StringComparison.OrdinalIgnoreCase)
                 || header.Equals("Ubicacion", StringComparison.OrdinalIgnoreCase);
         }
 
@@ -821,7 +823,7 @@ namespace LD.FormsX.Views.Dialogs
 
             if (!response.IsSuccess)
             {
-                DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo crear la recepción escaneada del ASN.");
+                DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo crear la recepciÃ³n escaneada del ASN.");
                 return false;
             }
 
@@ -847,7 +849,7 @@ namespace LD.FormsX.Views.Dialogs
 
             var quantityToAdd = receiptRow.ReceivedQuantity ?? 0m;
             if (quantityToAdd <= 0)
-                throw new InvalidOperationException("La línea escaneada no tiene cantidad recibida válida.");
+                throw new InvalidOperationException("La lÃ­nea escaneada no tiene cantidad recibida vÃ¡lida.");
 
             var detailRow = FindMatchingDetailForReceipt(receiptRow);
             if (detailRow == null)
@@ -859,13 +861,13 @@ namespace LD.FormsX.Views.Dialogs
                     detailRow.AsnId, detailRow.PartNumber, createResponse.IsSuccess, createResponse.Code, createResponse.Message, createResponse.Data);
 
                 if (!createResponse.IsSuccess)
-                    throw new InvalidOperationException(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el detail para la recepción escaneada.");
+                    throw new InvalidOperationException(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el detail para la recepciÃ³n escaneada.");
 
                 if (int.TryParse(createResponse.Data, out var asnDetailId) && asnDetailId > 0)
                     detailRow.AsnDetailId = asnDetailId;
 
                 if (detailRow.AsnDetailId <= 0)
-                    throw new InvalidOperationException("No se pudo obtener el Id del detail creado para la recepción escaneada.");
+                    throw new InvalidOperationException("No se pudo obtener el Id del detail creado para la recepciÃ³n escaneada.");
 
                 var emptyDetailRow = DetailItems.FirstOrDefault(IsEmptyDetailRow);
                 if (emptyDetailRow != null)
@@ -891,7 +893,7 @@ namespace LD.FormsX.Views.Dialogs
             if (!updateResponse.IsSuccess)
             {
                 detailRow.Quantity -= quantityToAdd;
-                throw new InvalidOperationException(updateResponse.ErrorMessage ?? updateResponse.Message ?? "No se pudo actualizar la cantidad del detail para la recepción escaneada.");
+                throw new InvalidOperationException(updateResponse.ErrorMessage ?? updateResponse.Message ?? "No se pudo actualizar la cantidad del detail para la recepciÃ³n escaneada.");
             }
 
             return detailRow;
@@ -991,7 +993,7 @@ namespace LD.FormsX.Views.Dialogs
                 SystemField_e.PartNumber => string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(fieldName, "número de parte", StringComparison.OrdinalIgnoreCase),
+                    || string.Equals(fieldName, "nÃºmero de parte", StringComparison.OrdinalIgnoreCase),
                 _ => false
             };
         }
@@ -1014,6 +1016,7 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.ApplyDefaultsFromDetail(detailRow, AsnSelected!.AsnId);
             SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
             ApplyProjectLocationDefaults(receiptRow);
+            AssignPalletNumber(receiptRow);
 
             return receiptRow;
         }
@@ -1110,7 +1113,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             var partNumber = receiptRow.PartNumber?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(partNumber))
-                throw new InvalidOperationException("La línea escaneada no tiene número de parte.");
+                throw new InvalidOperationException("La lÃ­nea escaneada no tiene nÃºmero de parte.");
 
             var productLookup = ProductLookupItems.FirstOrDefault(item =>
                 string.Equals(item.Code?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase));
@@ -1156,7 +1159,7 @@ namespace LD.FormsX.Views.Dialogs
                     break;
                 case "part_number":
                 case "partnumber":
-                case "número de parte":
+                case "nÃºmero de parte":
                 case "numero de parte":
                     receiptRow.PartNumber = scannedValue;
                     break;
@@ -1366,7 +1369,7 @@ namespace LD.FormsX.Views.Dialogs
             if (linkedReceiptsCount > 0)
                 return true;
 
-            DialogHelper.ShowWarning("No se puede eliminar la recepción porque es el unico registro ligado al detail.");
+            DialogHelper.ShowWarning("No se puede eliminar la recepciÃ³n porque es el unico registro ligado al detail.");
             return false;
         }
 
@@ -1435,6 +1438,48 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.CustomsDeclarationNumber = detailRow.CustomsDeclarationNumber;
         }
 
+        private int GetNextPalletNumber(int asnId)
+        {
+            var currentAsnId = asnId > 0
+                ? asnId
+                : AsnSelected?.AsnId ?? 0;
+
+            var existingNumbers = new List<int>();
+
+            if (currentAsnId > 0)
+            {
+                var detailIds = DetailItems
+                    .Where(item => item.AsnId == currentAsnId && item.AsnDetailId > 0)
+                    .Select(item => item.AsnDetailId)
+                    .ToHashSet();
+
+                existingNumbers.AddRange(_asnReceiptDetailsCache
+                    .Where(item => detailIds.Contains(item.AsnDetailId) && item.PalletNumber > 0)
+                    .Select(item => item.PalletNumber));
+
+                existingNumbers.AddRange(ReceiptItems
+                    .Where(item => item.AsnId == currentAsnId && item.PalletNumber > 0)
+                    .Select(item => item.PalletNumber));
+            }
+            else
+            {
+                existingNumbers.AddRange(ReceiptItems
+                    .Where(item => item.PalletNumber > 0)
+                    .Select(item => item.PalletNumber));
+            }
+
+            return existingNumbers.DefaultIfEmpty(0).Max() + 1;
+        }
+
+        private void AssignPalletNumber(AsnReceiptItem receiptRow)
+        {
+            var asnId = receiptRow.AsnId > 0
+                ? receiptRow.AsnId
+                : AsnSelected?.AsnId ?? 0;
+
+            receiptRow.PalletNumber = GetNextPalletNumber(asnId);
+        }
+
         private static void SeedSingleReceiptValuesFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow)
         {
             receiptRow.ReceivedQuantity = detailRow.Quantity;
@@ -1452,6 +1497,7 @@ namespace LD.FormsX.Views.Dialogs
             return new AsnReceiptItem
             {
                 AsnReceiptDetailId = 0,
+                PalletNumber = source.PalletNumber,
                 AsnId = source.AsnId,
                 AsnDetailId = source.AsnDetailId,
                 ProductId = source.ProductId,
@@ -1497,15 +1543,15 @@ namespace LD.FormsX.Views.Dialogs
             var remainder = splitQuantities.Last();
 
             if (splitQuantities.Count == 1)
-                return $"¿Está seguro de generar 1 registro de {splitQuantities[0]:0.##}?";
+                return $"Â¿EstÃ¡ seguro de generar 1 registro de {splitQuantities[0]:0.##}?";
 
             if (remainder == maximumQuantity)
-                return $"¿Está seguro de generar {splitQuantities.Count} registros de {maximumQuantity:0.##}?";
+                return $"Â¿EstÃ¡ seguro de generar {splitQuantities.Count} registros de {maximumQuantity:0.##}?";
 
             if (fullChunks <= 0)
-                return $"¿Está seguro de generar {splitQuantities.Count} registros?";
+                return $"Â¿EstÃ¡ seguro de generar {splitQuantities.Count} registros?";
 
-            return $"¿Está seguro de generar {splitQuantities.Count} registros: {fullChunks} de {maximumQuantity:0.##} y 1 de {remainder:0.##}?";
+            return $"Â¿EstÃ¡ seguro de generar {splitQuantities.Count} registros: {fullChunks} de {maximumQuantity:0.##} y 1 de {remainder:0.##}?";
         }
 
         private async Task SplitReceiptRowAsync(AsnReceiptItem receiptRow)
@@ -1517,13 +1563,13 @@ namespace LD.FormsX.Views.Dialogs
 
             if (maximumQuantity <= 0)
             {
-                DialogHelper.ShowError("La cantidad máxima debe ser mayor a cero para dividir el registro.");
+                DialogHelper.ShowError("La cantidad mÃ¡xima debe ser mayor a cero para dividir el registro.");
                 return;
             }
 
             if (receivedQuantity <= maximumQuantity)
             {
-                DialogHelper.ShowError("La cantidad recibida debe ser mayor a la máxima para poder dividir el registro.");
+                DialogHelper.ShowError("La cantidad recibida debe ser mayor a la mÃ¡xima para poder dividir el registro.");
                 return;
             }
 
@@ -1548,6 +1594,7 @@ namespace LD.FormsX.Views.Dialogs
             {
                 var newRow = CloneReceiptRow(receiptRow);
                 newRow.ReceivedQuantity = splitQuantities[index];
+                AssignPalletNumber(newRow);
                 ReceiptItems.Insert(currentIndex + index, newRow);
                 await SaveReceiptRowAsync(newRow);
             }
@@ -1579,7 +1626,7 @@ namespace LD.FormsX.Views.Dialogs
                 var response = await _asnReceiptService.UpdateAsnReceipt(receiptRow.AsnReceiptDetailId, receiptRow.ToRequest());
                 if (!response.IsSuccess)
                 {
-                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo sincronizar la recepción del ASN.");
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo sincronizar la recepciÃ³n del ASN.");
                     return;
                 }
             }
@@ -1682,11 +1729,13 @@ namespace LD.FormsX.Views.Dialogs
 
             receiptRow.ApplyDefaultsFromDetail(_selectedDetailItem, AsnSelected?.AsnId ?? _selectedDetailItem.AsnId);
             ApplyProjectLocationDefaults(receiptRow);
+            AssignPalletNumber(receiptRow);
         }
 
         private async Task LoadReceiptItemsForSelectedDetailAsync()
         {
             ReceiptItems.Clear();
+            _asnReceiptDetailsCache = [];
 
             if (_selectedDetailItem == null)
                 return;
@@ -1697,7 +1746,12 @@ namespace LD.FormsX.Views.Dialogs
             var result = await _asnReceiptService.GetAsnReceipts();
             if (result.IsSuccess && result.Data != null)
             {
-                foreach (var dto in result.Data.Where(x => x.AsnDetailId == _selectedDetailItem.AsnDetailId))
+                _asnReceiptDetailsCache = result.Data.ToList();
+
+                foreach (var dto in _asnReceiptDetailsCache
+                             .Where(x => x.AsnDetailId == _selectedDetailItem.AsnDetailId)
+                             .OrderBy(x => x.PalletNumber)
+                             .ThenBy(x => x.AsnReceiptDetailId))
                 {
                     var item = AsnReceiptItem.FromDto(dto);
                     item.AsnId = AsnSelected.AsnId;
@@ -1728,6 +1782,7 @@ namespace LD.FormsX.Views.Dialogs
             receiptItem.ApplyDefaultsFromDetail(detailRow, AsnSelected.AsnId);
             SyncReceiptRowFromDetail(receiptItem, detailRow, AsnSelected.AsnId);
             ApplyProjectLocationDefaults(receiptItem);
+            AssignPalletNumber(receiptItem);
             if (receiptRows.Count <= 1)
                 SeedSingleReceiptValuesFromDetail(receiptItem, detailRow);
            
@@ -1740,7 +1795,7 @@ namespace LD.FormsX.Views.Dialogs
 
             if (!createResponse.IsSuccess)
             {
-                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear la recepción inicial del ASN.");
+                DialogHelper.ShowError(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear la recepciÃ³n inicial del ASN.");
                 return;
             }
 
@@ -1789,6 +1844,9 @@ namespace LD.FormsX.Views.Dialogs
                 RemoveEmptyReceiptRows();
                 return;
             }
+
+            if (receiptRow.PalletNumber <= 0)
+                AssignPalletNumber(receiptRow);
 
             _savingReceiptRows.Add(receiptRow);
 
@@ -1862,6 +1920,7 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.Reference = refreshedRow.Reference;
             receiptRow.PurchaseOrder = refreshedRow.PurchaseOrder;
             receiptRow.CustomsDeclarationNumber = refreshedRow.CustomsDeclarationNumber;
+            receiptRow.PalletNumber = refreshedRow.PalletNumber;
         }
 
         private async Task SaveDetailsAsync(int asnId)
@@ -1879,7 +1938,7 @@ namespace LD.FormsX.Views.Dialogs
                 var isNewDetail = row.AsnDetailId <= 0;
 
                 if (string.IsNullOrWhiteSpace(row.PartNumber))
-                    throw new InvalidOperationException($"La partida {index + 1} debe tener número de parte.");
+                    throw new InvalidOperationException($"La partida {index + 1} debe tener nÃºmero de parte.");
 
                 row.AsnId = asnId;
 
@@ -2086,7 +2145,7 @@ namespace LD.FormsX.Views.Dialogs
                     var response = await _asnReceiptService.DeleteAsnReceipt(receiptRow.AsnReceiptDetailId);
                     if (!response.IsSuccess)
                     {
-                        DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la recepción.");
+                        DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la recepciÃ³n.");
                         return;
                     }
                 }
@@ -2267,7 +2326,7 @@ namespace LD.FormsX.Views.Dialogs
                 if (_clientId <= 0 || _projectId <= 0)
                     return;
 
-                var response = await _productService.GetProductByClientId(_clientId, _projectId); // ajusta al método real
+                var response = await _productService.GetProductByClientId(_clientId, _projectId); // ajusta al mÃ©todo real
 
                 if (!response.IsSuccess || response.Data == null)
                     return;
@@ -2330,7 +2389,7 @@ namespace LD.FormsX.Views.Dialogs
 
             if (createdLookupItem?.Data is not ProductAutocompleteDto createdProduct)
             {
-                DialogHelper.ShowWarning("El artículo se guardó, pero no se pudo recargar automáticamente en el ASN.");
+                DialogHelper.ShowWarning("El artÃ­culo se guardÃ³, pero no se pudo recargar automÃ¡ticamente en el ASN.");
                 return true;
             }
 
@@ -2546,7 +2605,7 @@ namespace LD.FormsX.Views.Dialogs
                 }
 
                 var header = currentColumn.Header?.ToString() ?? string.Empty;
-                if (!header.Equals("Número de Parte", StringComparison.OrdinalIgnoreCase))
+                if (!header.Equals("NÃºmero de Parte", StringComparison.OrdinalIgnoreCase))
                     return;
 
                 if (!ProductLookupItems.Any())

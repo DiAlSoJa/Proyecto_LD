@@ -116,7 +116,7 @@ public partial class DatabaseDiagramView : UserControl
 
         new("Asn", "ASN", "ASN", "#EA580C", ["PK AsnId : int", "FK ClientId : int", "FK ProjectId : int", "AsnCode : string?", "Status : string?"]),
         new("AsnDetail", "Partidas ASN", "ASN", "#EA580C", ["PK AsnDetailId : int", "FK AsnId : int", "FK ProductId : int?", "PartNumber : string", "Quantity : decimal"]),
-        new("AsnReceiptDetail", "Recepciones ASN", "ASN", "#EA580C", ["PK AsnReceiptDetailId : int", "FK AsnDetailId : int", "FK LocationId : int?", "StandardId : int?", "ReceivedQuantity : decimal?"]),
+        new("AsnReceiptDetail", "Recepciones ASN", "ASN", "#EA580C", ["PK AsnReceiptDetailId : int", "PalletNumber : int", "FK AsnDetailId : int", "FK LocationId : int?", "StandardId : int?", "ReceivedQuantity : decimal?"]),
         new("StandardLabel", "Standard ID", "ASN", "#EA580C", ["PK StandardId : int", "StandardCode : string", "FK ProductId : int?", "FK ProjectId : int?"]),
         new("StandarIdSequence", "Secuencia Standard ID", "ASN", "#EA580C", ["PK StandarIdSequenceId : int", "Prefix : string", "CurrentNumber : int"]),
 

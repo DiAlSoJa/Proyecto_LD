@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -56,6 +57,7 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
             request.StandardId = standardIdResult.Data?.ToString();
 
             var entity = _mapper.Map<LD.Domain.Entities.AsnReceiptDetail>(request);
+            entity.PalletNumber = await ResolveNextPalletNumberAsync(request.AsnDetailId);
             var result = await _asnRepository.CreateAsync(entity);
             return result ? Result<string>.Success(entity.AsnReceiptDetailId.ToString(), "ASN Receipt creado con exito") : Result<string>.Failure("Hubo un error al crear el ASN Receipt", new());
         }
@@ -79,5 +81,27 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
             return Result<int?>.Success(parsedStandardId, string.Empty);
 
         return Result<int?>.Failure("No existe la etiqueta LD.", new() { "No existe la etiqueta LD." }, 404);
+    }
+
+    private async Task<int> ResolveNextPalletNumberAsync(int asnDetailId)
+    {
+        var asnDetail = await _asnDetailRepository.GetByIdAsync(asnDetailId);
+        if (asnDetail is null)
+            return 1;
+
+        var asnDetailIds = (await _asnDetailRepository.GetManyAsync() ?? new System.Collections.Generic.List<LD.Domain.Entities.AsnDetail>())
+            .Where(x => x.AsnId == asnDetail.AsnId)
+            .Select(x => x.AsnDetailId)
+            .ToHashSet();
+
+        var receipts = await _asnRepository.GetManyAsync() ?? new System.Collections.Generic.List<LD.Domain.Entities.AsnReceiptDetail>();
+
+        var nextPalletNumber = receipts
+            .Where(x => asnDetailIds.Contains(x.AsnDetailId))
+            .Select(x => x.PalletNumber)
+            .DefaultIfEmpty(0)
+            .Max() + 1;
+
+        return nextPalletNumber;
     }
 }

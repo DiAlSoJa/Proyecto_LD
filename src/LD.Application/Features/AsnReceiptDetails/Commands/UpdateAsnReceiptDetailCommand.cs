@@ -54,6 +54,7 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
                 return Result<string>.Failure("No existe el ASN Receipt", new System.Collections.Generic.List<string> { "No existe el ASN Receipt" }, 404);
 
             var existingStandardId = asn.StandardId;
+            var existingPalletNumber = asn.PalletNumber;
             var standardIdResult = await ResolveStandardIdAsync(request.StandardId);
             if (standardIdResult.IsFailure)
                 return Result<string>.Failure(standardIdResult.Message, standardIdResult.Errors, standardIdResult.Code);
@@ -65,6 +66,7 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
 
             if (!hasStandardIdInRequest)
                 asn.StandardId = existingStandardId;
+            asn.PalletNumber = existingPalletNumber;
 
             var updated = await _asnRepository.UpdateAsync(asn);
             if (!updated)

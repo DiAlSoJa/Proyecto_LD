@@ -48,6 +48,7 @@ namespace LD.Client
             services.AddScoped<CyclicInventoryService>();
             services.AddScoped<DamageReportService>();
             services.AddScoped<StandardLabelService>();
+            services.AddScoped<ReportQueryService>();
 
             services.AddScoped<LookupService>();
             services.AddScoped<AsnService>();

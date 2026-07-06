@@ -20,6 +20,10 @@ public class PatioClientService
         => await _api.GetAsync<ApiResponseDto<List<SecurityRegistrationDto>>>(
                _apiEndpoints.Security_GetSinSalida);
 
+    public async Task<ApiResponseDto<List<PatioMonitorDto>>> GetPatioMonitorAsync()
+        => await _api.GetAsync<ApiResponseDto<List<PatioMonitorDto>>>(
+               _apiEndpoints.Security_GetPatioMonitor);
+
     public async Task<ApiResponseDto<List<CortinaDto>>> GetCortinasDisponiblesAsync(int? warehouseId = null)
     {
         var url = _apiEndpoints.Security_GetCortinas;

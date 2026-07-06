@@ -3,20 +3,27 @@ using System.ComponentModel;
 using LD.Contracts.ASN;
 using LD.Contracts.Requests;
 
-public class AsnReceiptItem : INotifyPropertyChanged
-{
-    private int _asnReceiptDetailId;
-    public int AsnReceiptDetailId
+    public class AsnReceiptItem : INotifyPropertyChanged
     {
-        get => _asnReceiptDetailId;
-        set { _asnReceiptDetailId = value; OnPropertyChanged(nameof(AsnReceiptDetailId)); }
-    }
+        private int _asnReceiptDetailId;
+        public int AsnReceiptDetailId
+        {
+            get => _asnReceiptDetailId;
+            set { _asnReceiptDetailId = value; OnPropertyChanged(nameof(AsnReceiptDetailId)); }
+        }
 
-    private int _asnId;
-    public int AsnId
-    {
-        get => _asnId;
-        set { _asnId = value; OnPropertyChanged(nameof(AsnId)); }
+        private int _palletNumber;
+        public int PalletNumber
+        {
+            get => _palletNumber;
+            set { _palletNumber = value; OnPropertyChanged(nameof(PalletNumber)); }
+        }
+
+        private int _asnId;
+        public int AsnId
+        {
+            get => _asnId;
+            set { _asnId = value; OnPropertyChanged(nameof(AsnId)); }
     }
 
     private int _asnDetailId;
@@ -170,6 +177,7 @@ public class AsnReceiptItem : INotifyPropertyChanged
         return new AsnReceiptRequest
         {
             AsnReceiptDetailId = AsnReceiptDetailId,
+            PalletNumber = PalletNumber,
             AsnDetailId = AsnDetailId,
             ProductId = ProductId,
             StandardId = StandardId,
@@ -195,6 +203,7 @@ public class AsnReceiptItem : INotifyPropertyChanged
         return new AsnReceiptItem
         {
             AsnReceiptDetailId = dto.AsnReceiptDetailId,
+            PalletNumber = dto.PalletNumber,
             AsnDetailId = dto.AsnDetailId,
             ProductId = dto.ProductId,
             StandardId = dto.StandardId,

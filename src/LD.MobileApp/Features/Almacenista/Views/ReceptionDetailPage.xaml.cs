@@ -1,6 +1,7 @@
 using LD.Client.Services;
 using LD.Contracts.ASN;
 using MauiAppLogin.Features.Almacenista.Models;
+using System.Globalization;
 using System.Collections.ObjectModel;
 
 namespace MauiAppLogin;
@@ -95,7 +96,8 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
             _items.Clear();
             foreach (var item in receiptsResponse.Data
                          .Where(x => detailIds.Contains(x.AsnDetailId))
-                         .OrderBy(x => x.StandardId ?? string.Empty)
+                         .OrderBy(x => x.PalletNumber > 0 ? x.PalletNumber : int.MaxValue)
+                         .ThenBy(x => x.StandardId ?? string.Empty)
                          .ThenBy(x => x.PartNumber)
                          .Select(BuildReceptionDetailItem))
             {
@@ -118,6 +120,9 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
         var partNumber = asnReceipt.PartNumber?.Trim();
         var quantity = asnReceipt.ReceivedQuantity.GetValueOrDefault();
         var location = asnReceipt.LocationCode?.Trim();
+        var palletNumber = asnReceipt.PalletNumber > 0
+            ? asnReceipt.PalletNumber.ToString(CultureInfo.InvariantCulture)
+            : "-";
         var standardText = string.IsNullOrWhiteSpace(standardId) ? "Sin StandardId" : standardId;
         var partText = string.IsNullOrWhiteSpace(partNumber) ? "Sin numero de parte" : partNumber;
         var locationText = string.IsNullOrWhiteSpace(location) ? "Sin ubicacion" : location;
@@ -125,13 +130,14 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
         return new ReceptionDetailItem
         {
             AsnDetailId = asnReceipt.AsnDetailId,
-            Title = $"StandardId: {standardText}",
+            PalletNumber = asnReceipt.PalletNumber,
+            Title = $"Pallet {palletNumber} - StandardId: {standardText}",
             StandardId = standardText,
             PartNumber = partText,
             QuantityText = $"Cantidad: {quantity:0.##}",
             Ubicacion = locationText,
-            Subtitle = $"Número de Parte: {partText}",
-            InstructionText = $"ASN {standardText} - Número de Parte {partText} - Cantidad {quantity:0.##} - Ubicación {locationText}"
+            Subtitle = $"Pallet {palletNumber} - Número de Parte: {partText}",
+            InstructionText = $"Pallet {palletNumber} - ASN {standardText} - Número de Parte {partText} - Cantidad {quantity:0.##} - Ubicación {locationText}"
         };
     }
 

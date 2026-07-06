@@ -215,6 +215,7 @@ namespace LD.Forms.Configuration
         public string Security_GetRegistrations => $"{_baseApi}/security";
         public string Security_Register        => $"{_baseApi}/security";
         public string Security_GetSinSalida    => $"{_baseApi}/security/sin-salida";
+        public string Security_GetPatioMonitor => $"{_baseApi}/security/patio-monitor";
         public string Security_GetCortinas     => $"{_baseApi}/security/cortinas";
         public string Security_AsignarCortina  => $"{_baseApi}/security/{{id}}/asignar-cortina";
         public string Security_GetTasks        => $"{_baseApi}/security/tasks";
@@ -328,6 +329,19 @@ namespace LD.Forms.Configuration
         public string DamageReport_Create => $"{_baseApi}/DamageReport";
         public string DamageReport_UploadImage => $"{_baseApi}/DamageReport/upload-image";
         public string DamageReport_GetImage => $"{_baseApi}/DamageReport/image?path={{path}}";
+
+        // ======================
+        // REPORT QUERIES
+        // ======================
+
+        public string ReportQuery_GetSummaries => $"{_baseApi}/ReportQuery";
+        public string ReportQuery_GetAll => $"{_baseApi}/ReportQuery/manage";
+        public string ReportQuery_GetById => $"{_baseApi}/ReportQuery/{{reportQueryId}}";
+        public string ReportQuery_GetParameters => $"{_baseApi}/ReportQuery/{{reportQueryId}}/parameters";
+        public string ReportQuery_Create => $"{_baseApi}/ReportQuery";
+        public string ReportQuery_Update => $"{_baseApi}/ReportQuery/{{reportQueryId}}";
+        public string ReportQuery_Delete => $"{_baseApi}/ReportQuery/{{reportQueryId}}";
+        public string ReportQuery_Execute => $"{_baseApi}/ReportQuery/{{reportQueryId}}/execute";
 
 
 

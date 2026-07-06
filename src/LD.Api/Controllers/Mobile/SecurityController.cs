@@ -32,6 +32,11 @@ public class SecurityController : CommonController
     public async Task<IActionResult> GetSinSalida()
         => ResultExtensions.ToActionResult(await Mediator.Send(new GetSecurityRegistrationsSinSalidaQuery()));
 
+    [HttpGet("patio-monitor")]
+    [Permission(PermissionKeys.YardControl_View)]
+    public async Task<IActionResult> GetPatioMonitor()
+        => ResultExtensions.ToActionResult(await Mediator.Send(new GetPatioMonitorQuery()));
+
     [HttpGet("cortinas")]
     [Permission(PermissionKeys.Cortina_Assign)]
     public async Task<IActionResult> GetCortinas([FromQuery] int? warehouseId)

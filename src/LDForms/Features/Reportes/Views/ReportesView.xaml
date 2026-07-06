@@ -1,18 +1,94 @@
-﻿<UserControl x:Class="LD.FormsX.Views.Reportes.ReportesView"
+<UserControl x:Class="LD.FormsX.Views.Reportes.ReportesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:LD.FormsX.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded"
-             Background="#F8FAFC">
+             Background="{StaticResource SurfaceSubtle}">
 
     <UserControl.Resources>
-        <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#EEF1F5"/>
-            <Setter Property="Foreground" Value="#16263D"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="BorderBrush" Value="#D9DEE7"/>
+            <Setter Property="Foreground" Value="{StaticResource TextOnPrimary}"/>
+            <Setter Property="Background" Value="{StaticResource AppPrimary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource AppPrimaryHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource AppPrimaryPressed}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSubtle}"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceSubtle}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderInput}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource BtnChromeHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource BtnChromePressed}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource SurfaceTabHeader}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSoft}"/>
             <Setter Property="BorderThickness" Value="0,0,1,1"/>
             <Setter Property="Padding" Value="8,6"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -20,218 +96,164 @@
         </Style>
 
         <Style x:Key="GridCellStyle" TargetType="DataGridCell">
-            <Setter Property="BorderBrush" Value="#E4E8EE"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSoft}"/>
             <Setter Property="BorderThickness" Value="0,0,1,1"/>
             <Setter Property="Padding" Value="8,4"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
         <Style x:Key="GridRowStyle" TargetType="DataGridRow">
-            <Setter Property="BorderBrush" Value="#E4E8EE"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSoft}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceCard}"/>
         </Style>
     </UserControl.Resources>
 
     <Grid Margin="12">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1.05*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
-            <RowDefinition Height="1.25*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Queries -->
-        <Border Grid.Row="0"
-                Background="White"
-                CornerRadius="12"
-                BorderBrush="#E5E7EB"
+        <Border Background="{StaticResource SurfaceCard}"
+                CornerRadius="16"
+                BorderBrush="{StaticResource BorderSoft}"
                 BorderThickness="1"
-                Padding="10">
+                Padding="18">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="8"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="8"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Queries"
-                           FontSize="16"
-                           FontWeight="SemiBold"
-                           Foreground="#1F2937"
-                           Margin="4,0,0,0"/>
-
-                <StackPanel Grid.Row="2"
-                            Orientation="Horizontal">
-                    <Button x:Name="BtnEjecutar"
-                            Width="160"
-                            Height="38"
-                            Content="Ejecutar"
-                            Click="BtnEjecutar_Click"
-                            Background="#2563EB"
-                            Foreground="White"
-                            BorderThickness="0"
-                            Cursor="Hand"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Reportes"
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}"/>
+                    <TextBlock Text="Administra consultas SQL parametrizadas y ejecútalas desde el backend."
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               Margin="0,4,0,0"/>
                 </StackPanel>
 
-                <Border Grid.Row="4"
-                        BorderBrush="#D9DEE7"
-                        BorderThickness="1"
-                        CornerRadius="4"
-                        Background="White">
-                    <Grid>
-                        <DataGrid x:Name="dgQueries"
-                                  AutoGenerateColumns="False"
-                                  SelectionMode="Single"
-                                  SelectionUnit="FullRow"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  IsReadOnly="True"
-                                  HeadersVisibility="Column"
-                                  GridLinesVisibility="Vertical"
-                                  RowHeight="28"
-                                  ColumnHeaderHeight="40"
-                                  FontSize="12"
-                                  VerticalGridLinesBrush="#D9D9D9"
-                                  HorizontalGridLinesBrush="#E4E8EE"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  SelectionChanged="dgQueries_SelectionChanged">
+                <WrapPanel Grid.Column="1"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           ItemHeight="40">
+                    <Button x:Name="btnNuevo"
+                            Content="Nuevo"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Margin="0,0,10,0"
+                            Visibility="{Binding CanCreate, Converter={StaticResource BoolToVis}}"
+                            Click="BtnNuevo_Click"/>
+                    <Button x:Name="btnEditar"
+                            Content="Editar"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="0,0,10,0"
+                            Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}"
+                            IsEnabled="False"
+                            Click="BtnEditar_Click"/>
+                    <Button x:Name="btnEliminar"
+                            Content="Eliminar"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="0,0,10,0"
+                            Visibility="{Binding CanDelete, Converter={StaticResource BoolToVis}}"
+                            IsEnabled="False"
+                            Click="BtnEliminar_Click"/>
+                    <Button x:Name="btnEjecutar"
+                            Content="Ejecutar"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="0,0,10,0"
+                            Visibility="{Binding CanExecute, Converter={StaticResource BoolToVis}}"
+                            IsEnabled="False"
+                            Click="BtnEjecutar_Click"/>
+                    <Button x:Name="btnActualizar"
+                            Content="Actualizar"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
+                            Click="BtnActualizar_Click"/>
+                </WrapPanel>
+            </Grid>
+        </Border>
 
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Nombre del query" Binding="{Binding Nombre}" Width="420"/>
-                                <DataGridTextColumn Header="Parametros" Binding="{Binding Parametros}" Width="220"/>
-                            </DataGrid.Columns>
+        <controls:LDInput x:Name="ldBuscar"
+                          Grid.Row="2"
+                          Label="Buscar"
+                          Placeholder="Filtra por nombre o consulta SQL"
+                          HelpText="Ctrl+F activa filtros por columna y Ctrl+T exporta las filas visibles."
+                          InputHeight="34"
+                          TextVerticalAlignment="Center"
+                          Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"/>
 
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
-                                <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
-                            </DataGrid.Resources>
-                        </DataGrid>
+        <Border Grid.Row="4"
+                Background="{StaticResource SurfaceCard}"
+                CornerRadius="16"
+                BorderBrush="{StaticResource BorderSoft}"
+                BorderThickness="1"
+                Padding="8"
+                Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}">
+            <Grid>
+                <DataGrid x:Name="dgQueries"
+                          AutoGenerateColumns="True"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Vertical"
+                          RowHeight="28"
+                          ColumnHeaderHeight="40"
+                          FontSize="12"
+                          VerticalGridLinesBrush="{StaticResource BorderSoft}"
+                          HorizontalGridLinesBrush="{StaticResource BorderSoft}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          SelectionChanged="DgQueries_SelectionChanged">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
+                    </DataGrid.Resources>
+                </DataGrid>
 
-                        <Border x:Name="LoadingOverlayQueries"
-                                Background="#80FFFFFF"
-                                Visibility="Collapsed">
-                            <StackPanel HorizontalAlignment="Center"
-                                        VerticalAlignment="Center">
-                                <ProgressBar IsIndeterminate="True"
-                                             Width="220"
-                                             Height="18"/>
-                                <TextBlock x:Name="TxtLoadingQueries"
-                                           Text="Cargando queries..."
-                                           HorizontalAlignment="Center"
-                                           Margin="0,12,0,0"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           Foreground="#24344D"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
+                <Border x:Name="LoadingOverlay"
+                        Background="{StaticResource LoadingOverlayBg}"
+                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
+                        CornerRadius="10">
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True"
+                                     Width="220"
+                                     Height="18"
+                                     Foreground="{StaticResource AppPrimary}"/>
+                        <TextBlock Text="Cargando consultas..."
+                                   HorizontalAlignment="Center"
+                                   Margin="0,12,0,0"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}"/>
+                    </StackPanel>
                 </Border>
             </Grid>
         </Border>
 
-        <!-- Resultado -->
-        <Border Grid.Row="2"
-                Background="White"
+        <Border Grid.Row="6"
+                Background="{StaticResource SurfaceCard}"
                 CornerRadius="12"
-                BorderBrush="#E5E7EB"
+                BorderBrush="{StaticResource BorderSoft}"
                 BorderThickness="1"
-                Padding="10">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="8"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock x:Name="txtStatusResultado"
-                           Grid.Row="0"
-                           Text="Resultado"
-                           FontSize="16"
-                           FontWeight="SemiBold"
-                           Foreground="#1F2937"
-                           Margin="4,0,0,0"/>
-
-                <Border Grid.Row="2"
-                        BorderBrush="#D9DEE7"
-                        BorderThickness="1"
-                        CornerRadius="4"
-                        Background="White">
-                    <Grid>
-                        <DataGrid x:Name="dgResultado"
-                                  AutoGenerateColumns="False"
-                                  SelectionMode="Single"
-                                  SelectionUnit="FullRow"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  IsReadOnly="True"
-                                  HeadersVisibility="Column"
-                                  GridLinesVisibility="Vertical"
-                                  RowHeight="28"
-                                  ColumnHeaderHeight="40"
-                                  FontSize="12"
-                                  VerticalGridLinesBrush="#D9D9D9"
-                                  HorizontalGridLinesBrush="#E4E8EE"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
-
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="125"/>
-                                <DataGridTextColumn Header="Almacén" Binding="{Binding Almacen}" Width="125"/>
-                                <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="200"/>
-                                <DataGridTextColumn Header="Proyecto" Binding="{Binding Proyecto}" Width="200"/>
-                                <DataGridTextColumn Header="EstandarID" Binding="{Binding EstandarID}" Width="125"/>
-                                <DataGridTextColumn Header="Fecha Recepción" Binding="{Binding FechaRecepcion}" Width="140"/>
-                                <DataGridTextColumn Header="Fecha Storing" Binding="{Binding FechaStoring}" Width="130"/>
-                                <DataGridTextColumn Header="ASN" Binding="{Binding ASN}" Width="125"/>
-                                <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="125"/>
-                                <DataGridTextColumn Header="Particion" Binding="{Binding Particion}" Width="125"/>
-                                <DataGridTextColumn Header="Origen" Binding="{Binding Origen}" Width="125"/>
-                                <DataGridTextColumn Header="No. Parte" Binding="{Binding NoParte}" Width="125"/>
-                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="160"/>
-                                <DataGridTextColumn Header="Recibida" Binding="{Binding Recibida}" Width="110"/>
-                                <DataGridTextColumn Header="Disponible" Binding="{Binding Disponible}" Width="110"/>
-                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="110"/>
-                                <DataGridTextColumn Header="Número de Lote" Binding="{Binding NumeroLote}" Width="140"/>
-                                <DataGridTextColumn Header="Caducidad" Binding="{Binding Caducidad}" Width="120"/>
-                                <DataGridTextColumn Header="Orden de Compra" Binding="{Binding OrdenCompra}" Width="140"/>
-                                <DataGridTextColumn Header="Pedimento" Binding="{Binding Pedimento}" Width="125"/>
-                                <DataGridTextColumn Header="Tipo de Cambio" Binding="{Binding TipoCambio}" Width="130"/>
-                                <DataGridTextColumn Header="SD" Binding="{Binding SD}" Width="90"/>
-                                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="110"/>
-                                <DataGridTextColumn Header="Días Transcurridos" Binding="{Binding DiasTranscurridos}" Width="150"/>
-                            </DataGrid.Columns>
-
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource GridHeaderStyle}"/>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource GridCellStyle}"/>
-                                <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRowStyle}"/>
-                            </DataGrid.Resources>
-                        </DataGrid>
-
-                        <Border x:Name="LoadingOverlayResultado"
-                                Background="#80FFFFFF"
-                                Visibility="Collapsed">
-                            <StackPanel HorizontalAlignment="Center"
-                                        VerticalAlignment="Center">
-                                <ProgressBar IsIndeterminate="True"
-                                             Width="220"
-                                             Height="18"/>
-                                <TextBlock x:Name="TxtLoadingResultado"
-                                           Text="Cargando resultado..."
-                                           HorizontalAlignment="Center"
-                                           Margin="0,12,0,0"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           Foreground="#24344D"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                </Border>
-            </Grid>
+                Padding="12,10">
+            <TextBlock Text="{Binding StatusText}"
+                       Foreground="{StaticResource TextSecondary}"
+                       FontSize="13"
+                       TextWrapping="Wrap"/>
         </Border>
     </Grid>
 </UserControl>

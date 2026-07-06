@@ -1,40 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using LD.FormsX.Features.ControlPatio.ViewModels;
+using LD.FormsX.Helpers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace LD.FormsX.Views.ControlPatio
+namespace LD.FormsX.Views.ControlPatio;
+
+public partial class ControlPatioView : UserControl
 {
-    /// <summary>
-    /// Lógica de interacción para ControlPatioView.xaml
-    /// </summary>
-    public partial class ControlPatioView : UserControl
+    private readonly ControlPatioViewModel _viewModel;
+    private readonly DataGridColumnFilterManager _patioGridManager;
+    private bool _loaded;
+
+    public ControlPatioView(ControlPatioViewModel viewModel)
     {
-        public ControlPatioView()
+        InitializeComponent();
+        _viewModel = viewModel;
+        DataContext = viewModel;
+        _patioGridManager = new DataGridColumnFilterManager(dgPatioUnits);
+        _patioGridManager.ApplyTo(_viewModel.PatioRowsView);
+    }
+
+    private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (_loaded)
         {
-            InitializeComponent();
+            return;
         }
-        private void UserControl_Loaded(object sender, RoutedEventArgs e) { }
-        private void BtnActualizar_Click(object sender, RoutedEventArgs e) { }
 
-        private void dgPendientesOperaciones_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
-        private void dgPendientesTransportes_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
-
-        private void dgOperaciones_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
-        private void dgTransportes_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
-
-        private void BtnEditarOperacion_Click(object sender, RoutedEventArgs e) { }
-        private void BtnCancelarOperacion_Click(object sender, RoutedEventArgs e) { }
-
-        private void BtnEditarTransporte_Click(object sender, RoutedEventArgs e) { }
-        private void BtnCancelarTransporte_Click(object sender, RoutedEventArgs e) { }
+        _loaded = true;
+        await _viewModel.CargarDatosAsync();
     }
 }

@@ -21,6 +21,7 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
         {
             CreateMap<AsnReceiptDetail, AsnReceiptDetailDto>()
                 .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.MapFrom(src => src.AsnReceiptDetailId))
+                .ForMember(dest => dest.PalletNumber, opt => opt.MapFrom(src => src.PalletNumber))
                 .ForMember(dest => dest.AsnDetailId, opt => opt.MapFrom(src => src.AsnDetailId))
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))                
                 .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardLabel != null
@@ -43,9 +44,11 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
 
             CreateMap<AsnReceiptRequest, AsnReceiptDetail>()
                 .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.Ignore())
+                .ForMember(dest => dest.PalletNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => ParseNullableStandardId(src.StandardId)));
 
             CreateMap<AsnReceiptDetail, AsnReceiptRequest>()
+                .ForMember(dest => dest.PalletNumber, opt => opt.MapFrom(src => src.PalletNumber))
                 .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src =>
                     src.StandardId.HasValue ? src.StandardId.Value.ToString() : null));
         }

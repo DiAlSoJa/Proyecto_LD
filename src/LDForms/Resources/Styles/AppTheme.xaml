@@ -48,6 +48,16 @@
     <SolidColorBrush x:Key="SurfaceSubtle"      Color="#F3F4F6"/>  <!-- Botones secundarios -->
     <SolidColorBrush x:Key="SurfaceTitleBar"    Color="#EEF2F6"/>  <!-- Barra superior Dashboard -->
     <SolidColorBrush x:Key="SurfaceTabHeader"   Color="#F8FAFC"/>  <!-- Cabecera de tabs -->
+    <SolidColorBrush x:Key="PatioMonitorHeroBg"        Color="#EEF4FF"/>
+    <SolidColorBrush x:Key="PatioMonitorHeroAccent"    Color="#DCE7FF"/>
+    <SolidColorBrush x:Key="PatioMonitorCurrentBg"     Color="#EAF4FF"/>
+    <SolidColorBrush x:Key="PatioMonitorCurrentBorder" Color="#9CC8FF"/>
+    <SolidColorBrush x:Key="PatioMonitorPendingBg"     Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="PatioMonitorPendingBorder" Color="#CBD5E1"/>
+    <SolidColorBrush x:Key="PatioMonitorCompletedBg"   Color="#ECFDF5"/>
+    <SolidColorBrush x:Key="PatioMonitorCompletedBorder" Color="#A7F3D0"/>
+    <SolidColorBrush x:Key="PatioMonitorOverdueBg"     Color="#FEF2F2"/>
+    <SolidColorBrush x:Key="PatioMonitorOverdueBorder" Color="#FECACA"/>
 
     <!-- ═══════════════════════════════════════════════════════════
          BORDES

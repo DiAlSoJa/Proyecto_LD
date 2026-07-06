@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Collections;
+using System.Data;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -96,6 +98,27 @@ namespace LD.FormsX.Helpers
 
         private static object? GetPropertyValue(object item, string propertyPath)
         {
+            if (item is DataRowView rowView)
+            {
+                var column = rowView.Row.Table.Columns
+                    .Cast<DataColumn>()
+                    .FirstOrDefault(c => string.Equals(c.ColumnName, propertyPath, StringComparison.OrdinalIgnoreCase));
+
+                if (column != null)
+                    return rowView[column.ColumnName];
+
+                return null;
+            }
+
+            if (item is IDictionary<string, object?> genericDictionary
+                && genericDictionary.TryGetValue(propertyPath, out var genericValue))
+            {
+                return genericValue;
+            }
+
+            if (item is IDictionary dictionary && dictionary.Contains(propertyPath))
+                return dictionary[propertyPath];
+
             object? current = item;
 
             foreach (var segment in propertyPath.Split('.'))
