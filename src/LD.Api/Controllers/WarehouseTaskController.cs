@@ -34,6 +34,11 @@ public class WarehouseTaskController : CommonController
     public async Task<IActionResult> GetConnectedUsers()
         => ResultExtensions.ToActionResult(await Mediator.Send(new ConnectedUsersQuery()));
 
+    [HttpGet("{taskId}")]
+    [Permission(PermissionKeys.WarehouseTask_View)]
+    public async Task<IActionResult> GetTaskById(int taskId)
+        => ResultExtensions.ToActionResult(await Mediator.Send(new WarehouseTaskByIdQuery { WarehouseTaskId = taskId }));
+
     [HttpGet]
     [Permission(PermissionKeys.WarehouseTask_View)]
     public async Task<IActionResult> GetTasks(
@@ -59,6 +64,17 @@ public class WarehouseTaskController : CommonController
     [Permission(PermissionKeys.WarehouseTask_Manage)]
     public async Task<IActionResult> CreateTask([FromBody] CreateWarehouseTaskCommand command)
         => ResultExtensions.ToActionResult(await Mediator.Send(command));
+
+    // SOLO PARA PRUEBAS: genera tareas dummy NoAsignada para que el worker las auto-asigne.
+    // Quitar antes de producción.
+    [AllowAnonymous]
+    [HttpPost("dummy")]
+    public async Task<IActionResult> SeedDummyTasks([FromQuery] int warehouseId, [FromQuery] int count = 5)
+        => ResultExtensions.ToActionResult(await Mediator.Send(new SeedDummyWarehouseTasksCommand
+        {
+            WarehouseId = warehouseId,
+            Count       = count
+        }));
 
     [HttpPut("{taskId}/complete")]
     [Permission(PermissionKeys.WarehouseTask_View)]

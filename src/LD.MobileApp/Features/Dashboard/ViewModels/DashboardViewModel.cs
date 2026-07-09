@@ -18,7 +18,7 @@ namespace MauiAppLogin.ViewModels
         private readonly ApiService _apiService;
         private readonly PatioClientService _patioClientService;
         private readonly ChecklistService _checklistService;
-        private readonly OperationalTaskService _operationalTaskService;
+        private readonly WarehouseTaskService _warehouseTaskService;
         private readonly LookupService _lookupService;
         private readonly IDialogService _dialogService;
         private readonly MobileSessionService _sessionService;
@@ -119,7 +119,7 @@ namespace MauiAppLogin.ViewModels
             ApiService apiService,
             PatioClientService patioClientService,
             ChecklistService checklistService,
-            OperationalTaskService operationalTaskService,
+            WarehouseTaskService warehouseTaskService,
             LookupService lookupService,
             IDialogService dialogService,
             MobileSessionService sessionService,
@@ -132,7 +132,7 @@ namespace MauiAppLogin.ViewModels
             _apiService = apiService;
             _patioClientService = patioClientService;
             _checklistService = checklistService;
-            _operationalTaskService = operationalTaskService;
+            _warehouseTaskService = warehouseTaskService;
             _lookupService = lookupService;
             _dialogService = dialogService;
             _sessionService = sessionService;
@@ -292,7 +292,7 @@ namespace MauiAppLogin.ViewModels
                 }
 
                 var selectedWarehouseId = warehouseIds.Count == 1 ? warehouseIds.First() : (int?)null;
-                var operationalTasksResponse = await _operationalTaskService.GetTasks(soloPendientes: true, selectedWarehouseId);
+                var operationalTasksResponse = await _warehouseTaskService.GetTasksAsync(soloPendientes: true, selectedWarehouseId);
                 if (operationalTasksResponse.IsSuccess && operationalTasksResponse.Data != null)
                 {
                     OperationalTasksPendingCount = selectedWarehouseId.HasValue || warehouseIds.Count == 0
@@ -328,7 +328,7 @@ namespace MauiAppLogin.ViewModels
                     try
                     {
                         _dialogService.ShowBlocking("Verificando", "Comprobando tarea asignada...");
-                        var taskResponse = await _operationalTaskService.GetMyAssignedTaskAsync();
+                        var taskResponse = await _warehouseTaskService.GetMyAssignedTaskAsync();
                         tieneTarea = taskResponse.IsSuccess && taskResponse.Data != null;
                     }
                     catch { }

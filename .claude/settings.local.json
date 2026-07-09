@@ -78,7 +78,13 @@
       "Bash(rmdir src/LD.Api/Services src/LD.Api/Hubs)",
       "Bash(adb devices *)",
       "PowerShell($paths = @\\(\"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\", \"$env:USERPROFILE\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\", \"C:\\\\Program Files \\(x86\\)\\\\Android\\\\android-sdk\\\\platform-tools\\\\adb.exe\", \"C:\\\\Android\\\\platform-tools\\\\adb.exe\"\\); $found = $paths | Where-Object { Test-Path $_ }; if \\($found\\) { Write-Output \"Encontrado:\"; $found } else { Write-Output \"No encontrado en rutas comunes. Buscando...\"; Get-ChildItem -Path \"$env:LOCALAPPDATA\",\"C:\\\\Program Files \\(x86\\)\\\\Android\",\"$env:USERPROFILE\" -Filter adb.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 3 -ExpandProperty FullName })",
-      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices -l)"
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices -l)",
+      "Bash(grep -oE \"[0-9]+$\")",
+      "Bash(awk '$1>1 {print \"DUP:\", $2, \"x\"$1}')",
+      "Bash(awk '$1>1 {print \"DUP:\",$2,\"x\"$1}')",
+      "Bash(python -c \"import json;json.load\\(open\\('src/LD.Api/appsettings.json'\\)\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/LD.Api/appsettings.json','utf8'\\)\\); console.log\\('appsettings.json: JSON valido'\\)\")",
+      "Bash(command -v sqlcmd)"
     ]
   }
 }

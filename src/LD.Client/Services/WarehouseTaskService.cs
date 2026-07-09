@@ -33,6 +33,10 @@ public class WarehouseTaskService
         return await _api.GetAsync<ApiResponseDto<List<WarehouseTaskDto>>>(endpoint);
     }
 
+    public async Task<ApiResponseDto<WarehouseTaskDto>> GetTaskByIdAsync(int taskId)
+        => await _api.GetAsync<ApiResponseDto<WarehouseTaskDto>>(
+            _apiEndpoints.WarehouseTask_GetById.Replace("{taskId}", taskId.ToString()));
+
     public async Task<ApiResponseDto<WarehouseTaskDto?>> GetMyAssignedTaskAsync()
         => await _api.GetAsync<ApiResponseDto<WarehouseTaskDto?>>(_apiEndpoints.WarehouseTask_MyAssigned);
 

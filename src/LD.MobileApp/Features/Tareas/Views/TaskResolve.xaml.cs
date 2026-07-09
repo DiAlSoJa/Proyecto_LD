@@ -1,5 +1,5 @@
 using LD.Client.Services;
-using LD.Contracts.DTOs.OperationalTasks;
+using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.Requests;
 using Microsoft.Maui.Graphics.Platform;
 
@@ -10,17 +10,17 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
     private const float TaskPhotoMaxSize = 1920f;
     private const float TaskPhotoQuality = 0.86f;
 
-    private readonly OperationalTaskService _operationalTaskService;
+    private readonly WarehouseTaskService _warehouseTaskService;
     private readonly ImageSource?[] _resolutionPhotos = new ImageSource?[4];
     private readonly string?[] _resolutionPhotoPaths = new string?[4];
     private readonly string?[] _existingResolutionPhotoPaths = new string?[4];
     private int _taskId;
     private bool _loaded;
 
-    public TaskResolve(OperationalTaskService operationalTaskService)
+    public TaskResolve(WarehouseTaskService warehouseTaskService)
     {
         InitializeComponent();
-        _operationalTaskService = operationalTaskService;
+        _warehouseTaskService = warehouseTaskService;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -60,7 +60,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
 
         try
         {
-            var response = await _operationalTaskService.GetTaskById(_taskId);
+            var response = await _warehouseTaskService.GetTaskByIdAsync(_taskId);
             if (!response.IsSuccess || response.Data is null)
             {
                 await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo cargar la tarea.", "OK");
@@ -76,7 +76,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         }
     }
 
-    private void ApplyTask(OperationalTaskDto task)
+    private void ApplyTask(WarehouseTaskDto task)
     {
         WarehouseLabel.Text = $"Almacen: {(string.IsNullOrWhiteSpace(task.WarehouseName) ? "Sin almacen" : task.WarehouseName)}";
         CategoryLabel.Text = $"Categoria: {task.Priority}";
@@ -111,7 +111,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         }
 
         image.Opacity = 1;
-        image.Source = ImageSource.FromUri(new Uri(_operationalTaskService.GetImageUrl(relativePath)));
+        image.Source = ImageSource.FromUri(new Uri(_warehouseTaskService.GetImageUrl(relativePath)));
     }
 
     private async void OnAtrasClicked(object sender, EventArgs e)
@@ -123,7 +123,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
     {
         try
         {
-            var request = new CompleteOperationalTaskRequest
+            var request = new CompleteWarehouseTaskRequest
             {
                 ResolutionObservations = ResolutionObservationsEditor.Text?.Trim(),
                 ResolvedPhoto1Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[0], 1) ?? _existingResolutionPhotoPaths[0],
@@ -132,7 +132,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
                 ResolvedPhoto4Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[3], 4) ?? _existingResolutionPhotoPaths[3]
             };
 
-            var response = await _operationalTaskService.CompleteTask(_taskId, request);
+            var response = await _warehouseTaskService.CompleteTaskAsync(_taskId, request);
             if (!response.IsSuccess)
             {
                 await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo terminar la tarea.", "OK");
@@ -242,7 +242,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         if (string.IsNullOrWhiteSpace(photoPath) || !File.Exists(photoPath))
             return null;
 
-        var response = await _operationalTaskService.UploadImage(photoPath, photoNumber);
+        var response = await _warehouseTaskService.UploadImageAsync(photoPath, photoNumber);
         if (!response.IsSuccess || response.Data is null || string.IsNullOrWhiteSpace(response.Data.RelativePath))
             throw new InvalidOperationException(response.Message ?? $"No se pudo cargar la foto resuelta {photoNumber}.");
 

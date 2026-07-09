@@ -235,6 +235,7 @@ namespace LD.Forms.Configuration
         // ======================
 
         public string WarehouseTask_GetAll       => $"{_baseApi}/WarehouseTask";
+        public string WarehouseTask_GetById      => $"{_baseApi}/WarehouseTask/{{taskId}}";
         public string WarehouseTask_MyAssigned   => $"{_baseApi}/WarehouseTask/my-assigned";
         public string WarehouseTask_ConnectedUsers => $"{_baseApi}/WarehouseTask/connected-users";
         public string WarehouseTask_MarkAvailable => $"{_baseApi}/WarehouseTask/mark-available";
