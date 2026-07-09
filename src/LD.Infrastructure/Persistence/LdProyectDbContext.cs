@@ -86,6 +86,7 @@ namespace LD.Infrastructure.Persistence
         public DbSet<CyclicInventoryAvailableInventory> CyclicInventoryAvailableInventories { get; set; }
         public DbSet<CyclicInventoryScan> CyclicInventoryScans { get; set; }
         public DbSet<DamageReport> DamageReports { get; set; }
+        public DbSet<ReportQuery> ReportQueries { get; set; }
 
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
@@ -329,6 +330,10 @@ namespace LD.Infrastructure.Persistence
                 .WithMany()
                 .HasForeignKey(r => r.StandardId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AsnReceiptDetail>()
+                .HasIndex(r => new { r.AsnDetailId, r.PalletNumber })
+                .IsUnique();
 
             builder.Entity<Kitting>()
                 .HasOne(k => k.Client)
@@ -852,6 +857,8 @@ namespace LD.Infrastructure.Persistence
 
                 // QUERIES / CONSULTAS
                 new Permission { PermissionId = 50, PermissionName = "Ver consultas", Key = "queries.read", ModuleId = 26 },
+                new Permission { PermissionId = 93, PermissionName = "Administrar consultas", Key = "queries.manage", ModuleId = 26 },
+                new Permission { PermissionId = 94, PermissionName = "Ejecutar consultas", Key = "queries.execute", ModuleId = 26 },
 
                 // DAMAGE REPORT / REPORTE DE DAÑOS
                 new Permission { PermissionId = 51, PermissionName = "Ver reporte de daños",    Key = "damage-report.read",   ModuleId = 27 },
@@ -947,7 +954,7 @@ namespace LD.Infrastructure.Persistence
             );
 
             builder.Entity<RolePermission>().HasData(
-                Enumerable.Range(1, 92)
+                Enumerable.Range(1, 94)
                     .Select(id => new RolePermission
                     {
                         RoleId        = superAdminRoleId,
@@ -1166,6 +1173,12 @@ namespace LD.Infrastructure.Persistence
                     .HasFilter("[DamageReportCode] IS NOT NULL");
             });
 
+            builder.Entity<ReportQuery>(entity =>
+            {
+                entity.Property(x => x.Name).HasMaxLength(150).IsRequired();
+                entity.Property(x => x.SqlQuery).HasColumnType("nvarchar(max)").IsRequired();
+                entity.HasIndex(x => x.Name).IsUnique();
+            });
 
             // Seed: warehouse de referencia para cortinas
             builder.Entity<Warehouse>().HasData(

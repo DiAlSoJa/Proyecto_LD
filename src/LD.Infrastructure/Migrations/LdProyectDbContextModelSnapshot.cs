@@ -313,6 +313,9 @@ namespace LD.Infrastructure.Migrations
                     b.Property<decimal?>("MaximumQuantity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("PalletNumber")
+                        .HasColumnType("int");
+
                     b.Property<string>("PartNumber")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -352,13 +355,14 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasKey("AsnReceiptDetailId");
 
-                    b.HasIndex("AsnDetailId");
-
                     b.HasIndex("LocationId");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("StandardId");
+
+                    b.HasIndex("AsnDetailId", "PalletNumber")
+                        .IsUnique();
 
                     b.ToTable("AsnReceiptDetails");
                 });
@@ -4033,6 +4037,24 @@ namespace LD.Infrastructure.Migrations
                         },
                         new
                         {
+                            PermissionId = 93,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "queries.manage",
+                            ModuleId = 26,
+                            PermissionName = "Administrar consultas"
+                        },
+                        new
+                        {
+                            PermissionId = 94,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Key = "queries.execute",
+                            ModuleId = 26,
+                            PermissionName = "Ejecutar consultas"
+                        },
+                        new
+                        {
                             PermissionId = 51,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
@@ -4755,6 +4777,52 @@ namespace LD.Infrastructure.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.ReportQuery", b =>
+                {
+                    b.Property<int>("ReportQueryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportQueryId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("SqlQuery")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReportQueryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ReportQueries");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.RolePermission", b =>
                 {
                     b.Property<string>("RoleId")
@@ -5432,6 +5500,20 @@ namespace LD.Infrastructure.Migrations
                         {
                             RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
                             PermissionId = 92,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 93,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true
+                        },
+                        new
+                        {
+                            RoleId = "87b92599-3be7-4ab5-b19e-9e069e015d4e",
+                            PermissionId = 94,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true
                         },

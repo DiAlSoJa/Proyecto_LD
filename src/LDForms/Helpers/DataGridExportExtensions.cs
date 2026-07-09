@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Data;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -142,6 +143,27 @@ namespace LD.FormsX.Helpers
         {
             if (item == null || string.IsNullOrWhiteSpace(propertyPath))
                 return null;
+
+            if (item is DataRowView rowView)
+            {
+                var column = rowView.Row.Table.Columns
+                    .Cast<DataColumn>()
+                    .FirstOrDefault(c => string.Equals(c.ColumnName, propertyPath, StringComparison.OrdinalIgnoreCase));
+
+                if (column != null)
+                    return rowView[column.ColumnName];
+
+                return null;
+            }
+
+            if (item is IDictionary<string, object?> genericDictionary
+                && genericDictionary.TryGetValue(propertyPath, out var genericValue))
+            {
+                return genericValue;
+            }
+
+            if (item is IDictionary dictionary && dictionary.Contains(propertyPath))
+                return dictionary[propertyPath];
 
             object? current = item;
             foreach (var segment in propertyPath.Split('.'))

@@ -124,6 +124,8 @@ public static class PermissionKeys
 
     // QUERIES / CONSULTAS
     public const string Query_View = "queries.read";
+    public const string Query_Manage = "queries.manage";
+    public const string Query_Execute = "queries.execute";
 
     // DAMAGE REPORT / REPORTE DE DAÑOS
     public const string DamageReport_View = "damage-report.read";

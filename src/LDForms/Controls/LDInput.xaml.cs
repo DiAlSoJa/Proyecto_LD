@@ -42,6 +42,34 @@ public partial class LDInput : UserControl
         DependencyProperty.Register(nameof(MaxLength), typeof(int), typeof(LDInput),
             new PropertyMetadata(0, OnMaxLengthChanged));
 
+    public static readonly DependencyProperty InputHeightProperty =
+        DependencyProperty.Register(nameof(InputHeight), typeof(double), typeof(LDInput),
+            new PropertyMetadata(36d));
+
+    public static readonly DependencyProperty AcceptsReturnProperty =
+        DependencyProperty.Register(nameof(AcceptsReturn), typeof(bool), typeof(LDInput),
+            new PropertyMetadata(false));
+
+    public static readonly DependencyProperty AcceptsTabProperty =
+        DependencyProperty.Register(nameof(AcceptsTab), typeof(bool), typeof(LDInput),
+            new PropertyMetadata(false));
+
+    public static readonly DependencyProperty InputTextWrappingProperty =
+        DependencyProperty.Register(nameof(InputTextWrapping), typeof(TextWrapping), typeof(LDInput),
+            new PropertyMetadata(TextWrapping.NoWrap));
+
+    public static readonly DependencyProperty VerticalScrollBarVisibilityProperty =
+        DependencyProperty.Register(nameof(VerticalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(LDInput),
+            new PropertyMetadata(ScrollBarVisibility.Hidden));
+
+    public static readonly DependencyProperty HorizontalScrollBarVisibilityProperty =
+        DependencyProperty.Register(nameof(HorizontalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(LDInput),
+            new PropertyMetadata(ScrollBarVisibility.Disabled));
+
+    public static readonly DependencyProperty TextVerticalAlignmentProperty =
+        DependencyProperty.Register(nameof(TextVerticalAlignment), typeof(VerticalAlignment), typeof(LDInput),
+            new PropertyMetadata(VerticalAlignment.Center));
+
     // ── CLR wrappers ────────────────────────────────────────────────────────
 
     public string Label
@@ -90,6 +118,48 @@ public partial class LDInput : UserControl
     {
         get => (int)GetValue(MaxLengthProperty);
         set => SetValue(MaxLengthProperty, value);
+    }
+
+    public double InputHeight
+    {
+        get => (double)GetValue(InputHeightProperty);
+        set => SetValue(InputHeightProperty, value);
+    }
+
+    public bool AcceptsReturn
+    {
+        get => (bool)GetValue(AcceptsReturnProperty);
+        set => SetValue(AcceptsReturnProperty, value);
+    }
+
+    public bool AcceptsTab
+    {
+        get => (bool)GetValue(AcceptsTabProperty);
+        set => SetValue(AcceptsTabProperty, value);
+    }
+
+    public TextWrapping InputTextWrapping
+    {
+        get => (TextWrapping)GetValue(InputTextWrappingProperty);
+        set => SetValue(InputTextWrappingProperty, value);
+    }
+
+    public ScrollBarVisibility VerticalScrollBarVisibility
+    {
+        get => (ScrollBarVisibility)GetValue(VerticalScrollBarVisibilityProperty);
+        set => SetValue(VerticalScrollBarVisibilityProperty, value);
+    }
+
+    public ScrollBarVisibility HorizontalScrollBarVisibility
+    {
+        get => (ScrollBarVisibility)GetValue(HorizontalScrollBarVisibilityProperty);
+        set => SetValue(HorizontalScrollBarVisibilityProperty, value);
+    }
+
+    public VerticalAlignment TextVerticalAlignment
+    {
+        get => (VerticalAlignment)GetValue(TextVerticalAlignmentProperty);
+        set => SetValue(TextVerticalAlignmentProperty, value);
     }
 
     // ── Exposes inner TextBox for WpfGridFilter compatibility ────────────────

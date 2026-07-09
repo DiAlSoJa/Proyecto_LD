@@ -8,6 +8,9 @@ namespace LD.Contracts.ASN
         [DisplayName("Id")]
         public int AsnReceiptDetailId { get; set; }
 
+        [DisplayName("Pallet Number")]
+        public int PalletNumber { get; set; }
+
         public int AsnDetailId { get; set; }
 
         public int? ProductId { get; set; }

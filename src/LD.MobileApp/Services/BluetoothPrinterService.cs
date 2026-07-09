@@ -26,6 +26,7 @@ public class BluetoothPrinterService : IBluetoothPrinterService
 {
     private const string PrinterAddressPreferenceKey = "BluetoothPrinterAddress";
     private const string PrinterNamePreferenceKey = "BluetoothPrinterName";
+    private const int TicketTopBottomMarginDots = 400;
     private const byte QrModuleSize = 6;
     private const byte QrErrorCorrectionLevel = 50; // Q
     private static readonly Encoding PrinterEncoding = Encoding.ASCII;
@@ -62,13 +63,12 @@ public class BluetoothPrinterService : IBluetoothPrinterService
             using var output = socket.OutputStream;
 
             WriteCommand(output, 0x1B, 0x40);
+            WriteFeedDots(output, TicketTopBottomMarginDots);
             WriteTextLine(output, "REPORTE DE DANOS", center: true, bold: true);
             WriteTextLine(output, damageReportCode, center: true);
-            WriteFeed(output, 1);
             WriteQrCode(output, qrUrl);
-            WriteFeed(output, 1);
             WriteTextLine(output, "rd.ld.com.mx", center: true);
-            WriteFeed(output, 4);
+            WriteFeedDots(output, TicketTopBottomMarginDots);
             output.Flush();
         }
         finally
@@ -373,6 +373,17 @@ public class BluetoothPrinterService : IBluetoothPrinterService
     private static void WriteFeed(Stream stream, byte lines)
     {
         WriteCommand(stream, 0x1B, 0x64, lines);
+    }
+
+    private static void WriteFeedDots(Stream stream, int dots)
+    {
+        var remainingDots = Math.Max(0, dots);
+        while (remainingDots > 0)
+        {
+            var chunk = (byte)Math.Min(255, remainingDots);
+            WriteCommand(stream, 0x1B, 0x4A, chunk);
+            remainingDots -= chunk;
+        }
     }
 
     // Comando QR nativo ESC/POS. Evita que la impresora interprete los bytes del bitmap como texto basura.

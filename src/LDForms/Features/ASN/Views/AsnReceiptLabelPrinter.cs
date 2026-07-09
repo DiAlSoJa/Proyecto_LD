@@ -198,6 +198,7 @@ internal static class AsnReceiptLabelPrinter
         };
 
         AddInfoLine(panel, "N.P.", receiptDetail.PartNumber);
+        AddInfoLine(panel, "Pallet", receiptDetail.PalletNumber > 0 ? receiptDetail.PalletNumber.ToString(CultureInfo.InvariantCulture) : "-");
         AddInfoLine(panel, "Descripción", receiptDetail.Description);
         AddInfoLine(panel, "Qty.", FormatQuantity(receiptDetail.ReceivedQuantity ?? detail?.Quantity));
         AddInfoLine(panel, "Lote", receiptDetail.LotNumber);
@@ -264,6 +265,7 @@ internal static class AsnReceiptLabelPrinter
         var values = new[]
         {
             receiptDetail.StandardId,
+            receiptDetail.PalletNumber > 0 ? receiptDetail.PalletNumber.ToString(CultureInfo.InvariantCulture) : string.Empty,
             receiptDetail.PartNumber,
             receiptDetail.LotNumber,
             receiptDetail.LocationCode

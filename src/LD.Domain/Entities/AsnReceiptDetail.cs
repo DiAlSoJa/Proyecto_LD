@@ -11,6 +11,9 @@ namespace LD.Domain.Entities
         public int AsnReceiptDetailId { get; set; }
 
         [Required]
+        public int PalletNumber { get; set; }
+
+        [Required]
         public int AsnDetailId { get; set; }
 
         public int? ProductId { get; set; }

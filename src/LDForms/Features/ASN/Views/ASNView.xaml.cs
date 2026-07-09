@@ -706,7 +706,8 @@ namespace LD.FormsX.Views.ASN
                 var receiptDetails = dgRecepcionASN.Items
                     .OfType<AsnReceiptDetailDto>()
                     .Where(x => !string.IsNullOrWhiteSpace(x.StandardId))
-                    .OrderBy(x => x.StandardId)
+                    .OrderBy(x => x.PalletNumber > 0 ? x.PalletNumber : int.MaxValue)
+                    .ThenBy(x => x.StandardId)
                     .ToList();
 
                 if (receiptDetails.Count == 0)
@@ -934,7 +935,9 @@ namespace LD.FormsX.Views.ASN
 
             rowIndex++;
 
-            foreach (var receipt in receiptDetails.OrderBy(x => x.AsnReceiptDetailId))
+            foreach (var receipt in receiptDetails
+                .OrderBy(x => x.PalletNumber > 0 ? x.PalletNumber : int.MaxValue)
+                .ThenBy(x => x.AsnReceiptDetailId))
             {
                 var rowStyle = rowIndex % 2 == 0 ? 3 : 0;
                 rows.Append(Row(

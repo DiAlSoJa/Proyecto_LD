@@ -37,13 +37,15 @@ namespace LD.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-       async public Task<List<AsnReceiptDetailDto>> GetAsnReceiptByAsnIdAsync(int detailAsnId)
+        async public Task<List<AsnReceiptDetailDto>> GetAsnReceiptByAsnIdAsync(int detailAsnId)
         {
 
             var entities = await _context.AsnReceiptDetails
                 .AsNoTracking()
                 .Include(x => x.StandardLabel)
                 .Where(p => p.AsnDetailId == detailAsnId)
+                .OrderBy(x => x.PalletNumber)
+                .ThenBy(x => x.AsnReceiptDetailId)
                 .ToListAsync();
 
             return _mapper.Map<List<AsnReceiptDetailDto>>(entities);
@@ -70,7 +72,12 @@ namespace LD.Infrastructure.Repositories
         {
             var entities = await _context.AsnReceiptDetails
               .AsNoTracking()
+               .Include(x => x.AsnDetail)
                .Include(x => x.StandardLabel)
+               .OrderBy(x => x.AsnDetail!.AsnId)
+               .ThenBy(x => x.PalletNumber)
+               .ThenBy(x => x.AsnDetailId)
+               .ThenBy(x => x.AsnReceiptDetailId)
                .ToListAsync();
             return _mapper.Map<List<AsnReceiptDetailDto>>(entities);       
         }

@@ -5,6 +5,7 @@ namespace LD.Contracts.Requests
     public class AsnReceiptRequest
     {
         public int AsnReceiptDetailId { get; set; }
+        public int PalletNumber { get; set; }
         public int AsnDetailId { get; set; }
         public int? ProductId { get; set; }
 
