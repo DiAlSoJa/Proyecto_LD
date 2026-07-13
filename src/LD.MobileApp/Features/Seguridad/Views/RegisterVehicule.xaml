@@ -31,8 +31,8 @@
                     </HorizontalStackLayout>
 
                     <!-- Card con datos del vehículo -->
-                    <Border BackgroundColor="#1B2A3A"
-                            Stroke="#244A7C"
+                    <Border BackgroundColor="#F6F8FC"
+                            Stroke="#E2E8F0"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 24"
                             Padding="18"
@@ -42,24 +42,26 @@
 
                             <!-- Tipo selector -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Tipo:" TextColor="#94A3B8" FontSize="14"/>
+                                <Label Text="Tipo:" TextColor="#64748B" FontSize="14"/>
                                 <HorizontalStackLayout Spacing="10">
-                                    <Border StrokeThickness="0"
-                                            BackgroundColor="{Binding IsCajaSelected, Converter={StaticResource BoolToColorConverter}}"
+                                    <Border BackgroundColor="{Binding IsCajaSelected, Converter={StaticResource BoolToColorConverter}}"
+                                            Stroke="#CBD5E1"
+                                            StrokeThickness="1"
                                             StrokeShape="RoundRectangle 25"
                                             Padding="18,10">
-                                        <Label Text="Caja" TextColor="White" FontAttributes="Bold"
+                                        <Label Text="Caja" TextColor="#0F172A" FontAttributes="Bold"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding SelectCajaCommand}"/>
                                         </Border.GestureRecognizers>
                                     </Border>
 
-                                    <Border StrokeThickness="0"
-                                            BackgroundColor="{Binding IsTractorSelected, Converter={StaticResource BoolToColorConverter}}"
+                                    <Border BackgroundColor="{Binding IsTractorSelected, Converter={StaticResource BoolToColorConverter}}"
+                                            Stroke="#CBD5E1"
+                                            StrokeThickness="1"
                                             StrokeShape="RoundRectangle 25"
                                             Padding="18,10">
-                                        <Label Text="Tractor" TextColor="White" FontAttributes="Bold"
+                                        <Label Text="Tractor" TextColor="#0F172A" FontAttributes="Bold"
                                                HorizontalOptions="Center" VerticalOptions="Center"/>
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding SelectTractorCommand}"/>
