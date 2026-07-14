@@ -198,6 +198,7 @@
                                   HeadersVisibility="Column"
                                   GridLinesVisibility="Vertical"
                                   SelectionChanged="dg_SelectionChanged"
+                                  AutoGeneratingColumn="dg_AutoGeneratingColumn"
                                   Visibility="{Binding CanView, Converter={StaticResource BoolToVis}}"
                                   RowHeight="28"
                                   ColumnHeaderHeight="40"

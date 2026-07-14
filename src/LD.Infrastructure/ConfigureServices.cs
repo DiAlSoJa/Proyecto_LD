@@ -17,6 +17,7 @@ using LD.Infrastructure.Services.Storage;
 using LD.Infrastructure.Workers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,6 +45,7 @@ public static class ConfigureServices
                     connectionString,
                     b => b.MigrationsAssembly(migrationAssembly)
                 );
+                options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
                 options.AddInterceptors(interceptor);
             }
         );

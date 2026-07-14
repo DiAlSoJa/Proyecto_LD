@@ -32,4 +32,3 @@ finally
 {
     Log.CloseAndFlush();
 }
-z|

@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
+using LD.Contracts.Location;
+using LD.Contracts.Requests;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
@@ -10,7 +12,7 @@ namespace MauiAppLogin.ViewModels;
 
 public partial class PatioDetalleViewModel : ObservableObject
 {
-    private readonly PatioClientService _patioClientService;
+    private readonly LocationService _locationService;
     private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
@@ -30,18 +32,18 @@ public partial class PatioDetalleViewModel : ObservableObject
     public ICommand AtrasCommand { get; }
 
     public PatioDetalleViewModel(
-        PatioClientService patioClientService,
+        LocationService locationService,
         IDialogService dialogService,
         ILoaderService loaderService,
         PatioContext context)
     {
-        _patioClientService = patioClientService;
-        _dialogService      = dialogService;
-        _loaderService      = loaderService;
-        _context            = context;
+        _locationService = locationService;
+        _dialogService   = dialogService;
+        _loaderService   = loaderService;
+        _context         = context;
 
         AsignarCortinaCommand = new AsyncCommand(AsignarCortinaAsync);
-        AtrasCommand          = new AsyncCommand(AtrasAsync);
+        AtrasCommand = new AsyncCommand(AtrasAsync);
     }
 
     public void Inicializar()
@@ -52,27 +54,41 @@ public partial class PatioDetalleViewModel : ObservableObject
 
     public async Task VerificarCortinaSeleccionadaAsync()
     {
-        var cortina = _context.CortinaSeleccionada;
-        if (cortina is null || Vehiculo is null) return;
+        var ubicacion = _context.UbicacionSeleccionada;
+        if (ubicacion is null || Vehiculo is null) return;
 
-        _context.CortinaSeleccionada = null;
+        _context.UbicacionSeleccionada = null;
 
-        _loaderService.Show("Asignando cortina...");
+        _loaderService.Show("Asignando ubicación...");
         try
         {
-            var response = await _patioClientService.AsignarCortinaAsync(Vehiculo.Id, cortina.Id);
+            var request = new LocationRequest
+            {
+                LocationId = ubicacion.LocationId,
+                WarehouseId = ubicacion.WarehouseId,
+                LocationName = ubicacion.Ubicacion,
+                IsFiscal = ubicacion.EsFiscal,
+                HasControlledTemperature = ubicacion.ControlTemperatura,
+                HasPaso = ubicacion.EsTienePaso,
+                HasCortina = ubicacion.EsTieneCortina,
+                Ocupado = true,
+                Placas = Vehiculo.Placa,
+                IsActive = ubicacion.Activo
+            };
+
+            var response = await _locationService.UpdateLocation(ubicacion.LocationId, request);
             if (!response.IsSuccess)
             {
-                await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudo asignar la cortina.");
+                await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudo asignar la ubicación.");
                 return;
             }
 
-            Vehiculo.CortinaAsignada = cortina.Numero;
+            Vehiculo.CortinaAsignada = ubicacion.Ubicacion;
             RefrescarCortina();
 
             await _dialogService.ShowSuccessAsync(
-                "Cortina asignada",
-                $"Vehículo {Vehiculo.Placa} → Cortina {cortina.Numero}.\nTarea creada en Task Manager de Seguridad.");
+                "Ubicación asignada",
+                $"Vehículo {Vehiculo.Placa} → Ubicación {ubicacion.Ubicacion}.\nSe marcó como ocupada y se guardaron las placas.");
         }
         finally
         {
@@ -82,7 +98,7 @@ public partial class PatioDetalleViewModel : ObservableObject
 
     private async Task AsignarCortinaAsync()
     {
-        _context.CortinaSeleccionada = null;
+        _context.UbicacionSeleccionada = null;
         await Shell.Current.GoToAsync(nameof(CortinaSeleccionPage));
     }
 

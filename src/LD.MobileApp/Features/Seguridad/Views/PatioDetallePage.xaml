@@ -78,7 +78,7 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- ═══ Tarjeta de cortina ═══ -->
+                <!-- ═══ Tarjeta de ubicación ═══ -->
                 <Border BackgroundColor="#F6F8FC"
                         Stroke="#E2E8F0" StrokeThickness="1"
                         StrokeShape="RoundRectangle 24"
@@ -94,7 +94,7 @@
                                        VerticalTextAlignment="Center"/>
                             </Border>
                             <VerticalStackLayout VerticalOptions="Center" Spacing="2">
-                                <Label Text="Cortina asignada"
+                                <Label Text="Ubicación asignada"
                                        FontSize="12" TextColor="#64748B"/>
                                 <Label Text="{Binding CortinaTexto}"
                                        FontSize="22" FontAttributes="Bold" TextColor="#1E293B"/>
@@ -102,19 +102,19 @@
                         </HorizontalStackLayout>
 
                         <!-- Botón: visible solo si NO tiene cortina -->
-                        <Button Text="🔗  Asignar Cortina"
+                        <Button Text="🔗  Asignar Ubicación"
                                 Command="{Binding AsignarCortinaCommand}"
                                 IsVisible="{Binding TieneCortina, Converter={StaticResource InvertedBool}}"
                                 HeightRequest="54" CornerRadius="18"
                                 BackgroundColor="#244A7C" TextColor="White"
                                 FontAttributes="Bold" FontSize="16"/>
 
-                        <!-- Chip: visible cuando ya tiene cortina -->
+                        <!-- Chip: visible cuando ya tiene ubicación -->
                         <Border BackgroundColor="#DCFCE7" StrokeThickness="0"
                                 StrokeShape="RoundRectangle 12"
                                 IsVisible="{Binding TieneCortina}"
                                 Padding="14,8" HorizontalOptions="Start">
-                            <Label Text="✔  Cortina asignada correctamente"
+                            <Label Text="✔  Ubicación asignada correctamente"
                                    TextColor="#166534" FontSize="13" FontAttributes="Bold"/>
                         </Border>
 

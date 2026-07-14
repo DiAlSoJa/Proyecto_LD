@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
-             xmlns:models="clr-namespace:MauiAppLogin.Models"
+             xmlns:models="clr-namespace:LD.Contracts.Location;assembly=LD.Contracts"
              xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
              x:Class="MauiAppLogin.CortinaSeleccionPage"
              x:DataType="vm:CortinaSeleccionViewModel"
@@ -11,18 +11,14 @@
              BackgroundColor="#0F2E4F">
 
     <Grid>
-
         <Grid RowDefinitions="Auto,*,Auto" Padding="16">
-
-            <!-- ═══ Encabezado ═══ -->
             <VerticalStackLayout Grid.Row="0" Spacing="4" Margin="0,10,0,16">
                 <Label Text="Cortinas disponibles"
                        FontSize="20" FontAttributes="Bold" TextColor="White"/>
-                <Label Text="Selecciona una cortina para asignar al vehículo."
+                <Label Text="Selecciona una cortina del almacén del usuario."
                        FontSize="13" TextColor="#94A3B8"/>
             </VerticalStackLayout>
 
-            <!-- ═══ Lista de cortinas ═══ -->
             <CollectionView Grid.Row="1"
                             ItemsSource="{Binding Cortinas}"
                             SelectionMode="Single"
@@ -37,7 +33,7 @@
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Cortina">
+                    <DataTemplate x:DataType="models:LocationDto">
                         <Border Stroke="#E2E8F0" StrokeThickness="1"
                                 StrokeShape="RoundRectangle 20"
                                 Padding="16" Margin="0,0,0,10">
@@ -60,7 +56,6 @@
                             </VisualStateManager.VisualStateGroups>
 
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-
                                 <Border BackgroundColor="#EFF6FF" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 14"
                                         WidthRequest="46" HeightRequest="46"
@@ -71,9 +66,9 @@
                                 </Border>
 
                                 <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
-                                    <Label Text="{Binding Numero}"
+                                    <Label Text="{Binding Ubicacion}"
                                            FontSize="18" FontAttributes="Bold" TextColor="#0F172A"/>
-                                    <Label Text="{Binding Descripcion}"
+                                    <Label Text="{Binding Almacen}"
                                            FontSize="13" TextColor="#64748B"/>
                                 </VerticalStackLayout>
 
@@ -81,7 +76,6 @@
                                        Text="›" FontSize="32"
                                        TextColor="#244A7C"
                                        VerticalOptions="Center"/>
-
                             </Grid>
 
                             <Border.GestureRecognizers>
@@ -89,16 +83,12 @@
                                     Command="{Binding BindingContext.SeleccionarCommand, Source={x:Reference Root}}"
                                     CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
-
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-
             </CollectionView>
 
-            <!-- ═══ Botones ═══ -->
             <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,6">
-
                 <Button Text="Cancelar"
                         Command="{Binding CancelarCommand}"
                         HeightRequest="52" CornerRadius="18"
@@ -112,13 +102,9 @@
                         HeightRequest="52" CornerRadius="18"
                         BackgroundColor="#244A7C" TextColor="White"
                         FontAttributes="Bold"/>
-
             </Grid>
-
         </Grid>
 
-        <!-- Loader con spinner GIF sobre todo el contenido -->
         <controls:LoaderSpinner BindingContext="{Binding Loader}" />
-
     </Grid>
 </ContentPage>

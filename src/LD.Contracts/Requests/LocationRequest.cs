@@ -49,6 +49,8 @@ namespace LD.Contracts.Requests
         public bool HasPaso { get; set; }
 
         public bool HasCortina { get; set; }
+        public bool Ocupado { get; set; }
+        public string? Placas { get; set; }
 
 
         public bool IsActive { get; set; }

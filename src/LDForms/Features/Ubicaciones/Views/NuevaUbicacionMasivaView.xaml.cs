@@ -16,6 +16,8 @@ namespace LD.FormsX.Views.Ubicaciones
         private readonly LookupService _lookupService;
 
         private LocationDto? _locationSelected;
+        private bool _ocupado;
+        private string? _placas;
 
         public bool ResponseForm { get; private set; }
 
@@ -90,6 +92,8 @@ namespace LD.FormsX.Views.Ubicaciones
 
                 cmbAlmacenN.SelectedValue = location.WarehouseId.ToString();
                 txtRack.Text = location.Rack ?? string.Empty;
+                _ocupado = location.Ocupado;
+                _placas = location.Placas;
             }
             catch (Exception ex)
             {
@@ -129,7 +133,9 @@ namespace LD.FormsX.Views.Ubicaciones
                 IsSencillo = radioSencillo.IsChecked == true,
 
                 HasPaso = checkPaso.IsChecked == true,
-                HasCortina = checkCortina.IsChecked == true
+                HasCortina = checkCortina.IsChecked == true,
+                Ocupado = _ocupado,
+                Placas = _placas
             };
         }
 

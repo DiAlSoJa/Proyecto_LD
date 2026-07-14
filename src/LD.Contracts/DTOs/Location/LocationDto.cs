@@ -67,6 +67,12 @@ namespace LD.Contracts.Location
         [DisplayName("Cortina")]
         public bool EsTieneCortina { get; set; }
 
+        [DisplayName("Ocupado")]
+        public bool Ocupado { get; set; }
+
+        [DisplayName("Placas")]
+        public string? Placas { get; set; }
+
 
 
     }

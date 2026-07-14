@@ -100,6 +100,12 @@ public partial class NuevaUbicacionViewModel : ObservableObject
     [ObservableProperty]
     private bool hasCortina;
 
+    [ObservableProperty]
+    private bool ocupado;
+
+    [ObservableProperty]
+    private string placas = "";
+
     public NuevaUbicacionViewModel(LocationService locationService, LookupService lookupService)
     {
         _locationService = locationService;
@@ -180,6 +186,8 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
             HasPaso = l.HasPaso;
             HasCortina = l.HasCortina;
+            Ocupado = l.Ocupado;
+            Placas = l.Placas ?? "";
         }
         catch (Exception ex)
         {
@@ -237,6 +245,8 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
             HasPaso = HasPaso,
             HasCortina = HasCortina,
+            Ocupado = Ocupado,
+            Placas = string.IsNullOrWhiteSpace(Placas) ? null : Placas.Trim(),
 
             Level = level,
             Position = position,

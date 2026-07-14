@@ -82,6 +82,8 @@ public class CreateLocationsByRangeCommandHandler : IRequestHandler<CreateLocati
                         IsSencillo = request.IsSencillo,
                         HasPaso = request.HasPaso,
                         HasCortina = request.HasCortina,
+                        Ocupado = request.Ocupado,
+                        Placas = request.Placas,
 
 
                     });

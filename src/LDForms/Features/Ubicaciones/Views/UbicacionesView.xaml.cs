@@ -151,6 +151,12 @@ namespace LD.FormsX.Views
             ViewModel.SelectedLocation = _gridFilter.SelectedItem;
         }
 
+        private void dg_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyName is nameof(LocationDto.Ocupado) or nameof(LocationDto.Placas))
+                e.Cancel = true;
+        }
+
         private async void BtnNuevo_Click(object sender, RoutedEventArgs e)
         {
             var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();

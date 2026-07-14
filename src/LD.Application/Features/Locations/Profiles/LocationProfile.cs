@@ -52,6 +52,10 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.HasPaso))
                 .ForMember(dest => dest.EsTieneCortina,
                     opt => opt.MapFrom(src => src.HasCortina))
+                .ForMember(dest => dest.Ocupado,
+                    opt => opt.MapFrom(src => src.Ocupado))
+                .ForMember(dest => dest.Placas,
+                    opt => opt.MapFrom(src => src.Placas))
                 .ForMember(dest => dest.Rack,
                     opt => opt.MapFrom(src => src.Rack))
                   .ForMember(dest => dest.Posicion,

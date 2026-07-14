@@ -57,6 +57,8 @@ namespace LD.Domain.Entities
         public bool HasPaso { get; set; }
 
         public bool HasCortina { get; set; }
+        public bool Ocupado { get; set; }
+        public string? Placas { get; set; }
 
         public Warehouse Warehouse { get; set; }
 
