@@ -26,6 +26,10 @@ public class SecurityProfile : Profile
             .ForMember(dest => dest.Fotos,         opt => opt.MapFrom(src => src.Photos.Where(p => p.Categoria != PhotoCategoria.Firma).ToList()));
 
         CreateMap<Cortina, CortinaDto>();
+        CreateMap<Cortina, CortinaRequest>();
+        CreateMap<CortinaRequest, Cortina>()
+            .ForMember(dest => dest.CortinaId, opt => opt.Ignore())
+            .ForMember(dest => dest.SecurityRegistrations, opt => opt.Ignore());
 
         CreateMap<SecurityTask, SecurityTaskDto>()
             .ForMember(dest => dest.Placa,            opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Placa : ""))

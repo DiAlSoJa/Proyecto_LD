@@ -72,5 +72,19 @@ namespace LDForms.Views
             if (dialog.ShowDialog() == true)
                 await ViewModel.CargarDatosAsync();
         }
+
+        private void BtnCortinas_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SelectedWarehouse is null)
+            {
+                DialogHelper.ShowWarning("Selecciona un almacen para ver sus cortinas.");
+                return;
+            }
+
+            var dialog = _serviceProvider.GetRequiredService<CortinasView>();
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
+            dialog.SetWarehouse(ViewModel.SelectedWarehouse);
+            dialog.ShowDialog();
+        }
     }
 }

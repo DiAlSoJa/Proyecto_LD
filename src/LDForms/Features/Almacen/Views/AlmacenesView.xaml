@@ -35,6 +35,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
@@ -106,8 +108,34 @@
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnActualizar"
+                <Button x:Name="btnCortinas"
                         Grid.Column="7"
+                        Height="38"
+                        Padding="12,0"
+                        Click="BtnCortinas_Click"
+                        IsEnabled="{Binding CanOpenCortinas}"
+                        Background="{StaticResource SurfaceSubtle}"
+                        Foreground="{StaticResource TextSubtle}"
+                        BorderBrush="{StaticResource BorderInput}"
+                        BorderThickness="1"
+                        Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                   Text="&#xE7C1;"
+                                   Foreground="{StaticResource AccentAction}"
+                                   Margin="0,0,6,0"
+                                   FontSize="14"/>
+                        <TextBlock Text="Cortinas"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="BtnActualizar"
+                        Grid.Column="9"
                         Height="38"
                         Padding="12,0"
                         Command="{Binding CargarDatosCommand}"

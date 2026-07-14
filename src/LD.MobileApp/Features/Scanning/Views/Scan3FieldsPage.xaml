@@ -19,14 +19,30 @@
                 Margin="0,10,0,12">
 
             <VerticalStackLayout Spacing="10">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Button Text="&#x2190;"
+                            Clicked="OnBackTapped"
+                            BackgroundColor="Transparent"
+                            TextColor="#1E293B"
+                            BorderWidth="0"
+                            CornerRadius="0"
+                            Padding="0"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            FontSize="22"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Center" />
 
-                <Label Text="Escaneo de ubicación"
-                       x:Name="ScreenTitleLabel"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="#1E293B"/>
+                    <Label Text="Escaneo de ubicaci&#xF3;n"
+                           x:Name="ScreenTitleLabel"
+                           Grid.Column="1"
+                           VerticalOptions="Center"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#1E293B" />
+                </Grid>
 
-                <!-- Indicador qué escanear -->
+                <!-- Indicador que escanear -->
                 <Border BackgroundColor="#102A43"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 16"
@@ -34,7 +50,7 @@
                     <Label x:Name="HintLabel"
                            Text="Escanea: Estandar ID"
                            TextColor="White"
-                           FontSize="15"/>
+                           FontSize="15" />
                 </Border>
 
                 <Border x:Name="ContextBorder"
@@ -47,59 +63,88 @@
                     <Label x:Name="ContextLabel"
                            TextColor="#0F172A"
                            FontSize="14"
-                           LineBreakMode="WordWrap"/>
+                           LineBreakMode="WordWrap" />
                 </Border>
 
                 <!-- Campos -->
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
 
-                    <Border x:Name="EstandarIdBorder" Stroke="#E2E8F0" Grid.Column="0" Grid.ColumnSpan="2" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                    <Border x:Name="EstandarIdBorder"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Stroke="#E2E8F0"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="White"
+                            Padding="12,8">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnEstandarIdTapped"/>
+                            <TapGestureRecognizer Tapped="OnEstandarIdTapped" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Estandar ID" TextColor="#64748B" FontSize="12"/>
-                            <Label x:Name="EstandarIdLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
+                            <Label Text="Estandar ID"
+                                   TextColor="#64748B"
+                                   FontSize="12" />
+                            <Label x:Name="EstandarIdLabel"
+                                   Text="-"
+                                   TextColor="#0F172A"
+                                   FontAttributes="Bold" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <Border x:Name="RackBorder" Grid.Row="1" Grid.Column="0" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Padding="12,8">
+                    <Border x:Name="RackBorder"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Stroke="#E2E8F0"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="White"
+                            Padding="12,8">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnRackTapped"/>
+                            <TapGestureRecognizer Tapped="OnRackTapped" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Rack" TextColor="#64748B" FontSize="12"/>
-                            <Label x:Name="RackLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
+                            <Label Text="Rack"
+                                   TextColor="#64748B"
+                                   FontSize="12" />
+                            <Label x:Name="RackLabel"
+                                   Text="-"
+                                   TextColor="#0F172A"
+                                   FontAttributes="Bold" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <Border x:Name="PosicionBorder" Grid.Row="1" Grid.Column="1"
-                            Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12"
-                            BackgroundColor="White" Padding="12,8">
+                    <Border x:Name="PosicionBorder"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Stroke="#E2E8F0"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="White"
+                            Padding="12,8">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnPosicionTapped"/>
+                            <TapGestureRecognizer Tapped="OnPosicionTapped" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Nivel" TextColor="#64748B" FontSize="12"/>
-                            <Label x:Name="PosicionLabel" Text="—" TextColor="#0F172A" FontAttributes="Bold"/>
+                            <Label Text="Nivel"
+                                   TextColor="#64748B"
+                                   FontSize="12" />
+                            <Label x:Name="PosicionLabel"
+                                   Text="-"
+                                   TextColor="#0F172A"
+                                   FontAttributes="Bold" />
                         </VerticalStackLayout>
                     </Border>
 
                 </Grid>
-
             </VerticalStackLayout>
         </Border>
 
-        <!-- Cámara -->
+        <!-- Camara -->
         <Grid Grid.Row="1">
             <zxing:CameraBarcodeReaderView x:Name="CameraView"
                                            BarcodesDetected="CameraView_BarcodesDetected"
                                            IsDetecting="True" />
 
-            <!-- overlay -->
-            
-
-            <!-- marco -->
             <Border Stroke="White"
                     StrokeThickness="2"
                     StrokeShape="RoundRectangle 18"
@@ -108,11 +153,14 @@
                     WidthRequest="280"
                     HeightRequest="180"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center"/>
+                    VerticalOptions="Center" />
         </Grid>
 
         <!-- Botones -->
-        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,12,0,0">
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="10"
+              Margin="0,12,0,0">
 
             <Button Text="Limpiar"
                     x:Name="ClearButton"
@@ -121,7 +169,7 @@
                     TextColor="#1E293B"
                     CornerRadius="18"
                     HeightRequest="54"
-                    FontAttributes="Bold"/>
+                    FontAttributes="Bold" />
 
             <Button Grid.Column="1"
                     x:Name="AcceptButton"
@@ -131,7 +179,7 @@
                     TextColor="White"
                     CornerRadius="18"
                     HeightRequest="54"
-                    FontAttributes="Bold"/>
+                    FontAttributes="Bold" />
         </Grid>
 
         <Border x:Name="TransferOverlay"
@@ -147,13 +195,13 @@
                                    IsRunning="False"
                                    Color="#244A7C"
                                    WidthRequest="42"
-                                   HeightRequest="42"/>
+                                   HeightRequest="42" />
                 <Label Text="Transfiriendo ubicacion..."
                        x:Name="TransferMessageLabel"
                        HorizontalOptions="Center"
                        TextColor="#244A7C"
                        FontAttributes="Bold"
-                       FontSize="16"/>
+                       FontSize="16" />
             </VerticalStackLayout>
         </Border>
 

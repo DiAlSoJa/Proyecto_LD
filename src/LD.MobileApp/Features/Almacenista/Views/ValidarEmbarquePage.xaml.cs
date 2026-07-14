@@ -32,6 +32,16 @@ public partial class ValidarEmbarquePage : ContentPage
         await LoadValidationKittingsAsync();
     }
 
+    private async void OnBackTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync("//dashboard");
+    }
+
+    private async void OnRefreshTapped(object sender, TappedEventArgs e)
+    {
+        await LoadValidationKittingsAsync();
+    }
+
     private async Task LoadValidationKittingsAsync()
     {
         try

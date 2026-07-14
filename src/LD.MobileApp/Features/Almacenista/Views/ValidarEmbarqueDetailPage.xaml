@@ -12,17 +12,33 @@
                     Stroke="#E2E8F0"
                     StrokeShape="RoundRectangle 26"
                     Padding="18,16">
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                    <VerticalStackLayout Spacing="4"
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                    <Border WidthRequest="34"
+                            HeightRequest="34"
+                            BackgroundColor="#EEF2FF"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBackTapped" />
+                        </Border.GestureRecognizers>
+                        <Label Text="←"
+                               FontSize="18"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1"
+                                         Spacing="4"
                                          VerticalOptions="Center">
                         <Label Text="{Binding HeaderTitle}"
                                FontAttributes="Bold"
-                               FontSize="24"
-                               TextColor="#0F172A"
+                               FontSize="18"
+                               TextColor="#1E293B"
                                LineBreakMode="TailTruncation" />
                     </VerticalStackLayout>
 
-                    <Button Grid.Column="1"
+                    <Button Grid.Column="2"
                             WidthRequest="42"
                             HeightRequest="42"
                             BackgroundColor="#F8FAFC"

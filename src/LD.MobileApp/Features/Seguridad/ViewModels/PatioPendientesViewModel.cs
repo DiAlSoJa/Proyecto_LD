@@ -6,6 +6,7 @@ using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace MauiAppLogin.ViewModels;
@@ -16,11 +17,37 @@ public partial class PatioPendientesViewModel : ObservableObject
     private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
+    private readonly List<SecurityRegistrationDto> _vehiculosBase = new();
 
     public ILoaderService Loader => _loaderService;
 
     [ObservableProperty]
     private ObservableCollection<SecurityRegistrationDto> vehiculos = new();
+
+    private string filtroTexto = string.Empty;
+
+    public string FiltroTexto
+    {
+        get => filtroTexto;
+        set
+        {
+            value ??= string.Empty;
+            if (SetProperty(ref filtroTexto, value))
+            {
+                AplicarFiltro();
+            }
+        }
+    }
+
+    public string EmptyTitle =>
+        string.IsNullOrWhiteSpace(FiltroTexto)
+            ? "No hay vehículos en patio"
+            : "No hay coincidencias";
+
+    public string EmptyMessage =>
+        string.IsNullOrWhiteSpace(FiltroTexto)
+            ? "Registra un vehículo para comenzar."
+            : "Prueba con otra placa, nombre, tipo o línea.";
 
     public ICommand CargarCommand { get; }
     public ICommand SeleccionarCommand { get; }
@@ -33,13 +60,13 @@ public partial class PatioPendientesViewModel : ObservableObject
         PatioContext context)
     {
         _patioClientService = patioClientService;
-        _dialogService      = dialogService;
-        _loaderService      = loaderService;
-        _context            = context;
+        _dialogService = dialogService;
+        _loaderService = loaderService;
+        _context = context;
 
-        CargarCommand      = new AsyncCommand(CargarAsync);
+        CargarCommand = new AsyncCommand(CargarAsync);
         SeleccionarCommand = new AsyncCommand<SecurityRegistrationDto>(SeleccionarAsync);
-        AtrasCommand       = new AsyncCommand(AtrasAsync);
+        AtrasCommand = new AsyncCommand(AtrasAsync);
     }
 
     public async Task InicializarAsync() => await CargarAsync();
@@ -51,13 +78,20 @@ public partial class PatioPendientesViewModel : ObservableObject
             _loaderService.Show("Obteniendo vehículos...");
             var response = await _patioClientService.GetVehiculosSinSalidaAsync();
             var lista = response.IsSuccess ? (response.Data ?? []) : [];
-            Vehiculos = new ObservableCollection<SecurityRegistrationDto>(lista);
+
+            _vehiculosBase.Clear();
+            _vehiculosBase.AddRange(lista);
+            AplicarFiltro();
+
             if (!response.IsSuccess)
+            {
                 await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudieron cargar los vehículos.");
+            }
         }
         catch (Exception ex)
         {
-            Vehiculos = new ObservableCollection<SecurityRegistrationDto>();
+            _vehiculosBase.Clear();
+            AplicarFiltro();
             await _dialogService.ShowErrorAsync("Error", $"Error al cargar vehículos: {ex.Message}");
         }
         finally
@@ -66,20 +100,51 @@ public partial class PatioPendientesViewModel : ObservableObject
         }
     }
 
+    private void AplicarFiltro()
+    {
+        var texto = (FiltroTexto ?? string.Empty).Trim();
+
+        var filtrados = string.IsNullOrWhiteSpace(texto)
+            ? _vehiculosBase
+            : _vehiculosBase.Where(registro => CoincideFiltro(registro, texto)).ToList();
+
+        Vehiculos = new ObservableCollection<SecurityRegistrationDto>(filtrados);
+        OnPropertyChanged(nameof(EmptyTitle));
+        OnPropertyChanged(nameof(EmptyMessage));
+    }
+
+    private static bool CoincideFiltro(SecurityRegistrationDto registro, string texto)
+    {
+        return Contiene(registro.Placa, texto)
+               || Contiene(registro.Nombre, texto)
+               || Contiene(registro.Tipo, texto)
+               || Contiene(registro.TipoVehiculo, texto)
+               || Contiene(registro.Linea, texto)
+               || Contiene(registro.Origen, texto)
+               || Contiene(registro.Numero, texto)
+               || Contiene(registro.CortinaNumero, texto);
+    }
+
+    private static bool Contiene(string? source, string texto)
+    {
+        return !string.IsNullOrWhiteSpace(source)
+               && source.Contains(texto, StringComparison.OrdinalIgnoreCase);
+    }
+
     private async Task SeleccionarAsync(SecurityRegistrationDto? registro)
     {
         if (registro is null) return;
 
         _context.VehiculoSeleccionado = new VehiculoEnPatio
         {
-            Id           = registro.SecurityRegistrationId,
-            Placa        = registro.Placa,
-            HoraEntrada  = registro.CreatedAt,
-            Operador     = registro.Nombre,
+            Id = registro.SecurityRegistrationId,
+            Placa = registro.Placa,
+            HoraEntrada = registro.CreatedAt,
+            Operador = registro.Nombre,
             TipoVehiculo = registro.TipoVehiculo,
-            Linea        = registro.Linea,
+            Linea = registro.Linea,
             CortinaAsignada = registro.CortinaNumero,
-            Status       = "Dentro"
+            Status = "Dentro"
         };
 
         await Shell.Current.GoToAsync(nameof(PatioDetallePage));

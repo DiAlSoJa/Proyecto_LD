@@ -42,6 +42,7 @@ namespace LD.Client
             services.AddScoped<VehicleService>();
             services.AddScoped<DriverService>();
             services.AddScoped<SecurityService>();
+            services.AddScoped<CortinaService>();
             services.AddScoped<OperationalTaskService>();
             services.AddScoped<PatioClientService>();
             services.AddScoped<InventoryMovementService>();

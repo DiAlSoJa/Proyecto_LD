@@ -27,6 +27,16 @@ public partial class ReceptionPage : ContentPage
         await LoadLocatingAsnsAsync();
     }
 
+    private async void OnBackTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync("//dashboard");
+    }
+
+    private async void OnRefreshTapped(object sender, TappedEventArgs e)
+    {
+        await LoadLocatingAsnsAsync();
+    }
+
     private async Task LoadLocatingAsnsAsync()
     {
         try

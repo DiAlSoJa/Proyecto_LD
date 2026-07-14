@@ -21,6 +21,11 @@ public partial class ChangeLocationPage : ContentPage, IQueryAttributable
         RefreshEntryTexts();
     }
 
+    private async void OnBackTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         _viewModel.ExpectedStandardId = string.Empty;

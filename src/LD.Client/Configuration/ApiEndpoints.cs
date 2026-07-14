@@ -222,6 +222,16 @@ namespace LD.Forms.Configuration
         public string Security_AbrirCortina    => $"{_baseApi}/security/tasks/{{taskId}}/abrir";
         public string Security_CerrarRegistro  => $"{_baseApi}/security/tasks/{{taskId}}/cerrar";
 
+        // ======================
+        // CORTINA
+        // ======================
+
+        public string Cortina_GetAll => $"{_baseApi}/cortina";
+        public string Cortina_GetById => $"{_baseApi}/cortina/{{id}}";
+        public string Cortina_Create => $"{_baseApi}/cortina";
+        public string Cortina_Update => $"{_baseApi}/cortina/{{id}}";
+        public string Cortina_Delete => $"{_baseApi}/cortina/{{id}}";
+
         public string OperationalTask_GetAll      => $"{_baseApi}/OperationalTask";
         public string OperationalTask_GetById     => $"{_baseApi}/OperationalTask/{{taskId}}";
         public string OperationalTask_MyAssigned  => $"{_baseApi}/OperationalTask/my-assigned";

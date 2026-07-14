@@ -187,6 +187,8 @@ namespace LD.FormsX
             services.AddTransient<LoginViewModel>();
             services.AddTransient<AlmacenesViewModel>();
             services.AddTransient<NuevoAlmacenViewModel>();
+            services.AddTransient<CortinasViewModel>();
+            services.AddTransient<NuevaCortinaViewModel>();
             services.AddTransient<CatalogoCategoriasViewModel>();
             services.AddTransient<NuevaCategoriaViewModel>();
             services.AddTransient<CatalogoDimensionadorViewModel>();
@@ -216,6 +218,7 @@ namespace LD.FormsX
             services.AddTransient<DashBoard>();
             services.AddTransient<CatalogosClientesView>();
             services.AddTransient<AlmacenesView>();
+            services.AddTransient<CortinasView>();
             services.AddTransient<UbicacionesView>();
             services.AddTransient<ArticulosView>();
             services.AddTransient<CatalogoStatusView>();
@@ -266,6 +269,7 @@ namespace LD.FormsX
             services.AddTransient<PermissionLoginDialog>();
             services.AddTransient<NuevoClienteView>();
             services.AddTransient<NuevoAlmacenView>();
+            services.AddTransient<NuevaCortinaView>();
             services.AddTransient<NuevaUbicacionView>();
             services.AddTransient<NuevaUbicacionMasivaView>();
             services.AddTransient<NuevoStatusView>();

@@ -4,7 +4,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:LD.FormsX.Controls"
-             xmlns:contracts="clr-namespace:LD.Contracts.Enums;assembly=LD.Contracts"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded"
@@ -59,20 +58,24 @@
                 BorderThickness="1"
                 CornerRadius="20"
                 Padding="12,10">
-            <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
                 <TextBlock Text="Control de patio"
                            FontSize="26"
                            FontWeight="SemiBold"
+                           VerticalAlignment="Center"
                            Foreground="{StaticResource TextPrimary}"/>
-                <TextBlock Text="Monitor de movimientos faltantes para cajas y tractos desde securityregistrations."
-                           Margin="0,1,0,0"
-                           FontSize="13"
-                           Foreground="{StaticResource TextSecondary}"/>
-                <TextBlock Text="{Binding StatusText}"
-                           Margin="0,6,0,0"
+
+                <TextBlock Grid.Column="1"
+                           Text="{Binding StatusText}"
+                           VerticalAlignment="Center"
                            FontSize="14"
                            Foreground="{StaticResource TextSubtle}"/>
-            </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Filters -->
@@ -164,9 +167,7 @@
         <!-- Main content -->
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="12"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- List -->
@@ -318,101 +319,6 @@
                         </DataGrid>
                     </Border>
                 </Grid>
-            </Border>
-
-            <!-- Details -->
-            <Border Grid.Column="2" Style="{StaticResource MonitorCardStyle}" Padding="14">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <TextBlock Text="Secuencia de pasos"
-                                   Margin="0,0,0,10"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource TextPrimary}"/>
-
-                        <ItemsControl ItemsSource="{Binding SelectedSteps}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Margin="0,0,0,10"
-                                            Padding="14"
-                                            CornerRadius="16"
-                                            BorderThickness="1">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="{StaticResource PatioMonitorPendingBg}"/>
-                                                <Setter Property="BorderBrush" Value="{StaticResource PatioMonitorPendingBorder}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding State}" Value="{x:Static contracts:PatioMonitorStepState_e.Completed}">
-                                                        <Setter Property="Background" Value="{StaticResource PatioMonitorCompletedBg}"/>
-                                                        <Setter Property="BorderBrush" Value="{StaticResource PatioMonitorCompletedBorder}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding State}" Value="{x:Static contracts:PatioMonitorStepState_e.Current}">
-                                                        <Setter Property="Background" Value="{StaticResource PatioMonitorCurrentBg}"/>
-                                                        <Setter Property="BorderBrush" Value="{StaticResource PatioMonitorCurrentBorder}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding State}" Value="{x:Static contracts:PatioMonitorStepState_e.Overdue}">
-                                                        <Setter Property="Background" Value="{StaticResource PatioMonitorOverdueBg}"/>
-                                                        <Setter Property="BorderBrush" Value="{StaticResource PatioMonitorOverdueBorder}"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="12"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Border Width="36"
-                                                    Height="36"
-                                                    CornerRadius="18"
-                                                    Background="{StaticResource AppPrimary}"
-                                                    VerticalAlignment="Top">
-                                                <TextBlock Text="{Binding Order}"
-                                                           Foreground="{StaticResource TextOnPrimary}"
-                                                           FontWeight="SemiBold"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"/>
-                                            </Border>
-
-                                            <StackPanel Grid.Column="2">
-                                                <TextBlock Text="{Binding Label}"
-                                                           FontSize="15"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="{StaticResource TextPrimary}"/>
-                                                <TextBlock Text="{Binding Area}"
-                                                           Margin="0,3,0,0"
-                                                           FontSize="12"
-                                                           Foreground="{StaticResource TextSecondary}"/>
-                                                <TextBlock Text="{Binding Note}"
-                                                           Margin="0,6,0,0"
-                                                           FontSize="12"
-                                                           TextWrapping="Wrap"
-                                                           Foreground="{StaticResource TextSubtle}"/>
-                                                <TextBlock Text="{Binding CompletedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}, TargetNullValue=Pendiente}"
-                                                           Margin="0,6,0,0"
-                                                           FontSize="11"
-                                                           Foreground="{StaticResource TextSecondary}"/>
-                                            </StackPanel>
-
-                                            <Border Grid.Column="3"
-                                                    Style="{StaticResource MonitorChipStyle}"
-                                                    VerticalAlignment="Top">
-                                                <TextBlock Text="{Binding StateText}"
-                                                           FontSize="11"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="{StaticResource TextSubtle}"/>
-                                            </Border>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </ScrollViewer>
             </Border>
         </Grid>
     </Grid>

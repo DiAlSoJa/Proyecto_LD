@@ -3,96 +3,146 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppLogin.ReceptionPage"
              Title="Listado de Recepciones"
-             BackgroundColor="#0F2E4F">
+             BackgroundColor="#1F3A5F">
 
-    <Grid RowDefinitions="Auto,*" Padding="16">
+    <Grid>
+        <Grid RowDefinitions="Auto,*" Padding="16">
 
-        <!-- Barra superior: filtro -->
-        <Border Grid.Row="0"
-                BackgroundColor="#F6F8FC"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 24"
-                Padding="14"
-                Margin="0,10,0,12">
+            <Border Grid.Row="0"
+                    BackgroundColor="#F6F8FC"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 26"
+                    Padding="14"
+                    Margin="0,10,0,12">
 
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                <Label Text="🔎"
-                       FontSize="18"
-                       VerticalOptions="Center"/>
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                        <Border WidthRequest="34"
+                                HeightRequest="34"
+                                BackgroundColor="#EEF2FF"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                VerticalOptions="Center">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBackTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="←"
+                                   FontSize="18"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </Border>
 
-                <Entry x:Name="FiltroEntry"
-                       Grid.Column="1"
-                       Placeholder="Filtrar..."
-                       TextChanged="OnFiltroChanged"
-                       BackgroundColor="White"
-                       TextColor="#1E293B"
-                       PlaceholderColor="#94A3B8"
-                       ClearButtonVisibility="WhileEditing"/>
-            </Grid>
-        </Border>
-
-        <!-- Lista -->
-        <Border Grid.Row="1"
-                BackgroundColor="White"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 24"
-                Padding="0">
-
-            <CollectionView x:Name="ItemsList"
-                            SelectionMode="Single"
-                            SelectionChanged="OnItemSelected">
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="14,12"
-                              ColumnDefinitions="Auto,*"
-                              RowDefinitions="Auto,Auto">
-
-                            <!-- Icono -->
-                            <Border WidthRequest="34"
-                                    HeightRequest="34"
-                                    BackgroundColor="#EEF2FF"
-                                    StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 12"
-                                    VerticalOptions="Center">
-                                <Label Text="📦"
-                                       HorizontalTextAlignment="Center"
-                                       VerticalTextAlignment="Center"/>
-                            </Border>
-
-                            <!-- Título -->
-                            <Label Grid.Column="1"
-                                   Text="{Binding Titulo}"
+                        <VerticalStackLayout Grid.Column="1"
+                                             Spacing="0"
+                                             VerticalOptions="Center">
+                            <Label Text="Listado de Recepciones"
                                    FontAttributes="Bold"
                                    FontSize="18"
-                                   TextColor="#1E293B"
-                                   Margin="10,0,0,0"
-                                   LineBreakMode="TailTruncation"/>
+                                   TextColor="#1E293B" />
+                            <Label Text="ASN actualmente en recepción"
+                                   FontSize="13"
+                                   TextColor="#64748B" />
+                        </VerticalStackLayout>
 
-                            <!-- Subtítulo -->
-                            <Label Grid.Row="1"
+                        <Border Grid.Column="2"
+                                WidthRequest="34"
+                                HeightRequest="34"
+                                BackgroundColor="#EEF2FF"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                VerticalOptions="Center">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRefreshTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="↻"
+                                   FontSize="18"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </Border>
+                    </Grid>
+
+                    <Border BackgroundColor="White"
+                            Stroke="#D9E2F0"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 18"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <Label Text="🔎"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   TextColor="#64748B" />
+
+                            <Entry x:Name="FiltroEntry"
                                    Grid.Column="1"
-                                   Text="{Binding Subtitulo}"
-                                   FontSize="15"
-                                   TextColor="#64748B"
-                                   Margin="10,2,0,0"
-                                   LineBreakMode="TailTruncation"/>
-
-                            <!-- Línea -->
-                            <BoxView Grid.Row="2"
-                                     Grid.ColumnSpan="2"
-                                     HeightRequest="1"
-                                     BackgroundColor="#EEF2F7"
-                                     VerticalOptions="End"
-                                     Margin="0,12,0,-12"/>
+                                   Placeholder="Filtrar por ASN o ubicación..."
+                                   TextChanged="OnFiltroChanged"
+                                   BackgroundColor="Transparent"
+                                   TextColor="#1E293B"
+                                   PlaceholderColor="#94A3B8"
+                                   ClearButtonVisibility="WhileEditing"
+                                   Keyboard="Text" />
                         </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-            </CollectionView>
-        </Border>
+            <Border Grid.Row="1"
+                    BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="0">
 
+                <CollectionView x:Name="ItemsList"
+                                SelectionMode="Single"
+                                SelectionChanged="OnItemSelected">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="14,12"
+                                  ColumnDefinitions="Auto,*"
+                                  RowDefinitions="Auto,Auto,Auto">
+
+                                <Border WidthRequest="34"
+                                        HeightRequest="34"
+                                        BackgroundColor="#EEF2FF"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 12"
+                                        VerticalOptions="Center">
+                                    <Label Text="📦"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"/>
+                                </Border>
+
+                                <Label Grid.Column="1"
+                                       Text="{Binding Titulo}"
+                                       FontAttributes="Bold"
+                                       FontSize="18"
+                                       TextColor="#1E293B"
+                                       Margin="10,0,0,0"
+                                       LineBreakMode="TailTruncation"/>
+
+                                <Label Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding Subtitulo}"
+                                       FontSize="15"
+                                       TextColor="#64748B"
+                                       Margin="10,2,0,0"
+                                       LineBreakMode="TailTruncation"/>
+
+                                <BoxView Grid.Row="2"
+                                         Grid.ColumnSpan="2"
+                                         HeightRequest="1"
+                                         BackgroundColor="#EEF2F7"
+                                         VerticalOptions="End"
+                                         Margin="0,12,0,-12"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+            </Border>
+
+        </Grid>
     </Grid>
 </ContentPage>

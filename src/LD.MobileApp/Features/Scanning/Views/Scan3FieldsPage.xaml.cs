@@ -59,6 +59,16 @@ public partial class Scan3FieldsPage : ContentPage
         return _completion.Task;
     }
 
+    private async void OnBackTapped(object sender, EventArgs e)
+    {
+        if (_isBusy || _isClosing)
+            return;
+
+        _isClosing = true;
+        _completion.TrySetResult(false);
+        await Navigation.PopModalAsync();
+    }
+
     private void UpdateHint()
     {
         var hint = _step switch

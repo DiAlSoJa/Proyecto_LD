@@ -838,7 +838,7 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
     }
 #endif
 
-    private async void OnCloseClicked(object sender, EventArgs e)
+    private async void OnBackTapped(object sender, TappedEventArgs e)
     {
         await Shell.Current.GoToAsync("..");
     }

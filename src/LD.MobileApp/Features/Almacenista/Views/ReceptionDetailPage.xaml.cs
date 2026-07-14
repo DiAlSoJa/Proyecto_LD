@@ -67,6 +67,11 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
         await LoadAsnDetailsAsync();
     }
 
+    private async void OnBackTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
     private async Task LoadAsnDetailsAsync()
     {
         if (_asnId <= 0)

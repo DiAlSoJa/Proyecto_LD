@@ -33,6 +33,16 @@ public partial class PickingPage : ContentPage
         await LoadSurtiendoKittingsAsync();
     }
 
+    private async void OnBackTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync("//dashboard");
+    }
+
+    private async void OnRefreshTapped(object sender, TappedEventArgs e)
+    {
+        await LoadSurtiendoKittingsAsync();
+    }
+
     private async Task LoadSurtiendoKittingsAsync()
     {
         try
