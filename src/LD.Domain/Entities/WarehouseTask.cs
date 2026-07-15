@@ -12,6 +12,19 @@ public class WarehouseTask : AuditableEntity
     public int? WarehouseId { get; set; }
     public Warehouse? Warehouse { get; set; }
 
+    // ===== Payload de putaway (tareas de entrada generadas al ubicar un ASN) =====
+    // Nulos para tareas normales (no de ASN). Ver LocateAsnCommandHandler.
+    public int? AsnId { get; set; }
+
+    public int? StandardId { get; set; }
+
+    public int? SourceLocationId { get; set; }
+
+    public int? DestinationLocationId { get; set; }
+
+    [MaxLength(100)]
+    public string? DestinationLocationCode { get; set; }
+
     [Required]
     [MaxLength(50)]
     public string Priority { get; set; } = string.Empty;

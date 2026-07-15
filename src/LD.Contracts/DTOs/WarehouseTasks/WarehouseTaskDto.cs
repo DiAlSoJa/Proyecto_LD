@@ -7,6 +7,11 @@ public class WarehouseTaskDto
     public int WarehouseTaskId { get; set; }
     public int? WarehouseId { get; set; }
     public string? WarehouseName { get; set; }
+    public int? AsnId { get; set; }
+    public int? StandardId { get; set; }
+    public int? SourceLocationId { get; set; }
+    public int? DestinationLocationId { get; set; }
+    public string? DestinationLocationCode { get; set; }
     public string Priority { get; set; } = string.Empty;
     public string Activity { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
