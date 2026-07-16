@@ -28,6 +28,7 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
     private string _kittingCode = string.Empty;
     private bool _loaded;
     private bool _showPendingTab = true;
+    private bool _isValidating;
     private string _statusMessage = "Escanea una etiqueta para validar.";
     private bool _statusIsError;
     private string _kittingSummary = string.Empty;
@@ -115,6 +116,19 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
     public int ScannedCount => _validatedItems.Count;
     public bool IsPendingVisible => _showPendingTab;
     public bool IsValidatedVisible => !_showPendingTab;
+
+    public bool IsValidating
+    {
+        get => _isValidating;
+        private set
+        {
+            if (_isValidating == value)
+                return;
+
+            _isValidating = value;
+            OnPropertyChanged();
+        }
+    }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
@@ -352,6 +366,9 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
 
     private async Task ProcessScanAsync(string scanValue)
     {
+        if (IsValidating)
+            return;
+
         var match = FindMatchingIssue(scanValue);
         if (match is null)
         {
@@ -388,33 +405,41 @@ public partial class ValidarEmbarqueDetailPage : ContentPage, IQueryAttributable
         if (string.IsNullOrWhiteSpace(photoPath))
             return;
 
-        var uploadedPhoto = await UploadValidationPhotoAsync(photoPath);
-        if (uploadedPhoto is null)
-            return;
-
-        var request = new KittingIssueValidateRequest
+        IsValidating = true;
+        try
         {
-            StandardIdStr = scanValue.Trim()
-        };
+            var uploadedPhoto = await UploadValidationPhotoAsync(photoPath);
+            if (uploadedPhoto is null)
+                return;
 
-        var response = await _kittingIssueService.ValidateKittingIssue(match.KittingReceiptDetailId, request);
-        if (!response.IsSuccess)
-        {
-            await DeleteValidationPhotoSilentlyAsync(uploadedPhoto.PhotoKey);
-            await SetErrorStatusAsync(response.ErrorMessage ?? response.Message ?? "No se pudo validar la línea.", playSound: true);
-            return;
+            var request = new KittingIssueValidateRequest
+            {
+                StandardIdStr = scanValue.Trim()
+            };
+
+            var response = await _kittingIssueService.ValidateKittingIssue(match.KittingReceiptDetailId, request);
+            if (!response.IsSuccess)
+            {
+                await DeleteValidationPhotoSilentlyAsync(uploadedPhoto.PhotoKey);
+                await SetErrorStatusAsync(response.ErrorMessage ?? response.Message ?? "No se pudo validar la línea.", playSound: true);
+                return;
+            }
+
+            await RefreshIssueRowFromServerAsync(match);
+            await RefreshValidationPhotosAsync();
+            MoveToValidated(match);
+
+            SetSuccessStatus(response.Message ?? $"Cargando: {match.StandardIdStr} | Cantidad: {match.ReceivedQuantity}");
+            NotifyCountsChanged();
+
+            if (_pendingItems.Count == 0)
+            {
+                StatusMessage = "Todas las líneas quedaron en Cargando.";
+            }
         }
-
-        await RefreshIssueRowFromServerAsync(match);
-        await RefreshValidationPhotosAsync();
-        MoveToValidated(match);
-
-        SetSuccessStatus(response.Message ?? $"Cargando: {match.StandardIdStr} | Cantidad: {match.ReceivedQuantity}");
-        NotifyCountsChanged();
-
-        if (_pendingItems.Count == 0)
+        finally
         {
-            StatusMessage = "Todas las líneas quedaron en Cargando.";
+            IsValidating = false;
         }
     }
 

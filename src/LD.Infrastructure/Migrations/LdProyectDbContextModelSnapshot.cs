@@ -5974,12 +5974,21 @@ namespace LD.Infrastructure.Migrations
                     b.Property<int>("Orden")
                         .HasColumnType("int");
 
+                    b.Property<string>("RealizadaPor")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
                     b.Property<int>("SecurityRegistrationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SecurityTaskId")
                         .HasColumnType("int");
 
                     b.HasKey("SecurityRegistrationPhotoId");
 
                     b.HasIndex("SecurityRegistrationId");
+
+                    b.HasIndex("SecurityTaskId");
 
                     b.ToTable("SecurityRegistrationPhotos");
                 });
@@ -6026,6 +6035,9 @@ namespace LD.Infrastructure.Migrations
                     b.Property<int>("SecurityRegistrationId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("FechaIniciada")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("TipoAccion")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -6035,7 +6047,7 @@ namespace LD.Infrastructure.Migrations
 
                     b.HasIndex("SecurityRegistrationId");
 
-                    b.ToTable("SecurityTasks");
+                    b.ToTable("YardTasks", (string)null);
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.StandarIdSequence", b =>
@@ -7876,7 +7888,14 @@ namespace LD.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LD.Domain.Entities.SecurityTask", "SecurityTask")
+                        .WithMany()
+                        .HasForeignKey("SecurityTaskId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("SecurityRegistration");
+
+                    b.Navigation("SecurityTask");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.SecurityTask", b =>

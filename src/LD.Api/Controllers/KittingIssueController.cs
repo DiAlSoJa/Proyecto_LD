@@ -380,9 +380,30 @@ public class KittingIssueController : CommonController
                     Result<string>.Failure("No existe el Kitting Issue Detail.", new List<string> { "No existe el Kitting Issue Detail." }, 404));
             }
 
-            var validation = await EnsureKittingDetailEditableAsync(entity.KittingDetailId);
-            if (validation is not null)
-                return ResultExtensions.ToActionResult(validation);
+            var detail = await _context.KittingDetails
+                .AsNoTracking()
+                .Include(x => x.Kitting)
+                .FirstOrDefaultAsync(x => x.KittingDetailId == entity.KittingDetailId);
+
+            if (detail is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("Kitting Detail no encontrado.", new List<string> { "No existe el Kitting Detail." }, 404));
+            }
+
+            if (detail.Kitting is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se encontro el Kitting relacionado.", new List<string> { "No se encontro el Kitting relacionado." }, 404));
+            }
+
+            if (!KittingStatusNames.IsValidation(detail.Kitting.Status))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure(
+                        "Solo se puede validar un issue cuando el Kitting esta en estatus Validacion.",
+                        new List<string> { "El Kitting debe estar en estatus Validacion para validar sus issues." }));
+            }
 
             var expectedStandardId = await ResolveIssueStandardIdTextAsync(entity);
             if (string.IsNullOrWhiteSpace(expectedStandardId))

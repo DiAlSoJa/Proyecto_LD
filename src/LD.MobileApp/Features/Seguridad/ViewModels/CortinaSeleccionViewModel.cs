@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using LD.Client.Configuration;
 using LD.Client.Services;
-using LD.Contracts.Location;
+using LD.Contracts.DTOs.Security;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
@@ -13,8 +12,7 @@ namespace MauiAppLogin.ViewModels;
 
 public partial class CortinaSeleccionViewModel : ObservableObject
 {
-    private readonly LocationService _locationService;
-    private readonly LookupService _lookupService;
+    private readonly PatioClientService _patioClientService;
     private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
@@ -22,10 +20,10 @@ public partial class CortinaSeleccionViewModel : ObservableObject
     public ILoaderService Loader => _loaderService;
 
     [ObservableProperty]
-    private ObservableCollection<LocationDto> cortinas = new();
+    private ObservableCollection<CortinaDto> cortinas = new();
 
     [ObservableProperty]
-    private LocationDto? cortinaSeleccionada;
+    private CortinaDto? cortinaSeleccionada;
 
     [ObservableProperty]
     private bool puedeConfirmar;
@@ -39,20 +37,18 @@ public partial class CortinaSeleccionViewModel : ObservableObject
     public ICommand CancelarCommand { get; }
 
     public CortinaSeleccionViewModel(
-        LocationService locationService,
-        LookupService lookupService,
+        PatioClientService patioClientService,
         IDialogService dialogService,
         ILoaderService loaderService,
         PatioContext context)
     {
-        _locationService = locationService;
-        _lookupService   = lookupService;
-        _dialogService   = dialogService;
-        _loaderService   = loaderService;
-        _context         = context;
+        _patioClientService = patioClientService;
+        _dialogService      = dialogService;
+        _loaderService      = loaderService;
+        _context            = context;
 
         CargarCommand = new AsyncCommand(CargarAsync);
-        SeleccionarCommand = new MvvmHelpers.Commands.Command<LocationDto>(Seleccionar);
+        SeleccionarCommand = new MvvmHelpers.Commands.Command<CortinaDto>(Seleccionar);
         ConfirmarCommand = new AsyncCommand(ConfirmarAsync);
         CancelarCommand = new AsyncCommand(CancelarAsync);
     }
@@ -70,52 +66,15 @@ public partial class CortinaSeleccionViewModel : ObservableObject
         {
             _loaderService.Show(LoadingMessage);
 
-            if (string.IsNullOrWhiteSpace(UserData.Id))
+            var response = await _patioClientService.GetCortinasDisponiblesAsync();
+            if (!response.IsSuccess || response.Data is null)
             {
-                Cortinas = new ObservableCollection<LocationDto>();
-                await _dialogService.ShowErrorAsync("Error", "No se pudo identificar al usuario para cargar sus almacenes.");
+                Cortinas = new ObservableCollection<CortinaDto>();
+                await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudieron cargar las cortinas.");
                 return;
             }
 
-            var warehousesResponse = await _lookupService.GetWarehouseLookupByUser(UserData.Id);
-            if (!warehousesResponse.IsSuccess || warehousesResponse.Data is null)
-            {
-                Cortinas = new ObservableCollection<LocationDto>();
-                await _dialogService.ShowErrorAsync("Error", warehousesResponse.Message ?? "No se pudieron cargar los almacenes del usuario.");
-                return;
-            }
-
-            var warehouseIds = warehousesResponse.Data
-                .Select(w => int.TryParse(w.Key, out var id) ? id : (int?)null)
-                .Where(id => id.HasValue)
-                .Select(id => id!.Value)
-                .Distinct()
-                .ToList();
-
-            if (warehouseIds.Count == 0)
-            {
-                Cortinas = new ObservableCollection<LocationDto>();
-                await _dialogService.ShowWarningAsync("Sin almacenes", "No tienes almacenes asignados, por eso no hay cortinas disponibles.");
-                return;
-            }
-
-            var locationResponses = await Task.WhenAll(
-                warehouseIds.Select(id => _locationService.GetLocations()));
-
-            var lista = locationResponses
-                .Where(response => response.IsSuccess && response.Data is not null)
-                .SelectMany(response => response.Data!)
-                .Where(location => warehouseIds.Contains(location.WarehouseId) && location.EsTieneCortina && !location.Ocupado)
-                .GroupBy(location => location.LocationId)
-                .Select(group => group.First())
-                .OrderBy(location => location.Ubicacion)
-                .ToList();
-
-            Cortinas = new ObservableCollection<LocationDto>(lista);
-
-            var firstError = locationResponses.FirstOrDefault(response => !response.IsSuccess && !string.IsNullOrWhiteSpace(response.Message));
-            if (firstError is not null)
-                await _dialogService.ShowErrorAsync("Error", firstError.Message ?? "No se pudieron cargar algunas cortinas.");
+            Cortinas = new ObservableCollection<CortinaDto>(response.Data);
         }
         finally
         {
@@ -123,9 +82,9 @@ public partial class CortinaSeleccionViewModel : ObservableObject
         }
     }
 
-    private void Seleccionar(LocationDto location)
+    private void Seleccionar(CortinaDto cortina)
     {
-        CortinaSeleccionada = location;
+        CortinaSeleccionada = cortina;
         PuedeConfirmar = true;
     }
 
@@ -134,28 +93,13 @@ public partial class CortinaSeleccionViewModel : ObservableObject
         if (CortinaSeleccionada is null || _context.VehiculoSeleccionado is null)
             return;
 
-        _context.UbicacionSeleccionada = CortinaSeleccionada;
-
-        var request = new LD.Contracts.Requests.LocationRequest
+        _context.CortinaSeleccionada = new Cortina
         {
-            LocationId = CortinaSeleccionada.LocationId,
-            WarehouseId = CortinaSeleccionada.WarehouseId,
-            LocationName = CortinaSeleccionada.Ubicacion,
-            IsActive = CortinaSeleccionada.Activo,
-            IsFiscal = CortinaSeleccionada.EsFiscal,
-            HasControlledTemperature = CortinaSeleccionada.ControlTemperatura,
-            HasPaso = CortinaSeleccionada.EsTienePaso,
-            HasCortina = CortinaSeleccionada.EsTieneCortina,
-            Ocupado = true,
-            Placas = _context.VehiculoSeleccionado.Placa
+            Id = CortinaSeleccionada.CortinaId,
+            Numero = CortinaSeleccionada.Numero,
+            Descripcion = CortinaSeleccionada.Descripcion,
+            EstaDisponible = CortinaSeleccionada.EstaDisponible
         };
-
-        var response = await _locationService.UpdateLocation(CortinaSeleccionada.LocationId, request);
-        if (!response.IsSuccess)
-        {
-            await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudo asignar la cortina.");
-            return;
-        }
 
         await Shell.Current.GoToAsync("..");
     }

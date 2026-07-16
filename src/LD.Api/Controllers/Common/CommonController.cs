@@ -14,4 +14,7 @@ public abstract class CommonController : ControllerBase
 
     protected string CurrentUserId =>
         User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+    protected string CurrentUserEmail =>
+        User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
 }

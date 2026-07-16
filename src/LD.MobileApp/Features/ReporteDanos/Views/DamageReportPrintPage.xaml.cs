@@ -221,22 +221,37 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
         }
     }
 
-    private void OnExcelClicked(object sender, EventArgs e)
+    private async void OnExcelClicked(object sender, EventArgs e)
     {
+        try
+        {
+            var excelPath = await CreateExcelAsync();
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = "Reporte de danos",
+                File = new ShareFile(excelPath)
+            });
+        }
+        catch (Exception ex)
+        {
+            await _dialogService.ShowErrorAsync("Excel", ex.Message);
+        }
     }
 
     private async Task<string> CreatePdfAsync()
     {
-        var fileName = $"reporte-danos-{DateTime.Now:yyyyMMdd-HHmmss}.pdf";
-        var pdfPath = Path.Combine(FileSystem.CacheDirectory, fileName);
+        if (_report is null)
+            throw new InvalidOperationException("No se encontro el reporte para imprimir.");
 
-        var builder = new SimplePdfBuilder();
-        var lines = GetSummaryLines();
-        builder.AddTextPage("Reporte de danos", lines);
-        builder.AddImagePages(_photoPaths);
+        return await DamageReportPdfExporter.CreateAsync(_report, _photoPaths);
+    }
 
-        await File.WriteAllBytesAsync(pdfPath, builder.Build());
-        return pdfPath;
+    private async Task<string> CreateExcelAsync()
+    {
+        if (_report is null)
+            throw new InvalidOperationException("No se encontro el reporte para exportar.");
+
+        return await DamageReportExcelExporter.CreateAsync(_report, _photoPaths);
     }
 
     private IReadOnlyList<string> GetSummaryLines()

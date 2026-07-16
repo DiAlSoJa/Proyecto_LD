@@ -101,6 +101,7 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
             _items.Clear();
             foreach (var item in receiptsResponse.Data
                          .Where(x => detailIds.Contains(x.AsnDetailId))
+                         .Where(IsPendingReceiptDetail)
                          .OrderBy(x => x.PalletNumber > 0 ? x.PalletNumber : int.MaxValue)
                          .ThenBy(x => x.StandardId ?? string.Empty)
                          .ThenBy(x => x.PartNumber)
@@ -117,6 +118,12 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
         {
             await DisplayAlertAsync("Error", ex.Message, "OK");
         }
+    }
+
+    private static bool IsPendingReceiptDetail(AsnReceiptDetailDto asnReceipt)
+    {
+        return asnReceipt.LocationId is null
+            && string.IsNullOrWhiteSpace(asnReceipt.LocationCode);
     }
 
     private static ReceptionDetailItem BuildReceptionDetailItem(AsnReceiptDetailDto asnReceipt)

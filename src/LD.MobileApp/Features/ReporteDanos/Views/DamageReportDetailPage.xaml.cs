@@ -1,4 +1,5 @@
 using LD.Client.Services;
+using LD.Client.Configuration;
 using LD.Contracts.AvailableInventory;
 using LD.Contracts.DamageReports;
 using LD.Contracts.Requests;
@@ -406,6 +407,8 @@ public partial class DamageReportDetailPage : ContentPage
             Category = EstadoPickewr.SelectedItem?.ToString() ?? string.Empty,
             NewStatus = EstadoPickewsr.SelectedItem?.ToString() ?? string.Empty,
             DamageReportCode = DamageReportCodeGenerator.Generate(reportDate),
+            ReportedByUserId = UserData.Id,
+            ReportedByName = FirstNotEmpty(UserData.Name, UserData.UserName),
             Comments = LicenciaEntry.Text,
             Photo1Path = _foto1Path,
             Photo2Path = _foto2Path,

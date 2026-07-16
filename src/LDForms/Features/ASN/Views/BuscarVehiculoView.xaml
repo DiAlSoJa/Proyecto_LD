@@ -183,11 +183,12 @@
                                   Grid.Column="1"
                                   Style="{StaticResource InputComboBoxStyle}"
                                   SelectionChanged="cmbFiltroHoras_SelectionChanged">
-                            <ComboBoxItem Content="Ultimas 24 hrs"/>
-                            <ComboBoxItem Content="Ultimos 3 dias"/>
-                            <ComboBoxItem Content="Ultimos 5 dias"/>
-                            <ComboBoxItem Content="Ultimos 7 dias"/>
-                            <ComboBoxItem Content="Ultimos 30 dias"/>
+                            <ComboBoxItem Content="Todos los registros" Tag="all"/>
+                            <ComboBoxItem Content="Ultimas 24 hrs" Tag="24h"/>
+                            <ComboBoxItem Content="Ultimos 3 dias" Tag="3d"/>
+                            <ComboBoxItem Content="Ultimos 5 dias" Tag="5d"/>
+                            <ComboBoxItem Content="Ultimos 7 dias" Tag="7d"/>
+                            <ComboBoxItem Content="Ultimos 30 dias" Tag="30d"/>
                         </ComboBox>
                     </Grid>
 

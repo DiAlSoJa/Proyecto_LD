@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using LD.Client.Services;
 using LD.Contracts.DTOs.Security;
-using LD.Contracts.Enums;
+using MauiAppLogin.Controls;
 using MauiAppLogin.Services;
 using Microsoft.Maui.Media;
 using MvvmHelpers.Commands;
@@ -13,9 +13,8 @@ namespace MauiAppLogin.ViewModels;
 public partial class TaskSecurityViewModel : ObservableObject
 {
     private readonly PatioClientService _patioClientService;
+    private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
-
-    public ILoaderService Loader => _loaderService;
 
     [ObservableProperty]
     private ObservableCollection<SecurityTaskDto> tareas = new();
@@ -24,20 +23,26 @@ public partial class TaskSecurityViewModel : ObservableObject
     private bool hasError;
 
     [ObservableProperty]
-    private string errorMessage = "";
+    private string errorMessage = string.Empty;
+
+    public ILoaderService Loader => _loaderService;
 
     public ICommand CargarCommand { get; }
     public ICommand SelectTaskCommand { get; }
     public ICommand AtrasCommand { get; }
 
-    public TaskSecurityViewModel(PatioClientService patioClientService, ILoaderService loaderService)
+    public TaskSecurityViewModel(
+        PatioClientService patioClientService,
+        IDialogService dialogService,
+        ILoaderService loaderService)
     {
         _patioClientService = patioClientService;
-        _loaderService      = loaderService;
+        _dialogService = dialogService;
+        _loaderService = loaderService;
 
-        CargarCommand     = new AsyncCommand(CargarAsync);
+        CargarCommand = new AsyncCommand(CargarAsync);
         SelectTaskCommand = new AsyncCommand<SecurityTaskDto>(SeleccionarTareaAsync);
-        AtrasCommand      = new AsyncCommand(AtrasAsync);
+        AtrasCommand = new AsyncCommand(AtrasAsync);
     }
 
     public async Task InicializarAsync() => await CargarAsync();
@@ -45,21 +50,36 @@ public partial class TaskSecurityViewModel : ObservableObject
     private async Task CargarAsync()
     {
         _loaderService.Show("Cargando tareas...");
-        HasError     = false;
-        ErrorMessage = "";
+        HasError = false;
+        ErrorMessage = string.Empty;
 
         try
         {
             var response = await _patioClientService.GetTasksAsync(soloPendientes: true);
-            var lista = response.IsSuccess ? (response.Data ?? []) : [];
-            Tareas = new ObservableCollection<SecurityTaskDto>(
-                lista.OrderByDescending(t => t.CreatedAt));
+            if (!response.IsSuccess)
+            {
+                Tareas = new ObservableCollection<SecurityTaskDto>();
+                ErrorMessage = response.Message ?? "No se pudieron cargar las tareas.";
+                HasError = true;
+                await _dialogService.ShowErrorAsync("Error", ErrorMessage);
+                return;
+            }
+
+            var lista = (response.Data ?? [])
+                .Where(t => (t.TipoAccion == "AbrirCortina" || t.TipoAccion == "CerrarRegistro")
+                            && !t.Completada)
+                .OrderByDescending(t => t.FechaIniciada)
+                .ThenByDescending(t => t.SecurityTaskId)
+                .ToList();
+
+            Tareas = new ObservableCollection<SecurityTaskDto>(lista);
         }
         catch (Exception ex)
         {
+            Tareas = new ObservableCollection<SecurityTaskDto>();
             ErrorMessage = $"Error al cargar tareas: {ex.Message}";
-            HasError     = true;
-            Tareas       = new ObservableCollection<SecurityTaskDto>();
+            HasError = true;
+            await _dialogService.ShowErrorAsync("Error", ErrorMessage);
         }
         finally
         {
@@ -69,54 +89,62 @@ public partial class TaskSecurityViewModel : ObservableObject
 
     private async Task SeleccionarTareaAsync(SecurityTaskDto? tarea)
     {
-        if (tarea is null) return;
+        if (tarea is null || tarea.Completada)
+            return;
 
-        bool esAbrir = tarea.RegistrationStatus == RegistroEstado_e.CortinaAsignada;
+        if (tarea.TipoAccion != "AbrirCortina" && tarea.TipoAccion != "CerrarRegistro")
+            return;
 
-        string title       = esAbrir ? "Abrir Cortina"    : "Cerrar Cortina";
-        string confirmText = esAbrir ? "Abrir Cortina"    : "Cerrar Cortina";
-        string message     = esAbrir
-            ? $"¿Confirmas abrir la cortina {tarea.CortinaNumero ?? tarea.SecurityRegistrationId.ToString()}?"
-            : $"¿Confirmas cerrar la cortina del vehículo {tarea.Placa}?";
+        var esAbrir = tarea.TipoAccion == "AbrirCortina";
+        var confirm = await _dialogService.ShowWarningAsync(
+            esAbrir ? "Abrir cortina" : "Cerrar cortina",
+            esAbrir
+                ? $"¿Confirmas abrir la cortina {tarea.CortinaNumero ?? tarea.SecurityRegistrationId.ToString()}?"
+                : $"¿Confirmas cerrar la cortina del vehículo {tarea.Placa}?");
 
-        var confirm = await Shell.Current.DisplayAlertAsync(title, message, confirmText, "No");
-        if (!confirm) return;
+        if (!confirm)
+            return;
 
         var fotoBase64 = await CapturarFotoBase64Async();
         if (string.IsNullOrWhiteSpace(fotoBase64))
             return;
 
-        _loaderService.Show(esAbrir ? "Abriendo cortina..." : "Cerrando registro...");
+        _loaderService.Show(esAbrir ? "Abriendo cortina..." : "Cerrando cortina...");
         try
         {
             var response = esAbrir
                 ? await _patioClientService.AbrirCortinaAsync(tarea.SecurityTaskId, fotoBase64)
                 : await _patioClientService.CerrarRegistroAsync(tarea.SecurityTaskId, fotoBase64);
 
-            if (response.IsSuccess)
+            if (!response.IsSuccess)
             {
-                await CargarAsync();
-                await Shell.Current.DisplayAlertAsync(
-                    "Completado",
-                    esAbrir ? "Cortina abierta correctamente." : "Registro cerrado correctamente.",
-                    "OK");
+                await _dialogService.ShowErrorAsync("Error", response.Message ?? "No se pudo completar la acción.");
+                return;
             }
-            else
-            {
-                await Shell.Current.DisplayAlertAsync("Error", response.Message ?? "No se pudo completar la acción.", "OK");
-            }
+
+            await CargarAsync();
+            await _dialogService.ShowSuccessAsync(
+                "Completado",
+                esAbrir ? "Cortina abierta correctamente." : "Cortina cerrada correctamente.");
         }
-        finally { _loaderService.Hide(); }
+        catch (Exception ex)
+        {
+            await _dialogService.ShowErrorAsync("Error", $"No se pudo completar la acción: {ex.Message}");
+        }
+        finally
+        {
+            _loaderService.Hide();
+        }
     }
 
     private async Task AtrasAsync()
         => await Shell.Current.GoToAsync("..");
 
-    private static async Task<string?> CapturarFotoBase64Async()
+    private async Task<string?> CapturarFotoBase64Async()
     {
         if (!MediaPicker.Default.IsCaptureSupported)
         {
-            await Shell.Current.DisplayAlertAsync("Cámara", "Este dispositivo no soporta captura de foto.", "OK");
+            await _dialogService.ShowErrorAsync("Cámara", "Este dispositivo no soporta captura de foto.");
             return null;
         }
 
@@ -124,10 +152,7 @@ public partial class TaskSecurityViewModel : ObservableObject
         {
             var foto = await MediaPicker.Default.CapturePhotoAsync();
             if (foto is null)
-            {
-                await Shell.Current.DisplayAlertAsync("Foto requerida", "Debes tomar una foto para continuar.", "OK");
                 return null;
-            }
 
             await using var stream = await foto.OpenReadAsync();
             using var ms = new MemoryStream();
@@ -136,7 +161,7 @@ public partial class TaskSecurityViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Error", $"No se pudo capturar la foto: {ex.Message}", "OK");
+            await _dialogService.ShowErrorAsync("Error", $"No se pudo capturar la foto: {ex.Message}");
             return null;
         }
     }

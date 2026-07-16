@@ -20,7 +20,6 @@ namespace LD.FormsX.Views
         private readonly IServiceProvider _serviceProvider;
         private readonly LookupService _lookupService;
         private readonly WpfGridFilter<LocationDto> _gridFilter;
-        private readonly List<UserProjectClientDto> _userProjectClients = new();
         private bool _loaded;
         private bool _loadingWarehouse;
         private int _selectedWarehouseId;
@@ -68,7 +67,6 @@ namespace LD.FormsX.Views
             try
             {
                 _loadingWarehouse = true;
-                _userProjectClients.Clear();
                 _selectedWarehouseId = 0;
                 ViewModel.SelectedWarehouseId = 0;
                 cmbAlmacen.ItemsSource = null;
@@ -81,17 +79,11 @@ namespace LD.FormsX.Views
                     return;
                 }
 
-                var response = await _lookupService.GetProjectClientsByUserWarehouses(UserData.Id);
+                var response = await _lookupService.GetWarehouseLookupByUser(UserData.Id);
                 if (response.IsSuccess && response.Data != null)
                 {
-                    _userProjectClients.AddRange(response.Data);
-                    var warehouses = _userProjectClients
-                        .GroupBy(x => x.WarehouseId)
-                        .Select(group => new DropDownDto
-                        {
-                            Key = group.Key.ToString(),
-                            Value = group.First().Warehouse
-                        })
+                    var warehouses = response.Data
+                        .Where(x => !string.IsNullOrWhiteSpace(x.Key))
                         .OrderBy(x => x.Value)
                         .ToList();
 
@@ -111,7 +103,6 @@ namespace LD.FormsX.Views
                 }
                 else
                 {
-                    _userProjectClients.Clear();
                     DialogHelper.ShowWarning(response.Message ?? "No se pudieron cargar tus almacenes.");
                 }
             }

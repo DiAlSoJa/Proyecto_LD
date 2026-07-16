@@ -36,6 +36,7 @@ public class SecurityProfile : Profile
             .ForMember(dest => dest.Nombre,           opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Nombre : ""))
             .ForMember(dest => dest.TipoVehiculo,     opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.TipoVehiculo : ""))
             .ForMember(dest => dest.Linea,            opt => opt.MapFrom(src => src.SecurityRegistration != null ? src.SecurityRegistration.Linea : ""))
+            .ForMember(dest => dest.FechaIniciada,    opt => opt.MapFrom(src => src.FechaIniciada))
             .ForMember(dest => dest.CortinaNumero,    opt => opt.MapFrom(src => src.SecurityRegistration != null && src.SecurityRegistration.Cortina != null
                                                                                     ? src.SecurityRegistration.Cortina.Numero : null))
             .ForMember(dest => dest.RegistrationStatus, opt => opt.MapFrom(src => src.SecurityRegistration != null

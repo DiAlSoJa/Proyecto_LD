@@ -39,8 +39,8 @@ public class SecurityController : CommonController
 
     [HttpGet("cortinas")]
     [Permission(PermissionKeys.Cortina_Assign)]
-    public async Task<IActionResult> GetCortinas([FromQuery] int? warehouseId)
-        => ResultExtensions.ToActionResult(await Mediator.Send(new GetCortinasDisponiblesQuery { WarehouseId = warehouseId }));
+    public async Task<IActionResult> GetCortinas()
+        => ResultExtensions.ToActionResult(await Mediator.Send(new GetCortinasDisponiblesQuery()));
 
     [HttpPut("{id}/asignar-cortina")]
     [Permission(PermissionKeys.Cortina_Assign)]
@@ -53,8 +53,14 @@ public class SecurityController : CommonController
 
     [HttpGet("tasks")]
     [Permission(PermissionKeys.Security_Tasks_View)]
-    public async Task<IActionResult> GetTasks([FromQuery] bool soloPendientes = false)
-        => ResultExtensions.ToActionResult(await Mediator.Send(new GetSecurityTasksQuery { SoloPendientes = soloPendientes }));
+    public async Task<IActionResult> GetTasks(
+        [FromQuery] bool soloPendientes = false,
+        [FromQuery] int? securityRegistrationId = null)
+        => ResultExtensions.ToActionResult(await Mediator.Send(new GetSecurityTasksQuery
+        {
+            SoloPendientes = soloPendientes,
+            SecurityRegistrationId = securityRegistrationId
+        }));
 
     [HttpPut("tasks/{taskId}/abrir")]
     [Permission(PermissionKeys.Security_Tasks_Manage)]
@@ -62,7 +68,7 @@ public class SecurityController : CommonController
         => ResultExtensions.ToActionResult(await Mediator.Send(new AbrirCortinaCommand
         {
             SecurityTaskId = taskId,
-            RealizadaPor   = request.RealizadaPor,
+            RealizadaPor   = string.IsNullOrWhiteSpace(request.RealizadaPor) ? CurrentUserEmail : request.RealizadaPor,
             FotoBase64     = request.FotoBase64
         }));
 
@@ -72,7 +78,35 @@ public class SecurityController : CommonController
         => ResultExtensions.ToActionResult(await Mediator.Send(new CerrarRegistroCommand
         {
             SecurityTaskId = taskId,
-            RealizadaPor   = request.RealizadaPor,
+            RealizadaPor   = string.IsNullOrWhiteSpace(request.RealizadaPor) ? CurrentUserEmail : request.RealizadaPor,
             FotoBase64     = request.FotoBase64
+        }));
+
+    [HttpPut("tasks/{taskId}/iniciar-operacion")]
+    [Permission(PermissionKeys.Security_Tasks_Manage)]
+    public async Task<IActionResult> IniciarOperacion(int taskId, [FromBody] SecurityTaskActionRequest request)
+        => ResultExtensions.ToActionResult(await Mediator.Send(new IniciarOperacionCommand
+        {
+            SecurityTaskId = taskId,
+            RealizadaPor   = string.IsNullOrWhiteSpace(request.RealizadaPor) ? CurrentUserEmail : request.RealizadaPor,
+            FotoBase64     = request.FotoBase64
+        }));
+
+    [HttpPut("tasks/{taskId}/finalizar-operacion")]
+    [Permission(PermissionKeys.Security_Tasks_Manage)]
+    public async Task<IActionResult> FinalizarOperacion(int taskId, [FromBody] SecurityTaskActionRequest request)
+        => ResultExtensions.ToActionResult(await Mediator.Send(new FinalizarOperacionCommand
+        {
+            SecurityTaskId = taskId,
+            RealizadaPor   = string.IsNullOrWhiteSpace(request.RealizadaPor) ? CurrentUserEmail : request.RealizadaPor,
+            FotoBase64     = request.FotoBase64
+        }));
+
+    [HttpPost("{id}/generar-cierre-cortina")]
+    [Permission(PermissionKeys.Security_Tasks_Manage)]
+    public async Task<IActionResult> GenerarCierreCortina(int id)
+        => ResultExtensions.ToActionResult(await Mediator.Send(new GenerarCierreCortinaCommand
+        {
+            SecurityRegistrationId = id
         }));
 }

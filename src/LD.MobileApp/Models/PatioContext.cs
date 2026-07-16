@@ -5,12 +5,10 @@ public class PatioContext
 {
     public VehiculoEnPatio? VehiculoSeleccionado { get; set; }
     public Cortina? CortinaSeleccionada { get; set; }
-    public LD.Contracts.Location.LocationDto? UbicacionSeleccionada { get; set; }
 
     public void Clear()
     {
         VehiculoSeleccionado = null;
         CortinaSeleccionada = null;
-        UbicacionSeleccionada = null;
     }
 }

@@ -4,5 +4,5 @@ namespace LD.Application.Common.Interfaces.Repository;
 
 public interface ISecurityTaskRepository : IRepository<SecurityTask>
 {
-    Task<List<SecurityTask>> GetManyWithRegistracionAsync();
+    Task<List<SecurityTask>> GetManyWithRegistracionAsync(int? securityRegistrationId = null);
 }

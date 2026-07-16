@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MauiAppLogin.ViewModels"
-             xmlns:models="clr-namespace:LD.Contracts.Location;assembly=LD.Contracts"
+             xmlns:models="clr-namespace:LD.Contracts.DTOs.Security;assembly=LD.Contracts"
              xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
              x:Class="MauiAppLogin.CortinaSeleccionPage"
              x:DataType="vm:CortinaSeleccionViewModel"
@@ -15,7 +15,7 @@
             <VerticalStackLayout Grid.Row="0" Spacing="4" Margin="0,10,0,16">
                 <Label Text="Cortinas disponibles"
                        FontSize="20" FontAttributes="Bold" TextColor="White"/>
-                <Label Text="Selecciona una cortina del almacén del usuario."
+                <Label Text="Selecciona una cortina del almacen del usuario."
                        FontSize="13" TextColor="#94A3B8"/>
             </VerticalStackLayout>
 
@@ -26,14 +26,14 @@
 
                 <CollectionView.EmptyView>
                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
-                        <Label Text="🚫" FontSize="48" HorizontalOptions="Center"/>
+                        <Label Text="-" FontSize="48" HorizontalOptions="Center"/>
                         <Label Text="No hay cortinas disponibles"
                                TextColor="#94A3B8" FontSize="15" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:LocationDto">
+                    <DataTemplate x:DataType="models:CortinaDto">
                         <Border Stroke="#E2E8F0" StrokeThickness="1"
                                 StrokeShape="RoundRectangle 20"
                                 Padding="16" Margin="0,0,0,10">
@@ -60,20 +60,20 @@
                                         StrokeShape="RoundRectangle 14"
                                         WidthRequest="46" HeightRequest="46"
                                         VerticalOptions="Center">
-                                    <Label Text="🏭" FontSize="22"
+                                    <Label Text="C" FontSize="22"
                                            HorizontalTextAlignment="Center"
                                            VerticalTextAlignment="Center"/>
                                 </Border>
 
                                 <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
-                                    <Label Text="{Binding Ubicacion}"
+                                    <Label Text="{Binding Numero}"
                                            FontSize="18" FontAttributes="Bold" TextColor="#0F172A"/>
-                                    <Label Text="{Binding Almacen}"
+                                    <Label Text="{Binding Descripcion}"
                                            FontSize="13" TextColor="#64748B"/>
                                 </VerticalStackLayout>
 
                                 <Label Grid.Column="2"
-                                       Text="›" FontSize="32"
+                                       Text=">" FontSize="32"
                                        TextColor="#244A7C"
                                        VerticalOptions="Center"/>
                             </Grid>

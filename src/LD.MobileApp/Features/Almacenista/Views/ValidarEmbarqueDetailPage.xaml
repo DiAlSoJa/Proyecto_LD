@@ -5,8 +5,9 @@
              Title="Validar embarque"
              BackgroundColor="#1F3A5F">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="16,18,16,28" Spacing="14">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="16,18,16,28" Spacing="14">
 
             <Border BackgroundColor="White"
                     Stroke="#E2E8F0"
@@ -375,6 +376,26 @@
                 </Grid>
             </Border>
 
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border BackgroundColor="#AAFFFFFF"
+                StrokeThickness="0"
+                IsVisible="{Binding IsValidating}"
+                InputTransparent="False">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="12">
+                <ActivityIndicator IsRunning="{Binding IsValidating}"
+                                   Color="#244A7C"
+                                   WidthRequest="48"
+                                   HeightRequest="48" />
+                <Label Text="Validando etiqueta..."
+                       HorizontalOptions="Center"
+                       TextColor="#244A7C"
+                       FontAttributes="Bold"
+                       FontSize="16" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
 </ContentPage>

@@ -67,7 +67,7 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="130"/>
                     <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="170"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical"
@@ -147,8 +147,8 @@
 
               <Button x:Name="btnTerminar"
 	                Grid.Column="7"
-	                Height="38"
-	                Padding="12,0"
+	                Height="42"
+	                Padding="16,0"
 	                Click="BtnTerminar_Click"
 	              
 	                Background="#F3F4F6"
@@ -170,10 +170,12 @@
 		                <TextBlock FontFamily="Segoe MDL2 Assets"
 		                   Text="&#xE70;"
 		                   Foreground="#233167"
-		                   Margin="0,0,6,0"
-		                   FontSize="14"/>
+		                   Margin="0,0,8,0"
+		                   FontSize="16"/>
 
-		                <TextBlock Text="Terminar"/>
+		                <TextBlock Text="Cerrar carga"
+		                   FontSize="13"
+		                   FontWeight="SemiBold"/>
 	                </StackPanel>
                 </Button>
             </Grid>
@@ -211,7 +213,7 @@
 
                         <TextBlock x:Name="txtStatusAuditoria"
                                    Grid.Row="0"
-                                   Text="Sin mapeos de carga por mostrar"
+                                   Text="Sin pendientes por auditar"
                                    FontSize="12"
                                    Foreground="#6B7280"
                                    Margin="4,0,0,8"/>

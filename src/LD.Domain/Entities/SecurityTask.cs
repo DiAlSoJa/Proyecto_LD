@@ -12,6 +12,8 @@ public class SecurityTask : AuditableEntity
     public int SecurityRegistrationId { get; set; }
     public virtual SecurityRegistration SecurityRegistration { get; set; } = null!;
 
+    public DateTime FechaIniciada { get; set; }
+
     [Required]
     [MaxLength(50)]
     public string TipoAccion { get; set; } = "";     // AbrirCortina | CerrarRegistro

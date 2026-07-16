@@ -147,12 +147,12 @@ namespace LD.FormsX.Views.Auditar
                 return;
             }
 
-            if (!DialogHelper.ShowConfirm("¿Está seguro de terminar la carga?", "Advertencia"))
+            if (!DialogHelper.ShowConfirm("Esta seguro de cerrar la carga?", "Advertencia"))
                 return;
 
             try
             {
-                SetAuditoriaLoading(true, $"Terminando {deliveryOrderCode}...");
+                SetAuditoriaLoading(true, $"Cerrando {deliveryOrderCode}...");
                 SetDetalleLoading(true, "Validando parciales...");
 
                 var response = await _deliveryOrderService.FinishDeliveryOrderLoading(deliveryOrderCode);
@@ -204,14 +204,14 @@ namespace LD.FormsX.Views.Auditar
             try
             {
                 ++_orderLoadVersion;
-                SetAuditoriaLoading(true, "Cargando mapeos...");
+                SetAuditoriaLoading(true, "Cargando pendientes...");
                 ClearSelectedOrderData();
 
                 var response = await _loadMappingService.GetLoadMappings();
                 if (!response.IsSuccess)
                 {
                     MapeoCargaItems.Clear();
-                    txtStatusAuditoria.Text = "Sin mapeos de carga por mostrar";
+                    txtStatusAuditoria.Text = "Sin pendientes por auditar";
                     DialogHelper.ShowWarning(response.Message ?? "No se pudieron cargar los mapeos de carga.");
                     return;
                 }
@@ -221,8 +221,8 @@ namespace LD.FormsX.Views.Auditar
                     MapeoCargaItems.Add(item);
 
                 txtStatusAuditoria.Text = MapeoCargaItems.Count > 0
-                    ? $"Mapeos de carga: {MapeoCargaItems.Count}"
-                    : "Sin mapeos de carga por mostrar";
+                    ? $"Pendientes por auditar: {MapeoCargaItems.Count}"
+                    : "Sin pendientes por auditar";
             }
             catch (Exception ex)
             {
@@ -876,7 +876,7 @@ namespace LD.FormsX.Views.Auditar
             _activePlayers.Remove(player);
         }
 
-        private void SetAuditoriaLoading(bool isLoading, string message = "Cargando auditorias...")
+        private void SetAuditoriaLoading(bool isLoading, string message = "Cargando pendientes...")
         {
             LoadingOverlayAuditoria.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
             TxtLoadingAuditoria.Text = message;

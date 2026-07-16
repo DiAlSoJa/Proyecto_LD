@@ -44,6 +44,17 @@ public class LoadMappingController : CommonController
                     _context.UserWarehouses.Any(userWarehouse =>
                         userWarehouse.UserId == CurrentUserId &&
                         userWarehouse.WarehouseId == project.WarehouseId)))
+                .Where(mapping => _context.DeliveryOrderKittings
+                    .AsNoTracking()
+                    .Any(orderKitting =>
+                        orderKitting.Kitting != null &&
+                        (orderKitting.Kitting.Status == KittingStatusNames.Cargando ||
+                         orderKitting.Kitting.Status == KittingStatusNames.LegacyCargando) &&
+                        orderKitting.DeliveryOrder != null &&
+                        orderKitting.DeliveryOrder.ClientId == mapping.ClientId &&
+                        orderKitting.DeliveryOrder.ProjectId == mapping.ProjectId &&
+                        ((orderKitting.DeliveryOrder.DeliveryOrderCode ?? orderKitting.DeliveryOrder.PreDeliveryOrderCode) ?? string.Empty) ==
+                        (mapping.DeliveryOrderCode ?? string.Empty)))
                 .Select(mapping => new LoadMappingDto
                 {
                     MapeoCargaId = mapping.LoadMappingId,

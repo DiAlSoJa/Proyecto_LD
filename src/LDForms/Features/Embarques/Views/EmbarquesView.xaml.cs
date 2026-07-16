@@ -346,14 +346,6 @@ namespace LD.FormsX.Features.Embarques.Views
                     : "Selecciona un embarque para imprimir la lista de validación.");
 
             ConfigureActionButton(
-                btnValidar,
-                hasSelected && !hasMultipleSelection,
-                false,
-                hasSelected
-                    ? "Abrir el dialogo de validación del embarque."
-                    : "Selecciona un embarque para validar.");
-
-            ConfigureActionButton(
                 btnImprimirDO,
                 hasSelected && !hasMultipleSelection,
                 false,
@@ -894,31 +886,6 @@ namespace LD.FormsX.Features.Embarques.Views
                 }
 
                 ListaSurtidoPrinter.Print(_selectedKitting, rows);
-            }
-            catch (Exception ex)
-            {
-                DialogHelper.ShowError(ex.Message);
-            }
-        }
-
-        private async void BtnValidar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (_selectedKitting == null || _selectedKitting.KittingId <= 0)
-                {
-                    DialogHelper.ShowWarning("Selecciona un embarque para validar.");
-                    return;
-                }
-
-                var dialog = _serviceProvider.GetRequiredService<ValidarEmbarqueDialog>();
-                WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
-                dialog.SetKitting(_selectedKitting);
-                dialog.ShowDialog();
-                if (dialog.HasChanges)
-                {
-                    await CargarDatosConLoaderAsync();
-                }
             }
             catch (Exception ex)
             {

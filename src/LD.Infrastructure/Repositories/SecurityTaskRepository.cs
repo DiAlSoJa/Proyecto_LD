@@ -9,10 +9,19 @@ public class SecurityTaskRepository : Repository<SecurityTask>, ISecurityTaskRep
 {
     public SecurityTaskRepository(LdProyectDbContext context) : base(context) { }
 
-    public async Task<List<SecurityTask>> GetManyWithRegistracionAsync()
-        => await _context.SecurityTasks
+    public async Task<List<SecurityTask>> GetManyWithRegistracionAsync(int? securityRegistrationId = null)
+    {
+        var query = _context.SecurityTasks
             .AsNoTracking()
             .Include(t => t.SecurityRegistration)
                 .ThenInclude(r => r.Cortina)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (securityRegistrationId.HasValue)
+        {
+            query = query.Where(t => t.SecurityRegistrationId == securityRegistrationId.Value);
+        }
+
+        return await query.ToListAsync();
+    }
 }

@@ -16,7 +16,7 @@ public partial class PatioDetallePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        _vm.Inicializar();
+        await _vm.InicializarAsync();
         // Verifica si se seleccionó una cortina al regresar de CortinaSeleccionPage
         await _vm.VerificarCortinaSeleccionadaAsync();
     }

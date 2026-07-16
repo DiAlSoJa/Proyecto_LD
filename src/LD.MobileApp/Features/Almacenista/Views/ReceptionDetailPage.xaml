@@ -85,12 +85,12 @@
                                          Spacing="8"
                                          HorizontalOptions="Center"
                                          VerticalOptions="Center">
-                        <Label Text="No hay lineas para este ASN"
+                        <Label Text="No hay lineas pendientes para este ASN"
                                FontAttributes="Bold"
                                FontSize="16"
                                TextColor="#64748B"
                                HorizontalTextAlignment="Center" />
-                        <Label Text="Cuando exista detalle del ASN apareceran aqui."
+                        <Label Text="Cuando escanees todos, el ASN se confirmara automaticamente."
                                FontSize="13"
                                TextColor="#94A3B8"
                                HorizontalTextAlignment="Center" />

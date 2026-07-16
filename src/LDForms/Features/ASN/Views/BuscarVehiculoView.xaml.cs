@@ -14,7 +14,7 @@ namespace LD.FormsX.Views.Dialogs
 {
     public partial class BuscarVehiculoView : Window, INotifyPropertyChanged
     {
-        private readonly SecurityService _securityService;
+        private readonly PatioClientService _patioClientService;
         private readonly DataGridColumnFilterManager _columnFilterManager;
         private string _statusMessage = "Cargando registros de seguridad...";
 
@@ -35,10 +35,10 @@ namespace LD.FormsX.Views.Dialogs
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public BuscarVehiculoView(SecurityService securityService)
+        public BuscarVehiculoView(PatioClientService patioClientService)
         {
             InitializeComponent();
-            _securityService = securityService;
+            _patioClientService = patioClientService;
 
             VehiclesView = CollectionViewSource.GetDefaultView(Vehicles);
             VehiclesView.Filter = FilterVehicle;
@@ -60,8 +60,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             try
             {
-                var (hours, days) = GetSelectedCreatedAtFilter();
-                var response = await _securityService.GetRegistrationsAsync(hours, days);
+                var response = await _patioClientService.GetVehiculosSinSalidaAsync();
 
                 if (!response.IsSuccess || response.Data == null)
                 {
@@ -71,8 +70,25 @@ namespace LD.FormsX.Views.Dialogs
                     return;
                 }
 
+                var (hours, days) = GetSelectedCreatedAtFilter();
+                var now = DateTime.UtcNow;
+                var filteredVehicles = response.Data.AsEnumerable();
+
+                if (days.HasValue)
+                {
+                    var from = now.AddDays(-days.Value);
+                    filteredVehicles = filteredVehicles.Where(vehicle =>
+                        vehicle.CreatedAt >= from && vehicle.CreatedAt <= now);
+                }
+                else if (hours.HasValue)
+                {
+                    var from = now.AddHours(-hours.Value);
+                    filteredVehicles = filteredVehicles.Where(vehicle =>
+                        vehicle.CreatedAt >= from && vehicle.CreatedAt <= now);
+                }
+
                 Vehicles.Clear();
-                foreach (var vehicle in response.Data.OrderByDescending(x => x.CreatedAt))
+                foreach (var vehicle in filteredVehicles.OrderByDescending(x => x.CreatedAt))
                     Vehicles.Add(vehicle);
 
                 VehiclesView.Refresh();
@@ -106,21 +122,18 @@ namespace LD.FormsX.Views.Dialogs
 
         private (int? Hours, int? Days) GetSelectedCreatedAtFilter()
         {
-            var selectedText = (cmbFiltroHoras?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+            var selectedValue = (cmbFiltroHoras?.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? string.Empty;
 
-            if (selectedText.Contains("30", StringComparison.OrdinalIgnoreCase))
-                return (null, 30);
-
-            if (selectedText.Contains("5", StringComparison.OrdinalIgnoreCase))
-                return (null, 5);
-
-            if (selectedText.Contains("7", StringComparison.OrdinalIgnoreCase))
-                return (null, 7);
-
-            if (selectedText.Contains("3", StringComparison.OrdinalIgnoreCase))
-                return (null, 3);
-
-            return (24, null);
+            return selectedValue switch
+            {
+                "all"  => (null, null),
+                "24h"  => (24, null),
+                "3d"   => (null, 3),
+                "5d"   => (null, 5),
+                "7d"   => (null, 7),
+                "30d"  => (null, 30),
+                _      => (null, null)
+            };
         }
 
         private static bool Contains(string? source, string searchText)

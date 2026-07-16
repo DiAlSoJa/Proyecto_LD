@@ -73,7 +73,7 @@ public partial class DamageReportView : UserControl
                 saveDialog.FileName,
                 ViewModel.GetImageBytesAsync);
 
-            DialogHelper.ShowSuccess("Excel exportado correctamente.", "Excel");
+            ToastHelper.ShowSuccess("Excel exportado correctamente.", "Excel");
 
             Process.Start(new ProcessStartInfo
             {

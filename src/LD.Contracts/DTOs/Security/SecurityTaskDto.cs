@@ -10,6 +10,7 @@ public class SecurityTaskDto
     public string Nombre { get; set; } = "";
     public string TipoVehiculo { get; set; } = "";
     public string Linea { get; set; } = "";
+    public DateTime FechaIniciada { get; set; }
     public string TipoAccion { get; set; } = "";
     public bool Completada { get; set; }
     public DateTime? FechaCompletada { get; set; }

@@ -54,8 +54,9 @@ public class AsignarCortinaCommandHandler : IRequestHandler<AsignarCortinaComman
         var tarea = new SecurityTask
         {
             SecurityRegistrationId = registro.SecurityRegistrationId,
-            TipoAccion             = "AbrirCortina",
-            Completada             = false
+            FechaIniciada = DateTime.UtcNow,
+            TipoAccion = "AbrirCortina",
+            Completada = false
         };
         await _taskRepo.CreateAsync(tarea);
 

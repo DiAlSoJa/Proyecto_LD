@@ -6,7 +6,6 @@ using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MvvmHelpers.Commands;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
 namespace MauiAppLogin.ViewModels;
@@ -17,12 +16,12 @@ public partial class PatioPendientesViewModel : ObservableObject
     private readonly IDialogService _dialogService;
     private readonly ILoaderService _loaderService;
     private readonly PatioContext _context;
-    private readonly List<SecurityRegistrationDto> _vehiculosBase = new();
+    private readonly List<PatioMonitorDto> _vehiculosBase = new();
 
     public ILoaderService Loader => _loaderService;
 
     [ObservableProperty]
-    private ObservableCollection<SecurityRegistrationDto> vehiculos = new();
+    private ObservableCollection<PatioMonitorDto> vehiculos = new();
 
     private string filtroTexto = string.Empty;
 
@@ -65,7 +64,7 @@ public partial class PatioPendientesViewModel : ObservableObject
         _context = context;
 
         CargarCommand = new AsyncCommand(CargarAsync);
-        SeleccionarCommand = new AsyncCommand<SecurityRegistrationDto>(SeleccionarAsync);
+        SeleccionarCommand = new AsyncCommand<PatioMonitorDto>(SeleccionarAsync);
         AtrasCommand = new AsyncCommand(AtrasAsync);
     }
 
@@ -76,7 +75,7 @@ public partial class PatioPendientesViewModel : ObservableObject
         try
         {
             _loaderService.Show("Obteniendo vehículos...");
-            var response = await _patioClientService.GetVehiculosSinSalidaAsync();
+            var response = await _patioClientService.GetPatioMonitorAsync();
             var lista = response.IsSuccess ? (response.Data ?? []) : [];
 
             _vehiculosBase.Clear();
@@ -108,12 +107,12 @@ public partial class PatioPendientesViewModel : ObservableObject
             ? _vehiculosBase
             : _vehiculosBase.Where(registro => CoincideFiltro(registro, texto)).ToList();
 
-        Vehiculos = new ObservableCollection<SecurityRegistrationDto>(filtrados);
+        Vehiculos = new ObservableCollection<PatioMonitorDto>(filtrados);
         OnPropertyChanged(nameof(EmptyTitle));
         OnPropertyChanged(nameof(EmptyMessage));
     }
 
-    private static bool CoincideFiltro(SecurityRegistrationDto registro, string texto)
+    private static bool CoincideFiltro(PatioMonitorDto registro, string texto)
     {
         return Contiene(registro.Placa, texto)
                || Contiene(registro.Nombre, texto)
@@ -122,7 +121,17 @@ public partial class PatioPendientesViewModel : ObservableObject
                || Contiene(registro.Linea, texto)
                || Contiene(registro.Origen, texto)
                || Contiene(registro.Numero, texto)
-               || Contiene(registro.CortinaNumero, texto);
+               || Contiene(registro.CortinaNumero, texto)
+               || Contiene(registro.CurrentStep, texto)
+               || Contiene(registro.NextStep, texto)
+               || Contiene(registro.StatusText, texto)
+               || Contiene(registro.ProgressText, texto)
+               || Contiene(registro.AlertText, texto)
+               || registro.Steps.Any(paso =>
+                    Contiene(paso.Label, texto)
+                    || Contiene(paso.StateText, texto)
+                    || Contiene(paso.Area, texto)
+                    || Contiene(paso.Note, texto));
     }
 
     private static bool Contiene(string? source, string texto)
@@ -131,7 +140,7 @@ public partial class PatioPendientesViewModel : ObservableObject
                && source.Contains(texto, StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task SeleccionarAsync(SecurityRegistrationDto? registro)
+    private async Task SeleccionarAsync(PatioMonitorDto? registro)
     {
         if (registro is null) return;
 
@@ -141,10 +150,12 @@ public partial class PatioPendientesViewModel : ObservableObject
             Placa = registro.Placa,
             HoraEntrada = registro.CreatedAt,
             Operador = registro.Nombre,
+            TipoOperacion = registro.Tipo,
             TipoVehiculo = registro.TipoVehiculo,
             Linea = registro.Linea,
             CortinaAsignada = registro.CortinaNumero,
-            Status = "Dentro"
+            Estado = registro.Estado,
+            Status = registro.StatusText
         };
 
         await Shell.Current.GoToAsync(nameof(PatioDetallePage));

@@ -15,6 +15,10 @@ public class GetPatioMonitorQuery : IRequest<Result<List<PatioMonitorDto>>>
 public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery, Result<List<PatioMonitorDto>>>
 {
     private const int DefaultCriticalMinutes = 45;
+    private static readonly string[] TiposAbrirCortina = new[] { "AbrirCortina" };
+    private static readonly string[] TiposIniciarOperacion = new[] { "IniciarOperacion", "ComenzarOperacion" };
+    private static readonly string[] TiposFinalizarOperacion = new[] { "FinalizarOperacion", "TerminarOperacion" };
+    private static readonly string[] TiposCerrarRegistro = new[] { "CerrarRegistro" };
 
     private readonly ISecurityRegistrationRepository _registrationRepository;
     private readonly ISecurityTaskRepository _taskRepository;
@@ -60,11 +64,20 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
     private static PatioMonitorDto BuildRow(SecurityRegistration registration, List<SecurityTask> tasks, DateTime now)
     {
         var sequenceType = DetectSequenceType(registration.TipoVehiculo);
-        var openTask = GetCompletedTask(tasks, "AbrirCortina");
-        var closeTask = GetCompletedTask(tasks, "CerrarRegistro");
 
-        var steps = BuildSteps(registration, sequenceType, openTask, closeTask);
-        var lastEventAt = GetLastEventAt(registration, openTask, closeTask);
+        var openTask = GetLatestTask(tasks, TiposAbrirCortina);
+        var startTask = openTask?.Completada == true
+            ? GetLatestTask(tasks, TiposIniciarOperacion, openTask.FechaCompletada)
+            : null;
+        var finishTask = startTask?.Completada == true
+            ? GetLatestTask(tasks, TiposFinalizarOperacion, startTask.FechaCompletada)
+            : null;
+        var closeTask = finishTask?.Completada == true
+            ? GetLatestTask(tasks, TiposCerrarRegistro, finishTask.FechaCompletada)
+            : null;
+
+        var steps = BuildSteps(registration, sequenceType, openTask, startTask, finishTask, closeTask);
+        var lastEventAt = GetLastEventAt(registration, openTask, startTask, finishTask, closeTask);
         var minutesInPatio = (int)Math.Max(0, (now - registration.CreatedAt).TotalMinutes);
         var minutesSinceLastEvent = (int)Math.Max(0, (now - lastEventAt).TotalMinutes);
 
@@ -75,7 +88,7 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
             : null;
 
         var isCritical = currentStep is not null && ShouldFlagAsCritical(currentStep, minutesSinceLastEvent);
-        if (currentStep is not null && currentStep.State != PatioMonitorStepState_e.Completed)
+        if (currentStep is not null)
         {
             currentStep.State = isCritical ? PatioMonitorStepState_e.Overdue : PatioMonitorStepState_e.Current;
             currentStep.StateText = isCritical ? "Crítico" : "En curso";
@@ -141,10 +154,14 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
         SecurityRegistration registration,
         PatioMonitorSequence_e sequenceType,
         SecurityTask? openTask,
+        SecurityTask? startTask,
+        SecurityTask? finishTask,
         SecurityTask? closeTask)
     {
         var curtainAssigned = registration.CortinaId.HasValue;
         var openCompleted = openTask?.Completada == true;
+        var startCompleted = startTask?.Completada == true;
+        var finishCompleted = finishTask?.Completada == true;
         var closeCompleted = closeTask?.Completada == true;
 
         var steps = new List<PatioMonitorStepDto>();
@@ -205,8 +222,16 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
             Label = "Abrir cortina",
             Area = "Seguridad",
             Order = order++,
-            State = openCompleted ? PatioMonitorStepState_e.Completed : PatioMonitorStepState_e.Pending,
-            StateText = openCompleted ? "Completado" : "Pendiente",
+            State = openCompleted
+                ? PatioMonitorStepState_e.Completed
+                : curtainAssigned
+                    ? PatioMonitorStepState_e.Current
+                    : PatioMonitorStepState_e.Pending,
+            StateText = openCompleted
+                ? "Completado"
+                : curtainAssigned
+                    ? "En curso"
+                    : "Pendiente",
             IsTrackedBySystem = true,
             CompletedAt = openTask?.FechaCompletada,
             Note = openCompleted
@@ -216,32 +241,52 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
 
         steps.Add(new PatioMonitorStepDto
         {
-            Code = "ComenzarOperacion",
-            Label = "Comenzar operación",
+            Code = "IniciarOperacion",
+            Label = "Iniciar operación",
             Area = "Operaciones",
             Order = order++,
-            State = openCompleted ? PatioMonitorStepState_e.Completed : PatioMonitorStepState_e.Pending,
-            StateText = openCompleted ? "Completado" : "Pendiente",
+            State = startCompleted
+                ? PatioMonitorStepState_e.Completed
+                : openCompleted
+                    ? PatioMonitorStepState_e.Current
+                    : PatioMonitorStepState_e.Pending,
+            StateText = startCompleted
+                ? "Completado"
+                : openCompleted
+                    ? "En curso"
+                    : "Pendiente",
             IsTrackedBySystem = false,
-            CompletedAt = openTask?.FechaCompletada,
-            Note = openCompleted
-                ? "Derivado de la apertura de cortina"
-                : "No existe evento directo"
+            CompletedAt = startTask?.FechaCompletada,
+            Note = startCompleted
+                ? "La operación ya fue iniciada"
+                : openCompleted
+                    ? "Pendiente de iniciar operación"
+                    : "Esperando apertura de cortina"
         });
 
         steps.Add(new PatioMonitorStepDto
         {
-            Code = "TerminarOperacion",
-            Label = "Terminar operación",
+            Code = "FinalizarOperacion",
+            Label = "Finalizar operación",
             Area = "Operaciones",
             Order = order++,
-            State = closeCompleted ? PatioMonitorStepState_e.Completed : PatioMonitorStepState_e.Pending,
-            StateText = closeCompleted ? "Completado" : "Pendiente",
+            State = finishCompleted
+                ? PatioMonitorStepState_e.Completed
+                : startCompleted
+                    ? PatioMonitorStepState_e.Current
+                    : PatioMonitorStepState_e.Pending,
+            StateText = finishCompleted
+                ? "Completado"
+                : startCompleted
+                    ? "En curso"
+                    : "Pendiente",
             IsTrackedBySystem = false,
-            CompletedAt = closeTask?.FechaCompletada,
-            Note = closeCompleted
-                ? "Derivado del cierre del registro"
-                : "Pendiente de terminar la operación"
+            CompletedAt = finishTask?.FechaCompletada,
+            Note = finishCompleted
+                ? "La operación ya fue finalizada"
+                : startCompleted
+                    ? "Pendiente de finalizar operación"
+                    : "Pendiente de iniciar operación"
         });
 
         steps.Add(new PatioMonitorStepDto
@@ -250,13 +295,21 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
             Label = "Cerrar cortina",
             Area = "Seguridad",
             Order = order++,
-            State = closeCompleted ? PatioMonitorStepState_e.Completed : PatioMonitorStepState_e.Pending,
-            StateText = closeCompleted ? "Completado" : "Pendiente",
+            State = closeCompleted
+                ? PatioMonitorStepState_e.Completed
+                : finishCompleted
+                    ? PatioMonitorStepState_e.Current
+                    : PatioMonitorStepState_e.Pending,
+            StateText = closeCompleted
+                ? "Completado"
+                : finishCompleted
+                    ? "En curso"
+                    : "Pendiente",
             IsTrackedBySystem = true,
             CompletedAt = closeTask?.FechaCompletada,
             Note = closeCompleted
                 ? "Cortina liberada"
-                : "Esperando cierre"
+                : "Esperando finalización"
         });
 
         steps.Add(new PatioMonitorStepDto
@@ -296,25 +349,35 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
             _ => "No definido"
         };
 
-    private static SecurityTask? GetCompletedTask(List<SecurityTask> tasks, string tipoAccion)
+    private static SecurityTask? GetLatestTask(List<SecurityTask> tasks, string tipoAccion, DateTime? desde = null)
+        => GetLatestTask(tasks, new[] { tipoAccion }, desde);
+
+    private static SecurityTask? GetLatestTask(List<SecurityTask> tasks, string[] tiposAccion, DateTime? desde = null)
         => tasks
-            .Where(t => t.TipoAccion == tipoAccion && t.Completada)
-            .OrderByDescending(t => t.FechaCompletada ?? t.CreatedAt)
+            .Where(t => tiposAccion.Contains(t.TipoAccion))
+            .Where(t => !desde.HasValue || t.FechaIniciada >= desde.Value)
+            .OrderByDescending(t => t.FechaIniciada)
+            .ThenByDescending(t => t.SecurityTaskId)
             .FirstOrDefault();
 
     private static DateTime GetLastEventAt(
         SecurityRegistration registration,
         SecurityTask? openTask,
+        SecurityTask? startTask,
+        SecurityTask? finishTask,
         SecurityTask? closeTask)
     {
         if (closeTask?.FechaCompletada.HasValue == true)
             return closeTask.FechaCompletada.Value;
 
+        if (finishTask?.FechaCompletada.HasValue == true)
+            return finishTask.FechaCompletada.Value;
+
+        if (startTask?.FechaCompletada.HasValue == true)
+            return startTask.FechaCompletada.Value;
+
         if (openTask?.FechaCompletada.HasValue == true)
             return openTask.FechaCompletada.Value;
-
-        if (registration.Estado == RegistroEstado.CortinaAsignada && registration.LastModifiedAt.HasValue)
-            return registration.LastModifiedAt.Value;
 
         if (registration.LastModifiedAt.HasValue)
             return registration.LastModifiedAt.Value;
@@ -330,8 +393,8 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
             "AsignacionCaja" => 30,
             "AsignacionCortina" => 30,
             "AbrirCortina" => 20,
-            "ComenzarOperacion" => 30,
-            "TerminarOperacion" => 45,
+            "IniciarOperacion" => 20,
+            "FinalizarOperacion" => 45,
             "CerrarCortina" => 20,
             "SalidaUnidad" => 15,
             _ => DefaultCriticalMinutes

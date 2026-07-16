@@ -110,16 +110,16 @@
                                    FontAttributes="Bold"
                                    FontSize="16"
                                    TextColor="#64748B"
-                                   HorizontalTextAlignment="Center"/>
+                                   HorizontalTextAlignment="Center" />
                             <Label Text="{Binding EmptyMessage}"
                                    FontSize="13"
                                    TextColor="#94A3B8"
-                                   HorizontalTextAlignment="Center"/>
+                                   HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="dto:SecurityRegistrationDto">
+                        <DataTemplate x:DataType="dto:PatioMonitorDto">
                             <VerticalStackLayout Spacing="0">
                                 <Border Stroke="Transparent"
                                         BackgroundColor="White"
@@ -132,41 +132,45 @@
 
                                     <Grid Padding="14,12"
                                           ColumnDefinitions="Auto,*"
-                                          RowDefinitions="Auto,Auto,Auto">
+                                          ColumnSpacing="12"
+                                          RowSpacing="2">
                                         <Border WidthRequest="34"
                                                 HeightRequest="34"
                                                 BackgroundColor="#EEF2FF"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 12"
-                                                VerticalOptions="Center">
-                                            <Label Text="🚚"
+                                                VerticalOptions="Start">
+                                            <Label Text=">"
                                                    HorizontalTextAlignment="Center"
-                                                   VerticalTextAlignment="Center" />
+                                                   VerticalTextAlignment="Center"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#244A7C" />
                                         </Border>
 
-                                        <Label Grid.Column="1"
-                                               Text="{Binding Placa}"
-                                               FontAttributes="Bold"
-                                               FontSize="18"
-                                               TextColor="#1E293B"
-                                               Margin="10,0,0,0"
-                                               LineBreakMode="TailTruncation" />
-
-                                        <Label Grid.Row="1"
-                                               Grid.Column="1"
-                                               Text="{Binding Nombre}"
-                                               FontSize="14"
-                                               TextColor="#64748B"
-                                               Margin="10,2,0,0"
-                                               LineBreakMode="TailTruncation" />
-
-                                        <Label Grid.Row="2"
-                                               Grid.Column="1"
-                                               Text="{Binding CreatedAt, StringFormat='Entrada: {0:HH:mm}'}"
-                                               FontSize="12"
-                                               TextColor="#0F766E"
-                                               Margin="10,4,0,0"
-                                               LineBreakMode="TailTruncation" />
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             Spacing="2">
+                                            <Label Text="{Binding Placa}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="18"
+                                                   TextColor="#1E293B"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Nombre}"
+                                                   FontSize="14"
+                                                   TextColor="#64748B"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Tipo}"
+                                                   FontSize="12"
+                                                   TextColor="#244A7C"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding CurrentStep}"
+                                                   FontSize="12"
+                                                   TextColor="#0F766E"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding CreatedAt, StringFormat='Entrada: {0:HH:mm}'}"
+                                                   FontSize="12"
+                                                   TextColor="#64748B"
+                                                   LineBreakMode="TailTruncation" />
+                                        </VerticalStackLayout>
                                     </Grid>
                                 </Border>
 

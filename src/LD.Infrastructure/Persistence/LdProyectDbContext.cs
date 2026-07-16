@@ -1096,9 +1096,18 @@ namespace LD.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<SecurityRegistrationPhoto>()
+                .HasOne(p => p.SecurityTask)
+                .WithMany()
+                .HasForeignKey(p => p.SecurityTaskId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<SecurityRegistrationPhoto>()
                 .Property(p => p.Categoria)
                 .HasConversion<string>()
                 .HasMaxLength(30);
+
+            builder.Entity<SecurityRegistrationPhoto>()
+                .HasIndex(p => p.SecurityTaskId);
 
             // Cortina
             builder.Entity<Cortina>()
@@ -1107,12 +1116,15 @@ namespace LD.Infrastructure.Persistence
                 .HasForeignKey(c => c.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // SecurityTask
-            builder.Entity<SecurityTask>()
-                .HasOne(t => t.SecurityRegistration)
-                .WithMany()
-                .HasForeignKey(t => t.SecurityRegistrationId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<SecurityTask>(entity =>
+            {
+                entity.ToTable("YardTasks");
+
+                entity.HasOne(t => t.SecurityRegistration)
+                    .WithMany()
+                    .HasForeignKey(t => t.SecurityRegistrationId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             builder.Entity<OperationalTask>(entity =>
             {
