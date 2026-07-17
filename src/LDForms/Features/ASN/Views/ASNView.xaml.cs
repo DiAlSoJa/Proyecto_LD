@@ -251,6 +251,14 @@ namespace LD.FormsX.Views.ASN
                     : hasSelectedAsn
                         ? "Cancelar ASN"
                         : "Selecciona un ASN para cancelar.");
+
+            ConfigureActionButton(
+                btnCuadre,
+                hasSelectedAsn,
+                false,
+                hasSelectedAsn
+                    ? "Ver el cuadre de las lineas de receipt del ASN."
+                    : "Selecciona un ASN para ver el cuadre.");
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -818,6 +826,27 @@ namespace LD.FormsX.Views.ASN
             finally
             {
                 MostrarLoader(false);
+            }
+        }
+
+        private void BtnCuadre_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_selectedX == null || _selectedX.AsnId <= 0)
+                {
+                    DialogHelper.ShowWarning("Selecciona un ASN para ver el cuadre.");
+                    return;
+                }
+
+                var dialog = _serviceProvider.GetRequiredService<CuadreASNView>();
+                WindowOwnerHelper.AttachOwnerOrCenter(dialog, WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
+                dialog.SetAsn(_selectedX);
+                dialog.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
             }
         }
 

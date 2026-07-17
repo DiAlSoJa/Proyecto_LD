@@ -439,6 +439,38 @@
                         </StackPanel>
                     </Button>
 
+                    <Button x:Name="btnCuadre"
+                            Height="28"
+                            MinWidth="88"
+                            Padding="8,0"
+                            Margin="0,0,8,0"
+                            Click="BtnCuadre_Click"
+                            Background="{StaticResource SurfaceSubtle}"
+                            Foreground="{StaticResource TextSubtle}"
+                            BorderBrush="{StaticResource BorderInput}"
+                            BorderThickness="1"
+                            Cursor="Hand">
+
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE9D2;"
+                                       Foreground="{StaticResource IconAsn}"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+
+                            <TextBlock Text="Cuadre"
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </Button>
+
                 </WrapPanel>
                
             </Grid>

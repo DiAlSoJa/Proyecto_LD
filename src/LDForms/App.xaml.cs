@@ -285,6 +285,7 @@ namespace LD.FormsX
             services.AddTransient<AsignarUsuarioEquipoView>();
             services.AddTransient<NuevoProveedorCheckListView>();
             services.AddTransient<NuevoASNView>();
+            services.AddTransient<CuadreASNView>();
             services.AddTransient<NuevoSurtidoView>();
             services.AddTransient<EditarSurtidoView>();
             services.AddTransient<ValidarEmbarqueDialog>();
