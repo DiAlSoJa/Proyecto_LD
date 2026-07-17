@@ -39,6 +39,9 @@ namespace LD.Contracts.InventoryMovement
         [DisplayName("Lote")]
         public string LotNumber { get; set; } = string.Empty;
 
+        [DisplayName("PalletNumber")]
+        public int? PalletNumber { get; set; }
+
         [DisplayName("Referencia")]
         public string Reference { get; set; } = string.Empty;
 

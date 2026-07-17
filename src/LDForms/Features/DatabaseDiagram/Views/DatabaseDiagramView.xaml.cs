@@ -120,8 +120,8 @@ public partial class DatabaseDiagramView : UserControl
         new("StandardLabel", "Standard ID", "ASN", "#EA580C", ["PK StandardId : int", "StandardCode : string", "FK ProductId : int?", "FK ProjectId : int?"]),
         new("StandarIdSequence", "Secuencia Standard ID", "ASN", "#EA580C", ["PK StandarIdSequenceId : int", "Prefix : string", "CurrentNumber : int"]),
 
-        new("AvailableInventory", "Inventario disponible", "WMS", "#16A34A", ["PK AvailableInventoryId : int", "FK ClientId : int", "FK ProjectId : int", "FK ProductId : int?", "FK LocationId : int?", "Qty : decimal?"]),
-        new("InventoryMovement", "Movimientos", "WMS", "#16A34A", ["PK MovementId : int", "FK ClientId : int", "FK ProjectId : int", "FK ProductId : int?", "DocumentType : enum", "MovementType : enum"]),
+        new("AvailableInventory", "Inventario disponible", "WMS", "#16A34A", ["PK AvailableInventoryId : int", "FK ClientId : int", "FK ProjectId : int", "FK ProductId : int?", "FK LocationId : int?", "PalletNumber : int?", "Qty : decimal?"]),
+        new("InventoryMovement", "Movimientos", "WMS", "#16A34A", ["PK MovementId : int", "FK ClientId : int", "FK ProjectId : int", "FK ProductId : int?", "PalletNumber : int?", "DocumentType : enum", "MovementType : enum"]),
         new("CyclicInventory", "Inventario ciclico", "WMS", "#16A34A", ["PK CyclicInventoryId : int", "FK WarehouseId : int?", "Status : string"]),
         new("CyclicInventoryDetail", "Detalle inventario ciclico", "WMS", "#16A34A", ["PK CyclicInventoryDetailId : int", "FK CyclicInventoryId : int", "FK LocationId : int?", "CountedQty : decimal?"]),
         new("InventaryStatus", "Status inventario", "Catalogos", "#16A34A", ["PK InventoryStatusIdS : string", "FullName : string"]),

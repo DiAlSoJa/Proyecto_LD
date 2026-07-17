@@ -36,6 +36,8 @@ namespace LD.Domain.Entities
         [MaxLength(50)]
         public string? LotNumber { get; set; }
 
+        public int? PalletNumber { get; set; }
+
         [MaxLength(100)]
         public string? Reference { get; set; }
 

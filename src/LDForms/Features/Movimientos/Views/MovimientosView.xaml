@@ -297,6 +297,7 @@
                                 <DataGridTextColumn Header="Tipo de documento" Binding="{Binding DocumentType}" Width="140"/>
                                 <DataGridTextColumn Header="Tipo de movimiento" Binding="{Binding MovementType}" Width="140"/>
                                 <DataGridTextColumn Header="Lote" Binding="{Binding LotNumber}" Width="110"/>
+                                <DataGridTextColumn Header="PalletNumber" Binding="{Binding PalletNumber}" Width="110"/>
                                 <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="120"/>
                                 <DataGridTextColumn Header="Orden compra" Binding="{Binding PurchaseOrder}" Width="120"/>
                                 <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber}" Width="120"/>

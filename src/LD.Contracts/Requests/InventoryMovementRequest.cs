@@ -18,6 +18,7 @@ namespace LD.Contracts.Requests
         public string UserId { get; set; } = string.Empty;
 
         public string? LotNumber { get; set; }
+        public int? PalletNumber { get; set; }
         public string? Reference { get; set; }
         public string? PurchaseOrder { get; set; }
         public string? CustomsDeclarationNumber { get; set; }

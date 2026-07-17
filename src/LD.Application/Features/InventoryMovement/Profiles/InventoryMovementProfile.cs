@@ -42,6 +42,8 @@ namespace LD.Application.Features.InventoryMovement.Profiles
                     opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.LotNumber,
                     opt => opt.MapFrom(src => src.LotNumber))
+                .ForMember(dest => dest.PalletNumber,
+                    opt => opt.MapFrom(src => src.PalletNumber))
                 .ForMember(dest => dest.Reference,
                     opt => opt.MapFrom(src => src.Reference))
                 .ForMember(dest => dest.PurchaseOrder,
@@ -66,6 +68,8 @@ namespace LD.Application.Features.InventoryMovement.Profiles
                     opt => opt.MapFrom(src => src.StandardId));
 
             CreateMap<Domain.Entities.InventoryMovement, InventoryMovementRequest>()
+                .ForMember(dest => dest.PalletNumber,
+                    opt => opt.MapFrom(src => src.PalletNumber))
                 .ForMember(dest => dest.DocumentType,
                     opt => opt.MapFrom(src => (LD.Contracts.Enums.DocumentType_e)(int)src.DocumentType))
                 .ForMember(dest => dest.MovementType,

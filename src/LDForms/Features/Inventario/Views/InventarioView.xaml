@@ -351,6 +351,7 @@
                                 <DataGridTextColumn Header="Hora" Binding="{Binding Hora, StringFormat={}{0:hh\\:mm\\:ss}}" Width="90"/>
                                 <DataGridTextColumn Header="Usuario" Binding="{Binding UserName}" Width="120"/>
                                 <DataGridTextColumn Header="Lote" Binding="{Binding LotNumber}" Width="110"/>
+                                <DataGridTextColumn Header="PalletNumber" Binding="{Binding PalletNumber}" Width="110"/>
                                 <DataGridTextColumn Header="Referencia" Binding="{Binding Reference}" Width="120"/>
                                 <DataGridTextColumn Header="Orden compra" Binding="{Binding PurchaseOrder}" Width="120"/>
                                 <DataGridTextColumn Header="Pedimento" Binding="{Binding CustomsDeclarationNumber}" Width="120"/>

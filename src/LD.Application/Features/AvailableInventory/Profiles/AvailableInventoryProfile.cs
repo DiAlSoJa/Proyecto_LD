@@ -38,6 +38,8 @@ public class AvailableInventoryProfile : Profile
                     src.StandardLabel != null ? src.StandardLabel.StandarIdStr : null)))
             .ForMember(dest => dest.AvailableReference,
                 opt => opt.MapFrom(src => src.AvailableReference ?? string.Empty))
+            .ForMember(dest => dest.PalletNumber,
+                opt => opt.MapFrom(src => src.PalletNumber))
             .ForMember(dest => dest.SD,
                 opt => opt.MapFrom(src => src.SD ?? string.Empty))
             .ForMember(dest => dest.AvailableStatus,
