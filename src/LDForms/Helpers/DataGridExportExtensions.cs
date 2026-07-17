@@ -125,14 +125,7 @@ namespace LD.FormsX.Helpers
                 boundColumn.Binding is Binding binding)
             {
                 var value = GetPropertyValue(row, binding.Path?.Path);
-
-                if (value == null)
-                    return string.Empty;
-
-                if (!string.IsNullOrWhiteSpace(binding.StringFormat))
-                    return NormalizeExcelText(string.Format(CultureInfo.CurrentCulture, binding.StringFormat, value));
-
-                return FormatValue(value);
+                return FormatValue(value, binding.StringFormat);
             }
 
             var fallbackValue = GetPropertyValue(row, column.SortMemberPath);
@@ -181,17 +174,50 @@ namespace LD.FormsX.Helpers
             return current;
         }
 
-        private static string FormatValue(object? value)
+        private static string FormatValue(object? value, string? bindingStringFormat = null)
         {
             if (value == null)
                 return string.Empty;
 
+            var format = NormalizeBindingStringFormat(bindingStringFormat);
+            if (!string.IsNullOrWhiteSpace(format) && value is IFormattable formattable)
+            {
+                var formatted = format.Contains("{0", StringComparison.Ordinal)
+                    ? string.Format(CultureInfo.CurrentCulture, format, value)
+                    : formattable.ToString(format, CultureInfo.CurrentCulture);
+
+                return NormalizeExcelText(formatted ?? string.Empty);
+            }
+
             return value switch
             {
-                DateTime dateTime => NormalizeExcelText(dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                DateTime dateTime => NormalizeExcelText(
+                    dateTime.TimeOfDay == TimeSpan.Zero
+                        ? dateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                        : dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
+                DateTimeOffset dateTimeOffset => NormalizeExcelText(
+                    dateTimeOffset.DateTime.TimeOfDay == TimeSpan.Zero
+                        ? dateTimeOffset.DateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                        : dateTimeOffset.DateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)),
                 TimeSpan timeSpan => NormalizeExcelText(timeSpan.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)),
                 _ => NormalizeExcelText(Convert.ToString(value, CultureInfo.CurrentCulture) ?? string.Empty)
             };
+        }
+
+        private static string? NormalizeBindingStringFormat(string? bindingStringFormat)
+        {
+            var format = bindingStringFormat?.Trim();
+
+            if (string.IsNullOrWhiteSpace(format))
+                return null;
+
+            if (format.StartsWith("{}", StringComparison.Ordinal))
+                format = format[2..];
+
+            if (format.StartsWith("{0:", StringComparison.Ordinal) && format.EndsWith("}", StringComparison.Ordinal))
+                format = format[3..^1];
+
+            return string.IsNullOrWhiteSpace(format) ? null : format;
         }
 
         private static string SanitizeFileName(string? fileName)
