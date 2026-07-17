@@ -711,6 +711,7 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 var view = _serviceProvider.GetRequiredService<BuscarVehiculoView>();
+                view.SearchMode = BuscarVehiculoView.VehicleSearchMode.AsnDescarga;
                 WindowOwnerHelper.AttachOwnerOrCenter(view, WindowOwnerHelper.GetVisibleOwner(this));
 
                 if (view.ShowDialog() != true || view.SelectedVehicle == null)

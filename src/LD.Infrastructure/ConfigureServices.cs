@@ -9,6 +9,7 @@ using LD.Application.Features.Auth.Commands;
 using LD.Domain.Entities;
 using LD.Infrastructure.Persistence;
 using LD.Infrastructure.Persistence.Interceptors;
+using LD.Infrastructure.Identity;
 using LD.Infrastructure.Realtime;
 using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
@@ -52,7 +53,8 @@ public static class ConfigureServices
         services
              .AddIdentity<ApplicationUser, ApplicationRole>()
              .AddEntityFrameworkStores<LdProyectDbContext>()
-             .AddDefaultTokenProviders();
+             .AddDefaultTokenProviders()
+             .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
         services.AddHttpContextAccessor();
         services.AddMemoryCache();

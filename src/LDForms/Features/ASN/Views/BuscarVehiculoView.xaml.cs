@@ -14,10 +14,17 @@ namespace LD.FormsX.Views.Dialogs
 {
     public partial class BuscarVehiculoView : Window, INotifyPropertyChanged
     {
+        public enum VehicleSearchMode
+        {
+            Patio,
+            AsnDescarga
+        }
+
         private readonly PatioClientService _patioClientService;
         private readonly DataGridColumnFilterManager _columnFilterManager;
         private string _statusMessage = "Cargando registros de seguridad...";
 
+        public VehicleSearchMode SearchMode { get; set; } = VehicleSearchMode.Patio;
         public ObservableCollection<SecurityRegistrationDto> Vehicles { get; } = new();
         public ICollectionView VehiclesView { get; }
 
@@ -60,7 +67,9 @@ namespace LD.FormsX.Views.Dialogs
         {
             try
             {
-                var response = await _patioClientService.GetVehiculosSinSalidaAsync();
+                var response = SearchMode == VehicleSearchMode.AsnDescarga
+                    ? await _patioClientService.GetVehiculosDescargaAsync()
+                    : await _patioClientService.GetVehiculosSinSalidaAsync();
 
                 if (!response.IsSuccess || response.Data == null)
                 {
@@ -73,6 +82,12 @@ namespace LD.FormsX.Views.Dialogs
                 var (hours, days) = GetSelectedCreatedAtFilter();
                 var now = DateTime.UtcNow;
                 var filteredVehicles = response.Data.AsEnumerable();
+
+                if (SearchMode == VehicleSearchMode.AsnDescarga)
+                {
+                    filteredVehicles = filteredVehicles.Where(vehicle =>
+                        string.Equals(vehicle.Tipo?.Trim(), "Descarga", StringComparison.OrdinalIgnoreCase));
+                }
 
                 if (days.HasValue)
                 {
@@ -94,7 +109,9 @@ namespace LD.FormsX.Views.Dialogs
                 VehiclesView.Refresh();
                 StatusMessage = VehiclesView.Cast<object>().Any()
                     ? $"{VehiclesView.Cast<object>().Count()} registro(s) disponibles."
-                    : "No se encontraron registros de seguridad.";
+                    : SearchMode == VehicleSearchMode.AsnDescarga
+                        ? "No se encontraron vehiculos de descarga."
+                        : "No se encontraron registros de seguridad.";
             }
             catch (Exception ex)
             {
@@ -114,6 +131,7 @@ namespace LD.FormsX.Views.Dialogs
 
             return Contains(vehicle.Placa, searchText)
                 || Contains(vehicle.Nombre, searchText)
+                || Contains(vehicle.Tipo, searchText)
                 || Contains(vehicle.TipoVehiculo, searchText)
                 || Contains(vehicle.Linea, searchText)
                 || Contains(vehicle.Numero, searchText)

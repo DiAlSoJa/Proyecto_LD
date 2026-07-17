@@ -42,6 +42,7 @@
                             <Label Text="Operador" FontAttributes="Bold" TextColor="#486581" />
                             <Entry x:Name="OperadorEntry"
                                    Placeholder="Nombre del operador"
+                                   IsReadOnly="True"
                                    BackgroundColor="#F8FAFC"
                                    TextColor="#102A43" />
                         </VerticalStackLayout>

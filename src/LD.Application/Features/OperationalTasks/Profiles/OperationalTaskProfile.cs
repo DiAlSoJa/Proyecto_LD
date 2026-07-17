@@ -15,8 +15,12 @@ public class OperationalTaskProfile : Profile
         CreateMap<CreateOperationalTaskCommand, OperationalTask>();
 
         CreateMap<OperationalTask, OperationalTaskDto>()
+            .ForMember(dest => dest.CreatedByUserId,
+                opt => opt.MapFrom(src => src.CreatedByUserId))
             .ForMember(dest => dest.WarehouseName,
-                opt => opt.MapFrom(src => src.Warehouse != null ? src.Warehouse.WarehouseName : null));
+                opt => opt.MapFrom(src => src.Warehouse != null ? src.Warehouse.WarehouseName : null))
+            .ForMember(dest => dest.CompletedByName,
+                opt => opt.MapFrom(src => src.CompletedBy));
             // Cast explícito entre enums gemelos (Domain ↔ Contracts).
             // Si los valores dejan de coincidir el test de mapeo fallará aquí, no en silencio.
             //.ForMember(dest => dest.Status,

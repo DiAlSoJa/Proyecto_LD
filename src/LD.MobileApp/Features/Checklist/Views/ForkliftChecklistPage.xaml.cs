@@ -19,6 +19,8 @@ public partial class ForkliftChecklistPage : ContentPage
     private readonly EquipmentService  _equipmentService;
     private readonly ChecklistService  _checklistService;
     private readonly IDialogService    _dialogService;
+    private string? _operadorUserId;
+    private string? _operadorUserName;
 
     // Bytes de las fotos capturadas en memoria (para subir sin escribir a disco)
     private byte[]? _foto1Bytes;
@@ -59,6 +61,21 @@ public partial class ForkliftChecklistPage : ContentPage
         _checklistService = checklistService;
         _dialogService    = dialogService;
         FechaPicker.Date  = DateTime.Today;
+        AutoLlenarOperadorLogueado();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        AutoLlenarOperadorLogueado();
+    }
+
+    private void AutoLlenarOperadorLogueado()
+    {
+        _operadorUserId   = UserData.Id?.Trim();
+        _operadorUserName = (UserData.UserName ?? UserData.Name ?? string.Empty).Trim();
+
+        OperadorEntry.Text = _operadorUserName;
     }
 
     // Bloquea el botón Atrás del dispositivo cuando el checklist es obligatorio.
@@ -385,7 +402,7 @@ public partial class ForkliftChecklistPage : ContentPage
             var request = new SubmitChecklistRequest
             {
                 EquipmentId   = _equipment.EquipmentId,
-                UserName      = OperadorEntry.Text?.Trim() ?? string.Empty,
+                UserName      = _operadorUserName ?? OperadorEntry.Text?.Trim() ?? string.Empty,
                 Turno         = TurnoPicker.SelectedItem?.ToString() ?? string.Empty,
                 Horometro     = horometro,
                 Observaciones = ObservacionesEditor.Text?.Trim(),

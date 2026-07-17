@@ -77,4 +77,16 @@ public class OperationalTaskService
     {
         return _apiEndpoints.OperationalTask_GetImage.Replace("{path}", Uri.EscapeDataString(relativePath));
     }
+
+    public async Task<byte[]> GetImageBytesAsync(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return Array.Empty<byte>();
+
+        var endpoint = Uri.TryCreate(relativePath, UriKind.Absolute, out _)
+            ? relativePath
+            : GetImageUrl(relativePath);
+
+        return await _api.GetByteArrayAsync(endpoint);
+    }
 }

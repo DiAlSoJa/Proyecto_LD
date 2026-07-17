@@ -7,11 +7,14 @@ using LD.Contracts.DTOs.OperationalTasks;
 using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.Warehouse;
 using LD.FormsX.Helpers;
+using LD.FormsX.Views.Tareas;
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace LD.FormsX.Features.Tareas.ViewModels;
 
@@ -47,6 +50,10 @@ public partial class TasksViewModel : ObservableObject
     private bool canView;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(GenerarReporteCommand))]
+    private OperationalTaskDto? selectedTask;
+
+    [ObservableProperty]
     private bool isLoadingAsignadas;
 
     [ObservableProperty]
@@ -54,6 +61,7 @@ public partial class TasksViewModel : ObservableObject
 
     public ObservableCollection<WarehouseDto> Warehouses { get; } = [];
     public ObservableCollection<OperationalTaskDto> Tasks { get; } = [];
+    public ICollectionView TasksView { get; }
 
     // Listado de la tabla WarehouseTasks (tab "Tareas asignadas"), ordenado por OrderIndex.
     public ObservableCollection<WarehouseTaskDto> WarehouseTasks { get; } = [];
@@ -73,6 +81,7 @@ public partial class TasksViewModel : ObservableObject
         _warehouseService = warehouseService;
         _warehouseTaskService = warehouseTaskService;
         CanView = UserData.HasPermission(PermissionKeys.WarehouseStaff_Tasks_View);
+        TasksView = CollectionViewSource.GetDefaultView(Tasks);
     }
 
     [RelayCommand]
@@ -137,6 +146,7 @@ public partial class TasksViewModel : ObservableObject
         {
             IsLoading = true;
             LoadingMessage = "Cargando tareas...";
+            SelectedTask = null;
 
             var result = await _operationalTaskService.GetTasks(false, SelectedWarehouse?.Id);
 
@@ -171,7 +181,40 @@ public partial class TasksViewModel : ObservableObject
         await CargarDatosAsync();
     }
 
-    public string GetImageUrl(string relativePath) => _operationalTaskService.GetImageUrl(relativePath);
+    [RelayCommand(CanExecute = nameof(CanGenerarReporte))]
+    private void GenerarReporte()
+    {
+        if (SelectedTask is null)
+        {
+            DialogHelper.ShowWarning("Selecciona una tarea para generar el reporte.", "Reporte");
+            return;
+        }
+
+        try
+        {
+            OperationalTaskDocumentExporter.Preview(SelectedTask, GetImageUrl);
+        }
+        catch (Exception ex)
+        {
+            DialogHelper.ShowError(ex.Message, "Reporte");
+        }
+    }
+
+    public string? GetImageUrl(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return null;
+
+        return _operationalTaskService.GetImageUrl(relativePath);
+    }
+
+    public Task<byte[]> GetImageBytesAsync(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return Task.FromResult(Array.Empty<byte>());
+
+        return _operationalTaskService.GetImageBytesAsync(relativePath);
+    }
 
     private async Task LoadWarehousesAsync()
     {
@@ -213,5 +256,12 @@ public partial class TasksViewModel : ObservableObject
             Tasks.Add(task);
 
         StatusText = $"Registros: {Tasks.Count}";
+        TasksView.Refresh();
+        SelectedTask = TasksView.Cast<OperationalTaskDto>().FirstOrDefault();
+    }
+
+    private bool CanGenerarReporte()
+    {
+        return SelectedTask is not null;
     }
 }
