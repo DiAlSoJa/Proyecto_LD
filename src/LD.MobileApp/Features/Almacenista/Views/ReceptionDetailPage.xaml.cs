@@ -10,6 +10,7 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
 {
     private readonly AsnDetailService _asnDetailService;
     private readonly AsnReceiptService _asnReceiptService;
+    private readonly AvailableInventoryService _availableInventoryService;
     private readonly ObservableCollection<ReceptionDetailItem> _items = new();
     private readonly ObservableCollection<ReceptionDetailItem> _filtered = new();
 
@@ -20,12 +21,16 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
     private string _instructionText = string.Empty;
     private int _pendingCount;
 
-    public ReceptionDetailPage(AsnDetailService asnDetailService, AsnReceiptService asnReceiptService)
+    public ReceptionDetailPage(
+        AsnDetailService asnDetailService,
+        AsnReceiptService asnReceiptService,
+        AvailableInventoryService availableInventoryService)
     {
         InitializeComponent();
 
         _asnDetailService = asnDetailService;
         _asnReceiptService = asnReceiptService;
+        _availableInventoryService = availableInventoryService;
         DetailCollection.ItemsSource = _filtered;
     }
 
@@ -93,6 +98,7 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
                 return;
             }
 
+            var availableStandardIds = await TryLoadAvailableStandardIdsAsync();
             var detailIds = detailsResponse.Data
                 .Where(x => x.AsnDetailId > 0)
                 .Select(x => x.AsnDetailId)
@@ -101,7 +107,7 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
             _items.Clear();
             foreach (var item in receiptsResponse.Data
                          .Where(x => detailIds.Contains(x.AsnDetailId))
-                         .Where(IsPendingReceiptDetail)
+                         .Where(x => availableStandardIds is null || IsPendingReceiptDetail(x, availableStandardIds))
                          .OrderBy(x => x.PalletNumber > 0 ? x.PalletNumber : int.MaxValue)
                          .ThenBy(x => x.StandardId ?? string.Empty)
                          .ThenBy(x => x.PartNumber)
@@ -120,10 +126,33 @@ public partial class ReceptionDetailPage : ContentPage, IQueryAttributable
         }
     }
 
-    private static bool IsPendingReceiptDetail(AsnReceiptDetailDto asnReceipt)
+    private async Task<HashSet<string>?> TryLoadAvailableStandardIdsAsync()
     {
-        return asnReceipt.LocationId is null
-            && string.IsNullOrWhiteSpace(asnReceipt.LocationCode);
+        try
+        {
+            var availableResponse = await _availableInventoryService.GetAvailableInventories();
+            if (!availableResponse.IsSuccess || availableResponse.Data is null)
+                return null;
+
+            return availableResponse.Data
+                .Select(x => x.StandardIdStr?.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x!)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool IsPendingReceiptDetail(AsnReceiptDetailDto asnReceipt, ISet<string> availableStandardIds)
+    {
+        var standardId = asnReceipt.StandardId?.Trim();
+        if (string.IsNullOrWhiteSpace(standardId))
+            return true;
+
+        return !availableStandardIds.Contains(standardId);
     }
 
     private static ReceptionDetailItem BuildReceptionDetailItem(AsnReceiptDetailDto asnReceipt)

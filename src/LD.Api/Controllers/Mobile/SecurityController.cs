@@ -37,6 +37,11 @@ public class SecurityController : CommonController
     public async Task<IActionResult> GetDescarga()
         => ResultExtensions.ToActionResult(await Mediator.Send(new GetSecurityRegistrationsDescargaQuery()));
 
+    [HttpGet("carga")]
+    [Permission(PermissionKeys.Security_View)]
+    public async Task<IActionResult> GetCarga()
+        => ResultExtensions.ToActionResult(await Mediator.Send(new GetSecurityRegistrationsCargaQuery()));
+
     [HttpGet("patio-monitor")]
     [Permission(PermissionKeys.YardControl_View)]
     public async Task<IActionResult> GetPatioMonitor()

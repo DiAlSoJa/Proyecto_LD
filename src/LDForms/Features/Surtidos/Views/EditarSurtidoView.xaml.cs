@@ -2211,6 +2211,7 @@ namespace LD.FormsX.Features.Surtidos.Views
             try
             {
                 var view = _serviceProvider.GetRequiredService<BuscarVehiculoView>();
+                view.SearchMode = BuscarVehiculoView.VehicleSearchMode.SurtidosCarga;
                 WindowOwnerHelper.AttachOwnerOrCenter(
                     view,
                     WindowOwnerHelper.GetVisibleOwner(this));

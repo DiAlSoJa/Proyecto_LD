@@ -24,6 +24,10 @@ public class PatioClientService
         => await _api.GetAsync<ApiResponseDto<List<SecurityRegistrationDto>>>(
                _apiEndpoints.Security_GetDescarga);
 
+    public async Task<ApiResponseDto<List<SecurityRegistrationDto>>> GetVehiculosCargaAsync()
+        => await _api.GetAsync<ApiResponseDto<List<SecurityRegistrationDto>>>(
+               _apiEndpoints.Security_GetCarga);
+
     public async Task<ApiResponseDto<List<PatioMonitorDto>>> GetPatioMonitorAsync()
         => await _api.GetAsync<ApiResponseDto<List<PatioMonitorDto>>>(
                _apiEndpoints.Security_GetPatioMonitor);

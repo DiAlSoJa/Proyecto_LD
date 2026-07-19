@@ -17,7 +17,8 @@ namespace LD.FormsX.Views.Dialogs
         public enum VehicleSearchMode
         {
             Patio,
-            AsnDescarga
+            AsnDescarga,
+            SurtidosCarga
         }
 
         private readonly PatioClientService _patioClientService;
@@ -67,9 +68,12 @@ namespace LD.FormsX.Views.Dialogs
         {
             try
             {
-                var response = SearchMode == VehicleSearchMode.AsnDescarga
-                    ? await _patioClientService.GetVehiculosDescargaAsync()
-                    : await _patioClientService.GetVehiculosSinSalidaAsync();
+                var response = SearchMode switch
+                {
+                    VehicleSearchMode.AsnDescarga => await _patioClientService.GetVehiculosDescargaAsync(),
+                    VehicleSearchMode.SurtidosCarga => await _patioClientService.GetVehiculosCargaAsync(),
+                    _ => await _patioClientService.GetVehiculosSinSalidaAsync()
+                };
 
                 if (!response.IsSuccess || response.Data == null)
                 {
@@ -87,6 +91,11 @@ namespace LD.FormsX.Views.Dialogs
                 {
                     filteredVehicles = filteredVehicles.Where(vehicle =>
                         string.Equals(vehicle.Tipo?.Trim(), "Descarga", StringComparison.OrdinalIgnoreCase));
+                }
+                else if (SearchMode == VehicleSearchMode.SurtidosCarga)
+                {
+                    filteredVehicles = filteredVehicles.Where(vehicle =>
+                        string.Equals(vehicle.Tipo?.Trim(), "Carga", StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (days.HasValue)
@@ -111,6 +120,8 @@ namespace LD.FormsX.Views.Dialogs
                     ? $"{VehiclesView.Cast<object>().Count()} registro(s) disponibles."
                     : SearchMode == VehicleSearchMode.AsnDescarga
                         ? "No se encontraron vehiculos de descarga."
+                        : SearchMode == VehicleSearchMode.SurtidosCarga
+                            ? "No se encontraron vehiculos de carga."
                         : "No se encontraron registros de seguridad.";
             }
             catch (Exception ex)

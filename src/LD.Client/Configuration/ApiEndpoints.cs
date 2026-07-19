@@ -216,6 +216,7 @@ namespace LD.Forms.Configuration
         public string Security_Register        => $"{_baseApi}/security";
         public string Security_GetSinSalida    => $"{_baseApi}/security/sin-salida";
         public string Security_GetDescarga     => $"{_baseApi}/security/descarga";
+        public string Security_GetCarga        => $"{_baseApi}/security/carga";
         public string Security_GetPatioMonitor => $"{_baseApi}/security/patio-monitor";
         public string Security_GetCortinas     => $"{_baseApi}/security/cortinas";
         public string Security_AsignarCortina  => $"{_baseApi}/security/{{id}}/asignar-cortina";
