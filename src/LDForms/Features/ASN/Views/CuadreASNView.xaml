@@ -80,12 +80,10 @@
         </Style>
     </Window.Resources>
 
-    <Grid Background="{StaticResource AppBg}">
+    <Grid Background="Transparent">
         <Border Margin="24"
                 Background="{StaticResource SurfaceCard}"
                 CornerRadius="16"
-                BorderBrush="{StaticResource BorderSoft}"
-                BorderThickness="1"
                 SnapsToDevicePixels="True"
                 Effect="{StaticResource DialogShadow}">
             <Grid>

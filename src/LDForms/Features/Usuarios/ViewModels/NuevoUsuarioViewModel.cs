@@ -52,6 +52,27 @@ public partial class NuevoUsuarioViewModel : ObservableObject
         _lookupService = lookupService;
     }
 
+    private static string NormalizeUppercase(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : value.ToUpper();
+    }
+
+    partial void OnUsernameChanged(string value)
+    {
+        var normalized = NormalizeUppercase(value);
+        if (Username != normalized)
+            Username = normalized;
+    }
+
+    partial void OnFullNameChanged(string value)
+    {
+        var normalized = NormalizeUppercase(value);
+        if (FullName != normalized)
+            FullName = normalized;
+    }
+
     public void SetUser(GetUserDto user)
     {
         _editUserId = user.User?.Id;
@@ -105,8 +126,8 @@ public partial class NuevoUsuarioViewModel : ObservableObject
 
             var request = new UserRequest
             {
-                Username = Username.Trim(),
-                Name = FullName.Trim(),
+                Username = NormalizeUppercase(Username).Trim(),
+                Name = NormalizeUppercase(FullName).Trim(),
                 Password = password,
                 ConfirmPassword = confirmPassword,
                 Role = SelectedRoleId,
