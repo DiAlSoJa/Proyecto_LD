@@ -543,12 +543,12 @@ public partial class DamageReportPrintPage : ContentPage, IQueryAttributable
         {
             return value switch
             {
-                'Ã¡' or 'Ã ' or 'Ã¤' or 'Ã¢' or 'Ã' or 'Ã€' or 'Ã„' or 'Ã‚' => 'a',
-                'Ã©' or 'Ã¨' or 'Ã«' or 'Ãª' or 'Ã‰' or 'Ãˆ' or 'Ã‹' or 'ÃŠ' => 'e',
-                'Ã­' or 'Ã¬' or 'Ã¯' or 'Ã®' or 'Ã' or 'ÃŒ' or 'Ã' or 'ÃŽ' => 'i',
-                'Ã³' or 'Ã²' or 'Ã¶' or 'Ã´' or 'Ã“' or 'Ã’' or 'Ã–' or 'Ã”' => 'o',
-                'Ãº' or 'Ã¹' or 'Ã¼' or 'Ã»' or 'Ãš' or 'Ã™' or 'Ãœ' or 'Ã›' => 'u',
-                'Ã±' or 'Ã‘' => 'n',
+                'á' or 'à' or 'ä' or 'â' or 'Á' or 'À' or 'Ä' or 'Â' => 'a',
+                'é' or 'è' or 'ë' or 'ê' or 'É' or 'È' or 'Ë' or 'Ê' => 'e',
+                'í' or 'ì' or 'ï' or 'î' or 'Í' or 'Ì' or 'Ï' or 'Î' => 'i',
+                'ó' or 'ò' or 'ö' or 'ô' or 'Ó' or 'Ò' or 'Ö' or 'Ô' => 'o',
+                'ú' or 'ù' or 'ü' or 'û' or 'Ú' or 'Ù' or 'Ü' or 'Û' => 'u',
+                'ñ' or 'Ñ' => 'n',
                 _ => '?'
             };
         }

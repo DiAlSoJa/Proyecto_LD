@@ -38,11 +38,11 @@ public class IniciarOperacionCommandHandler : IRequestHandler<IniciarOperacionCo
     public async Task<Result<string>> Handle(IniciarOperacionCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.FotoBase64))
-            return Result<string>.Failure("La foto es obligatoria para iniciar operaciÃ³n", []);
+            return Result<string>.Failure("La foto es obligatoria para iniciar operación", []);
 
         var tarea = await _taskRepo.GetByIdAsync(request.SecurityTaskId);
         if (tarea is null)
-            return Result<string>.Failure("Tarea de operaciÃ³n no encontrada", []);
+            return Result<string>.Failure("Tarea de operación no encontrada", []);
 
         if (tarea.TipoAccion == "AbrirCortina")
         {
@@ -53,7 +53,7 @@ public class IniciarOperacionCommandHandler : IRequestHandler<IniciarOperacionCo
         }
         else if (!TiposInicioOperacion.Contains(tarea.TipoAccion))
         {
-            return Result<string>.Failure("Tarea de operaciÃ³n no encontrada", []);
+            return Result<string>.Failure("Tarea de operación no encontrada", []);
         }
 
         if (tarea.Completada)
@@ -87,7 +87,7 @@ public class IniciarOperacionCommandHandler : IRequestHandler<IniciarOperacionCo
             await _taskRepo.CreateAsync(tareaClose);
         }
 
-        return Result<string>.Success(tarea.SecurityTaskId.ToString(), "OperaciÃ³n iniciada correctamente");
+        return Result<string>.Success(tarea.SecurityTaskId.ToString(), "Operación iniciada correctamente");
     }
 
     private async Task<SecurityTask> ObtenerOCrearTareaOperacionAsync(int securityRegistrationId)

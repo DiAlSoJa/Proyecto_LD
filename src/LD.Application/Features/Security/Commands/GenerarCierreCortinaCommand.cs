@@ -41,7 +41,7 @@ public class GenerarCierreCortinaCommandHandler : IRequestHandler<GenerarCierreC
                    && t.Completada);
 
         if (!operacionFinalizada)
-            return Result<string>.Failure("Primero debes finalizar la operaciÃ³n", []);
+            return Result<string>.Failure("Primero debes finalizar la operación", []);
 
         var tareaExistente = tareas
             .Any(t => t.SecurityRegistrationId == request.SecurityRegistrationId

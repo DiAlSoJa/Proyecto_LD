@@ -18,13 +18,13 @@
 
         <VerticalStackLayout Spacing="16">
 
-            <!-- Ícono del tipo de diálogo -->
+            <!-- Icono del tipo de dialogo -->
             <Label x:Name="IconLabel"
                    FontSize="48"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"/>
 
-            <!-- Título -->
+            <!-- Titulo -->
             <Label x:Name="TitleLabel"
                    FontSize="18"
                    FontAttributes="Bold"
@@ -40,7 +40,7 @@
                    TextColor="#374151"
                    LineBreakMode="WordWrap"/>
 
-            <!-- Contenedor de botones (se llena en code-behind según DialogType) -->
+            <!-- Contenedor de botones (se llena en code-behind segun DialogType) -->
             <HorizontalStackLayout x:Name="ButtonsContainer"
                                    Spacing="12"
                                    HorizontalOptions="Center"

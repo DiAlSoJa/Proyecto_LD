@@ -35,27 +35,27 @@ namespace LDForms
                 case DialogType.Info:
                     IconBackground.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EAF2FD")); // #
                     BtnAccept.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A90E2"));      // #
-                    BtnAccept.Content = "Ok";
+                    BtnAccept.Content = "Entendido";
                     InfoIcon.Visibility = Visibility.Visible;
                     break;
                 case DialogType.Success:
                     IconBackground.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E8F8F1"));
                     BtnAccept.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#58C29C"));
-                    BtnAccept.Content = "Confirm";
+                    BtnAccept.Content = "Aceptar";
                     SuccessIcon.Visibility = Visibility.Visible;
                     break;
 
                 case DialogType.Warning:
                     IconBackground.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF4E5"));
                     BtnAccept.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F0AD4E"));
-                    BtnAccept.Content = "Review";
+                    BtnAccept.Content = "Revisar";
                     WarningIcon.Visibility = Visibility.Visible;
                     break;
 
                 case DialogType.Error:
                     IconBackground.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FDECEC"));
                     BtnAccept.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E05A5A"));
-                    BtnAccept.Content = "Close";
+                    BtnAccept.Content = "Cerrar";
                     ErrorIcon.Visibility = Visibility.Visible;
                     break;
 

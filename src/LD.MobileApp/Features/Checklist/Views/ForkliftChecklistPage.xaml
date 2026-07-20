@@ -338,7 +338,7 @@
                         </Border>
                     </Grid>
 
-                    <!-- Controles inferiores (Capturar / GalerÃ­a) -->
+                    <!-- Controles inferiores (Capturar / Galería) -->
                     <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
                         <Border Grid.Column="1"
                     BackgroundColor="#102A43"

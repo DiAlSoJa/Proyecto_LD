@@ -38,22 +38,22 @@ public class FinalizarOperacionCommandHandler : IRequestHandler<FinalizarOperaci
     public async Task<Result<string>> Handle(FinalizarOperacionCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.FotoBase64))
-            return Result<string>.Failure("La foto es obligatoria para finalizar operaciÃ³n", []);
+            return Result<string>.Failure("La foto es obligatoria para finalizar operación", []);
 
         var tarea = await _taskRepo.GetByIdAsync(request.SecurityTaskId);
         if (tarea is null)
-            return Result<string>.Failure("Tarea de operaciÃ³n no encontrada", []);
+            return Result<string>.Failure("Tarea de operación no encontrada", []);
 
         if (tarea.TipoAccion == "IniciarOperacion")
         {
             if (!tarea.Completada)
-                return Result<string>.Failure("Primero debes iniciar la operaciÃ³n", []);
+                return Result<string>.Failure("Primero debes iniciar la operación", []);
 
             tarea = await ObtenerOCrearTareaFinalizacionAsync(tarea.SecurityRegistrationId);
         }
         else if (!TiposFinalizarOperacion.Contains(tarea.TipoAccion))
         {
-            return Result<string>.Failure("Tarea de operaciÃ³n no encontrada", []);
+            return Result<string>.Failure("Tarea de operación no encontrada", []);
         }
 
         if (tarea.Completada)
@@ -78,7 +78,7 @@ public class FinalizarOperacionCommandHandler : IRequestHandler<FinalizarOperaci
             await _registroRepo.UpdateAsync(registro);
         }
 
-        return Result<string>.Success(tarea.SecurityTaskId.ToString(), "OperaciÃ³n finalizada correctamente");
+        return Result<string>.Success(tarea.SecurityTaskId.ToString(), "Operación finalizada correctamente");
     }
 
     private async Task<SecurityTask> ObtenerOCrearTareaFinalizacionAsync(int securityRegistrationId)
