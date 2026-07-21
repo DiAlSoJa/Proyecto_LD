@@ -168,9 +168,34 @@ namespace LD.FormsX.Views
 
         private async void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
+            var selectedLocation = ViewModel.SelectedLocation;
+            if (selectedLocation is null)
+            {
+                DialogHelper.ShowWarning("Selecciona una ubicacion para editar.");
+                return;
+            }
+
             var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();
             LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
-            dialog.SetLocation(ViewModel.SelectedLocation);
+            dialog.SetLocation(selectedLocation);
+
+            if (dialog.ShowDialog() == true)
+                await ViewModel.CargarDatosAsync();
+        }
+
+        private async void BtnEditarMasivo_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedLocations = dg.SelectedItems.OfType<LocationDto>().ToList();
+
+            if (selectedLocations.Count < 2)
+            {
+                DialogHelper.ShowWarning("Selecciona al menos dos ubicaciones para editar masivo.");
+                return;
+            }
+
+            var dialog = _serviceProvider.GetRequiredService<NuevaUbicacionView>();
+            LD.FormsX.Features.Common.WindowOwnerHelper.AttachOwnerOrCenter(dialog, LD.FormsX.Features.Common.WindowOwnerHelper.GetVisibleOwner(Window.GetWindow(this)));
+            dialog.SetLocations(selectedLocations);
 
             if (dialog.ShowDialog() == true)
                 await ViewModel.CargarDatosAsync();

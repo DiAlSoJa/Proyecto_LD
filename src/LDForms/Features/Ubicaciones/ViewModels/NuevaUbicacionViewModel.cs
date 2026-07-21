@@ -7,6 +7,7 @@ using LD.Contracts.Requests;
 using LD.FormsX.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LD.FormsX.Features.Ubicaciones.ViewModels;
@@ -17,12 +18,13 @@ public partial class NuevaUbicacionViewModel : ObservableObject
     private readonly LookupService _lookupService;
 
     private int? _editLocationId;
+    private List<LocationDto> _bulkLocations = [];
 
     public Action? RequestClose { get; set; }
     public bool ResponseForm { get; private set; }
 
     [ObservableProperty]
-    private string headerTitle = "Nueva ubicación";
+    private string headerTitle = "Nueva ubicacion";
 
     [ObservableProperty]
     private bool isSaving;
@@ -33,14 +35,20 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
     public bool CanEditFields => !IsEditing;
 
-    // ── Combos ──
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowIdentityFields))]
+    private bool isBulkEdit;
+
+    public bool ShowIdentityFields => !IsBulkEdit;
+
+    // Combos
     [ObservableProperty]
     private List<DropDownDto> warehousesSource = [];
 
     [ObservableProperty]
     private string? selectedWarehouseId;
 
-    // ── Datos principales ──
+    // Datos principales
     [ObservableProperty]
     private string locationName = "";
 
@@ -53,7 +61,7 @@ public partial class NuevaUbicacionViewModel : ObservableObject
     [ObservableProperty]
     private bool hasControlledTemperature;
 
-    // ── Dimensiones ──
+    // Dimensiones
     [ObservableProperty]
     private string height = "";
 
@@ -63,14 +71,14 @@ public partial class NuevaUbicacionViewModel : ObservableObject
     [ObservableProperty]
     private string depth = "";
 
-    // ── Tipo (RadioButton grupo 1) ──
+    // Tipo
     [ObservableProperty]
     private bool isRack = true;
 
     [ObservableProperty]
     private bool isCompartidoType;
 
-    // ── Sub-tipo (RadioButton grupo 2) ──
+    // Sub-tipo
     [ObservableProperty]
     private bool isGeneral = true;
 
@@ -86,14 +94,14 @@ public partial class NuevaUbicacionViewModel : ObservableObject
     [ObservableProperty]
     private bool isEmbarque;
 
-    // ── Tamaño (RadioButton grupo 3) ──
+    // Tamaño
     [ObservableProperty]
     private bool isDoble;
 
     [ObservableProperty]
     private bool isSencillo = true;
 
-    // ── Extras ──
+    // Extras
     [ObservableProperty]
     private bool hasPaso;
 
@@ -114,9 +122,31 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
     public void SetLocation(LocationDto location)
     {
+        _bulkLocations = [];
         _editLocationId = location.LocationId;
-        HeaderTitle = "Editar ubicación";
+        HeaderTitle = "Editar ubicacion";
         IsEditing = true;
+        IsBulkEdit = false;
+        SelectedWarehouseId = location.WarehouseId.ToString();
+        LocationName = location.Ubicacion ?? "";
+        ResponseForm = false;
+        IsSaving = false;
+    }
+
+    public void SetLocations(IEnumerable<LocationDto> locations)
+    {
+        _bulkLocations = locations?.ToList() ?? [];
+        if (_bulkLocations.Count == 0)
+            return;
+
+        _editLocationId = _bulkLocations[0].LocationId;
+        HeaderTitle = $"Editar masivo ({_bulkLocations.Count})";
+        IsEditing = true;
+        IsBulkEdit = true;
+        SelectedWarehouseId = _bulkLocations[0].WarehouseId.ToString();
+        LocationName = _bulkLocations[0].Ubicacion ?? "";
+        ResponseForm = false;
+        IsSaving = false;
     }
 
     [RelayCommand]
@@ -143,7 +173,7 @@ public partial class NuevaUbicacionViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            DialogHelper.ShowError($"Ocurrió un error al cargar los almacenes: {ex.Message}");
+            DialogHelper.ShowError($"Ocurrio un error al cargar los almacenes: {ex.Message}");
         }
     }
 
@@ -155,7 +185,7 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
             if (!response.IsSuccess || response.Data == null)
             {
-                DialogHelper.ShowError(response.Message ?? "No se pudo cargar la ubicación.");
+                DialogHelper.ShowError(response.Message ?? "No se pudo cargar la ubicacion.");
                 return;
             }
 
@@ -191,13 +221,19 @@ public partial class NuevaUbicacionViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            DialogHelper.ShowError($"Ocurrió un error al cargar la información: {ex.Message}");
+            DialogHelper.ShowError($"Ocurrio un error al cargar la informacion: {ex.Message}");
         }
     }
 
-    private LocationRequest BuildRequest()
+    private LocationRequest BuildRequest(LocationDto? sourceLocation = null)
     {
-        var name = LocationName.Trim();
+        var name = IsBulkEdit && sourceLocation is not null
+            ? (sourceLocation.Ubicacion ?? string.Empty).Trim()
+            : LocationName.Trim();
+
+        var warehouseId = IsBulkEdit && sourceLocation is not null
+            ? sourceLocation.WarehouseId
+            : int.TryParse(SelectedWarehouseId, out int wId) ? wId : 0;
 
         string level = string.Empty;
         string position = string.Empty;
@@ -219,8 +255,8 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
         return new LocationRequest
         {
-            LocationId = _editLocationId ?? 0,
-            WarehouseId = int.TryParse(SelectedWarehouseId, out int wId) ? wId : 0,
+            LocationId = sourceLocation?.LocationId ?? _editLocationId ?? 0,
+            WarehouseId = warehouseId,
             LocationName = name,
 
             IsActive = IsActive,
@@ -254,18 +290,48 @@ public partial class NuevaUbicacionViewModel : ObservableObject
         };
     }
 
+    private static string GetLocationLabel(LocationDto location)
+    {
+        var label = location.Ubicacion?.Trim();
+        return string.IsNullOrWhiteSpace(label) ? $"ID {location.LocationId}" : label;
+    }
+
+    private async Task<(bool Success, string ErrorMessage)> UpdateLocationAsync(LocationDto location)
+    {
+        try
+        {
+            var request = BuildRequest(location);
+            var result = await _locationService.UpdateLocation(location.LocationId, request);
+
+            if (result.IsSuccess)
+                return (true, string.Empty);
+
+            return (false, result.Message ?? $"No se pudo actualizar la ubicacion {GetLocationLabel(location)}.");
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error inesperado al actualizar {GetLocationLabel(location)}: {ex.Message}");
+        }
+    }
+
     [RelayCommand]
     public async Task SaveAsync()
     {
+        if (IsBulkEdit)
+        {
+            await SaveBulkAsync();
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(SelectedWarehouseId))
         {
-            DialogHelper.ShowWarning("Selecciona un almacén.");
+            DialogHelper.ShowWarning("Selecciona un almacen.");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(LocationName))
         {
-            DialogHelper.ShowWarning("Captura el nombre de la ubicación.");
+            DialogHelper.ShowWarning("Captura el nombre de la ubicacion.");
             return;
         }
 
@@ -280,14 +346,73 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
             if (result.IsSuccess)
             {
-                DialogHelper.ShowSuccess(result.Data ?? "Operación realizada correctamente.");
+                DialogHelper.ShowSuccess(result.Data ?? "Operacion realizada correctamente.");
                 ResponseForm = true;
                 RequestClose?.Invoke();
             }
             else
             {
-                DialogHelper.ShowError(result.Message ?? "Ocurrió un error al guardar la ubicación.");
+                DialogHelper.ShowError(result.Message ?? "Ocurrio un error al guardar la ubicacion.");
             }
+        }
+        catch (Exception ex)
+        {
+            DialogHelper.ShowError($"Error inesperado: {ex.Message}");
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    private async Task SaveBulkAsync()
+    {
+        if (_bulkLocations.Count == 0)
+        {
+            DialogHelper.ShowWarning("No hay ubicaciones seleccionadas para editar.");
+            return;
+        }
+
+        try
+        {
+            IsSaving = true;
+
+            var failures = new List<string>();
+            var successCount = 0;
+
+            foreach (var location in _bulkLocations)
+            {
+                var (success, errorMessage) = await UpdateLocationAsync(location);
+                if (success)
+                {
+                    successCount++;
+                    continue;
+                }
+
+                failures.Add($"{GetLocationLabel(location)}: {errorMessage}");
+            }
+
+            if (failures.Count == 0)
+            {
+                DialogHelper.ShowSuccess($"{successCount} ubicaciones actualizadas correctamente.");
+                ResponseForm = true;
+                RequestClose?.Invoke();
+                return;
+            }
+
+            var summary = successCount > 0
+                ? $"Se actualizaron {successCount} de {_bulkLocations.Count} ubicaciones."
+                : "No se pudo actualizar ninguna ubicacion.";
+
+            var detailLines = failures
+                .Take(3)
+                .Select(x => $"- {x}")
+                .ToList();
+
+            if (failures.Count > 3)
+                detailLines.Add($"- y {failures.Count - 3} mas.");
+
+            DialogHelper.ShowError($"{summary}{Environment.NewLine}{string.Join(Environment.NewLine, detailLines)}");
         }
         catch (Exception ex)
         {

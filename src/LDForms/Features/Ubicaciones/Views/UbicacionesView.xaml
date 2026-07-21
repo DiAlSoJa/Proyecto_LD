@@ -37,6 +37,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
@@ -52,7 +54,7 @@
 
                 <controls:LDSelector x:Name="cmbAlmacen"
                                      Grid.Column="1"
-                                     Label="Almacén:"
+                                     Label="Almacen:"
                                      DisplayMemberPath="Value"
                                      SelectedValuePath="Key"
                                      VerticalAlignment="Center"/>
@@ -105,7 +107,7 @@
                                    Foreground="{StaticResource AccentAction}"
                                    Margin="0,0,6,0"
                                    FontSize="14"/>
-                        <TextBlock Text="Nueva ubicación masiva"/>
+                        <TextBlock Text="Nueva ubicacion masiva"/>
                     </StackPanel>
                 </Button>
 
@@ -136,8 +138,34 @@
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnActualizar"
+                <Button x:Name="btnEditarMasivo"
                         Grid.Column="9"
+                        Height="38"
+                        Padding="12,0"
+                        Click="BtnEditarMasivo_Click"
+                        Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}"
+                        Background="{StaticResource SurfaceSubtle}"
+                        Foreground="{StaticResource TextSubtle}"
+                        BorderBrush="{StaticResource BorderInput}"
+                        BorderThickness="1"
+                        Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                   Text="&#xE70F;"
+                                   Foreground="{StaticResource AccentWarning}"
+                                   Margin="0,0,6,0"
+                                   FontSize="14"/>
+                        <TextBlock Text="Editar masivo"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="BtnActualizar"
+                        Grid.Column="11"
                         Height="38"
                         Padding="12,0"
                         Command="{Binding CargarDatosCommand}"
@@ -190,7 +218,7 @@
                     <Grid>
                         <DataGrid x:Name="dg"
                                   AutoGenerateColumns="True"
-                                  SelectionMode="Single"
+                                  SelectionMode="Extended"
                                   SelectionUnit="FullRow"
                                   CanUserAddRows="False"
                                   CanUserDeleteRows="False"

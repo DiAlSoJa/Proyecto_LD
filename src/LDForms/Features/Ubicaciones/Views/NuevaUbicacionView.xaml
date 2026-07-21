@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:LD.FormsX.Controls"
         mc:Ignorable="d"
-        Title="Nueva ubicación"
+        Title="{Binding HeaderTitle}"
         Height="700"
         Width="980"
         WindowStartupLocation="CenterOwner"
@@ -20,6 +20,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Controls/DialogStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
             <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="14"/>
@@ -76,13 +78,19 @@
                         <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center"
                                    Foreground="{StaticResource TextOnPrimary}"
-                                   FontSize="16" FontWeight="SemiBold"/>
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
                         <Button Grid.Column="1"
-                                Width="30" Height="30"
-                                Background="Transparent" BorderThickness="0"
+                                Width="30"
+                                Height="30"
+                                Background="Transparent"
+                                BorderThickness="0"
                                 Foreground="{StaticResource TextOnPrimary}"
-                                FontSize="18" FontWeight="Bold"
-                                Cursor="Hand" Click="BtnCerrar_Click" Content="×"/>
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Click="BtnCerrar_Click"
+                                Content="×"/>
                     </Grid>
                 </Border>
 
@@ -96,15 +104,24 @@
 
                     <!-- Columna izquierda -->
                     <StackPanel Grid.Column="0">
-                        <controls:LDSelector Label="Almacén"
+                        <TextBlock Text="Edicion masiva: se conservan almacen y ubicacion por registro."
+                                   Visibility="{Binding IsBulkEdit, Converter={StaticResource BoolToVis}}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,14"/>
+
+                        <controls:LDSelector Label="Almacen"
                                              ItemsSource="{Binding WarehousesSource}"
                                              SelectedValue="{Binding SelectedWarehouseId}"
                                              DisplayMemberPath="Value"
                                              SelectedValuePath="Key"
+                                             Visibility="{Binding ShowIdentityFields, Converter={StaticResource BoolToVis}}"
                                              Margin="0,0,0,14"/>
 
-                        <controls:LDInput Label="Ubicación"
+                        <controls:LDInput Label="Ubicacion"
                                           Text="{Binding LocationName, UpdateSourceTrigger=PropertyChanged}"
+                                          Visibility="{Binding ShowIdentityFields, Converter={StaticResource BoolToVis}}"
                                           Margin="0,0,0,14"/>
 
                         <StackPanel Margin="0,0,0,18">
@@ -149,7 +166,7 @@
                                 Padding="16"
                                 Margin="0,0,0,14">
                             <StackPanel>
-                                <TextBlock Text="Tipo de ubicación"
+                                <TextBlock Text="Tipo de ubicacion"
                                            Style="{StaticResource SectionTitleStyle}"/>
 
                                 <Grid>

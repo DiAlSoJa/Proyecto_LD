@@ -1,5 +1,6 @@
-﻿using LD.Contracts.Location;
+using LD.Contracts.Location;
 using LD.FormsX.Features.Ubicaciones.ViewModels;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
@@ -26,6 +27,11 @@ namespace LD.FormsX.Views.Ubicaciones
         public void SetLocation(LocationDto location)
         {
             ViewModel.SetLocation(location);
+        }
+
+        public void SetLocations(IEnumerable<LocationDto> locations)
+        {
+            ViewModel.SetLocations(locations);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
