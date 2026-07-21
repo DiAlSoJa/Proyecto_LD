@@ -6,6 +6,7 @@ using LD.Contracts.Constants;
 using LD.Contracts.DTOs.DeliveryOrder;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
+using LD.Domain.Enums;
 using LD.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,9 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class DeliveryOrderController : CommonController
 {
+    private const string EmbarcadoStatus = "Embarcado";
+    private const string AvailableStatusSalida = "Salida";
+
     private readonly LdProyectDbContext _context;
 
     public DeliveryOrderController(LdProyectDbContext context)
@@ -281,6 +285,212 @@ public class DeliveryOrderController : CommonController
         }
     }
 
+    [HttpPost("dar-salida")]
+    [Permission(PermissionKeys.Shipment_View)]
+    public async Task<IActionResult> DarSalida([FromBody] FinishDeliveryOrderLoadingRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(CurrentUserId))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se pudo identificar al usuario actual.", new List<string> { "No se pudo identificar al usuario actual." }, 401));
+            }
+
+            var deliveryOrderCode = request.DeliveryOrderCode?.Trim();
+            if (string.IsNullOrWhiteSpace(deliveryOrderCode))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("Debes seleccionar una orden de entrega.", new List<string> { "Debes seleccionar una orden de entrega." }));
+            }
+
+            var deliveryOrder = await _context.DeliveryOrders
+                .Include(x => x.DeliveryOrderKittings)
+                    .ThenInclude(x => x.Kitting)
+                .FirstOrDefaultAsync(x =>
+                    x.DeliveryOrderCode == deliveryOrderCode ||
+                    x.PreDeliveryOrderCode == deliveryOrderCode);
+
+            if (deliveryOrder is null)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("No se encontro la orden de entrega seleccionada.", new List<string> { "No se encontro la orden de entrega seleccionada." }, 404));
+            }
+
+            var resolvedDeliveryOrderCode = deliveryOrder.DeliveryOrderCode ?? deliveryOrder.PreDeliveryOrderCode ?? deliveryOrder.DeliveryOrderId.ToString();
+
+            var kittings = deliveryOrder.DeliveryOrderKittings
+                .Where(x => x.Kitting != null)
+                .OrderBy(x => x.SortOrder)
+                .Select(x => x.Kitting!)
+                .GroupBy(x => x.KittingId)
+                .Select(group => group.First())
+                .ToList();
+
+            if (kittings.Count == 0)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("La orden de entrega no tiene kittings relacionados.", new List<string> { "La orden de entrega no tiene kittings relacionados." }));
+            }
+
+            if (kittings.Any(kitting => !KittingStatusNames.IsLoading(kitting.Status)))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("Los embarques deben estar en estatus Cargando para dar salida.", new List<string> { "Los embarques deben estar en estatus Cargando para dar salida." }));
+            }
+
+            var deliveryMovementExists = await _context.InventoryMovements
+                .AsNoTracking()
+                .AnyAsync(x =>
+                    x.DocumentType == DocumentType_e.Salida &&
+                    x.DocumentId == resolvedDeliveryOrderCode);
+
+            if (deliveryMovementExists)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("La orden de entrega ya tiene salida registrada.", new List<string> { "La orden de entrega ya tiene salida registrada." }, 409));
+            }
+
+            var issueDetails = await _context.KittingIssueDetails
+                .AsNoTracking()
+                .Where(x => x.DeliveryOrderId == deliveryOrder.DeliveryOrderId && !x.DeleteRow)
+                .OrderBy(x => x.KittingDetailId)
+                .ThenBy(x => x.KittingReceiptDetailId)
+                .ToListAsync();
+
+            if (issueDetails.Count == 0)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("La orden de entrega no tiene inventario relacionado para dar salida.", new List<string> { "La orden de entrega no tiene inventario relacionado para dar salida." }));
+            }
+
+            var resolvedIssues = new List<(KittingIssueDetail Issue, int AvailableInventoryId, decimal Quantity)>();
+            var missingInventories = new List<string>();
+
+            foreach (var issue in issueDetails)
+            {
+                var availableInventory = await ResolveAvailableInventoryForSalidaAsync(issue);
+                if (availableInventory is null)
+                {
+                    missingInventories.Add(DescribeSalidaIssue(issue));
+                    continue;
+                }
+
+                var quantity = ResolveSalidaQuantity(issue, availableInventory);
+                if (quantity <= 0m)
+                {
+                    missingInventories.Add($"{DescribeSalidaIssue(issue)} | sin cantidad disponible.");
+                    continue;
+                }
+
+                resolvedIssues.Add((issue, availableInventory.AvailableInventoryId, quantity));
+            }
+
+            if (missingInventories.Count > 0)
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure(
+                        "No se pudo localizar inventario disponible para dar salida.",
+                        missingInventories.Distinct(StringComparer.OrdinalIgnoreCase).ToList()));
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var now = DateTime.Now;
+                var inventoryIds = resolvedIssues
+                    .Select(x => x.AvailableInventoryId)
+                    .Distinct()
+                    .ToList();
+
+                var inventories = await _context.AvailableInventories
+                    .Where(x => inventoryIds.Contains(x.AvailableInventoryId))
+                    .ToListAsync();
+
+                if (inventories.Count != inventoryIds.Count)
+                {
+                    await transaction.RollbackAsync();
+                    return ResultExtensions.ToActionResult(
+                        Result<string>.Failure("No se encontro el inventario disponible para actualizar.", new List<string> { "No se encontro el inventario disponible para actualizar." }, 404));
+                }
+
+                var inventoryById = inventories.ToDictionary(x => x.AvailableInventoryId);
+                var updatedInventories = new HashSet<int>();
+
+                foreach (var item in resolvedIssues)
+                {
+                    if (!inventoryById.TryGetValue(item.AvailableInventoryId, out var inventory))
+                    {
+                        await transaction.RollbackAsync();
+                        return ResultExtensions.ToActionResult(
+                            Result<string>.Failure("No se encontro el inventario disponible para actualizar.", new List<string> { "No se encontro el inventario disponible para actualizar." }, 404));
+                    }
+
+                    _context.InventoryMovements.Add(
+                        BuildSalidaMovement(
+                            item.Issue,
+                            inventory,
+                            deliveryOrder.ClientId,
+                            deliveryOrder.ProjectId,
+                            resolvedDeliveryOrderCode,
+                            now,
+                            CurrentUserId,
+                            item.Quantity,
+                            MovementType_e.Venta));
+
+                    _context.InventoryMovements.Add(
+                        BuildSalidaMovement(
+                            item.Issue,
+                            inventory,
+                            deliveryOrder.ClientId,
+                            deliveryOrder.ProjectId,
+                            resolvedDeliveryOrderCode,
+                            now,
+                            CurrentUserId,
+                            item.Quantity,
+                            MovementType_e.Compra));
+
+                    if (updatedInventories.Add(inventory.AvailableInventoryId))
+                    {
+                        inventory.AvailableReference = Truncate(resolvedDeliveryOrderCode, 30);
+                        inventory.AvailableStatus = AvailableStatusSalida;
+                        inventory.LastModifiedAt = now;
+                        inventory.LastModifiedByUserId = CurrentUserId;
+                    }
+                }
+
+                foreach (var kitting in kittings)
+                {
+                    kitting.Status = EmbarcadoStatus;
+                    kitting.LastModifiedAt = now;
+                    kitting.LastModifiedByUserId = CurrentUserId;
+                }
+
+                deliveryOrder.Status = EmbarcadoStatus;
+                deliveryOrder.LastModifiedAt = now;
+                deliveryOrder.LastModifiedByUserId = CurrentUserId;
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Success(
+                        resolvedDeliveryOrderCode,
+                        $"Salida generada correctamente para la orden {resolvedDeliveryOrderCode}."));
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        catch (Exception ex)
+        {
+            return ResultExtensions.ToActionResult(
+                Result<string>.Failure("Hubo un error al dar salida a la orden de entrega.", new List<string> { ex.Message }));
+        }
+    }
+
     [HttpPost("finish-loading")]
     [Permission(PermissionKeys.Auditing_View)]
     public async Task<IActionResult> FinishLoading([FromBody] FinishDeliveryOrderLoadingRequest request)
@@ -310,6 +520,15 @@ public class DeliveryOrderController : CommonController
                         "No se encontro la orden de entrega seleccionada.",
                         new List<string> { "No se encontro la orden de entrega seleccionada." },
                         404));
+            }
+
+            if (string.Equals(deliveryOrder.Status?.Trim(), EmbarcadoStatus, StringComparison.OrdinalIgnoreCase))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<FinishDeliveryOrderLoadingResultDto>.Failure(
+                        "La orden de entrega ya fue embarcada.",
+                        new List<string> { "La orden de entrega ya fue embarcada." },
+                        409));
             }
 
             var kittings = deliveryOrder.DeliveryOrderKittings
@@ -513,6 +732,111 @@ public class DeliveryOrderController : CommonController
         {
             issueDetail.DeliveryOrderId = deliveryOrderId;
         }
+    }
+
+    private async Task<AvailableInventory?> ResolveAvailableInventoryForSalidaAsync(KittingIssueDetail issue)
+    {
+        if (!issue.StandardId.HasValue || issue.StandardId.Value <= 0)
+            return null;
+
+        var inventories = _context.AvailableInventories
+            .AsNoTracking()
+            .Where(x => x.StandardId == issue.StandardId.Value);
+
+        var exactMatch = await inventories.FirstOrDefaultAsync(x =>
+            x.PartNumber == issue.PartNumber &&
+            x.ProductId == issue.ProductId &&
+            x.LocationId == issue.LocationId &&
+            x.LotNumber == issue.LotNumber &&
+            x.Reference == issue.Reference &&
+            x.PurchaseOrder == issue.PurchaseOrder &&
+            x.CustomsDeclarationNumber == issue.CustomsDeclarationNumber);
+
+        if (exactMatch is not null)
+            return exactMatch;
+
+        return await inventories
+            .Where(x => x.PartNumber == issue.PartNumber)
+            .Where(x => !issue.ProductId.HasValue || issue.ProductId <= 0 || x.ProductId == issue.ProductId)
+            .Where(x => !issue.LocationId.HasValue || issue.LocationId <= 0 || x.LocationId == issue.LocationId)
+            .OrderByDescending(x => x.Fecha)
+            .ThenByDescending(x => x.Hora)
+            .ThenByDescending(x => x.AvailableInventoryId)
+            .FirstOrDefaultAsync();
+    }
+
+    private static decimal ResolveSalidaQuantity(KittingIssueDetail issue, AvailableInventory inventory)
+    {
+        if (issue.ReceivedQuantity.HasValue && issue.ReceivedQuantity.Value > 0m)
+            return issue.ReceivedQuantity.Value;
+
+        if (inventory.Supply > 0m)
+            return inventory.Supply;
+
+        if (inventory.FinalAvailable > 0m)
+            return inventory.FinalAvailable;
+
+        return inventory.Qty.GetValueOrDefault();
+    }
+
+    private static InventoryMovement BuildSalidaMovement(
+        KittingIssueDetail issue,
+        AvailableInventory inventory,
+        int clientId,
+        int projectId,
+        string deliveryOrderCode,
+        DateTime now,
+        string userId,
+        decimal quantity,
+        MovementType_e movementType)
+    {
+        return new InventoryMovement
+        {
+            ProductId = issue.ProductId ?? inventory.ProductId,
+            ClientId = clientId,
+            ProjectId = projectId,
+            PartNumber = issue.PartNumber?.Trim() ?? inventory.PartNumber.Trim(),
+            Description = issue.Description?.Trim() ?? inventory.Description?.Trim(),
+            Fecha = now,
+            Hora = now.TimeOfDay,
+            UserId = userId,
+            LotNumber = issue.LotNumber?.Trim() ?? inventory.LotNumber?.Trim(),
+            PalletNumber = inventory.PalletNumber,
+            Reference = issue.Reference?.Trim() ?? inventory.Reference?.Trim(),
+            PurchaseOrder = issue.PurchaseOrder?.Trim() ?? inventory.PurchaseOrder?.Trim(),
+            CustomsDeclarationNumber = issue.CustomsDeclarationNumber?.Trim() ?? inventory.CustomsDeclarationNumber?.Trim(),
+            ExpirationDate = issue.ExpirationDate ?? inventory.ExpirationDate,
+            DocumentType = DocumentType_e.Salida,
+            MovementType = movementType,
+            DocumentId = deliveryOrderCode.Trim(),
+            StatusId = inventory.StatusId?.Trim(),
+            LocationId = inventory.LocationId,
+            Qty = movementType == MovementType_e.Venta
+                ? -Math.Abs(quantity)
+                : Math.Abs(quantity),
+            StandardId = issue.StandardId ?? inventory.StandardId
+        };
+    }
+
+    private static string DescribeSalidaIssue(KittingIssueDetail issue)
+    {
+        var standardId = issue.StandardId?.ToString() ?? "Sin StandardId";
+        var partNumber = string.IsNullOrWhiteSpace(issue.PartNumber)
+            ? "Sin parte"
+            : issue.PartNumber.Trim();
+
+        return $"{standardId} - {partNumber} ({issue.KittingReceiptDetailId})";
+    }
+
+    private static string Truncate(string? value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var trimmed = value.Trim();
+        return trimmed.Length <= maxLength
+            ? trimmed
+            : trimmed[..maxLength];
     }
 
     private static string GetDeliveryOrderPrefix(Project project)

@@ -128,6 +128,7 @@
                               Cursor="Hand">
                         <ComboBoxItem Content="Ver validación" Tag="Validación"/>
                         <ComboBoxItem Content="Ver cargando" Tag="Cargando"/>
+                        <ComboBoxItem Content="Ver cargado" Tag="Cargado"/>
                     </ComboBox>
 
                     <Button x:Name="BtnActualizar"
@@ -389,6 +390,35 @@
                                        Margin="0,0,4,0"
                                        FontSize="12"/>
                             <TextBlock Text="Cargar" FontSize="11"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="btnDarSalida"
+                            Visibility="Collapsed"
+                            Height="28"
+                            MinWidth="100"
+                            Padding="6,0"
+                            Margin="0,0,8,0"
+                            Click="BtnDarSalida_Click"
+                            Background="#F3F4F6"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE8D4;"
+                                       Foreground="#B45309"
+                                       Margin="0,0,4,0"
+                                       FontSize="12"/>
+                            <TextBlock Text="Dar Salida" FontSize="11"/>
                         </StackPanel>
                     </Button>
                 </WrapPanel>

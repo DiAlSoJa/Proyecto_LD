@@ -41,6 +41,29 @@ public class DeliveryOrderService
             request);
     }
 
+    public async Task<ApiResponseDto<string>> DarSalida(string? deliveryOrderCode)
+    {
+        var normalizedCode = deliveryOrderCode?.Trim();
+        if (string.IsNullOrWhiteSpace(normalizedCode))
+        {
+            return new ApiResponseDto<string>
+            {
+                IsSuccess = false,
+                Code = 400,
+                Message = "Debes seleccionar una orden de entrega."
+            };
+        }
+
+        var request = new FinishDeliveryOrderLoadingRequest
+        {
+            DeliveryOrderCode = normalizedCode
+        };
+
+        return await _api.PostAsync<FinishDeliveryOrderLoadingRequest, ApiResponseDto<string>>(
+            _apiEndpoints.DeliveryOrder_DarSalida,
+            request);
+    }
+
     public async Task<ApiResponseDto<FinishDeliveryOrderLoadingResultDto>> FinishDeliveryOrderLoading(string? deliveryOrderCode)
     {
         var normalizedCode = deliveryOrderCode?.Trim();

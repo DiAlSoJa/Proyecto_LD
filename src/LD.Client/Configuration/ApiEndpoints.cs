@@ -461,6 +461,7 @@ namespace LD.Forms.Configuration
 
         public string DeliveryOrder_CreateFromKittings => $"{_baseApi}/deliveryOrder/from-kittings";
         public string DeliveryOrder_AddKittingsToExisting => $"{_baseApi}/deliveryOrder/add-kittings";
+        public string DeliveryOrder_DarSalida => $"{_baseApi}/deliveryOrder/dar-salida";
         public string DeliveryOrder_FinishLoading => $"{_baseApi}/deliveryOrder/finish-loading";
 
         public string LoadMapping_GetAll => $"{_baseApi}/loadmapping";
