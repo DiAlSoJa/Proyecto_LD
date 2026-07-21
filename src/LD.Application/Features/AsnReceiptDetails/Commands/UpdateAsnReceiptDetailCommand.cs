@@ -3,10 +3,12 @@ using LD.Application.Common.Guards;
 using LD.Application.Common.Results;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Interfaces.StandarLabel;
+using LD.Domain.Entities;
 
 namespace LD.Application.Features.Asn.Commands;
 
@@ -20,6 +22,8 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
     private readonly IRepository<LD.Domain.Entities.AsnReceiptDetail> _asnRepository;
     private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnDetailRepository;
     private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
+    private readonly IRepository<AvailableInventory> _availableInventoryRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IStandarIdService _standarIdService;
     private readonly AutoMapper.IMapper _mapper;
 
@@ -27,12 +31,16 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
         IRepository<LD.Domain.Entities.AsnReceiptDetail> asnRepository,
         IRepository<LD.Domain.Entities.AsnDetail> asnDetailRepository,
         IRepository<LD.Domain.Entities.Asn> asnParentRepository,
+        IRepository<AvailableInventory> availableInventoryRepository,
+        IProjectRepository projectRepository,
         IStandarIdService standarIdService,
         AutoMapper.IMapper mapper)
     {
         _asnRepository = asnRepository;
         _asnDetailRepository = asnDetailRepository;
         _asnParentRepository = asnParentRepository;
+        _availableInventoryRepository = availableInventoryRepository;
+        _projectRepository = projectRepository;
         _standarIdService = standarIdService;
         _mapper = mapper;
     }
@@ -61,6 +69,10 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
 
             var hasStandardIdInRequest = !string.IsNullOrWhiteSpace(request.StandardId);
             request.StandardId = standardIdResult.Data?.ToString();
+
+            var uniqueLotValidation = await EnsureUniqueLotIsNotDuplicatedAsync(asn, request.LotNumber);
+            if (uniqueLotValidation is not null)
+                return uniqueLotValidation;
 
             _mapper.Map(request, asn);
 
@@ -94,5 +106,54 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
             return Result<int?>.Success(parsedStandardId, string.Empty);
 
         return Result<int?>.Failure("No existe la etiqueta LD.", new() { "No existe la etiqueta LD." }, 404);
+    }
+
+    private async Task<Result<string>?> EnsureUniqueLotIsNotDuplicatedAsync(LD.Domain.Entities.AsnReceiptDetail currentReceipt, string? lotNumber)
+    {
+        var normalizedLot = lotNumber?.Trim();
+        if (string.IsNullOrWhiteSpace(normalizedLot))
+            return null;
+
+        var asnDetail = await _asnDetailRepository.GetByIdAsync(currentReceipt.AsnDetailId);
+        if (asnDetail is null)
+            return null;
+
+        var asn = await _asnParentRepository.GetByIdAsync(asnDetail.AsnId);
+        if (asn is null)
+            return null;
+
+        var project = await _projectRepository.GetByIdAsync(asn.ProjectId);
+        if (project is null || !project.UniqueLot)
+            return null;
+
+        var asnIdsInProject = (await _asnParentRepository.GetManyAsync() ?? new List<LD.Domain.Entities.Asn>())
+            .Where(x => x.ProjectId == project.ProjectId)
+            .Select(x => x.AsnId)
+            .ToHashSet();
+
+        var asnDetailIds = (await _asnDetailRepository.GetManyAsync() ?? new List<LD.Domain.Entities.AsnDetail>())
+            .Where(x => asnIdsInProject.Contains(x.AsnId))
+            .Select(x => x.AsnDetailId)
+            .ToHashSet();
+
+        var receipts = await _asnRepository.GetManyAsync() ?? new List<AsnReceiptDetail>();
+        var duplicateReceiptExists = receipts.Any(x =>
+            x.AsnReceiptDetailId != currentReceipt.AsnReceiptDetailId
+            && asnDetailIds.Contains(x.AsnDetailId)
+            && !string.IsNullOrWhiteSpace(x.LotNumber)
+            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
+
+        var inventories = await _availableInventoryRepository.GetManyAsync() ?? new List<AvailableInventory>();
+        var duplicateInventoryExists = inventories.Any(x =>
+            x.ClientId == asn.ClientId
+            && x.ProjectId == project.ProjectId
+            && !string.IsNullOrWhiteSpace(x.LotNumber)
+            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
+
+        if (!duplicateReceiptExists && !duplicateInventoryExists)
+            return null;
+
+        var message = $"El lote {normalizedLot} ya existe en recepciones o inventario para este cliente y proyecto y no se permite repetirlo.";
+        return Result<string>.Failure(message, new List<string> { message });
     }
 }

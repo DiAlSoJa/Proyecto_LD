@@ -28,6 +28,7 @@ namespace LD.FormsX.Views.Dialogs
 
         public event Func<IReadOnlyList<ScanRuleResult>, Task<bool>>? ScanCompleted;
         public event Func<string, Task<UnmatchedScanResult?>>? UnmatchedScanReceived;
+        public event Func<string, Task<string?>>? UniqueLotValidationRequested;
         public event Func<Window, string, Task<bool>>? MissingPartNumberRequested;
 
         private List<ScanConfigurationRequest> _scanConfigurations = [];
@@ -118,6 +119,18 @@ namespace LD.FormsX.Views.Dialogs
             }
 
             var savedValue = ApplySaveConfiguration(match.Configuration, scanValue);
+
+            if (IsLotNumberConfiguration(match.Configuration) && UniqueLotValidationRequested != null)
+            {
+                var validationMessage = await UniqueLotValidationRequested.Invoke(savedValue);
+                if (!string.IsNullOrWhiteSpace(validationMessage))
+                {
+                    AddMessage(validationMessage, true);
+                    PlayErrorSound();
+                    return;
+                }
+            }
+
             match.CapturedValue = savedValue;
             PlayCorrectSound();
 
@@ -229,6 +242,17 @@ namespace LD.FormsX.Views.Dialogs
                 && config.SaveValue > 0;
 
             return HasScanCondition(config) || hasSaveCondition;
+        }
+
+        private static bool IsLotNumberConfiguration(ScanConfigurationRequest config)
+        {
+            if (config.SystemFieldId == (int)SystemField_e.LotNumber)
+                return true;
+
+            var fieldName = config.SystemFieldName?.Trim();
+            return string.Equals(fieldName, "lot_number", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fieldName, "lotnumber", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fieldName, "lote", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool HasScanCondition(ScanConfigurationRequest config)

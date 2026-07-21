@@ -253,6 +253,7 @@
                                                 <CheckBox Content="Almacén Fiscal"  IsChecked="{Binding IsFiscalWarehouse}"    Style="{StaticResource CheckStyle}"/>
                                                 <CheckBox Content="Sobredimensión"  IsChecked="{Binding AllowsOversizedItems}" Style="{StaticResource CheckStyle}"/>
                                                 <CheckBox Content="Etiquetas"       IsChecked="{Binding RequiresLabels}"       Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox Content="Lote único"      IsChecked="{Binding UniqueLot}"            Style="{StaticResource CheckStyle}"/>
                                             </StackPanel>
                                         </Border>
 

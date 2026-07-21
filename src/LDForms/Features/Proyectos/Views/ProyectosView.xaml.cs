@@ -23,7 +23,7 @@ namespace LD.FormsX.Views.Proyectos
             _serviceProvider = serviceProvider;
 
             _gridFilter = new WpfGridFilter<ProjectDto>(dgProyectos, txtBuscar);
-            _gridFilter.SetHiddenColumns(new string[] { "ProjectId" });
+            _gridFilter.SetHiddenColumns(new string[] { "ProjectId", "UniqueLot" });
             _gridFilter.SetColumnWidths(new Dictionary<string, double>
             {
                 { "Activo",    70 },                

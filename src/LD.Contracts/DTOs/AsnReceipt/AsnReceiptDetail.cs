@@ -13,6 +13,8 @@ namespace LD.Contracts.ASN
 
         public int AsnDetailId { get; set; }
 
+        public int ProjectId { get; set; }
+
         public int? ProductId { get; set; }
 
        

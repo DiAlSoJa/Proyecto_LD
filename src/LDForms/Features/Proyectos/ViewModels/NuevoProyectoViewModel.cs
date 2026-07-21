@@ -203,6 +203,9 @@ public partial class NuevoProyectoViewModel : ObservableObject
     [ObservableProperty]
     private bool scanRequired;
 
+    [ObservableProperty]
+    private bool uniqueLot;
+
     // ── Configuraciones de escaneo ──
     public ObservableCollection<DropDownDto> AvailableSystemFields { get; } = [];
     public ObservableCollection<ScanConfigurationRequest> ScanConfigurations { get; } = [];
@@ -436,6 +439,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
             DoPrefix = p.DoPrefix ?? p.DeliveryOrderPrefix ?? "";
             ReciveRequired = p.ReciveRequired;
             ScanRequired = p.ScanRequired;
+            UniqueLot = p.UniqueLot;
 
             // Cargar configuraciones de escaneo
             ScanConfigurations.Clear();
@@ -492,6 +496,7 @@ public partial class NuevoProyectoViewModel : ObservableObject
         DeliveryOrderPrefix = DoPrefix,
         ReciveRequired = ReciveRequired,
         ScanRequired = ScanRequired,
+        UniqueLot = UniqueLot,
         ScanConfigurations = ScanConfigurations.ToList(),
     };
 

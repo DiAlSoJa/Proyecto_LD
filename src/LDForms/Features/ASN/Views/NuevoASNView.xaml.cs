@@ -9,6 +9,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LD.Client.Services;
+using LD.Contracts.AvailableInventory;
 using LD.Contracts.ASN;
 using LD.Contracts.DTOs.StandardLabel;
 using LD.Contracts.Enums;
@@ -36,6 +37,7 @@ namespace LD.FormsX.Views.Dialogs
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
         private readonly AsnReceiptService _asnReceiptService;
+        private readonly AvailableInventoryService _availableInventoryService;
         private readonly LookupService _lookupService;
         private readonly LocationService _locationService;
         private readonly ProjectService _projectService;
@@ -64,8 +66,10 @@ namespace LD.FormsX.Views.Dialogs
         private string _clientName = string.Empty;
         private string _projectName = string.Empty;
         private bool _projectScanRequired;
+        private bool _projectUniqueLot;
         private List<ScanConfigurationRequest> _projectScanConfigurations = [];
         private List<AsnReceiptDetailDto> _asnReceiptDetailsCache = [];
+        private List<AvailableInventoryDto> _projectAvailableInventoriesCache = [];
 
         public ObservableCollection<LookupItem> ProductLookupItems { get; } = new();
         public ObservableCollection<LookupItem> StatusLookupItems { get; } = new();
@@ -75,12 +79,13 @@ namespace LD.FormsX.Views.Dialogs
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
         public ObservableCollection<AsnReceiptItem> ReceiptItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, ProductService productService, StandardLabelService standardLabelService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, ProjectService projectService, IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, AvailableInventoryService availableInventoryService, ProductService productService, StandardLabelService standardLabelService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, ProjectService projectService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
             _asnDetailService = asnDetailService;
             _asnReceiptService = asnReceiptService;
+            _availableInventoryService = availableInventoryService;
             _lookupService = lookupService;
             _productService = productService;
             _standardLabelService = standardLabelService;
@@ -639,7 +644,9 @@ namespace LD.FormsX.Views.Dialogs
             view.SetScanConfigurations(_projectScanConfigurations);
             view.ScanCompleted += CreateReceiptFromCompletedScanAsync;
             view.UnmatchedScanReceived += ResolveUnmatchedScanAsync;
+            view.UniqueLotValidationRequested += ValidateUniqueLotScanAsync;
             view.ShowDialog();
+            view.UniqueLotValidationRequested -= ValidateUniqueLotScanAsync;
             view.UnmatchedScanReceived -= ResolveUnmatchedScanAsync;
             view.ScanCompleted -= CreateReceiptFromCompletedScanAsync;
         }
@@ -761,6 +768,7 @@ namespace LD.FormsX.Views.Dialogs
         {
             _projectScanConfigurations = [];
             _projectScanRequired = false;
+            _projectUniqueLot = false;
 
             if (_projectId <= 0)
             {
@@ -776,10 +784,16 @@ namespace LD.FormsX.Views.Dialogs
             }
 
             _projectScanRequired = response.Data.ScanRequired;
+            _projectUniqueLot = response.Data.UniqueLot;
             _projectScanConfigurations = response.Data.ScanConfigurations
                 .OrderBy(config => config.Order)
                 .ThenBy(config => config.SystemFieldId)
                 .ToList();
+
+            if (_projectUniqueLot)
+                await LoadProjectAvailableInventoriesAsync();
+            else
+                _projectAvailableInventoriesCache = [];
 
             ApplyConfirmedState();
         }
@@ -797,6 +811,9 @@ namespace LD.FormsX.Views.Dialogs
             foreach (var result in scanResults)
                 ApplyScannedValueToReceipt(receiptRow, result.Configuration, result.Value);
 
+            if (!EnsureUniqueLotIsAllowed(receiptRow))
+                return false;
+
             AsnDetailItem detailRow;
             try
             {
@@ -813,6 +830,9 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.ApplyDefaultsFromDetail(detailRow, AsnSelected!.AsnId);
             SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
             ApplyProjectLocationDefaults(receiptRow);
+
+            if (!EnsureUniqueLotIsAllowed(receiptRow))
+                return false;
 
             if (!IsReceiptRowCompleted(receiptRow))
                 return false;
@@ -976,6 +996,47 @@ namespace LD.FormsX.Views.Dialogs
                 && label.ProjectId == null;
         }
 
+        private bool EnsureUniqueLotIsAllowed(AsnReceiptItem receiptRow)
+        {
+            if (!IsUniqueLotEnabledForProject())
+                return true;
+
+            var lotNumber = receiptRow.LotNumber?.Trim();
+            if (string.IsNullOrWhiteSpace(lotNumber))
+                return true;
+
+            if (!HasDuplicateLotNumber(receiptRow, lotNumber))
+                return true;
+
+            DialogHelper.ShowError($"El lote {lotNumber} ya existe en recepciones o inventario para este cliente y proyecto y no se permite repetirlo.");
+            return false;
+        }
+
+        private bool IsUniqueLotEnabledForProject() => _projectUniqueLot;
+
+        private bool HasDuplicateLotNumber(AsnReceiptItem receiptRow, string lotNumber)
+        {
+            return HasDuplicateLotNumber(lotNumber, receiptRow.AsnReceiptDetailId);
+        }
+
+        private bool HasDuplicateLotNumber(string lotNumber, int? excludedAsnReceiptDetailId = null)
+        {
+            return ReceiptItems.Any(item =>
+                    (!excludedAsnReceiptDetailId.HasValue || item.AsnReceiptDetailId != excludedAsnReceiptDetailId.Value)
+                    && !IsEmptyReceiptRow(item)
+                    && string.Equals(item.LotNumber?.Trim(), lotNumber, StringComparison.OrdinalIgnoreCase))
+                || _asnReceiptDetailsCache.Any(item =>
+                    (_projectId <= 0 || item.ProjectId == _projectId)
+                    && (!excludedAsnReceiptDetailId.HasValue || item.AsnReceiptDetailId != excludedAsnReceiptDetailId.Value)
+                    && !string.IsNullOrWhiteSpace(item.LotNumber)
+                    && string.Equals(item.LotNumber?.Trim(), lotNumber, StringComparison.OrdinalIgnoreCase))
+                || _projectAvailableInventoriesCache.Any(item =>
+                    item.ClientId == _clientId
+                    && item.ProjectId == _projectId
+                    && !string.IsNullOrWhiteSpace(item.LotNumber)
+                    && string.Equals(item.LotNumber?.Trim(), lotNumber, StringComparison.OrdinalIgnoreCase));
+        }
+
         private bool HasConfiguredScanField(SystemField_e systemField)
         {
             return _projectScanConfigurations.Any(config =>
@@ -997,6 +1058,27 @@ namespace LD.FormsX.Views.Dialogs
                     || string.Equals(fieldName, "número de parte", StringComparison.OrdinalIgnoreCase),
                 _ => false
             };
+        }
+
+        private async Task<string?> ValidateUniqueLotScanAsync(string lotNumber)
+        {
+            if (!IsUniqueLotEnabledForProject())
+                return null;
+
+            var normalizedLot = lotNumber?.Trim();
+            if (string.IsNullOrWhiteSpace(normalizedLot))
+                return null;
+
+            if (_asnReceiptDetailsCache.Count == 0)
+                await LoadProjectReceiptCacheAsync();
+
+            if (_projectAvailableInventoriesCache.Count == 0)
+                await LoadProjectAvailableInventoriesAsync();
+
+            if (!HasDuplicateLotNumber(normalizedLot))
+                return null;
+
+            return $"El lote {normalizedLot} ya existe en recepciones o inventario para este cliente y proyecto y no se permite repetirlo.";
         }
 
         private AsnReceiptItem CreateScannedReceiptTemplate(AsnDetailItem detailRow)
@@ -1432,7 +1514,8 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.MaximumQuantity = detailRow.MaximumQuantity;
             receiptRow.SD = detailRow.SD;
             receiptRow.Status = detailRow.Status;
-            receiptRow.LotNumber = detailRow.LotNumber;
+            if (string.IsNullOrWhiteSpace(receiptRow.LotNumber))
+                receiptRow.LotNumber = detailRow.LotNumber;
             receiptRow.ExpirationDate = detailRow.ExpirationDate;
             receiptRow.Reference = detailRow.CustomerReference;
             receiptRow.PurchaseOrder = detailRow.PurchaseOrder;
@@ -1736,31 +1819,71 @@ namespace LD.FormsX.Views.Dialogs
         private async Task LoadReceiptItemsForSelectedDetailAsync()
         {
             ReceiptItems.Clear();
-            _asnReceiptDetailsCache = [];
+            await LoadProjectReceiptCacheAsync();
 
             if (_selectedDetailItem == null)
                 return;
 
-            if (!HasPersistedAsn() || _selectedDetailItem.AsnDetailId <= 0)
+            if (_selectedDetailItem.AsnDetailId <= 0)
                 return;
 
-            var result = await _asnReceiptService.GetAsnReceipts();
-            if (result.IsSuccess && result.Data != null)
+            foreach (var dto in _asnReceiptDetailsCache
+                         .Where(x => x.AsnDetailId == _selectedDetailItem.AsnDetailId)
+                         .OrderBy(x => x.PalletNumber)
+                         .ThenBy(x => x.AsnReceiptDetailId))
             {
-                _asnReceiptDetailsCache = result.Data.ToList();
-
-                foreach (var dto in _asnReceiptDetailsCache
-                             .Where(x => x.AsnDetailId == _selectedDetailItem.AsnDetailId)
-                             .OrderBy(x => x.PalletNumber)
-                             .ThenBy(x => x.AsnReceiptDetailId))
-                {
-                    var item = AsnReceiptItem.FromDto(dto);
-                    item.AsnId = AsnSelected.AsnId;
-                    ReceiptItems.Add(item);
-                }
+                var item = AsnReceiptItem.FromDto(dto);
+                item.AsnId = AsnSelected.AsnId;
+                ReceiptItems.Add(item);
             }
 
             RemoveEmptyReceiptRows();
+        }
+
+        private async Task LoadProjectReceiptCacheAsync()
+        {
+            _asnReceiptDetailsCache = [];
+
+            if (_projectId <= 0)
+                return;
+
+            try
+            {
+                var result = await _asnReceiptService.GetAsnReceipts();
+                if (!result.IsSuccess || result.Data == null)
+                    return;
+
+                _asnReceiptDetailsCache = result.Data
+                    .Where(x => _projectId <= 0 || x.ProjectId == _projectId)
+                    .ToList();
+            }
+            catch
+            {
+                _asnReceiptDetailsCache = [];
+            }
+        }
+
+        private async Task LoadProjectAvailableInventoriesAsync()
+        {
+            _projectAvailableInventoriesCache = [];
+
+            if (_clientId <= 0 || _projectId <= 0)
+                return;
+
+            try
+            {
+                var response = await _availableInventoryService.GetAvailableInventories();
+                if (!response.IsSuccess || response.Data == null)
+                    return;
+
+                _projectAvailableInventoriesCache = response.Data
+                    .Where(x => x.ClientId == _clientId && x.ProjectId == _projectId)
+                    .ToList();
+            }
+            catch
+            {
+                _projectAvailableInventoriesCache = [];
+            }
         }
 
         private async Task EnsureInitialReceiptCreatedAsync(AsnDetailItem detailRow)
@@ -1771,6 +1894,11 @@ namespace LD.FormsX.Views.Dialogs
             var receiptsResult = await _asnReceiptService.GetAsnReceipts();
             if (!receiptsResult.IsSuccess)
                 return;
+
+            _asnReceiptDetailsCache = receiptsResult.Data?
+                .Where(x => _projectId <= 0 || x.ProjectId == _projectId)
+                .ToList()
+                ?? [];
 
             var existingReceipt = receiptsResult.Data?.Any(x => x.AsnDetailId == detailRow.AsnDetailId) == true;
             if (existingReceipt)
@@ -1786,9 +1914,10 @@ namespace LD.FormsX.Views.Dialogs
             AssignPalletNumber(receiptItem);
             if (receiptRows.Count <= 1)
                 SeedSingleReceiptValuesFromDetail(receiptItem, detailRow);
-           
 
-           
+            if (!EnsureUniqueLotIsAllowed(receiptItem))
+                return;
+
             var createResponse = await _asnReceiptService.CreateAsnReceipt(receiptItem.ToRequest());
             Log.Information(
                 "Resultado EnsureInitialReceiptCreatedAsync. AsnDetailId: {AsnDetailId}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
@@ -1848,6 +1977,9 @@ namespace LD.FormsX.Views.Dialogs
 
             if (receiptRow.PalletNumber <= 0)
                 AssignPalletNumber(receiptRow);
+
+            if (!EnsureUniqueLotIsAllowed(receiptRow))
+                return;
 
             _savingReceiptRows.Add(receiptRow);
 

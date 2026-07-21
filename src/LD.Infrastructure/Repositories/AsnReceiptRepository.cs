@@ -42,6 +42,8 @@ namespace LD.Infrastructure.Repositories
 
             var entities = await _context.AsnReceiptDetails
                 .AsNoTracking()
+                .Include(x => x.AsnDetail)
+                    .ThenInclude(x => x!.Asn)
                 .Include(x => x.StandardLabel)
                 .Where(p => p.AsnDetailId == detailAsnId)
                 .OrderBy(x => x.PalletNumber)
@@ -52,13 +54,15 @@ namespace LD.Infrastructure.Repositories
 
         }
 
-        public async Task<AsnReceiptDetailDto?> GetByIdAsync(int id)
-        {
-            var entity = await _context.AsnReceiptDetails
-                .AsNoTracking()
-                .Include(x => x.StandardLabel)
-                .Where(x => x.AsnReceiptDetailId == id)
-                .FirstOrDefaultAsync();
+    public async Task<AsnReceiptDetailDto?> GetByIdAsync(int id)
+    {
+        var entity = await _context.AsnReceiptDetails
+            .AsNoTracking()
+            .Include(x => x.AsnDetail)
+                .ThenInclude(x => x!.Asn)
+            .Include(x => x.StandardLabel)
+            .Where(x => x.AsnReceiptDetailId == id)
+            .FirstOrDefaultAsync();
 
             return entity is null ? null : _mapper.Map<AsnReceiptDetailDto>(entity);
         }
@@ -71,11 +75,12 @@ namespace LD.Infrastructure.Repositories
         async public Task<List<AsnReceiptDetailDto>?> GetManyAsync()
         {
             var entities = await _context.AsnReceiptDetails
-              .AsNoTracking()
-               .Include(x => x.AsnDetail)
-               .Include(x => x.StandardLabel)
-               .OrderBy(x => x.AsnDetail!.AsnId)
-               .ThenBy(x => x.PalletNumber)
+               .AsNoTracking()
+                .Include(x => x.AsnDetail)
+                    .ThenInclude(x => x!.Asn)
+                .Include(x => x.StandardLabel)
+                .OrderBy(x => x.AsnDetail!.AsnId)
+                .ThenBy(x => x.PalletNumber)
                .ThenBy(x => x.AsnDetailId)
                .ThenBy(x => x.AsnReceiptDetailId)
                .ToListAsync();

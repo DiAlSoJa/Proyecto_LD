@@ -23,6 +23,9 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
                 .ForMember(dest => dest.AsnReceiptDetailId, opt => opt.MapFrom(src => src.AsnReceiptDetailId))
                 .ForMember(dest => dest.PalletNumber, opt => opt.MapFrom(src => src.PalletNumber))
                 .ForMember(dest => dest.AsnDetailId, opt => opt.MapFrom(src => src.AsnDetailId))
+                .ForMember(dest => dest.ProjectId, opt => opt.MapFrom(src => src.AsnDetail != null && src.AsnDetail.Asn != null
+                    ? src.AsnDetail.Asn.ProjectId
+                    : 0))
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))                
                 .ForMember(dest => dest.StandardId, opt => opt.MapFrom(src => src.StandardLabel != null
                     ? src.StandardLabel.StandarIdStr

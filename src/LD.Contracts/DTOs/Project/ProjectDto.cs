@@ -28,6 +28,8 @@ namespace LD.Contracts.Project
         public bool Etiqueta { get; set; }
         [DisplayName("Escaneo Obligatorio")]
         public bool ScanRequired { get; set; }
+        [DisplayName("Lote único")]
+        public bool UniqueLot { get; set; }
 
        
     }
