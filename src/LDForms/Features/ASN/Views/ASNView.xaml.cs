@@ -22,6 +22,8 @@ using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.ASN;
 using LD.Contracts.DTOs;
+using LD.Contracts.Enums;
+using LD.Contracts.Requests;
 using LD.FormsX.Features.Common;
 using LD.FormsX.Helpers;
 using LD.FormsX.Model.Lookup;
@@ -43,6 +45,7 @@ namespace LD.FormsX.Views.ASN
         private readonly AsnService _asnService;
         private readonly AsnDetailService _asnDetailService;
         private readonly AsnReceiptService _asnReceiptService;
+        private readonly ProjectService _projectService;
         private readonly LookupService _lookupService;
         private readonly IServiceProvider _serviceProvider;
      
@@ -137,6 +140,7 @@ namespace LD.FormsX.Views.ASN
             AsnService asnService,
             AsnDetailService asnDetailService,
             AsnReceiptService asnReceiptService,
+            ProjectService projectService,
             LookupService lookupService,
             IServiceProvider serviceProvider)
         {
@@ -145,6 +149,7 @@ namespace LD.FormsX.Views.ASN
             _asnService = asnService;
             _asnDetailService = asnDetailService;
             _asnReceiptService = asnReceiptService;
+            _projectService = projectService;
             _lookupService = lookupService;
             _serviceProvider = serviceProvider;
 
@@ -777,7 +782,8 @@ namespace LD.FormsX.Views.ASN
                 if (dialog.ShowDialog(Window.GetWindow(this)) != true)
                     return;
 
-                ExportAsnReceiptsToExcel(dialog.FileName, _selectedX, receiptDetails);
+                var project = await ResolveProjectForExportAsync();
+                ExportAsnReceiptsToExcel(dialog.FileName, _selectedX, receiptDetails, project);
                 DialogHelper.ShowSuccess("Excel exportado correctamente.");
             }
             catch (Exception ex)
@@ -853,10 +859,13 @@ namespace LD.FormsX.Views.ASN
         private static void ExportAsnReceiptsToExcel(
             string filePath,
             AsnDto asn,
-            IEnumerable<AsnReceiptDetailDto> receiptDetails)
+            IEnumerable<AsnReceiptDetailDto> receiptDetails,
+            ProjectRequest? project = null)
         {
             if (File.Exists(filePath))
                 File.Delete(filePath);
+
+            var detailColumns = BuildDetailColumns(project);
 
             using var archive = ZipFile.Open(filePath, ZipArchiveMode.Create);
 
@@ -912,7 +921,7 @@ namespace LD.FormsX.Views.ASN
                 """);
 
             AddZipEntry(archive, "xl/styles.xml", BuildExcelStylesXml());
-            AddZipEntry(archive, "xl/worksheets/sheet1.xml", BuildAsnWorksheetXml(asn, receiptDetails));
+            AddZipEntry(archive, "xl/worksheets/sheet1.xml", BuildAsnWorksheetXml(asn, receiptDetails, detailColumns));
 
             var timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
             AddZipEntry(
@@ -939,7 +948,10 @@ namespace LD.FormsX.Views.ASN
                 """);
         }
 
-        private static string BuildAsnWorksheetXml(AsnDto asn, IEnumerable<AsnReceiptDetailDto> receiptDetails)
+        private static string BuildAsnWorksheetXml(
+            AsnDto asn,
+            IEnumerable<AsnReceiptDetailDto> receiptDetails,
+            IReadOnlyList<ExportColumn> detailColumns)
         {
             var rows = new StringBuilder();
             var rowIndex = 1;
@@ -956,11 +968,9 @@ namespace LD.FormsX.Views.ASN
 
             rows.Append(Row(
                 rowIndex,
-                TextCell($"A{rowIndex}", "FOLIO", 2),
-                TextCell($"B{rowIndex}", "No. de parte", 2),
-                TextCell($"C{rowIndex}", "Cantidad", 2),
-                TextCell($"D{rowIndex}", "Dub", 2),
-                TextCell($"E{rowIndex}", "SKID", 2)));
+                detailColumns
+                    .Select((column, columnIndex) => TextCell($"{GetColumnName(columnIndex + 1)}{rowIndex}", column.Header, 2))
+                    .ToArray()));
 
             rowIndex++;
 
@@ -969,15 +979,26 @@ namespace LD.FormsX.Views.ASN
                 .ThenBy(x => x.AsnReceiptDetailId))
             {
                 var rowStyle = rowIndex % 2 == 0 ? 3 : 0;
+                var cells = detailColumns
+                    .Select((column, columnIndex) =>
+                    {
+                        var reference = $"{GetColumnName(columnIndex + 1)}{rowIndex}";
+
+                        return column.NumericValueSelector != null
+                            ? NumberCell(reference, column.NumericValueSelector(receipt), rowStyle)
+                            : TextCell(reference, column.TextValueSelector?.Invoke(receipt), rowStyle);
+                    })
+                    .ToArray();
+
                 rows.Append(Row(
                     rowIndex,
-                    NumberCell($"A{rowIndex}", receipt.AsnReceiptDetailId, rowStyle),
-                    TextCell($"B{rowIndex}", receipt.PartNumber, rowStyle),
-                    NumberCell($"C{rowIndex}", receipt.ReceivedQuantity ?? 0, rowStyle),
-                    TextCell($"D{rowIndex}", receipt.SD, rowStyle),
-                    TextCell($"E{rowIndex}", receipt.StandardId ?? string.Empty, rowStyle)));
+                    cells));
                 rowIndex++;
             }
+
+            var cols = string.Join(Environment.NewLine,
+                detailColumns.Select((column, index) =>
+                    $"    <col min=\"{index + 1}\" max=\"{index + 1}\" width=\"{column.Width}\" customWidth=\"1\"/>"));
 
             return $"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -987,19 +1008,233 @@ namespace LD.FormsX.Views.ASN
                   </sheetViews>
                   <sheetFormatPr defaultRowHeight="18"/>
                   <cols>
-                    <col min="1" max="1" width="10" customWidth="1"/>
-                    <col min="2" max="2" width="34" customWidth="1"/>
-                    <col min="3" max="3" width="14" customWidth="1"/>
-                    <col min="4" max="4" width="14" customWidth="1"/>
-                    <col min="5" max="5" width="18" customWidth="1"/>
-                    <col min="6" max="6" width="18" customWidth="1"/>
+                  {cols}
                   </cols>
                   <sheetData>
-                {rows}
+                  {rows}
                   </sheetData>
                 </worksheet>
                 """;
         }
+
+        private async Task<ProjectRequest?> ResolveProjectForExportAsync()
+        {
+            if (_selectedX == null || _selectedX.AsnId <= 0)
+                return null;
+
+            var projectId = SelectedProjectId;
+            if (projectId <= 0)
+            {
+                var asnResult = await _asnService.GetAsnById(_selectedX.AsnId);
+                if (asnResult.IsSuccess && asnResult.Data?.ProjectId > 0)
+                    projectId = asnResult.Data.ProjectId;
+            }
+
+            if (projectId <= 0)
+                return null;
+
+            var projectResult = await _projectService.GetProjectById(projectId);
+            return projectResult.IsSuccess && projectResult.Data != null
+                ? projectResult.Data
+                : null;
+        }
+
+        private static IReadOnlyList<ExportColumn> BuildDetailColumns(ProjectRequest? project)
+        {
+            var columns = BuildBaseDetailColumns();
+
+            if (project?.ScanRequired != true)
+                return columns;
+
+            var configuredScans = (project.ScanConfigurations ?? Enumerable.Empty<ScanConfigurationRequest>())
+                .Select(config => new
+                {
+                    Config = config,
+                    Key = NormalizeSystemField(config)
+                })
+                .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+                .OrderBy(x => x.Config.Order)
+                .ThenBy(x => x.Config.SystemFieldId)
+                .ToList();
+
+            var configuredByKey = configuredScans
+                .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(group => group.Key, group => group.First().Config, StringComparer.OrdinalIgnoreCase);
+
+            columns = columns
+                .Select(column =>
+                {
+                    if (!configuredByKey.TryGetValue(column.Key, out var config))
+                        return column;
+
+                    var header = ResolveConfiguredHeader(config, column.Header);
+                    return column with
+                    {
+                        Header = header,
+                        Width = BuildColumnWidth(column.Width, header)
+                    };
+                })
+                .ToList();
+
+            var knownKeys = columns
+                .Select(column => column.Key)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var item in configuredScans)
+            {
+                if (knownKeys.Contains(item.Key))
+                    continue;
+
+                var extraColumn = TryCreateExtraColumn(item.Config, item.Key);
+                if (extraColumn == null)
+                    continue;
+
+                columns.Add(extraColumn);
+                knownKeys.Add(item.Key);
+            }
+
+            return columns;
+        }
+
+        private static List<ExportColumn> BuildBaseDetailColumns() =>
+            new()
+            {
+                new ExportColumn(
+                    "folio",
+                    "FOLIO",
+                    10,
+                    NumericValueSelector: receipt => receipt.AsnReceiptDetailId),
+                new ExportColumn(
+                    "part_number",
+                    "No. de parte",
+                    34,
+                    TextValueSelector: receipt => receipt.PartNumber),
+                new ExportColumn(
+                    "qty",
+                    "Cantidad",
+                    14,
+                    NumericValueSelector: receipt => receipt.ReceivedQuantity ?? 0m),
+                new ExportColumn(
+                    "lot_number",
+                    "Lote",
+                    18,
+                    TextValueSelector: receipt => receipt.LotNumber),
+                new ExportColumn(
+                    "standard_id",
+                    "StandardId",
+                    20,
+                    TextValueSelector: receipt => receipt.StandardId)
+            };
+
+        private static ExportColumn? TryCreateExtraColumn(ScanConfigurationRequest config, string normalizedKey)
+        {
+            return normalizedKey switch
+            {
+                "customer_reference" => CreateTextExportColumn(config, normalizedKey, "Referencia cliente", receipt => receipt.Reference),
+                "purchase_order" => CreateTextExportColumn(config, normalizedKey, "Orden de compra", receipt => receipt.PurchaseOrder),
+                "customs_declaration" => CreateTextExportColumn(config, normalizedKey, "Pedimento", receipt => receipt.CustomsDeclarationNumber),
+                _ => null
+            };
+        }
+
+        private static ExportColumn CreateTextExportColumn(
+            ScanConfigurationRequest config,
+            string key,
+            string fallbackHeader,
+            Func<AsnReceiptDetailDto, string?> valueSelector)
+        {
+            var header = ResolveConfiguredHeader(config, fallbackHeader);
+            return new ExportColumn(
+                key,
+                header,
+                BuildColumnWidth(18, header),
+                TextValueSelector: receipt => valueSelector(receipt) ?? string.Empty);
+        }
+
+        private static string ResolveConfiguredHeader(ScanConfigurationRequest config, string fallbackHeader)
+        {
+            var customHeader = config.ClientField?.Trim();
+            if (!string.IsNullOrWhiteSpace(customHeader))
+                return customHeader;
+
+            var normalizedKey = NormalizeSystemField(config);
+            return GetDefaultHeader(normalizedKey, fallbackHeader);
+        }
+
+        private static string GetDefaultHeader(string normalizedKey, string fallbackHeader) =>
+            normalizedKey switch
+            {
+                "lot_number" => "Lote",
+                "customer_reference" => "Referencia cliente",
+                "purchase_order" => "Orden de compra",
+                "customs_declaration" => "Pedimento",
+                "qty" => "Cantidad",
+                "standard_id" => "StandardId",
+                "part_number" => "No. de parte",
+                _ => fallbackHeader
+            };
+
+        private static string NormalizeSystemField(ScanConfigurationRequest config)
+        {
+            var fieldName = config.SystemFieldName?.Trim().ToLowerInvariant() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(fieldName))
+            {
+                return fieldName switch
+                {
+                    "lot_number" or "lotnumber" or "numero de lote" or "número de lote" => "lot_number",
+                    "customer_reference" or "customerreference" or "referencia cliente" or "referencia" => "customer_reference",
+                    "purchase_order" or "purchaseorder" or "orden de compra" => "purchase_order",
+                    "customs_declaration" or "customsdeclaration" or "pedimento" => "customs_declaration",
+                    "qty" or "quantity" or "cantidad" => "qty",
+                    "standard_id" or "standardid" => "standard_id",
+                    "part_number" or "partnumber" or "numero de parte" or "número de parte" => "part_number",
+                    _ => fieldName
+                };
+            }
+
+            return config.SystemFieldId switch
+            {
+                (int)SystemField_e.LotNumber => "lot_number",
+                (int)SystemField_e.CustomerReference => "customer_reference",
+                (int)SystemField_e.PurchaseOrder => "purchase_order",
+                (int)SystemField_e.CustomsDeclaration => "customs_declaration",
+                (int)SystemField_e.Qty => "qty",
+                (int)SystemField_e.StandardId => "standard_id",
+                (int)SystemField_e.PartNumber => "part_number",
+                _ => string.Empty
+            };
+        }
+
+        private static int BuildColumnWidth(int minimumWidth, string? header)
+        {
+            var headerWidth = Math.Min(30, (header?.Length ?? 0) + 2);
+            return Math.Max(minimumWidth, headerWidth);
+        }
+
+        private static string GetColumnName(int columnNumber)
+        {
+            if (columnNumber < 1)
+                throw new ArgumentOutOfRangeException(nameof(columnNumber));
+
+            var dividend = columnNumber;
+            var columnName = string.Empty;
+
+            while (dividend > 0)
+            {
+                var modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar('A' + modulo) + columnName;
+                dividend = (dividend - modulo - 1) / 26;
+            }
+
+            return columnName;
+        }
+
+        private sealed record ExportColumn(
+            string Key,
+            string Header,
+            int Width,
+            Func<AsnReceiptDetailDto, string>? TextValueSelector = null,
+            Func<AsnReceiptDetailDto, decimal>? NumericValueSelector = null);
 
         private static string BuildExcelStylesXml() =>
             """
