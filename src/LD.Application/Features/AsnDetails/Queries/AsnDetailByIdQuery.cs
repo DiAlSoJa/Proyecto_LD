@@ -24,10 +24,10 @@ namespace LD.Application.Features.AsnDetails.Queries
         {
             var entity = await _repo.GetByIdAsync(request.AsnDetailId);
             if (entity is null)
-                return Result<AsnDetailDto?>.Failure("No existe AsnDetail", new System.Collections.Generic.List<string> { "No existe AsnDetail" }, 404);
+                return Result<AsnDetailDto?>.Failure("No existe el detalle de ASN", new System.Collections.Generic.List<string> { "No existe el detalle de ASN" }, 404);
 
             var dto = _mapper.Map<AsnDetailDto>(entity);
-            return Result<AsnDetailDto?>.Success(dto, "AsnDetail obtenido correctamente");
+            return Result<AsnDetailDto?>.Success(dto, "Detalle de ASN obtenido correctamente");
         }
     }
 }

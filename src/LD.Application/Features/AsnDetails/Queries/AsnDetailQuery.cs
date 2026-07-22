@@ -25,7 +25,7 @@ namespace LD.Application.Features.AsnDetails.Queries
         {
             var list = await _repo.GetManyAsync();
             var dtos = _mapper.Map<List<AsnDetailDto>>(list);
-            return Result<List<AsnDetailDto>?>.Success(dtos, "AsnDetails obtenidos correctamente");
+            return Result<List<AsnDetailDto>?>.Success(dtos, "Detalles de ASN obtenidos correctamente");
         }
     }
 }

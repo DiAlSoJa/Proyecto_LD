@@ -36,17 +36,17 @@ public class DeleteAsnDetailCommandHandler : IRequestHandler<DeleteAsnDetailComm
 
             var asnDetail = await _asnRepository.GetByIdAsync(request.AsnDetailId);
             if (asnDetail is null)
-                return Result<string>.Failure("No existe el ASN Detail", new List<string> { "No existe el ASN Detail" }, 404);
+                return Result<string>.Failure("No existe el detalle de ASN", new List<string> { "No existe el detalle de ASN" }, 404);
 
             var deleted = await _asnRepository.DeleteAsync(asnDetail);
             if (!deleted)
-                return Result<string>.Failure("Error al eliminar", new List<string> { "Hubo un error al eliminar el ASN Detail" });
+                return Result<string>.Failure("Error al eliminar", new List<string> { "Hubo un error al eliminar el detalle de ASN" });
 
-            return Result<string>.Success(request.AsnDetailId.ToString(), "ASN Detail eliminado");
+            return Result<string>.Success(request.AsnDetailId.ToString(), "Detalle de ASN eliminado");
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al eliminar el ASN Detail", new List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al eliminar el detalle de ASN", new List<string> { ex.Message });
         }
     }
 }

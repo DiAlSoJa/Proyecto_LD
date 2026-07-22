@@ -36,7 +36,7 @@ namespace LD.Infrastructure.Repositories
                     throw new Exception("No se encontró el proyecto.");
 
                 if (string.IsNullOrWhiteSpace(project.AsnPrefix))
-                    throw new Exception("El proyecto no tiene configurado AsnPrefix.");
+                    throw new Exception("El proyecto no tiene configurado el prefijo de ASN.");
 
                 var currentNumber = 1;
 

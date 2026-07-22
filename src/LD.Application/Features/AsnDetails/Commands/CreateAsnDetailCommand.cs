@@ -42,12 +42,12 @@ public class CreateAsnDetailCommandHandler : IRequestHandler<CreateAsnDetailComm
             var entity = _mapper.Map<LD.Domain.Entities.AsnDetail>(request);
             var result = await _asnRepository.CreateAsync(entity);
             return result
-                ? Result<string>.Success(entity.AsnDetailId.ToString(), "Detalle ASN creado con éxito")
-                : Result<string>.Failure("Hubo un error al crear el detalle ASN", new());
+                ? Result<string>.Success(entity.AsnDetailId.ToString(), "Detalle de ASN creado con éxito")
+                : Result<string>.Failure("Hubo un error al crear el detalle de ASN", new());
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el detalle ASN", new System.Collections.Generic.List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al crear el detalle de ASN", new System.Collections.Generic.List<string> { ex.Message });
         }
     }
 }

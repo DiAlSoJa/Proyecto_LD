@@ -107,10 +107,10 @@ public class KittingController : CommonController
                     .FirstOrDefaultAsync(p => p.ProjectId == entity.ProjectId);
 
                 if (project is null)
-                    throw new Exception("No se encontro el proyecto.");
+                    throw new Exception("No se encontró el proyecto.");
 
                 if (string.IsNullOrWhiteSpace(project.KittingPrefix))
-                    throw new Exception("El proyecto no tiene configurado KittingPrefix.");
+                    throw new Exception("El proyecto no tiene configurado el prefijo de Kit.");
 
                 var currentNumber = 1;
                 if (!string.IsNullOrWhiteSpace(project.KittingNumber) &&
@@ -562,15 +562,15 @@ public class KittingController : CommonController
                 if ((IsConfirmedStatus(targetStatus) || IsValidationStatus(targetStatus)) && kittingDetails.Count == 0)
                 {
                     return Result<string>.Failure(
-                        "El Kitting debe tener al menos un Kitting Detail antes de pasar a Validación.",
-                        new List<string> { "El Kitting debe tener al menos un Kitting Detail antes de pasar a Validación." });
+                        "El Kitting debe tener al menos un detalle de kit antes de pasar a validación.",
+                        new List<string> { "El Kitting debe tener al menos un detalle de kit antes de pasar a validación." });
                 }
 
                 if (issueDetails.Count == 0)
                 {
                     return Result<string>.Failure(
-                        "El Kitting debe tener al menos un Kitting Issue Detail.",
-                        new List<string> { "El Kitting debe tener al menos un Kitting Issue Detail." });
+                        "El Kitting debe tener al menos un detalle de salida de kit.",
+                        new List<string> { "El Kitting debe tener al menos un detalle de salida de kit." });
                 }
 
                 if (IsConfirmedStatus(targetStatus) || IsValidationStatus(targetStatus))
@@ -589,7 +589,7 @@ public class KittingController : CommonController
                     if (detailsWithoutIssues.Any())
                     {
                         return Result<string>.Failure(
-                            $"Antes de {actionLabel}, cada linea del Kitting debe tener al menos un Kitting Issue Detail. Lineas sin issue detail: {string.Join(", ", detailsWithoutIssues)}.",
+                            $"Antes de {actionLabel}, cada línea del Kitting debe tener al menos un detalle de salida de kit. Líneas sin detalle de salida de kit: {string.Join(", ", detailsWithoutIssues)}.",
                             new List<string>());
                     }
                 }
@@ -608,7 +608,7 @@ public class KittingController : CommonController
                 if (invalidDetails.Any())
                 {
                     return Result<string>.Failure(
-                        $"Antes de {actionLabel}, todos los Kitting Issue Details deben tener ubicacion, estatus y SD. Lineas con problema: {string.Join(", ", invalidDetails)}.",
+                        $"Antes de {actionLabel}, todos los detalles de salida de kit deben tener ubicación, estatus y SD. Líneas con problema: {string.Join(", ", invalidDetails)}.",
                         new List<string>());
                 }
             }

@@ -46,17 +46,17 @@ public class DeleteAsnReceiptDetailCommandHandler : IRequestHandler<DeleteAsnRec
 
             var asnReceipt = await _asnRepository.GetByIdAsync(request.AsnReceiptDetailId);
             if (asnReceipt is null)
-                return Result<string>.Failure("No existe el ASN Receipt", new List<string> { "No existe el ASN Receipt" }, 404);
+                return Result<string>.Failure("No existe el detalle de recepción del ASN", new List<string> { "No existe el detalle de recepción del ASN" }, 404);
 
             var deleted = await _asnRepository.DeleteAsync(asnReceipt);
             if (!deleted)
-                return Result<string>.Failure("Error al eliminar", new List<string> { "Hubo un error al eliminar el ASN Receipt" });
+                return Result<string>.Failure("Error al eliminar", new List<string> { "Hubo un error al eliminar el detalle de recepción del ASN" });
 
-            return Result<string>.Success(request.AsnReceiptDetailId.ToString(), "ASN Receipt eliminado");
+            return Result<string>.Success(request.AsnReceiptDetailId.ToString(), "Detalle de recepción del ASN eliminado");
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al eliminar el ASN Receipt", new List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al eliminar el detalle de recepción del ASN", new List<string> { ex.Message });
         }
     }
 }

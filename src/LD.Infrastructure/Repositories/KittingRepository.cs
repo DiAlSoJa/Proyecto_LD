@@ -32,7 +32,7 @@ public class KittingRepository : IKittingRepository
                 throw new Exception("No se encontró el proyecto.");
 
             if (string.IsNullOrWhiteSpace(project.KittingPrefix))
-                throw new Exception("El proyecto no tiene configurado KittingPrefix.");
+                throw new Exception("El proyecto no tiene configurado el prefijo de Kit.");
 
             var currentNumber = 1;
             if (!string.IsNullOrWhiteSpace(project.KittingNumber) && int.TryParse(project.KittingNumber, out var parsedNumber))

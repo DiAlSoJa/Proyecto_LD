@@ -33,7 +33,7 @@ public static class AsnModificationGuard
     {
         var asnDetail = await asnDetailRepository.GetByIdAsync(asnDetailId);
         if (asnDetail is null)
-            return Result<string>.Failure("No existe el ASN Detail", new List<string> { "No existe el ASN Detail" }, 404);
+            return Result<string>.Failure("No existe el detalle de ASN", new List<string> { "No existe el detalle de ASN" }, 404);
 
         return await EnsureAsnIsEditableAsync(asnDetail.AsnId, asnRepository);
     }
@@ -46,7 +46,7 @@ public static class AsnModificationGuard
     {
         var asnReceiptDetail = await asnReceiptDetailRepository.GetByIdAsync(asnReceiptDetailId);
         if (asnReceiptDetail is null)
-            return Result<string>.Failure("No existe el ASN Receipt", new List<string> { "No existe el ASN Receipt" }, 404);
+            return Result<string>.Failure("No existe el detalle de recepción del ASN", new List<string> { "No existe el detalle de recepción del ASN" }, 404);
 
         return await EnsureAsnDetailParentIsEditableAsync(asnReceiptDetail.AsnDetailId, asnDetailRepository, asnRepository);
     }
@@ -57,7 +57,7 @@ public static class AsnModificationGuard
     {
         var asnReceiptDetail = await asnReceiptDetailRepository.GetByIdAsync(asnReceiptDetailId);
         if (asnReceiptDetail is null)
-            return Result<string>.Failure("No existe el ASN Receipt", new List<string> { "No existe el ASN Receipt" }, 404);
+            return Result<string>.Failure("No existe el detalle de recepción del ASN", new List<string> { "No existe el detalle de recepción del ASN" }, 404);
 
         var receipts = await asnReceiptDetailRepository.GetManyAsync();
         var linkedReceiptsCount = receipts?
@@ -65,7 +65,7 @@ public static class AsnModificationGuard
 
         if (linkedReceiptsCount <= 1)
         {
-            const string message = "No se puede eliminar la recepción porque es el unico registro ligado al detail.";
+            const string message = "No se puede eliminar la recepción porque es el único registro ligado al detalle de recepción del ASN.";
             return Result<string>.Failure(message, new List<string> { message });
         }
 

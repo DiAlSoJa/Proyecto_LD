@@ -26,12 +26,12 @@ namespace LD.Application.Features.Asn.Queries
             if (asnDetails is null || !asnDetails.Any())
             {
                 return Result<List<AsnDetailDto>>.Failure(
-                    "No existen detalles para el ASN",
-                    new List<string> { "No existen detalles para el ASN" },
+                    "No existen detalles de ASN para este ASN",
+                    new List<string> { "No existen detalles de ASN para este ASN" },
                     404);
             }
 
-            return Result<List<AsnDetailDto>>.Success(asnDetails, "ASN Detalles obtenidos correctamente");
+            return Result<List<AsnDetailDto>>.Success(asnDetails, "Detalles de ASN obtenidos correctamente");
         }
     }
 }

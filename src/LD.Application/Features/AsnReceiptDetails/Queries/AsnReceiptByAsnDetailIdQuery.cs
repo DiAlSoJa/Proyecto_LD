@@ -32,12 +32,12 @@ namespace LD.Application.Features.AsnReceiptDetails.Queries
             if (asnDetails is null || !asnDetails.Any())
             {
                 return Result<List<AsnReceiptDetailDto>>.Failure(
-                    "No existen recibidas para el ASN",
-                    new List<string> { "No existen recibidas para el ASN" },
+                    "No existen detalles de recepción del ASN para este ASN",
+                    new List<string> { "No existen detalles de recepción del ASN para este ASN" },
                     404);
             }
 
-            return Result<List<AsnReceiptDetailDto>>.Success(asnDetails, "ASN Recibidas obtenidos correctamente");
+            return Result<List<AsnReceiptDetailDto>>.Success(asnDetails, "Detalles de recepción del ASN obtenidos correctamente");
         }
     }
 

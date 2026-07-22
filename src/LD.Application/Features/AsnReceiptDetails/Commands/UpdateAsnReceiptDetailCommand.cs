@@ -59,7 +59,7 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
 
             var asn = await _asnRepository.GetByIdAsync(request.AsnReceiptDetailId);
             if (asn is null)
-                return Result<string>.Failure("No existe el ASN Receipt", new System.Collections.Generic.List<string> { "No existe el ASN Receipt" }, 404);
+                return Result<string>.Failure("No existe el detalle de recepción del ASN", new System.Collections.Generic.List<string> { "No existe el detalle de recepción del ASN" }, 404);
 
             var existingStandardId = asn.StandardId;
             var existingPalletNumber = asn.PalletNumber;
@@ -84,11 +84,11 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
             if (!updated)
                 return Result<string>.Failure("Error al actualizar", new System.Collections.Generic.List<string> { "Hubo un error al actualizar" });
 
-            return Result<string>.Success(asn.AsnReceiptDetailId.ToString(), "ASN Detail actualizado");
+            return Result<string>.Success(asn.AsnReceiptDetailId.ToString(), "Detalle de recepción del ASN actualizado");
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al actualizar el ASN", new System.Collections.Generic.List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al actualizar el detalle de recepción del ASN", new System.Collections.Generic.List<string> { ex.Message });
         }
     }
 

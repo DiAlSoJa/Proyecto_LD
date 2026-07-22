@@ -42,7 +42,7 @@ public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailComm
 
             var asnDetail = await _asnRepository.GetByIdAsync(request.AsnDetailId);
             if (asnDetail is null)
-                return Result<string>.Failure("No existe el ASN Detail", new System.Collections.Generic.List<string> { "No existe el ASN Detail" }, 404);
+                return Result<string>.Failure("No existe el detalle de ASN", new System.Collections.Generic.List<string> { "No existe el detalle de ASN" }, 404);
 
             _mapper.Map(request, asnDetail);
 
@@ -50,11 +50,11 @@ public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailComm
             if (!updated)
                 return Result<string>.Failure("Error al actualizar", new System.Collections.Generic.List<string> { "Hubo un error al actualizar" });
 
-            return Result<string>.Success(asnDetail.AsnDetailId.ToString(), "ASN Detail actualizado");
+            return Result<string>.Success(asnDetail.AsnDetailId.ToString(), "Detalle de ASN actualizado");
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al actualizar el ASN", new System.Collections.Generic.List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al actualizar el detalle de ASN", new System.Collections.Generic.List<string> { ex.Message });
         }
     }
 }

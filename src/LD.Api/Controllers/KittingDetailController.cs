@@ -39,7 +39,7 @@ public class KittingDetailController : CommonController
             .ToListAsync();
 
         var dto = _mapper.Map<List<KittingDetailDto>>(entities);
-        return ResultExtensions.ToActionResult(Result<List<KittingDetailDto>?>.Success(dto, "Kitting Details obtenidos correctamente"));
+        return ResultExtensions.ToActionResult(Result<List<KittingDetailDto>?>.Success(dto, "Detalles de kit obtenidos correctamente"));
     }
 
     [HttpGet("{kittingDetailId}")]
@@ -53,11 +53,11 @@ public class KittingDetailController : CommonController
         if (entity is null)
         {
             return ResultExtensions.ToActionResult(
-                Result<KittingDetailRequest?>.Failure("Kitting Detail no encontrado.", new List<string> { "No existe el Kitting Detail." }, 404));
+                Result<KittingDetailRequest?>.Failure("Detalle de kit no encontrado.", new List<string> { "No existe el detalle de kit." }, 404));
         }
 
         var dto = _mapper.Map<KittingDetailRequest>(entity);
-        return ResultExtensions.ToActionResult(Result<KittingDetailRequest?>.Success(dto, "Kitting Detail obtenido correctamente"));
+        return ResultExtensions.ToActionResult(Result<KittingDetailRequest?>.Success(dto, "Detalle de kit obtenido correctamente"));
     }
 
     [HttpGet("kitting/{kittingId}")]
@@ -71,7 +71,7 @@ public class KittingDetailController : CommonController
             .ToListAsync();
 
         var dto = _mapper.Map<List<KittingDetailDto>>(entities);
-        return ResultExtensions.ToActionResult(Result<List<KittingDetailDto>>.Success(dto, "Kitting Details obtenidos correctamente"));
+        return ResultExtensions.ToActionResult(Result<List<KittingDetailDto>>.Success(dto, "Detalles de kit obtenidos correctamente"));
     }
 
     [HttpPost]
@@ -105,14 +105,14 @@ public class KittingDetailController : CommonController
                 {
                     await transaction.RollbackAsync();
                     return ResultExtensions.ToActionResult(
-                        Result<string>.Failure("No se pudo guardar el Kitting Detail.", new List<string> { "No se pudo guardar el Kitting Detail." }));
+                        Result<string>.Failure("No se pudo guardar el detalle de kit.", new List<string> { "No se pudo guardar el detalle de kit." }));
                 }
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Success(entity.KittingDetailId.ToString(), "Kitting Detail creado con exito"));
+                    Result<string>.Success(entity.KittingDetailId.ToString(), "Detalle de kit creado con exito"));
             }
             catch
             {
@@ -123,7 +123,7 @@ public class KittingDetailController : CommonController
         catch (Exception ex)
         {
             return ResultExtensions.ToActionResult(
-                Result<string>.Failure("Hubo un error al crear el Kitting Detail.", new List<string> { ex.Message }));
+                Result<string>.Failure("Hubo un error al crear el detalle de kit.", new List<string> { ex.Message }));
         }
     }
 
@@ -140,7 +140,7 @@ public class KittingDetailController : CommonController
             if (entity is null)
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("No existe el Kitting Detail.", new List<string> { "No existe el Kitting Detail." }, 404));
+                    Result<string>.Failure("No existe el detalle de kit.", new List<string> { "No existe el detalle de kit." }, 404));
             }
 
             var validation = await EnsureKittingEditableAsync(entity.KittingId);
@@ -160,16 +160,16 @@ public class KittingDetailController : CommonController
             if (!updated)
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Success(entity.KittingDetailId.ToString(), "Kitting Detail actualizado"));
+                    Result<string>.Success(entity.KittingDetailId.ToString(), "Detalle de kit actualizado"));
             }
 
             return ResultExtensions.ToActionResult(
-                Result<string>.Success(entity.KittingDetailId.ToString(), "Kitting Detail actualizado"));
+                Result<string>.Success(entity.KittingDetailId.ToString(), "Detalle de kit actualizado"));
         }
         catch (Exception ex)
         {
             return ResultExtensions.ToActionResult(
-                Result<string>.Failure("Hubo un error al actualizar el Kitting Detail.", new List<string> { ex.Message }));
+                Result<string>.Failure("Hubo un error al actualizar el detalle de kit.", new List<string> { ex.Message }));
         }
     }
 
@@ -183,7 +183,7 @@ public class KittingDetailController : CommonController
             if (entity is null)
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("No existe el Kitting Detail.", new List<string> { "No existe el Kitting Detail." }, 404));
+                    Result<string>.Failure("No existe el detalle de kit.", new List<string> { "No existe el detalle de kit." }, 404));
             }
 
             var validation = await EnsureKittingEditableAsync(entity.KittingId);
@@ -212,7 +212,7 @@ public class KittingDetailController : CommonController
                 {
                     await transaction.RollbackAsync();
                     return ResultExtensions.ToActionResult(
-                        Result<string>.Failure("No se pudo eliminar el Kitting Detail.", new List<string> { "No se pudo eliminar el Kitting Detail." }));
+                        Result<string>.Failure("No se pudo eliminar el detalle de kit.", new List<string> { "No se pudo eliminar el detalle de kit." }));
                 }
 
                 await transaction.CommitAsync();
@@ -224,12 +224,12 @@ public class KittingDetailController : CommonController
             }
 
             return ResultExtensions.ToActionResult(
-                Result<string>.Success(kittingDetailId.ToString(), "Kitting Detail eliminado"));
+                Result<string>.Success(kittingDetailId.ToString(), "Detalle de kit eliminado"));
         }
         catch (Exception ex)
         {
             return ResultExtensions.ToActionResult(
-                Result<string>.Failure("Hubo un error al eliminar el Kitting Detail.", new List<string> { ex.Message }));
+                Result<string>.Failure("Hubo un error al eliminar el detalle de kit.", new List<string> { ex.Message }));
         }
     }
 

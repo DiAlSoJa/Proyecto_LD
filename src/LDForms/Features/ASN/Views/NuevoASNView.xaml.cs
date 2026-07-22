@@ -314,7 +314,7 @@ namespace LD.FormsX.Views.Dialogs
             if (!IsScanRequiredForProject())
                 return true;
 
-            DialogHelper.ShowWarning("El proyecto requiere escaneo obligatorio; los ASN Details no se pueden editar ni eliminar manualmente.");
+            DialogHelper.ShowWarning("El proyecto requiere escaneo obligatorio; los detalles de ASN no se pueden editar ni eliminar manualmente.");
             return false;
         }
 
@@ -323,7 +323,7 @@ namespace LD.FormsX.Views.Dialogs
             if (!IsScanRequiredForProject())
                 return true;
 
-            DialogHelper.ShowWarning($"El proyecto requiere escaneo obligatorio; solo se permite editar estatus, SD y ubicacion en ASN Receipt Details. No se puede {action}.");
+            DialogHelper.ShowWarning($"El proyecto requiere escaneo obligatorio; solo se permite editar estatus, SD y ubicacion en los detalles de recepción del ASN. No se puede {action}.");
             return false;
         }
 
@@ -632,7 +632,7 @@ namespace LD.FormsX.Views.Dialogs
             if (!IsScanRequiredForProject()
                 && (dgDetail.SelectedItem is not AsnDetailItem selectedDetail || IsEmptyDetailRow(selectedDetail)))
             {
-                DialogHelper.ShowWarning("Selecciona una linea de ASN Details antes de escanear.");
+                DialogHelper.ShowWarning("Selecciona una línea de detalle de ASN antes de escanear.");
                 return;
             }
 
@@ -1122,7 +1122,7 @@ namespace LD.FormsX.Views.Dialogs
             if (dgDetail.CurrentItem is AsnDetailItem currentDetail && !IsEmptyDetailRow(currentDetail))
                 return currentDetail;
 
-            throw new InvalidOperationException("Selecciona una linea de ASN Details antes de escanear.");
+            throw new InvalidOperationException("Selecciona una línea de detalle de ASN antes de escanear.");
         }
 
         private static string GetScannedPartNumber(IReadOnlyList<ScanRuleResult> scanResults)

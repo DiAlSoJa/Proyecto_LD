@@ -22,9 +22,9 @@ namespace LD.Application.Features.AsnReceiptDetails.Queries
         {
             var dto = await _repo.GetByIdAsync(request.AsnReceiptDetailId);
             if (dto is null)
-                return Result<AsnReceiptDetailDto?>.Failure("No existe AsnReceiptDetail", new System.Collections.Generic.List<string> { "No existe AsnReceiptDetail" }, 404);
+                return Result<AsnReceiptDetailDto?>.Failure("No existe el detalle de recepción del ASN", new System.Collections.Generic.List<string> { "No existe el detalle de recepción del ASN" }, 404);
 
-            return Result<AsnReceiptDetailDto?>.Success(dto, "AsnReceiptDetail obtenido correctamente");
+            return Result<AsnReceiptDetailDto?>.Success(dto, "Detalle de recepción del ASN obtenido correctamente");
         }
     }
 }

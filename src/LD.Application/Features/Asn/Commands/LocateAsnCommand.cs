@@ -63,7 +63,7 @@ public class LocateAsnCommandHandler : IRequestHandler<LocateAsnCommand, Result<
                 .ToList();
 
             if (!details.Any())
-                return Result<string>.Failure("El ASN debe tener al menos un ASN Receipt Detail.", new());
+                return Result<string>.Failure("El ASN debe tener al menos un detalle de recepción del ASN.", new());
 
             var invalidDetails = details
                 .Where(x =>
@@ -79,7 +79,7 @@ public class LocateAsnCommandHandler : IRequestHandler<LocateAsnCommand, Result<
             if (invalidDetails.Any())
             {
                 return Result<string>.Failure(
-                    $"Antes de confirmar, todos los asnreceiptdetails deben tener ubicacion, estatus y SD. Lineas con problema: {string.Join(", ", invalidDetails)}.",
+                    $"Antes de confirmar, todos los detalles de recepción del ASN deben tener ubicación, estatus y SD. Líneas con problema: {string.Join(", ", invalidDetails)}.",
                     new());
             }
 

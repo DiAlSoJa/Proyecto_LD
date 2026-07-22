@@ -71,11 +71,13 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
             var entity = _mapper.Map<LD.Domain.Entities.AsnReceiptDetail>(request);
             entity.PalletNumber = await ResolveNextPalletNumberAsync(request.AsnDetailId);
             var result = await _asnRepository.CreateAsync(entity);
-            return result ? Result<string>.Success(entity.AsnReceiptDetailId.ToString(), "ASN Receipt creado con exito") : Result<string>.Failure("Hubo un error al crear el ASN Receipt", new());
+            return result
+                ? Result<string>.Success(entity.AsnReceiptDetailId.ToString(), "Detalle de recepción del ASN creado con éxito")
+                : Result<string>.Failure("Hubo un error al crear el detalle de recepción del ASN", new());
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el ASN", new System.Collections.Generic.List<string> { ex.Message });
+            return Result<string>.Failure("Hubo un error al crear el detalle de recepción del ASN", new System.Collections.Generic.List<string> { ex.Message });
         }
     }
 

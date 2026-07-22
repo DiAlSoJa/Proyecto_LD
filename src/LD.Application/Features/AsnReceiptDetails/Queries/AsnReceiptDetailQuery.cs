@@ -23,7 +23,7 @@ namespace LD.Application.Features.AsnReceiptDetails.Queries
         public async Task<Result<List<AsnReceiptDetailDto>?>> Handle(AsnReceiptDetailQuery request, CancellationToken cancellationToken)
         {
             var list = await _repo.GetManyAsync();
-            return Result<List<AsnReceiptDetailDto>?>.Success(list, "AsnReceiptDetails obtenidos correctamente");
+            return Result<List<AsnReceiptDetailDto>?>.Success(list, "Detalles de recepción del ASN obtenidos correctamente");
         }
     }
 }
