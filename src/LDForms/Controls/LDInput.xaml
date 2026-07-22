@@ -33,6 +33,7 @@
                          FontSize="13"
                          BorderThickness="0"
                          Background="Transparent"
+                         CharacterCasing="{Binding CharacterCasing, ElementName=uc}"
                          VerticalContentAlignment="{Binding TextVerticalAlignment, ElementName=uc}"
                          TextWrapping="{Binding InputTextWrapping, ElementName=uc}"
                          AcceptsReturn="{Binding AcceptsReturn, ElementName=uc}"

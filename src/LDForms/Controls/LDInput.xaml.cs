@@ -70,6 +70,10 @@ public partial class LDInput : UserControl
         DependencyProperty.Register(nameof(TextVerticalAlignment), typeof(VerticalAlignment), typeof(LDInput),
             new PropertyMetadata(VerticalAlignment.Center));
 
+    public static readonly DependencyProperty CharacterCasingProperty =
+        DependencyProperty.Register(nameof(CharacterCasing), typeof(System.Windows.Controls.CharacterCasing), typeof(LDInput),
+            new PropertyMetadata(System.Windows.Controls.CharacterCasing.Normal));
+
     // ── CLR wrappers ────────────────────────────────────────────────────────
 
     public string Label
@@ -160,6 +164,12 @@ public partial class LDInput : UserControl
     {
         get => (VerticalAlignment)GetValue(TextVerticalAlignmentProperty);
         set => SetValue(TextVerticalAlignmentProperty, value);
+    }
+
+    public System.Windows.Controls.CharacterCasing CharacterCasing
+    {
+        get => (System.Windows.Controls.CharacterCasing)GetValue(CharacterCasingProperty);
+        set => SetValue(CharacterCasingProperty, value);
     }
 
     // ── Exposes inner TextBox for WpfGridFilter compatibility ────────────────

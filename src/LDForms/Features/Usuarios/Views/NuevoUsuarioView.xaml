@@ -6,7 +6,7 @@
         xmlns:controls="clr-namespace:LD.FormsX.Controls"
         mc:Ignorable="d"
         Title="Nuevo usuario"
-        Height="480" Width="580"
+        Height="540" Width="580"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -66,10 +66,12 @@
                 <!-- Formulario -->
                 <StackPanel Grid.Row="1" Margin="28,20,28,16">
                     <controls:LDInput Label="Nombre de usuario"
+                                      CharacterCasing="Upper"
                                       Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
                                       Margin="0,0,0,10"/>
 
                     <controls:LDInput Label="Nombre completo"
+                                      CharacterCasing="Upper"
                                       Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"
                                       Margin="0,0,0,10"/>
 
