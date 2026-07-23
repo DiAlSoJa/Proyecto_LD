@@ -138,6 +138,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Orden" Binding="{Binding Order}" Width="50"/>
                                 <DataGridTextColumn Header="Campo" Binding="{Binding FieldName}" Width="160"/>
+                                <DataGridCheckBoxColumn Header="Obligatorio" Binding="{Binding IsRequired}" Width="90" IsReadOnly="True"/>
                                 <DataGridTextColumn Header="Condición" Binding="{Binding ConditionSummary}" Width="190"/>
                                 <DataGridTextColumn Header="Guardar como" Binding="{Binding SaveSummary}" Width="160"/>
                                 <DataGridTextColumn Header="Valor" Binding="{Binding CapturedValue}" Width="*"/>

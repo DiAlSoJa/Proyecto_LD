@@ -46,7 +46,7 @@ namespace LD.FormsX.Views.Dialogs
             _scanConfigurations = (configurations ?? Enumerable.Empty<ScanConfigurationRequest>()).ToList();
 
             foreach (var config in _scanConfigurations
-                .Where(config => HasAnyScanOrSaveCondition(config) || IsPartNumberOrStandardIdConfiguration(config))
+                .Where(config => HasAnyScanOrSaveCondition(config) || IsPartNumberOrStandardIdConfiguration(config) || config.IsRequired)
                 .OrderBy(c => c.Order)
                 .ThenBy(c => c.SystemFieldId))
             {
@@ -110,17 +110,32 @@ namespace LD.FormsX.Views.Dialogs
 
             if (match == null)
             {
-                if (HasPartNumberOrStandardIdConfiguration() && await TryApplyUnmatchedScanAsync(scanValue))
+                var requiredFallbackRule = GetRequiredFallbackRule();
+                var suppressSpecialFailure = requiredFallbackRule != null;
+
+                if (HasPartNumberOrStandardIdConfiguration()
+                    && await TryApplyUnmatchedScanAsync(scanValue, suppressSpecialFailure))
                     return;
+
+                if (requiredFallbackRule != null)
+                {
+                    await CaptureScanRuleAsync(requiredFallbackRule, scanValue);
+                    return;
+                }
 
                 AddMessage("No coincide con ninguna condición configurada.", true);
                 PlayErrorSound();
                 return;
             }
 
-            var savedValue = ApplySaveConfiguration(match.Configuration, scanValue);
+            await CaptureScanRuleAsync(match, scanValue);
+        }
 
-            if (IsLotNumberConfiguration(match.Configuration) && UniqueLotValidationRequested != null)
+        private async Task CaptureScanRuleAsync(ScanRuleDisplay rule, string scanValue)
+        {
+            var savedValue = ApplySaveConfiguration(rule.Configuration, scanValue);
+
+            if (IsLotNumberConfiguration(rule.Configuration) && UniqueLotValidationRequested != null)
             {
                 var validationMessage = await UniqueLotValidationRequested.Invoke(savedValue);
                 if (!string.IsNullOrWhiteSpace(validationMessage))
@@ -131,16 +146,16 @@ namespace LD.FormsX.Views.Dialogs
                 }
             }
 
-            match.CapturedValue = savedValue;
+            rule.CapturedValue = savedValue;
             PlayCorrectSound();
 
-            AddMessage($"{match.FieldName}: {savedValue}");
+            AddMessage($"{rule.FieldName}: {savedValue}");
 
-            if (ScanRules.All(rule => !string.IsNullOrWhiteSpace(rule.CapturedValue)))
+            if (ShouldCompleteCurrentScan())
                 await CompleteCurrentScanAsync();
         }
 
-        private async Task<bool> TryApplyUnmatchedScanAsync(string scanValue)
+        private async Task<bool> TryApplyUnmatchedScanAsync(string scanValue, bool suppressFailure = false)
         {
             if (UnmatchedScanReceived == null)
                 return false;
@@ -151,6 +166,9 @@ namespace LD.FormsX.Views.Dialogs
 
             if (!result.Success)
             {
+                if (suppressFailure)
+                    return false;
+
                 AddMessage(result.Message, true);
                 PlayErrorSound();
 
@@ -158,7 +176,7 @@ namespace LD.FormsX.Views.Dialogs
                     && MissingPartNumberRequested != null
                     && await MissingPartNumberRequested.Invoke(this, scanValue))
                 {
-                    return await TryApplyUnmatchedScanAsync(scanValue);
+                    return await TryApplyUnmatchedScanAsync(scanValue, suppressFailure);
                 }
 
                 return true;
@@ -178,12 +196,7 @@ namespace LD.FormsX.Views.Dialogs
                 return true;
             }
 
-            targetRule.CapturedValue = result.Value;
-            PlayCorrectSound();
-            AddMessage($"{targetRule.FieldName}: {result.Value}");
-
-            if (ScanRules.All(rule => !string.IsNullOrWhiteSpace(rule.CapturedValue)))
-                await CompleteCurrentScanAsync();
+            await CaptureScanRuleAsync(targetRule, result.Value);
 
             return true;
         }
@@ -215,6 +228,24 @@ namespace LD.FormsX.Views.Dialogs
 
             foreach (var rule in ScanRules)
                 rule.CapturedValue = string.Empty;
+        }
+
+        private ScanRuleDisplay? GetRequiredFallbackRule()
+        {
+            return ScanRules.FirstOrDefault(rule =>
+                rule.IsRequired
+                && string.IsNullOrWhiteSpace(rule.CapturedValue)
+                && !HasScanCondition(rule.Configuration)
+                && !IsPartNumberOrStandardIdConfiguration(rule.Configuration));
+        }
+
+        private bool ShouldCompleteCurrentScan()
+        {
+            var requiredRules = ScanRules.Where(rule => rule.IsRequired).ToList();
+            if (requiredRules.Any())
+                return requiredRules.All(rule => !string.IsNullOrWhiteSpace(rule.CapturedValue));
+
+            return ScanRules.All(rule => !string.IsNullOrWhiteSpace(rule.CapturedValue));
         }
 
         private static bool RuleMatches(ScanConfigurationRequest config, string scanValue)
@@ -391,6 +422,8 @@ namespace LD.FormsX.Views.Dialogs
         public string FieldName => string.IsNullOrWhiteSpace(Configuration.ClientField)
             ? Configuration.SystemFieldName
             : Configuration.ClientField;
+
+        public bool IsRequired => Configuration.IsRequired;
 
         public string ConditionSummary => IsStandardIdConfiguration(Configuration)
             ? "Es etiqueta LD"

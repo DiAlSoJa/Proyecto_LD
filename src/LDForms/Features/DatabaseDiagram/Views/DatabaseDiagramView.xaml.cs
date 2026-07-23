@@ -104,7 +104,7 @@ public partial class DatabaseDiagramView : UserControl
 
         new("Project", "Proyecto", "WMS", "#2563EB", ["PK ProjectId : int", "FK ClientId : int", "FK WarehouseId : int", "FK LocationId : int?", "ScanRequired : bool", "UniqueLot : bool"]),
         new("StorageType", "Tipo almacenamiento", "Catalogos", "#2563EB", ["PK StorageTypeId : int", "StorageTypeName : string"]),
-        new("ScanConfiguration", "Configuracion escaneo", "WMS", "#2563EB", ["PK ScanConfigurationId : int", "FK ProjectId : int", "FK ScanTypeId : int", "FK ScanSaveTypeId : int"]),
+        new("ScanConfiguration", "Configuracion escaneo", "WMS", "#2563EB", ["PK ScanConfigurationId : int", "FK ProjectId : int", "Obligatorio : bool", "FK ScanTypeId : int", "FK ScanSaveTypeId : int"]),
         new("ScanType", "Tipo escaneo", "Catalogos", "#2563EB", ["PK ScanTypeId : int", "Name : string"]),
         new("ScanSaveType", "Tipo guardado", "Catalogos", "#2563EB", ["PK ScanSaveTypeId : int", "Name : string"]),
 
@@ -124,7 +124,7 @@ public partial class DatabaseDiagramView : UserControl
         new("InventoryMovement", "Movimientos", "WMS", "#16A34A", ["PK MovementId : int", "FK ClientId : int", "FK ProjectId : int", "FK ProductId : int?", "PalletNumber : int?", "DocumentType : enum", "MovementType : enum"]),
         new("CyclicInventory", "Inventario ciclico", "WMS", "#16A34A", ["PK CyclicInventoryId : int", "FK WarehouseId : int?", "Status : string"]),
         new("CyclicInventoryDetail", "Detalle inventario ciclico", "WMS", "#16A34A", ["PK CyclicInventoryDetailId : int", "FK CyclicInventoryId : int", "FK LocationId : int?", "CountedQty : decimal?"]),
-        new("InventaryStatus", "Status inventario", "Catalogos", "#16A34A", ["PK InventoryStatusIdS : string", "FullName : string"]),
+        new("InventaryStatus", "Status inventario", "Catalogos", "#16A34A", ["PK InventoryStatusIdS, ClientId, ProjectId : composite", "FullName : string"]),
 
         new("UserWarehouse", "Usuario almacen", "Permisos", "#475569", ["PK UserWarehouseId : int", "FK UserId : string?", "FK WarehouseId : int?"]),
         new("Module", "Modulo", "Permisos", "#475569", ["PK ModuleId : int", "ModuleName : string"]),

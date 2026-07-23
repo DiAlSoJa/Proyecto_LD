@@ -71,6 +71,7 @@ namespace LD.Application.Features.Clients.Profiles
             CreateMap<ScanConfiguration, ScanConfigurationRequest>()
                 .ForMember(dest => dest.ScanTypeId, opt => opt.MapFrom(src => src.ScanTypeId))
                 .ForMember(dest => dest.SaveTypeId, opt => opt.MapFrom(src => src.SaveTypeId))
+                .ForMember(dest => dest.IsRequired, opt => opt.MapFrom(src => src.IsRequired))
                 .ForMember(dest => dest.SystemFieldName,
                     opt => opt.MapFrom(src => src.SystemField != null ? src.SystemField.SystemFieldName : ""));
 

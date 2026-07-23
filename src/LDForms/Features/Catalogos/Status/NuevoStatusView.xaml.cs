@@ -98,7 +98,7 @@ namespace LD.FormsX.Views.Status
 
             if (!response.IsSuccess || response.Data is null)
             {
-                DialogHelper.ShowError(response.Message ?? "No se pudo cargar el status.");
+                DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo cargar el status.");
                 return;
             }
 
@@ -177,7 +177,7 @@ namespace LD.FormsX.Views.Status
                 }
                 else
                 {
-                    DialogHelper.ShowError(result.ErrorMessage ?? "Hubo un error al guardar.");
+                    DialogHelper.ShowError(result.ErrorMessage ?? result.Message ?? "Hubo un error al guardar.");
                 }
             }
             catch (Exception ex)

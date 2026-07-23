@@ -809,7 +809,12 @@ namespace LD.FormsX.Views.Dialogs
             var receiptRow = CreateScannedReceiptTemplate(GetScanTemplateDetailRow(scanResults));
 
             foreach (var result in scanResults)
+            {
+                if (string.IsNullOrWhiteSpace(result.Value))
+                    continue;
+
                 ApplyScannedValueToReceipt(receiptRow, result.Configuration, result.Value);
+            }
 
             if (!EnsureUniqueLotIsAllowed(receiptRow))
                 return false;
@@ -1129,7 +1134,8 @@ namespace LD.FormsX.Views.Dialogs
         {
             return scanResults
                 .FirstOrDefault(result =>
-                    string.Equals(NormalizeSystemField(result.Configuration), "partnumber", StringComparison.OrdinalIgnoreCase))?
+                    !string.IsNullOrWhiteSpace(result.Value)
+                    && string.Equals(NormalizeSystemField(result.Configuration), "partnumber", StringComparison.OrdinalIgnoreCase))?
                 .Value?
                 .Trim() ?? string.Empty;
         }
@@ -1218,6 +1224,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private static void ApplyScannedValueToReceipt(AsnReceiptItem receiptRow, ScanConfigurationRequest configuration, string scannedValue)
         {
+            if (string.IsNullOrWhiteSpace(scannedValue))
+                return;
+
             switch (NormalizeSystemField(configuration))
             {
                 case "lot_number":

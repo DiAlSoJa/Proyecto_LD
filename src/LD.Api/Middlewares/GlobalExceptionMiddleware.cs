@@ -1,5 +1,6 @@
-﻿namespace LD.Api.Middlewares
+namespace LD.Api.Middlewares
 {
+    using LD.Application.Common.Exceptions;
     using LD.Application.Common.Results;
     using System.Net;
     using System.Text.Json;
@@ -40,8 +41,9 @@
                 ArgumentException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };
-            
-            var response = Result<string>.Failure(ex.Message,new(), (int)statusCode);
+
+            var message = DatabaseExceptionMessageHelper.GetUserMessage(ex);
+            var response = Result<string>.Failure(message, new List<string> { message }, (int)statusCode);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;

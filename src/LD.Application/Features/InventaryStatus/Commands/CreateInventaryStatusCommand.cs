@@ -1,29 +1,22 @@
-﻿using AutoMapper;
-using LD.Application.Common.Interfaces.Auth;
+using AutoMapper;
+using LD.Application.Common.Exceptions;
 using LD.Application.Common.Interfaces.Repository;
-using LD.Application.Common.Models;
 using LD.Application.Common.Results;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD.Application.Features.InventaryStatus.Comands;
 
 public class CreateInventaryStatusCommand : InventaryStatusRequest, IRequest<Result<string>>
 {
-
 }
-
 
 public class CreateStatusCommandHandler : IRequestHandler<CreateInventaryStatusCommand, Result<string>>
 {
     private readonly IRepository<LD.Domain.Entities.InventaryStatus> _statusRepository;
     private readonly IMapper _mapper;
+
     public CreateStatusCommandHandler(IRepository<LD.Domain.Entities.InventaryStatus> statusRepository, IMapper mapper)
     {
         _statusRepository = statusRepository;
@@ -35,15 +28,14 @@ public class CreateStatusCommandHandler : IRequestHandler<CreateInventaryStatusC
         try
         {
             var result = await _statusRepository.CreateAsync(_mapper.Map<LD.Domain.Entities.InventaryStatus>(request));
-            return result ? Result<string>.Success("Estatus creado con exito", "") : Result<string>.Failure("Hubo un error al crear el Estatus", new());
-
+            return result
+                ? Result<string>.Success("Estatus creado con exito", "")
+                : Result<string>.Failure("Hubo un error al crear el estatus", new());
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al crear el Estatus", new List<string> { ex.Message });
+            var detail = DatabaseExceptionMessageHelper.GetUserMessage(ex, "estatus", "status, cliente y proyecto");
+            return Result<string>.Failure("Hubo un error al crear el estatus", new List<string> { detail });
         }
     }
 }
-
-
-
