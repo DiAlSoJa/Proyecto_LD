@@ -9,10 +9,12 @@ public static class KittingStatusNames
     public const string Creado = "Creado";
     public const string Cargado = "Cargado";
     public const string CargadoParcial = "Cargado Parcial";
+    public const string Salida = "Salida";
     public const string Surtiendo = "Surtiendo";
     public const string Ubicando = "Ubicando";
     public const string Validacion = "Validación";
     public const string Cargando = "Cargando";
+    public const string LegacyEmbarcado = "Embarcado";
 
     public const string LegacyValidacion = "Surtido";
     public const string LegacyCargando = "Validado";
@@ -29,11 +31,14 @@ public static class KittingStatusNames
     public static bool IsPartiallyLoaded(string? status) =>
         EqualsAny(status, CargadoParcial);
 
+    public static bool IsSalida(string? status) =>
+        EqualsAny(status, Salida, LegacyEmbarcado);
+
     public static bool IsConfirmed(string? status) =>
         EqualsAny(status, Confirmado, Validacion, LegacyValidacion);
 
     public static bool IsTerminal(string? status) =>
-        IsConfirmed(status) || IsLoading(status) || IsLoaded(status) || IsPartiallyLoaded(status) || IsCancelled(status);
+        IsConfirmed(status) || IsLoading(status) || IsLoaded(status) || IsPartiallyLoaded(status) || IsCancelled(status) || IsSalida(status);
 
     public static bool IsCancelled(string? status) =>
         EqualsAny(status, Cancelado);
@@ -49,6 +54,7 @@ public static class KittingStatusNames
 
         return trimmed switch
         {
+            LegacyEmbarcado => Salida,
             LegacyValidacion => Validacion,
             LegacyCargando => Cargando,
             _ => trimmed

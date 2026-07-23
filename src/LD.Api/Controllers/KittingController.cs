@@ -163,7 +163,7 @@ public class KittingController : CommonController
 
             if (IsTerminalStatus(kitting.Status))
             {
-                if (!request.AllowRestrictedUpdate || IsEmbarcadoStatus(kitting.Status))
+                if (!request.AllowRestrictedUpdate || IsSalidaStatus(kitting.Status))
                 {
                     return ResultExtensions.ToActionResult(
                         Result<string>.Failure("El Kitting ya esta finalizado y no se puede editar.", new List<string> { "El Kitting ya esta finalizado." }));
@@ -859,8 +859,8 @@ public class KittingController : CommonController
     private static bool IsCancelledStatus(string? status) =>
         string.Equals(status?.Trim(), KittingStatusNames.Cancelado, StringComparison.OrdinalIgnoreCase);
 
-    private static bool IsEmbarcadoStatus(string? status) =>
-        string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
+    private static bool IsSalidaStatus(string? status) =>
+        KittingStatusNames.IsSalida(status);
 
     private static void ApplyTransportAndDeliveryUpdate(Kitting kitting, KittingRequest request)
     {

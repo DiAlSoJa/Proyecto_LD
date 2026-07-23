@@ -207,8 +207,8 @@ namespace LD.FormsX.Features.Embarques.Views
         private static bool IsSurtiendoStatus(string? status) =>
             string.Equals(status?.Trim(), KittingStatusNames.Surtiendo, StringComparison.OrdinalIgnoreCase);
 
-        private static bool IsEmbarcadoStatus(string? status) =>
-            string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
+        private static bool IsSalidaStatus(string? status) =>
+            KittingStatusNames.IsSalida(status);
 
         private static bool IsCargadoStatus(string? status) =>
             string.Equals(status?.Trim(), KittingStatusNames.Cargado, StringComparison.OrdinalIgnoreCase) ||
@@ -258,14 +258,14 @@ namespace LD.FormsX.Features.Embarques.Views
             if (IsCargadoStatus(status))
                 return "cargado";
 
-            if (IsEmbarcadoStatus(status))
-                return "embarcado";
+            if (IsSalidaStatus(status))
+                return "dado de salida";
 
             return "confirmado";
         }
 
         private static bool IsTerminalStatus(string? status) =>
-            IsConfirmedStatus(status) || IsValidatedStatus(status) || IsCancelledStatus(status) || IsCargadoStatus(status) || IsEmbarcadoStatus(status);
+            KittingStatusNames.IsTerminal(status);
 
         private void dgKitting_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
@@ -383,14 +383,14 @@ namespace LD.FormsX.Features.Embarques.Views
 
             ConfigureActionButton(
                 btnCargar,
-                canShowCargar && _selectedKittings.All(item => !IsCancelledStatus(item.Status) && !IsEmbarcadoStatus(item.Status)),
-                hasSelected && _selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsEmbarcadoStatus(item.Status)),
+                canShowCargar && _selectedKittings.All(item => !IsCancelledStatus(item.Status) && !IsSalidaStatus(item.Status)),
+                hasSelected && _selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsSalidaStatus(item.Status)),
                 hasSelected
                     ? $"Cargar {_selectedKittings.Count} embarque(s) a orden de entrega."
                     : "Selecciona uno o más embarques para cargar.");
 
             var canShowSalida = hasSelected
-                && _selectedKittings.All(item => IsValidatedStatus(item.Status))
+                && _selectedKittings.All(item => IsCargadoStatus(item.Status))
                 && !string.IsNullOrWhiteSpace(selectedDeliveryOrderCode);
 
             if (btnDarSalida != null)
@@ -399,7 +399,7 @@ namespace LD.FormsX.Features.Embarques.Views
             ConfigureActionButton(
                 btnDarSalida,
                 canShowSalida,
-                hasSelected && _selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsEmbarcadoStatus(item.Status)),
+                hasSelected && _selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsSalidaStatus(item.Status)),
                 hasSelected
                     ? !string.IsNullOrWhiteSpace(selectedDeliveryOrderCode)
                         ? $"Dar salida a la orden de entrega {selectedDeliveryOrderCode}."
@@ -560,6 +560,8 @@ namespace LD.FormsX.Features.Embarques.Views
                 filtered = filtered.Where(x => IsValidatedStatus(x.Status));
             else if (IsCargadoFilterSelected())
                 filtered = filtered.Where(x => IsCargadoStatus(x.Status));
+            else if (IsSalidaFilterSelected())
+                filtered = filtered.Where(x => IsSalidaStatus(x.Status));
             else
                 filtered = filtered.Where(x => IsSurtidoStatus(x.Status));
 
@@ -696,6 +698,14 @@ namespace LD.FormsX.Features.Embarques.Views
             return false;
         }
 
+        private bool IsSalidaFilterSelected()
+        {
+            if (cmbFiltroEmbarques?.SelectedItem is ComboBoxItem selectedItem)
+                return string.Equals(selectedItem.Tag?.ToString()?.Trim(), KittingStatusNames.Salida, StringComparison.OrdinalIgnoreCase);
+
+            return false;
+        }
+
         private async void CmbFiltroEmbarques_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_gridFilter == null || _gridFilterDet == null || _gridFilterIssue == null)
@@ -736,9 +746,9 @@ namespace LD.FormsX.Features.Embarques.Views
                 return;
             }
 
-            if (selectedKittings.Any(item => IsEmbarcadoStatus(item.Status)))
+            if (selectedKittings.Any(item => IsSalidaStatus(item.Status)))
             {
-                DialogHelper.ShowWarning("Uno o más embarques seleccionados estan embarcados. Ya no se pueden editar.");
+                DialogHelper.ShowWarning("Uno o más embarques seleccionados estan dados de salida. Ya no se pueden editar.");
                 return;
             }
 
@@ -980,9 +990,9 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-                if (selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsEmbarcadoStatus(item.Status)))
+                if (selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsSalidaStatus(item.Status)))
                 {
-                    DialogHelper.ShowWarning("No se pueden cargar embarques cancelados o ya embarcados.");
+                    DialogHelper.ShowWarning("No se pueden cargar embarques cancelados o ya dados de salida.");
                     return;
                 }
 
@@ -1044,15 +1054,15 @@ namespace LD.FormsX.Features.Embarques.Views
                     return;
                 }
 
-                if (selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsEmbarcadoStatus(item.Status)))
+                if (selectedKittings.Any(item => IsCancelledStatus(item.Status) || IsSalidaStatus(item.Status)))
                 {
-                    DialogHelper.ShowWarning("No se puede dar salida a embarques cancelados o ya embarcados.");
+                    DialogHelper.ShowWarning("No se puede dar salida a embarques cancelados o ya dados de salida.");
                     return;
                 }
 
-                if (selectedKittings.Any(item => !IsValidatedStatus(item.Status)))
+                if (selectedKittings.Any(item => !IsCargadoStatus(item.Status)))
                 {
-                    DialogHelper.ShowWarning("Los embarques deben estar en estatus Cargando para dar salida.");
+                    DialogHelper.ShowWarning("Los embarques deben estar en estatus Cargado para dar salida.");
                     return;
                 }
 

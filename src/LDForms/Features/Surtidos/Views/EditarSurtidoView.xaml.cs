@@ -546,12 +546,12 @@ namespace LD.FormsX.Features.Surtidos.Views
         private static bool IsCancelledStatus(string? status) =>
             string.Equals(status?.Trim(), "Cancelado", StringComparison.OrdinalIgnoreCase);
 
-        private static bool IsEmbarcadoStatus(string? status) =>
-            string.Equals(status?.Trim(), "Embarcado", StringComparison.OrdinalIgnoreCase);
+        private static bool IsSalidaStatus(string? status) =>
+            KittingStatusNames.IsSalida(status);
 
         private bool IsCurrentKittingEditable() =>
             _transportAndDeliveryOnlyMode
-                ? !IsEmbarcadoStatus(_selectedKitting?.Status)
+                ? !IsSalidaStatus(_selectedKitting?.Status)
                 : !IsConfirmedStatus(_selectedKitting?.Status) &&
                   !IsValidatedStatus(_selectedKitting?.Status) &&
                   !IsCancelledStatus(_selectedKitting?.Status);
@@ -571,7 +571,7 @@ namespace LD.FormsX.Features.Surtidos.Views
                 return true;
 
             DialogHelper.ShowWarning(_transportAndDeliveryOnlyMode
-                ? "El embarque esta embarcado y ya no permite cambios."
+                ? "El embarque esta dado de salida y ya no permite cambios."
                 : "El surtido esta en Validación, Cargando, confirmado o cancelado y ya no permite cambios.");
             return false;
         }

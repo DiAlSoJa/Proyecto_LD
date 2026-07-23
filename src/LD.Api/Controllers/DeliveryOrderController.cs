@@ -18,7 +18,7 @@ namespace LD.Api.Controllers;
 [Route("api/[controller]")]
 public class DeliveryOrderController : CommonController
 {
-    private const string EmbarcadoStatus = "Embarcado";
+    private const string SalidaStatus = KittingStatusNames.Salida;
     private const string AvailableStatusSalida = "Salida";
 
     private readonly LdProyectDbContext _context;
@@ -319,6 +319,12 @@ public class DeliveryOrderController : CommonController
 
             var resolvedDeliveryOrderCode = deliveryOrder.DeliveryOrderCode ?? deliveryOrder.PreDeliveryOrderCode ?? deliveryOrder.DeliveryOrderId.ToString();
 
+            if (KittingStatusNames.IsSalida(deliveryOrder.Status))
+            {
+                return ResultExtensions.ToActionResult(
+                    Result<string>.Failure("La orden de entrega ya fue dada de salida.", new List<string> { "La orden de entrega ya fue dada de salida." }, 409));
+            }
+
             var kittings = deliveryOrder.DeliveryOrderKittings
                 .Where(x => x.Kitting != null)
                 .OrderBy(x => x.SortOrder)
@@ -333,10 +339,10 @@ public class DeliveryOrderController : CommonController
                     Result<string>.Failure("La orden de entrega no tiene kittings relacionados.", new List<string> { "La orden de entrega no tiene kittings relacionados." }));
             }
 
-            if (kittings.Any(kitting => !KittingStatusNames.IsLoading(kitting.Status)))
+            if (kittings.Any(kitting => !IsCargadoStatus(kitting.Status)))
             {
                 return ResultExtensions.ToActionResult(
-                    Result<string>.Failure("Los embarques deben estar en estatus Cargando para dar salida.", new List<string> { "Los embarques deben estar en estatus Cargando para dar salida." }));
+                    Result<string>.Failure("Los embarques deben estar en estatus Cargado para dar salida.", new List<string> { "Los embarques deben estar en estatus Cargado para dar salida." }));
             }
 
             var deliveryMovementExists = await _context.InventoryMovements
@@ -461,12 +467,12 @@ public class DeliveryOrderController : CommonController
 
                 foreach (var kitting in kittings)
                 {
-                    kitting.Status = EmbarcadoStatus;
+                    kitting.Status = SalidaStatus;
                     kitting.LastModifiedAt = now;
                     kitting.LastModifiedByUserId = CurrentUserId;
                 }
 
-                deliveryOrder.Status = EmbarcadoStatus;
+                deliveryOrder.Status = SalidaStatus;
                 deliveryOrder.LastModifiedAt = now;
                 deliveryOrder.LastModifiedByUserId = CurrentUserId;
 
@@ -522,12 +528,12 @@ public class DeliveryOrderController : CommonController
                         404));
             }
 
-            if (string.Equals(deliveryOrder.Status?.Trim(), EmbarcadoStatus, StringComparison.OrdinalIgnoreCase))
+            if (KittingStatusNames.IsSalida(deliveryOrder.Status))
             {
                 return ResultExtensions.ToActionResult(
                     Result<FinishDeliveryOrderLoadingResultDto>.Failure(
-                        "La orden de entrega ya fue embarcada.",
-                        new List<string> { "La orden de entrega ya fue embarcada." },
+                        "La orden de entrega ya fue dada de salida.",
+                        new List<string> { "La orden de entrega ya fue dada de salida." },
                         409));
             }
 
@@ -838,6 +844,10 @@ public class DeliveryOrderController : CommonController
             ? trimmed
             : trimmed[..maxLength];
     }
+
+    private static bool IsCargadoStatus(string? status) =>
+        string.Equals(status?.Trim(), KittingStatusNames.Cargado, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(status?.Trim(), KittingStatusNames.CargadoParcial, StringComparison.OrdinalIgnoreCase);
 
     private static string GetDeliveryOrderPrefix(Project project)
     {

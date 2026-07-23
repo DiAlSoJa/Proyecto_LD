@@ -129,7 +129,7 @@ public partial class SignatureDriverViewModel : ObservableObject
                 return;
             }
 
-            await _dialogService.ShowSuccessAsync("Registro completado", "Control de Patio asignará una cortina.");
+            await _dialogService.ShowSuccessAsync("Registro completado", "Control de Operaciones asignará una cortina.");
             _context.Clear();
             await Shell.Current.GoToAsync("//dashboard");
         }

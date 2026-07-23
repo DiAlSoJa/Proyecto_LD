@@ -1103,7 +1103,7 @@ namespace LD.FormsX.Views.ASN
                     "folio",
                     "FOLIO",
                     10,
-                    NumericValueSelector: receipt => receipt.AsnReceiptDetailId),
+                    NumericValueSelector: receipt => receipt.PalletNumber),
                 new ExportColumn(
                     "part_number",
                     "No. de parte",

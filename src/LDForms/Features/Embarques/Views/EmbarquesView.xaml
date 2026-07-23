@@ -115,7 +115,7 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left">
                     <ComboBox x:Name="cmbFiltroEmbarques"
-                              Width="150"
+                              Width="172"
                               Height="28"
                               Margin="0,0,0,0"
                               Padding="5,1"
@@ -129,6 +129,7 @@
                         <ComboBoxItem Content="Ver validación" Tag="Validación"/>
                         <ComboBoxItem Content="Ver cargando" Tag="Cargando"/>
                         <ComboBoxItem Content="Ver cargado" Tag="Cargado"/>
+                        <ComboBoxItem Content="Ver embarcados" Tag="Salida"/>
                     </ComboBox>
 
                     <Button x:Name="BtnActualizar"

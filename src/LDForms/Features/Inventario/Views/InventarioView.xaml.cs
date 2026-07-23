@@ -305,6 +305,9 @@ namespace LD.FormsX.Views.Inventario
             if (item is not AvailableInventoryDto inventory)
                 return false;
 
+            if (IsHiddenAvailableStatus(inventory.AvailableStatus))
+                return false;
+
             if (!string.IsNullOrWhiteSpace(SelectedClientText) &&
                 !string.Equals(inventory.Cliente?.Trim(), SelectedClientText.Trim(), StringComparison.OrdinalIgnoreCase))
             {
@@ -336,6 +339,10 @@ namespace LD.FormsX.Views.Inventario
 
             return true;
         }
+
+        private static bool IsHiddenAvailableStatus(string? availableStatus) =>
+            string.Equals(availableStatus?.Trim(), "Salida", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(availableStatus?.Trim(), "Surtido", StringComparison.OrdinalIgnoreCase);
 
         private static bool Contains(string? source, string searchText)
         {
