@@ -51,12 +51,12 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
     {
         try
         {
-            var validation = await AsnModificationGuard.EnsureAsnDetailParentIsEditableAsync(
+            var parentValidation = await AsnModificationGuard.EnsureAsnDetailParentIsEditableAsync(
                 request.AsnDetailId,
                 _asnDetailRepository,
                 _asnParentRepository);
-            if (validation is not null)
-                return validation;
+            if (parentValidation is not null)
+                return parentValidation;
 
             var standardIdResult = await ResolveStandardIdAsync(request.StandardId);
             if (standardIdResult.IsFailure)
@@ -64,9 +64,15 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
 
             request.StandardId = standardIdResult.Data?.ToString();
 
-            var uniqueLotValidation = await EnsureUniqueLotIsNotDuplicatedAsync(request.AsnDetailId, request.LotNumber);
-            if (uniqueLotValidation is not null)
-                return uniqueLotValidation;
+            var validationResult = await AsnReceiptValidationGuard.EnsureReceiptCanBeSavedAsync(
+                request,
+                _asnRepository,
+                _asnDetailRepository,
+                _asnParentRepository,
+                _availableInventoryRepository,
+                _projectRepository);
+            if (validationResult is not null)
+                return validationResult;
 
             var entity = _mapper.Map<LD.Domain.Entities.AsnReceiptDetail>(request);
             entity.PalletNumber = await ResolveNextPalletNumberAsync(request.AsnDetailId);
@@ -119,51 +125,4 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
         return nextPalletNumber;
     }
 
-    private async Task<Result<string>?> EnsureUniqueLotIsNotDuplicatedAsync(int asnDetailId, string? lotNumber)
-    {
-        var normalizedLot = lotNumber?.Trim();
-        if (string.IsNullOrWhiteSpace(normalizedLot))
-            return null;
-
-        var asnDetail = await _asnDetailRepository.GetByIdAsync(asnDetailId);
-        if (asnDetail is null)
-            return null;
-
-        var asn = await _asnParentRepository.GetByIdAsync(asnDetail.AsnId);
-        if (asn is null)
-            return null;
-
-        var project = await _projectRepository.GetByIdAsync(asn.ProjectId);
-        if (project is null || !project.UniqueLot)
-            return null;
-
-        var asnIdsInProject = (await _asnParentRepository.GetManyAsync() ?? new List<LD.Domain.Entities.Asn>())
-            .Where(x => x.ProjectId == project.ProjectId)
-            .Select(x => x.AsnId)
-            .ToHashSet();
-
-        var asnDetailIds = (await _asnDetailRepository.GetManyAsync() ?? new List<LD.Domain.Entities.AsnDetail>())
-            .Where(x => asnIdsInProject.Contains(x.AsnId))
-            .Select(x => x.AsnDetailId)
-            .ToHashSet();
-
-        var receipts = await _asnRepository.GetManyAsync() ?? new List<AsnReceiptDetail>();
-        var duplicateReceiptExists = receipts.Any(x =>
-            asnDetailIds.Contains(x.AsnDetailId)
-            && !string.IsNullOrWhiteSpace(x.LotNumber)
-            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
-
-        var inventories = await _availableInventoryRepository.GetManyAsync() ?? new List<AvailableInventory>();
-        var duplicateInventoryExists = inventories.Any(x =>
-            x.ClientId == asn.ClientId
-            && x.ProjectId == project.ProjectId
-            && !string.IsNullOrWhiteSpace(x.LotNumber)
-            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
-
-        if (!duplicateReceiptExists && !duplicateInventoryExists)
-            return null;
-
-        var message = $"El lote {normalizedLot} ya existe en recepciones o inventario para este cliente y proyecto y no se permite repetirlo.";
-        return Result<string>.Failure(message, new List<string> { message });
-    }
 }

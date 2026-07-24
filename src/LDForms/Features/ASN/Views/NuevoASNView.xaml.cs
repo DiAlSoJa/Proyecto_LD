@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using LD.Client.Services;
 using LD.Contracts.AvailableInventory;
 using LD.Contracts.ASN;
+using LD.Contracts.DTOs;
 using LD.Contracts.DTOs.StandardLabel;
 using LD.Contracts.Enums;
 using LD.Contracts.InventaryStatus;
@@ -39,7 +40,6 @@ namespace LD.FormsX.Views.Dialogs
         private readonly AsnReceiptService _asnReceiptService;
         private readonly AvailableInventoryService _availableInventoryService;
         private readonly LookupService _lookupService;
-        private readonly LocationService _locationService;
         private readonly ProjectService _projectService;
         private readonly ProductService _productService;
         private readonly StandardLabelService _standardLabelService;
@@ -61,6 +61,7 @@ namespace LD.FormsX.Views.Dialogs
         private string _lastSavedHeaderSignature = string.Empty;
         private int _clientId;
         private int _projectId;
+        private int? _projectWarehouseId;
         private int? _defaultProjectLocationId;
         private string _defaultProjectLocationCode = string.Empty;
         private string _clientName = string.Empty;
@@ -79,7 +80,7 @@ namespace LD.FormsX.Views.Dialogs
         public ObservableCollection<AsnDetailItem> DetailItems { get; set; } = new();
         public ObservableCollection<AsnReceiptItem> ReceiptItems { get; set; } = new();
 
-        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, AvailableInventoryService availableInventoryService, ProductService productService, StandardLabelService standardLabelService, LookupService lookupService, InventaryStatusService inventaryStatusService, LocationService locationService, ProjectService projectService, IServiceProvider serviceProvider)
+        public NuevoASNView(AsnService asnService, AsnDetailService asnDetailService, AsnReceiptService asnReceiptService, AvailableInventoryService availableInventoryService, ProductService productService, StandardLabelService standardLabelService, LookupService lookupService, InventaryStatusService inventaryStatusService, ProjectService projectService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _asnService = asnService;
@@ -90,7 +91,6 @@ namespace LD.FormsX.Views.Dialogs
             _productService = productService;
             _standardLabelService = standardLabelService;
             _inventaryStatusService = inventaryStatusService;
-            _locationService = locationService;
             _projectService = projectService;
             _serviceProvider = serviceProvider;
             _detailGridNavigation = new DataGridNavigationManager(dgDetail);
@@ -384,7 +384,7 @@ namespace LD.FormsX.Views.Dialogs
             if (dgDetail == null)
                 return;
 
-            dgDetail.IsReadOnly = !isEditable || scanRequired;
+            dgDetail.IsReadOnly = !isEditable;
             dgDetail.CanUserDeleteRows = isEditable && !scanRequired;
         }
 
@@ -551,7 +551,6 @@ namespace LD.FormsX.Views.Dialogs
                 _cargandoDatos = true;
 
                 await LoadDetailLookupsAsync();
-                await LoadLocationLookupAsync();
                 await LoadProjectDefaultLocationAsync();
                 await LoadProjectScanConfigurationsAsync();
                 await LoadProductsForSelectedClientProjectAsync();
@@ -806,7 +805,18 @@ namespace LD.FormsX.Views.Dialogs
             if (!await EnsureAsnPersistedAsync())
                 return false;
 
-            var receiptRow = CreateScannedReceiptTemplate(GetScanTemplateDetailRow(scanResults));
+            AsnDetailItem detailRow;
+            try
+            {
+                detailRow = GetScanTemplateDetailRow(scanResults);
+            }
+            catch (InvalidOperationException ex)
+            {
+                DialogHelper.ShowWarning(ex.Message);
+                return false;
+            }
+
+            var receiptRow = CreateScannedReceiptTemplate(detailRow);
 
             foreach (var result in scanResults)
             {
@@ -819,7 +829,6 @@ namespace LD.FormsX.Views.Dialogs
             if (!EnsureUniqueLotIsAllowed(receiptRow))
                 return false;
 
-            AsnDetailItem detailRow;
             try
             {
                 detailRow = await ResolveDetailForScannedReceiptAsync(receiptRow);
@@ -872,54 +881,56 @@ namespace LD.FormsX.Views.Dialogs
                 await LoadProductsForSelectedClientProjectAsync();
 
             EnsureProductDataForScannedReceipt(receiptRow);
+            return await ValidateScannedReceiptAgainstExistingDetailAsync(receiptRow);
+        }
 
+        private async Task<AsnDetailItem> ValidateScannedReceiptAgainstExistingDetailAsync(AsnReceiptItem receiptRow)
+        {
             var quantityToAdd = receiptRow.ReceivedQuantity ?? 0m;
             if (quantityToAdd <= 0)
-                throw new InvalidOperationException("La línea escaneada no tiene cantidad recibida válida.");
+                throw new InvalidOperationException("La linea escaneada no tiene cantidad recibida valida.");
 
             var detailRow = FindMatchingDetailForReceipt(receiptRow);
             if (detailRow == null)
             {
-                detailRow = CreateDetailRowFromScannedReceipt(receiptRow, quantityToAdd);
-                var createResponse = await _asnDetailService.CreateAsnDetail(detailRow.ToRequest());
-                Log.Information(
-                    "Resultado ResolveDetailForScannedReceiptAsync Create. AsnId: {AsnId}. PartNumber: {PartNumber}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
-                    detailRow.AsnId, detailRow.PartNumber, createResponse.IsSuccess, createResponse.Code, createResponse.Message, createResponse.Data);
+                var partNumber = receiptRow.PartNumber?.Trim() ?? string.Empty;
+                var lotNumber = receiptRow.LotNumber?.Trim() ?? string.Empty;
 
-                if (!createResponse.IsSuccess)
-                    throw new InvalidOperationException(createResponse.ErrorMessage ?? createResponse.Message ?? "No se pudo crear el detail para la recepción escaneada.");
+                if (!string.IsNullOrWhiteSpace(lotNumber))
+                    throw new InvalidOperationException($"No existe una partida guardada con numero de parte {partNumber} y lote {lotNumber} para este ASN.");
 
-                if (int.TryParse(createResponse.Data, out var asnDetailId) && asnDetailId > 0)
-                    detailRow.AsnDetailId = asnDetailId;
-
-                if (detailRow.AsnDetailId <= 0)
-                    throw new InvalidOperationException("No se pudo obtener el Id del detail creado para la recepción escaneada.");
-
-                var emptyDetailRow = DetailItems.FirstOrDefault(IsEmptyDetailRow);
-                if (emptyDetailRow != null)
-                {
-                    var index = DetailItems.IndexOf(emptyDetailRow);
-                    DetailItems[index] = detailRow;
-                }
-                else
-                {
-                    DetailItems.Add(detailRow);
-                }
-
-                EnsureTrailingEmptyDetailRow();
-                return detailRow;
+                throw new InvalidOperationException($"No existe una partida guardada con numero de parte {partNumber} para este ASN.");
             }
 
-            detailRow.Quantity += quantityToAdd;
-            var updateResponse = await _asnDetailService.UpdateAsnDetail(detailRow.AsnDetailId, detailRow.ToRequest());
-            Log.Information(
-                "Resultado ResolveDetailForScannedReceiptAsync Update. AsnDetailId: {AsnDetailId}. Quantity: {Quantity}. Success: {IsSuccess}. Code: {Code}. Message: {Message}. Data: {Data}",
-                detailRow.AsnDetailId, detailRow.Quantity, updateResponse.IsSuccess, updateResponse.Code, updateResponse.Message, updateResponse.Data);
+            if (detailRow.AsnDetailId <= 0)
+                throw new InvalidOperationException($"La partida {detailRow.PartNumber?.Trim() ?? string.Empty} debe guardarse antes de escanear.");
 
-            if (!updateResponse.IsSuccess)
+            await LoadProjectReceiptCacheAsync();
+
+            var currentQuantity = _asnReceiptDetailsCache
+                .Where(x => x.AsnDetailId == detailRow.AsnDetailId
+                    && x.AsnReceiptDetailId != receiptRow.AsnReceiptDetailId)
+                .Sum(x => x.ReceivedQuantity ?? 0m);
+
+            var totalQuantity = currentQuantity + quantityToAdd;
+            if (totalQuantity > detailRow.Quantity)
             {
-                detailRow.Quantity -= quantityToAdd;
-                throw new InvalidOperationException(updateResponse.ErrorMessage ?? updateResponse.Message ?? "No se pudo actualizar la cantidad del detail para la recepción escaneada.");
+                throw new InvalidOperationException(
+                    $"La suma de las cantidades de recepciones ({totalQuantity:0.##}) no puede ser mayor a la cantidad del detalle ({detailRow.Quantity:0.##}).");
+            }
+
+            if (!string.IsNullOrWhiteSpace(receiptRow.StandardId))
+            {
+                var standardIdText = receiptRow.StandardId.Trim();
+                if (!int.TryParse(standardIdText, out var standardId) || standardId <= 0)
+                    throw new InvalidOperationException("StandardId invalido.");
+
+                var standardAlreadyAssigned = _asnReceiptDetailsCache.Any(x =>
+                    x.AsnReceiptDetailId != receiptRow.AsnReceiptDetailId
+                    && string.Equals(x.StandardId?.Trim(), standardIdText, StringComparison.OrdinalIgnoreCase));
+
+                if (standardAlreadyAssigned)
+                    throw new InvalidOperationException($"El StandardId {standardIdText} ya fue agregado previamente.");
             }
 
             return detailRow;
@@ -1095,6 +1106,9 @@ namespace LD.FormsX.Views.Dialogs
             {
                 receiptRow = CloneReceiptRow(selectedReceipt);
                 receiptRow.AsnReceiptDetailId = 0;
+                receiptRow.StandardId = null;
+                receiptRow.ReceivedQuantity = null;
+                receiptRow.LotNumber = null;
             }
             else
             {
@@ -1144,26 +1158,13 @@ namespace LD.FormsX.Views.Dialogs
         {
             var existingDetail = DetailItems.FirstOrDefault(item =>
                 !IsEmptyDetailRow(item)
+                && item.AsnDetailId > 0
                 && string.Equals(item.PartNumber?.Trim(), partNumber.Trim(), StringComparison.OrdinalIgnoreCase));
 
             if (existingDetail != null)
                 return existingDetail;
 
-            var productLookup = ProductLookupItems.FirstOrDefault(item =>
-                string.Equals(item.Code?.Trim(), partNumber.Trim(), StringComparison.OrdinalIgnoreCase));
-
-            if (productLookup?.Data is not ProductAutocompleteDto product)
-                throw new InvalidOperationException($"No existe el numero de parte {partNumber} para este cliente y proyecto.");
-
-            return new AsnDetailItem
-            {
-                AsnId = AsnSelected?.AsnId ?? 0,
-                ProductId = product.ItemId,
-                PartNumber = product.NumeroParte?.Trim() ?? partNumber.Trim(),
-                Description = product.Descripcion ?? string.Empty,
-                StandardQuantity = product.StandardPackageValue,
-                MaximumQuantity = product.MaxUnitValue
-            };
+            throw new InvalidOperationException($"No existe una partida guardada con numero de parte {partNumber} para este ASN.");
         }
 
         private AsnDetailItem? FindMatchingDetailForReceipt(AsnReceiptItem receiptRow)
@@ -1172,9 +1173,12 @@ namespace LD.FormsX.Views.Dialogs
                 !IsEmptyDetailRow(item)
                 && item.AsnDetailId > 0
                 && string.Equals(NormalizeMatchValue(item.PartNumber), NormalizeMatchValue(receiptRow.PartNumber), StringComparison.OrdinalIgnoreCase)
-                && string.Equals(NormalizeMatchValue(item.LotNumber), NormalizeMatchValue(receiptRow.LotNumber), StringComparison.OrdinalIgnoreCase)
-                && string.Equals(NormalizeMatchValue(item.PurchaseOrder), NormalizeMatchValue(receiptRow.PurchaseOrder), StringComparison.OrdinalIgnoreCase)
-                && string.Equals(NormalizeMatchValue(item.CustomsDeclarationNumber), NormalizeMatchValue(receiptRow.CustomsDeclarationNumber), StringComparison.OrdinalIgnoreCase));
+                && (string.IsNullOrWhiteSpace(receiptRow.LotNumber)
+                    || string.Equals(NormalizeMatchValue(item.LotNumber), NormalizeMatchValue(receiptRow.LotNumber), StringComparison.OrdinalIgnoreCase))
+                && (string.IsNullOrWhiteSpace(receiptRow.PurchaseOrder)
+                    || string.Equals(NormalizeMatchValue(item.PurchaseOrder), NormalizeMatchValue(receiptRow.PurchaseOrder), StringComparison.OrdinalIgnoreCase))
+                && (string.IsNullOrWhiteSpace(receiptRow.CustomsDeclarationNumber)
+                    || string.Equals(NormalizeMatchValue(item.CustomsDeclarationNumber), NormalizeMatchValue(receiptRow.CustomsDeclarationNumber), StringComparison.OrdinalIgnoreCase)));
         }
 
         private AsnDetailItem CreateDetailRowFromScannedReceipt(AsnReceiptItem receiptRow, decimal quantity)
@@ -2306,26 +2310,23 @@ namespace LD.FormsX.Views.Dialogs
             await LoadSdLookupAsync();
         }
 
-        private async Task LoadLocationLookupAsync()
+        private async Task LoadLocationLookupAsync(int? warehouseId)
         {
             try
             {
                 LocationLookupItems.Clear();
 
-                var response = await _locationService.GetLocations();
+                if (!warehouseId.HasValue || warehouseId.Value <= 0)
+                    return;
+
+                var response = await _lookupService.GetLocationWarehouseLookup(warehouseId.Value);
                 if (!response.IsSuccess || response.Data == null)
                     return;
 
                 foreach (var item in response.Data
-                    .Where(x => !string.IsNullOrWhiteSpace(x.Ubicacion))
-                    .OrderBy(x => x.Ubicacion)
-                    .Select(x => new LookupItem
-                    {
-                        Id = x.LocationId,
-                        Code = x.Ubicacion ?? string.Empty,
-                        Description = x.Almacen ?? string.Empty,
-                        Data = x
-                    }))
+                    .Where(x => !string.IsNullOrWhiteSpace(x.Value))
+                    .OrderBy(x => x.Value)
+                    .Select(ToLocationLookupItem))
                 {
                     LocationLookupItems.Add(item);
                 }
@@ -2338,16 +2339,32 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task LoadProjectDefaultLocationAsync()
         {
+            _projectWarehouseId = null;
             _defaultProjectLocationId = null;
             _defaultProjectLocationCode = string.Empty;
 
             if (_projectId <= 0)
+            {
+                await LoadLocationLookupAsync(null);
                 return;
+            }
 
             try
             {
                 var response = await _projectService.GetProjectById(_projectId);
-                if (!response.IsSuccess || response.Data?.LocationId == null)
+                if (!response.IsSuccess || response.Data == null)
+                {
+                    await LoadLocationLookupAsync(null);
+                    return;
+                }
+
+                _projectWarehouseId = response.Data.WarehouseId.HasValue && response.Data.WarehouseId.Value > 0
+                    ? response.Data.WarehouseId
+                    : null;
+
+                await LoadLocationLookupAsync(_projectWarehouseId);
+
+                if (response.Data.LocationId == null)
                     return;
 
                 _defaultProjectLocationId = response.Data.LocationId;
@@ -2355,6 +2372,7 @@ namespace LD.FormsX.Views.Dialogs
             }
             catch (Exception ex)
             {
+                await LoadLocationLookupAsync(null);
                 DialogHelper.ShowError(ex.Message);
             }
         }
@@ -2377,13 +2395,27 @@ namespace LD.FormsX.Views.Dialogs
             if (!string.IsNullOrWhiteSpace(lookupItem?.Code))
                 return lookupItem.Code;
 
-            var locationsResponse = await _locationService.GetLocations();
+            if (!_projectWarehouseId.HasValue || _projectWarehouseId.Value <= 0)
+                return string.Empty;
+
+            var locationsResponse = await _lookupService.GetLocationWarehouseLookup(_projectWarehouseId.Value);
             if (!locationsResponse.IsSuccess || locationsResponse.Data == null)
                 return string.Empty;
 
             return locationsResponse.Data
-                .FirstOrDefault(x => x.LocationId == targetLocationId)?
-                .Ubicacion ?? string.Empty;
+                .FirstOrDefault(x => int.TryParse(x.Key, out var parsedId) && parsedId == targetLocationId)?
+                .Value ?? string.Empty;
+        }
+
+        private static LookupItem ToLocationLookupItem(DropDownDto item)
+        {
+            return new LookupItem
+            {
+                Id = int.TryParse(item.Key, out var locationId) ? locationId : item.Key ?? string.Empty,
+                Code = item.Value?.Trim() ?? string.Empty,
+                Description = item.Description?.Trim() ?? string.Empty,
+                Data = item
+            };
         }
 
         private void ApplyProjectLocationDefaults(AsnReceiptItem receiptRow)

@@ -1,14 +1,15 @@
-using LD.Contracts.Requests;
-using LD.Application.Common.Guards;
-using LD.Application.Common.Results;
-using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using LD.Application.Common.Guards;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Interfaces.StandarLabel;
+using LD.Application.Common.Results;
+using LD.Contracts.Requests;
 using LD.Domain.Entities;
+using MediatR;
 
 namespace LD.Application.Features.Asn.Commands;
 
@@ -25,7 +26,7 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
     private readonly IRepository<AvailableInventory> _availableInventoryRepository;
     private readonly IProjectRepository _projectRepository;
     private readonly IStandarIdService _standarIdService;
-    private readonly AutoMapper.IMapper _mapper;
+    private readonly IMapper _mapper;
 
     public UpdateAsnReceiptDetailCommandHandler(
         IRepository<LD.Domain.Entities.AsnReceiptDetail> asnRepository,
@@ -34,7 +35,7 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
         IRepository<AvailableInventory> availableInventoryRepository,
         IProjectRepository projectRepository,
         IStandarIdService standarIdService,
-        AutoMapper.IMapper mapper)
+        IMapper mapper)
     {
         _asnRepository = asnRepository;
         _asnDetailRepository = asnDetailRepository;
@@ -57,12 +58,21 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
             if (validation is not null)
                 return validation;
 
-            var asn = await _asnRepository.GetByIdAsync(request.AsnReceiptDetailId);
-            if (asn is null)
-                return Result<string>.Failure("No existe el detalle de recepción del ASN", new System.Collections.Generic.List<string> { "No existe el detalle de recepción del ASN" }, 404);
+            var currentReceipt = await _asnRepository.GetByIdAsync(request.AsnReceiptDetailId);
+            if (currentReceipt is null)
+                return Result<string>.Failure(
+                    "No existe el detalle de recepcion del ASN",
+                    new List<string> { "No existe el detalle de recepcion del ASN" },
+                    404);
 
-            var existingStandardId = asn.StandardId;
-            var existingPalletNumber = asn.PalletNumber;
+            var targetAsnDetailId = request.AsnDetailId > 0
+                ? request.AsnDetailId
+                : currentReceipt.AsnDetailId;
+            request.AsnDetailId = targetAsnDetailId;
+
+            var existingStandardId = currentReceipt.StandardId;
+            var existingPalletNumber = currentReceipt.PalletNumber;
+
             var standardIdResult = await ResolveStandardIdAsync(request.StandardId);
             if (standardIdResult.IsFailure)
                 return Result<string>.Failure(standardIdResult.Message, standardIdResult.Errors, standardIdResult.Code);
@@ -70,25 +80,37 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
             var hasStandardIdInRequest = !string.IsNullOrWhiteSpace(request.StandardId);
             request.StandardId = standardIdResult.Data?.ToString();
 
-            var uniqueLotValidation = await EnsureUniqueLotIsNotDuplicatedAsync(asn, request.LotNumber);
-            if (uniqueLotValidation is not null)
-                return uniqueLotValidation;
+            var validationResult = await AsnReceiptValidationGuard.EnsureReceiptCanBeSavedAsync(
+                request,
+                _asnRepository,
+                _asnDetailRepository,
+                _asnParentRepository,
+                _availableInventoryRepository,
+                _projectRepository,
+                currentReceipt.AsnReceiptDetailId);
+            if (validationResult is not null)
+                return validationResult;
 
-            _mapper.Map(request, asn);
+            _mapper.Map(request, currentReceipt);
 
             if (!hasStandardIdInRequest)
-                asn.StandardId = existingStandardId;
-            asn.PalletNumber = existingPalletNumber;
+                currentReceipt.StandardId = existingStandardId;
 
-            var updated = await _asnRepository.UpdateAsync(asn);
+            currentReceipt.PalletNumber = existingPalletNumber;
+
+            var updated = await _asnRepository.UpdateAsync(currentReceipt);
             if (!updated)
-                return Result<string>.Failure("Error al actualizar", new System.Collections.Generic.List<string> { "Hubo un error al actualizar" });
+                return Result<string>.Failure(
+                    "Error al actualizar",
+                    new List<string> { "Hubo un error al actualizar" });
 
-            return Result<string>.Success(asn.AsnReceiptDetailId.ToString(), "Detalle de recepción del ASN actualizado");
+            return Result<string>.Success(currentReceipt.AsnReceiptDetailId.ToString(), "Detalle de recepcion del ASN actualizado");
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure("Hubo un error al actualizar el detalle de recepción del ASN", new System.Collections.Generic.List<string> { ex.Message });
+            return Result<string>.Failure(
+                "Hubo un error al actualizar el detalle de recepcion del ASN",
+                new List<string> { ex.Message });
         }
     }
 
@@ -106,54 +128,5 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
             return Result<int?>.Success(parsedStandardId, string.Empty);
 
         return Result<int?>.Failure("No existe la etiqueta LD.", new() { "No existe la etiqueta LD." }, 404);
-    }
-
-    private async Task<Result<string>?> EnsureUniqueLotIsNotDuplicatedAsync(LD.Domain.Entities.AsnReceiptDetail currentReceipt, string? lotNumber)
-    {
-        var normalizedLot = lotNumber?.Trim();
-        if (string.IsNullOrWhiteSpace(normalizedLot))
-            return null;
-
-        var asnDetail = await _asnDetailRepository.GetByIdAsync(currentReceipt.AsnDetailId);
-        if (asnDetail is null)
-            return null;
-
-        var asn = await _asnParentRepository.GetByIdAsync(asnDetail.AsnId);
-        if (asn is null)
-            return null;
-
-        var project = await _projectRepository.GetByIdAsync(asn.ProjectId);
-        if (project is null || !project.UniqueLot)
-            return null;
-
-        var asnIdsInProject = (await _asnParentRepository.GetManyAsync() ?? new List<LD.Domain.Entities.Asn>())
-            .Where(x => x.ProjectId == project.ProjectId)
-            .Select(x => x.AsnId)
-            .ToHashSet();
-
-        var asnDetailIds = (await _asnDetailRepository.GetManyAsync() ?? new List<LD.Domain.Entities.AsnDetail>())
-            .Where(x => asnIdsInProject.Contains(x.AsnId))
-            .Select(x => x.AsnDetailId)
-            .ToHashSet();
-
-        var receipts = await _asnRepository.GetManyAsync() ?? new List<AsnReceiptDetail>();
-        var duplicateReceiptExists = receipts.Any(x =>
-            x.AsnReceiptDetailId != currentReceipt.AsnReceiptDetailId
-            && asnDetailIds.Contains(x.AsnDetailId)
-            && !string.IsNullOrWhiteSpace(x.LotNumber)
-            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
-
-        var inventories = await _availableInventoryRepository.GetManyAsync() ?? new List<AvailableInventory>();
-        var duplicateInventoryExists = inventories.Any(x =>
-            x.ClientId == asn.ClientId
-            && x.ProjectId == project.ProjectId
-            && !string.IsNullOrWhiteSpace(x.LotNumber)
-            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
-
-        if (!duplicateReceiptExists && !duplicateInventoryExists)
-            return null;
-
-        var message = $"El lote {normalizedLot} ya existe en recepciones o inventario para este cliente y proyecto y no se permite repetirlo.";
-        return Result<string>.Failure(message, new List<string> { message });
     }
 }
