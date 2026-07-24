@@ -56,6 +56,11 @@ public static class WebApplicationExtensions
                 {
                     PermissionKeys.Asn_View,
                     PermissionKeys.WarehouseStaff_Asn_View
+                }),
+                AnyPermissionRequirement.BuildPolicyName(new[]
+                {
+                    PermissionKeys.Shipment_View,
+                    PermissionKeys.KittingFolioCapture_Access
                 })
             };
 

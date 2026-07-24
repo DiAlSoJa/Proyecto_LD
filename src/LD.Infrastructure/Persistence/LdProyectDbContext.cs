@@ -61,10 +61,11 @@ namespace LD.Infrastructure.Persistence
         public DbSet<OperationalTask> OperationalTasks { get; set; }
         public DbSet<WarehouseTask> WarehouseTasks { get; set; }
 
-        // ASN related tables
-        public DbSet<Asn> Asns { get; set; }
-        public DbSet<AsnDetail> AsnDetails { get; set; }
-        public DbSet<AsnReceiptDetail> AsnReceiptDetails { get; set; }
+          // ASN related tables
+          public DbSet<Asn> Asns { get; set; }
+          public DbSet<AsnDetail> AsnDetails { get; set; }
+          public DbSet<KittingFolioCapture> KittingFolioCaptures { get; set; }
+          public DbSet<AsnReceiptDetail> AsnReceiptDetails { get; set; }
         public DbSet<Kitting> Kittings { get; set; }
         public DbSet<DeliveryOrder> DeliveryOrders { get; set; }
         public DbSet<DeliveryOrderKitting> DeliveryOrderKittings { get; set; }
@@ -282,6 +283,32 @@ namespace LD.Infrastructure.Persistence
                     .WithMany()
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<KittingFolioCapture>(entity =>
+            {
+                entity.ToTable("KittingFolioCaptures");
+                entity.Property(x => x.SourceFileName).HasMaxLength(260);
+                entity.Property(x => x.GuideNumber).HasMaxLength(50);
+                entity.Property(x => x.InvoiceNumber).HasMaxLength(50);
+                entity.Property(x => x.PartNumber).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.Description).HasMaxLength(250);
+                entity.Property(x => x.Quantity).HasColumnType("decimal(18,2)");
+                entity.Property(x => x.LotNumber).HasMaxLength(50);
+                entity.Property(x => x.SourceStatus).HasMaxLength(30);
+
+                entity.HasIndex(x => new { x.KittingId, x.CreatedAt });
+                entity.HasIndex(x => x.KittingDetailId);
+
+                entity.HasOne(x => x.Kitting)
+                    .WithMany()
+                    .HasForeignKey(x => x.KittingId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.KittingDetail)
+                    .WithMany()
+                    .HasForeignKey(x => x.KittingDetailId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
 
             builder.Entity<AsnReceiptDetail>()
                 .HasOne(r => r.Product)

@@ -71,6 +71,7 @@ public static class PermissionKeys
 
     // PICKING
     public const string Picking_View = "picking.read";
+    public const string KittingFolioCapture_Access = "kitting-folio-capture.access";
 
     // AUDITING
     public const string Auditing_View = "auditing.read";

@@ -52,6 +52,7 @@ public partial class DashBoardViewModel : ObservableObject
             ["Inventario"] = new("Inventario", "ClipboardCheckOutline", DashboardIconColor, Module_e.Inventory, null, () => _serviceProvider.GetRequiredService<InventarioView>()),
             ["Movimientos"] = new("Movimientos", "SwapHorizontal", DashboardIconColor, Module_e.Movements, null, () => _serviceProvider.GetRequiredService<MovimientosView>()),
             ["ASN"] = new("ASN", "PackageVariantClosed", DashboardIconColor, Module_e.ASN, null, () => _serviceProvider.GetRequiredService<ASNView>()),
+            ["CapturaFolios"] = new("Captura folios", "FileDocumentOutline", DashboardIconColor, Module_e.Picking, null, () => _serviceProvider.GetRequiredService<CapturaFoliosView>()),
             ["Auditar"] = new("Auditar", "ClipboardSearchOutline", DashboardIconColor, Module_e.Auditing, null, () => _serviceProvider.GetRequiredService<AuditarView>()),
             ["Aleatorio"] = new("Inventario aleatorio", "ShuffleVariant", DashboardIconColor, Module_e.RandomInventory, null, () => _serviceProvider.GetRequiredService<InventarioCiclicoView>()),
             ["Usuarios"] = new("Usuarios", "AccountMultipleOutline", DashboardIconColor, Module_e.Users, null, () => _serviceProvider.GetRequiredService<UsuariosView>()),
@@ -89,9 +90,11 @@ public partial class DashBoardViewModel : ObservableObject
                 openCommand,
                 openInWindowCommand)
             {
-                IsVisible = key.Equals("DockDelivery", StringComparison.OrdinalIgnoreCase)
-                    ? HasDockDeliveryAccess()
-                    : UserData.HasModule((int)meta.Module)
+                IsVisible = key.Equals("CapturaFolios", StringComparison.OrdinalIgnoreCase)
+                    ? UserData.HasPermission(PermissionKeys.KittingFolioCapture_Access)
+                    : key.Equals("DockDelivery", StringComparison.OrdinalIgnoreCase)
+                        ? HasDockDeliveryAccess()
+                        : UserData.HasModule((int)meta.Module)
             });
         }
 

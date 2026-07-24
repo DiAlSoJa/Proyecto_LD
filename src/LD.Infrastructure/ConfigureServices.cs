@@ -2,6 +2,7 @@ using LD.Application.Common.Interfaces;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Application.Common.Interfaces.Persistence;
 using LD.Application.Common.Interfaces.Repository;
+using LD.Application.Common.Interfaces.KittingFolioImport;
 using LD.Application.Common.Interfaces.StandarLabel;
 using LD.Application.Common.Interfaces.Storage;
 using LD.Application.Common.Models;
@@ -13,6 +14,7 @@ using LD.Infrastructure.Identity;
 using LD.Infrastructure.Realtime;
 using LD.Infrastructure.Repositories;
 using LD.Infrastructure.Services.Auth;
+using LD.Infrastructure.Services;
 using LD.Infrastructure.Services.StandardLabel;
 using LD.Infrastructure.Services.Storage;
 using LD.Infrastructure.Workers;
@@ -129,6 +131,7 @@ public static class ConfigureServices
         services.AddScoped<IAsnDetailRepository, AsnDetailRepository>();
         services.AddScoped<IAsnReceiptDetailRepository, AsnReceiptRepository>();
         services.AddScoped<IAsnRepository, AsnRepository>();
+        services.AddScoped<IKittingFolioCaptureRepository, KittingFolioCaptureRepository>();
         services.AddScoped<IKittingRepository, KittingRepository>();
         services.AddScoped<ISecurityRegistrationRepository, SecurityRegistrationRepository>();
         services.AddScoped<IReportQueryRepository, ReportQueryRepository>();
@@ -139,6 +142,7 @@ public static class ConfigureServices
         services.AddScoped<ISecurityRegistrationRepository, SecurityRegistrationRepository>();
         services.AddScoped<ISecurityTaskRepository,         SecurityTaskRepository>();
         services.AddScoped<IChecklistRepository,            ChecklistRepository>();
+        services.AddScoped<IKittingFolioImportService, KittingFolioImportService>();
 
         return services;
     }

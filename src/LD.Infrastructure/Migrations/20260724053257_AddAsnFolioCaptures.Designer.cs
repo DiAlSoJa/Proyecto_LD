@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260724053257_AddAsnFolioCaptures")]
+    partial class AddAsnFolioCaptures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,6 +254,85 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("AsnDetails");
+                });
+
+            modelBuilder.Entity("LD.Domain.Entities.AsnFolioCapture", b =>
+                {
+                    b.Property<int>("AsnFolioCaptureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AsnFolioCaptureId"));
+
+                    b.Property<int?>("AsnDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AsnId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("GuideNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("InvoiceNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LotNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SourceFileName")
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<int>("SourceLineNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SourceStatus")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("AsnFolioCaptureId");
+
+                    b.HasIndex("AsnDetailId");
+
+                    b.HasIndex("AsnId", "CreatedAt");
+
+                    b.ToTable("AsnFolioCaptures", (string)null);
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.AsnReceiptDetail", b =>
@@ -2668,85 +2750,6 @@ namespace LD.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("KittingDetails");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.KittingFolioCapture", b =>
-                {
-                    b.Property<int>("KittingFolioCaptureId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KittingFolioCaptureId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("GuideNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("InvoiceNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("KittingDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("KittingId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LotNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PartNumber")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("SourceFileName")
-                        .HasMaxLength(260)
-                        .HasColumnType("nvarchar(260)");
-
-                    b.Property<int>("SourceLineNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SourceStatus")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("KittingFolioCaptureId");
-
-                    b.HasIndex("KittingDetailId");
-
-                    b.HasIndex("KittingId", "CreatedAt");
-
-                    b.ToTable("KittingFolioCaptures", (string)null);
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.KittingIssueDetail", b =>
@@ -7146,6 +7149,24 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("LD.Domain.Entities.AsnFolioCapture", b =>
+                {
+                    b.HasOne("LD.Domain.Entities.AsnDetail", "AsnDetail")
+                        .WithMany()
+                        .HasForeignKey("AsnDetailId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("LD.Domain.Entities.Asn", "Asn")
+                        .WithMany()
+                        .HasForeignKey("AsnId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Asn");
+
+                    b.Navigation("AsnDetail");
+                });
+
             modelBuilder.Entity("LD.Domain.Entities.AsnReceiptDetail", b =>
                 {
                     b.HasOne("LD.Domain.Entities.AsnDetail", "AsnDetail")
@@ -7657,24 +7678,6 @@ namespace LD.Infrastructure.Migrations
                     b.Navigation("Kitting");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("LD.Domain.Entities.KittingFolioCapture", b =>
-                {
-                    b.HasOne("LD.Domain.Entities.KittingDetail", "KittingDetail")
-                        .WithMany()
-                        .HasForeignKey("KittingDetailId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("LD.Domain.Entities.Kitting", "Kitting")
-                        .WithMany()
-                        .HasForeignKey("KittingId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Kitting");
-
-                    b.Navigation("KittingDetail");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.KittingIssueDetail", b =>

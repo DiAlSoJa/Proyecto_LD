@@ -17,6 +17,8 @@ namespace LD.Infrastructure.Persistence.Seeders
             SeedSimplePermissions(db);
             SeedStandardLabelPrintPermission(db);
             SeedLoadMappingScanDeletePermission(db);
+            SeedKittingFolioCapturePermission(db);
+            AssignAllPermissionsToSuperAdmin(db);
         }
 
         private static void SeedSimplePermissions(LdProyectDbContext db)
@@ -63,6 +65,41 @@ namespace LD.Infrastructure.Persistence.Seeders
                 PermissionKeys.LoadMappingScan_Delete,
                 "Eliminar escaneo de mapeo de carga",
                 moduleId: 18);
+
+        private static void SeedKittingFolioCapturePermission(LdProyectDbContext db)
+            => SeedPermissionAndAssignToSuperAdmin(
+                db,
+                PermissionKeys.KittingFolioCapture_Access,
+                "Captura de folios Kitting",
+                moduleId: 17);
+
+        private static void AssignAllPermissionsToSuperAdmin(LdProyectDbContext db)
+        {
+            var assignedPermissionIds = db.RolePermissions
+                .Where(rp => rp.RoleId == SuperAdminRoleId)
+                .Select(rp => rp.PermissionId)
+                .ToHashSet();
+
+            var missingAssignments = db.Permissions
+                .AsNoTracking()
+                .Select(permission => permission.PermissionId)
+                .ToList()
+                .Where(permissionId => !assignedPermissionIds.Contains(permissionId))
+                .Select(permissionId => new RolePermission
+                {
+                    RoleId = SuperAdminRoleId,
+                    PermissionId = permissionId
+                })
+                .ToList();
+
+            if (missingAssignments.Count == 0)
+            {
+                return;
+            }
+
+            db.RolePermissions.AddRange(missingAssignments);
+            db.SaveChanges();
+        }
 
         private static void SeedPermissionAndAssignToSuperAdmin(
             LdProyectDbContext db,

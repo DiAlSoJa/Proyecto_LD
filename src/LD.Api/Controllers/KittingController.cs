@@ -212,7 +212,7 @@ public class KittingController : CommonController
     }
 
     [HttpPost("{kittingId}/cancel")]
-    [Permission(PermissionKeys.Shipment_View)]
+    [AnyPermission(PermissionKeys.Shipment_View, PermissionKeys.KittingFolioCapture_Access)]
     public async Task<IActionResult> CancelKitting(int kittingId)
     {
         return ResultExtensions.ToActionResult(await ChangeKittingStatusAsync(kittingId, "Cancelado", "Kitting cancelado correctamente.", requireIssueValidation: false));

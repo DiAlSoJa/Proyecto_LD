@@ -56,6 +56,7 @@ namespace LD.Client
             services.AddScoped<AsnService>();
             services.AddScoped<AsnDetailService>();
             services.AddScoped<AsnReceiptService>();
+            services.AddScoped<KittingFolioCaptureService>();
             services.AddScoped<KittingService>();
             services.AddScoped<KittingDetailService>();
             services.AddScoped<KittingIssueService>();

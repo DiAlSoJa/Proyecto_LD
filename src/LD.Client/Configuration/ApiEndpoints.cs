@@ -454,6 +454,10 @@ namespace LD.Forms.Configuration
         public string Kitting_ValidationPhotos => $"{_baseApi}/kitting/{{kittingId}}/validation-photos";
         public string Kitting_ValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}";
         public string Kitting_ReplaceValidationPhotoByKey => $"{_baseApi}/kitting/{{kittingId}}/validation-photos/{{photoKey}}/replace";
+        public string KittingFolioCapture_GetAll => $"{_baseApi}/KittingFolioCapture";
+        public string KittingFolioCapture_GetById => $"{_baseApi}/KittingFolioCapture/{{captureId}}";
+        public string KittingFolioCapture_Preview => $"{_baseApi}/KittingFolioCapture/preview";
+        public string KittingFolioCapture_Generate => $"{_baseApi}/KittingFolioCapture/generate";
 
         // ======================
         // DELIVERY ORDER / DO

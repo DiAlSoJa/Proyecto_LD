@@ -34,6 +34,7 @@ using LD.FormsX.Views.DatabaseDiagram;
 using LD.FormsX.Views.Dialogs;
 using LD.FormsX.Views.Dimensionador;
 using LD.FormsX.Features.Surtidos.Views;
+using LD.FormsX.Features.Surtidos.ViewModels;
 using LD.FormsX.Features.Embarques.Views;
 using LD.FormsX.Views.Equipos;
 using LD.FormsX.Views.Familias;
@@ -82,7 +83,6 @@ namespace LD.FormsX
                    .CreateLogger();
 
                 Log.Information("App iniciada");
-
                 HostContainer = Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration((context, config) =>
                     {
@@ -232,6 +232,8 @@ namespace LD.FormsX
             services.AddTransient<InventarioView>();
             services.AddTransient<MovimientosView>();
             services.AddTransient<ASNView>();
+            services.AddTransient<CapturaFoliosViewModel>();
+            services.AddTransient<CapturaFoliosView>();
             services.AddTransient<SurtidosView>();
             services.AddTransient<EmbarquesView>();
             services.AddTransient<AuditarView>();
@@ -286,6 +288,8 @@ namespace LD.FormsX
             services.AddTransient<NuevoProveedorCheckListView>();
             services.AddTransient<NuevoASNView>();
             services.AddTransient<CuadreASNView>();
+            services.AddTransient<CapturaFolioDetalleView>();
+            services.AddTransient<CapturaFolioPreviewDialog>();
             services.AddTransient<NuevoSurtidoView>();
             services.AddTransient<EditarSurtidoView>();
             services.AddTransient<ValidarEmbarqueDialog>();
