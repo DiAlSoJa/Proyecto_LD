@@ -24,7 +24,6 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
     private readonly IRepository<LD.Domain.Entities.AsnReceiptDetail> _asnRepository;
     private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnDetailRepository;
     private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
-    private readonly IRepository<AvailableInventory> _availableInventoryRepository;
     private readonly IProjectRepository _projectRepository;
     private readonly IStandarIdService _standarIdService;
     private readonly IMapper _mapper;
@@ -33,7 +32,6 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
         IRepository<LD.Domain.Entities.AsnReceiptDetail> asnRepository,
         IRepository<LD.Domain.Entities.AsnDetail> asnDetailRepository,
         IRepository<LD.Domain.Entities.Asn> asnParentRepository,
-        IRepository<AvailableInventory> availableInventoryRepository,
         IProjectRepository projectRepository,
         IStandarIdService standarIdService,
         AutoMapper.IMapper mapper)
@@ -41,7 +39,6 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
         _asnRepository = asnRepository;
         _asnDetailRepository = asnDetailRepository;
         _asnParentRepository = asnParentRepository;
-        _availableInventoryRepository = availableInventoryRepository;
         _projectRepository = projectRepository;
         _standarIdService = standarIdService;
         _mapper = mapper;
@@ -69,7 +66,6 @@ public class CreateAsnReceiptDetailCommandHandler : IRequestHandler<CreateAsnRec
                 _asnRepository,
                 _asnDetailRepository,
                 _asnParentRepository,
-                _availableInventoryRepository,
                 _projectRepository);
             if (validationResult is not null)
                 return validationResult;

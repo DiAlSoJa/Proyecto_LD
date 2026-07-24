@@ -253,7 +253,6 @@
                                                 <CheckBox Content="Almacén Fiscal"  IsChecked="{Binding IsFiscalWarehouse}"    Style="{StaticResource CheckStyle}"/>
                                                 <CheckBox Content="Sobredimensión"  IsChecked="{Binding AllowsOversizedItems}" Style="{StaticResource CheckStyle}"/>
                                                 <CheckBox Content="Etiquetas"       IsChecked="{Binding RequiresLabels}"       Style="{StaticResource CheckStyle}"/>
-                                                <CheckBox Content="Lote único"      IsChecked="{Binding UniqueLot}"            Style="{StaticResource CheckStyle}"/>
                                             </StackPanel>
                                         </Border>
 
@@ -421,6 +420,11 @@
                                                             <!-- Obligatorio -->
                                                             <DataGridCheckBoxColumn Header="Obligatorio"
                                                                                     Binding="{Binding IsRequired, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                                    Width="90"/>
+
+                                                            <!-- Dato unico -->
+                                                            <DataGridCheckBoxColumn Header="Dato unico"
+                                                                                    Binding="{Binding IsUnique, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                                     Width="90"/>
 
                                                             <!-- Config de escaneo (Combo) -->

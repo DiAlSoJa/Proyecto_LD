@@ -104,7 +104,7 @@ public partial class DatabaseDiagramView : UserControl
 
         new("Project", "Proyecto", "WMS", "#2563EB", ["PK ProjectId : int", "FK ClientId : int", "FK WarehouseId : int", "FK LocationId : int?", "ScanRequired : bool", "UniqueLot : bool"]),
         new("StorageType", "Tipo almacenamiento", "Catalogos", "#2563EB", ["PK StorageTypeId : int", "StorageTypeName : string"]),
-        new("ScanConfiguration", "Configuracion escaneo", "WMS", "#2563EB", ["PK ScanConfigurationId : int", "FK ProjectId : int", "Obligatorio : bool", "FK ScanTypeId : int", "FK ScanSaveTypeId : int"]),
+        new("ScanConfiguration", "Configuracion escaneo", "WMS", "#2563EB", ["PK ScanConfigurationId : int", "FK ProjectId : int", "Obligatorio : bool", "Dato unico : bool", "FK ScanTypeId : int", "FK ScanSaveTypeId : int"]),
         new("ScanType", "Tipo escaneo", "Catalogos", "#2563EB", ["PK ScanTypeId : int", "Name : string"]),
         new("ScanSaveType", "Tipo guardado", "Catalogos", "#2563EB", ["PK ScanSaveTypeId : int", "Name : string"]),
 

@@ -698,6 +698,7 @@
                                 </DataGrid.RowHeaderStyle>
                                 <DataGrid.Columns>
                                     
+                                    <DataGridTextColumn Header="Pallet Number" Binding="{Binding PalletNumber, Mode=OneWay}" Width="100" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Número de Parte" Binding="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}" Width="160" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Descripción" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="180" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Estandar" Binding="{Binding StandardQuantity, UpdateSourceTrigger=PropertyChanged}" Width="50"/>

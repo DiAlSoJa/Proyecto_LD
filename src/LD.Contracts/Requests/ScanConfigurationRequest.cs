@@ -6,6 +6,7 @@ namespace LD.Contracts.Requests
         public string SystemFieldName { get; set; } = "";
         public string ClientField { get; set; } = "";
         public bool IsRequired { get; set; }
+        public bool IsUnique { get; set; }
         public int? ScanTypeId { get; set; }
         public string? ScanValue { get; set; }
         public int? SaveTypeId { get; set; }

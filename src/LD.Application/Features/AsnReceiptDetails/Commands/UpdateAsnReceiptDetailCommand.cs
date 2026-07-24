@@ -23,7 +23,6 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
     private readonly IRepository<LD.Domain.Entities.AsnReceiptDetail> _asnRepository;
     private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnDetailRepository;
     private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
-    private readonly IRepository<AvailableInventory> _availableInventoryRepository;
     private readonly IProjectRepository _projectRepository;
     private readonly IStandarIdService _standarIdService;
     private readonly IMapper _mapper;
@@ -32,7 +31,6 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
         IRepository<LD.Domain.Entities.AsnReceiptDetail> asnRepository,
         IRepository<LD.Domain.Entities.AsnDetail> asnDetailRepository,
         IRepository<LD.Domain.Entities.Asn> asnParentRepository,
-        IRepository<AvailableInventory> availableInventoryRepository,
         IProjectRepository projectRepository,
         IStandarIdService standarIdService,
         IMapper mapper)
@@ -40,7 +38,6 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
         _asnRepository = asnRepository;
         _asnDetailRepository = asnDetailRepository;
         _asnParentRepository = asnParentRepository;
-        _availableInventoryRepository = availableInventoryRepository;
         _projectRepository = projectRepository;
         _standarIdService = standarIdService;
         _mapper = mapper;
@@ -85,7 +82,6 @@ public class UpdateAsnReceiptDetailCommandHandler : IRequestHandler<UpdateAsnRec
                 _asnRepository,
                 _asnDetailRepository,
                 _asnParentRepository,
-                _availableInventoryRepository,
                 _projectRepository,
                 currentReceipt.AsnReceiptDetailId);
             if (validationResult is not null)

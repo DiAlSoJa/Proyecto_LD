@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Text;
 using LD.Contracts.Enums;
 using LD.Contracts.Requests;
 
@@ -28,7 +29,8 @@ namespace LD.FormsX.Views.Dialogs
 
         public event Func<IReadOnlyList<ScanRuleResult>, Task<bool>>? ScanCompleted;
         public event Func<string, Task<UnmatchedScanResult?>>? UnmatchedScanReceived;
-        public event Func<string, Task<string?>>? UniqueLotValidationRequested;
+        public event Func<string, Task<string?>>? PartNumberValidationRequested;
+        public event Func<ScanConfigurationRequest, string, Task<string?>>? UniqueDataValidationRequested;
         public event Func<Window, string, Task<bool>>? MissingPartNumberRequested;
 
         private List<ScanConfigurationRequest> _scanConfigurations = [];
@@ -135,9 +137,21 @@ namespace LD.FormsX.Views.Dialogs
         {
             var savedValue = ApplySaveConfiguration(rule.Configuration, scanValue);
 
-            if (IsLotNumberConfiguration(rule.Configuration) && UniqueLotValidationRequested != null)
+            if (IsSystemFieldConfiguration(rule.Configuration, (int)SystemField_e.PartNumber)
+                && PartNumberValidationRequested != null)
             {
-                var validationMessage = await UniqueLotValidationRequested.Invoke(savedValue);
+                var validationMessage = await PartNumberValidationRequested.Invoke(savedValue);
+                if (!string.IsNullOrWhiteSpace(validationMessage))
+                {
+                    AddMessage(validationMessage, true);
+                    PlayErrorSound();
+                    return;
+                }
+            }
+
+            if (rule.IsUnique && UniqueDataValidationRequested != null)
+            {
+                var validationMessage = await UniqueDataValidationRequested.Invoke(rule.Configuration, savedValue);
                 if (!string.IsNullOrWhiteSpace(validationMessage))
                 {
                     AddMessage(validationMessage, true);
@@ -275,17 +289,6 @@ namespace LD.FormsX.Views.Dialogs
             return HasScanCondition(config) || hasSaveCondition;
         }
 
-        private static bool IsLotNumberConfiguration(ScanConfigurationRequest config)
-        {
-            if (config.SystemFieldId == (int)SystemField_e.LotNumber)
-                return true;
-
-            var fieldName = config.SystemFieldName?.Trim();
-            return string.Equals(fieldName, "lot_number", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(fieldName, "lotnumber", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(fieldName, "lote", StringComparison.OrdinalIgnoreCase);
-        }
-
         private static bool HasScanCondition(ScanConfigurationRequest config)
         {
             if (IsPartNumberOrStandardIdConfiguration(config))
@@ -319,7 +322,7 @@ namespace LD.FormsX.Views.Dialogs
             if (config.SystemFieldId == systemFieldId)
                 return true;
 
-            var fieldName = config.SystemFieldName?.Trim();
+            var fieldName = NormalizeFieldName(config.SystemFieldName);
 
             return systemFieldId switch
             {
@@ -349,6 +352,16 @@ namespace LD.FormsX.Views.Dialogs
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var rule in ScanRules)
+                rule.CapturedValue = string.Empty;
+
+            txtEscaneo.Clear();
+            AddMessage("Se limpiaron los valores capturados.");
+            txtEscaneo.Focus();
         }
 
         private void BtnCerrarVentana_Click(object sender, RoutedEventArgs e)
@@ -406,6 +419,25 @@ namespace LD.FormsX.Views.Dialogs
             player.Close();
             _activePlayers.Remove(player);
         }
+
+        private static string NormalizeFieldName(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            var normalized = value.Trim().Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder(normalized.Length);
+
+            foreach (var ch in normalized)
+            {
+                if (char.GetUnicodeCategory(ch) == UnicodeCategory.NonSpacingMark)
+                    continue;
+
+                builder.Append(char.ToLowerInvariant(ch));
+            }
+
+            return builder.ToString();
+        }
     }
 
     public class ScanRuleDisplay : INotifyPropertyChanged
@@ -424,6 +456,7 @@ namespace LD.FormsX.Views.Dialogs
             : Configuration.ClientField;
 
         public bool IsRequired => Configuration.IsRequired;
+        public bool IsUnique => Configuration.IsUnique;
 
         public string ConditionSummary => IsStandardIdConfiguration(Configuration)
             ? "Es etiqueta LD"
@@ -465,7 +498,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private static bool IsStandardIdConfiguration(ScanConfigurationRequest config)
         {
-            var fieldName = config.SystemFieldName?.Trim();
+            var fieldName = NormalizeFieldName(config.SystemFieldName);
 
             return config.SystemFieldId == (int)SystemField_e.StandardId
                 || string.Equals(fieldName, "standard_id", StringComparison.OrdinalIgnoreCase)
@@ -474,13 +507,32 @@ namespace LD.FormsX.Views.Dialogs
 
         private static bool IsPartNumberConfiguration(ScanConfigurationRequest config)
         {
-            var fieldName = config.SystemFieldName?.Trim();
+            var fieldName = NormalizeFieldName(config.SystemFieldName);
 
             return config.SystemFieldId == (int)SystemField_e.PartNumber
                 || string.Equals(fieldName, "part_number", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(fieldName, "partnumber", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(fieldName, "numero de parte", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(fieldName, "número de parte", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeFieldName(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            var normalized = value.Trim().Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder(normalized.Length);
+
+            foreach (var ch in normalized)
+            {
+                if (char.GetUnicodeCategory(ch) == UnicodeCategory.NonSpacingMark)
+                    continue;
+
+                builder.Append(char.ToLowerInvariant(ch));
+            }
+
+            return builder.ToString();
         }
     }
 

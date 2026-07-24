@@ -138,7 +138,8 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Orden" Binding="{Binding Order}" Width="50"/>
                                 <DataGridTextColumn Header="Campo" Binding="{Binding FieldName}" Width="160"/>
-                                <DataGridCheckBoxColumn Header="Obligatorio" Binding="{Binding IsRequired}" Width="90" IsReadOnly="True"/>
+                                <DataGridCheckBoxColumn Header="Obligatorio" Binding="{Binding IsRequired, Mode=OneWay}" Width="90" IsReadOnly="True"/>
+                                <DataGridCheckBoxColumn Header="Dato unico" Binding="{Binding IsUnique, Mode=OneWay}" Width="90" IsReadOnly="True"/>
                                 <DataGridTextColumn Header="Condición" Binding="{Binding ConditionSummary}" Width="190"/>
                                 <DataGridTextColumn Header="Guardar como" Binding="{Binding SaveSummary}" Width="160"/>
                                 <DataGridTextColumn Header="Valor" Binding="{Binding CapturedValue}" Width="*"/>
@@ -186,10 +187,16 @@
                         BorderBrush="{StaticResource BorderBrushSoft}"
                         BorderThickness="0,1,0,0"
                         Padding="12">
-                    <Button Content="Cerrar"
-                            HorizontalAlignment="Right"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            Click="BtnCerrar_Click"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Content="Limpiar"
+                                Margin="0,0,8,0"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Click="BtnLimpiar_Click"/>
+                        <Button Content="Cerrar"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Click="BtnCerrar_Click"/>
+                    </StackPanel>
                 </Border>
             </Grid>
         </Border>

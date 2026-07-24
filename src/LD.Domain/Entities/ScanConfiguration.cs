@@ -21,6 +21,7 @@ namespace LD.Domain.Entities
         // Campo del cliente (texto libre o catálogo)
         public string ClientField { get; set; } = null!;
         public bool IsRequired { get; set; }
+        public bool IsUnique { get; set; }
 
         public int ScanTypeId { get; set; }
         public ScanType? ScanType { get; set; } = null!;

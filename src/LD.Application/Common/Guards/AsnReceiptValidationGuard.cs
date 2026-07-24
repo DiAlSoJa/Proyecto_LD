@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Results;
+using LD.Contracts.Enums;
 using LD.Contracts.Requests;
 using LD.Domain.Entities;
 
@@ -17,7 +19,6 @@ public static class AsnReceiptValidationGuard
         IRepository<AsnReceiptDetail> receiptRepository,
         IRepository<AsnDetail> detailRepository,
         IRepository<Asn> asnRepository,
-        IRepository<AvailableInventory> availableInventoryRepository,
         IProjectRepository projectRepository,
         int? excludedReceiptId = null)
     {
@@ -39,15 +40,18 @@ public static class AsnReceiptValidationGuard
         if (quantityValidation is not null)
             return quantityValidation;
 
-        return await EnsureUniqueLotIsNotDuplicatedAsync(
+        var uniqueValidation = await EnsureUniqueConfiguredValuesAreNotDuplicatedAsync(
             detail,
-            request.LotNumber,
+            request,
             receipts,
             detailRepository,
             asnRepository,
-            availableInventoryRepository,
             projectRepository,
             excludedReceiptId);
+        if (uniqueValidation is not null)
+            return uniqueValidation;
+
+        return null;
     }
 
     private static Result<string>? ValidateReceiptMatchesDetail(AsnReceiptRequest request, AsnDetail detail)
@@ -64,16 +68,14 @@ public static class AsnReceiptValidationGuard
                 400);
         }
 
+        var detailLot = Normalize(detail.LotNumber);
         var requestedLot = Normalize(request.LotNumber);
-        if (!string.IsNullOrWhiteSpace(requestedLot))
+        if (!string.IsNullOrWhiteSpace(detailLot)
+            && !string.Equals(requestedLot, detailLot, StringComparison.OrdinalIgnoreCase))
         {
-            var detailLot = Normalize(detail.LotNumber);
-            if (string.IsNullOrWhiteSpace(detailLot) || !string.Equals(requestedLot, detailLot, StringComparison.OrdinalIgnoreCase))
-            {
-                return Failure(
-                    $"El lote {requestedLot} no coincide con el detalle de ASN.",
-                    400);
-            }
+            return Failure(
+                $"El lote {requestedLot} no coincide con el detalle de ASN.",
+                400);
         }
 
         return null;
@@ -127,56 +129,182 @@ public static class AsnReceiptValidationGuard
             400);
     }
 
-    private static async Task<Result<string>?> EnsureUniqueLotIsNotDuplicatedAsync(
+    private static async Task<Result<string>?> EnsureUniqueConfiguredValuesAreNotDuplicatedAsync(
         AsnDetail detail,
-        string? lotNumber,
+        AsnReceiptRequest request,
         IReadOnlyCollection<AsnReceiptDetail> receipts,
         IRepository<AsnDetail> detailRepository,
         IRepository<Asn> asnRepository,
-        IRepository<AvailableInventory> availableInventoryRepository,
         IProjectRepository projectRepository,
         int? excludedReceiptId)
     {
-        var normalizedLot = Normalize(lotNumber);
-        if (string.IsNullOrWhiteSpace(normalizedLot))
-            return null;
-
         var asn = await asnRepository.GetByIdAsync(detail.AsnId);
         if (asn is null)
             return null;
 
         var project = await projectRepository.GetByIdAsync(asn.ProjectId);
-        if (project is null || !project.UniqueLot)
+        if (project is null)
             return null;
 
-        var asnIdsInProject = (await asnRepository.GetManyAsync() ?? new List<Asn>())
-            .Where(x => x.ProjectId == project.ProjectId)
-            .Select(x => x.AsnId)
-            .ToHashSet();
+        var uniqueConfigurations = project.ScanConfigurations
+            .Where(config => config.IsUnique)
+            .ToList();
 
-        var asnDetailIds = (await detailRepository.GetManyAsync() ?? new List<AsnDetail>())
-            .Where(x => asnIdsInProject.Contains(x.AsnId))
+        if (uniqueConfigurations.Count == 0)
+            return null;
+
+        var asnDetailIds = await GetAsnDetailIdsAsync(detailRepository, detail.AsnId);
+        if (asnDetailIds.Count == 0)
+            return null;
+
+        foreach (var config in uniqueConfigurations)
+        {
+            if (IsStandardIdConfiguration(config))
+                continue;
+
+            var requestedValue = Normalize(GetConfiguredValue(request, config));
+            if (string.IsNullOrWhiteSpace(requestedValue))
+                continue;
+
+            var duplicateExists = receipts.Any(x =>
+                (!excludedReceiptId.HasValue || x.AsnReceiptDetailId != excludedReceiptId.Value)
+                && asnDetailIds.Contains(x.AsnDetailId)
+                && string.Equals(GetConfiguredValue(x, config), requestedValue, StringComparison.OrdinalIgnoreCase));
+
+            if (duplicateExists)
+            {
+                var fieldLabel = ResolveFieldLabel(config);
+                return Failure($"El dato {requestedValue} del campo {fieldLabel} ya existe en recepciones del ASN.", 400);
+            }
+        }
+
+        return null;
+    }
+
+    private static async Task<HashSet<int>> GetAsnDetailIdsAsync(
+        IRepository<AsnDetail> detailRepository,
+        int asnId)
+    {
+        return (await detailRepository.GetManyAsync() ?? new List<AsnDetail>())
+            .Where(x => x.AsnId == asnId)
             .Select(x => x.AsnDetailId)
             .ToHashSet();
+    }
 
-        var duplicateReceiptExists = receipts.Any(x =>
-            (!excludedReceiptId.HasValue || x.AsnReceiptDetailId != excludedReceiptId.Value)
-            && asnDetailIds.Contains(x.AsnDetailId)
-            && !string.IsNullOrWhiteSpace(x.LotNumber)
-            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
+    private static bool IsStandardIdConfiguration(ScanConfiguration config)
+    {
+        return config.SystemFieldId == (int)SystemField_e.StandardId
+            || string.Equals(NormalizeFieldName(config.SystemField?.SystemFieldName), "standard_id", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(NormalizeFieldName(config.SystemField?.SystemFieldName), "standardid", StringComparison.OrdinalIgnoreCase);
+    }
 
-        var inventories = await availableInventoryRepository.GetManyAsync() ?? new List<AvailableInventory>();
-        var duplicateInventoryExists = inventories.Any(x =>
-            x.ClientId == asn.ClientId
-            && x.ProjectId == project.ProjectId
-            && !string.IsNullOrWhiteSpace(x.LotNumber)
-            && string.Equals(x.LotNumber.Trim(), normalizedLot, StringComparison.OrdinalIgnoreCase));
+    private static string GetConfiguredValue(AsnReceiptRequest request, ScanConfiguration config)
+    {
+        return NormalizeConfiguredValue(NormalizeField(config), request);
+    }
 
-        if (!duplicateReceiptExists && !duplicateInventoryExists)
-            return null;
+    private static string GetConfiguredValue(AsnReceiptDetail receipt, ScanConfiguration config)
+    {
+        return NormalizeConfiguredValue(NormalizeField(config), receipt);
+    }
 
-        var message = $"El lote {normalizedLot} ya existe en recepciones o inventario para este cliente y proyecto y no se permite repetirlo.";
-        return Failure(message, 400);
+    private static string NormalizeConfiguredValue(string fieldKey, AsnReceiptRequest request)
+    {
+        return fieldKey switch
+        {
+            "lot_number" => Normalize(request.LotNumber),
+            "customer_reference" => Normalize(request.Reference),
+            "purchase_order" => Normalize(request.PurchaseOrder),
+            "customs_declaration" => Normalize(request.CustomsDeclarationNumber),
+            "qty" => NormalizeQuantity(request.ReceivedQuantity),
+            "standardid" => Normalize(request.StandardId),
+            "part_number" or "partnumber" or "numero de parte" or "nÃºmero de parte" => Normalize(request.PartNumber),
+            _ => string.Empty
+        };
+    }
+
+    private static string NormalizeConfiguredValue(string fieldKey, AsnReceiptDetail receipt)
+    {
+        return fieldKey switch
+        {
+            "lot_number" => Normalize(receipt.LotNumber),
+            "customer_reference" => Normalize(receipt.Reference),
+            "purchase_order" => Normalize(receipt.PurchaseOrder),
+            "customs_declaration" => Normalize(receipt.CustomsDeclarationNumber),
+            "qty" => NormalizeQuantity(receipt.ReceivedQuantity),
+            "standard_id" or "standardid" => NormalizeStandardId(receipt.StandardId),
+            "part_number" or "partnumber" or "numero de parte" or "nÃºmero de parte" => Normalize(receipt.PartNumber),
+            _ => string.Empty
+        };
+    }
+
+    private static string NormalizeField(ScanConfiguration config)
+    {
+        var fieldName = NormalizeFieldName(config.SystemField?.SystemFieldName);
+        if (!string.IsNullOrWhiteSpace(fieldName))
+            return fieldName;
+
+        return config.SystemFieldId switch
+        {
+            (int)SystemField_e.LotNumber => "lot_number",
+            (int)SystemField_e.CustomerReference => "customer_reference",
+            (int)SystemField_e.PurchaseOrder => "purchase_order",
+            (int)SystemField_e.CustomsDeclaration => "customs_declaration",
+            (int)SystemField_e.Qty => "qty",
+            (int)SystemField_e.StandardId => "standard_id",
+            (int)SystemField_e.PartNumber => "part_number",
+            _ => string.Empty
+        };
+    }
+
+    private static string NormalizeFieldName(string? fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(fieldName))
+            return string.Empty;
+
+        var normalized = fieldName.Trim().Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(normalized.Length);
+
+        foreach (var ch in normalized)
+        {
+            if (char.GetUnicodeCategory(ch) == UnicodeCategory.NonSpacingMark)
+                continue;
+
+            builder.Append(char.ToLowerInvariant(ch));
+        }
+
+        return builder.ToString();
+    }
+
+    private static string NormalizeQuantity(decimal? value) =>
+        value.HasValue ? value.Value.ToString(CultureInfo.InvariantCulture) : string.Empty;
+
+    private static string NormalizeQuantity(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var parsed)
+            || decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out parsed))
+        {
+            return parsed.ToString(CultureInfo.InvariantCulture);
+        }
+
+        return value.Trim();
+    }
+
+    private static string NormalizeStandardId(int? value) =>
+        value.HasValue ? value.Value.ToString(CultureInfo.InvariantCulture) : string.Empty;
+
+    private static string ResolveFieldLabel(ScanConfiguration config)
+    {
+        if (!string.IsNullOrWhiteSpace(config.ClientField))
+            return config.ClientField.Trim();
+
+        if (!string.IsNullOrWhiteSpace(config.SystemField?.SystemFieldName))
+            return config.SystemField.SystemFieldName.Trim();
+
+        return NormalizeField(config);
     }
 
     private static Result<string> Failure(string message, int code) =>
