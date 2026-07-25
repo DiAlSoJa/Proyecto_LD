@@ -1680,7 +1680,8 @@ namespace LD.FormsX.Views.Dialogs
 
         private static void SeedSingleReceiptValuesFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow)
         {
-            receiptRow.ReceivedQuantity = detailRow.Quantity;
+            if (detailRow.Quantity > 0m)
+                receiptRow.ReceivedQuantity = detailRow.Quantity;
             receiptRow.LotNumber = detailRow.LotNumber;
             receiptRow.SD = detailRow.SD;
             receiptRow.Status = detailRow.Status;
@@ -1818,7 +1819,7 @@ namespace LD.FormsX.Views.Dialogs
                 receiptRow.AsnId = AsnSelected.AsnId;
                 SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
 
-                if (shouldSyncReceivedQuantity)
+                if (shouldSyncReceivedQuantity && detailRow.Quantity > 0m)
                     receiptRow.ReceivedQuantity = detailRow.Quantity;
 
                 var response = await _asnReceiptService.UpdateAsnReceipt(receiptRow.AsnReceiptDetailId, receiptRow.ToRequest());
@@ -1979,6 +1980,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private async Task EnsureInitialReceiptCreatedAsync(AsnDetailItem detailRow)
         {
+            if (IsScanRequiredForProject())
+                return;
+
             if (!HasPersistedAsn() || detailRow.AsnDetailId <= 0)
                 return;
 

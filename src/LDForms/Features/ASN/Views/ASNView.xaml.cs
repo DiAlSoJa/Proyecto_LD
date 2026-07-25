@@ -1101,27 +1101,27 @@ namespace LD.FormsX.Views.ASN
             {
                 new ExportColumn(
                     "folio",
-                    "FOLIO",
+                    "Pallet Number",
                     10,
                     NumericValueSelector: receipt => receipt.PalletNumber),
                 new ExportColumn(
                     "part_number",
-                    "No. de parte",
+                    "Part Number",
                     34,
                     TextValueSelector: receipt => receipt.PartNumber),
                 new ExportColumn(
                     "qty",
-                    "Cantidad",
+                    "Quantity",
                     14,
                     NumericValueSelector: receipt => receipt.ReceivedQuantity ?? 0m),
                 new ExportColumn(
                     "lot_number",
-                    "Lote",
+                    "Lot Number",
                     18,
                     TextValueSelector: receipt => receipt.LotNumber),
                 new ExportColumn(
                     "standard_id",
-                    "StandardId",
+                    "Standard ID",
                     20,
                     TextValueSelector: receipt => receipt.StandardId)
             };
