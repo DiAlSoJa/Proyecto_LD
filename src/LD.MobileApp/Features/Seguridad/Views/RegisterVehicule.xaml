@@ -6,31 +6,27 @@
     xmlns:controls="clr-namespace:MauiAppLogin.Views.Controls"
     x:Class="MauiAppLogin.RegisterVehicule"
     x:DataType="vm:RegisterVehiculeViewModel"
-    Title="Vehículo"
+    Title="Vehiculo"
     BackgroundColor="#0F2E4F">
 
-    <!-- Grid externo: aísla el loader de la elevation nativa de Android -->
     <Grid>
-
         <Grid RowDefinitions="*,Auto" Padding="16">
 
             <ScrollView Grid.Row="0">
                 <VerticalStackLayout Spacing="0">
 
-                    <!-- Stepper -->
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" Margin="0,10,0,6">
                         <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
                             <Label Text="1 Licencia" TextColor="#94A3B8" FontSize="13"/>
                         </Border>
                         <Border BackgroundColor="#244A7C" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
-                            <Label Text="2 Vehículo" TextColor="White" FontAttributes="Bold" FontSize="13"/>
+                            <Label Text="2 Vehiculo" TextColor="White" FontAttributes="Bold" FontSize="13"/>
                         </Border>
                         <Border BackgroundColor="#334155" StrokeShape="RoundRectangle 14" Padding="12,6" StrokeThickness="0">
                             <Label Text="3 Firma" TextColor="#94A3B8" FontSize="13"/>
                         </Border>
                     </HorizontalStackLayout>
 
-                    <!-- Card con datos del vehículo -->
                     <Border BackgroundColor="#F6F8FC"
                             Stroke="#E2E8F0"
                             StrokeThickness="1"
@@ -40,40 +36,26 @@
 
                         <VerticalStackLayout Spacing="12">
 
-                            <!-- Tipo selector -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Tipo:" TextColor="#64748B" FontSize="14"/>
-                                <HorizontalStackLayout Spacing="10">
-                                    <Border BackgroundColor="{Binding IsCajaSelected, Converter={StaticResource BoolToColorConverter}}"
-                                            Stroke="#CBD5E1"
-                                            StrokeThickness="1"
-                                            StrokeShape="RoundRectangle 25"
-                                            Padding="18,10">
-                                        <Label Text="Caja" TextColor="#0F172A" FontAttributes="Bold"
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding SelectCajaCommand}"/>
-                                        </Border.GestureRecognizers>
-                                    </Border>
-
-                                    <Border BackgroundColor="{Binding IsTractorSelected, Converter={StaticResource BoolToColorConverter}}"
-                                            Stroke="#CBD5E1"
-                                            StrokeThickness="1"
-                                            StrokeShape="RoundRectangle 25"
-                                            Padding="18,10">
-                                        <Label Text="Tractor" TextColor="#0F172A" FontAttributes="Bold"
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding SelectTractorCommand}"/>
-                                        </Border.GestureRecognizers>
-                                    </Border>
-                                </HorizontalStackLayout>
+                                <Label Text="Tipo de camion:" TextColor="#64748B" FontSize="14"/>
+                                <Border BackgroundColor="White"
+                                        Stroke="#CBD5E1"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 18"
+                                        Padding="8,2">
+                                    <Picker ItemsSource="{Binding TruckTypes}"
+                                            SelectedItem="{Binding SelectedTruckType, Mode=TwoWay}"
+                                            ItemDisplayBinding="{Binding Name}"
+                                            Title="Selecciona un tipo de camion"
+                                            TextColor="#0F172A"
+                                            BackgroundColor="Transparent"/>
+                                </Border>
                             </VerticalStackLayout>
 
                             <controls:LabeledEntry
-                                LabelText="Línea:"
+                                LabelText="Linea:"
                                 Text="{Binding Linea}"
-                                Placeholder="Seleccione la línea"/>
+                                Placeholder="Seleccione la linea"/>
 
                             <controls:LabeledEntry
                                 LabelText="Origen:"
@@ -81,7 +63,7 @@
                                 Placeholder="Ej. GDL"/>
 
                             <controls:LabeledEntry
-                                LabelText="Número:"
+                                LabelText="Numero:"
                                 Text="{Binding Numero}"
                                 Placeholder="Ej. XS225"/>
 
@@ -90,7 +72,46 @@
                                 Text="{Binding Placa}"
                                 Placeholder="Ej. 123-ABC"/>
 
-                            <!-- Galería de fotos -->
+                            <VerticalStackLayout Spacing="12"
+                                                 IsVisible="{Binding TieneCaja}">
+                                <controls:LabeledEntry
+                                    LabelText="Numero de caja:"
+                                    Text="{Binding NumeroCaja}"
+                                    Placeholder="Ej. CAX-001"/>
+
+                                <controls:LabeledEntry
+                                    LabelText="Placa de la caja:"
+                                    Text="{Binding PlacaCaja}"
+                                    Placeholder="Ej. 123-XYZ"/>
+
+                                <controls:LabeledEntry
+                                    LabelText="Sello:"
+                                    Text="{Binding Sello}"
+                                    Placeholder="Ej. SELLO-01"/>
+                            </VerticalStackLayout>
+
+                            <Border BackgroundColor="#EAF2FF"
+                                    Stroke="#C7DBFF"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="14"
+                                    Margin="0,2,0,0">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding PhotoInstruction}"
+                                           TextColor="#0F172A"
+                                           FontAttributes="Bold"
+                                           FontSize="13"
+                                           HorizontalTextAlignment="Center"
+                                           LineBreakMode="WordWrap"/>
+
+                                    <Label Text="{Binding PhotoStatusText}"
+                                           TextColor="#475569"
+                                           FontSize="12"
+                                           HorizontalTextAlignment="Center"
+                                           LineBreakMode="WordWrap"/>
+                                </VerticalStackLayout>
+                            </Border>
+
                             <controls:PhotoGallery
                                 ItemsSource="{Binding Photos}"
                                 DeleteCommand="{Binding RemovePhotoCommand}"
@@ -101,41 +122,39 @@
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Área de cámara -->
                     <Border BackgroundColor="#1B2A3A"
                             Stroke="#0B1B2A"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 26"
-                            Padding="10"
+                            Padding="14"
                             Margin="0,0,0,12">
 
-                        <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                        <VerticalStackLayout Spacing="12">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding PhotoInstruction}"
+                                       TextColor="White"
+                                       FontAttributes="Bold"
+                                       FontSize="15"
+                                       HorizontalTextAlignment="Center"
+                                       LineBreakMode="WordWrap"/>
 
-                            <Grid HeightRequest="78">
-                                <Border BackgroundColor="#0F172A" Stroke="#334155"
-                                        StrokeShape="RoundRectangle 22" Padding="10">
-                                    <Grid>
-                                        <Grid Padding="16,10">
-                                            <Border Stroke="#FFFFFF" StrokeThickness="3"
-                                                    StrokeShape="RoundRectangle 22"
-                                                    BackgroundColor="Transparent" Opacity="0.35"/>
-                                        </Grid>
-                                    </Grid>
-                                </Border>
-                            </Grid>
+                                <Label Text="{Binding PhotoStatusText}"
+                                       TextColor="#94A3B8"
+                                       FontSize="12"
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
 
-                            <Grid Row="1" ColumnDefinitions="*,Auto,*" Padding="6,0">
-                                <Border Grid.Column="1" BackgroundColor="#102A43"
-                                        Stroke="#FFFFFF" StrokeThickness="2"
-                                        StrokeShape="RoundRectangle 999"
-                                        WidthRequest="86" HeightRequest="86"
-                                        VerticalOptions="Center" HorizontalOptions="Center" Padding="10">
-                                    <Button Text="" Command="{Binding CapturarCommand}"
-                                            BackgroundColor="White" CornerRadius="999"
-                                            WidthRequest="60" HeightRequest="60"/>
-                                </Border>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <Button Text="{Binding CaptureButtonText}"
+                                        Command="{Binding CapturarCommand}"
+                                        HeightRequest="56"
+                                        CornerRadius="18"
+                                        BackgroundColor="White"
+                                        TextColor="#0F172A"
+                                        FontAttributes="Bold"
+                                        FontSize="15"/>
 
-                                <Border Grid.Column="2"
+                                <Border Grid.Column="1"
                                         BackgroundColor="#102A43"
                                         Stroke="#1E3A5F"
                                         StrokeThickness="1"
@@ -154,29 +173,27 @@
                                                 WidthRequest="28"
                                                 HeightRequest="28"
                                                 Padding="0">
-                                            <Label Text="🖼"
+                                            <Label Text="&#x1F5BC;"
                                                    TextColor="White"
                                                    FontSize="15"
                                                    HorizontalOptions="Center"
                                                    VerticalOptions="Center"/>
                                         </Border>
-                                        <Label Text="Galería"
+                                        <Label Text="Galeria"
                                                TextColor="White"
                                                FontSize="13"
                                                VerticalOptions="Center"/>
                                     </HorizontalStackLayout>
                                 </Border>
                             </Grid>
-
-                        </Grid>
+                        </VerticalStackLayout>
                     </Border>
 
                 </VerticalStackLayout>
             </ScrollView>
 
-            <!-- Navigation -->
             <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,14,0,6">
-                <Button Text="Atrás"
+                <Button Text="Atras"
                         Command="{Binding AtrasCommand}"
                         HeightRequest="56" CornerRadius="18"
                         BackgroundColor="#334155" TextColor="White"
@@ -191,8 +208,6 @@
 
         </Grid>
 
-        <!-- LOADER — en Grid externo, encima de todo en Android -->
         <controls:LoaderSpinner BindingContext="{Binding Loader}" />
-
     </Grid>
 </ContentPage>

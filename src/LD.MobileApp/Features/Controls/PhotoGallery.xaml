@@ -12,6 +12,7 @@
                 <DataTemplate>
                     <controls:PhotoThumb
                         PhotoSource="{Binding Source}"
+                        BadgeText="{Binding Title}"
                         DeleteCommand="{Binding DeleteCommand, Source={x:Reference root}}"
                         DeleteCommandParameter="{Binding .}"
                         ViewCommand="{Binding ViewCommand, Source={x:Reference root}}"

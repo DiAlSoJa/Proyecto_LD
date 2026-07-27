@@ -50,6 +50,7 @@ namespace LD.Infrastructure.Persistence
 
         public DbSet<Units> Units { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<TruckType> TruckTypes { get; set; }
         public DbSet<Warehouse>Warehouses{ get; set; }
         public DbSet<Family> Families{ get; set; }
         public DbSet<Dimensioner> Dimensioner{ get; set; }
@@ -186,6 +187,10 @@ namespace LD.Infrastructure.Persistence
 
             builder.Entity<Units>()
                 .HasIndex(u => u.UnitIdS)
+                .IsUnique();
+
+            builder.Entity<TruckType>()
+                .HasIndex(x => x.Name)
                 .IsUnique();
 
             builder.Entity<Project>()
@@ -739,6 +744,27 @@ namespace LD.Infrastructure.Persistence
                     Code = "EXP",
                     Name = "Fecha de Caducidad",
                     CreatedAt = new DateTime(2026, 3, 4),
+                    CreatedByUserId = "system",
+                    IsActive = true
+                }
+            );
+
+            builder.Entity<TruckType>().HasData(
+                new TruckType
+                {
+                    TruckTypeId = 1,
+                    Name = "Caja",
+                    TieneCaja = true,
+                    CreatedAt = new DateTime(2026, 7, 26),
+                    CreatedByUserId = "system",
+                    IsActive = true
+                },
+                new TruckType
+                {
+                    TruckTypeId = 2,
+                    Name = "Tractor",
+                    TieneCaja = false,
+                    CreatedAt = new DateTime(2026, 7, 26),
                     CreatedByUserId = "system",
                     IsActive = true
                 }

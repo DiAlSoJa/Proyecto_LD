@@ -12,9 +12,22 @@
                 Stroke="#CBD5E1"
                 StrokeShape="RoundRectangle 10"
                 BackgroundColor="White">
-            <Image Source="{Binding PhotoSource, Source={x:Reference root}}"
-                   Aspect="AspectFill"
-                   HeightRequest="82"/>
+            <Grid>
+                <Image Source="{Binding PhotoSource, Source={x:Reference root}}"
+                       Aspect="AspectFill"
+                       HeightRequest="82"/>
+
+                <Label Text="{Binding BadgeText, Source={x:Reference root}}"
+                       Margin="6"
+                       Padding="6,2"
+                       HorizontalOptions="Start"
+                       VerticalOptions="End"
+                       BackgroundColor="#CC0F172A"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       FontSize="10"
+                       LineBreakMode="TailTruncation"/>
+            </Grid>
             <Border.GestureRecognizers>
                 <TapGestureRecognizer
                     Command="{Binding ViewCommand, Source={x:Reference root}}"

@@ -11,11 +11,15 @@ public class SecurityRegistrationDto
     public string Licencia { get; set; } = "";
     public DateTime Vencimiento { get; set; }
     public string Celular { get; set; } = "";
+    public bool TieneCaja { get; set; }
     public string TipoVehiculo { get; set; } = "";
     public string Linea { get; set; } = "";
     public string Origen { get; set; } = "";
     public string Numero { get; set; } = "";
     public string Placa { get; set; } = "";
+    public string NumeroCaja { get; set; } = "";
+    public string PlacaCaja { get; set; } = "";
+    public string Sello { get; set; } = "";
     public bool IsActive { get; set; }
     public RegistroEstado_e Estado { get; set; }
     public int? CortinaId { get; set; }

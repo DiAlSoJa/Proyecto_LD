@@ -40,6 +40,7 @@ namespace LD.Client
             services.AddScoped<FamilyService>();
             services.AddScoped<DimensionerService>();
             services.AddScoped<VehicleService>();
+            services.AddScoped<TruckTypeService>();
             services.AddScoped<DriverService>();
             services.AddScoped<SecurityService>();
             services.AddScoped<CortinaService>();

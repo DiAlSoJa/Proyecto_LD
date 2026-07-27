@@ -14,10 +14,14 @@ public class PatioMonitorDto
     public string Licencia { get; set; } = string.Empty;
     public DateTime Vencimiento { get; set; }
     public string Celular { get; set; } = string.Empty;
+    public bool TieneCaja { get; set; }
     public string Linea { get; set; } = string.Empty;
     public string Origen { get; set; } = string.Empty;
     public string Numero { get; set; } = string.Empty;
     public string Placa { get; set; } = string.Empty;
+    public string NumeroCaja { get; set; } = string.Empty;
+    public string PlacaCaja { get; set; } = string.Empty;
+    public string Sello { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public RegistroEstado_e Estado { get; set; }
     public int? CortinaId { get; set; }

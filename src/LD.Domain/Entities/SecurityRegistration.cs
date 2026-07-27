@@ -32,6 +32,8 @@ public class SecurityRegistration : AuditableEntity
     public string Celular { get; set; } = "";
 
     // Vehicle
+    public bool TieneCaja { get; set; }
+
     [MaxLength(30)]
     public string TipoVehiculo { get; set; } = "";
 
@@ -46,6 +48,15 @@ public class SecurityRegistration : AuditableEntity
 
     [MaxLength(20)]
     public string Placa { get; set; } = "";
+
+    [MaxLength(50)]
+    public string NumeroCaja { get; set; } = "";
+
+    [MaxLength(20)]
+    public string PlacaCaja { get; set; } = "";
+
+    [MaxLength(50)]
+    public string Sello { get; set; } = "";
 
     public ICollection<SecurityRegistrationPhoto> Photos { get; set; } = new List<SecurityRegistrationPhoto>();
 }

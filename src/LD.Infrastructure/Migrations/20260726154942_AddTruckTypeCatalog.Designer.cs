@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260726154942_AddTruckTypeCatalog")]
+    partial class AddTruckTypeCatalog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -6017,11 +6020,6 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("NumeroCaja")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("Origen")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -6031,19 +6029,6 @@ namespace LD.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("PlacaCaja")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Sello")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("TieneCaja")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
@@ -6488,9 +6473,6 @@ namespace LD.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("TieneCaja")
-                        .HasColumnType("bit");
-
                     b.HasKey("TruckTypeId");
 
                     b.HasIndex("Name")
@@ -6505,8 +6487,7 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(2026, 7, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = "system",
                             IsActive = true,
-                            Name = "Caja",
-                            TieneCaja = true
+                            Name = "Caja"
                         },
                         new
                         {
@@ -6514,8 +6495,7 @@ namespace LD.Infrastructure.Migrations
                             CreatedAt = new DateTime(2026, 7, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = "system",
                             IsActive = true,
-                            Name = "Tractor",
-                            TieneCaja = false
+                            Name = "Tractor"
                         });
                 });
 

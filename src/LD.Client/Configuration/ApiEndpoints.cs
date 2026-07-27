@@ -271,6 +271,16 @@ namespace LD.Forms.Configuration
         public string Vehicle_Delete => $"{_baseApi}/vehicle/{{id}}";
 
         // ======================
+        // TRUCK TYPE
+        // ======================
+
+        public string TruckType_GetAll => $"{_baseApi}/trucktype";
+        public string TruckType_GetById => $"{_baseApi}/trucktype/{{truckTypeId}}";
+        public string TruckType_Create => $"{_baseApi}/trucktype";
+        public string TruckType_Update => $"{_baseApi}/trucktype/{{truckTypeId}}";
+        public string TruckType_Delete => $"{_baseApi}/trucktype/{{truckTypeId}}";
+
+        // ======================
         // EQUIPMENT QUESTION
         // ======================
 

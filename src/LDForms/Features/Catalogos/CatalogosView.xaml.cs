@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using LD.Client.Configuration;
 using LD.Contracts.Constants;
 using LD.Contracts.Enums;
+using LD.FormsX.Views;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LD.FormsX.Views.Catalogos
@@ -33,6 +34,7 @@ namespace LD.FormsX.Views.Catalogos
             RemoveIfNoModule(TabCategorias,    Module_e.Categories);
             RemoveIfNoModule(TabUnidades,      Module_e.Units);
             RemoveIfNoEquipmentPermissions(TabEquipos);
+            RemoveIfNoModule(TabTiposCamion,   Module_e.Catalogs);
             RemoveIfNoModule(TabMonedas,       Module_e.Currencies);
             RemoveIfNoModule(TabFamilias,      Module_e.Families);
             RemoveIfNoModule(TabDimensionador, Module_e.Dimensioner);
@@ -62,6 +64,7 @@ namespace LD.FormsX.Views.Catalogos
                 TabCategorias.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoCategoriasView>());
                 TabUnidades.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoUnidadesView>());
                 TabEquipos.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoEquiposView>());
+                TabTiposCamion.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoTiposCamionView>());
                 TabMonedas.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoMonedasView>());
                 TabFamilias.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoFamiliasView>());
                 TabDimensionador.Content = CrearContenedor(_serviceProvider.GetRequiredService<CatalogoDimensionadorView>());

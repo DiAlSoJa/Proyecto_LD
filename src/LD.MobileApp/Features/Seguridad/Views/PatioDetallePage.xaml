@@ -82,6 +82,45 @@
                         Stroke="#E2E8F0"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 24"
+                        Padding="20"
+                        IsVisible="{Binding Vehiculo.TieneCaja}">
+                    <VerticalStackLayout Spacing="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Caja"
+                                   FontSize="12"
+                                   TextColor="#64748B"/>
+                            <Label Text="{Binding Vehiculo.NumeroCaja}"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   TextColor="#1E293B"/>
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                              ColumnSpacing="16"
+                              RowSpacing="14">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Placa caja" FontSize="12" TextColor="#64748B"/>
+                                <Label Text="{Binding Vehiculo.PlacaCaja}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="#1E293B"/>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                <Label Text="Sello" FontSize="12" TextColor="#64748B"/>
+                                <Label Text="{Binding Vehiculo.Sello}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="#1E293B"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#F6F8FC"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 24"
                         Padding="20">
                     <VerticalStackLayout Spacing="14">
                         <VerticalStackLayout Spacing="4">

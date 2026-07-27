@@ -146,6 +146,9 @@ namespace LD.FormsX.Views.Dialogs
                 || Contains(vehicle.TipoVehiculo, searchText)
                 || Contains(vehicle.Linea, searchText)
                 || Contains(vehicle.Numero, searchText)
+                || Contains(vehicle.NumeroCaja, searchText)
+                || Contains(vehicle.PlacaCaja, searchText)
+                || Contains(vehicle.Sello, searchText)
                 || Contains(vehicle.Licencia, searchText);
         }
 

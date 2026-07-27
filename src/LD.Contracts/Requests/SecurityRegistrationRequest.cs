@@ -14,11 +14,15 @@ public class SecurityRegistrationRequest
     public string Celular { get; set; } = "";
 
     // Vehicle
+    public bool TieneCaja { get; set; }
     public string TipoVehiculo { get; set; } = "";   // Caja / Tractor
     public string Linea { get; set; } = "";
     public string Origen { get; set; } = "";
     public string Numero { get; set; } = "";
     public string Placa { get; set; } = "";
+    public string NumeroCaja { get; set; } = "";
+    public string PlacaCaja { get; set; } = "";
+    public string Sello { get; set; } = "";
 
     public List<SecurityPhotoDto> Fotos { get; set; } = new();
 }

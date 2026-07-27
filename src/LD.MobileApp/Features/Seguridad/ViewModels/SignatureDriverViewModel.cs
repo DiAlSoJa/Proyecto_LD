@@ -1,9 +1,9 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LD.Client.Services;
 using LD.Contracts.DTOs.Security;
 using LD.Contracts.Enums;
 using LD.Contracts.Requests;
-using LD.Client.Services;
 using MauiAppLogin.Controls;
 using MauiAppLogin.Models;
 using MauiAppLogin.Services;
@@ -26,13 +26,19 @@ public partial class SignatureDriverViewModel : ObservableObject
     private bool isBusy;
 
     [ObservableProperty]
-    private string resumenTipo = "";
+    private bool tieneCaja;
 
     [ObservableProperty]
-    private string resumenChofer = "";
+    private string resumenTipo = string.Empty;
 
     [ObservableProperty]
-    private string resumenVehiculo = "";
+    private string resumenChofer = string.Empty;
+
+    [ObservableProperty]
+    private string resumenVehiculo = string.Empty;
+
+    [ObservableProperty]
+    private string resumenCaja = string.Empty;
 
     public DrawingView? SignaturePad { get; set; }
 
@@ -46,23 +52,27 @@ public partial class SignatureDriverViewModel : ObservableObject
         ILoaderService loaderService,
         IDialogService dialogService)
     {
-        _context         = context;
+        _context = context;
         _securityService = securityService;
-        _loaderService   = loaderService;
-        _dialogService   = dialogService;
+        _loaderService = loaderService;
+        _dialogService = dialogService;
 
-        ClearCommand     = new Command(ClearSignature);
+        ClearCommand = new Command(ClearSignature);
         FinalizarCommand = new AsyncCommand(FinalizarAsync);
-        AtrasCommand     = new AsyncCommand(AtrasAsync);
+        AtrasCommand = new AsyncCommand(AtrasAsync);
 
         LoadResumen();
     }
 
     private void LoadResumen()
     {
-        ResumenTipo     = _context.Tipo;
-        ResumenChofer   = _context.Nombre;
-        ResumenVehiculo = $"{_context.TipoVehiculo} — {_context.Placa}";
+        ResumenTipo = _context.Tipo;
+        ResumenChofer = _context.Nombre;
+        ResumenVehiculo = $"{_context.TipoVehiculo} - {_context.Placa}";
+        TieneCaja = _context.TieneCaja;
+        ResumenCaja = _context.TieneCaja
+            ? $"Numero: {_context.NumeroCaja} | Placa: {_context.PlacaCaja} | Sello: {_context.Sello}"
+            : string.Empty;
     }
 
     private void ClearSignature()
@@ -91,7 +101,13 @@ public partial class SignatureDriverViewModel : ObservableObject
 
             if (_context.Firma is null || _context.Firma.Length == 0)
             {
-                await _dialogService.ShowInfoAsync("Atención", "Firme antes de finalizar.");
+                await _dialogService.ShowInfoAsync("Atencion", "Firme antes de finalizar.");
+                return;
+            }
+
+            if (!_context.Vencimiento.HasValue)
+            {
+                await _dialogService.ShowInfoAsync("Atencion", "Selecciona el vencimiento de la licencia.");
                 return;
             }
 
@@ -107,17 +123,21 @@ public partial class SignatureDriverViewModel : ObservableObject
 
             var request = new SecurityRegistrationRequest
             {
-                Tipo        = _context.Tipo,
-                Nombre      = _context.Nombre,
-                Licencia    = _context.Licencia,
-                Vencimiento = _context.Vencimiento,
-                Celular     = _context.Celular,
+                Tipo = _context.Tipo,
+                Nombre = _context.Nombre,
+                Licencia = _context.Licencia,
+                Vencimiento = _context.Vencimiento.Value,
+                Celular = _context.Celular,
+                TieneCaja = _context.TieneCaja,
                 TipoVehiculo = _context.TipoVehiculo,
-                Linea       = _context.Linea,
-                Origen      = _context.Origen,
-                Numero      = _context.Numero,
-                Placa       = _context.Placa,
-                Fotos       = fotos,
+                Linea = _context.Linea,
+                Origen = _context.Origen,
+                Numero = _context.Numero,
+                Placa = _context.Placa,
+                NumeroCaja = _context.TieneCaja ? _context.NumeroCaja : string.Empty,
+                PlacaCaja = _context.TieneCaja ? _context.PlacaCaja : string.Empty,
+                Sello = _context.TieneCaja ? _context.Sello : string.Empty,
+                Fotos = fotos,
             };
 
             _dialogService.ShowBlocking("Guardando", "Enviando registro...");
@@ -129,7 +149,7 @@ public partial class SignatureDriverViewModel : ObservableObject
                 return;
             }
 
-            await _dialogService.ShowSuccessAsync("Registro completado", "Control de Operaciones asignará una cortina.");
+            await _dialogService.ShowSuccessAsync("Registro completado", "Control de Operaciones asignara una cortina.");
             _context.Clear();
             await Shell.Current.GoToAsync("//dashboard");
         }

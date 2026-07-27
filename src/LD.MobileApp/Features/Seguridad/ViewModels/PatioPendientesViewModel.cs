@@ -118,9 +118,12 @@ public partial class PatioPendientesViewModel : ObservableObject
                || Contiene(registro.Nombre, texto)
                || Contiene(registro.Tipo, texto)
                || Contiene(registro.TipoVehiculo, texto)
+               || Contiene(registro.Numero, texto)
+               || Contiene(registro.NumeroCaja, texto)
+               || Contiene(registro.PlacaCaja, texto)
+               || Contiene(registro.Sello, texto)
                || Contiene(registro.Linea, texto)
                || Contiene(registro.Origen, texto)
-               || Contiene(registro.Numero, texto)
                || Contiene(registro.CortinaNumero, texto)
                || Contiene(registro.CurrentStep, texto)
                || Contiene(registro.NextStep, texto)
@@ -153,6 +156,11 @@ public partial class PatioPendientesViewModel : ObservableObject
             TipoOperacion = registro.Tipo,
             TipoVehiculo = registro.TipoVehiculo,
             Linea = registro.Linea,
+            Numero = registro.Numero,
+            NumeroCaja = registro.NumeroCaja,
+            PlacaCaja = registro.PlacaCaja,
+            Sello = registro.Sello,
+            TieneCaja = registro.TieneCaja,
             CortinaAsignada = registro.CortinaNumero,
             Estado = registro.Estado,
             Status = registro.StatusText
