@@ -99,6 +99,33 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     private string photoStatusText = "0/2 fotos requeridas";
 
     [ObservableProperty]
+    private string vehiclePhotoStatusText = "0/2 fotos";
+
+    [ObservableProperty]
+    private string boxPhotoStatusText = "0/3 fotos";
+
+    [ObservableProperty]
+    private bool hasNumeroVehiculoPhoto;
+
+    [ObservableProperty]
+    private bool hasPlacaVehiculoPhoto;
+
+    [ObservableProperty]
+    private bool hasNumeroCajaPhoto;
+
+    [ObservableProperty]
+    private bool hasPlacaCajaPhoto;
+
+    [ObservableProperty]
+    private bool hasSelloPhoto;
+
+    [ObservableProperty]
+    private bool hasVehiclePhotos;
+
+    [ObservableProperty]
+    private bool hasBoxPhotos;
+
+    [ObservableProperty]
     private ImageSource? previewImage;
 
     [ObservableProperty]
@@ -106,9 +133,15 @@ public partial class RegisterVehiculeViewModel : ObservableObject
 
     public ObservableCollection<TruckTypeDto> TruckTypes { get; } = new();
     public ObservableCollection<VehiclePhotoItem> Photos { get; } = new();
+    public IReadOnlyList<VehiclePhotoItem> VehiclePhotos =>
+        Photos.Where(p => BasePhotoSlots.Contains(p.Slot)).ToList();
+    public IReadOnlyList<VehiclePhotoItem> BoxPhotos =>
+        Photos.Where(p => BoxPhotoSlots.Contains(p.Slot)).ToList();
 
     public ICommand CapturarCommand { get; }
     public ICommand GaleriaCommand { get; }
+    public ICommand CapturarSlotCommand { get; }
+    public ICommand GaleriaSlotCommand { get; }
     public ICommand CancelarCommand { get; }
     public ICommand SiguienteCommand { get; }
     public ICommand AtrasCommand { get; }
@@ -128,6 +161,8 @@ public partial class RegisterVehiculeViewModel : ObservableObject
 
         CapturarCommand = new AsyncCommand(CapturarAsync);
         GaleriaCommand = new AsyncCommand(SeleccionarGaleriaAsync);
+        CapturarSlotCommand = new AsyncCommand<VehiclePhotoSlot>(CapturarSlotAsync);
+        GaleriaSlotCommand = new AsyncCommand<VehiclePhotoSlot>(SeleccionarSlotGaleriaAsync);
         CancelarCommand = new Command(Cancelar);
         SiguienteCommand = new AsyncCommand(SiguienteAsync);
         AtrasCommand = new AsyncCommand(AtrasAsync);
@@ -236,9 +271,24 @@ public partial class RegisterVehiculeViewModel : ObservableObject
                 return;
             }
 
+            await CapturarSlotAsync(slot.Value);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task CapturarSlotAsync(VehiclePhotoSlot slot)
+    {
+        try
+        {
+            if (!GetRequiredSlots().Contains(slot))
+                return;
+
             if (!MediaPicker.Default.IsCaptureSupported)
             {
-                await _dialogService.ShowInfoAsync("Camara", "Este dispositivo no soporta captura de fotos.");
+                await _dialogService.ShowInfoAsync("Cámara", "Este dispositivo no soporta captura de fotos.");
                 return;
             }
 
@@ -246,7 +296,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
             if (photo is null)
                 return;
 
-            await ProcesarFotoAsync(photo, slot.Value);
+            await ProcesarFotoAsync(photo, slot);
         }
         catch (Exception ex)
         {
@@ -265,16 +315,31 @@ public partial class RegisterVehiculeViewModel : ObservableObject
                 return;
             }
 
+            await SeleccionarSlotGaleriaAsync(slot.Value);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task SeleccionarSlotGaleriaAsync(VehiclePhotoSlot slot)
+    {
+        try
+        {
+            if (!GetRequiredSlots().Contains(slot))
+                return;
+
             var photos = await MediaPicker.Default.PickPhotosAsync(new MediaPickerOptions
             {
-                Title = $"Selecciona una imagen para {GetPhotoTitle(slot.Value)}"
+                Title = $"Selecciona una imagen para {GetPhotoTitle(slot)}"
             });
             var photo = photos?.FirstOrDefault();
 
             if (photo is null)
                 return;
 
-            await ProcesarFotoAsync(photo, slot.Value);
+            await ProcesarFotoAsync(photo, slot);
         }
         catch (Exception ex)
         {
@@ -472,6 +537,19 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         var nextSlot = GetNextRequiredSlot();
 
         PhotoStatusText = $"{capturedCount}/{requiredSlots.Count} fotos requeridas";
+
+        HasNumeroVehiculoPhoto = Photos.Any(p => p.Slot == VehiclePhotoSlot.NumeroVehiculo);
+        HasPlacaVehiculoPhoto = Photos.Any(p => p.Slot == VehiclePhotoSlot.PlacaVehiculo);
+        HasNumeroCajaPhoto = Photos.Any(p => p.Slot == VehiclePhotoSlot.NumeroCaja);
+        HasPlacaCajaPhoto = Photos.Any(p => p.Slot == VehiclePhotoSlot.PlacaCaja);
+        HasSelloPhoto = Photos.Any(p => p.Slot == VehiclePhotoSlot.Sello);
+        HasVehiclePhotos = HasNumeroVehiculoPhoto || HasPlacaVehiculoPhoto;
+        HasBoxPhotos = HasNumeroCajaPhoto || HasPlacaCajaPhoto || HasSelloPhoto;
+
+        VehiclePhotoStatusText = $"{Photos.Count(p => BasePhotoSlots.Contains(p.Slot))}/2 fotos";
+        BoxPhotoStatusText = $"{Photos.Count(p => BoxPhotoSlots.Contains(p.Slot))}/3 fotos";
+        OnPropertyChanged(nameof(VehiclePhotos));
+        OnPropertyChanged(nameof(BoxPhotos));
 
         if (nextSlot is null)
         {

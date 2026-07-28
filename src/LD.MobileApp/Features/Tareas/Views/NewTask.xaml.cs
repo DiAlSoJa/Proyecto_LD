@@ -11,7 +11,7 @@ public partial class NewTask : ContentPage, IQueryAttributable
     private const float TaskPhotoMaxSize = 1920f;
     private const float TaskPhotoQuality = 0.86f;
 
-    private readonly WarehouseTaskService _warehouseTaskService;
+    private readonly OperationalTaskService _operationalTaskService;
     private readonly LookupService _lookupService;
     private readonly string?[] _photoPaths = new string?[4];
     private readonly ImageSource?[] _photos = new ImageSource?[4];
@@ -19,10 +19,10 @@ public partial class NewTask : ContentPage, IQueryAttributable
 
     public string? TextInformation { get; set; }
 
-    public NewTask(WarehouseTaskService warehouseTaskService, LookupService lookupService)
+    public NewTask(OperationalTaskService operationalTaskService, LookupService lookupService)
     {
         InitializeComponent();
-        _warehouseTaskService = warehouseTaskService;
+        _operationalTaskService = operationalTaskService;
         _lookupService = lookupService;
     }
 
@@ -170,7 +170,7 @@ public partial class NewTask : ContentPage, IQueryAttributable
 
         try
         {
-            var request = new WarehouseTaskRequest
+            var request = new OperationalTaskRequest
             {
                 WarehouseId = warehouseId,
                 Priority = EstadoPicker.SelectedItem.ToString() ?? string.Empty,
@@ -184,7 +184,7 @@ public partial class NewTask : ContentPage, IQueryAttributable
             request.Photo3Path = await UploadPhotoAsync(_photoPaths[2], 3);
             request.Photo4Path = await UploadPhotoAsync(_photoPaths[3], 4);
 
-            var response = await _warehouseTaskService.CreateTaskAsync(request);
+            var response = await _operationalTaskService.CreateTask(request);
             if (!response.IsSuccess)
             {
                 await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo guardar la tarea.", "OK");
@@ -205,7 +205,7 @@ public partial class NewTask : ContentPage, IQueryAttributable
         if (string.IsNullOrWhiteSpace(photoPath) || !File.Exists(photoPath))
             return null;
 
-        var response = await _warehouseTaskService.UploadImageAsync(photoPath, photoNumber);
+        var response = await _operationalTaskService.UploadImage(photoPath, photoNumber);
         if (!response.IsSuccess || response.Data is null || string.IsNullOrWhiteSpace(response.Data.RelativePath))
             throw new InvalidOperationException(response.Message ?? $"No se pudo cargar la foto {photoNumber}.");
 

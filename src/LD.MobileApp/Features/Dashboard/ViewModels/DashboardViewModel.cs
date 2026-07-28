@@ -399,7 +399,10 @@ namespace MauiAppLogin.ViewModels
         private async Task NavigateToCaseta()
         {
             var opciones = new[] { "Carga", "Descarga" };
-            var popup = new OptionPopup("Caseta", opciones);
+            var popup = new OptionPopup(
+                "Caseta",
+                opciones,
+                OptionPopupPresentation.Separated);
 
             var page = GetActivePage();
             if (page is null)

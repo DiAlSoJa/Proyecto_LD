@@ -78,6 +78,54 @@ public static class AsnReceiptValidationGuard
                 400);
         }
 
+        if (detail.ExpirationDate.HasValue
+            && (!request.ExpirationDate.HasValue
+                || request.ExpirationDate.Value.Date != detail.ExpirationDate.Value.Date))
+        {
+            return Failure(
+                $"La fecha de caducidad {request.ExpirationDate:dd/MM/yyyy} no coincide con el detalle de ASN.",
+                400);
+        }
+
+        var detailReference = Normalize(detail.CustomerReference);
+        var requestedReference = Normalize(request.Reference);
+        if (!string.IsNullOrWhiteSpace(detailReference)
+            && !string.Equals(requestedReference, detailReference, StringComparison.OrdinalIgnoreCase))
+        {
+            return Failure(
+                $"La referencia de cliente {requestedReference} no coincide con el detalle de ASN.",
+                400);
+        }
+
+        var detailPurchaseOrder = Normalize(detail.PurchaseOrder);
+        var requestedPurchaseOrder = Normalize(request.PurchaseOrder);
+        if (!string.IsNullOrWhiteSpace(detailPurchaseOrder)
+            && !string.Equals(requestedPurchaseOrder, detailPurchaseOrder, StringComparison.OrdinalIgnoreCase))
+        {
+            return Failure(
+                $"La orden de compra {requestedPurchaseOrder} no coincide con el detalle de ASN.",
+                400);
+        }
+
+        var detailCustomsDeclaration = Normalize(detail.CustomsDeclarationNumber);
+        var requestedCustomsDeclaration = Normalize(request.CustomsDeclarationNumber);
+        if (!string.IsNullOrWhiteSpace(detailCustomsDeclaration)
+            && !string.Equals(requestedCustomsDeclaration, detailCustomsDeclaration, StringComparison.OrdinalIgnoreCase))
+        {
+            return Failure(
+                $"El pedimento {requestedCustomsDeclaration} no coincide con el detalle de ASN.",
+                400);
+        }
+
+        if (detail.ExchangeRate.HasValue
+            && (!request.ExchangeRate.HasValue
+                || request.ExchangeRate.Value != detail.ExchangeRate.Value))
+        {
+            return Failure(
+                $"El tipo de cambio {request.ExchangeRate?.ToString(CultureInfo.InvariantCulture) ?? string.Empty} no coincide con el detalle de ASN.",
+                400);
+        }
+
         return null;
     }
 
@@ -193,9 +241,7 @@ public static class AsnReceiptValidationGuard
 
     private static bool IsStandardIdConfiguration(ScanConfiguration config)
     {
-        return config.SystemFieldId == (int)SystemField_e.StandardId
-            || string.Equals(NormalizeFieldName(config.SystemField?.SystemFieldName), "standard_id", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(NormalizeFieldName(config.SystemField?.SystemFieldName), "standardid", StringComparison.OrdinalIgnoreCase);
+        return string.Equals(NormalizeField(config), "standard_id", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string GetConfiguredValue(AsnReceiptRequest request, ScanConfiguration config)
@@ -217,7 +263,11 @@ public static class AsnReceiptValidationGuard
             "purchase_order" => Normalize(request.PurchaseOrder),
             "customs_declaration" => Normalize(request.CustomsDeclarationNumber),
             "qty" => NormalizeQuantity(request.ReceivedQuantity),
-            "standardid" => Normalize(request.StandardId),
+            "expiration_date" => NormalizeDate(request.ExpirationDate),
+            "exchange_rate" => NormalizeQuantity(request.ExchangeRate),
+            "sd" => Normalize(request.SD),
+            "status" => Normalize(request.Status),
+            "standard_id" or "standardid" => Normalize(request.StandardId),
             "part_number" or "partnumber" or "numero de parte" or "nÃºmero de parte" => Normalize(request.PartNumber),
             _ => string.Empty
         };
@@ -232,6 +282,10 @@ public static class AsnReceiptValidationGuard
             "purchase_order" => Normalize(receipt.PurchaseOrder),
             "customs_declaration" => Normalize(receipt.CustomsDeclarationNumber),
             "qty" => NormalizeQuantity(receipt.ReceivedQuantity),
+            "expiration_date" => NormalizeDate(receipt.ExpirationDate),
+            "exchange_rate" => NormalizeQuantity(receipt.ExchangeRate),
+            "sd" => Normalize(receipt.SD),
+            "status" => Normalize(receipt.Status),
             "standard_id" or "standardid" => NormalizeStandardId(receipt.StandardId),
             "part_number" or "partnumber" or "numero de parte" or "nÃºmero de parte" => Normalize(receipt.PartNumber),
             _ => string.Empty
@@ -240,9 +294,17 @@ public static class AsnReceiptValidationGuard
 
     private static string NormalizeField(ScanConfiguration config)
     {
-        var fieldName = NormalizeFieldName(config.SystemField?.SystemFieldName);
-        if (!string.IsNullOrWhiteSpace(fieldName))
-            return fieldName;
+        foreach (var candidate in GetConfiguredFieldNameCandidates(config))
+        {
+            if (TryNormalizeConfiguredFieldKey(candidate, out var normalizedFieldKey))
+                return normalizedFieldKey;
+        }
+
+        var fallbackField = GetConfiguredFieldNameCandidates(config)
+            .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
+
+        if (!string.IsNullOrWhiteSpace(fallbackField))
+            return NormalizeFieldName(fallbackField);
 
         return config.SystemFieldId switch
         {
@@ -252,9 +314,42 @@ public static class AsnReceiptValidationGuard
             (int)SystemField_e.CustomsDeclaration => "customs_declaration",
             (int)SystemField_e.Qty => "qty",
             (int)SystemField_e.StandardId => "standard_id",
-            (int)SystemField_e.PartNumber => "part_number",
+            (int)SystemField_e.PartNumber => "partnumber",
             _ => string.Empty
         };
+    }
+
+    private static IEnumerable<string?> GetConfiguredFieldNameCandidates(ScanConfiguration config)
+    {
+        yield return config.ClientField;
+        yield return config.SystemField?.SystemFieldName;
+    }
+
+    private static bool TryNormalizeConfiguredFieldKey(string? fieldName, out string normalizedFieldKey)
+    {
+        normalizedFieldKey = string.Empty;
+
+        var normalized = NormalizeFieldName(fieldName);
+        if (string.IsNullOrWhiteSpace(normalized))
+            return false;
+
+        normalizedFieldKey = normalized switch
+        {
+            "lotnumber" or "lote" or "lot number" or "lot_number" => "lot_number",
+            "customerreference" or "referencia de cliente" or "referencia cliente" or "referencia" => "customer_reference",
+            "purchaseorder" or "orden de compra" or "purchase order" or "purchase_order" or "po" => "purchase_order",
+            "customsdeclaration" or "pedimento" or "declaracion aduanal" or "declaracion de aduana" or "customs declaration" or "customs_declaration" => "customs_declaration",
+            "qty" or "quantity" or "cantidad" => "qty",
+            "expirationdate" or "fecha de caducidad" or "caducidad" or "expiration date" or "expiration_date" => "expiration_date",
+            "exchangerate" or "tipo de cambio" or "tipo cambio" or "exchange rate" or "exchange_rate" or "tc" => "exchange_rate",
+            "standardid" or "standard id" or "standard_id" => "standard_id",
+            "partnumber" or "part number" or "part_number" or "numerodeparte" or "numero de parte" => "partnumber",
+            "sd" => "sd",
+            "status" or "estatus" => "status",
+            _ => normalized
+        };
+
+        return true;
     }
 
     private static string NormalizeFieldName(string? fieldName)
@@ -278,6 +373,9 @@ public static class AsnReceiptValidationGuard
 
     private static string NormalizeQuantity(decimal? value) =>
         value.HasValue ? value.Value.ToString(CultureInfo.InvariantCulture) : string.Empty;
+
+    private static string NormalizeDate(DateTime? value) =>
+        value.HasValue ? value.Value.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty;
 
     private static string NormalizeQuantity(string? value)
     {

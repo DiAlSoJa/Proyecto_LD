@@ -32,6 +32,7 @@ namespace LD.Application.Features.AsnReceiptDetails.Profiles
                     : src.StandardId.HasValue ? src.StandardId.Value.ToString() : string.Empty))
                 .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PartNumber))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.ExchangeRate, opt => opt.MapFrom(src => src.ExchangeRate))
                 .ForMember(dest => dest.StandardQuantity, opt => opt.MapFrom(src => src.StandardQuantity))
                 .ForMember(dest => dest.MaximumQuantity, opt => opt.MapFrom(src => src.MaximumQuantity))
                 .ForMember(dest => dest.SD, opt => opt.MapFrom(src => src.SD))

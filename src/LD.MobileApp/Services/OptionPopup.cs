@@ -4,13 +4,24 @@ using Microsoft.Maui.Controls.Shapes;
 
 namespace MauiAppLogin;
 
+public enum OptionPopupPresentation
+{
+    Standard,
+    Separated
+}
+
 public sealed class OptionPopup : Popup
 {
     private readonly TaskCompletionSource<string?> _tcs = new();
     public Task<string?> Result => _tcs.Task;
 
-    public OptionPopup(string title, IEnumerable<string> options)
+    public OptionPopup(
+        string title,
+        IEnumerable<string> options,
+        OptionPopupPresentation presentation = OptionPopupPresentation.Standard)
     {
+        var separatedOptions = presentation == OptionPopupPresentation.Separated;
+
         // Contenedor (tarjeta)
         var container = new Border
         {
@@ -58,25 +69,34 @@ public sealed class OptionPopup : Popup
 
         var desc = new Label
         {
-            Text = "Selecciona una opción:",
+            Text = separatedOptions
+                ? "Selecciona cuidadosamente el tipo de operación:"
+                : "Selecciona una opción:",
             FontSize = 13,
             TextColor = Color.FromArgb("#64748B")
         };
 
         // Lista de opciones
-        var list = new VerticalStackLayout { Spacing = 0 };
+        var list = new VerticalStackLayout
+        {
+            Spacing = separatedOptions ? 12 : 0
+        };
 
         foreach (var opt in options)
         {
-            list.Add(BuildRow(opt));
-            list.Add(new BoxView
+            list.Add(separatedOptions ? BuildSeparatedRow(opt) : BuildRow(opt));
+
+            if (!separatedOptions)
             {
-                HeightRequest = 1,
-                BackgroundColor = Color.FromArgb("#EEF2F7")
-            });
+                list.Add(new BoxView
+                {
+                    HeightRequest = 1,
+                    BackgroundColor = Color.FromArgb("#EEF2F7")
+                });
+            }
         }
 
-        if (list.Count > 0)
+        if (!separatedOptions && list.Count > 0)
             list.RemoveAt(list.Count - 1);
 
         var cancel = new Button
@@ -97,7 +117,11 @@ public sealed class OptionPopup : Popup
             {
                 header,
                 desc,
-                new ScrollView { Content = list, HeightRequest = 260 },
+                new ScrollView
+                {
+                    Content = list,
+                    HeightRequest = separatedOptions ? 164 : 260
+                },
                 cancel
             }
         };
@@ -163,6 +187,98 @@ public sealed class OptionPopup : Popup
         grid.Add(chevron);
         Grid.SetColumn(chevron, 1);
 
+        rowBorder.Content = grid;
+
+        var tap = new TapGestureRecognizer();
+        tap.Tapped += (_, __) => CloseWith(text);
+        rowBorder.GestureRecognizers.Add(tap);
+
+        return rowBorder;
+    }
+
+    private View BuildSeparatedRow(string text)
+    {
+        var isLoad = string.Equals(text, "Carga", StringComparison.OrdinalIgnoreCase);
+        var accentColor = Color.FromArgb(isLoad ? "#1D4ED8" : "#C2410C");
+        var backgroundColor = Color.FromArgb(isLoad ? "#EFF6FF" : "#FFF7ED");
+        var strokeColor = Color.FromArgb(isLoad ? "#BFDBFE" : "#FED7AA");
+
+        var rowBorder = new Border
+        {
+            Stroke = strokeColor,
+            StrokeThickness = 1.5,
+            BackgroundColor = backgroundColor,
+            Padding = new Thickness(12, 10),
+            MinimumHeightRequest = 70,
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(16) }
+        };
+
+        var grid = new Grid
+        {
+            ColumnSpacing = 12,
+            ColumnDefinitions =
+            {
+                new ColumnDefinition(GridLength.Auto),
+                new ColumnDefinition(GridLength.Star),
+                new ColumnDefinition(GridLength.Auto)
+            }
+        };
+
+        var badge = new Border
+        {
+            WidthRequest = 42,
+            HeightRequest = 42,
+            StrokeThickness = 0,
+            BackgroundColor = accentColor,
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(13) },
+            Content = new Label
+            {
+                Text = isLoad ? "C" : "D",
+                TextColor = Colors.White,
+                FontSize = 18,
+                FontAttributes = FontAttributes.Bold,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            }
+        };
+
+        var textBlock = new VerticalStackLayout
+        {
+            Spacing = 1,
+            VerticalOptions = LayoutOptions.Center,
+            Children =
+            {
+                new Label
+                {
+                    Text = text,
+                    FontSize = 16,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#0F172A")
+                },
+                new Label
+                {
+                    Text = isLoad
+                        ? "Registrar operación de carga"
+                        : "Registrar operación de descarga",
+                    FontSize = 12,
+                    TextColor = Color.FromArgb("#64748B")
+                }
+            }
+        };
+
+        var chevron = new Label
+        {
+            Text = "›",
+            FontSize = 22,
+            TextColor = accentColor,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        grid.Add(badge);
+        grid.Add(textBlock);
+        grid.Add(chevron);
+        Grid.SetColumn(textBlock, 1);
+        Grid.SetColumn(chevron, 2);
         rowBorder.Content = grid;
 
         var tap = new TapGestureRecognizer();

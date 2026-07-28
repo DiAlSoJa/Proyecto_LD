@@ -51,6 +51,7 @@ namespace LD.FormsX.Views.Dialogs
         private readonly HashSet<AsnReceiptItem> _savingReceiptRows = new();
         private readonly HashSet<AsnDetailItem> _pendingDetailRows = new();
         private readonly HashSet<AsnReceiptItem> _pendingReceiptRows = new();
+        private readonly Dictionary<int, decimal> _savedDetailQuantities = new();
         private AsnDto? AsnSelected;
         private AsnDetailItem? _selectedDetailItem;
         private bool _cargandoDatos = false;
@@ -289,6 +290,9 @@ namespace LD.FormsX.Views.Dialogs
 
         private bool IsCurrentAsnConfirmed() => IsConfirmedStatus(AsnSelected?.Status);
 
+        private static bool IsCreatedStatus(string? status) =>
+            string.Equals(status?.Trim(), DefaultAsnStatus, StringComparison.OrdinalIgnoreCase);
+
         private bool IsScanRequiredForProject() => _projectScanRequired;
 
         private bool HasPersistedAsn() => AsnSelected != null && AsnSelected.AsnId > 0;
@@ -302,6 +306,15 @@ namespace LD.FormsX.Views.Dialogs
                 return true;
 
             DialogHelper.ShowWarning("El ASN esta confirmado y no permite agregar, editar ni eliminar registros.");
+            return false;
+        }
+
+        private bool EnsureCurrentAsnAllowsDetailDeletion()
+        {
+            if (!HasPersistedAsn() || IsCreatedStatus(AsnSelected?.Status))
+                return true;
+
+            DialogHelper.ShowWarning("Solo se pueden eliminar detalles mientras el ASN tenga estatus Creado.");
             return false;
         }
 
@@ -481,6 +494,7 @@ namespace LD.FormsX.Views.Dialogs
             if (AsnSelected == null || AsnSelected.AsnId <= 0)
             {
                 DetailItems.Clear();
+                _savedDetailQuantities.Clear();
                 ReceiptItems.Clear();
                 _selectedDetailItem = null;
                 return;
@@ -492,12 +506,13 @@ namespace LD.FormsX.Views.Dialogs
                 return;*/
 
             DetailItems.Clear();
+            _savedDetailQuantities.Clear();
             if (result.Data != null)
             {
 
                 foreach (var dto in result.Data)
                 {
-                    DetailItems.Add(AsnDetailItem.FromRequest(new AsnDetailRequest
+                    var detailItem = AsnDetailItem.FromRequest(new AsnDetailRequest
                     {
                         AsnDetailId = dto.AsnDetailId,
                         AsnId = dto.AsnId,
@@ -515,7 +530,10 @@ namespace LD.FormsX.Views.Dialogs
                         ExchangeRate = dto.ExchangeRate,
                         PurchaseOrder = dto.PurchaseOrder,
                         CustomsDeclarationNumber = dto.CustomsDeclarationNumber
-                    }));
+                    });
+
+                    DetailItems.Add(detailItem);
+                    _savedDetailQuantities[detailItem.AsnDetailId] = detailItem.Quantity;
                 }
             }
 
@@ -894,6 +912,43 @@ namespace LD.FormsX.Views.Dialogs
                     $"El lote {receiptLotNumber} no coincide con el detalle de ASN.");
             }
 
+            if (detailRow.ExpirationDate.HasValue
+                && (!receiptRow.ExpirationDate.HasValue
+                    || receiptRow.ExpirationDate.Value.Date != detailRow.ExpirationDate.Value.Date))
+            {
+                throw new InvalidOperationException(
+                    $"La fecha de caducidad {receiptRow.ExpirationDate:dd/MM/yyyy} no coincide con el detalle de ASN.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(detailRow.CustomerReference)
+                && !string.Equals(detailRow.CustomerReference.Trim(), receiptRow.Reference?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    $"La referencia de cliente {receiptRow.Reference?.Trim() ?? string.Empty} no coincide con el detalle de ASN.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(detailRow.PurchaseOrder)
+                && !string.Equals(detailRow.PurchaseOrder.Trim(), receiptRow.PurchaseOrder?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    $"La orden de compra {receiptRow.PurchaseOrder?.Trim() ?? string.Empty} no coincide con el detalle de ASN.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(detailRow.CustomsDeclarationNumber)
+                && !string.Equals(detailRow.CustomsDeclarationNumber.Trim(), receiptRow.CustomsDeclarationNumber?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    $"El pedimento {receiptRow.CustomsDeclarationNumber?.Trim() ?? string.Empty} no coincide con el detalle de ASN.");
+            }
+
+            if (detailRow.ExchangeRate.HasValue
+                && (!receiptRow.ExchangeRate.HasValue
+                    || receiptRow.ExchangeRate.Value != detailRow.ExchangeRate.Value))
+            {
+                throw new InvalidOperationException(
+                    $"El tipo de cambio {receiptRow.ExchangeRate?.ToString(CultureInfo.InvariantCulture) ?? string.Empty} no coincide con el detalle de ASN.");
+            }
+
             await LoadProjectReceiptCacheAsync();
 
             var currentQuantity = _asnReceiptDetailsCache
@@ -1019,9 +1074,18 @@ namespace LD.FormsX.Views.Dialogs
 
         private bool HasConfiguredScanField(SystemField_e systemField)
         {
+            var expectedFieldKey = systemField switch
+            {
+                SystemField_e.StandardId => "standard_id",
+                SystemField_e.PartNumber => "partnumber",
+                _ => string.Empty
+            };
+
+            if (string.IsNullOrWhiteSpace(expectedFieldKey))
+                return false;
+
             return _projectScanConfigurations.Any(config =>
-                config.SystemFieldId == (int)systemField
-                || IsConfiguredScanFieldName(config.SystemFieldName, systemField));
+                string.Equals(NormalizeSystemField(config), expectedFieldKey, StringComparison.OrdinalIgnoreCase));
         }
 
         private static bool IsConfiguredScanFieldName(string? systemFieldName, SystemField_e systemField)
@@ -1116,6 +1180,8 @@ namespace LD.FormsX.Views.Dialogs
             var fieldKey = NormalizeSystemField(configuration);
             return fieldKey == "qty"
                 ? NormalizeQuantityValue(value)
+                : fieldKey == "expiration_date"
+                ? NormalizeDateValue(value)
                 : value?.Trim() ?? string.Empty;
         }
 
@@ -1129,6 +1195,8 @@ namespace LD.FormsX.Views.Dialogs
                 "purchase_order" => NormalizeTextValue(receipt.PurchaseOrder),
                 "customs_declaration" => NormalizeTextValue(receipt.CustomsDeclarationNumber),
                 "qty" => NormalizeQuantityValue(receipt.ReceivedQuantity),
+                "expiration_date" => NormalizeDateValue(receipt.ExpirationDate),
+                "exchange_rate" => NormalizeQuantityValue(receipt.ExchangeRate),
                 "standard_id" or "standardid" => NormalizeTextValue(receipt.StandardId),
                 "part_number" or "partnumber" or "nÃºmero de parte" or "numero de parte" => NormalizeTextValue(receipt.PartNumber),
                 _ => string.Empty
@@ -1145,6 +1213,8 @@ namespace LD.FormsX.Views.Dialogs
                 "purchase_order" => NormalizeTextValue(receipt.PurchaseOrder),
                 "customs_declaration" => NormalizeTextValue(receipt.CustomsDeclarationNumber),
                 "qty" => NormalizeQuantityValue(receipt.ReceivedQuantity),
+                "expiration_date" => NormalizeDateValue(receipt.ExpirationDate),
+                "exchange_rate" => NormalizeQuantityValue(receipt.ExchangeRate),
                 "standard_id" or "standardid" => NormalizeTextValue(receipt.StandardId),
                 "part_number" or "partnumber" or "nÃºmero de parte" or "numero de parte" => NormalizeTextValue(receipt.PartNumber),
                 _ => string.Empty
@@ -1155,6 +1225,20 @@ namespace LD.FormsX.Views.Dialogs
 
         private static string NormalizeQuantityValue(decimal? value) =>
             value.HasValue ? value.Value.ToString(CultureInfo.InvariantCulture) : string.Empty;
+
+        private static string NormalizeDateValue(DateTime? value) =>
+            value.HasValue ? value.Value.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty;
+
+        private static string NormalizeDateValue(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            if (TryParseScannedDate(value, out var parsedDate))
+                return parsedDate.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            return value.Trim();
+        }
 
         private static string NormalizeQuantityValue(string? value)
         {
@@ -1168,6 +1252,18 @@ namespace LD.FormsX.Views.Dialogs
             }
 
             return value.Trim();
+        }
+
+        private static bool TryParseScannedDate(string scannedValue, out DateTime value)
+        {
+            return DateTime.TryParse(scannedValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out value)
+                || DateTime.TryParse(scannedValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
+        }
+
+        private static bool TryParseScannedDecimal(string scannedValue, out decimal value)
+        {
+            return decimal.TryParse(scannedValue, NumberStyles.Number, CultureInfo.CurrentCulture, out value)
+                || decimal.TryParse(scannedValue, NumberStyles.Number, CultureInfo.InvariantCulture, out value);
         }
 
         private AsnReceiptItem CreateScannedReceiptTemplate(AsnDetailItem detailRow)
@@ -1259,6 +1355,7 @@ namespace LD.FormsX.Views.Dialogs
                 ProductId = receiptRow.ProductId.GetValueOrDefault(),
                 PartNumber = receiptRow.PartNumber,
                 Description = receiptRow.Description,
+                ExchangeRate = receiptRow.ExchangeRate,
                 Quantity = quantity,
                 StandardQuantity = receiptRow.StandardQuantity,
                 MaximumQuantity = receiptRow.MaximumQuantity,
@@ -1315,8 +1412,16 @@ namespace LD.FormsX.Views.Dialogs
                 case "customs_declaration":
                     receiptRow.CustomsDeclarationNumber = scannedValue;
                     break;
+                case "expiration_date":
+                    if (TryParseScannedDate(scannedValue, out var expirationDate))
+                        receiptRow.ExpirationDate = expirationDate.Date;
+                    break;
+                case "exchange_rate":
+                    if (TryParseScannedDecimal(scannedValue, out var exchangeRate))
+                        receiptRow.ExchangeRate = exchangeRate;
+                    break;
                 case "qty":
-                    if (decimal.TryParse(scannedValue, out var quantity))
+                    if (TryParseScannedDecimal(scannedValue, out var quantity))
                         receiptRow.ReceivedQuantity = quantity;
                     break;
                 case "standard_id":
@@ -1334,21 +1439,17 @@ namespace LD.FormsX.Views.Dialogs
 
         private static string NormalizeSystemField(ScanConfigurationRequest configuration)
         {
-            var fieldName = NormalizeFieldName(configuration.SystemFieldName);
-            if (!string.IsNullOrWhiteSpace(fieldName))
+            foreach (var candidate in GetConfiguredFieldNameCandidates(configuration))
             {
-                return fieldName switch
-                {
-                    "lotnumber" or "lote" => "lot_number",
-                    "customerreference" => "customer_reference",
-                    "purchaseorder" => "purchase_order",
-                    "customsdeclaration" => "customs_declaration",
-                    "qty" or "quantity" => "qty",
-                    "standardid" => "standard_id",
-                    "part_number" or "partnumber" or "numerodeparte" or "numero de parte" => "partnumber",
-                    _ => fieldName
-                };
+                if (TryNormalizeConfiguredFieldKey(candidate, out var normalizedFieldKey))
+                    return normalizedFieldKey;
             }
+
+            var fallbackField = GetConfiguredFieldNameCandidates(configuration)
+                .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
+
+            if (!string.IsNullOrWhiteSpace(fallbackField))
+                return NormalizeFieldName(fallbackField);
 
             return configuration.SystemFieldId switch
             {
@@ -1361,6 +1462,39 @@ namespace LD.FormsX.Views.Dialogs
                 7 => "partnumber",
                 _ => string.Empty
             };
+        }
+
+        private static IEnumerable<string?> GetConfiguredFieldNameCandidates(ScanConfigurationRequest configuration)
+        {
+            yield return configuration.ClientField;
+            yield return configuration.SystemFieldName;
+        }
+
+        private static bool TryNormalizeConfiguredFieldKey(string? fieldName, out string normalizedFieldKey)
+        {
+            normalizedFieldKey = string.Empty;
+
+            var normalized = NormalizeFieldName(fieldName);
+            if (string.IsNullOrWhiteSpace(normalized))
+                return false;
+
+            normalizedFieldKey = normalized switch
+            {
+                "lotnumber" or "lote" or "lot number" or "lot_number" => "lot_number",
+                "customerreference" or "referencia de cliente" or "referencia cliente" or "referencia" => "customer_reference",
+                "purchaseorder" or "orden de compra" or "purchase order" or "purchase_order" or "po" => "purchase_order",
+                "customsdeclaration" or "pedimento" or "declaracion aduanal" or "declaracion de aduana" or "customs declaration" or "customs_declaration" => "customs_declaration",
+                "qty" or "quantity" or "cantidad" => "qty",
+                "expirationdate" or "fecha de caducidad" or "caducidad" or "expiration date" or "expiration_date" => "expiration_date",
+                "exchangerate" or "tipo de cambio" or "tipo cambio" or "exchange rate" or "exchange_rate" or "tc" => "exchange_rate",
+                "standardid" or "standard id" or "standard_id" => "standard_id",
+                "partnumber" or "part number" or "part_number" or "numerodeparte" or "numero de parte" => "partnumber",
+                "sd" => "sd",
+                "status" or "estatus" => "status",
+                _ => normalized
+            };
+
+            return true;
         }
 
         private static string NormalizeFieldName(string? value)
@@ -1553,23 +1687,6 @@ namespace LD.FormsX.Views.Dialogs
                 ReceiptItems.Remove(emptyRow);
         }
 
-        private bool CanDeleteReceiptRow(AsnReceiptItem receiptRow)
-        {
-            if (receiptRow.AsnDetailId <= 0)
-                return true;
-
-            var linkedReceiptsCount = ReceiptItems.Count(item =>
-                !ReferenceEquals(item, receiptRow)
-                && !IsEmptyReceiptRow(item)
-                && item.AsnDetailId == receiptRow.AsnDetailId);
-
-            if (linkedReceiptsCount > 0)
-                return true;
-
-            DialogHelper.ShowWarning("No se puede eliminar la recepción porque es el unico registro ligado al detail.");
-            return false;
-        }
-
         private static bool IsDetailRowCompleted(AsnDetailItem detailRow)
         {
             return detailRow.ProductId > 0
@@ -1595,7 +1712,8 @@ namespace LD.FormsX.Views.Dialogs
                 && item.ExpirationDate == null
                 && string.IsNullOrWhiteSpace(item.Reference)
                 && string.IsNullOrWhiteSpace(item.PurchaseOrder)
-                && string.IsNullOrWhiteSpace(item.CustomsDeclarationNumber);
+                && string.IsNullOrWhiteSpace(item.CustomsDeclarationNumber)
+                && item.ExchangeRate == null;
         }
 
         private bool IsReceiptRowCompleted(AsnReceiptItem receiptRow)
@@ -1614,26 +1732,13 @@ namespace LD.FormsX.Views.Dialogs
                 || !string.IsNullOrWhiteSpace(receiptRow.Reference)
                 || !string.IsNullOrWhiteSpace(receiptRow.PurchaseOrder)
                 || !string.IsNullOrWhiteSpace(receiptRow.CustomsDeclarationNumber)
+                || receiptRow.ExchangeRate.HasValue
                 || !string.IsNullOrWhiteSpace(receiptRow.StandardId);
         }
 
         private static void SyncReceiptRowFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow, int asnId)
         {
-            receiptRow.AsnId = asnId;
-            receiptRow.AsnDetailId = detailRow.AsnDetailId;
-            receiptRow.ProductId = detailRow.ProductId;
-            receiptRow.PartNumber = detailRow.PartNumber;
-            receiptRow.Description = detailRow.Description;
-            receiptRow.StandardQuantity = detailRow.StandardQuantity;
-            receiptRow.MaximumQuantity = detailRow.MaximumQuantity;
-            receiptRow.SD = detailRow.SD;
-            receiptRow.Status = detailRow.Status;
-            if (string.IsNullOrWhiteSpace(receiptRow.LotNumber))
-                receiptRow.LotNumber = detailRow.LotNumber;
-            receiptRow.ExpirationDate = detailRow.ExpirationDate;
-            receiptRow.Reference = detailRow.CustomerReference;
-            receiptRow.PurchaseOrder = detailRow.PurchaseOrder;
-            receiptRow.CustomsDeclarationNumber = detailRow.CustomsDeclarationNumber;
+            receiptRow.ApplyDefaultsFromDetail(detailRow, asnId);
         }
 
         private int GetNextPalletNumber(int asnId)
@@ -1680,15 +1785,10 @@ namespace LD.FormsX.Views.Dialogs
 
         private static void SeedSingleReceiptValuesFromDetail(AsnReceiptItem receiptRow, AsnDetailItem detailRow)
         {
+            receiptRow.ApplyDefaultsFromDetail(detailRow, receiptRow.AsnId);
+
             if (detailRow.Quantity > 0m)
                 receiptRow.ReceivedQuantity = detailRow.Quantity;
-            receiptRow.LotNumber = detailRow.LotNumber;
-            receiptRow.SD = detailRow.SD;
-            receiptRow.Status = detailRow.Status;
-            receiptRow.ExpirationDate = detailRow.ExpirationDate;
-            receiptRow.Reference = detailRow.CustomerReference;
-            receiptRow.PurchaseOrder = detailRow.PurchaseOrder;
-            receiptRow.CustomsDeclarationNumber = detailRow.CustomsDeclarationNumber;
         }
 
         private static AsnReceiptItem CloneReceiptRow(AsnReceiptItem source)
@@ -1714,7 +1814,8 @@ namespace LD.FormsX.Views.Dialogs
                 ExpirationDate = source.ExpirationDate,
                 Reference = source.Reference,
                 PurchaseOrder = source.PurchaseOrder,
-                CustomsDeclarationNumber = source.CustomsDeclarationNumber
+                CustomsDeclarationNumber = source.CustomsDeclarationNumber,
+                ExchangeRate = source.ExchangeRate
             };
         }
 
@@ -1834,6 +1935,35 @@ namespace LD.FormsX.Views.Dialogs
                 await LoadReceiptItemsForSelectedDetailAsync();
         }
 
+        private async Task ValidateDetailQuantityAgainstReceiptsAsync(AsnDetailItem detailRow)
+        {
+            if (detailRow.AsnDetailId <= 0)
+                return;
+
+            var response = await _asnReceiptService.GetAsnReceiptsByAsnDetailId(detailRow.AsnDetailId);
+            if (!response.IsSuccess || response.Data == null)
+                return;
+
+            var receivedQuantity = response.Data.Sum(receipt => receipt.ReceivedQuantity ?? 0m);
+            if (detailRow.Quantity >= receivedQuantity)
+                return;
+
+            var attemptedQuantity = detailRow.Quantity;
+            RestoreSavedDetailQuantity(detailRow);
+
+            throw new InvalidOperationException(
+                $"La cantidad del detalle ({attemptedQuantity:0.##}) no puede ser menor a la suma de sus recepciones ({receivedQuantity:0.##}).");
+        }
+
+        private void RestoreSavedDetailQuantity(AsnDetailItem detailRow)
+        {
+            if (detailRow.AsnDetailId > 0
+                && _savedDetailQuantities.TryGetValue(detailRow.AsnDetailId, out var savedQuantity))
+            {
+                detailRow.Quantity = savedQuantity;
+            }
+        }
+
         private async Task SaveDetailRowAsync(AsnDetailItem detailRow)
         {
             if (!EnsureCurrentAsnEditable())
@@ -1858,6 +1988,8 @@ namespace LD.FormsX.Views.Dialogs
                 detailRow.AsnId = AsnSelected!.AsnId;
                 var isNewDetail = detailRow.AsnDetailId <= 0;
 
+                if (!isNewDetail)
+                    await ValidateDetailQuantityAgainstReceiptsAsync(detailRow);
 
                 var request = detailRow.ToRequest();
                 request.AsnId = AsnSelected.AsnId;
@@ -1872,12 +2004,18 @@ namespace LD.FormsX.Views.Dialogs
 
                 if (!response.IsSuccess)
                 {
+                    if (!isNewDetail)
+                        RestoreSavedDetailQuantity(detailRow);
+
                     DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo guardar el detalle del ASN.");
                     return;
                 }
 
                 if (detailRow.AsnDetailId <= 0 && int.TryParse(response.Data, out var asnDetailId) && asnDetailId > 0)
                     detailRow.AsnDetailId = asnDetailId;
+
+                if (detailRow.AsnDetailId > 0)
+                    _savedDetailQuantities[detailRow.AsnDetailId] = detailRow.Quantity;
 
                 if (isNewDetail && detailRow.AsnDetailId > 0)
                     await EnsureInitialReceiptCreatedAsync(detailRow);
@@ -2142,6 +2280,7 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.Reference = refreshedRow.Reference;
             receiptRow.PurchaseOrder = refreshedRow.PurchaseOrder;
             receiptRow.CustomsDeclarationNumber = refreshedRow.CustomsDeclarationNumber;
+            receiptRow.ExchangeRate = refreshedRow.ExchangeRate;
             receiptRow.PalletNumber = refreshedRow.PalletNumber;
         }
 
@@ -2319,10 +2458,7 @@ namespace LD.FormsX.Views.Dialogs
 
             try
             {
-                if (!EnsureCurrentAsnEditable())
-                    return;
-
-                if (!EnsureProjectScanDoesNotLockDetails())
+                if (!EnsureCurrentAsnAllowsDetailDeletion())
                     return;
 
                 if (detailRow.AsnDetailId > 0)
@@ -2336,6 +2472,9 @@ namespace LD.FormsX.Views.Dialogs
                 }
 
                 DetailItems.Remove(detailRow);
+                if (detailRow.AsnDetailId > 0)
+                    _savedDetailQuantities.Remove(detailRow.AsnDetailId);
+
                 EnsureTrailingEmptyDetailRow();
                 _selectedDetailItem = DetailItems.FirstOrDefault(item => !IsEmptyDetailRow(item)) ?? DetailItems.FirstOrDefault();
                 await LoadReceiptItemsForSelectedDetailAsync();
@@ -2353,13 +2492,7 @@ namespace LD.FormsX.Views.Dialogs
 
             try
             {
-                if (!EnsureCurrentAsnEditable())
-                    return;
-
-                if (!EnsureProjectScanAllowsReceiptAction("eliminar recepciones manualmente"))
-                    return;
-
-                if (!CanDeleteReceiptRow(receiptRow))
+                if (!EnsureCurrentAsnAllowsDetailDeletion())
                     return;
 
                 if (receiptRow.AsnReceiptDetailId > 0)

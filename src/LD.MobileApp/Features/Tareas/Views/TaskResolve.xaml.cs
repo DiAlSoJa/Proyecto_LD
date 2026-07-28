@@ -1,4 +1,5 @@
 using LD.Client.Services;
+using LD.Contracts.DTOs.OperationalTasks;
 using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.Requests;
 using Microsoft.Maui.Graphics.Platform;
@@ -10,16 +11,21 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
     private const float TaskPhotoMaxSize = 1920f;
     private const float TaskPhotoQuality = 0.86f;
 
+    private readonly OperationalTaskService _operationalTaskService;
     private readonly WarehouseTaskService _warehouseTaskService;
     private readonly ImageSource?[] _resolutionPhotos = new ImageSource?[4];
     private readonly string?[] _resolutionPhotoPaths = new string?[4];
     private readonly string?[] _existingResolutionPhotoPaths = new string?[4];
+    private string _taskSource = "warehouse";
     private int _taskId;
     private bool _loaded;
 
-    public TaskResolve(WarehouseTaskService warehouseTaskService)
+    public TaskResolve(
+        OperationalTaskService operationalTaskService,
+        WarehouseTaskService warehouseTaskService)
     {
         InitializeComponent();
+        _operationalTaskService = operationalTaskService;
         _warehouseTaskService = warehouseTaskService;
     }
 
@@ -36,6 +42,13 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
 
             _loaded = false;
         }
+
+        if (query.TryGetValue("TaskSource", out var sourceValue) && sourceValue is string source && !string.IsNullOrWhiteSpace(source))
+            _taskSource = source;
+
+        Title = IsOperationalTask
+            ? "Resolucion de Tareas Operativas"
+            : "Resolucion de Tareas de Almacen";
     }
 
     protected override async void OnAppearing()
@@ -49,6 +62,9 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         await LoadTaskAsync();
     }
 
+    private bool IsOperationalTask
+        => string.Equals(_taskSource, "operational", StringComparison.OrdinalIgnoreCase);
+
     private async Task LoadTaskAsync()
     {
         if (_taskId <= 0)
@@ -60,20 +76,59 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
 
         try
         {
-            var response = await _warehouseTaskService.GetTaskByIdAsync(_taskId);
-            if (!response.IsSuccess || response.Data is null)
+            if (IsOperationalTask)
             {
-                await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo cargar la tarea.", "OK");
+                var response = await _operationalTaskService.GetTaskById(_taskId);
+                if (!response.IsSuccess || response.Data is null)
+                {
+                    await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo cargar la tarea.", "OK");
+                    await Shell.Current.GoToAsync("..");
+                    return;
+                }
+
+                ApplyTask(response.Data);
+                return;
+            }
+
+            var warehouseResponse = await _warehouseTaskService.GetTaskByIdAsync(_taskId);
+            if (!warehouseResponse.IsSuccess || warehouseResponse.Data is null)
+            {
+                await DisplayAlertAsync("Tarea", warehouseResponse.Message ?? "No se pudo cargar la tarea.", "OK");
                 await Shell.Current.GoToAsync("..");
                 return;
             }
 
-            ApplyTask(response.Data);
+            ApplyTask(warehouseResponse.Data);
         }
         catch (Exception ex)
         {
             await DisplayAlertAsync("Error", ex.Message, "OK");
         }
+    }
+
+    private void ApplyTask(OperationalTaskDto task)
+    {
+        WarehouseLabel.Text = $"Almacen: {(string.IsNullOrWhiteSpace(task.WarehouseName) ? "Sin almacen" : task.WarehouseName)}";
+        CategoryLabel.Text = $"Categoria: {task.Priority}";
+        ActivityLabel.Text = $"Tarea: {task.Activity}";
+        NameLabel.Text = $"Nombre: {task.Name}";
+        DescriptionLabel.Text = $"Descripcion: {task.Description}";
+        ResolutionObservationsEditor.Text = task.ResolutionObservations;
+
+        SetOriginalImage(OriginalThumb1, task.Photo1Path);
+        SetOriginalImage(OriginalThumb2, task.Photo2Path);
+        SetOriginalImage(OriginalThumb3, task.Photo3Path);
+        SetOriginalImage(OriginalThumb4, task.Photo4Path);
+
+        SetOriginalImage(ResolutionThumb1, task.ResolvedPhoto1Path);
+        SetOriginalImage(ResolutionThumb2, task.ResolvedPhoto2Path);
+        SetOriginalImage(ResolutionThumb3, task.ResolvedPhoto3Path);
+        SetOriginalImage(ResolutionThumb4, task.ResolvedPhoto4Path);
+
+        _existingResolutionPhotoPaths[0] = task.ResolvedPhoto1Path;
+        _existingResolutionPhotoPaths[1] = task.ResolvedPhoto2Path;
+        _existingResolutionPhotoPaths[2] = task.ResolvedPhoto3Path;
+        _existingResolutionPhotoPaths[3] = task.ResolvedPhoto4Path;
     }
 
     private void ApplyTask(WarehouseTaskDto task)
@@ -101,6 +156,11 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         _existingResolutionPhotoPaths[3] = task.ResolvedPhoto4Path;
     }
 
+    private string GetImageUrl(string relativePath)
+        => IsOperationalTask
+            ? _operationalTaskService.GetImageUrl(relativePath)
+            : _warehouseTaskService.GetImageUrl(relativePath);
+
     private void SetOriginalImage(Image image, string? relativePath)
     {
         if (string.IsNullOrWhiteSpace(relativePath))
@@ -111,7 +171,7 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         }
 
         image.Opacity = 1;
-        image.Source = ImageSource.FromUri(new Uri(_warehouseTaskService.GetImageUrl(relativePath)));
+        image.Source = ImageSource.FromUri(new Uri(GetImageUrl(relativePath)));
     }
 
     private async void OnAtrasClicked(object sender, EventArgs e)
@@ -123,7 +183,30 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
     {
         try
         {
-            var request = new CompleteWarehouseTaskRequest
+            if (IsOperationalTask)
+            {
+                var request = new CompleteOperationalTaskRequest
+                {
+                    ResolutionObservations = ResolutionObservationsEditor.Text?.Trim(),
+                    ResolvedPhoto1Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[0], 1) ?? _existingResolutionPhotoPaths[0],
+                    ResolvedPhoto2Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[1], 2) ?? _existingResolutionPhotoPaths[1],
+                    ResolvedPhoto3Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[2], 3) ?? _existingResolutionPhotoPaths[2],
+                    ResolvedPhoto4Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[3], 4) ?? _existingResolutionPhotoPaths[3]
+                };
+
+                var response = await _operationalTaskService.CompleteTask(_taskId, request);
+                if (!response.IsSuccess)
+                {
+                    await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo terminar la tarea.", "OK");
+                    return;
+                }
+
+                await DisplayAlertAsync("Tarea", "Tarea terminada.", "OK");
+                await Shell.Current.GoToAsync("..");
+                return;
+            }
+
+            var warehouseRequest = new CompleteWarehouseTaskRequest
             {
                 ResolutionObservations = ResolutionObservationsEditor.Text?.Trim(),
                 ResolvedPhoto1Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[0], 1) ?? _existingResolutionPhotoPaths[0],
@@ -132,10 +215,10 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
                 ResolvedPhoto4Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[3], 4) ?? _existingResolutionPhotoPaths[3]
             };
 
-            var response = await _warehouseTaskService.CompleteTaskAsync(_taskId, request);
-            if (!response.IsSuccess)
+            var warehouseResponse = await _warehouseTaskService.CompleteTaskAsync(_taskId, warehouseRequest);
+            if (!warehouseResponse.IsSuccess)
             {
-                await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo terminar la tarea.", "OK");
+                await DisplayAlertAsync("Tarea", warehouseResponse.Message ?? "No se pudo terminar la tarea.", "OK");
                 return;
             }
 
@@ -242,10 +325,19 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
         if (string.IsNullOrWhiteSpace(photoPath) || !File.Exists(photoPath))
             return null;
 
-        var response = await _warehouseTaskService.UploadImageAsync(photoPath, photoNumber);
-        if (!response.IsSuccess || response.Data is null || string.IsNullOrWhiteSpace(response.Data.RelativePath))
-            throw new InvalidOperationException(response.Message ?? $"No se pudo cargar la foto resuelta {photoNumber}.");
+        if (IsOperationalTask)
+        {
+            var operationalResponse = await _operationalTaskService.UploadImage(photoPath, photoNumber);
+            if (!operationalResponse.IsSuccess || operationalResponse.Data is null || string.IsNullOrWhiteSpace(operationalResponse.Data.RelativePath))
+                throw new InvalidOperationException(operationalResponse.Message ?? $"No se pudo cargar la foto resuelta {photoNumber}.");
 
-        return response.Data.RelativePath;
+            return operationalResponse.Data.RelativePath;
+        }
+
+        var warehouseResponse = await _warehouseTaskService.UploadImageAsync(photoPath, photoNumber);
+        if (!warehouseResponse.IsSuccess || warehouseResponse.Data is null || string.IsNullOrWhiteSpace(warehouseResponse.Data.RelativePath))
+            throw new InvalidOperationException(warehouseResponse.Message ?? $"No se pudo cargar la foto resuelta {photoNumber}.");
+
+        return warehouseResponse.Data.RelativePath;
     }
 }

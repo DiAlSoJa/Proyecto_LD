@@ -131,7 +131,8 @@ public partial class TaskList : ContentPage
 
         await Shell.Current.GoToAsync("TaskResolve", new Dictionary<string, object>
         {
-            ["TaskId"] = selected.TaskId
+            ["TaskId"] = selected.TaskId,
+            ["TaskSource"] = "operational"
         });
     }
 

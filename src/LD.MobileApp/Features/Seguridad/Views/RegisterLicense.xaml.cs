@@ -9,5 +9,13 @@ public partial class RegisterLicense : ContentPage
 		InitializeComponent();
 		BindingContext = vm;
 	}
+
+	protected override async void OnAppearing()
+	{
+		base.OnAppearing();
+
+		if (BindingContext is RegisterLicenseViewModel vm)
+			await vm.StartCaptureFlowAsync();
+	}
 }
 

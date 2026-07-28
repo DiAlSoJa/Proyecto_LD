@@ -16,16 +16,36 @@ public partial class LabeledEntry : ContentView
         BindableProperty.Create(nameof(IconSource), typeof(ImageSource), typeof(LabeledEntry), null,
             propertyChanged: OnIconSourceChanged);
 
+    public static readonly BindableProperty KeyboardProperty =
+        BindableProperty.Create(nameof(Keyboard), typeof(Microsoft.Maui.Keyboard), typeof(LabeledEntry), Microsoft.Maui.Keyboard.Default,
+            propertyChanged: OnKeyboardChanged);
+
+    public static readonly BindableProperty ShowClearButtonProperty =
+        BindableProperty.Create(nameof(ShowClearButton), typeof(bool), typeof(LabeledEntry), false,
+            propertyChanged: OnShowClearButtonChanged);
+
     private static void OnTextChanged(BindableObject bindable, object oldValue, object newValue)
     {
         var ctrl = (LabeledEntry)bindable;
         var val = (string?)newValue ?? string.Empty;
         if (ctrl.InnerEntry.Text != val)
             ctrl.InnerEntry.Text = val;
+
+        ctrl.UpdateClearButtonVisibility();
     }
 
     private static void OnIconSourceChanged(BindableObject bindable, object oldValue, object newValue)
         => ((LabeledEntry)bindable).IconImage.IsVisible = newValue is not null;
+
+    private static void OnKeyboardChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        var ctrl = (LabeledEntry)bindable;
+        if (newValue is Microsoft.Maui.Keyboard keyboard)
+            ctrl.InnerEntry.Keyboard = keyboard;
+    }
+
+    private static void OnShowClearButtonChanged(BindableObject bindable, object oldValue, object newValue)
+        => ((LabeledEntry)bindable).UpdateClearButtonVisibility();
 
     public string LabelText
     {
@@ -51,6 +71,18 @@ public partial class LabeledEntry : ContentView
         set => SetValue(IconSourceProperty, value);
     }
 
+    public Microsoft.Maui.Keyboard Keyboard
+    {
+        get => (Microsoft.Maui.Keyboard)GetValue(KeyboardProperty);
+        set => SetValue(KeyboardProperty, value);
+    }
+
+    public bool ShowClearButton
+    {
+        get => (bool)GetValue(ShowClearButtonProperty);
+        set => SetValue(ShowClearButtonProperty, value);
+    }
+
     public LabeledEntry()
     {
         InitializeComponent();
@@ -59,6 +91,7 @@ public partial class LabeledEntry : ContentView
         InnerEntry.Focused += OnInnerEntryFocused;
         InnerEntry.Unfocused += OnInnerEntryUnfocused;
         InnerEntry.HandlerChanged += OnInnerEntryHandlerChanged;
+        ClearButton.Clicked += OnClearButtonClicked;
         Unloaded += OnUnloaded;
     }
 
@@ -66,6 +99,14 @@ public partial class LabeledEntry : ContentView
     {
         if (Text != e.NewTextValue)
             Text = e.NewTextValue;
+
+        UpdateClearButtonVisibility();
+    }
+
+    private void OnClearButtonClicked(object? sender, EventArgs e)
+    {
+        Text = string.Empty;
+        InnerEntry.Focus();
     }
 
     private async void OnInnerEntryFocused(object? sender, FocusEventArgs e)
@@ -83,8 +124,12 @@ public partial class LabeledEntry : ContentView
         InnerEntry.Focused -= OnInnerEntryFocused;
         InnerEntry.Unfocused -= OnInnerEntryUnfocused;
         InnerEntry.HandlerChanged -= OnInnerEntryHandlerChanged;
+        ClearButton.Clicked -= OnClearButtonClicked;
         Unloaded -= OnUnloaded;
     }
+
+    private void UpdateClearButtonVisibility()
+        => ClearButton.IsVisible = ShowClearButton && !string.IsNullOrWhiteSpace(Text);
 
     private async Task FadeUnderlineAsync(double targetOpacity)
     {

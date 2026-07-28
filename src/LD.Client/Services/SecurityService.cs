@@ -33,4 +33,17 @@ public class SecurityService
 
         return await _api.GetAsync<ApiResponseDto<List<SecurityRegistrationDto>>>(endpoint);
     }
+
+    public string GetImageUrl(string relativePath)
+    {
+        return _apiEndpoints.Security_GetImage.Replace("{path}", Uri.EscapeDataString(relativePath));
+    }
+
+    public async Task<byte[]> GetImageBytesAsync(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return Array.Empty<byte>();
+
+        return await _api.GetByteArrayAsync(GetImageUrl(relativePath));
+    }
 }

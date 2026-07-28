@@ -42,26 +42,28 @@
                         <controls:LabeledEntry
                             LabelText="Nombre:"
                             Text="{Binding Nombre}"
-                            Placeholder="Ej. Carlos Ramírez" />
+                            Placeholder="Ej. Carlos Ramírez"
+                            ShowClearButton="True" />
 
                         <controls:LabeledEntry
                             LabelText="Número de Licencia:"
                             Text="{Binding Licencia}"
-                            Placeholder="Ej. 1234567890" />
+                            Placeholder="Ej. 1234567890"
+                            ShowClearButton="True" />
 
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                            <VerticalStackLayout Grid.Column="0" Spacing="6">
-                                <Label Text="Vencimiento:" TextColor="#64748B" FontSize="14" />
-                                <Border BackgroundColor="White" Stroke="#E2E8F0" StrokeShape="RoundRectangle 14" Padding="12,10">
-                                    <DatePicker Date="{Binding Vencimiento}"
-                                                Format="dd/MM/yyyy" />
-                                </Border>
-                            </VerticalStackLayout>
+                            <controls:LabeledEntry Grid.Column="0"
+                                                   LabelText="Vigencia:"
+                                                   Text="{Binding VencimientoTexto}"
+                                                   Placeholder="dd/MM/yyyy"
+                                                   Keyboard="Text"
+                                                   ShowClearButton="True" />
 
                             <controls:LabeledEntry Grid.Column="1"
                                                    LabelText="Celular:"
                                                    Text="{Binding Celular}"
-                                                   Placeholder="Ej. 55 1234 5678" />
+                                                   Placeholder="Ej. 55 1234 5678"
+                                                   Keyboard="Telephone" />
                         </Grid>
 
                         <controls:PhotoGallery
@@ -79,7 +81,7 @@
                                    HorizontalTextAlignment="Center"
                                    LineBreakMode="WordWrap" />
 
-                            <Label Text="El OCR llenará nombre, número y vencimiento si los detecta en el frente."
+                            <Label Text="Verifica que los datos coincidan con la licencia antes de continuar."
                                    TextColor="#64748B"
                                    FontSize="12"
                                    HorizontalTextAlignment="Center"
@@ -92,83 +94,43 @@
                         BackgroundColor="#1B2A3A"
                         Stroke="#0B1B2A"
                         StrokeThickness="1"
-                        StrokeShape="RoundRectangle 26"
-                        Padding="10"
-                        HeightRequest="320"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="8"
                         Margin="0,0,0,12"
                         VerticalOptions="Start">
 
-                    <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
-                        <Grid HeightRequest="78">
-                            <Border BackgroundColor="#0F172A"
-                                    Stroke="#334155"
-                                    StrokeShape="RoundRectangle 22"
-                                    Padding="10">
-                                <Grid>
-                                    <Grid Padding="16,10">
-                                        <Border Stroke="#FFFFFF"
-                                                StrokeThickness="3"
-                                                StrokeShape="RoundRectangle 22"
-                                                BackgroundColor="Transparent"
-                                                Opacity="0.35" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                        </Grid>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <Button Text="Abrir cámara"
+                                Command="{Binding CapturarCommand}"
+                                IsEnabled="{Binding CanCapturePhoto}"
+                                HeightRequest="48"
+                                CornerRadius="14"
+                                BackgroundColor="#FFFFFF"
+                                TextColor="#0F172A"
+                                FontAttributes="Bold"
+                                FontSize="15" />
 
-                        <Grid Row="1" RowDefinitions="Auto,Auto" RowSpacing="10">
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                <Button Text="Tomar frente"
-                                        Command="{Binding CapturarFrenteCommand}"
-                                        HeightRequest="56"
-                                        CornerRadius="18"
-                                        BackgroundColor="#FFFFFF"
-                                        TextColor="#0F172A"
-                                        FontAttributes="Bold"
-                                        FontSize="16" />
-
-                                <Button Grid.Column="1"
-                                        Text="Tomar atrás"
-                                        Command="{Binding CapturarAtrasCommand}"
-                                        HeightRequest="56"
-                                        CornerRadius="18"
-                                        BackgroundColor="#244A7C"
-                                        TextColor="White"
-                                        FontAttributes="Bold"
-                                        FontSize="16" />
-                            </Grid>
-
-                            <Border Grid.Row="1"
-                                    BackgroundColor="#102A43"
-                                    Stroke="#1E3A5F"
-                                    StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 12"
-                                    Padding="8,7"
-                                    HorizontalOptions="End">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding GaleriaCommand}" />
-                                </Border.GestureRecognizers>
-                                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
-                                    <Border BackgroundColor="#1B2A3A"
-                                            Stroke="#DDE8F4"
-                                            StrokeThickness="1.5"
-                                            StrokeShape="RoundRectangle 6"
-                                            WidthRequest="28"
-                                            HeightRequest="28"
-                                            Padding="0">
-                                        <Label Text="🖼"
-                                               TextColor="White"
-                                               FontSize="15"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center" />
-                                    </Border>
-                                    <Label Text="Galería"
-                                           TextColor="White"
-                                           FontSize="13"
-                                           VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                            </Border>
-                        </Grid>
+                        <Border Grid.Column="1"
+                                BackgroundColor="#102A43"
+                                Stroke="#DDE8F4"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,0"
+                                HeightRequest="48">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GaleriaCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Label Text="🖼"
+                                       TextColor="White"
+                                       FontSize="17"
+                                       VerticalOptions="Center" />
+                                <Label Text="Galería"
+                                       TextColor="White"
+                                       FontSize="13"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
                     </Grid>
                 </Border>
 

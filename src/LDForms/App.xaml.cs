@@ -34,6 +34,7 @@ using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.DatabaseDiagram;
 using LD.FormsX.Views.Dialogs;
 using LD.FormsX.Views.Dimensionador;
+using LD.FormsX.Views.RegistroVehicular;
 using LD.FormsX.Features.Surtidos.Views;
 using LD.FormsX.Features.Surtidos.ViewModels;
 using LD.FormsX.Features.Embarques.Views;
@@ -266,6 +267,7 @@ namespace LD.FormsX
             services.AddTransient<TasksView>();
             services.AddTransient<DockDeliveryView>();
             services.AddTransient<ControlPatioView>();
+            services.AddTransient<RegistroVehicularView>();
             services.AddTransient<UsuariosView>();
             services.AddTransient<ProyectosView>();
 

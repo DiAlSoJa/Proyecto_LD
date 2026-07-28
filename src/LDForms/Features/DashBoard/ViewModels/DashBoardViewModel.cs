@@ -15,6 +15,7 @@ using LD.FormsX.Views.CheckList;
 using LD.FormsX.Views.ControlPatio;
 using LD.FormsX.Views.DatabaseDiagram;
 using LD.FormsX.Features.Surtidos.Views;
+using LD.FormsX.Views.RegistroVehicular;
 using LD.FormsX.Views.Inventario;
 using LD.FormsX.Views.InventarioAleatorio;
 using LD.FormsX.Views.Proyectos;
@@ -65,6 +66,7 @@ public partial class DashBoardViewModel : ObservableObject
             ["ReporteDanos"] = new("Reporte de daños", "AlertCircleOutline", DashboardIconColor, Module_e.DamageReport, null, () => _serviceProvider.GetRequiredService<DamageReportView>()),
             ["Tareas"] = new("Tareas", "ClipboardSearchOutline", DashboardIconColor, Module_e.WarehouseStaff, null, () => _serviceProvider.GetRequiredService<TasksView>()),
             ["DockDelivery"] = new("Dock delivery", "TruckFlatbed", DashboardIconColor, Module_e.Operations, null, () => _serviceProvider.GetRequiredService<DockDeliveryView>()),
+            ["RegistroVehicular"] = new("Registro vehicular", "TruckFlatbed", DashboardIconColor, Module_e.Security, null, () => _serviceProvider.GetRequiredService<RegistroVehicularView>()),
             ["Impresion"] = new("Impresión", "PrinterOutline", DashboardIconColor, Module_e.Reports, StandardLabelPrintOptionsDialog.StandardIdOption, null),
             ["Patio"] = new("Control de patio", "Parking", DashboardIconColor, Module_e.YardControl, null, () => _serviceProvider.GetRequiredService<ControlPatioView>())
         };

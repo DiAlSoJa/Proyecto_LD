@@ -3,6 +3,7 @@ using LD.Application.Common.Guards;
 using LD.Application.Common.Results;
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LD.Application.Common.Interfaces.Repository;
@@ -16,15 +17,18 @@ public class UpdateAsnDetailCommand : AsnDetailRequest, IRequest<Result<string>>
 public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailCommand, Result<string>>
 {
     private readonly IRepository<LD.Domain.Entities.AsnDetail> _asnRepository;
+    private readonly IRepository<LD.Domain.Entities.AsnReceiptDetail> _asnReceiptRepository;
     private readonly IRepository<LD.Domain.Entities.Asn> _asnParentRepository;
     private readonly AutoMapper.IMapper _mapper;
 
     public UpdateAsnDetailCommandHandler(
         IRepository<LD.Domain.Entities.AsnDetail> asnRepository,
+        IRepository<LD.Domain.Entities.AsnReceiptDetail> asnReceiptRepository,
         IRepository<LD.Domain.Entities.Asn> asnParentRepository,
         AutoMapper.IMapper mapper)
     {
         _asnRepository = asnRepository;
+        _asnReceiptRepository = asnReceiptRepository;
         _asnParentRepository = asnParentRepository;
         _mapper = mapper;
     }
@@ -43,6 +47,18 @@ public class UpdateAsnDetailCommandHandler : IRequestHandler<UpdateAsnDetailComm
             var asnDetail = await _asnRepository.GetByIdAsync(request.AsnDetailId);
             if (asnDetail is null)
                 return Result<string>.Failure("No existe el detalle de ASN", new System.Collections.Generic.List<string> { "No existe el detalle de ASN" }, 404);
+
+            var receipts = await _asnReceiptRepository.GetManyAsync();
+            var receivedQuantity = receipts?
+                .Where(receipt => receipt.AsnDetailId == request.AsnDetailId)
+                .Sum(receipt => receipt.ReceivedQuantity ?? 0m) ?? 0m;
+
+            if (request.Quantity < receivedQuantity)
+            {
+                var message =
+                    $"La cantidad del detalle ({request.Quantity:0.##}) no puede ser menor a la suma de sus recepciones ({receivedQuantity:0.##}).";
+                return Result<string>.Failure(message, new System.Collections.Generic.List<string> { message }, 400);
+            }
 
             _mapper.Map(request, asnDetail);
 

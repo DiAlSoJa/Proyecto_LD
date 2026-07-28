@@ -68,10 +68,13 @@ public partial class RegisterLicenseViewModel : ObservableObject
 
     private DateTime? vencimiento;
 
-    public DateTime? Vencimiento
+    [ObservableProperty]
+    private string vencimientoTexto = "";
+
+    private void SetVencimiento(DateTime? value)
     {
-        get => vencimiento;
-        set => SetProperty(ref vencimiento, value);
+        vencimiento = value;
+        VencimientoTexto = value?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) ?? string.Empty;
     }
 
     [ObservableProperty]
@@ -86,11 +89,15 @@ public partial class RegisterLicenseViewModel : ObservableObject
     [ObservableProperty]
     private string photoInstruction = "Toma primero la foto del frente de la licencia.";
 
+    [ObservableProperty]
+    private bool canCapturePhoto = true;
+
+    private bool _captureFlowStarted;
+    private bool _captureFlowActive;
+
     public ObservableCollection<LicensePhotoItem> Photos { get; } = new();
 
     public ICommand CapturarCommand { get; }
-    public ICommand CapturarFrenteCommand { get; }
-    public ICommand CapturarAtrasCommand { get; }
     public ICommand GaleriaCommand { get; }
     public ICommand CancelarCommand { get; }
     public ICommand SiguienteCommand { get; }
@@ -107,9 +114,7 @@ public partial class RegisterLicenseViewModel : ObservableObject
         _loaderService = loaderService;
         _dialogService = dialogService;
 
-        CapturarFrenteCommand = new AsyncCommand(() => CapturarAsync(LicensePhotoSide.Front));
-        CapturarAtrasCommand  = new AsyncCommand(() => CapturarAsync(LicensePhotoSide.Back));
-        CapturarCommand       = CapturarFrenteCommand;
+        CapturarCommand       = new AsyncCommand(CapturarFotosPendientesAsync);
         GaleriaCommand        = new AsyncCommand(SeleccionarGaleriaAsync);
         CancelarCommand       = new Command(Cancelar);
         SiguienteCommand      = new AsyncCommand(SiguienteAsync);
@@ -118,6 +123,17 @@ public partial class RegisterLicenseViewModel : ObservableObject
         ViewPhotoCommand      = new MvvmHelpers.Commands.Command<LicensePhotoItem>(ViewPhoto);
 
         LoadFromContext();
+    }
+
+    public async Task StartCaptureFlowAsync()
+    {
+        if (_captureFlowStarted)
+            return;
+
+        _captureFlowStarted = true;
+
+        if (GetNextRequiredSide().HasValue)
+            await CapturarFotosPendientesAsync();
     }
 
     private void LoadFromContext()
@@ -129,7 +145,9 @@ public partial class RegisterLicenseViewModel : ObservableObject
             Licencia = _context.Licencia;
 
         if (_context.Vencimiento.HasValue)
-            Vencimiento = _context.Vencimiento;
+            SetVencimiento(_context.Vencimiento);
+        else
+            VencimientoTexto = string.Empty;
 
         if (!string.IsNullOrEmpty(_context.Celular))
             Celular = _context.Celular;
@@ -153,7 +171,7 @@ public partial class RegisterLicenseViewModel : ObservableObject
         _context.Tipo        = Tipo;
         _context.Nombre      = Nombre;
         _context.Licencia    = Licencia;
-        _context.Vencimiento = Vencimiento;
+        _context.Vencimiento = vencimiento;
         _context.Celular     = Celular;
 
         _context.LicenciaFotos = Photos.Select(p => new SecurityPhotoEntry
@@ -165,25 +183,56 @@ public partial class RegisterLicenseViewModel : ObservableObject
         }).ToList();
     }
 
-    private async Task CapturarAsync(LicensePhotoSide side)
+    private async Task CapturarFotosPendientesAsync()
+    {
+        if (_captureFlowActive)
+            return;
+
+        _captureFlowActive = true;
+
+        try
+        {
+            while (GetNextRequiredSide() is { } side)
+            {
+                await _dialogService.ShowInfoAsync(
+                    side == LicensePhotoSide.Front
+                        ? "Licencia - Foto 1 de 2: FRENTE"
+                        : "Licencia - Foto 2 de 2: ATRÁS",
+                    side == LicensePhotoSide.Front
+                        ? "Coloca el frente completo de la licencia dentro de la cámara."
+                        : "Ahora coloca la parte de atrás completa de la licencia dentro de la cámara.");
+
+                if (!await CapturarAsync(side))
+                    break;
+            }
+        }
+        finally
+        {
+            _captureFlowActive = false;
+        }
+    }
+
+    private async Task<bool> CapturarAsync(LicensePhotoSide side)
     {
         try
         {
             if (!MediaPicker.Default.IsCaptureSupported)
             {
                 await _dialogService.ShowInfoAsync("Cámara", "Este dispositivo no soporta captura de fotos.");
-                return;
+                return false;
             }
 
             var photo = await MediaPicker.Default.CapturePhotoAsync();
             if (photo is null)
-                return;
+                return false;
 
             await ProcesarFotoAsync(photo, side);
+            return Photos.Any(p => p.Side == side);
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+            return false;
         }
     }
 
@@ -194,7 +243,9 @@ public partial class RegisterLicenseViewModel : ObservableObject
             var side = GetNextRequiredSide();
             if (side is null)
             {
-                await _dialogService.ShowInfoAsync("Licencia", "Ya tienes las fotos del frente y atrás. Si necesitas reemplazar una, usa Tomar frente o Tomar atrás.");
+                await _dialogService.ShowInfoAsync(
+                    "Licencia",
+                    "Ya tienes las fotos del frente y atrás. Para reemplazar una, elimínala de la galería y vuelve a tomarla.");
                 return;
             }
 
@@ -239,7 +290,7 @@ public partial class RegisterLicenseViewModel : ObservableObject
                     Licencia = NormalizeLicenseValue(ocrData.Licencia);
 
                 if (ocrData.Vencimiento.HasValue)
-                    Vencimiento = ocrData.Vencimiento.Value;
+                    SetVencimiento(ocrData.Vencimiento.Value);
             }
 
             var bytesFinales = await ComprimirImagenAsync(bytes);
@@ -299,7 +350,7 @@ public partial class RegisterLicenseViewModel : ObservableObject
             Licencia = NormalizeLicenseValue(licencia);
 
         if (TryExtractExpiration(normalizedText, lines, out var parsedVencimiento))
-            Vencimiento = parsedVencimiento;
+            SetVencimiento(parsedVencimiento);
     }
 
     private void RemovePhoto(LicensePhotoItem? item)
@@ -340,11 +391,13 @@ public partial class RegisterLicenseViewModel : ObservableObject
             return;
         }
 
-        if (!Vencimiento.HasValue)
+        if (!TryParseOcrDate(VencimientoTexto, out var parsedVencimiento))
         {
             await _dialogService.ShowInfoAsync("AtenciÃ³n", "Selecciona el vencimiento de la licencia.");
             return;
         }
+
+        SetVencimiento(parsedVencimiento);
 
         if (!hasFront || !hasBack)
         {
@@ -409,8 +462,11 @@ public partial class RegisterLicenseViewModel : ObservableObject
             (false, false) => "Toma primero la foto del frente de la licencia.",
             (true, false) => "Ahora toma la foto de atrás de la licencia.",
             (false, true) => "Falta la foto del frente de la licencia.",
-            _ => "Ya tienes las fotos del frente y atrás de la licencia. Puedes reemplazarlas con los botones de captura."
+            _ => "Ya tienes las fotos del frente y atrás de la licencia."
         };
+
+        var nextSide = GetNextRequiredSide();
+        CanCapturePhoto = nextSide.HasValue;
     }
 
     private LicensePhotoSide? GetNextRequiredSide()

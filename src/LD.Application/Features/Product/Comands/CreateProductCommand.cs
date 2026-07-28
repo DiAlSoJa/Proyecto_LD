@@ -48,7 +48,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             request.PartNumber = partNumber;
 
             var result = await _productRepository.CreateAsync(_mapper.Map<LD.Domain.Entities.Product>(request));
-            return result ? Result<string>.Success("Item creado con exito", "") : Result<string>.Failure("Hubo un error al crear el item", new());
+            return result ? Result<string>.Success("Articulo creado correctamente", "") : Result<string>.Failure("Hubo un error al crear el item", new());
 
         }
         catch (Exception ex)

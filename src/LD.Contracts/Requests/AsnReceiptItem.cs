@@ -61,6 +61,13 @@ using LD.Contracts.Requests;
         set { _description = value; OnPropertyChanged(nameof(Description)); }
     }
 
+    private decimal? _exchangeRate;
+    public decimal? ExchangeRate
+    {
+        get => _exchangeRate;
+        set { _exchangeRate = value; OnPropertyChanged(nameof(ExchangeRate)); }
+    }
+
     private decimal? _standardQuantity;
     public decimal? StandardQuantity
     {
@@ -159,8 +166,26 @@ using LD.Contracts.Requests;
         if (string.IsNullOrWhiteSpace(Description))
             Description = detailItem.Description;
 
+        if (!StandardQuantity.HasValue)
+            StandardQuantity = detailItem.StandardQuantity;
+
+        if (!MaximumQuantity.HasValue)
+            MaximumQuantity = detailItem.MaximumQuantity;
+
         if (string.IsNullOrWhiteSpace(SD))
             SD = detailItem.SD;
+
+        if (string.IsNullOrWhiteSpace(Status))
+            Status = detailItem.Status;
+
+        if (string.IsNullOrWhiteSpace(LotNumber))
+            LotNumber = detailItem.LotNumber;
+
+        if (!ExpirationDate.HasValue)
+            ExpirationDate = detailItem.ExpirationDate;
+
+        if (!ExchangeRate.HasValue)
+            ExchangeRate = detailItem.ExchangeRate;
 
         if (string.IsNullOrWhiteSpace(Reference))
             Reference = detailItem.CustomerReference;
@@ -183,6 +208,7 @@ using LD.Contracts.Requests;
             StandardId = StandardId,
             PartNumber = PartNumber,
             Description = Description,
+            ExchangeRate = ExchangeRate,
             StandardQuantity = StandardQuantity,
             MaximumQuantity = MaximumQuantity,
             SD = SD,
@@ -209,6 +235,7 @@ using LD.Contracts.Requests;
             StandardId = dto.StandardId,
             PartNumber = dto.PartNumber,
             Description = dto.Description,
+            ExchangeRate = dto.ExchangeRate,
             StandardQuantity = dto.StandardQuantity,
             MaximumQuantity = dto.MaximumQuantity,
             SD = dto.SD,

@@ -1,6 +1,7 @@
 using LD.Api.Authorization;
 using LD.Api.Common.Results;
 using LD.Api.Controllers.Common;
+using LD.Application.Common.Interfaces.Storage;
 using LD.Application.Features.Security.Commands;
 using LD.Application.Features.Security.Queries;
 using LD.Contracts.Constants;
@@ -15,6 +16,13 @@ namespace LD.Api.Controllers.Mobile;
 [Route("api/[controller]")]
 public class SecurityController : CommonController
 {
+    private readonly IFileStorageService _fileStorage;
+
+    public SecurityController(IFileStorageService fileStorage)
+    {
+        _fileStorage = fileStorage;
+    }
+
     [HttpGet]
     [Permission(PermissionKeys.Security_View)]
     public async Task<IActionResult> GetByCreatedAt([FromQuery] SecurityRegistrationsByCreatedAtQuery query)
@@ -46,6 +54,20 @@ public class SecurityController : CommonController
     [Permission(PermissionKeys.YardControl_View)]
     public async Task<IActionResult> GetPatioMonitor()
         => ResultExtensions.ToActionResult(await Mediator.Send(new GetPatioMonitorQuery()));
+
+    [HttpGet("image")]
+    [Permission(PermissionKeys.Security_View)]
+    public async Task<IActionResult> GetImage([FromQuery] string path)
+    {
+        if (!TryNormalizeBlobPath(path, out var normalizedPath))
+            return NotFound();
+
+        var stream = await _fileStorage.OpenReadAsync(normalizedPath);
+        if (stream is null)
+            return NotFound();
+
+        return File(stream, GetContentType(normalizedPath));
+    }
 
     [HttpGet("cortinas")]
     [Permission(PermissionKeys.Cortina_Assign)]
@@ -119,4 +141,32 @@ public class SecurityController : CommonController
         {
             SecurityRegistrationId = id
         }));
+
+    private static bool TryNormalizeBlobPath(string path, out string normalizedPath)
+    {
+        normalizedPath = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(path) || path.Contains("..") || path.Contains('\0'))
+            return false;
+
+        var candidate = path.Replace('\\', '/').Trim('/');
+        if (!candidate.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        normalizedPath = candidate;
+        return true;
+    }
+
+    private static string GetContentType(string path)
+    {
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        return ext switch
+        {
+            ".png" => "image/png",
+            ".webp" => "image/webp",
+            ".gif" => "image/gif",
+            ".bmp" => "image/bmp",
+            _ => "image/jpeg"
+        };
+    }
 }

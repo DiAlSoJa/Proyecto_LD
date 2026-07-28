@@ -17,6 +17,8 @@ public class SecurityProfile : Profile
 
         CreateMap<SecurityRegistrationPhoto, SecurityPhotoDto>()
             .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (PhotoCategoria_e)(int)src.Categoria))
+            .ForMember(dest => dest.SecurityTaskId, opt => opt.MapFrom(src => src.SecurityTaskId))
+            .ForMember(dest => dest.RealizadaPor, opt => opt.MapFrom(src => src.RealizadaPor))
             .ForMember(dest => dest.Contenido, opt => opt.Ignore());
 
         CreateMap<SecurityRegistration, SecurityRegistrationDto>()

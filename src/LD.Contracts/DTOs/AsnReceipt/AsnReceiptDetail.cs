@@ -28,6 +28,9 @@ namespace LD.Contracts.ASN
         [DisplayName("Descripción")]
         public string Description { get; set; } = string.Empty;
 
+        [DisplayName("Tipo de Cambio")]
+        public decimal? ExchangeRate { get; set; }
+
         [DisplayName("Estandar")]
         public decimal? StandardQuantity { get; set; }
 

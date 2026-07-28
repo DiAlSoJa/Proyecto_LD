@@ -15,6 +15,8 @@ namespace LD.Contracts.Requests
         public string PartNumber { get; set; } = string.Empty;
         public string? Description { get; set; }
 
+        public decimal? ExchangeRate { get; set; }
+
         public decimal? StandardQuantity { get; set; }
         public decimal? MaximumQuantity { get; set; }
 

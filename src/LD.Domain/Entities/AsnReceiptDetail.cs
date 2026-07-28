@@ -29,6 +29,8 @@ namespace LD.Domain.Entities
         [MaxLength(250)]
         public string? Description { get; set; }
 
+        public decimal? ExchangeRate { get; set; }
+
         public decimal? StandardQuantity { get; set; }
 
         public decimal? MaximumQuantity { get; set; }

@@ -30,19 +30,13 @@ public class DeleteAsnReceiptDetailCommandHandler : IRequestHandler<DeleteAsnRec
     {
         try
         {
-            var validation = await AsnModificationGuard.EnsureAsnReceiptParentIsEditableAsync(
+            var validation = await AsnModificationGuard.EnsureAsnReceiptParentAllowsDeletionAsync(
                 request.AsnReceiptDetailId,
                 _asnRepository,
                 _asnDetailRepository,
                 _asnParentRepository);
             if (validation is not null)
                 return validation;
-
-            var deleteValidation = await AsnModificationGuard.EnsureAsnReceiptIsNotLastForDetailAsync(
-                request.AsnReceiptDetailId,
-                _asnRepository);
-            if (deleteValidation is not null)
-                return deleteValidation;
 
             var asnReceipt = await _asnRepository.GetByIdAsync(request.AsnReceiptDetailId);
             if (asnReceipt is null)

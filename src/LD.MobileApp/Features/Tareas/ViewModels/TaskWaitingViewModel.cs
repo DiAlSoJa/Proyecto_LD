@@ -81,7 +81,8 @@ public partial class TaskWaitingViewModel : ObservableObject
 
             var parameters = new Dictionary<string, object>
             {
-                { "TaskId", task?.WarehouseTaskId ?? 0 }
+                { "TaskId", task?.WarehouseTaskId ?? 0 },
+                { "TaskSource", "warehouse" }
             };
 
             await Shell.Current.GoToAsync(nameof(TaskResolve), parameters);

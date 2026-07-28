@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="MauiAppLogin.NewTask"
-    Title="Nueva Tarea"
+    Title="Nueva Tarea Operativa"
     BackgroundColor="#0F2E4F">
     <ScrollView>
         <Grid RowDefinitions="Auto,*,Auto" Padding="16">

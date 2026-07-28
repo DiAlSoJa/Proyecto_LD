@@ -221,6 +221,7 @@ namespace LD.Forms.Configuration
         public string Security_GetCortinas     => $"{_baseApi}/security/cortinas";
         public string Security_AsignarCortina  => $"{_baseApi}/security/{{id}}/asignar-cortina";
         public string Security_GetTasks        => $"{_baseApi}/security/tasks";
+        public string Security_GetImage        => $"{_baseApi}/security/image?path={{path}}";
         public string Security_AbrirCortina    => $"{_baseApi}/security/tasks/{{taskId}}/abrir";
         public string Security_CerrarRegistro  => $"{_baseApi}/security/tasks/{{taskId}}/cerrar";
         public string Security_IniciarOperacion    => $"{_baseApi}/security/tasks/{{taskId}}/iniciar-operacion";

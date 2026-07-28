@@ -27,7 +27,7 @@ public class DeleteAsnDetailCommandHandler : IRequestHandler<DeleteAsnDetailComm
     {
         try
         {
-            var validation = await AsnModificationGuard.EnsureAsnDetailParentIsEditableAsync(
+            var validation = await AsnModificationGuard.EnsureAsnDetailParentAllowsDeletionAsync(
                 request.AsnDetailId,
                 _asnRepository,
                 _asnParentRepository);
