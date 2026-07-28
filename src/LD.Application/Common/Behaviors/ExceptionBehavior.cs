@@ -35,7 +35,8 @@ public class ExceptionBehavior<TRequest, TResponse>
                 typeof(TRequest).Name,
                 request);
 
-            return (TResponse)(object) Result<string>.Failure("Unhandled exception in {RequestName} - {@Request}", new List<string> { ex.Message }, 400);
+            var message = Common.Exceptions.DatabaseExceptionMessageHelper.GetUserMessage(ex);
+            return (TResponse)(object)Result<string>.Failure(message, new List<string> { message }, 500);
         }
     }
 }

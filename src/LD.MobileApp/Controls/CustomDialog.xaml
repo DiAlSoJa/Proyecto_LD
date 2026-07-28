@@ -18,6 +18,15 @@
 
         <VerticalStackLayout Spacing="16">
 
+            <!-- Indicador de carga para bloqueos -->
+            <ActivityIndicator x:Name="LoadingIndicator"
+                               IsVisible="False"
+                               IsRunning="False"
+                               Color="#1F3A5F"
+                               WidthRequest="48"
+                               HeightRequest="48"
+                               HorizontalOptions="Center"/>
+
             <!-- Icono del tipo de dialogo -->
             <Label x:Name="IconLabel"
                    FontSize="48"

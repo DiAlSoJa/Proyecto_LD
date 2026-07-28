@@ -257,7 +257,9 @@
         </Grid>
         </TabItem>
 
-        <TabItem Header="Tareas asignadas" Style="{StaticResource ElegantTabItemStyle}">
+        <TabItem Header="Tareas asignadas"
+                 Style="{StaticResource ElegantTabItemStyle}"
+                 Visibility="Collapsed">
             <Grid Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

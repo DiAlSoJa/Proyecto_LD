@@ -30,7 +30,7 @@ public class UpdateLocationValidator
 
         RuleFor(x => x.LocationName)
             .NotEmpty().WithMessage("El nombre es obligatorio.")
-            .MaximumLength(100);
+            .MaximumLength(100).WithMessage("El nombre de la ubicación no puede superar 100 caracteres.");
 
         // ===== Dimensiones =====
 /*

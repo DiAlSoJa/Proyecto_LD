@@ -37,12 +37,14 @@ public class ValidationBehavior<TRequest, TResponse>
         if (failures.Any())
         {
             var detailedErrors = failures
-                .Select(f => string.IsNullOrWhiteSpace(f.PropertyName)
-                    ? f.ErrorMessage
-                    : $"{f.PropertyName}: {f.ErrorMessage}")
+                .Select(f => f.ErrorMessage)
+                .Where(message => !string.IsNullOrWhiteSpace(message))
+                .Distinct(StringComparer.Ordinal)
                 .ToList();
 
-            var message = "Errores de validacion: " + string.Join(" | ", detailedErrors);
+            var message = detailedErrors.Count == 1
+                ? detailedErrors[0]
+                : "Revisa los datos capturados.";
 
             return (TResponse)(object)Result<string>.Failure(message, detailedErrors, 400);
 

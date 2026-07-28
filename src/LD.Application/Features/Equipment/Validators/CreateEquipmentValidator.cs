@@ -7,8 +7,13 @@ public class CreateEquipmentValidator : AbstractValidator<CreateEquipmentCommand
 {
     public CreateEquipmentValidator()
     {
-        RuleFor(x => x.EquipmentName).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.SerialNumber).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.EquipmentTypeId).GreaterThan(0);
+        RuleFor(x => x.EquipmentName)
+            .NotEmpty().WithMessage("El nombre del equipo es obligatorio.")
+            .MaximumLength(100).WithMessage("El nombre del equipo no puede superar 100 caracteres.");
+        RuleFor(x => x.SerialNumber)
+            .NotEmpty().WithMessage("El número de serie es obligatorio.")
+            .MaximumLength(100).WithMessage("El número de serie no puede superar 100 caracteres.");
+        RuleFor(x => x.EquipmentTypeId)
+            .GreaterThan(0).WithMessage("Debes seleccionar un tipo de equipo válido.");
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LD.Application.Common.Results;
+using LD.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LD.Api.Common.Results
@@ -9,6 +10,12 @@ namespace LD.Api.Common.Results
         {
             if (result.IsSuccess)
                 return new OkObjectResult(result);
+
+            result.Message = DatabaseExceptionMessageHelper.GetUserMessage(result.Message);
+            result.Errors = result.Errors?
+                .Select(DatabaseExceptionMessageHelper.GetUserMessage)
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
 
             var statusCode = result.Code ;
 

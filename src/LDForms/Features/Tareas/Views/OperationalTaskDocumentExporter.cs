@@ -284,7 +284,7 @@ internal static class OperationalTaskDocumentExporter
             imageBorder.Child = new Image
             {
                 Source = imageSource,
-                Stretch = Stretch.UniformToFill,
+                Stretch = Stretch.Uniform,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
             };

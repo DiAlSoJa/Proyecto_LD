@@ -1,7 +1,9 @@
+using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.DTOs.OperationalTasks;
 using LD.Contracts.DTOs.WarehouseTasks;
 using LD.Contracts.Requests;
+using MauiAppLogin.Controls;
 using Microsoft.Maui.Graphics.Platform;
 
 namespace MauiAppLogin;
@@ -13,20 +15,24 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
 
     private readonly OperationalTaskService _operationalTaskService;
     private readonly WarehouseTaskService _warehouseTaskService;
+    private readonly IDialogService _dialogService;
     private readonly ImageSource?[] _resolutionPhotos = new ImageSource?[4];
     private readonly string?[] _resolutionPhotoPaths = new string?[4];
     private readonly string?[] _existingResolutionPhotoPaths = new string?[4];
     private string _taskSource = "warehouse";
     private int _taskId;
     private bool _loaded;
+    private bool _isCompleting;
 
     public TaskResolve(
         OperationalTaskService operationalTaskService,
-        WarehouseTaskService warehouseTaskService)
+        WarehouseTaskService warehouseTaskService,
+        IDialogService dialogService)
     {
         InitializeComponent();
         _operationalTaskService = operationalTaskService;
         _warehouseTaskService = warehouseTaskService;
+        _dialogService = dialogService;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -181,55 +187,107 @@ public partial class TaskResolve : ContentPage, IQueryAttributable
 
     private async void OnSiguienteClicked(object sender, EventArgs e)
     {
+        if (_isCompleting)
+            return;
+
+        var confirmMessage = IsOperationalTask
+            ? "Se van a subir las fotos de resolucion y cerrar la tarea operativa. Deseas continuar?"
+            : "Se van a subir las fotos de resolucion y cerrar la tarea de almacen. Deseas continuar?";
+
+        var confirmed = await _dialogService.ShowWarningAsync("Terminar tarea", confirmMessage);
+        if (!confirmed)
+            return;
+
+        _isCompleting = true;
+        _dialogService.ShowBlocking(
+            IsOperationalTask ? "Terminando tarea operativa" : "Terminando tarea",
+            "Subiendo fotos y guardando la resolucion...");
+
+        string? errorMessage = null;
+        var completed = false;
+
         try
         {
             if (IsOperationalTask)
             {
-                var request = new CompleteOperationalTaskRequest
-                {
-                    ResolutionObservations = ResolutionObservationsEditor.Text?.Trim(),
-                    ResolvedPhoto1Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[0], 1) ?? _existingResolutionPhotoPaths[0],
-                    ResolvedPhoto2Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[1], 2) ?? _existingResolutionPhotoPaths[1],
-                    ResolvedPhoto3Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[2], 3) ?? _existingResolutionPhotoPaths[2],
-                    ResolvedPhoto4Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[3], 4) ?? _existingResolutionPhotoPaths[3]
-                };
+                var request = await BuildOperationalCompletionRequestAsync();
 
                 var response = await _operationalTaskService.CompleteTask(_taskId, request);
                 if (!response.IsSuccess)
                 {
-                    await DisplayAlertAsync("Tarea", response.Message ?? "No se pudo terminar la tarea.", "OK");
-                    return;
+                    errorMessage = response.Message ?? "No se pudo terminar la tarea.";
                 }
-
-                await DisplayAlertAsync("Tarea", "Tarea terminada.", "OK");
-                await Shell.Current.GoToAsync("..");
-                return;
+                else
+                {
+                    completed = true;
+                }
             }
-
-            var warehouseRequest = new CompleteWarehouseTaskRequest
+            else
             {
-                ResolutionObservations = ResolutionObservationsEditor.Text?.Trim(),
-                ResolvedPhoto1Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[0], 1) ?? _existingResolutionPhotoPaths[0],
-                ResolvedPhoto2Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[1], 2) ?? _existingResolutionPhotoPaths[1],
-                ResolvedPhoto3Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[2], 3) ?? _existingResolutionPhotoPaths[2],
-                ResolvedPhoto4Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[3], 4) ?? _existingResolutionPhotoPaths[3]
-            };
+                var warehouseRequest = await BuildWarehouseCompletionRequestAsync();
 
-            var warehouseResponse = await _warehouseTaskService.CompleteTaskAsync(_taskId, warehouseRequest);
-            if (!warehouseResponse.IsSuccess)
-            {
-                await DisplayAlertAsync("Tarea", warehouseResponse.Message ?? "No se pudo terminar la tarea.", "OK");
-                return;
+                var warehouseResponse = await _warehouseTaskService.CompleteTaskAsync(_taskId, warehouseRequest);
+                if (!warehouseResponse.IsSuccess)
+                {
+                    errorMessage = warehouseResponse.Message ?? "No se pudo terminar la tarea.";
+                }
+                else
+                {
+                    completed = true;
+                }
             }
-
-            await DisplayAlertAsync("Tarea", "Tarea terminada.", "OK");
-            await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            _dialogService.HideBlocking();
+            _isCompleting = false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            await DisplayAlertAsync("Tarea", errorMessage, "OK");
+            return;
+        }
+
+        if (completed)
+        {
+            await DisplayAlertAsync("Tarea", "Tarea terminada.", "OK");
+            await Shell.Current.GoToAsync("..");
         }
     }
+
+    private async Task<CompleteOperationalTaskRequest> BuildOperationalCompletionRequestAsync()
+    {
+        return new CompleteOperationalTaskRequest
+        {
+            CompletedBy = GetCompletedByDisplayName(),
+            ResolutionObservations = ResolutionObservationsEditor.Text?.Trim(),
+            ResolvedPhoto1Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[0], 1) ?? _existingResolutionPhotoPaths[0],
+            ResolvedPhoto2Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[1], 2) ?? _existingResolutionPhotoPaths[1],
+            ResolvedPhoto3Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[2], 3) ?? _existingResolutionPhotoPaths[2],
+            ResolvedPhoto4Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[3], 4) ?? _existingResolutionPhotoPaths[3]
+        };
+    }
+
+    private async Task<CompleteWarehouseTaskRequest> BuildWarehouseCompletionRequestAsync()
+    {
+        return new CompleteWarehouseTaskRequest
+        {
+            CompletedByName = GetCompletedByDisplayName(),
+            ResolutionObservations = ResolutionObservationsEditor.Text?.Trim(),
+            ResolvedPhoto1Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[0], 1) ?? _existingResolutionPhotoPaths[0],
+            ResolvedPhoto2Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[1], 2) ?? _existingResolutionPhotoPaths[1],
+            ResolvedPhoto3Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[2], 3) ?? _existingResolutionPhotoPaths[2],
+            ResolvedPhoto4Path = await UploadResolutionPhotoAsync(_resolutionPhotoPaths[3], 4) ?? _existingResolutionPhotoPaths[3]
+        };
+    }
+
+    private static string GetCompletedByDisplayName()
+        => (UserData.UserName ?? UserData.Name ?? UserData.Id ?? string.Empty).Trim();
 
     private async void OnCapturarClicked(object sender, EventArgs e)
     {

@@ -15,27 +15,27 @@ public class UpdateClientCommandValidator
     {
         RuleFor(x => x.CommercialName)
                    .NotEmpty().WithMessage("El nombre comercial es obligatorio.")
-                   .MaximumLength(150);
+                   .MaximumLength(150).WithMessage("El nombre comercial no puede superar 150 caracteres.");
 
         RuleFor(x => x.CommercialAddress)
             .NotEmpty().WithMessage("El domicilio comercial es obligatorio.")
-            .MaximumLength(250);
+            .MaximumLength(250).WithMessage("El domicilio comercial no puede superar 250 caracteres.");
 
         RuleFor(x => x.Neightbourhoud)
             .NotEmpty().WithMessage("La colonia es obligatoria.")
-            .MaximumLength(100);
+            .MaximumLength(100).WithMessage("La colonia no puede superar 100 caracteres.");
 
         RuleFor(x => x.City)
             .NotEmpty().WithMessage("La ciudad es obligatoria.")
-            .MaximumLength(100);
+            .MaximumLength(100).WithMessage("La ciudad no puede superar 100 caracteres.");
 
         RuleFor(x => x.ZipCode)
-            .NotEmpty()
+            .NotEmpty().WithMessage("El código postal es obligatorio.")
             .Matches(@"^\d{5}$")
             .WithMessage("El código postal debe tener 5 dígitos.");
 
         RuleFor(x => x.Phone)
-            .NotEmpty()
+            .NotEmpty().WithMessage("El teléfono es obligatorio.")
             .Matches(@"^\d{10}$")
             .WithMessage("El teléfono debe tener 10 dígitos.");
 

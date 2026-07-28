@@ -4,6 +4,7 @@ using LD.Application.Common.Behaviors;
 using LD.Application.Features.Clients.Profiles;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 
 namespace LD.Application;
 
@@ -11,6 +12,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("es");
 
         services.AddValidatorsFromAssembly(
             typeof(AssemblyMarker).Assembly

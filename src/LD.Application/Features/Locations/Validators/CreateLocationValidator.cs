@@ -30,20 +30,20 @@ public class CreateLocationValidator
 
         RuleFor(x => x.LocationName)
             .NotEmpty().WithMessage("El nombre es obligatorio.")
-            .MaximumLength(100);
+            .MaximumLength(100).WithMessage("El nombre de la ubicación no puede superar 100 caracteres.");
 
         // ===== Dimensiones =====
 
         RuleFor(x => x.Height)
-            .GreaterThan(0)
+            .GreaterThan(0).WithMessage("La altura debe ser mayor a 0.")
             .When(x => x.Height.HasValue);
 
         RuleFor(x => x.Width)
-            .GreaterThan(0)
+            .GreaterThan(0).WithMessage("El ancho debe ser mayor a 0.")
             .When(x => x.Width.HasValue);
 
         RuleFor(x => x.Depth)
-            .GreaterThan(0)
+            .GreaterThan(0).WithMessage("La profundidad debe ser mayor a 0.")
             .When(x => x.Depth.HasValue);
 
         // ===== SOLO 1 TIPO =====

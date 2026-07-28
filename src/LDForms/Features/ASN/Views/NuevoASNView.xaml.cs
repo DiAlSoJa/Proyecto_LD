@@ -318,6 +318,89 @@ namespace LD.FormsX.Views.Dialogs
             return false;
         }
 
+        private bool EnsureCurrentAsnAllowsReceiptDeletion()
+        {
+            if (!HasPersistedAsn() || IsCreatedStatus(AsnSelected?.Status))
+                return true;
+
+            DialogHelper.ShowWarning("Solo se pueden eliminar recepciones mientras el ASN tenga estatus Creado.");
+            return false;
+        }
+
+        private async Task DeleteDetailRowAsync(AsnDetailItem detailRow)
+        {
+            if (!EnsureCurrentAsnAllowsDetailDeletion())
+                return;
+
+            if (_savingDetailRows.Contains(detailRow))
+            {
+                DialogHelper.ShowWarning("La partida se esta guardando. Intenta eliminarla de nuevo en unos segundos.");
+                return;
+            }
+
+            var confirmationMessage = string.IsNullOrWhiteSpace(detailRow.PartNumber)
+                ? "Deseas eliminar esta partida?"
+                : $"Deseas eliminar la partida {detailRow.PartNumber}?";
+
+            if (!DialogHelper.ShowConfirm(confirmationMessage, "Eliminar partida"))
+                return;
+
+            _pendingDetailRows.Remove(detailRow);
+
+            if (detailRow.AsnDetailId > 0)
+            {
+                var response = await _asnDetailService.DeleteAsnDetail(detailRow.AsnDetailId);
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la partida.");
+                    return;
+                }
+            }
+
+            DetailItems.Remove(detailRow);
+
+            if (detailRow.AsnDetailId > 0)
+                _savedDetailQuantities.Remove(detailRow.AsnDetailId);
+
+            EnsureTrailingEmptyDetailRow();
+            _selectedDetailItem = DetailItems.FirstOrDefault(item => !IsEmptyDetailRow(item)) ?? DetailItems.FirstOrDefault();
+            await LoadReceiptItemsForSelectedDetailAsync();
+        }
+
+        private async Task DeleteReceiptRowAsync(AsnReceiptItem receiptRow)
+        {
+            if (!EnsureCurrentAsnAllowsReceiptDeletion())
+                return;
+
+            if (_savingReceiptRows.Contains(receiptRow))
+            {
+                DialogHelper.ShowWarning("La recepcion se esta guardando. Intenta eliminarla de nuevo en unos segundos.");
+                return;
+            }
+
+            var confirmationMessage = receiptRow.PalletNumber > 0
+                ? $"Deseas eliminar la recepcion del pallet {receiptRow.PalletNumber}?"
+                : "Deseas eliminar esta recepcion?";
+
+            if (!DialogHelper.ShowConfirm(confirmationMessage, "Eliminar recepcion"))
+                return;
+
+            _pendingReceiptRows.Remove(receiptRow);
+
+            if (receiptRow.AsnReceiptDetailId > 0)
+            {
+                var response = await _asnReceiptService.DeleteAsnReceipt(receiptRow.AsnReceiptDetailId);
+                if (!response.IsSuccess)
+                {
+                    DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la recepcion.");
+                    return;
+                }
+            }
+
+            ReceiptItems.Remove(receiptRow);
+            RemoveEmptyReceiptRows();
+        }
+
         private bool EnsureProjectScanDoesNotLockDetails()
         {
             if (!IsScanRequiredForProject())
@@ -394,7 +477,7 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             dgDetail.IsReadOnly = !isEditable;
-            dgDetail.CanUserDeleteRows = isEditable && !scanRequired;
+            dgDetail.CanUserDeleteRows = false;
         }
 
         private void ApplyReceiptGridEditState(bool isEditable, bool scanRequired)
@@ -403,7 +486,7 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             dgUbicacionesAsignadas.IsReadOnly = !isEditable;
-            dgUbicacionesAsignadas.CanUserDeleteRows = isEditable && !scanRequired;
+            dgUbicacionesAsignadas.CanUserDeleteRows = false;
 
             foreach (var column in dgUbicacionesAsignadas.Columns)
                 column.IsReadOnly = IsReceiptColumnReadOnly(column, isEditable, scanRequired);
@@ -2458,26 +2541,7 @@ namespace LD.FormsX.Views.Dialogs
 
             try
             {
-                if (!EnsureCurrentAsnAllowsDetailDeletion())
-                    return;
-
-                if (detailRow.AsnDetailId > 0)
-                {
-                    var response = await _asnDetailService.DeleteAsnDetail(detailRow.AsnDetailId);
-                    if (!response.IsSuccess)
-                    {
-                        DialogHelper.ShowError(response.ErrorMessage ?? response.Message ?? "No se pudo eliminar la partida.");
-                        return;
-                    }
-                }
-
-                DetailItems.Remove(detailRow);
-                if (detailRow.AsnDetailId > 0)
-                    _savedDetailQuantities.Remove(detailRow.AsnDetailId);
-
-                EnsureTrailingEmptyDetailRow();
-                _selectedDetailItem = DetailItems.FirstOrDefault(item => !IsEmptyDetailRow(item)) ?? DetailItems.FirstOrDefault();
-                await LoadReceiptItemsForSelectedDetailAsync();
+                await DeleteDetailRowAsync(detailRow);
             }
             catch (Exception ex)
             {
@@ -2485,6 +2549,7 @@ namespace LD.FormsX.Views.Dialogs
             }
         }
 
+#pragma warning disable CS0162
         private async void DeleteReceiptMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not MenuItem menuItem || menuItem.DataContext is not AsnReceiptItem receiptRow)
@@ -2492,6 +2557,9 @@ namespace LD.FormsX.Views.Dialogs
 
             try
             {
+                await DeleteReceiptRowAsync(receiptRow);
+                return;
+
                 if (!EnsureCurrentAsnAllowsDetailDeletion())
                     return;
 
@@ -2507,6 +2575,22 @@ namespace LD.FormsX.Views.Dialogs
 
                 ReceiptItems.Remove(receiptRow);
                 RemoveEmptyReceiptRows();
+            }
+            catch (Exception ex)
+            {
+                DialogHelper.ShowError(ex.Message);
+            }
+        }
+#pragma warning restore CS0162
+
+        private async void DeleteReceiptMenuItem_Confirm_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem menuItem || menuItem.DataContext is not AsnReceiptItem receiptRow)
+                return;
+
+            try
+            {
+                await DeleteReceiptRowAsync(receiptRow);
             }
             catch (Exception ex)
             {
@@ -2894,8 +2978,18 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 if (e.OriginalSource is DependencyObject source &&
-                    _receiptGridNavigation.IsEventInsideControl<InlineLookupEditor>(source))
+                    IsEventInsideEditableControl(_receiptGridNavigation, source))
                 {
+                    return;
+                }
+
+                if (e.Key == Key.Delete)
+                {
+                    if (dgUbicacionesAsignadas.CurrentItem is not AsnReceiptItem receiptRow)
+                        return;
+
+                    e.Handled = true;
+                    _ = DeleteReceiptRowAsync(receiptRow);
                     return;
                 }
 
@@ -2966,8 +3060,18 @@ namespace LD.FormsX.Views.Dialogs
             try
             {
                 if (e.OriginalSource is DependencyObject source &&
-                    _detailGridNavigation.IsEventInsideControl<InlineLookupEditor>(source))
+                    IsEventInsideEditableControl(_detailGridNavigation, source))
                 {
+                    return;
+                }
+
+                if (e.Key == Key.Delete)
+                {
+                    if (dgDetail.CurrentItem is not AsnDetailItem detailRow)
+                        return;
+
+                    e.Handled = true;
+                    _ = DeleteDetailRowAsync(detailRow);
                     return;
                 }
 
@@ -3005,6 +3109,15 @@ namespace LD.FormsX.Views.Dialogs
             {
                 DialogHelper.ShowError(ex.Message);
             }
+        }
+
+        private static bool IsEventInsideEditableControl(DataGridNavigationManager navigationManager, DependencyObject? source)
+        {
+            return source != null
+                && (navigationManager.IsEventInsideControl<InlineLookupEditor>(source)
+                    || navigationManager.IsEventInsideControl<TextBoxBase>(source)
+                    || navigationManager.IsEventInsideControl<ComboBox>(source)
+                    || navigationManager.IsEventInsideControl<DatePicker>(source));
         }
 
     }

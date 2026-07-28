@@ -8,11 +8,17 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace LD.FormsX.Views.Tareas;
 
 internal static class OperationalTaskExcelExporter
 {
+    private const double DefaultRowHeightPoints = 18d;
+    private const int NormalizedImageWidth = 1200;
+
     private sealed record PhotoSlot(string Title, string? Path, int FromCol, int ToCol, int FromRow, int ToRow, byte[]? Bytes = null, string? Extension = null);
 
     private sealed record SheetDefinition(string Name, string WorksheetXml, IReadOnlyList<PhotoSlot> PhotoSlots);
@@ -107,11 +113,23 @@ internal static class OperationalTaskExcelExporter
             if (bytes.Length == 0)
                 return slot;
 
-            return slot with
+            try
             {
-                Bytes = bytes,
-                Extension = DetectImageExtension(bytes)
-            };
+                var normalizedBytes = NormalizePhotoBytes(bytes, slot);
+                return slot with
+                {
+                    Bytes = normalizedBytes,
+                    Extension = "png"
+                };
+            }
+            catch
+            {
+                return slot with
+                {
+                    Bytes = bytes,
+                    Extension = DetectImageExtension(bytes)
+                };
+            }
         });
 
         return await Task.WhenAll(tasks);
@@ -449,6 +467,106 @@ internal static class OperationalTaskExcelExporter
             || !string.IsNullOrWhiteSpace(task.CompletedByName)
             || !string.IsNullOrWhiteSpace(task.ResolutionObservations)
             || BuildResolutionPhotoSlots(task).Any(photo => !string.IsNullOrWhiteSpace(photo.Path));
+    }
+
+    private static byte[] NormalizePhotoBytes(byte[] bytes, PhotoSlot slot)
+    {
+        var source = LoadBitmapSource(bytes);
+        var targetAspectRatio = GetTargetAspectRatio(slot);
+        return RenderPaddedImage(source, targetAspectRatio);
+    }
+
+    private static double GetTargetAspectRatio(PhotoSlot slot)
+    {
+        var widthPixels = GetWorksheetSpanWidthPixels(slot.FromCol, slot.ToCol);
+        var heightPixels = GetWorksheetSpanHeightPixels(slot.FromRow, slot.ToRow);
+        return widthPixels / heightPixels;
+    }
+
+    private static double GetWorksheetSpanWidthPixels(int fromCol, int toCol)
+    {
+        var width = 0d;
+        for (var columnIndex = fromCol; columnIndex <= toCol; columnIndex++)
+            width += ColumnWidthToPixels(GetWorksheetColumnWidth(columnIndex));
+
+        return Math.Max(width, 1d);
+    }
+
+    private static double GetWorksheetSpanHeightPixels(int fromRow, int toRow)
+    {
+        var rowCount = Math.Max(1, toRow - fromRow + 1);
+        return Math.Max(rowCount * RowHeightToPixels(DefaultRowHeightPoints), 1d);
+    }
+
+    private static double GetWorksheetColumnWidth(int columnIndex) =>
+        columnIndex switch
+        {
+            0 => 18d,
+            1 => 38d,
+            2 => 5d,
+            3 => 18d,
+            4 => 38d,
+            5 => 5d,
+            _ => 18d
+        };
+
+    private static double ColumnWidthToPixels(double width)
+    {
+        if (width <= 0)
+            return 0;
+
+        return width < 1d
+            ? Math.Floor(width * 12d + 0.5d)
+            : Math.Floor(width * 7d + 5d);
+    }
+
+    private static double RowHeightToPixels(double heightPoints) =>
+        heightPoints * 96d / 72d;
+
+    private static BitmapSource LoadBitmapSource(byte[] bytes)
+    {
+        using var stream = new MemoryStream(bytes);
+        var bitmap = new BitmapImage();
+        bitmap.BeginInit();
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+        bitmap.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+        bitmap.StreamSource = stream;
+        bitmap.EndInit();
+        bitmap.Freeze();
+        return bitmap;
+    }
+
+    private static byte[] RenderPaddedImage(BitmapSource source, double targetAspectRatio)
+    {
+        var renderWidth = NormalizedImageWidth;
+        var renderHeight = Math.Max(1, (int)Math.Round(renderWidth / targetAspectRatio));
+
+        var visual = new DrawingVisual();
+        using (var context = visual.RenderOpen())
+        {
+            context.DrawRectangle(Brushes.White, null, new Rect(0, 0, renderWidth, renderHeight));
+
+            var scale = Math.Min(
+                renderWidth / (double)source.PixelWidth,
+                renderHeight / (double)source.PixelHeight);
+
+            var drawWidth = source.PixelWidth * scale;
+            var drawHeight = source.PixelHeight * scale;
+            var offsetX = (renderWidth - drawWidth) / 2d;
+            var offsetY = (renderHeight - drawHeight) / 2d;
+
+            context.DrawImage(source, new Rect(offsetX, offsetY, drawWidth, drawHeight));
+        }
+
+        var target = new RenderTargetBitmap(renderWidth, renderHeight, 96d, 96d, PixelFormats.Pbgra32);
+        target.Render(visual);
+
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(target));
+
+        using var output = new MemoryStream();
+        encoder.Save(output);
+        return output.ToArray();
     }
 
     private static string BuildMergeCells(IReadOnlyList<string> merges)

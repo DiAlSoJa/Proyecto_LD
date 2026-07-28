@@ -31,7 +31,7 @@
         <ContextMenu x:Key="ReceiptRowHeaderContextMenu"
                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
             <MenuItem Header="Eliminar"
-                      Click="DeleteReceiptMenuItem_Click"/>
+                      Click="DeleteReceiptMenuItem_Confirm_Click"/>
         </ContextMenu>
 
         <Style TargetType="TextBlock" x:Key="LabelStyle">
@@ -514,7 +514,7 @@
                             <DataGrid x:Name="dgDetail"
                                       AutoGenerateColumns="False"
                                       CanUserAddRows="False"
-                                      CanUserDeleteRows="True"
+                                      CanUserDeleteRows="False"
                                       IsReadOnly="False"
                                       ItemsSource="{Binding DetailItems}"
                                       InitializingNewItem="dgDetail_InitializingNewItem"

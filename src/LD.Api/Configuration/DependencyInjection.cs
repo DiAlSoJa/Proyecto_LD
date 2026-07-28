@@ -1,7 +1,10 @@
 using Application;
+using LD.Api.Common.Validation;
+using LD.Application.Common.Results;
 using LD.Application.Common.Interfaces.Auth;
 using LD.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace LD.Api.Configuration;
@@ -24,7 +27,36 @@ public static class DependencyInjection
             .AddDefaultCors()
             .AddSwaggerDocumentation();
 
-        services.AddControllers();
+        services
+            .AddControllers()
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(entry => entry.Value?.Errors.Count > 0)
+                        .SelectMany(entry => entry.Value!.Errors.Select(error =>
+                            ModelValidationMessageHelper.GetUserMessage(
+                                entry.Key,
+                                string.IsNullOrWhiteSpace(error.ErrorMessage)
+                                    ? error.Exception?.Message
+                                    : error.ErrorMessage)))
+                        .Distinct(StringComparer.Ordinal)
+                        .ToList();
+
+                    if (errors.Count == 0)
+                    {
+                        errors.Add("La información enviada no es válida.");
+                    }
+
+                    var result = Result<string>.Failure(
+                        "Revisa los datos capturados.",
+                        errors,
+                        StatusCodes.Status400BadRequest);
+
+                    return new BadRequestObjectResult(result);
+                };
+            });
         services.AddEndpointsApiExplorer();
 
         return services;

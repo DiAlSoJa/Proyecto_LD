@@ -59,30 +59,30 @@ namespace LD.Client.Services
 
         public async Task<T> GetAsync<T>(string endpoint)
         {
-            var response = await _http.GetAsync(endpoint);
+            var response = await SendRequestAsync(() => _http.GetAsync(endpoint));
 
             if (response.StatusCode == HttpStatusCode.Unauthorized && await TryRefreshTokenAsync())
-                response = await _http.GetAsync(endpoint);
+                response = await SendRequestAsync(() => _http.GetAsync(endpoint));
 
             return await HandleResponse<T>(response);
         }
 
         public async Task<TResponse> PostAsync<TRequest, TResponse>(string endpoint, TRequest body)
         {
-            var response = await _http.PostAsJsonAsync(endpoint, body);
+            var response = await SendRequestAsync(() => _http.PostAsJsonAsync(endpoint, body));
 
             if (response.StatusCode == HttpStatusCode.Unauthorized && await TryRefreshTokenAsync())
-                response = await _http.PostAsJsonAsync(endpoint, body);
+                response = await SendRequestAsync(() => _http.PostAsJsonAsync(endpoint, body));
 
             return await HandleResponse<TResponse>(response);
         }
 
         public async Task<TResponse> PutAsync<TRequest, TResponse>(string endpoint, TRequest body)
         {
-            var response = await _http.PutAsJsonAsync(endpoint, body);
+            var response = await SendRequestAsync(() => _http.PutAsJsonAsync(endpoint, body));
 
             if (response.StatusCode == HttpStatusCode.Unauthorized && await TryRefreshTokenAsync())
-                response = await _http.PutAsJsonAsync(endpoint, body);
+                response = await SendRequestAsync(() => _http.PutAsJsonAsync(endpoint, body));
 
             return await HandleResponse<TResponse>(response);
         }
@@ -90,25 +90,50 @@ namespace LD.Client.Services
         public async Task<TResponse> PostMultipartAsync<TResponse>(string endpoint, MultipartFormDataContent content)
         {
             // No se reintenta multipart porque el stream puede estar consumido
-            var response = await _http.PostAsync(endpoint, content);
+            var response = await SendRequestAsync(() => _http.PostAsync(endpoint, content));
             return await HandleResponse<TResponse>(response);
         }
 
         public async Task<T> DeleteAsync<T>(string endpoint)
         {
-            var response = await _http.DeleteAsync(endpoint);
+            var response = await SendRequestAsync(() => _http.DeleteAsync(endpoint));
 
             if (response.StatusCode == HttpStatusCode.Unauthorized && await TryRefreshTokenAsync())
-                response = await _http.DeleteAsync(endpoint);
+                response = await SendRequestAsync(() => _http.DeleteAsync(endpoint));
 
             return await HandleResponse<T>(response);
         }
 
         public async Task<byte[]> GetByteArrayAsync(string endpoint)
         {
-            var response = await _http.GetAsync(endpoint);
-            response.EnsureSuccessStatusCode();
+            var response = await SendRequestAsync(() => _http.GetAsync(endpoint));
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new InvalidOperationException(GetHttpErrorMessage(response.StatusCode));
+            }
+
             return await response.Content.ReadAsByteArrayAsync();
+        }
+
+        private static async Task<HttpResponseMessage> SendRequestAsync(
+            Func<Task<HttpResponseMessage>> request)
+        {
+            try
+            {
+                return await request();
+            }
+            catch (TaskCanceledException ex)
+            {
+                throw new InvalidOperationException(
+                    "La solicitud tardó demasiado tiempo. Verifica tu conexión e inténtalo nuevamente.",
+                    ex);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new InvalidOperationException(
+                    "No fue posible comunicarse con el servidor. Verifica tu conexión e inténtalo nuevamente.",
+                    ex);
+            }
         }
 
         // Intenta hacer refresh. Usa lock para que peticiones concurrentes
@@ -204,15 +229,31 @@ namespace LD.Client.Services
                 fallbackType.GetProperty(nameof(ApiResponseDto<object>.Code))?.SetValue(fallback, (int)response.StatusCode);
                 fallbackType.GetProperty(nameof(ApiResponseDto<object>.Message))?.SetValue(
                     fallback,
-                    string.IsNullOrWhiteSpace(content) ? response.ReasonPhrase ?? "Error" : content);
+                    GetHttpErrorMessage(response.StatusCode));
 
                 return (T)fallback!;
             }
 
             throw new InvalidOperationException(
-                string.IsNullOrWhiteSpace(content)
-                    ? response.ReasonPhrase ?? "No se pudo procesar la respuesta del servidor."
-                    : content);
+                response.IsSuccessStatusCode
+                    ? "No se pudo interpretar la respuesta del servidor."
+                    : GetHttpErrorMessage(response.StatusCode));
         }
+
+        private static string GetHttpErrorMessage(HttpStatusCode statusCode) =>
+            statusCode switch
+            {
+                HttpStatusCode.BadRequest => "La solicitud contiene datos no válidos. Revisa la información capturada.",
+                HttpStatusCode.Unauthorized => "Tu sesión no es válida o ha expirado. Inicia sesión nuevamente.",
+                HttpStatusCode.Forbidden => "No tienes permiso para realizar esta acción.",
+                HttpStatusCode.NotFound => "No se encontró la información solicitada.",
+                HttpStatusCode.Conflict => "La operación genera un conflicto con la información existente.",
+                HttpStatusCode.UnprocessableEntity => "No se pudo procesar la información capturada.",
+                HttpStatusCode.InternalServerError => "Ocurrió un error en el servidor. Inténtalo nuevamente.",
+                HttpStatusCode.BadGateway => "El servidor no está disponible temporalmente. Inténtalo más tarde.",
+                HttpStatusCode.ServiceUnavailable => "El servicio no está disponible temporalmente. Inténtalo más tarde.",
+                HttpStatusCode.GatewayTimeout => "El servidor tardó demasiado tiempo en responder. Inténtalo nuevamente.",
+                _ => $"No se pudo completar la solicitud. Código de respuesta: {(int)statusCode}."
+            };
     }
 }

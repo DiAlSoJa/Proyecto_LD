@@ -16,6 +16,10 @@ public partial class CustomDialog : Popup
     {
         TitleLabel.Text = title;
         MessageLabel.Text = message;
+        LoadingIndicator.IsVisible = false;
+        LoadingIndicator.IsRunning = false;
+        IconLabel.IsVisible = true;
+        ButtonsContainer.IsVisible = true;
 
         switch (type)
         {
@@ -61,8 +65,10 @@ public partial class CustomDialog : Popup
                 break;
 
             case DialogType.Blocking:
-                IconLabel.Text = "\U0001F512";
-                // Sin boton: el popup solo se cierra programaticamente cuando el checklist se completa
+                LoadingIndicator.IsVisible = true;
+                LoadingIndicator.IsRunning = true;
+                IconLabel.IsVisible = false;
+                ButtonsContainer.IsVisible = false;
                 break;
         }
     }
