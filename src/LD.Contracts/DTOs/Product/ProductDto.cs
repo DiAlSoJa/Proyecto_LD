@@ -25,6 +25,9 @@ namespace LD.Contracts.Product
         [DisplayName("Descripción")]
         public string Descripcion { get; set; } = string.Empty;
 
+        [DisplayName("Activo")]
+        public bool IsActive { get; set; }
+
         [DisplayName("Categoría")]
         public string Categoria { get; set; } = string.Empty;
 

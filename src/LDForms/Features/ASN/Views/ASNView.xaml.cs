@@ -675,6 +675,11 @@ namespace LD.FormsX.Views.ASN
                     return;
                 }
 
+                btnUbicarMercancia.IsEnabled = false;
+
+                if (!await ValidateAsnQuantitiesBeforeLocatingAsync())
+                    return;
+
                 var confirmar = DialogHelper.ShowConfirm(
                     $"Deseas ubicar la mercancia del ASN {_selectedX.AsnCode ?? _selectedX.AsnId.ToString()}?",
                     "Ubicar mercancia");
@@ -710,6 +715,61 @@ namespace LD.FormsX.Views.ASN
                 MostrarLoader(false);
                 UpdateActionButtons();
             }
+        }
+
+        private async Task<bool> ValidateAsnQuantitiesBeforeLocatingAsync()
+        {
+            if (_selectedX == null)
+                return false;
+
+            var detailsResult = await _asnDetailService.GetAsnDetailsByAsn(_selectedX.AsnId);
+            if (!detailsResult.IsSuccess || detailsResult.Data == null)
+            {
+                DialogHelper.ShowError(detailsResult.ErrorMessage ?? detailsResult.Message ?? "No se pudieron obtener los detalles del ASN.");
+                return false;
+            }
+
+            var asnDetails = detailsResult.Data
+                .OrderBy(x => x.AsnDetailId)
+                .ToList();
+
+            if (asnDetails.Count == 0)
+            {
+                DialogHelper.ShowError("El ASN no tiene detalles capturados.");
+                return false;
+            }
+
+            var mismatches = new List<string>();
+
+            foreach (var detail in asnDetails)
+            {
+                var receiptResult = await _asnReceiptService.GetAsnReceiptsByAsnDetailId(detail.AsnDetailId);
+                if (!receiptResult.IsSuccess || receiptResult.Data == null)
+                {
+                    DialogHelper.ShowError(
+                        receiptResult.ErrorMessage ?? receiptResult.Message ?? $"No se pudieron obtener las recepciones del detalle {detail.AsnDetailId}.");
+                    return false;
+                }
+
+                var receivedQuantity = receiptResult.Data.Sum(x => x.ReceivedQuantity ?? 0m);
+                if (detail.Quantity == receivedQuantity)
+                    continue;
+
+                var detailLabel = string.IsNullOrWhiteSpace(detail.PartNumber)
+                    ? detail.AsnDetailId.ToString()
+                    : detail.PartNumber.Trim();
+
+                mismatches.Add($"{detailLabel} (ASN: {detail.Quantity:0.##}, Recepción: {receivedQuantity:0.##})");
+            }
+
+            if (mismatches.Any())
+            {
+                DialogHelper.ShowError(
+                    $"La cantidad de las partidas del ASN no coincide con la cantidad recibida. Líneas con diferencia: {string.Join(", ", mismatches)}.");
+                return false;
+            }
+
+            return true;
         }
 
         private void BtnImprimirEtiquetas_Click(object sender, RoutedEventArgs e)

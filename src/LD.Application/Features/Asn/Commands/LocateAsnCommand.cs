@@ -1,3 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using LD.Application.Common.Interfaces.Repository;
 using LD.Application.Common.Interfaces.StandarLabel;
 using LD.Application.Common.Results;
@@ -52,11 +57,15 @@ public class LocateAsnCommandHandler : IRequestHandler<LocateAsnCommand, Result<
             if (string.Equals(asn.Status?.Trim(), "Ubicando", StringComparison.OrdinalIgnoreCase))
                 return Result<string>.Failure("El ASN ya esta en estatus Ubicando.", new());
 
-            var asnDetails = await _asnDetailRepository.GetManyAsync() ?? new List<LD.Domain.Entities.AsnDetail>();
-            var asnDetailIds = asnDetails
+            var asnDetails = (await _asnDetailRepository.GetManyAsync() ?? new List<LD.Domain.Entities.AsnDetail>())
                 .Where(x => x.AsnId == request.AsnId)
+                .ToList();
+            var asnDetailIds = asnDetails
                 .Select(x => x.AsnDetailId)
                 .ToHashSet();
+
+            if (!asnDetails.Any())
+                return Result<string>.Failure("El ASN no tiene detalles capturados.", new());
 
             var details = (await _asnReceiptDetailRepository.GetManyAsync() ?? new List<AsnReceiptDetail>())
                 .Where(x => asnDetailIds.Contains(x.AsnDetailId))
@@ -64,6 +73,14 @@ public class LocateAsnCommandHandler : IRequestHandler<LocateAsnCommand, Result<
 
             if (!details.Any())
                 return Result<string>.Failure("El ASN debe tener al menos un detalle de recepción del ASN.", new());
+
+            var quantityMismatches = GetQuantityMismatches(asnDetails, details);
+            if (quantityMismatches.Any())
+            {
+                return Result<string>.Failure(
+                    $"La cantidad de las partidas del ASN no coincide con la cantidad recibida. Líneas con diferencia: {string.Join(", ", quantityMismatches)}.",
+                    new());
+            }
 
             var invalidDetails = details
                 .Where(x =>
@@ -105,5 +122,34 @@ public class LocateAsnCommandHandler : IRequestHandler<LocateAsnCommand, Result<
         {
             return Result<string>.Failure("Hubo un error al marcar el ASN como Ubicando.", new() { ex.Message });
         }
+    }
+
+    private static List<string> GetQuantityMismatches(
+        IEnumerable<LD.Domain.Entities.AsnDetail> asnDetails,
+        IEnumerable<AsnReceiptDetail> receiptDetails)
+    {
+        var receivedQuantityByDetailId = receiptDetails
+            .GroupBy(x => x.AsnDetailId)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Sum(x => x.ReceivedQuantity ?? 0m));
+
+        var mismatches = new List<string>();
+
+        foreach (var detail in asnDetails.OrderBy(x => x.AsnDetailId))
+        {
+            receivedQuantityByDetailId.TryGetValue(detail.AsnDetailId, out var receivedQuantity);
+
+            if (detail.Quantity == receivedQuantity)
+                continue;
+
+            var detailLabel = string.IsNullOrWhiteSpace(detail.PartNumber)
+                ? detail.AsnDetailId.ToString()
+                : detail.PartNumber.Trim();
+
+            mismatches.Add($"{detailLabel} (ASN: {detail.Quantity:0.##}, Recepcion: {receivedQuantity:0.##})");
+        }
+
+        return mismatches;
     }
 }

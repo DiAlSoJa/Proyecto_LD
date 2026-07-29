@@ -1,7 +1,8 @@
-﻿using LD.Contracts.Project;
-using LD.FormsX.Features.Proyectos.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Input;
+using LD.Contracts.Project;
+using LD.FormsX.Features.Proyectos.ViewModels;
 
 namespace LD.FormsX.Views.Proyectos
 {
@@ -15,6 +16,7 @@ namespace LD.FormsX.Views.Proyectos
         {
             InitializeComponent();
             DataContext = viewModel;
+            UpdateWindowButtons();
 
             viewModel.RequestClose = () =>
             {
@@ -35,12 +37,46 @@ namespace LD.FormsX.Views.Proyectos
 
         private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();
 
-        private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ClickCount == 2)
+            {
+                ToggleWindowState();
+                return;
+            }
+
             if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
         }
+
+        private void BtnMinimizarVentana_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void BtnMaximizarVentana_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleWindowState();
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            UpdateWindowButtons();
+        }
+
+        private void ToggleWindowState()
+        {
+            WindowState = WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
+        private void UpdateWindowButtons()
+        {
+            if (btnMaximizarVentana == null)
+                return;
+
+            btnMaximizarVentana.Content = WindowState == WindowState.Maximized ? "❐" : "□";
+        }
     }
 }
-
-              

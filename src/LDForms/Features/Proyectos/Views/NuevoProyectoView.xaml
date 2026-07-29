@@ -9,9 +9,10 @@
         Height="740" Width="1100"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         AllowsTransparency="True"
         Background="Transparent"
+        StateChanged="Window_StateChanged"
         Loaded="Window_Loaded">
 
     <Window.Resources>
@@ -139,8 +140,7 @@
     </Window.Resources>
 
     <Grid>
-        <Border Width="1100"
-                Background="White" CornerRadius="16"
+        <Border Background="White" CornerRadius="16"
                 BorderBrush="#E5E7EB" BorderThickness="1" SnapsToDevicePixels="True">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.18"/>
@@ -156,16 +156,28 @@
                 <!-- ── Header ── -->
                 <Border Grid.Row="0" Background="#233167"
                         CornerRadius="16,16,0,0"
-                        MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                     <Grid Margin="16,0,10,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding HeaderTitle}"
                                    VerticalAlignment="Center" Foreground="White"
                                    FontSize="16" FontWeight="SemiBold"/>
-                        <Button Grid.Column="1" Width="30" Height="30"
+                        <Button x:Name="btnMinimizarVentana"
+                                Grid.Column="1" Width="30" Height="30"
+                                Background="Transparent" BorderThickness="0"
+                                Foreground="White" FontSize="18" FontWeight="Bold"
+                                Cursor="Hand" Click="BtnMinimizarVentana_Click" Content="─"/>
+                        <Button x:Name="btnMaximizarVentana"
+                                Grid.Column="2" Width="30" Height="30"
+                                Background="Transparent" BorderThickness="0"
+                                Foreground="White" FontSize="14" FontWeight="Bold"
+                                Cursor="Hand" Click="BtnMaximizarVentana_Click" Content="□"/>
+                        <Button Grid.Column="3" Width="30" Height="30"
                                 Background="Transparent" BorderThickness="0"
                                 Foreground="White" FontSize="18" FontWeight="Bold"
                                 Cursor="Hand" Click="BtnClose_Click" Content="×"/>

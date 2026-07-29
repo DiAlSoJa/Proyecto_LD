@@ -20,6 +20,8 @@ namespace LD.Application.Features.Product.Profiles
             CreateMap<LD.Domain.Entities.Product, ProductDto>()
             .ForMember(dest => dest.ItemId,
                opt => opt.MapFrom(src => src.ProductId))
+           .ForMember(dest => dest.IsActive,
+               opt => opt.MapFrom(src => src.IsActive))
            .ForMember(dest => dest.NumeroParte,
                opt => opt.MapFrom(src => src.PartNumber))
              
@@ -72,10 +74,14 @@ namespace LD.Application.Features.Product.Profiles
             CreateMap<ProductRequest, LD.Domain.Entities.Product>()
                 .ForMember(dest => dest.ProductId,
                     opt => opt.MapFrom(src => src.ProductId))
+                .ForMember(dest => dest.IsActive,
+                    opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.PartNumber,
                     opt => opt.MapFrom(src => src.PartNumber));
 
-            CreateMap<LD.Domain.Entities.Product, ProductRequest>();
+            CreateMap<LD.Domain.Entities.Product, ProductRequest>()
+                .ForMember(dest => dest.IsActive,
+                    opt => opt.MapFrom(src => src.IsActive));
 
             CreateMap<LD.Domain.Entities.Product, ProductAutocompleteDto>()
              .ForMember(dest => dest.ItemId,

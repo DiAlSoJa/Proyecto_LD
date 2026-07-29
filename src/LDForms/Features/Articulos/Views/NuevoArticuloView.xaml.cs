@@ -267,7 +267,7 @@ namespace LD.FormsX.Views.Articulos
                 cmbCategoria.SelectedValue = item.CategoryId?.ToString();
                 cmbFamilia.SelectedValue = item.FamilyId?.ToString();
 
-                //chkActivo.IsChecked = item.a
+                chkActivo.IsChecked = item.IsActive;
                 chkTemperatura.IsChecked = item.IsTemperatureControlled;
                 chkVMI.IsChecked = item.IsVMI;
                 chkBOM.IsChecked = item.IsBOM;
@@ -356,6 +356,7 @@ namespace LD.FormsX.Views.Articulos
                 Description = (descriptionOverride ?? txtDescripcion.Text).Trim(),
                 CategoryId = int.TryParse(cmbCategoria.SelectedValue?.ToString(), out int categoryId) ? categoryId : 0,
                 FamilyId = int.TryParse(cmbFamilia.SelectedValue?.ToString(), out int familyId) ? familyId : 0,
+                IsActive = chkActivo.IsChecked == true,
 
                 IsTemperatureControlled = chkTemperatura.IsChecked ?? false,
                 IsVMI = chkVMI.IsChecked ?? false,

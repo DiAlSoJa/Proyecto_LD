@@ -226,7 +226,7 @@
                                             </Grid>
 
                                             <WrapPanel>
-                                                <CheckBox x:Name="chkActivo" Content="Activo" Style="{StaticResource CheckStyle}"/>
+                                                <CheckBox x:Name="chkActivo" Content="Activo" IsChecked="True" Style="{StaticResource CheckStyle}"/>
                                                 <CheckBox x:Name="chkTemperatura" Content="Temperatura controlada" Style="{StaticResource CheckStyle}"/>
                                                 <CheckBox x:Name="chkVMI" Content="VMI" Style="{StaticResource CheckStyle}"/>
                                                 <CheckBox x:Name="chkBOM" Content="BOM" Style="{StaticResource CheckStyle}"/>

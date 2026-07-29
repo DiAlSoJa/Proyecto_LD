@@ -1070,12 +1070,13 @@ namespace LD.FormsX.Views.Dialogs
                 await LoadProductsForSelectedClientProjectAsync();
 
             var hasPartNumberConfiguration = HasConfiguredScanField(SystemField_e.PartNumber);
+            var hasStandardIdConfiguration = HasConfiguredScanField(SystemField_e.StandardId);
             var asnDetail = DetailItems.FirstOrDefault(item =>
                 !IsEmptyDetailRow(item)
                 && item.AsnDetailId > 0
-                && string.Equals(item.PartNumber?.Trim(), value, StringComparison.OrdinalIgnoreCase));
+                && PartNumbersMatch(item.PartNumber, value));
 
-            if (asnDetail != null && hasPartNumberConfiguration)
+            if (asnDetail != null)
             {
                 return new UnmatchedScanResult(
                     true,
@@ -1085,9 +1086,9 @@ namespace LD.FormsX.Views.Dialogs
             }
 
             var product = ProductLookupItems.FirstOrDefault(item =>
-                string.Equals(item.Code?.Trim(), value, StringComparison.OrdinalIgnoreCase));
+                PartNumbersMatch(item.Code, value));
 
-            if (product != null && hasPartNumberConfiguration)
+            if (product != null)
             {
                 return new UnmatchedScanResult(
                     true,
@@ -1096,23 +1097,22 @@ namespace LD.FormsX.Views.Dialogs
                     string.Empty);
             }
 
-            if (!HasConfiguredScanField(SystemField_e.StandardId))
-            {
-                return new UnmatchedScanResult(
-                    false,
-                    (int)SystemField_e.PartNumber,
-                    value,
-                    hasPartNumberConfiguration
-                        ? $"No existe una partida guardada con numero de parte {value} para este ASN."
-                        : product != null
-                        ? "El numero de parte existe, pero Numero de Parte no esta en la configuracion de escaneo."
-                        : "No existe el numero de parte para este cliente y proyecto.");
-            }
-
             var labelResponse = await _standardLabelService.GetByCode(value);
             if (labelResponse.IsSuccess && labelResponse.Data != null)
             {
                 var label = labelResponse.Data;
+
+                if (hasPartNumberConfiguration
+                    && !hasStandardIdConfiguration
+                    && !string.IsNullOrWhiteSpace(label.PartNumber))
+                {
+                    return new UnmatchedScanResult(
+                        true,
+                        (int)SystemField_e.PartNumber,
+                        label.PartNumber.Trim(),
+                        string.Empty);
+                }
+
                 if (IsStandardLabelAvailableForScan(label))
                 {
                     return new UnmatchedScanResult(
@@ -1124,9 +1124,11 @@ namespace LD.FormsX.Views.Dialogs
 
                 return new UnmatchedScanResult(
                     false,
-                    (int)SystemField_e.StandardId,
+                    hasPartNumberConfiguration ? (int)SystemField_e.PartNumber : (int)SystemField_e.StandardId,
                     value,
-                    "La etiqueta LD ya esta asignada a una recepcion, numero de parte, cliente o proyecto.");
+                    hasPartNumberConfiguration
+                        ? $"No existe una partida guardada con numero de parte {value} para este ASN."
+                        : "La etiqueta LD ya esta asignada a una recepcion, numero de parte, cliente o proyecto.");
             }
 
             if (labelResponse.Code != 404)
@@ -1194,10 +1196,7 @@ namespace LD.FormsX.Views.Dialogs
                 && DetailItems.Any(item =>
                     !IsEmptyDetailRow(item)
                     && item.AsnDetailId > 0
-                    && string.Equals(
-                        item.PartNumber?.Trim(),
-                        normalizedPartNumber,
-                        StringComparison.OrdinalIgnoreCase));
+                    && PartNumbersMatch(item.PartNumber, normalizedPartNumber));
 
             var message = existsInAsnDetails
                 ? null
@@ -1411,7 +1410,7 @@ namespace LD.FormsX.Views.Dialogs
             var existingDetail = DetailItems.FirstOrDefault(item =>
                 !IsEmptyDetailRow(item)
                 && item.AsnDetailId > 0
-                && string.Equals(item.PartNumber?.Trim(), partNumber.Trim(), StringComparison.OrdinalIgnoreCase));
+                && PartNumbersMatch(item.PartNumber, partNumber));
 
             if (existingDetail != null)
                 return existingDetail;
@@ -1424,10 +1423,7 @@ namespace LD.FormsX.Views.Dialogs
             return DetailItems.FirstOrDefault(item =>
                 !IsEmptyDetailRow(item)
                 && item.AsnDetailId > 0
-                && string.Equals(
-                    NormalizeMatchValue(item.PartNumber),
-                    NormalizeMatchValue(receiptRow.PartNumber),
-                    StringComparison.OrdinalIgnoreCase));
+                && PartNumbersMatch(item.PartNumber, receiptRow.PartNumber));
         }
 
         private AsnDetailItem CreateDetailRowFromScannedReceipt(AsnReceiptItem receiptRow, decimal quantity)
@@ -1459,7 +1455,7 @@ namespace LD.FormsX.Views.Dialogs
                 throw new InvalidOperationException("La línea escaneada no tiene número de parte.");
 
             var productLookup = ProductLookupItems.FirstOrDefault(item =>
-                string.Equals(item.Code?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase));
+                PartNumbersMatch(item.Code, partNumber));
 
             if (productLookup?.Data is not ProductAutocompleteDto product)
                 throw new InvalidOperationException($"No existe el numero de parte {partNumber} para este cliente y proyecto.");
@@ -1474,7 +1470,27 @@ namespace LD.FormsX.Views.Dialogs
             receiptRow.MaximumQuantity ??= product.MaxUnitValue;
         }
 
-        private static string NormalizeMatchValue(string? value) => value?.Trim() ?? string.Empty;
+        private static bool PartNumbersMatch(string? left, string? right)
+        {
+            var normalizedLeft = NormalizeMatchValue(left);
+            var normalizedRight = NormalizeMatchValue(right);
+
+            return !string.IsNullOrWhiteSpace(normalizedLeft)
+                && !string.IsNullOrWhiteSpace(normalizedRight)
+                && string.Equals(normalizedLeft, normalizedRight, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeMatchValue(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            return new string(value
+                .Trim()
+                .Where(char.IsLetterOrDigit)
+                .Select(char.ToUpperInvariant)
+                .ToArray());
+        }
 
         private static void ApplyScannedValueToReceipt(AsnReceiptItem receiptRow, ScanConfigurationRequest configuration, string scannedValue)
         {
@@ -2852,7 +2868,7 @@ namespace LD.FormsX.Views.Dialogs
             await LoadProductsForSelectedClientProjectAsync();
 
             var createdLookupItem = ProductLookupItems
-                .FirstOrDefault(item => string.Equals(item.Code?.Trim(), partNumber, StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(item => PartNumbersMatch(item.Code, partNumber));
 
             if (createdLookupItem?.Data is not ProductAutocompleteDto createdProduct)
             {
