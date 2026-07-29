@@ -320,7 +320,7 @@ namespace LD.FormsX.Views.Dialogs
 
         private bool EnsureCurrentAsnAllowsReceiptDeletion()
         {
-            if (!HasPersistedAsn() || IsCreatedStatus(AsnSelected?.Status))
+            if (IsCreatedStatus(AsnSelected?.Status))
                 return true;
 
             DialogHelper.ShowWarning("Solo se pueden eliminar recepciones mientras el ASN tenga estatus Creado.");
@@ -2011,16 +2011,13 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             var receiptRows = receiptsResponse.Data;
-            var shouldSyncReceivedQuantity = receiptRows.Count == 1;
 
             foreach (var receiptDto in receiptRows)
             {
                 var receiptRow = AsnReceiptItem.FromDto(receiptDto);
                 receiptRow.AsnId = AsnSelected.AsnId;
                 SyncReceiptRowFromDetail(receiptRow, detailRow, AsnSelected.AsnId);
-
-                if (shouldSyncReceivedQuantity && detailRow.Quantity > 0m)
-                    receiptRow.ReceivedQuantity = detailRow.Quantity;
+                // Keep receipt quantity independent from detail quantity.
 
                 var response = await _asnReceiptService.UpdateAsnReceipt(receiptRow.AsnReceiptDetailId, receiptRow.ToRequest());
                 if (!response.IsSuccess)
