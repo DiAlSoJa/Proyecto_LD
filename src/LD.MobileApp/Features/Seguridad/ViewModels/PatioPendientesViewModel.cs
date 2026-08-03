@@ -150,6 +150,8 @@ public partial class PatioPendientesViewModel : ObservableObject
         _context.VehiculoSeleccionado = new VehiculoEnPatio
         {
             Id = registro.SecurityRegistrationId,
+            WarehouseId = registro.WarehouseId,
+            WarehouseName = registro.WarehouseName,
             Placa = registro.Placa,
             HoraEntrada = registro.CreatedAt,
             Operador = registro.Nombre,

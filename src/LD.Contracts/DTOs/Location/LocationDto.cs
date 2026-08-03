@@ -19,6 +19,9 @@ namespace LD.Contracts.Location
 
         public string Rack { get; set; } = string.Empty;
 
+        [DisplayName("Pasillo")]
+        public string? Aisle { get; set; }
+
         public string Nivel { get; set; } = string.Empty;
 
         [DisplayName("Posición")]

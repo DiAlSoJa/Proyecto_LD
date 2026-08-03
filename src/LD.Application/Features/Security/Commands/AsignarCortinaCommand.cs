@@ -41,6 +41,9 @@ public class AsignarCortinaCommandHandler : IRequestHandler<AsignarCortinaComman
         if (cortina is null)
             return Result<string>.Failure("Cortina no encontrada", []);
 
+        if (registro.WarehouseId.HasValue && cortina.WarehouseId != registro.WarehouseId.Value)
+            return Result<string>.Failure("La cortina seleccionada no pertenece al almacén del registro", []);
+
         if (!cortina.EstaDisponible)
             return Result<string>.Failure("La cortina seleccionada no está disponible", []);
 

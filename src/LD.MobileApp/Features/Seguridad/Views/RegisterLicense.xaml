@@ -39,6 +39,15 @@
                             <Label TextColor="Red" FontSize="18" Text="{Binding Tipo}" Margin="5,0,0,0" />
                         </FlexLayout>
 
+                        <FlexLayout>
+                            <Label TextColor="#64748B" FontSize="18">Almacén: </Label>
+                            <Label TextColor="#0F172A"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   Text="{Binding WarehouseName}"
+                                   Margin="5,0,0,0" />
+                        </FlexLayout>
+
                         <controls:LabeledEntry
                             LabelText="Nombre:"
                             Text="{Binding Nombre}"

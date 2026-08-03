@@ -6,6 +6,8 @@ public class SecurityRegistrationDto
 {
     public int SecurityRegistrationId { get; set; }
     public DateTime CreatedAt { get; set; }
+    public int? WarehouseId { get; set; }
+    public string WarehouseName { get; set; } = "";
     public string Tipo { get; set; } = "";
     public string Nombre { get; set; } = "";
     public string Licencia { get; set; } = "";
@@ -20,6 +22,7 @@ public class SecurityRegistrationDto
     public string NumeroCaja { get; set; } = "";
     public string PlacaCaja { get; set; } = "";
     public string Sello { get; set; } = "";
+    public string Documento { get; set; } = "";
     public bool IsActive { get; set; }
     public RegistroEstado_e Estado { get; set; }
     public int? CortinaId { get; set; }

@@ -1,4 +1,5 @@
 using LD.Contracts.DTOs.Security;
+using System.ComponentModel.DataAnnotations;
 
 namespace LD.Contracts.Requests;
 
@@ -6,6 +7,10 @@ public class SecurityRegistrationRequest
 {
     // Flow
     public string Tipo { get; set; } = "";           // Carga / Descarga
+
+    [Required]
+    [Range(1, int.MaxValue)]
+    public int? WarehouseId { get; set; }
 
     // Driver / License
     public string Nombre { get; set; } = "";
@@ -23,6 +28,7 @@ public class SecurityRegistrationRequest
     public string NumeroCaja { get; set; } = "";
     public string PlacaCaja { get; set; } = "";
     public string Sello { get; set; } = "";
+    public string Documento { get; set; } = "";
 
     public List<SecurityPhotoDto> Fotos { get; set; } = new();
 }

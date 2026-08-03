@@ -65,6 +65,7 @@ public class CreateLocationsByRangeCommandHandler : IRequestHandler<CreateLocati
                         Position = positionText,
                         Level = levelText,
                         LocationName = locationName,
+                        Aisle = string.IsNullOrWhiteSpace(request.Aisle) ? null : request.Aisle.Trim(),
                         IsActive = request.IsActive,
                         IsFiscal = request.IsFiscal,
                         HasControlledTemperature = request.HasControlledTemperature,

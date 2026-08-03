@@ -20,6 +20,8 @@ public class SecurityRegistrationContext
 {
     // Flow type
     public string Tipo { get; set; } = "";           // Carga / Descarga
+    public int? WarehouseId { get; set; }
+    public string WarehouseName { get; set; } = "";
 
     // Step 1 — License
     public string Nombre { get; set; } = "";
@@ -38,6 +40,7 @@ public class SecurityRegistrationContext
     public string NumeroCaja { get; set; } = "";
     public string PlacaCaja { get; set; } = "";
     public string Sello { get; set; } = "";
+    public string Documento { get; set; } = "";
     public List<SecurityPhotoEntry> VehiculoFotos { get; set; } = new();
 
     // Step 3 — Signature
@@ -46,6 +49,8 @@ public class SecurityRegistrationContext
     public void Clear()
     {
         Tipo = "";
+        WarehouseId = null;
+        WarehouseName = "";
         Nombre = "";
         Licencia = "";
         Vencimiento = null;
@@ -61,6 +66,7 @@ public class SecurityRegistrationContext
         NumeroCaja = "";
         PlacaCaja = "";
         Sello = "";
+        Documento = "";
         VehiculoFotos.Clear();
 
         Firma = null;

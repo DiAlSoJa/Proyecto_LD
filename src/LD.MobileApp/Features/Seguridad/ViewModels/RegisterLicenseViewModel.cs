@@ -61,6 +61,9 @@ public partial class RegisterLicenseViewModel : ObservableObject
     private string tipo = "";
 
     [ObservableProperty]
+    private string warehouseName = "";
+
+    [ObservableProperty]
     private string nombre = "";
 
     [ObservableProperty]
@@ -138,6 +141,8 @@ public partial class RegisterLicenseViewModel : ObservableObject
 
     private void LoadFromContext()
     {
+        WarehouseName = _context.WarehouseName;
+
         if (!string.IsNullOrEmpty(_context.Nombre))
             Nombre = _context.Nombre;
 
@@ -381,6 +386,12 @@ public partial class RegisterLicenseViewModel : ObservableObject
     {
         var hasFront = Photos.Any(p => p.Side == LicensePhotoSide.Front);
         var hasBack = Photos.Any(p => p.Side == LicensePhotoSide.Back);
+
+        if (!_context.WarehouseId.HasValue || _context.WarehouseId.Value <= 0)
+        {
+            await _dialogService.ShowInfoAsync("Atención", "Selecciona un almacén antes de continuar.");
+            return;
+        }
 
         if (string.IsNullOrEmpty(Tipo) ||
             string.IsNullOrEmpty(Licencia) ||

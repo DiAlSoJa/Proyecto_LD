@@ -4,8 +4,10 @@ using CommunityToolkit.Mvvm.Input;
 using LD.Client.Configuration;
 using LD.Client.Services;
 using LD.Contracts.Constants;
+using LD.Contracts.DTOs;
 using LD.Contracts.Enums;
 using MauiAppLogin.Controls;
+using MauiAppLogin.Models;
 using MauiAppLogin.Services;
 using MauiAppLogin.Views.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,7 @@ namespace MauiAppLogin.ViewModels
         private readonly LookupService _lookupService;
         private readonly IDialogService _dialogService;
         private readonly MobileSessionService _sessionService;
+        private readonly SecurityRegistrationContext _securityRegistrationContext;
 
         private readonly SignalRService _signalRService;
 
@@ -125,6 +128,7 @@ namespace MauiAppLogin.ViewModels
             LookupService lookupService,
             IDialogService dialogService,
             MobileSessionService sessionService,
+            SecurityRegistrationContext securityRegistrationContext,
 
             SignalRService signalRService,
 
@@ -139,6 +143,7 @@ namespace MauiAppLogin.ViewModels
             _lookupService = lookupService;
             _dialogService = dialogService;
             _sessionService = sessionService;
+            _securityRegistrationContext = securityRegistrationContext;
 
             _signalRService = signalRService;
 
@@ -415,7 +420,74 @@ namespace MauiAppLogin.ViewModels
 
             if (string.IsNullOrWhiteSpace(seleccion)) return;
 
+            var warehouse = await SelectWarehouseAsync(page);
+            if (warehouse is null || !int.TryParse(warehouse.Key, out var warehouseId))
+                return;
+
+            _securityRegistrationContext.Clear();
+            _securityRegistrationContext.Tipo = seleccion;
+            _securityRegistrationContext.WarehouseId = warehouseId;
+            _securityRegistrationContext.WarehouseName = warehouse.Value?.Trim() ?? string.Empty;
+
             await NavigateAsync($"RegisterLicense?tipo={Uri.EscapeDataString(seleccion)}");
+        }
+
+        private async Task<DropDownDto?> SelectWarehouseAsync(Page page)
+        {
+            if (string.IsNullOrWhiteSpace(UserData.Id))
+            {
+                await _dialogService.ShowErrorAsync("Almacén", "No se pudo identificar al usuario actual.");
+                return null;
+            }
+
+            var response = await _lookupService.GetWarehouseLookupByUser(UserData.Id);
+            if (!response.IsSuccess)
+            {
+                await _dialogService.ShowErrorAsync(
+                    "Almacén",
+                    response.Message ?? "No se pudieron cargar los almacenes asignados.");
+                return null;
+            }
+
+            var warehouses = (response.Data ?? [])
+                .Where(item =>
+                    int.TryParse(item.Key, out var id) &&
+                    id > 0 &&
+                    !string.IsNullOrWhiteSpace(item.Value))
+                .GroupBy(item => item.Key, StringComparer.Ordinal)
+                .Select(group => group.First())
+                .OrderBy(item => item.Value, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (warehouses.Count == 0)
+            {
+                await _dialogService.ShowInfoAsync(
+                    "Almacén requerido",
+                    "No tienes almacenes asignados. Solicita la asignación de un almacén para continuar.");
+                return null;
+            }
+
+            if (warehouses.Count == 1)
+                return warehouses[0];
+
+            var options = new Dictionary<string, DropDownDto>(StringComparer.Ordinal);
+            foreach (var warehouse in warehouses)
+            {
+                var label = warehouse.Value!.Trim();
+                if (options.ContainsKey(label))
+                    label = $"{label} (#{warehouse.Key})";
+
+                options[label] = warehouse;
+            }
+
+            var popup = new OptionPopup("Selecciona el almacén", options.Keys);
+            page.ShowPopup(popup);
+
+            var selectedOption = await popup.Result;
+            return !string.IsNullOrWhiteSpace(selectedOption) &&
+                   options.TryGetValue(selectedOption, out var selectedWarehouse)
+                ? selectedWarehouse
+                : null;
         }
 
         private async Task NavigateToMovement()

@@ -4,6 +4,7 @@ using LD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD.Infrastructure.Migrations
 {
     [DbContext(typeof(LdProyectDbContext))]
-    partial class LdProyectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260803114728_AddDocumentoToSecurityRegistrations")]
+    partial class AddDocumentoToSecurityRegistrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -6069,14 +6072,9 @@ namespace LD.Infrastructure.Migrations
                     b.Property<DateTime>("Vencimiento")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("WarehouseId")
-                        .HasColumnType("int");
-
                     b.HasKey("SecurityRegistrationId");
 
                     b.HasIndex("CortinaId");
-
-                    b.HasIndex("WarehouseId");
 
                     b.ToTable("SecurityRegistrations");
                 });
@@ -8088,14 +8086,7 @@ namespace LD.Infrastructure.Migrations
                         .HasForeignKey("CortinaId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("LD.Domain.Entities.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Cortina");
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("LD.Domain.Entities.SecurityRegistrationPhoto", b =>

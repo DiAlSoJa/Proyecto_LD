@@ -110,6 +110,8 @@ public class GetPatioMonitorQueryHandler : IRequestHandler<GetPatioMonitorQuery,
         {
             SecurityRegistrationId = registration.SecurityRegistrationId,
             CreatedAt = registration.CreatedAt,
+            WarehouseId = registration.WarehouseId,
+            WarehouseName = registration.Warehouse?.WarehouseName ?? string.Empty,
             Tipo = registration.Tipo,
             TipoVehiculo = registration.TipoVehiculo,
             TieneCaja = registration.TieneCaja,

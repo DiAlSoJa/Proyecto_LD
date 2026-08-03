@@ -12,6 +12,7 @@ namespace LD.Contracts.Requests
 
         public int WarehouseId { get; set; }
         public string? LocationName { get; set; }
+        public string? Aisle { get; set; }
         public bool IsFiscal { get; set; }
         public bool HasControlledTemperature { get; set; }
         // Dimensions (cm)

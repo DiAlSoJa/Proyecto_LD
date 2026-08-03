@@ -74,7 +74,19 @@ public partial class CortinaSeleccionViewModel : ObservableObject
                 return;
             }
 
-            Cortinas = new ObservableCollection<CortinaDto>(response.Data);
+            var warehouseId = _context.VehiculoSeleccionado?.WarehouseId;
+            var cortinas = response.Data
+                .Where(cortina => !warehouseId.HasValue || cortina.WarehouseId == warehouseId.Value)
+                .ToList();
+
+            Cortinas = new ObservableCollection<CortinaDto>(cortinas);
+
+            if (warehouseId.HasValue && Cortinas.Count == 0)
+            {
+                await _dialogService.ShowInfoAsync(
+                    "Sin cortinas",
+                    "No hay cortinas disponibles para el almacén de este registro.");
+            }
         }
         finally
         {

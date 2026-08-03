@@ -53,6 +53,9 @@ public partial class NuevaUbicacionViewModel : ObservableObject
     private string locationName = "";
 
     [ObservableProperty]
+    private string aisle = "";
+
+    [ObservableProperty]
     private bool isActive = true;
 
     [ObservableProperty]
@@ -129,6 +132,7 @@ public partial class NuevaUbicacionViewModel : ObservableObject
         IsBulkEdit = false;
         SelectedWarehouseId = location.WarehouseId.ToString();
         LocationName = location.Ubicacion ?? "";
+        Aisle = location.Aisle ?? "";
         ResponseForm = false;
         IsSaving = false;
     }
@@ -145,6 +149,7 @@ public partial class NuevaUbicacionViewModel : ObservableObject
         IsBulkEdit = true;
         SelectedWarehouseId = _bulkLocations[0].WarehouseId.ToString();
         LocationName = _bulkLocations[0].Ubicacion ?? "";
+        Aisle = _bulkLocations[0].Aisle ?? "";
         ResponseForm = false;
         IsSaving = false;
     }
@@ -193,6 +198,7 @@ public partial class NuevaUbicacionViewModel : ObservableObject
 
             SelectedWarehouseId = l.WarehouseId.ToString();
             LocationName = l.LocationName ?? "";
+            Aisle = l.Aisle ?? "";
 
             IsActive = l.IsActive;
             IsFiscal = l.IsFiscal;
@@ -258,6 +264,7 @@ public partial class NuevaUbicacionViewModel : ObservableObject
             LocationId = sourceLocation?.LocationId ?? _editLocationId ?? 0,
             WarehouseId = warehouseId,
             LocationName = name,
+            Aisle = string.IsNullOrWhiteSpace(Aisle) ? null : Aisle.Trim(),
 
             IsActive = IsActive,
             IsFiscal = IsFiscal,

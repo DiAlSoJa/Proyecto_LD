@@ -1138,6 +1138,12 @@ namespace LD.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<SecurityRegistration>()
+                .HasOne(r => r.Warehouse)
+                .WithMany()
+                .HasForeignKey(r => r.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SecurityRegistration>()
                 .Property(r => r.Estado)
                 .HasConversion<int>();
 

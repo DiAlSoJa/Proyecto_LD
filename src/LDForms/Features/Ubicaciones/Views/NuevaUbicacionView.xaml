@@ -124,6 +124,10 @@
                                           Visibility="{Binding ShowIdentityFields, Converter={StaticResource BoolToVis}}"
                                           Margin="0,0,0,14"/>
 
+                        <controls:LDInput Label="Pasillo"
+                                          Text="{Binding Aisle, UpdateSourceTrigger=PropertyChanged}"
+                                          Margin="0,0,0,14"/>
+
                         <StackPanel Margin="0,0,0,18">
                             <CheckBox Content="Activo"
                                       IsChecked="{Binding IsActive}"

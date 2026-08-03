@@ -124,6 +124,7 @@ public partial class SignatureDriverViewModel : ObservableObject
             var request = new SecurityRegistrationRequest
             {
                 Tipo = _context.Tipo,
+                WarehouseId = _context.WarehouseId,
                 Nombre = _context.Nombre,
                 Licencia = _context.Licencia,
                 Vencimiento = _context.Vencimiento.Value,
@@ -137,6 +138,7 @@ public partial class SignatureDriverViewModel : ObservableObject
                 NumeroCaja = _context.TieneCaja ? _context.NumeroCaja : string.Empty,
                 PlacaCaja = _context.TieneCaja ? _context.PlacaCaja : string.Empty,
                 Sello = _context.TieneCaja ? _context.Sello : string.Empty,
+                Documento = _context.Documento,
                 Fotos = fotos,
             };
 

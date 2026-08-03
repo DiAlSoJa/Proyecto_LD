@@ -45,6 +45,8 @@ public partial class RegisterVehiculeViewModel : ObservableObject
     [ObservableProperty]
     private bool tieneCaja;
 
+    public string DocumentSectionNumber => TieneCaja ? "4" : "3";
+
     private TruckTypeDto? selectedTruckType;
 
     public TruckTypeDto? SelectedTruckType
@@ -57,6 +59,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
 
             TipoVehiculo = value?.Name ?? string.Empty;
             TieneCaja = value?.TieneCaja ?? false;
+            OnPropertyChanged(nameof(DocumentSectionNumber));
 
             if (!TieneCaja)
             {
@@ -88,6 +91,9 @@ public partial class RegisterVehiculeViewModel : ObservableObject
 
     [ObservableProperty]
     private string sello = string.Empty;
+
+    [ObservableProperty]
+    private string documento = string.Empty;
 
     [ObservableProperty]
     private string photoInstruction = "Toma la foto del numero del vehiculo.";
@@ -184,6 +190,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         NumeroCaja = _context.NumeroCaja;
         PlacaCaja = _context.PlacaCaja;
         Sello = _context.Sello;
+        Documento = _context.Documento;
 
         Photos.Clear();
         foreach (var entry in _context.VehiculoFotos.OrderBy(x => x.Orden))
@@ -247,6 +254,7 @@ public partial class RegisterVehiculeViewModel : ObservableObject
         _context.NumeroCaja = TieneCaja ? NumeroCaja : string.Empty;
         _context.PlacaCaja = TieneCaja ? PlacaCaja : string.Empty;
         _context.Sello = TieneCaja ? Sello : string.Empty;
+        _context.Documento = Documento;
 
         var allowedSlots = GetRequiredSlots();
         _context.VehiculoFotos = Photos

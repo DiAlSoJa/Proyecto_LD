@@ -26,6 +26,8 @@ namespace LD.Application.Features.Clients.Profiles
                     opt => opt.MapFrom(src => src.Warehouse.WarehouseName))
                 .ForMember(dest => dest.Ubicacion,
                     opt => opt.MapFrom(src => src.LocationName))
+                .ForMember(dest => dest.Aisle,
+                    opt => opt.MapFrom(src => src.Aisle))
                 .ForMember(dest => dest.Dimension,
                     opt => opt.MapFrom(src => $"{src.Height}x{src.Width}x{src.Depth}"))
                 .ForMember(dest => dest.EsFiscal,

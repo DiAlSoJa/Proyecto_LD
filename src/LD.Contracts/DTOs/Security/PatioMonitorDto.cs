@@ -6,6 +6,8 @@ public class PatioMonitorDto
 {
     public int SecurityRegistrationId { get; set; }
     public DateTime CreatedAt { get; set; }
+    public int? WarehouseId { get; set; }
+    public string WarehouseName { get; set; } = string.Empty;
     public string Tipo { get; set; } = string.Empty;
     public string TipoVehiculo { get; set; } = string.Empty;
     public PatioMonitorSequence_e SequenceType { get; set; }

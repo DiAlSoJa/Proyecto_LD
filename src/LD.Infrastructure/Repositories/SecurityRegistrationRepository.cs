@@ -13,18 +13,21 @@ public class SecurityRegistrationRepository : Repository<SecurityRegistration>, 
         => await _context.SecurityRegistrations
             .AsNoTracking()
             .Include(r => r.Cortina)
+            .Include(r => r.Warehouse)
             .Include(r => r.Photos)
             .ToListAsync();
 
     public async Task<SecurityRegistration?> GetByIdWithCortinaAsync(int id)
         => await _context.SecurityRegistrations
             .Include(r => r.Cortina)
+            .Include(r => r.Warehouse)
             .Include(r => r.Photos)
             .FirstOrDefaultAsync(r => r.SecurityRegistrationId == id);
 
     public async Task<List<SecurityRegistration>> GetByCreatedAtRangeAsync(DateTime from, DateTime to)
         => await _context.SecurityRegistrations
             .AsNoTracking()
+            .Include(r => r.Warehouse)
             .Include(r => r.Photos)
             .Where(x => x.IsActive && x.CreatedAt >= from && x.CreatedAt <= to)
             .OrderByDescending(x => x.CreatedAt)

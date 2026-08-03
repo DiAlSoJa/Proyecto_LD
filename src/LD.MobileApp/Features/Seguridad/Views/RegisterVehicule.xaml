@@ -417,6 +417,42 @@
                         </VerticalStackLayout>
                     </Border>
 
+                    <!-- Documentos, siempre al final de la seccion de vehiculo -->
+                    <Border BackgroundColor="#F6F8FC"
+                            Stroke="#E2E8F0"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 22"
+                            Padding="18"
+                            Margin="0,0,0,12">
+                        <VerticalStackLayout Spacing="14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border WidthRequest="34"
+                                        HeightRequest="34"
+                                        BackgroundColor="#244A7C"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 12">
+                                    <Label Text="{Binding DocumentSectionNumber}"
+                                           TextColor="White"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                    <Label Text="Documentos"
+                                           Style="{StaticResource SectionTitleStyle}" />
+                                    <Label Text="Captura la referencia documental del transporte."
+                                           Style="{StaticResource SectionSubtitleStyle}" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <controls:LabeledEntry
+                                LabelText="Documento:"
+                                Text="{Binding Documento}"
+                                Placeholder="Ej. Carta porte, folio o referencia"
+                                ShowClearButton="True" />
+                        </VerticalStackLayout>
+                    </Border>
+
                 </VerticalStackLayout>
             </ScrollView>
 

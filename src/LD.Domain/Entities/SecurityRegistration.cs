@@ -1,6 +1,7 @@
 using LD.Domain.Common;
 using LD.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LD.Domain.Entities;
 
@@ -13,6 +14,9 @@ public class SecurityRegistration : AuditableEntity
 
     public int? CortinaId { get; set; }
     public virtual Cortina? Cortina { get; set; }
+
+    public int? WarehouseId { get; set; }
+    public virtual Warehouse? Warehouse { get; set; }
 
     [Required]
     [MaxLength(20)]
@@ -57,6 +61,10 @@ public class SecurityRegistration : AuditableEntity
 
     [MaxLength(50)]
     public string Sello { get; set; } = "";
+
+    [Column(TypeName = "varchar(255)")]
+    [MaxLength(255)]
+    public string Documento { get; set; } = "";
 
     public ICollection<SecurityRegistrationPhoto> Photos { get; set; } = new List<SecurityRegistrationPhoto>();
 }

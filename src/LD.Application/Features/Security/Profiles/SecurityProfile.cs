@@ -13,7 +13,8 @@ public class SecurityProfile : Profile
     public SecurityProfile()
     {
         CreateMap<CreateSecurityRegistrationCommand, SecurityRegistration>()
-            .ForMember(dest => dest.Photos, opt => opt.Ignore());
+            .ForMember(dest => dest.Photos, opt => opt.Ignore())
+            .ForMember(dest => dest.Warehouse, opt => opt.Ignore());
 
         CreateMap<SecurityRegistrationPhoto, SecurityPhotoDto>()
             .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (PhotoCategoria_e)(int)src.Categoria))
@@ -23,6 +24,7 @@ public class SecurityProfile : Profile
 
         CreateMap<SecurityRegistration, SecurityRegistrationDto>()
             .ForMember(dest => dest.Estado,        opt => opt.MapFrom(src => (RegistroEstado_e)(int)src.Estado))
+            .ForMember(dest => dest.WarehouseName, opt => opt.MapFrom(src => src.Warehouse != null ? src.Warehouse.WarehouseName : ""))
             .ForMember(dest => dest.CortinaNumero, opt => opt.MapFrom(src => src.Cortina != null ? src.Cortina.Numero : null))
             .ForMember(dest => dest.Firma,         opt => opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.Categoria == PhotoCategoria.Firma)))
             .ForMember(dest => dest.Fotos,         opt => opt.MapFrom(src => src.Photos.Where(p => p.Categoria != PhotoCategoria.Firma).ToList()));

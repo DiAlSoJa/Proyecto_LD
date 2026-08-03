@@ -5,6 +5,8 @@ using LD.Contracts.Enums;
 public class VehiculoEnPatio
 {
     public int Id { get; set; }
+    public int? WarehouseId { get; set; }
+    public string WarehouseName { get; set; } = "";
     public string Placa { get; set; } = "";
     public bool TieneCaja { get; set; }
     public DateTime HoraEntrada { get; set; }

@@ -104,6 +104,10 @@
                                                   Label="Rack"
                                                   Margin="0,0,0,14"/>
 
+                                <controls:LDInput x:Name="txtAisle"
+                                                  Label="Pasillo"
+                                                  Margin="0,0,0,14"/>
+
                                 <Grid Margin="0,0,0,14">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>

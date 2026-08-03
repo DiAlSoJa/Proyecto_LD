@@ -92,6 +92,7 @@ namespace LD.FormsX.Views.Ubicaciones
 
                 cmbAlmacenN.SelectedValue = location.WarehouseId.ToString();
                 txtRack.Text = location.Rack ?? string.Empty;
+                txtAisle.Text = location.Aisle ?? string.Empty;
                 _ocupado = location.Ocupado;
                 _placas = location.Placas;
             }
@@ -107,6 +108,7 @@ namespace LD.FormsX.Views.Ubicaciones
             {
                 WarehouseId = int.TryParse(cmbAlmacenN.SelectedValue?.ToString(), out int warehouseId) ? warehouseId : 0,
                 Rack = txtRack.Text?.Trim() ?? string.Empty,
+                Aisle = string.IsNullOrWhiteSpace(txtAisle.Text) ? null : txtAisle.Text.Trim(),
 
                 FromW = int.TryParse(txtDesde.Text, out int fromW) ? fromW : 0,
                 ToW = int.TryParse(txtHasta.Text, out int toW) ? toW : 0,
