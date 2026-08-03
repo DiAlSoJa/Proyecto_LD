@@ -91,10 +91,22 @@ namespace LD.FormsX.Views.Dialogs
                 return;
 
             e.Handled = true;
+            await SubmitCurrentScanAsync();
+        }
 
+        private async void BtnEscanear_Click(object sender, RoutedEventArgs e)
+        {
+            await SubmitCurrentScanAsync();
+        }
+
+        private async Task SubmitCurrentScanAsync()
+        {
             var scanValue = txtEscaneo.Text.Trim();
             if (string.IsNullOrWhiteSpace(scanValue))
+            {
+                txtEscaneo.Focus();
                 return;
+            }
 
             await ProcessScanAsync(scanValue);
             txtEscaneo.Clear();

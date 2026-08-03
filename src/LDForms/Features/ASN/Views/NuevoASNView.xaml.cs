@@ -1590,10 +1590,10 @@ namespace LD.FormsX.Views.Dialogs
                 "partnumber" or "part number" or "part_number" or "numerodeparte" or "numero de parte" => "partnumber",
                 "sd" => "sd",
                 "status" or "estatus" => "status",
-                _ => normalized
+                _ => string.Empty
             };
 
-            return true;
+            return !string.IsNullOrWhiteSpace(normalizedFieldKey);
         }
 
         private static string NormalizeFieldName(string? value)
